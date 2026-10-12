@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>英語学習｜ENGLISH PLAYROOM</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f6f5ef;color:#193d38;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}a:focus-visible{outline:3px solid #e4af37;outline-offset:3px}
+.home{max-width:1060px;margin:auto;padding:28px 20px 30px}
+.logo{font-weight:850;font-size:13px;letter-spacing:.12em;color:#447367}
+.label{margin-top:20px;font-size:10px;letter-spacing:.16em;color:#698479}
+h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-height:1.28}
+.intro{color:#65756e;line-height:1.6;font-size:13px;margin:0}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+.card{display:block;text-decoration:none;position:relative;text-align:left;background:#fff;border:1px solid #dce5da;border-radius:16px;padding:16px;color:inherit;box-shadow:0 4px 14px #203b3608;transition:transform .14s,box-shadow .14s,border-color .14s}
+.card:hover{transform:translateY(-2px);box-shadow:0 7px 18px #203b3610;border-color:#cbd9cf}
+.icon{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#e8f4ed;color:#23725c;font-size:18px;font-weight:900}
+.order .icon{background:#eaf0ff;color:#4068b0}.retry .icon{background:#e5efe7;color:#195f4a}.task .icon{background:#fff0dc;color:#ac6822}
+.eyebrow{font-size:9px;letter-spacing:.11em;color:#718478;margin-top:12px}
+.title{font-size:20px;font-weight:850;margin:3px 0 5px;line-height:1.35}
+.desc{font-size:12.5px;color:#65756e;line-height:1.55;min-height:58px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.chip{font-size:10px;background:#f3f6ef;padding:3px 7px;border-radius:14px}
+.play{display:flex;align-items:center;justify-content:space-between;color:#23725c;font-size:12.5px;font-weight:800;border-top:1px solid #e8ede5;padding-top:9px}
+.order .play{color:#4068b0}.retry .play{color:#195f4a}.task .play{color:#ac6822}
+.open-note{font-size:9.5px;color:#829087;margin-top:4px}.foot{font-size:10px;color:#829087;text-align:center;margin-top:20px}
+
+.grow-card{display:flex;align-items:center;gap:14px;margin-top:16px;padding:10px 14px;background:#fff;border:1px solid #dce5da;border-radius:14px;box-shadow:0 3px 12px #203b3607}
+.grow-img-wrap{width:92px;height:92px;flex:0 0 92px;display:grid;place-items:center}
+.grow-img{display:block;max-width:92px;max-height:92px;width:auto;height:auto;object-fit:contain}
+.grow-info{min-width:0;flex:1}
+.grow-eyebrow{font-size:9px;letter-spacing:.12em;color:#718478;font-weight:800}
+.grow-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:2px}
+.grow-title strong{font-size:18px}
+.grow-days{font-size:12px;color:#447367;font-weight:800}
+.grow-status{font-size:11.5px;color:#65756e;line-height:1.45;margin-top:3px}
+.grow-bar{height:5px;background:#edf1e8;border-radius:99px;overflow:hidden;margin-top:8px;max-width:360px}
+.grow-bar>i{display:block;height:100%;background:#78a96f;border-radius:99px}
+
+@media(max-width:820px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.home{padding:16px 14px 22px}.label{margin-top:12px}h1{font-size:28px}.grow-card{gap:10px;padding:8px 10px;margin-top:12px}.grow-img-wrap{width:76px;height:76px;flex-basis:76px}.grow-img{max-width:76px;max-height:76px}.grow-title strong{font-size:16px}.grow-days{font-size:11px}.grow-status{font-size:10.5px}.cards{grid-template-columns:1fr;gap:10px;margin-top:14px}.card{padding:14px}.desc{min-height:0}.title{font-size:19px}}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.auth-area{display:flex;align-items:center;gap:7px;min-width:0}
+.auth-btn,.logout-btn{appearance:none;border:1px solid #d6e1d8;background:#fff;color:#193d38;border-radius:999px;padding:7px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.auth-btn:hover,.logout-btn:hover{background:#edf5ef}
+.auth-btn:disabled{cursor:default;opacity:.68}
+.logout-btn{color:#718078;padding:7px 9px}
+.auth-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#b9c2bc;margin-right:5px;vertical-align:1px}
+.auth-dot.ok{background:#3f956b}.auth-dot.busy{background:#d1a02f}.auth-dot.error{background:#bd5a4d}
+.auth-sub{font-size:9.5px;color:#829087;white-space:nowrap}
+.grow-sync{font-size:9.5px;color:#829087;margin-top:5px}
+@media(max-width:560px){
+  .topbar{align-items:flex-start}
+  .auth-area{gap:4px}
+  .auth-btn,.logout-btn{font-size:9.5px;padding:6px 8px}
+  .auth-sub{display:none}
+}
+
+</style>
+</head>
+<body>
+<main class="home">
+  <div class="topbar">
+    <div class="logo">ENGLISH PLAYROOM</div>
+    <div class="auth-area">
+      <button id="loginBtn" class="auth-btn" type="button" disabled>
+        <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
+      </button>
+      <span id="authSub" class="auth-sub">Firebase接続中</span>
+      <button id="logoutBtn" class="logout-btn" type="button" hidden>ログアウト</button>
+    </div>
+  </div>
+  <div class="label">LET’S PRACTICE ENGLISH</div>
+  <h1>今日は、どれで<br>英語を練習する？</h1>
+  <p class="intro">単語・語順・英作文・読解。今日は何にチャレンジする？<br>好きなゲームを選んで始めよう。</p>
+
+  <section class="grow-card" aria-label="アサガオ育成">
+    <div class="grow-img-wrap">
+      <img id="morningGloryImage" class="grow-img" src="images/morning-glory-01.png" alt="育てているアサガオ">
+    </div>
+    <div class="grow-info">
+      <div class="grow-eyebrow">MY MORNING GLORY</div>
+      <div class="grow-title">
+        <strong>アサガオを育てよう</strong>
+        <span id="morningGloryDays" class="grow-days">学習 1日目</span>
+      </div>
+      <div id="morningGloryStatus" class="grow-status">成長記録を読み込んでいます。</div>
+      <div id="morningGlorySync" class="grow-sync">ログインすると、アサガオを端末間で同期できます。</div>
+      <div class="grow-bar" aria-hidden="true"><i id="morningGloryBar" style="width:3.3%"></i></div>
+    </div>
+  </section>
+
+  <div class="cards">
+    <a class="card" href="https://k-oota-pixel.github.io/ateru/" target="_blank" rel="noopener noreferrer">
+      <div class="icon" aria-hidden="true">?</div>
+      <div class="eyebrow">THREE-HINT WORD GAME</div>
+      <div class="title">アテル</div>
+      <div class="desc">3つの英語のヒントを読んで、答えの英単語を考えよう。光っている文字を押して答えを完成！</div>
+      <div class="chips"><span class="chip">320のお題</span><span class="chip">ランダム5問</span><span class="chip">単語・スペル</span></div>
+      <div class="play">アテルであそぶ <span aria-hidden="true">↗</span></div>
+      <div class="open-note">GitHub Pagesで開きます</div>
+    </a>
+
+    <a class="card order" href="https://k-oota-pixel.github.io/basic-quest/" target="_blank" rel="noopener noreferrer">
+      <div class="icon" aria-hidden="true">A↔B</div>
+      <div class="eyebrow">WORD ORDER TRAINING</div>
+      <div class="title">Basic Quest</div>
+      <div class="desc">日本語に合うように、英単語を正しい順番に並べよう。番号を選んで、4つの英文にチャレンジ！</div>
+      <div class="chips"><span class="chip">60ステージ</span><span class="chip">各4問</span><span class="chip">語順・英文</span></div>
+      <div class="play">Basic Questに挑戦 <span aria-hidden="true">↗</span></div>
+      <div class="open-note">GitHub Pagesで開きます</div>
+    </a>
+
+    <a class="card retry" href="https://k-oota-pixel.github.io/eiken-retry/" target="_blank" rel="noopener noreferrer">
+      <div class="icon" aria-hidden="true">↻</div>
+      <div class="eyebrow">EIKEN RETRY NOTE</div>
+      <div class="title">英検 リトライノート</div>
+      <div class="desc">英検の問題に挑戦して、間違えた問題をあとから復習。全選択肢の意味とワンポイント解説つき。</div>
+      <div class="chips"><span class="chip">準1〜4級</span><span class="chip">1,585問</span><span class="chip">復習</span></div>
+      <div class="play">リトライノートへ <span aria-hidden="true">↗</span></div>
+      <div class="open-note">GitHub Pagesで開きます</div>
+    </a>
+
+    <a class="card order" href="https://eiken-cloze.onrender.com/" target="_blank" rel="noopener noreferrer">
+      <div class="icon" aria-hidden="true">___</div>
+      <div class="eyebrow">READING &amp; CLOZE</div>
+      <div class="title">英検 空所補充</div>
+      <div class="desc">長文を読んで、空所に入る英語を考えよう。自由入力はGeminiが判定。選択肢モードでも練習できます。</div>
+      <div class="chips"><span class="chip">自由入力</span><span class="chip">選択問題</span><span class="chip">読解</span></div>
+      <div class="play">空所補充に挑戦 <span aria-hidden="true">↗</span></div>
+    </a>
+
+    <a class="card" href="https://eiken-title.onrender.com/" target="_blank" rel="noopener noreferrer">
+      <div class="icon" aria-hidden="true">Aa</div>
+      <div class="eyebrow">READING &amp; TITLES</div>
+      <div class="title">英検 タイトルを考える</div>
+      <div class="desc">本文を読んで、内容に合うタイトルを考えよう。本文の要点を捉える練習です。</div>
+      <div class="chips"><span class="chip">タイトル作成</span><span class="chip">Gemini判定</span><span class="chip">読解</span></div>
+      <div class="play">タイトル作成に挑戦 <span aria-hidden="true">↗</span></div>
+    </a>
+
+    <a class="card task" href="https://task-quest.onrender.com/" target="_blank" rel="noopener noreferrer">
+      <div class="icon" aria-hidden="true">✎</div>
+      <div class="eyebrow">SITUATION &amp; WRITING</div>
+      <div class="title">Task-Quest</div>
+      <div class="desc">シチュエーションとお題に合わせて、英語で伝えてみよう。自分の言葉で英文を作る練習！</div>
+      <div class="chips"><span class="chip">シチュエーション</span><span class="chip">英作文</span><span class="chip">オンライン</span></div>
+      <div class="play">Task-Questに挑戦 <span aria-hidden="true">↗</span></div>
+    </a>
+  </div>
+  <p class="foot">タッチ・クリックで操作できます。</p>
+</main>
+
+<script>
+(function(){
+  const DAYS_KEY = "englishPlayroomMorningGloryDays";
+  const LAST_KEY = "englishPlayroomMorningGloryLastDate";
+  const thresholds = [1,2,4,7,10,15,20,30];
+  const labels = ["種をまきました","芽が出ました","双葉になりました","本葉が増えてきました","つるが伸びてきました","つぼみができました","花が咲きました","満開です！"];
+
+  function localDateKey(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function readLocal(){
+    return {
+      days: Math.max(0, Number(localStorage.getItem(DAYS_KEY) || 0)),
+      lastVisitDate: localStorage.getItem(LAST_KEY) || ""
+    };
+  }
+
+  function writeLocal(days,lastVisitDate){
+    localStorage.setItem(DAYS_KEY,String(Math.max(1,days)));
+    localStorage.setItem(LAST_KEY,lastVisitDate);
+  }
+
+  function ensureTodayLocal(){
+    const today=localDateKey();
+    let {days,lastVisitDate}=readLocal();
+    if(lastVisitDate!==today){
+      days=Math.max(0,days)+1;
+      lastVisitDate=today;
+      writeLocal(days,lastVisitDate);
+    }
+    if(days<1){days=1;writeLocal(days,lastVisitDate||today);}
+    return {days,lastVisitDate:lastVisitDate||today};
+  }
+
+  function render(days,syncText){
+    days=Math.max(1,Number(days)||1);
+    let stage=0;
+    for(let i=0;i<thresholds.length;i++){
+      if(days>=thresholds[i])stage=i;
+    }
+
+    const image=document.getElementById("morningGloryImage");
+    const dayText=document.getElementById("morningGloryDays");
+    const status=document.getElementById("morningGloryStatus");
+    const bar=document.getElementById("morningGloryBar");
+    const sync=document.getElementById("morningGlorySync");
+
+    image.src=`images/morning-glory-${String(stage+1).padStart(2,"0")}.png`;
+    image.alt=`アサガオ成長ステージ${stage+1}`;
+    dayText.textContent=`学習 ${days}日目`;
+
+    if(stage===thresholds.length-1){
+      status.textContent=`${labels[stage]} これからも少しずつ続けよう。`;
+    }else{
+      const nextAt=thresholds[stage+1];
+      const remain=nextAt-days;
+      status.textContent=`${labels[stage]}　次の成長まであと${remain}日`;
+    }
+
+    bar.style.width=`${Math.min(100,(days/thresholds[thresholds.length-1])*100)}%`;
+    if(syncText)sync.textContent=syncText;
+  }
+
+  window.morningGloryApp={
+    localDateKey,
+    readLocal,
+    writeLocal,
+    ensureTodayLocal,
+    render
+  };
+
+  // Firebaseの認証確認中は、現在の端末記録を仮表示するだけにする。
+  const local=readLocal();
+  render(local.days||1,"ログイン状態を確認しています…");
+})();
+</script>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut,
+  onAuthStateChanged, setPersistence, browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
+  authDomain: "eiken-retry.firebaseapp.com",
+  projectId: "eiken-retry",
+  storageBucket: "eiken-retry.firebasestorage.app",
+  messagingSenderId: "231308672297",
+  appId: "1:231308672297:web:5e8b8ede3a0246c2318b38",
+  measurementId: "G-8CWR37L5K0"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const provider=new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
+
+const loginBtn=document.getElementById("loginBtn");
+const logoutBtn=document.getElementById("logoutBtn");
+const authDot=document.getElementById("authDot");
+const authLabel=document.getElementById("authLabel");
+const authSub=document.getElementById("authSub");
+const glory=window.morningGloryApp;
+
+let signingIn=false;
+
+function setAuthUI(mode,label,sub){
+  authDot.className="auth-dot"+(mode?` ${mode}`:"");
+  authLabel.textContent=label;
+  authSub.textContent=sub||"";
+}
+function shortName(user){
+  const name=(user?.displayName||"").trim();
+  return name ? (name.length>10?name.slice(0,10)+"…":name) : "ログイン中";
+}
+function growthRef(user){
+  return doc(db,"users",user.uid,"apps","english-playroom");
+}
+function loginErrorMessage(err){
+  switch(err?.code){
+    case "auth/popup-blocked":
+      return "Googleログイン画面がブロックされました。ポップアップを許可してもう一度お試しください。";
+    case "auth/popup-closed-by-user":
+      return "Googleログインをキャンセルしました。";
+    case "auth/unauthorized-domain":
+      return "このGitHub PagesのドメインがFirebaseで承認されていません。";
+    case "auth/network-request-failed":
+      return "通信エラーでGoogleログインできませんでした。";
+    default:
+      return `Googleログインを完了できませんでした${err?.code?`（${err.code}）`:""}。`;
+  }
+}
+
+async function syncGrowth(user){
+  const today=glory.localDateKey();
+  const local=glory.readLocal();
+  const ref=growthRef(user);
+  setAuthUI("busy",shortName(user),"アサガオ同期中");
+  glory.render(local.days||1,"クラウドの成長記録を読み込んでいます…");
+
+  const snap=await getDoc(ref);
+
+  let days=0;
+  let lastVisitDate="";
+  if(snap.exists()){
+    const data=snap.data()||{};
+    const cloudDays=Math.max(0,Number(data.morningGloryDays)||0);
+    const cloudLast=typeof data.lastVisitDate==="string"?data.lastVisitDate:"";
+    const localDays=Math.max(0,Number(local.days)||0);
+    const localLast=local.lastVisitDate||"";
+
+    // 既存クラウド記録を優先しつつ、ログアウト中に増えた端末側の日数も失わない。
+    if(cloudDays>=localDays){
+      days=cloudDays;
+      lastVisitDate=cloudLast;
+      if(cloudLast!==today && localLast===today) days+=1;
+    }else{
+      days=localDays;
+      lastVisitDate=localLast;
+      if(localLast!==today && cloudLast===today) days+=1;
+    }
+
+    if(cloudLast!==today && localLast!==today){
+      days=Math.max(0,days)+1;
+    }
+    lastVisitDate=today;
+  }else{
+    // 初回ログイン時は、これまでこの端末で育てたアサガオを引き継ぐ。
+    const seeded=glory.ensureTodayLocal();
+    days=seeded.days;
+    lastVisitDate=seeded.lastVisitDate;
+  }
+
+  days=Math.max(1,days);
+  glory.writeLocal(days,lastVisitDate);
+
+  await setDoc(ref,{
+    morningGloryDays:days,
+    lastVisitDate,
+    clientUpdatedAt:Date.now(),
+    serverUpdatedAt:serverTimestamp()
+  },{merge:true});
+
+  glory.render(days,"☁ Googleアカウントに保存済み。別端末でも同じアサガオが育ちます。");
+  setAuthUI("ok",shortName(user),"クラウド同期済み");
+}
+
+loginBtn.addEventListener("click",async()=>{
+  if(signingIn||auth.currentUser)return;
+  signingIn=true;
+  loginBtn.disabled=true;
+  setAuthUI("busy","Googleを開いています…","認証中");
+  try{
+    await signInWithPopup(auth,provider);
+  }catch(err){
+    console.error(err);
+    setAuthUI("error","Googleログイン","再試行できます");
+    glory.render(glory.readLocal().days||1,loginErrorMessage(err));
+  }finally{
+    signingIn=false;
+    if(!auth.currentUser)loginBtn.disabled=false;
+  }
+});
+
+logoutBtn.addEventListener("click",async()=>{
+  try{
+    await signOut(auth);
+  }catch(err){
+    console.error(err);
+    glory.render(glory.readLocal().days||1,"ログアウトできませんでした。");
+  }
+});
+
+try{
+  await setPersistence(auth,browserLocalPersistence);
+}catch(err){
+  console.error("Auth persistence setup failed",err);
+}
+
+onAuthStateChanged(auth,async user=>{
+  loginBtn.disabled=false;
+  if(!user){
+    logoutBtn.hidden=true;
+    setAuthUI("","Googleログイン","端末保存");
+    const local=glory.ensureTodayLocal();
+    glory.render(local.days,"この端末に保存中。Googleログインすると端末間で同期できます。");
+    return;
+  }
+
+  loginBtn.disabled=true;
+  logoutBtn.hidden=false;
+  try{
+    await syncGrowth(user);
+  }catch(err){
+    console.error("Morning glory sync failed",err);
+    setAuthUI("error",shortName(user),"同期エラー");
+    const local=glory.ensureTodayLocal();
+    glory.render(local.days,"ログイン済みですがクラウド同期に失敗しました。Firestoreのルールを確認してください。");
+  }finally{
+    loginBtn.disabled=false;
+  }
+});
+</script>
+
+</body>
+</html>
