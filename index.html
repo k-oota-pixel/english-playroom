@@ -119,11 +119,17 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <span id="todayAteru" class="today-pill">○ アテル</span>
       <span id="todayBasic" class="today-pill">○ Basic Quest</span>
       <span id="todayRetry" class="today-pill">○ リトライノート</span>
+      <span id="todayCloze" class="today-pill">○ 英検 空所補充</span>
+      <span id="todayTitle" class="today-pill">○ 英検 タイトル</span>
+      <span id="todayTask" class="today-pill">○ Task-Quest</span>
     </div>
     <div class="stat-grid">
       <div class="stat"><div class="stat-name">アテル</div><div id="ateruStat" class="stat-main">—</div><div id="ateruSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">Basic Quest</div><div id="basicStat" class="stat-main">— / 60</div><div id="basicSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">リトライノート</div><div id="retryStat" class="stat-main">— / 1,585</div><div id="retrySub" class="stat-sub">ログイン後に表示</div></div>
+      <div class="stat"><div class="stat-name">英検 空所補充</div><div id="clozeStat" class="stat-main">— / 17</div><div id="clozeSub" class="stat-sub">ログイン後に表示</div></div>
+      <div class="stat"><div class="stat-name">英検 タイトル</div><div id="titleStat" class="stat-main">— / 17</div><div id="titleSub" class="stat-sub">ログイン後に表示</div></div>
+      <div class="stat"><div class="stat-name">Task-Quest</div><div id="taskStat" class="stat-main">— / 50</div><div id="taskSub" class="stat-sub">ログイン後に表示</div></div>
     </div>
     <div id="dashNote" class="dash-note">Googleログインすると、各教材のクラウド記録をまとめて表示します。</div>
   </section>
@@ -308,12 +314,21 @@ const dashRefresh=document.getElementById("dashRefresh");
 const todayAteru=document.getElementById("todayAteru");
 const todayBasic=document.getElementById("todayBasic");
 const todayRetry=document.getElementById("todayRetry");
+const todayCloze=document.getElementById("todayCloze");
+const todayTitle=document.getElementById("todayTitle");
+const todayTask=document.getElementById("todayTask");
 const ateruStat=document.getElementById("ateruStat");
 const ateruSub=document.getElementById("ateruSub");
 const basicStat=document.getElementById("basicStat");
 const basicSub=document.getElementById("basicSub");
 const retryStat=document.getElementById("retryStat");
 const retrySub=document.getElementById("retrySub");
+const clozeStat=document.getElementById("clozeStat");
+const clozeSub=document.getElementById("clozeSub");
+const titleStat=document.getElementById("titleStat");
+const titleSub=document.getElementById("titleSub");
+const taskStat=document.getElementById("taskStat");
+const taskSub=document.getElementById("taskSub");
 const dashNote=document.getElementById("dashNote");
 
 let signingIn=false;
@@ -412,25 +427,35 @@ function setToday(el,done,label){
 }
 function resetDashboard(message="Googleログインすると、各教材のクラウド記録をまとめて表示します。"){
   setToday(todayAteru,false,"アテル");setToday(todayBasic,false,"Basic Quest");setToday(todayRetry,false,"リトライノート");
+  setToday(todayCloze,false,"英検 空所補充");setToday(todayTitle,false,"英検 タイトル");setToday(todayTask,false,"Task-Quest");
   ateruStat.textContent="—";ateruSub.textContent="ログイン後に表示";
   basicStat.textContent="— / 60";basicSub.textContent="ログイン後に表示";
   retryStat.textContent="— / 1,585";retrySub.textContent="ログイン後に表示";
+  clozeStat.textContent="— / 17";clozeSub.textContent="ログイン後に表示";
+  titleStat.textContent="— / 17";titleSub.textContent="ログイン後に表示";
+  taskStat.textContent="— / 50";taskSub.textContent="ログイン後に表示";
   dashNote.textContent=message;
 }
 async function refreshDashboard(user=dashboardUser){
   if(!user){resetDashboard();return;}
   dashRefresh.disabled=true;
   dashRefresh.textContent="更新中…";
-  dashNote.textContent="各教材の記録を読み込んでいます…";
+  dashNote.textContent="6つの教材の記録を読み込んでいます…";
   try{
-    const [aSnap,bSnap,rSnap]=await Promise.all([
+    const [aSnap,bSnap,rSnap,cSnap,tSnap,qSnap]=await Promise.all([
       getDoc(doc(db,"users",user.uid,"apps","ateru")),
       getDoc(doc(db,"users",user.uid,"apps","basic-quest")),
-      getDoc(doc(db,"users",user.uid,"apps","eiken-retry"))
+      getDoc(doc(db,"users",user.uid,"apps","eiken-retry")),
+      getDoc(doc(db,"users",user.uid,"apps","eiken-cloze")),
+      getDoc(doc(db,"users",user.uid,"apps","eiken-title")),
+      getDoc(doc(db,"users",user.uid,"apps","task-quest"))
     ]);
     const a=aSnap.exists()?aSnap.data():{};
     const b=bSnap.exists()?bSnap.data():{};
     const r=rSnap.exists()?rSnap.data():{};
+    const c=cSnap.exists()?cSnap.data():{};
+    const t=tSnap.exists()?tSnap.data():{};
+    const q=qSnap.exists()?qSnap.data():{};
     const today=glory.localDateKey();
 
     const rounds=Math.max(0,Number(a.gamesCompleted)||0);
@@ -447,12 +472,33 @@ async function refreshDashboard(user=dashboardUser){
     const records=r?.state?.records&&typeof r.state.records==="object"?r.state.records:{};
     const attempted=Object.keys(records).length;
     retryStat.textContent=`${attempted.toLocaleString()} / 1,585`;
-    const title=typeof r?.profile?.equippedTitle==="string"&&r.profile.equippedTitle?r.profile.equippedTitle:"挑戦した問題数";
-    retrySub.textContent=title;
-    setToday(todayRetry,dateKeyFromMs(r?.state?.updatedAt)===today,"リトライノート");
+    retrySub.textContent=typeof r?.profile?.equippedTitle==="string"&&r.profile.equippedTitle?r.profile.equippedTitle:"挑戦した問題数";
+    const retryToday=dateKeyFromMs(r?.state?.updatedAt)===today;
+    setToday(todayRetry,retryToday,"リトライノート");
 
-    const todayCount=[a.lastPlayedDate===today,b.lastPlayedDate===today,dateKeyFromMs(r?.state?.updatedAt)===today].filter(Boolean).length;
-    dashNote.textContent=todayCount?`今日は ${todayCount} / 3 教材に取り組んでいます。`:"今日はまだ3教材の学習記録がありません。";
+    const clozeAttempted=Array.isArray(c.attemptedIds)?c.attemptedIds.length:Math.max(0,Number(c.attemptedCount)||0);
+    const clozeTotal=Math.max(0,Number(c.totalAnswers)||0),clozeCorrect=Math.max(0,Number(c.correctAnswers)||0);
+    clozeStat.textContent=`${clozeAttempted} / 17`;
+    clozeSub.textContent=clozeTotal?`正答・成立 ${clozeCorrect} / ${clozeTotal}`:`判定 ${Math.max(0,Number(c.submissions)||0)}回`;
+    setToday(todayCloze,c.lastPlayedDate===today,"英検 空所補充");
+
+    const titleAttempted=Array.isArray(t.attemptedIds)?t.attemptedIds.length:Math.max(0,Number(t.attemptedCount)||0);
+    const titleSubs=Math.max(0,Number(t.submissions)||0),positive=Math.max(0,Number(t.positiveCount)||0);
+    titleStat.textContent=`${titleAttempted} / 17`;
+    titleSub.textContent=titleSubs?`良判定 ${positive} / ${titleSubs}`:"タイトル挑戦数";
+    setToday(todayTitle,t.lastPlayedDate===today,"英検 タイトル");
+
+    const taskCompleted=Math.max(0,Number(q.completedCount)||0);
+    const taskTotal=Math.max(1,Number(q.totalTasks)||50);
+    taskStat.textContent=`${taskCompleted} / ${taskTotal}`;
+    taskSub.textContent=`挑戦 ${Math.max(0,Number(q.attempts)||0)}回`;
+    setToday(todayTask,q.lastPlayedDate===today,"Task-Quest");
+
+    const todayCount=[
+      a.lastPlayedDate===today,b.lastPlayedDate===today,retryToday,
+      c.lastPlayedDate===today,t.lastPlayedDate===today,q.lastPlayedDate===today
+    ].filter(Boolean).length;
+    dashNote.textContent=todayCount?`今日は ${todayCount} / 6 教材に取り組んでいます。`:"今日はまだ6教材の学習記録がありません。";
   }catch(err){
     console.error("Dashboard load failed",err);
     dashNote.textContent="ダッシュボードの読み込みに失敗しました。もう一度「更新」を押してください。";
