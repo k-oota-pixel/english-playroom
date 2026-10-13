@@ -59,6 +59,23 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   .auth-sub{display:none}
 }
 
+
+.dashboard{margin-top:14px;background:#193d38;color:#f7fbf8;border-radius:16px;padding:14px 15px;box-shadow:0 5px 16px #203b3612}
+.dash-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dash-eyebrow{font-size:9px;letter-spacing:.13em;opacity:.68;font-weight:800}
+.dash-title{font-size:17px;font-weight:850;margin-top:2px}
+.dash-refresh{border:1px solid #ffffff28;background:#ffffff0d;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800;cursor:pointer}
+.today-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.today-pill{font-size:10px;padding:5px 8px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff16;opacity:.72}
+.today-pill.done{background:#dff4e8;color:#18573f;border-color:#dff4e8;opacity:1;font-weight:800}
+.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.stat{background:#ffffff0d;border:1px solid #ffffff18;border-radius:12px;padding:10px;min-width:0}
+.stat-name{font-size:9px;letter-spacing:.08em;opacity:.68}
+.stat-main{font-size:18px;font-weight:900;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-sub{font-size:9.5px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-note{font-size:9px;opacity:.58;margin-top:8px}
+@media(max-width:560px){.stat-grid{grid-template-columns:1fr}.stat{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:4px 8px}.stat-name{grid-row:1 / span 2}.stat-main{font-size:16px}.dash-title{font-size:15px}}
+
 </style>
 </head>
 <body>
@@ -91,6 +108,24 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div id="morningGlorySync" class="grow-sync">ログインすると、アサガオを端末間で同期できます。</div>
       <div class="grow-bar" aria-hidden="true"><i id="morningGloryBar" style="width:3.3%"></i></div>
     </div>
+  </section>
+
+  <section class="dashboard" aria-label="学習ダッシュボード">
+    <div class="dash-head">
+      <div><div class="dash-eyebrow">MY LEARNING</div><div class="dash-title">学習ダッシュボード</div></div>
+      <button id="dashRefresh" class="dash-refresh" type="button">↻ 更新</button>
+    </div>
+    <div class="today-row">
+      <span id="todayAteru" class="today-pill">○ アテル</span>
+      <span id="todayBasic" class="today-pill">○ Basic Quest</span>
+      <span id="todayRetry" class="today-pill">○ リトライノート</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-name">アテル</div><div id="ateruStat" class="stat-main">—</div><div id="ateruSub" class="stat-sub">ログイン後に表示</div></div>
+      <div class="stat"><div class="stat-name">Basic Quest</div><div id="basicStat" class="stat-main">— / 60</div><div id="basicSub" class="stat-sub">ログイン後に表示</div></div>
+      <div class="stat"><div class="stat-name">リトライノート</div><div id="retryStat" class="stat-main">— / 1,585</div><div id="retrySub" class="stat-sub">ログイン後に表示</div></div>
+    </div>
+    <div id="dashNote" class="dash-note">Googleログインすると、各教材のクラウド記録をまとめて表示します。</div>
   </section>
 
   <div class="cards">
@@ -269,8 +304,20 @@ const authDot=document.getElementById("authDot");
 const authLabel=document.getElementById("authLabel");
 const authSub=document.getElementById("authSub");
 const glory=window.morningGloryApp;
+const dashRefresh=document.getElementById("dashRefresh");
+const todayAteru=document.getElementById("todayAteru");
+const todayBasic=document.getElementById("todayBasic");
+const todayRetry=document.getElementById("todayRetry");
+const ateruStat=document.getElementById("ateruStat");
+const ateruSub=document.getElementById("ateruSub");
+const basicStat=document.getElementById("basicStat");
+const basicSub=document.getElementById("basicSub");
+const retryStat=document.getElementById("retryStat");
+const retrySub=document.getElementById("retrySub");
+const dashNote=document.getElementById("dashNote");
 
 let signingIn=false;
+let dashboardUser=null;
 
 function setAuthUI(mode,label,sub){
   authDot.className="auth-dot"+(mode?` ${mode}`:"");
@@ -353,6 +400,71 @@ async function syncGrowth(user){
   setAuthUI("ok",shortName(user),"クラウド同期済み");
 }
 
+
+function dateKeyFromMs(ms){
+  if(!Number.isFinite(Number(ms))||Number(ms)<=0)return "";
+  const d=new Date(Number(ms));
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function setToday(el,done,label){
+  el.classList.toggle("done",!!done);
+  el.textContent=(done?"✓ ":"○ ")+label;
+}
+function resetDashboard(message="Googleログインすると、各教材のクラウド記録をまとめて表示します。"){
+  setToday(todayAteru,false,"アテル");setToday(todayBasic,false,"Basic Quest");setToday(todayRetry,false,"リトライノート");
+  ateruStat.textContent="—";ateruSub.textContent="ログイン後に表示";
+  basicStat.textContent="— / 60";basicSub.textContent="ログイン後に表示";
+  retryStat.textContent="— / 1,585";retrySub.textContent="ログイン後に表示";
+  dashNote.textContent=message;
+}
+async function refreshDashboard(user=dashboardUser){
+  if(!user){resetDashboard();return;}
+  dashRefresh.disabled=true;
+  dashRefresh.textContent="更新中…";
+  dashNote.textContent="各教材の記録を読み込んでいます…";
+  try{
+    const [aSnap,bSnap,rSnap]=await Promise.all([
+      getDoc(doc(db,"users",user.uid,"apps","ateru")),
+      getDoc(doc(db,"users",user.uid,"apps","basic-quest")),
+      getDoc(doc(db,"users",user.uid,"apps","eiken-retry"))
+    ]);
+    const a=aSnap.exists()?aSnap.data():{};
+    const b=bSnap.exists()?bSnap.data():{};
+    const r=rSnap.exists()?rSnap.data():{};
+    const today=glory.localDateKey();
+
+    const rounds=Math.max(0,Number(a.gamesCompleted)||0);
+    const solved=Math.max(0,Number(a.questionsSolved)||0);
+    ateruStat.textContent=`${rounds}回クリア`;
+    ateruSub.textContent=`正解 ${solved}問`;
+    setToday(todayAteru,a.lastPlayedDate===today,"アテル");
+
+    const completed=Array.isArray(b.completedStages)?b.completedStages.length:Math.max(0,Number(b.completedCount)||0);
+    basicStat.textContent=`${completed} / 60`;
+    basicSub.textContent=completed>=60?"全ステージ COMPLETE":"クリア済みステージ";
+    setToday(todayBasic,b.lastPlayedDate===today,"Basic Quest");
+
+    const records=r?.state?.records&&typeof r.state.records==="object"?r.state.records:{};
+    const attempted=Object.keys(records).length;
+    retryStat.textContent=`${attempted.toLocaleString()} / 1,585`;
+    const title=typeof r?.profile?.equippedTitle==="string"&&r.profile.equippedTitle?r.profile.equippedTitle:"挑戦した問題数";
+    retrySub.textContent=title;
+    setToday(todayRetry,dateKeyFromMs(r?.state?.updatedAt)===today,"リトライノート");
+
+    const todayCount=[a.lastPlayedDate===today,b.lastPlayedDate===today,dateKeyFromMs(r?.state?.updatedAt)===today].filter(Boolean).length;
+    dashNote.textContent=todayCount?`今日は ${todayCount} / 3 教材に取り組んでいます。`:"今日はまだ3教材の学習記録がありません。";
+  }catch(err){
+    console.error("Dashboard load failed",err);
+    dashNote.textContent="ダッシュボードの読み込みに失敗しました。もう一度「更新」を押してください。";
+  }finally{
+    dashRefresh.disabled=false;
+    dashRefresh.textContent="↻ 更新";
+  }
+}
+dashRefresh.addEventListener("click",()=>refreshDashboard());
+window.addEventListener("focus",()=>{if(dashboardUser)refreshDashboard();});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dashboardUser)refreshDashboard();});
+
 loginBtn.addEventListener("click",async()=>{
   if(signingIn||auth.currentUser)return;
   signingIn=true;
@@ -388,17 +500,21 @@ try{
 onAuthStateChanged(auth,async user=>{
   loginBtn.disabled=false;
   if(!user){
+    dashboardUser=null;
     logoutBtn.hidden=true;
     setAuthUI("","Googleログイン","端末保存");
     const local=glory.ensureTodayLocal();
     glory.render(local.days,"この端末に保存中。Googleログインすると端末間で同期できます。");
+    resetDashboard();
     return;
   }
 
   loginBtn.disabled=true;
   logoutBtn.hidden=false;
+  dashboardUser=user;
   try{
     await syncGrowth(user);
+    await refreshDashboard(user);
   }catch(err){
     console.error("Morning glory sync failed",err);
     setAuthUI("error",shortName(user),"同期エラー");
