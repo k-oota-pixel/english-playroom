@@ -114,6 +114,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       </div>
       <div id="petStatus" class="pet-status" role="status" aria-live="polite">ログイン状態を確認しています…</div>
       <button id="petCreate" class="pet-button" type="button" hidden>どんな子がいい？</button>
+      <button id="petRetry" class="pet-button secondary" type="button" hidden>ペットをリセットして孵化からやり直す</button>
       <div class="pet-bar" aria-hidden="true"><i id="petBar" style="width:0%"></i></div>
     </div>
   </section>
@@ -313,6 +314,8 @@ let petData={};
 let petUser=null;
 let petAuthGeneration=0;
 const petCreate=document.getElementById('petCreate');
+const petRetry=document.getElementById('petRetry');
+let retryMode=new URLSearchParams(location.search).get('pet-retry')==='1';
 const petMaker=createPetMaker(async appearance=>{
   const user=petUser,generation=petAuthGeneration;
   if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
@@ -336,6 +339,27 @@ const petMaker=createPetMaker(async appearance=>{
 });
 petCreate.addEventListener('click',()=>{if(petUser && readyToHatch(petData) && !hasPet(petData))petMaker.open(petData.petAppearance);});
 
+petRetry.addEventListener('click',async()=>{
+  const user=petUser,generation=petAuthGeneration;
+  if(!retryMode || !user || auth.currentUser?.uid!==user.uid || petRetry.disabled)return;
+  if(!confirm(`${user.displayName||'ログイン中のアカウント'} のペットをリセットして、3日目の孵化アンケートからやり直しますか？ 学習記録はそのままです。`))return;
+  petRetry.disabled=true;petMaker.close();
+  try{
+    const saved=await runTransaction(db,async transaction=>{
+      const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
+      if(!readyToHatch(data))throw Error('3日ログインを達成してからお試しください。');
+      const payload={petLoginDays:3,petLastLoginDate:localDateKey(),petHatched:false,petAppearance:null,petHatchedAt:null,petCustomizedAt:null,petUpdatedAt:serverTimestamp()};
+      transaction.set(ref,payload,{merge:true});return {...data,...payload};
+    });
+    if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
+    retryMode=false;
+    const url=new URL(location.href);url.searchParams.delete('pet-retry');history.replaceState(null,'',url);
+    petData=saved;renderPet(saved,'3日目の孵化直前に戻しました。新しいアンケートをお楽しみください。');petMaker.open();
+  }catch(error){
+    if(generation===petAuthGeneration)petStatus.textContent=error.code?'リセットを保存できませんでした。通信状態を確認して、もう一度お試しください。':error.message;
+  }finally{petRetry.disabled=false;}
+});
+
 function renderPet(data={},message=''){
   const days=Math.max(0,Number(data.petLoginDays)||0),shown=Math.min(3,days);
   const hatched=hasPet(data),ready=readyToHatch(data);
@@ -344,6 +368,7 @@ function renderPet(data={},message=''){
   petVisual.classList.toggle('egg',!hatched);
   petVisual.classList.toggle('hatched',hatched);
   petCreate.hidden=!petUser || !ready || hatched;
+  petRetry.hidden=!retryMode || !petUser || !ready;
   if(hatched){
     petVisual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);
     petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
@@ -502,7 +527,7 @@ try{
 
 onAuthStateChanged(auth,async user=>{
   const generation=++petAuthGeneration;
-  petUser=null;petData={};petMaker.close();petCreate.hidden=true;
+  petUser=null;petData={};petMaker.close();petCreate.hidden=true;petRetry.hidden=true;
   loginBtn.disabled=false;
   if(!user){
     dashboardUser=null;

@@ -29,8 +29,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;}re
   assert.equal(await page.locator('#petCreate').isVisible(),false);
   await load({petLoginDays:2,petLastLoginDate:'2020-01-01'});
   await page.locator('#petCreate').click();
-  assert.equal(await page.locator('.pet-choice').count(),4);assert.equal(await page.locator('[data-next]').isEnabled(),false);assert.equal(await page.locator('.pet-preview').count(),0);
-  for(const id of ['mystery','blue','cool','horns','spots','rose']){await page.locator('[data-value="'+id+'"]').click();if(id!=='rose')await page.locator('[data-next]').click();}
+  assert.equal(await page.locator('.pet-choice').count(),5);assert.equal(await page.locator('[data-next]').isEnabled(),false);assert.equal(await page.locator('.pet-preview').count(),0);
+  for(const id of ['magical','blue','cool','horns','spots','rose']){await page.locator('[data-value="'+id+'"]').click();if(id!=='rose')await page.locator('[data-next]').click();}
   await page.locator('[data-back]').click();assert.equal(await page.locator('[data-value="spots"]').getAttribute('aria-pressed'),'true');await page.locator('[data-next]').click();
   await page.setViewportSize({width:390,height:844});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
@@ -42,17 +42,17 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;}re
   await page.evaluate(()=>window.failSave=false);await page.locator('[data-next]').click();
   await page.locator('dialog').waitFor({state:'hidden'});
   assert.equal(await page.locator('#petVisual svg').count(),1);
-  const saved=await page.evaluate(()=>window.petStore);assert.equal(saved.petAppearance.species,'mystery');assert.equal(saved.petAppearance.bodyColor,'blue');assert.ok(saved.petHatched);
+  const saved=await page.evaluate(()=>window.petStore);assert.ok(['cat','dog','bird','mystery','rabbit','hamster','fox','panda','penguin','dragon'].includes(saved.petAppearance.species));assert.equal(saved.petAppearance.bodyColor,'blue');assert.ok(saved.petHatched);
   await load(saved);await page.waitForFunction(()=>document.getElementById('petTitle').textContent==='わたしのペット');
   assert.equal(await page.locator('#petCreate').isVisible(),false);
   await load({petLoginDays:4,petHatched:true,petLastLoginDate:key});await page.locator('#petCreate').click();await page.locator('[data-close]').click();
   assert.equal(await page.locator('#petCreate').isVisible(),true);
   await page.locator('#petCreate').click();await page.keyboard.press('Escape');assert.equal(await page.locator('dialog').isVisible(),false);
   await page.locator('#petCreate').click();
-  for(const id of ['cat','cream','round','classic','none','ivory']){await page.locator('[data-value="'+id+'"]').click();if(id!=='ivory')await page.locator('[data-next]').click();}
+  for(const id of ['calm','cream','round','classic','none','ivory']){await page.locator('[data-value="'+id+'"]').click();if(id!=='ivory')await page.locator('[data-next]').click();}
   await page.evaluate(saved=>{window.petStore=saved;},saved);
   await page.locator('[data-next]').click();await page.locator('dialog').waitFor({state:'hidden'});
-  assert.equal(await page.evaluate(()=>window.petStore.petAppearance.species),'mystery');
+  assert.equal(await page.evaluate(()=>window.petStore.petAppearance.species),saved.petAppearance.species);
   await load({},false);assert.equal(await page.locator('#petCreate').isVisible(),false);
   assert.deepEqual(errors,[]);await load(saved);await page.waitForFunction(()=>document.getElementById('petTitle').textContent==='わたしのペット');await page.setViewportSize({width:1200,height:900});
   const petRect=await page.locator('.pet-visual-wrap').boundingBox(),titleRect=await page.locator('h1').boundingBox();assert.equal(petRect.width,220);assert.ok(petRect.x>titleRect.x+titleRect.width);

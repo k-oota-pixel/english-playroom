@@ -1,6 +1,6 @@
 // Stable IDs are persisted; labels and SVG art may evolve independently.
 export const OPTIONS = Object.freeze({
-  species: [{id:'cat',label:'ねこ'},{id:'dog',label:'いぬ'},{id:'bird',label:'ことり'},{id:'mystery',label:'ふしぎな子'}],
+  species: [{id:'cat',label:'ねこ'},{id:'dog',label:'いぬ'},{id:'bird',label:'ことり'},{id:'mystery',label:'ふしぎな子'},{id:'rabbit',label:'うさぎ'},{id:'hamster',label:'ハムスター'},{id:'fox',label:'きつね'},{id:'panda',label:'パンダ'},{id:'penguin',label:'ペンギン'},{id:'dragon',label:'ドラゴン'}],
   bodyColor: [{id:'cream',label:'クリーム',color:'#f5d99b'},{id:'pink',label:'ピンク',color:'#f3b5c4'},{id:'blue',label:'ブルー',color:'#a4cce9'},{id:'mint',label:'ミント',color:'#a9d9bc'},{id:'lavender',label:'ラベンダー',color:'#c6b8e3'},{id:'orange',label:'オレンジ',color:'#efb478'}],
   eyes: [{id:'round',label:'まんまる'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'cool',label:'クール'}],
   feature: [{id:'classic',label:'ベーシック'},{id:'long',label:'長い耳・羽'},{id:'horns',label:'小さな角'}],
@@ -37,4 +37,19 @@ export function equippedLayers(shop={}) {
     const id=equipped[slot];
     return [slot,typeof id==='string' && owned.includes(id) && Object.hasOwn(registry,id)?registry[id]:''];
   }));
+}
+
+// Every species remains possible; the answer gives two species triple weight.
+export const PERSONALITY_POOLS = Object.freeze({
+ calm:['cat','panda'], playful:['dog','hamster'], curious:['bird','penguin'],
+ gentle:['rabbit','fox'], magical:['mystery','dragon']
+});
+export function chooseSpecies(preference, random=Math.random) {
+ const favorites=Object.hasOwn(PERSONALITY_POOLS,preference)?PERSONALITY_POOLS[preference]:[];
+ const tickets=OPTIONS.species.flatMap(({id})=>Array(favorites.includes(id)?3:1).fill(id));
+ return tickets[Math.min(tickets.length-1,Math.max(0,Math.floor(random()*tickets.length)))];
+}
+export function appearanceFromAnswers(answers,random=Math.random) {
+ const {personality,...appearance}=answers;
+ return {...appearance,species:chooseSpecies(personality,random)};
 }
