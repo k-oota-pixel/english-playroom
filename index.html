@@ -27,17 +27,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .order .play{color:#4068b0}.retry .play{color:#195f4a}.task .play{color:#ac6822}
 .open-note{font-size:9.5px;color:#829087;margin-top:4px}.foot{font-size:10px;color:#829087;text-align:center;margin-top:20px}
 
-.grow-card{display:flex;align-items:center;gap:14px;margin-top:16px;padding:10px 14px;background:#fff;border:1px solid #dce5da;border-radius:14px;box-shadow:0 3px 12px #203b3607}
-.grow-img-wrap{width:92px;height:92px;flex:0 0 92px;display:grid;place-items:center}
-.grow-img{display:block;max-width:92px;max-height:92px;width:auto;height:auto;object-fit:contain}
-.grow-info{min-width:0;flex:1}
-.grow-eyebrow{font-size:9px;letter-spacing:.12em;color:#718478;font-weight:800}
-.grow-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:2px}
-.grow-title strong{font-size:18px}
-.grow-days{font-size:12px;color:#447367;font-weight:800}
-.grow-status{font-size:11.5px;color:#65756e;line-height:1.45;margin-top:3px}
-.grow-bar{height:5px;background:#edf1e8;border-radius:99px;overflow:hidden;margin-top:8px;max-width:360px}
-.grow-bar>i{display:block;height:100%;background:#78a96f;border-radius:99px}
 
 .pet-card{display:flex;align-items:center;gap:14px;margin-top:16px;padding:12px 14px;background:linear-gradient(135deg,#fffaf0,#fff);border:1px solid #eadfc7;border-radius:16px;box-shadow:0 3px 12px #5b472007}
 .pet-visual-wrap{width:92px;height:92px;flex:0 0 92px;display:grid;place-items:center;border-radius:18px;background:#fff7df;border:1px solid #f0e1b7}
@@ -56,7 +45,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 @keyframes petPop{0%{transform:scale(.65);opacity:.4}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 
 @media(max-width:820px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.home{padding:16px 14px 22px}.label{margin-top:12px}h1{font-size:28px}.pet-card,.grow-card{gap:10px;padding:8px 10px;margin-top:12px}.pet-visual-wrap,.grow-img-wrap{width:76px;height:76px;flex-basis:76px}.pet-visual{font-size:48px}.grow-img{max-width:76px;max-height:76px}.pet-title strong,.grow-title strong{font-size:16px}.pet-days,.grow-days{font-size:11px}.pet-status,.grow-status{font-size:10.5px}.cards{grid-template-columns:1fr;gap:10px;margin-top:14px}.card{padding:14px}.desc{min-height:0}.title{font-size:19px}}
+@media(max-width:560px){.home{padding:16px 14px 22px}.label{margin-top:12px}h1{font-size:28px}.pet-card{gap:10px;padding:8px 10px;margin-top:12px}.pet-visual-wrap{width:76px;height:76px;flex-basis:76px}.pet-visual{font-size:48px}.pet-title strong{font-size:16px}.pet-days{font-size:11px}.pet-status{font-size:10.5px}.cards{grid-template-columns:1fr;gap:10px;margin-top:14px}.card{padding:14px}.desc{min-height:0}.title{font-size:19px}}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .auth-area{display:flex;align-items:center;gap:7px;min-width:0}
@@ -67,7 +56,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .auth-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#b9c2bc;margin-right:5px;vertical-align:1px}
 .auth-dot.ok{background:#3f956b}.auth-dot.busy{background:#d1a02f}.auth-dot.error{background:#bd5a4d}
 .auth-sub{font-size:9.5px;color:#829087;white-space:nowrap}
-.grow-sync{font-size:9.5px;color:#829087;margin-top:5px}
 @media(max-width:560px){
   .topbar{align-items:flex-start}
   .auth-area{gap:4px}
@@ -125,23 +113,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
     </div>
   </section>
 
-  <section class="grow-card" aria-label="アサガオ育成">
-    <div class="grow-img-wrap">
-      <img id="morningGloryImage" class="grow-img" src="images/morning-glory-01.png" alt="育てているアサガオ">
-    </div>
-    <div class="grow-info">
-      <div class="grow-eyebrow">MY MORNING GLORY</div>
-      <div class="grow-title">
-        <strong>アサガオを育てよう</strong>
-        <span id="morningGloryDays" class="grow-days">学習 1日目</span>
-      </div>
-      <div id="morningGloryStatus" class="grow-status">成長記録を読み込んでいます。</div>
-      <div id="morningGlorySync" class="grow-sync">ログインすると、アサガオを端末間で同期できます。</div>
-      <div class="grow-bar" aria-hidden="true"><i id="morningGloryBar" style="width:3.3%"></i></div>
-    </div>
-  </section>
-
-  <section class="dashboard" aria-label="学習ダッシュボード">
+<section class="dashboard" aria-label="学習ダッシュボード">
     <div class="dash-head">
       <div><div class="dash-eyebrow">MY LEARNING</div><div class="dash-title">学習ダッシュボード</div></div>
       <button id="dashRefresh" class="dash-refresh" type="button">↻ 更新</button>
@@ -236,89 +208,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 
-<script>
-(function(){
-  const DAYS_KEY = "englishPlayroomMorningGloryDays";
-  const LAST_KEY = "englishPlayroomMorningGloryLastDate";
-  const thresholds = [1,2,4,7,10,15,20,30];
-  const labels = ["種をまきました","芽が出ました","双葉になりました","本葉が増えてきました","つるが伸びてきました","つぼみができました","花が咲きました","満開です！"];
-
-  function localDateKey(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    const day = String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${day}`;
-  }
-
-  function readLocal(){
-    return {
-      days: Math.max(0, Number(localStorage.getItem(DAYS_KEY) || 0)),
-      lastVisitDate: localStorage.getItem(LAST_KEY) || ""
-    };
-  }
-
-  function writeLocal(days,lastVisitDate){
-    localStorage.setItem(DAYS_KEY,String(Math.max(1,days)));
-    localStorage.setItem(LAST_KEY,lastVisitDate);
-  }
-
-  function ensureTodayLocal(){
-    const today=localDateKey();
-    let {days,lastVisitDate}=readLocal();
-    if(lastVisitDate!==today){
-      days=Math.max(0,days)+1;
-      lastVisitDate=today;
-      writeLocal(days,lastVisitDate);
-    }
-    if(days<1){days=1;writeLocal(days,lastVisitDate||today);}
-    return {days,lastVisitDate:lastVisitDate||today};
-  }
-
-  function render(days,syncText){
-    days=Math.max(1,Number(days)||1);
-    let stage=0;
-    for(let i=0;i<thresholds.length;i++){
-      if(days>=thresholds[i])stage=i;
-    }
-
-    const image=document.getElementById("morningGloryImage");
-    const dayText=document.getElementById("morningGloryDays");
-    const status=document.getElementById("morningGloryStatus");
-    const bar=document.getElementById("morningGloryBar");
-    const sync=document.getElementById("morningGlorySync");
-
-    image.src=`images/morning-glory-${String(stage+1).padStart(2,"0")}.png`;
-    image.alt=`アサガオ成長ステージ${stage+1}`;
-    dayText.textContent=`学習 ${days}日目`;
-
-    if(stage===thresholds.length-1){
-      status.textContent=`${labels[stage]} これからも少しずつ続けよう。`;
-    }else{
-      const nextAt=thresholds[stage+1];
-      const remain=nextAt-days;
-      status.textContent=`${labels[stage]}　次の成長まであと${remain}日`;
-    }
-
-    bar.style.width=`${Math.min(100,(days/thresholds[thresholds.length-1])*100)}%`;
-    if(syncText)sync.textContent=syncText;
-  }
-
-  window.morningGloryApp={
-    localDateKey,
-    readLocal,
-    writeLocal,
-    ensureTodayLocal,
-    render
-  };
-
-  // Firebaseの認証確認中は、現在の端末記録を仮表示するだけにする。
-  const local=readLocal();
-  render(local.days||1,"ログイン状態を確認しています…");
-})();
-</script>
-
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -350,7 +239,6 @@ const logoutBtn=document.getElementById("logoutBtn");
 const authDot=document.getElementById("authDot");
 const authLabel=document.getElementById("authLabel");
 const authSub=document.getElementById("authSub");
-const glory=window.morningGloryApp;
 const petVisual=document.getElementById("petVisual");
 const petTitle=document.getElementById("petTitle");
 const petDays=document.getElementById("petDays");
@@ -389,7 +277,11 @@ function shortName(user){
   const name=(user?.displayName||"").trim();
   return name ? (name.length>10?name.slice(0,10)+"…":name) : "ログイン中";
 }
-function growthRef(user){
+function localDateKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function petRef(user){
   return doc(db,"users",user.uid,"apps","english-playroom");
 }
 function loginErrorMessage(err){
@@ -405,60 +297,6 @@ function loginErrorMessage(err){
     default:
       return `Googleログインを完了できませんでした${err?.code?`（${err.code}）`:""}。`;
   }
-}
-
-async function syncGrowth(user){
-  const today=glory.localDateKey();
-  const local=glory.readLocal();
-  const ref=growthRef(user);
-  setAuthUI("busy",shortName(user),"アサガオ同期中");
-  glory.render(local.days||1,"クラウドの成長記録を読み込んでいます…");
-
-  const snap=await getDoc(ref);
-
-  let days=0;
-  let lastVisitDate="";
-  if(snap.exists()){
-    const data=snap.data()||{};
-    const cloudDays=Math.max(0,Number(data.morningGloryDays)||0);
-    const cloudLast=typeof data.lastVisitDate==="string"?data.lastVisitDate:"";
-    const localDays=Math.max(0,Number(local.days)||0);
-    const localLast=local.lastVisitDate||"";
-
-    // 既存クラウド記録を優先しつつ、ログアウト中に増えた端末側の日数も失わない。
-    if(cloudDays>=localDays){
-      days=cloudDays;
-      lastVisitDate=cloudLast;
-      if(cloudLast!==today && localLast===today) days+=1;
-    }else{
-      days=localDays;
-      lastVisitDate=localLast;
-      if(localLast!==today && cloudLast===today) days+=1;
-    }
-
-    if(cloudLast!==today && localLast!==today){
-      days=Math.max(0,days)+1;
-    }
-    lastVisitDate=today;
-  }else{
-    // 初回ログイン時は、これまでこの端末で育てたアサガオを引き継ぐ。
-    const seeded=glory.ensureTodayLocal();
-    days=seeded.days;
-    lastVisitDate=seeded.lastVisitDate;
-  }
-
-  days=Math.max(1,days);
-  glory.writeLocal(days,lastVisitDate);
-
-  await setDoc(ref,{
-    morningGloryDays:days,
-    lastVisitDate,
-    clientUpdatedAt:Date.now(),
-    serverUpdatedAt:serverTimestamp()
-  },{merge:true});
-
-  glory.render(days,"☁ Googleアカウントに保存済み。別端末でも同じアサガオが育ちます。");
-  setAuthUI("ok",shortName(user),"クラウド同期済み");
 }
 
 function renderPet(days,hatched,message=""){
@@ -483,8 +321,8 @@ function renderPet(days,hatched,message=""){
 }
 
 async function syncPet(user){
-  const today=glory.localDateKey();
-  const ref=growthRef(user);
+  const today=localDateKey();
+  const ref=petRef(user);
   const snap=await getDoc(ref);
   const data=snap.exists()?(snap.data()||{}):{};
   let days=Math.max(0,Number(data.petLoginDays)||0);
@@ -555,7 +393,7 @@ async function refreshDashboard(user=dashboardUser){
     const c=cSnap.exists()?cSnap.data():{};
     const t=tSnap.exists()?tSnap.data():{};
     const q=qSnap.exists()?qSnap.data():{};
-    const today=glory.localDateKey();
+    const today=localDateKey();
 
     const rounds=Math.max(0,Number(a.gamesCompleted)||0);
     const solved=Math.max(0,Number(a.questionsSolved)||0);
@@ -620,7 +458,7 @@ loginBtn.addEventListener("click",async()=>{
   }catch(err){
     console.error(err);
     setAuthUI("error","Googleログイン","再試行できます");
-    glory.render(glory.readLocal().days||1,loginErrorMessage(err));
+    petStatus.textContent=loginErrorMessage(err);
   }finally{
     signingIn=false;
     if(!auth.currentUser)loginBtn.disabled=false;
@@ -632,7 +470,7 @@ logoutBtn.addEventListener("click",async()=>{
     await signOut(auth);
   }catch(err){
     console.error(err);
-    glory.render(glory.readLocal().days||1,"ログアウトできませんでした。");
+    petStatus.textContent="ログアウトできませんでした。";
   }
 });
 
@@ -648,8 +486,6 @@ onAuthStateChanged(auth,async user=>{
     dashboardUser=null;
     logoutBtn.hidden=true;
     setAuthUI("","Googleログイン","端末保存");
-    const local=glory.ensureTodayLocal();
-    glory.render(local.days,"この端末に保存中。Googleログインすると端末間で同期できます。");
     renderPet(0,false,"Googleログインすると、たまごの育成が始まります。");
     resetDashboard();
     return;
@@ -659,14 +495,14 @@ onAuthStateChanged(auth,async user=>{
   logoutBtn.hidden=false;
   dashboardUser=user;
   try{
-    await syncGrowth(user);
+    setAuthUI("busy",shortName(user),"ペット同期中");
     await syncPet(user);
     await refreshDashboard(user);
+    setAuthUI("ok",shortName(user),"クラウド同期済み");
   }catch(err){
     console.error("English Playroom sync failed",err);
     setAuthUI("error",shortName(user),"同期エラー");
-    const local=glory.ensureTodayLocal();
-    glory.render(local.days,"ログイン済みですがクラウド同期に失敗しました。Firestoreのルールを確認してください。");
+    petStatus.textContent="ログイン済みですがクラウド同期に失敗しました。Firestoreのルールを確認してください。";
   }finally{
     loginBtn.disabled=false;
   }
