@@ -95,9 +95,12 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <button id="logoutBtn" class="logout-btn" type="button" hidden>ログアウト</button>
     </div>
   </div>
+  <div class="hero">
+  <div class="hero-intro">
   <div class="label">LET’S PRACTICE ENGLISH</div>
   <h1>今日は、どれで<br>英語を練習する？</h1>
   <p class="intro">単語・語順・英作文・読解。今日は何にチャレンジする？<br>好きなゲームを選んで始めよう。</p>
+  </div>
 
   <section class="pet-card" aria-label="ペット育成">
     <div class="pet-visual-wrap">
@@ -110,10 +113,11 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
         <span id="petDays" class="pet-days">ログイン 0 / 3日</span>
       </div>
       <div id="petStatus" class="pet-status" role="status" aria-live="polite">ログイン状態を確認しています…</div>
-      <button id="petCreate" class="pet-button" type="button" hidden>ペットを作る</button>
+      <button id="petCreate" class="pet-button" type="button" hidden>どんな子がいい？</button>
       <div class="pet-bar" aria-hidden="true"><i id="petBar" style="width:0%"></i></div>
     </div>
   </section>
+  </div>
 
 <section class="dashboard" aria-label="学習ダッシュボード">
     <div class="dash-head">
@@ -350,7 +354,7 @@ function renderPet(data={},message=''){
     petVisual.setAttribute('aria-label','ふしぎなたまご');
     petTitle.textContent=ready?'たまごがかえりそう！':'ふしぎなたまご';
     const remain=Math.max(0,3-days);
-    petStatus.textContent=message||(ready?'好きな見た目を選んで、ペットを迎えよう。':days?`あと${remain}日ログインすると、たまごがかえります。`:'Googleログインすると、たまごの育成が始まります。');
+    petStatus.textContent=message||(ready?'アンケートに答えて、あなたのペットに出会おう。':days?`あと${remain}日ログインすると、たまごがかえります。`:'Googleログインすると、たまごの育成が始まります。');
   }
 }
 
