@@ -42,3 +42,7 @@
 .pet-survey .pet-choice{text-align:left;padding:13px 14px;font-size:14px}
 .pet-survey .pet-button:disabled{cursor:default}
 @media(max-width:760px){.hero{grid-template-columns:1fr;gap:16px}.hero .pet-card{padding:6px}.hero .pet-visual-wrap{width:190px;height:190px;flex-basis:190px}.hero .pet-visual.egg{font-size:105px}}
+
+.pet-name-input{display:block;width:100%;margin-top:10px;border:1px solid #b8c9be;border-radius:10px;padding:12px;font:inherit;font-size:18px;color:#193d38;background:#fff}
+.pet-name-input:focus{outline:3px solid #e4af37;outline-offset:2px}
+.pet-title strong{overflow-wrap:anywhere}

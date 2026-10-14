@@ -114,6 +114,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       </div>
       <div id="petStatus" class="pet-status" role="status" aria-live="polite">ログイン状態を確認しています…</div>
       <button id="petCreate" class="pet-button" type="button" hidden>どんな子がいい？</button>
+      <button id="petNameButton" class="pet-button" type="button" hidden>名前をつける</button>
       <button id="petRetry" class="pet-button secondary" type="button" hidden>ペットをリセットして孵化からやり直す</button>
       <div class="pet-bar" aria-hidden="true"><i id="petBar" style="width:0%"></i></div>
     </div>
@@ -225,9 +226,9 @@ import {
   getFirestore, doc, getDoc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
-import {loginProgress,readyToHatch,hasPet,validAppearance} from './pet-model.js';
+import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
 import {renderPetSVG,appearanceLabel} from './pet-art.js';
-import {createPetMaker} from './pet-maker.js';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -316,9 +317,11 @@ let petAuthGeneration=0;
 const petCreate=document.getElementById('petCreate');
 const petRetry=document.getElementById('petRetry');
 let retryMode=new URLSearchParams(location.search).get('pet-retry')==='1';
-const petMaker=createPetMaker(async appearance=>{
+const petNameButton=document.getElementById('petNameButton');
+const petMaker=createPetMaker(async (appearance,name)=>{
   const user=petUser,generation=petAuthGeneration;
   if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
+  if(!validPetName(name))throw Error('名前を1〜12文字で入力してください。');
   if(!validAppearance(appearance))throw Error('見た目を選び直してください。');
   try{
     const saved=await runTransaction(db,async transaction=>{
@@ -326,7 +329,7 @@ const petMaker=createPetMaker(async appearance=>{
       if(!readyToHatch(data))throw Error('3日ログインするとペットを迎えられます。');
       // First successful choice wins, even across devices or tabs.
       if(hasPet(data))return data;
-      const payload={petAppearance:appearance,petSchemaVersion:1,petHatched:true,petCustomizedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()};
+      const payload={petName:normalizePetName(name),petAppearance:appearance,petSchemaVersion:1,petHatched:true,petCustomizedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()};
       if(!data.petHatchedAt)payload.petHatchedAt=serverTimestamp();
       transaction.set(ref,payload,{merge:true});
       return {...data,...payload};
@@ -339,16 +342,33 @@ const petMaker=createPetMaker(async appearance=>{
 });
 petCreate.addEventListener('click',()=>{if(petUser && readyToHatch(petData) && !hasPet(petData))petMaker.open(petData.petAppearance);});
 
+const petNameDialog=createPetNameDialog(async name=>{
+  const user=petUser,generation=petAuthGeneration;
+  if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
+  if(!validPetName(name))throw Error('名前を1〜12文字で入力してください。');
+  try{
+    const saved=await runTransaction(db,async transaction=>{
+      const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
+      if(!hasPet(data))throw Error('先にペットを迎えてください。');
+      if(validPetName(data.petName))return data;
+      const payload={petName:normalizePetName(name),petUpdatedAt:serverTimestamp()};
+      transaction.set(ref,payload,{merge:true});return {...data,...payload};
+    });
+    if(generation===petAuthGeneration && auth.currentUser?.uid===user.uid){petData=saved;renderPet(saved);}
+  }catch(error){throw Error(error.code?'名前を保存できませんでした。通信状態を確認して、もう一度お試しください。':error.message);}
+});
+petNameButton.addEventListener('click',()=>{if(petUser && hasPet(petData) && !validPetName(petData.petName))petNameDialog.open();});
+
 petRetry.addEventListener('click',async()=>{
   const user=petUser,generation=petAuthGeneration;
   if(!retryMode || !user || auth.currentUser?.uid!==user.uid || petRetry.disabled)return;
   if(!confirm(`${user.displayName||'ログイン中のアカウント'} のペットをリセットして、3日目の孵化アンケートからやり直しますか？ 学習記録はそのままです。`))return;
-  petRetry.disabled=true;petMaker.close();
+  petRetry.disabled=true;petMaker.close();petNameDialog.close();
   try{
     const saved=await runTransaction(db,async transaction=>{
       const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
       if(!readyToHatch(data))throw Error('3日ログインを達成してからお試しください。');
-      const payload={petLoginDays:3,petLastLoginDate:localDateKey(),petHatched:false,petAppearance:null,petHatchedAt:null,petCustomizedAt:null,petUpdatedAt:serverTimestamp()};
+      const payload={petLoginDays:3,petLastLoginDate:localDateKey(),petHatched:false,petName:null,petAppearance:null,petHatchedAt:null,petCustomizedAt:null,petUpdatedAt:serverTimestamp()};
       transaction.set(ref,payload,{merge:true});return {...data,...payload};
     });
     if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
@@ -369,10 +389,11 @@ function renderPet(data={},message=''){
   petVisual.classList.toggle('hatched',hatched);
   petCreate.hidden=!petUser || !ready || hatched;
   petRetry.hidden=!retryMode || !petUser || !ready;
+  petNameButton.hidden=!petUser || !hatched || validPetName(data.petName);
   if(hatched){
     petVisual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);
     petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
-    petTitle.textContent='わたしのペット';
+    petTitle.textContent=validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
     petStatus.textContent=message||'あなたのペットと一緒に、今日も英語を楽しもう。';
   }else{
     petVisual.textContent='🥚';
@@ -527,7 +548,7 @@ try{
 
 onAuthStateChanged(auth,async user=>{
   const generation=++petAuthGeneration;
-  petUser=null;petData={};petMaker.close();petCreate.hidden=true;petRetry.hidden=true;
+  petUser=null;petData={};petMaker.close();petNameDialog.close();petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
   loginBtn.disabled=false;
   if(!user){
     dashboardUser=null;

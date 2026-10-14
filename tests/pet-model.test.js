@@ -43,3 +43,11 @@ test('all ten species reachable for every answer, with equal-sized preference bo
   assert.ok(validAppearance(a));assert.equal(a.bodyColor,'cream');assert.equal('personality' in a,false);
  }
 });
+
+import {normalizePetName,validPetName} from '../pet-model.js';
+test('pet names trim blanks, reject empty/long values and count Unicode code points',()=>{
+ assert.equal(normalizePetName('  ぽんた  '),'ぽんた');
+ for(const value of ['', '  ', null, {}, 'a'.repeat(13)])assert.equal(validPetName(value),false);
+ for(const value of ['ぽんた','Luna','あ'.repeat(12),'🐱'.repeat(12)])assert.equal(validPetName(value),true);
+ assert.equal(normalizePetName('A\nB'),'AB');
+});

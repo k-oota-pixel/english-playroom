@@ -53,3 +53,10 @@ export function appearanceFromAnswers(answers,random=Math.random) {
  const {personality,...appearance}=answers;
  return {...appearance,species:chooseSpecies(personality,random)};
 }
+
+export function normalizePetName(value) {
+ return typeof value==='string'?value.replace(/[\u0000-\u001f\u007f]/g,'').trim():'';
+}
+export function validPetName(value) {
+ const name=normalizePetName(value);return name.length>0 && [...name].length<=12;
+}
