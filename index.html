@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>英語学習｜ENGLISH PLAYROOM</title>
+<link rel="stylesheet" href="./pet.css">
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f6f5ef;color:#193d38;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -108,7 +109,8 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
         <strong id="petTitle">ふしぎなたまご</strong>
         <span id="petDays" class="pet-days">ログイン 0 / 3日</span>
       </div>
-      <div id="petStatus" class="pet-status">ログイン状態を確認しています…</div>
+      <div id="petStatus" class="pet-status" role="status" aria-live="polite">ログイン状態を確認しています…</div>
+      <button id="petCreate" class="pet-button" type="button" hidden>ペットを作る</button>
       <div class="pet-bar" aria-hidden="true"><i id="petBar" style="width:0%"></i></div>
     </div>
   </section>
@@ -215,8 +217,12 @@ import {
   onAuthStateChanged, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, serverTimestamp
+  getFirestore, doc, getDoc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+import {loginProgress,readyToHatch,hasPet,validAppearance} from './pet-model.js';
+import {renderPetSVG,appearanceLabel} from './pet-art.js';
+import {createPetMaker} from './pet-maker.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -299,57 +305,67 @@ function loginErrorMessage(err){
   }
 }
 
-function renderPet(days,hatched,message=""){
-  days=Math.max(0,Number(days)||0);
-  const shown=Math.min(3,days);
-  petDays.textContent=hatched?"誕生しました！":`ログイン ${shown} / 3日`;
+let petData={};
+let petUser=null;
+let petAuthGeneration=0;
+const petCreate=document.getElementById('petCreate');
+const petMaker=createPetMaker(async appearance=>{
+  const user=petUser,generation=petAuthGeneration;
+  if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
+  if(!validAppearance(appearance))throw Error('見た目を選び直してください。');
+  try{
+    const saved=await runTransaction(db,async transaction=>{
+      const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
+      if(!readyToHatch(data))throw Error('3日ログインするとペットを迎えられます。');
+      // First successful choice wins, even across devices or tabs.
+      if(hasPet(data))return data;
+      const payload={petAppearance:appearance,petSchemaVersion:1,petHatched:true,petCustomizedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()};
+      if(!data.petHatchedAt)payload.petHatchedAt=serverTimestamp();
+      transaction.set(ref,payload,{merge:true});
+      return {...data,...payload};
+    });
+    if(generation===petAuthGeneration && auth.currentUser?.uid===user.uid){petData=saved;renderPet(saved);}
+  }catch(error){
+    if(error.code)throw Error('クラウドに保存できませんでした。通信状態を確認して、もう一度お試しください。');
+    throw error;
+  }
+});
+petCreate.addEventListener('click',()=>{if(petUser && readyToHatch(petData) && !hasPet(petData))petMaker.open(petData.petAppearance);});
+
+function renderPet(data={},message=''){
+  const days=Math.max(0,Number(data.petLoginDays)||0),shown=Math.min(3,days);
+  const hatched=hasPet(data),ready=readyToHatch(data);
+  petDays.textContent=hatched?'誕生しました！':`ログイン ${shown} / 3日`;
   petBar.style.width=`${Math.min(100,(shown/3)*100)}%`;
-  petVisual.classList.toggle("egg",!hatched);
-  petVisual.classList.toggle("hatched",hatched);
+  petVisual.classList.toggle('egg',!hatched);
+  petVisual.classList.toggle('hatched',hatched);
+  petCreate.hidden=!petUser || !ready || hatched;
   if(hatched){
-    petVisual.textContent="🐣";
-    petVisual.setAttribute("aria-label","生まれたばかりのペット");
-    petTitle.textContent="ペットが生まれた！";
-    petStatus.textContent=message||"3日ログイン達成！ これから一緒に育てていこう。";
+    petVisual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);
+    petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
+    petTitle.textContent='わたしのペット';
+    petStatus.textContent=message||'あなたのペットと一緒に、今日も英語を楽しもう。';
   }else{
-    petVisual.textContent="🥚";
-    petVisual.setAttribute("aria-label","ふしぎなたまご");
-    petTitle.textContent="ふしぎなたまご";
+    petVisual.textContent='🥚';
+    petVisual.setAttribute('aria-label','ふしぎなたまご');
+    petTitle.textContent=ready?'たまごがかえりそう！':'ふしぎなたまご';
     const remain=Math.max(0,3-days);
-    petStatus.textContent=message||(days?`あと${remain}日ログインすると、たまごがかえります。`:"Googleログインすると、たまごの育成が始まります。");
+    petStatus.textContent=message||(ready?'好きな見た目を選んで、ペットを迎えよう。':days?`あと${remain}日ログインすると、たまごがかえります。`:'Googleログインすると、たまごの育成が始まります。');
   }
 }
 
-async function syncPet(user){
+async function syncPet(user,generation){
   const today=localDateKey();
-  const ref=petRef(user);
-  const snap=await getDoc(ref);
-  const data=snap.exists()?(snap.data()||{}):{};
-  let days=Math.max(0,Number(data.petLoginDays)||0);
-  let last=typeof data.petLastLoginDate==="string"?data.petLastLoginDate:"";
-  const wasHatched=!!data.petHatched||days>=3;
-  let hatched=wasHatched;
-  let changed=false;
-
-  if(last!==today){
-    days+=1;
-    last=today;
-    changed=true;
-  }
-  if(days>=3)hatched=true;
-
-  renderPet(days,hatched);
-
-  if(changed||hatched!==wasHatched){
-    const payload={
-      petLoginDays:days,
-      petLastLoginDate:last,
-      petHatched:hatched,
-      petUpdatedAt:serverTimestamp()
-    };
-    if(hatched&&!wasHatched)payload.petHatchedAt=serverTimestamp();
-    await setDoc(ref,payload,{merge:true});
-  }
+  const data=await runTransaction(db,async transaction=>{
+    const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?(snap.data()||{}):{};
+    const progress=loginProgress(data,today);
+    if(progress.petLoginDays!==data.petLoginDays || progress.petLastLoginDate!==data.petLastLoginDate){
+      transaction.set(ref,{...progress,petUpdatedAt:serverTimestamp()},{merge:true});
+    }
+    return {...data,...progress};
+  });
+  if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
+  petUser=user;petData=data;renderPet(data);
 }
 
 
@@ -481,12 +497,14 @@ try{
 }
 
 onAuthStateChanged(auth,async user=>{
+  const generation=++petAuthGeneration;
+  petUser=null;petData={};petMaker.close();petCreate.hidden=true;
   loginBtn.disabled=false;
   if(!user){
     dashboardUser=null;
     logoutBtn.hidden=true;
     setAuthUI("","Googleログイン","端末保存");
-    renderPet(0,false,"Googleログインすると、たまごの育成が始まります。");
+    renderPet({},"Googleログインすると、たまごの育成が始まります。");
     resetDashboard();
     return;
   }
@@ -496,10 +514,13 @@ onAuthStateChanged(auth,async user=>{
   dashboardUser=user;
   try{
     setAuthUI("busy",shortName(user),"ペット同期中");
-    await syncPet(user);
+    await syncPet(user,generation);
+    if(generation!==petAuthGeneration)return;
     await refreshDashboard(user);
+    if(generation!==petAuthGeneration)return;
     setAuthUI("ok",shortName(user),"クラウド同期済み");
   }catch(err){
+    if(generation!==petAuthGeneration)return;
     console.error("English Playroom sync failed",err);
     setAuthUI("error",shortName(user),"同期エラー");
     petStatus.textContent="ログイン済みですがクラウド同期に失敗しました。Firestoreのルールを確認してください。";
