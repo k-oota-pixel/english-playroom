@@ -62,6 +62,10 @@ export function renderPetSVG(value,shop={}) {
     markings=path('M105 147 Q120 140 135 147 L143 180 Q120 196 97 180Z','#fff3df')+path('M108 159 L132 159 M105 171 L135 171');
   }
   const cheeks='<g fill="#e69c9c" opacity=".5" stroke="none"><ellipse cx="80" cy="128" rx="9" ry="5"/><ellipse cx="160" cy="128" rx="9" ry="5"/></g>';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${layers.backgrounds}<ellipse cx="120" cy="207" rx="66" ry="9" fill="${outline}" opacity=".09"/><g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${rear}${feature}${path('M78 180 Q65 205 87 204 L103 186 M137 186 L153 204 Q175 205 162 180',color)}${path(bodies[a.species],color)}${markings}<g fill="${outline}" stroke="${outline}" opacity=".22">${pattern}${layers.patterns}</g>${wings}<g fill="${outline}">${eyes}</g>${cheeks}${face}</g>${layers.accessories}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${layers.backgrounds}<ellipse cx="120" cy="207" rx="66" ry="9" fill="${outline}" opacity=".09"/><g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${rear}${feature}${path('M78 180 Q65 205 87 204 L103 186 M137 186 L153 204 Q175 205 162 180',color)}${path(bodies[a.species],color)}${markings}<g fill="${outline}" stroke="${outline}" opacity=".22">${pattern}${layers.patterns}</g>${wings}<g fill="${outline}">${eyes}</g>${cheeks}${face}</g>${layers.accessories}${layers.effects||''}</svg>`;
 }
 export function appearanceLabel(value) {const a=normalizeAppearance(value);return Object.entries(OPTIONS).map(([key,items])=>items.find(x=>x.id===a[key]).label).join('・');}
+
+if(typeof window!=='undefined'){
+  queueMicrotask(()=>import('./pet-shop.js').catch(error=>console.error('Pet shop failed to load',error)));
+}
