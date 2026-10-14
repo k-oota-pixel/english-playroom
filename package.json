@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/pet-model.test.js",
+    "test:browser": "node tests/pet-browser.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.0"
+  }
+}
