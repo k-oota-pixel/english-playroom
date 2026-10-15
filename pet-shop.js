@@ -36,6 +36,7 @@ const ITEMS = Object.freeze([
   {id:'sunset-bg',name:'夕焼けの背景',price:25,slot:'backgrounds',icon:'🌇'},
   {id:'classroom-bg',name:'教室の背景',price:25,slot:'backgrounds',icon:'🏫'},
   {id:'cafe-bg',name:'カフェの背景',price:25,slot:'backgrounds',icon:'☕'},
+  {id:'halloween-bg',name:'ハロウィンの背景',price:30,slot:'backgrounds',icon:'🎃'},
   {id:'snow-bg',name:'雪の背景',price:25,slot:'backgrounds',icon:'❄️'}
 ]);
 
