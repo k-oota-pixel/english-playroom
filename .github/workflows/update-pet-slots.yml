@@ -1,0 +1,45 @@
+name: Update pet design and shop slots
+
+on:
+  push:
+    paths:
+      - '.github/workflows/update-pet-slots.yml'
+      - '.github/scripts/update-pet-slots.py'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply pet patch
+        run: python .github/scripts/update-pet-slots.py
+      - name: Validate JavaScript
+        run: |
+          node --check pet-model.js
+          node --check pet-art.js
+          node --check pet-shop.js
+          node --input-type=module <<'NODE'
+          import {equippedLayers} from './pet-model.js';
+          const layers=equippedLayers({
+            ownedItems:['red-ribbon','sunglasses'],
+            equipped:{head:'red-ribbon',face:'sunglasses'}
+          });
+          if(!layers.accessories.includes('translate(30 -100)')) throw new Error('head ribbon missing');
+          if(!layers.accessories.includes('M78 101 H109')) throw new Error('face slot missing');
+          NODE
+          grep -q "if(a.pattern==='star') pattern='';" pet-art.js
+          grep -q 'class="pet-shop-groups"' pet-shop.js
+      - name: Commit updated pet files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pet-model.js pet-art.js pet-shop.js
+          if git diff --cached --quiet; then
+            echo 'No target changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Improve pet accessories and shop slots'
+          git push
