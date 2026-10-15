@@ -36,11 +36,13 @@ const STYLE = `
 .pet-shop-item{border:1px solid #e3e7dc;background:#fff;border-radius:14px;padding:11px;display:flex;flex-direction:column;min-height:138px}
 .pet-shop-icon{font-size:25px}.pet-shop-name{font-size:13px;font-weight:900;margin-top:4px;line-height:1.3}.pet-shop-price{font-size:10px;color:#866817;margin-top:3px}.pet-shop-action{margin-top:auto;appearance:none;border:0;border-radius:10px;padding:8px 9px;background:#236d58;color:white;font:inherit;font-size:11px;font-weight:900;cursor:pointer}.pet-shop-action:hover{filter:brightness(.96)}.pet-shop-action:disabled{opacity:.5;cursor:default}.pet-shop-action.owned{background:#e6f2ea;color:#1f684f;border:1px solid #cde4d5}.pet-shop-action.equipped{background:#f0ead8;color:#755b19;border:1px solid #e1d4ab}
 .pet-shop-specials{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px;padding-top:14px;border-top:1px solid #ebe7d9}.pet-shop-special{border:1px solid #e6dfca;background:#fffaf0;border-radius:14px;padding:12px}.pet-shop-special strong{display:block;font-size:14px}.pet-shop-special p{font-size:10.5px;color:#746d5c;line-height:1.45;margin:4px 0 9px}.pet-shop-special input,.pet-shop-special select{width:100%;border:1px solid #d7ddcf;border-radius:9px;padding:8px;background:white;font:inherit;font-size:12px;margin-bottom:7px}
+.pet-shop-confirm-dialog{width:min(420px,calc(100vw - 28px));border:0;border-radius:20px;padding:0;background:#fffdf7;color:#193d38;box-shadow:0 22px 80px #10251f66}.pet-shop-confirm-dialog::backdrop{background:#17342fa6;backdrop-filter:blur(3px)}.pet-shop-confirm-card{padding:24px 22px 20px;text-align:center}.pet-shop-confirm-icon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;background:#fff3c5;border:1px solid #ecd690;font-size:26px}.pet-shop-confirm-title{font-size:20px;font-weight:900;margin:0 0 9px}.pet-shop-confirm-message{font-size:13px;line-height:1.75;color:#5f6f68;margin:0;white-space:pre-line}.pet-shop-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}.pet-shop-confirm-cancel,.pet-shop-confirm-ok{appearance:none;border-radius:11px;padding:10px 12px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}.pet-shop-confirm-cancel{border:1px solid #d7dfd8;background:#fff;color:#52645d}.pet-shop-confirm-ok{border:1px solid #236d58;background:#236d58;color:#fff}.pet-shop-confirm-ok:hover{filter:brightness(.96)}.pet-shop-confirm-cancel:hover{background:#f5f8f5}
 @media(max-width:620px){.pet-shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pet-shop-specials{grid-template-columns:1fr}.pet-shop-shell{padding:14px}.pet-shop-title{font-size:20px}}
 `;
 
 let auth=null,db=null,currentUser=null,currentData={},unsubDoc=null,busy=false;
 let wallet=null,coinText=null,shopBtn=null,toast=null,dialog=null,grid=null,balance=null,nameInput=null,speciesSelect=null;
+let confirmDialog=null,confirmMessage=null,confirmTitle=null,confirmOk=null,confirmResolve=null;
 let birthToastShown=false;
 
 const todayKey=()=>{
@@ -71,6 +73,16 @@ function injectUI(){
   dialog=document.createElement('dialog');dialog.className='pet-shop-dialog';dialog.id='petShopDialog';
   dialog.innerHTML=`<div class="pet-shop-shell"><div class="pet-shop-head"><div><div class="pet-shop-kicker">PET SHOP</div><div class="pet-shop-title">ペットショップ</div><div id="petShopBalance" class="pet-shop-balance">🪙 —</div></div><button id="petShopClose" class="pet-shop-close" type="button" aria-label="閉じる">×</button></div><div class="pet-shop-note">買ったアイテムは何度でも着け替えできます。同じ種類のアイテムは1つだけ装備できます。</div><div id="petShopGrid" class="pet-shop-grid"></div><div class="pet-shop-specials"><div class="pet-shop-special"><strong>✏️ 名前変更　🪙50</strong><p>変更するたびに50コイン使います。1〜12文字で入力してください。</p><input id="petRenameInput" maxlength="12" autocomplete="off" placeholder="新しい名前"><button id="petRenameButton" class="pet-shop-action" type="button">50コインで変更</button></div><div class="pet-shop-special"><strong>🔄 ペットの種類変更　🪙100</strong><p>色・目・模様などはそのままで、種類だけ変更します。</p><select id="petSpeciesSelect"></select><button id="petSpeciesButton" class="pet-shop-action" type="button">100コインで変更</button></div></div></div>`;
   document.body.appendChild(dialog);
+
+  confirmDialog=document.createElement('dialog');confirmDialog.className='pet-shop-confirm-dialog';confirmDialog.id='petShopConfirmDialog';
+  confirmDialog.innerHTML=`<div class="pet-shop-confirm-card"><div class="pet-shop-confirm-icon">🪙</div><h2 id="petShopConfirmTitle" class="pet-shop-confirm-title">購入の確認</h2><p id="petShopConfirmMessage" class="pet-shop-confirm-message"></p><div class="pet-shop-confirm-actions"><button id="petShopConfirmCancel" class="pet-shop-confirm-cancel" type="button">キャンセル</button><button id="petShopConfirmOk" class="pet-shop-confirm-ok" type="button">購入する</button></div></div>`;
+  document.body.appendChild(confirmDialog);
+  confirmTitle=confirmDialog.querySelector('#petShopConfirmTitle');confirmMessage=confirmDialog.querySelector('#petShopConfirmMessage');confirmOk=confirmDialog.querySelector('#petShopConfirmOk');
+  confirmDialog.querySelector('#petShopConfirmCancel').addEventListener('click',()=>finishCoinConfirm(false));
+  confirmOk.addEventListener('click',()=>finishCoinConfirm(true));
+  confirmDialog.addEventListener('cancel',e=>{e.preventDefault();finishCoinConfirm(false);});
+  confirmDialog.addEventListener('click',e=>{if(e.target===confirmDialog)finishCoinConfirm(false);});
+
   grid=dialog.querySelector('#petShopGrid');balance=dialog.querySelector('#petShopBalance');nameInput=dialog.querySelector('#petRenameInput');speciesSelect=dialog.querySelector('#petSpeciesSelect');
   speciesSelect.innerHTML=OPTIONS.species.map(x=>`<option value="${x.id}">${x.label}</option>`).join('');
   dialog.querySelector('#petShopClose').addEventListener('click',()=>dialog.close());
@@ -78,6 +90,18 @@ function injectUI(){
   shopBtn.addEventListener('click',()=>{if(currentUser&&hasPet(currentData)){renderShop();dialog.showModal();}});
   dialog.querySelector('#petRenameButton').addEventListener('click',renamePet);
   dialog.querySelector('#petSpeciesButton').addEventListener('click',changeSpecies);
+}
+
+function finishCoinConfirm(ok){
+  const resolve=confirmResolve;confirmResolve=null;
+  if(confirmDialog?.open)confirmDialog.close();
+  if(resolve)resolve(!!ok);
+}
+function requestCoinConfirm({title='購入の確認',message='',confirmLabel='購入する'}={}){
+  if(!confirmDialog||confirmResolve)return Promise.resolve(false);
+  confirmTitle.textContent=title;confirmMessage.textContent=message;confirmOk.textContent=confirmLabel;
+  confirmDialog.showModal();
+  return new Promise(resolve=>{confirmResolve=resolve;});
 }
 
 function renderPetFromData(data){
@@ -122,6 +146,11 @@ async function withBusy(fn){
 }
 async function handleItem(item){
   const user=currentUser;if(!user)return;
+  const previewShop=shopOf(currentData);
+  if(!previewShop.ownedItems.includes(item.id)){
+    const ok=await requestCoinConfirm({title:'購入の確認',message:`${item.price}コインを消費して「${item.name}」を購入します。\nよろしいですか？`,confirmLabel:'購入する'});
+    if(!ok)return;
+  }
   await withBusy(async()=>{
     try{
       let result='';
@@ -146,6 +175,9 @@ async function handleItem(item){
 async function renamePet(){
   const user=currentUser,newName=normalizePetName(nameInput.value);if(!user)return;
   if(!validPetName(newName)){setToast('名前は1〜12文字で入力してください。','error');return;}
+  if(normalizePetName(currentData.petName)===newName){setToast('今と同じ名前です。','error');return;}
+  const renameOk=await requestCoinConfirm({title:'名前変更の確認',message:`50コインを消費して「${newName}」に名前を変更します。\nよろしいですか？`,confirmLabel:'変更する'});
+  if(!renameOk)return;
   await withBusy(async()=>{
     try{
       await runTransaction(db,async tx=>{
@@ -162,9 +194,13 @@ async function renamePet(){
 async function changeSpecies(){
   const user=currentUser,nextSpecies=speciesSelect.value;if(!user)return;
   if(!OPTIONS.species.some(x=>x.id===nextSpecies)){setToast('種類を選び直してください。','error');return;}
+  const currentSpecies=normalizeAppearance(currentData.petAppearance).species;
+  if(currentSpecies===nextSpecies){setToast('今と同じ種類です。','error');return;}
+  const label=OPTIONS.species.find(x=>x.id===nextSpecies)?.label||nextSpecies;
+  const speciesOk=await requestCoinConfirm({title:'種類変更の確認',message:`100コインを消費して「${label}」に変更します。\nよろしいですか？`,confirmLabel:'変更する'});
+  if(!speciesOk)return;
   await withBusy(async()=>{
     try{
-      const label=OPTIONS.species.find(x=>x.id===nextSpecies)?.label||nextSpecies;
       await runTransaction(db,async tx=>{
         const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};
         if(!hasPet(data))throw Error('ペットが誕生してから使えます。');
