@@ -38,7 +38,8 @@ export function renderPetSVG(value,shop={}) {
   let pattern='';
   if(a.pattern==='spots') pattern='<circle cx="77" cy="145" r="9"/><circle cx="158" cy="159" r="12"/><circle cx="113" cy="174" r="7"/>';
   if(a.pattern==='stripes') pattern=path('M61 143 L88 149 M61 159 L83 165 M179 143 L152 149 M179 159 L157 165');
-  if(a.pattern==='star') pattern=star(120,163);
+  // The old center-chest star looked like an accessory hanging below the mouth, so it is intentionally hidden.
+  if(a.pattern==='star') pattern='';
   let face=path('M116 130 Q120 125 124 130 L120 135Z',outline)+path('M120 135 Q114 144 108 139 M120 135 Q126 144 132 139');
   if(a.species==='bird')face=path('M111 129 L120 140 L129 129 Z','#edaa48');
   if(a.species==='cat')face+=path('M70 127 L52 123 M70 135 L51 138 M170 127 L188 123 M170 135 L189 138');

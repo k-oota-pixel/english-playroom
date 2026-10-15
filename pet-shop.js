@@ -1,23 +1,30 @@
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import { OPTIONS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
+import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
 import { renderPetSVG, appearanceLabel } from './pet-art.js';
 
 const ITEMS = Object.freeze([
-  { id:'red-ribbon', name:'赤いリボン', price:5, slot:'accessories', icon:'🎀' },
-  { id:'blue-ribbon', name:'青いリボン', price:5, slot:'accessories', icon:'🎗️' },
-  { id:'sunglasses', name:'サングラス', price:8, slot:'accessories', icon:'😎' },
-  { id:'crown', name:'王冠', price:15, slot:'accessories', icon:'👑' },
-  { id:'wizard-hat', name:'魔法使いの帽子', price:15, slot:'accessories', icon:'🧙' },
-  { id:'pirate-hat', name:'海賊帽', price:15, slot:'accessories', icon:'🏴‍☠️' },
-  { id:'flower-crown', name:'花かんむり', price:20, slot:'accessories', icon:'🌼' },
+  { id:'red-ribbon', name:'赤いリボン', price:5, slot:'head', icon:'🎀' },
+  { id:'blue-ribbon', name:'青いリボン', price:5, slot:'head', icon:'🎗️' },
+  { id:'sunglasses', name:'サングラス', price:8, slot:'face', icon:'😎' },
+  { id:'crown', name:'王冠', price:15, slot:'head', icon:'👑' },
+  { id:'wizard-hat', name:'魔法使いの帽子', price:15, slot:'head', icon:'🧙' },
+  { id:'pirate-hat', name:'海賊帽', price:15, slot:'head', icon:'🏴‍☠️' },
+  { id:'flower-crown', name:'花かんむり', price:20, slot:'head', icon:'🌼' },
   { id:'star-effect', name:'星のエフェクト', price:20, slot:'effects', icon:'⭐' },
   { id:'sparkle-effect', name:'キラキラエフェクト', price:25, slot:'effects', icon:'✨' },
   { id:'forest-bg', name:'森の背景', price:20, slot:'backgrounds', icon:'🌲' },
   { id:'ocean-bg', name:'海の背景', price:25, slot:'backgrounds', icon:'🌊' },
   { id:'space-bg', name:'宇宙の背景', price:30, slot:'backgrounds', icon:'🌌' },
   { id:'castle-bg', name:'お城の背景', price:30, slot:'backgrounds', icon:'🏰' }
+]);
+
+const SLOT_GROUPS = Object.freeze([
+  {slot:'head',label:'あたま',icon:'🎀'},
+  {slot:'face',label:'かお',icon:'🕶️'},
+  {slot:'effects',label:'エフェクト',icon:'✨'},
+  {slot:'backgrounds',label:'背景',icon:'🖼️'}
 ]);
 
 const STYLE = `
@@ -32,6 +39,7 @@ const STYLE = `
 .pet-shop-kicker{font-size:9px;font-weight:900;letter-spacing:.14em;color:#9a7830}.pet-shop-title{font-size:24px;font-weight:900;margin-top:2px}.pet-shop-balance{font-size:13px;font-weight:900;color:#805f13;margin-top:3px}
 .pet-shop-close{appearance:none;border:1px solid #dce5da;background:#fff;border-radius:999px;width:34px;height:34px;font-size:18px;cursor:pointer}
 .pet-shop-note{font-size:11px;line-height:1.55;color:#6d756f;background:#f5f3e9;border-radius:12px;padding:9px 11px;margin-bottom:12px}
+.pet-shop-groups{display:grid;gap:14px}.pet-shop-group{border:1px solid #ebe7d9;background:#fbfaf4;border-radius:16px;padding:10px}.pet-shop-group-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:900;color:#314d46;margin:0 0 9px;padding:0 2px}.pet-shop-group-slot{font-size:9px;color:#8b8f87;font-weight:800;margin-left:auto}
 .pet-shop-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
 .pet-shop-item{border:1px solid #e3e7dc;background:#fff;border-radius:14px;padding:11px;display:flex;flex-direction:column;min-height:138px}
 .pet-shop-icon{font-size:25px}.pet-shop-name{font-size:13px;font-weight:900;margin-top:4px;line-height:1.3}.pet-shop-price{font-size:10px;color:#866817;margin-top:3px}.pet-shop-action{margin-top:auto;appearance:none;border:0;border-radius:10px;padding:8px 9px;background:#236d58;color:white;font:inherit;font-size:11px;font-weight:900;cursor:pointer}.pet-shop-action:hover{filter:brightness(.96)}.pet-shop-action:disabled{opacity:.5;cursor:default}.pet-shop-action.owned{background:#e6f2ea;color:#1f684f;border:1px solid #cde4d5}.pet-shop-action.equipped{background:#f0ead8;color:#755b19;border:1px solid #e1d4ab}
@@ -55,6 +63,12 @@ const shopOf=data=>({
   equipped:data?.petShop?.equipped&&typeof data.petShop.equipped==='object'?data.petShop.equipped:{}
 });
 const refFor=user=>doc(db,'users',user.uid,'apps','english-playroom');
+const equippedIdFor=(shop,slot)=>{
+  const direct=shop?.equipped?.[slot];
+  if(typeof direct==='string')return direct;
+  const legacy=shop?.equipped?.accessories;
+  return typeof legacy==='string' && ACCESSORY_ITEM_SLOTS[legacy]===slot ? legacy : null;
+};
 
 function setToast(message='',kind=''){
   if(!toast)return;
@@ -71,7 +85,7 @@ function injectUI(){
   coinText=wallet.querySelector('#petCoinText');shopBtn=wallet.querySelector('#petShopOpen');toast=wallet.querySelector('#petShopToast');
 
   dialog=document.createElement('dialog');dialog.className='pet-shop-dialog';dialog.id='petShopDialog';
-  dialog.innerHTML=`<div class="pet-shop-shell"><div class="pet-shop-head"><div><div class="pet-shop-kicker">PET SHOP</div><div class="pet-shop-title">ペットショップ</div><div id="petShopBalance" class="pet-shop-balance">🪙 —</div></div><button id="petShopClose" class="pet-shop-close" type="button" aria-label="閉じる">×</button></div><div class="pet-shop-note">買ったアイテムは何度でも着け替えできます。同じ種類のアイテムは1つだけ装備できます。</div><div id="petShopGrid" class="pet-shop-grid"></div><div class="pet-shop-specials"><div class="pet-shop-special"><strong>✏️ 名前変更　🪙50</strong><p>変更するたびに50コイン使います。1〜12文字で入力してください。</p><input id="petRenameInput" maxlength="12" autocomplete="off" placeholder="新しい名前"><button id="petRenameButton" class="pet-shop-action" type="button">50コインで変更</button></div><div class="pet-shop-special"><strong>🔄 ペットの種類変更　🪙100</strong><p>色・目・模様などはそのままで、種類だけ変更します。</p><select id="petSpeciesSelect"></select><button id="petSpeciesButton" class="pet-shop-action" type="button">100コインで変更</button></div></div></div>`;
+  dialog.innerHTML=`<div class="pet-shop-shell"><div class="pet-shop-head"><div><div class="pet-shop-kicker">PET SHOP</div><div class="pet-shop-title">ペットショップ</div><div id="petShopBalance" class="pet-shop-balance">🪙 —</div></div><button id="petShopClose" class="pet-shop-close" type="button" aria-label="閉じる">×</button></div><div class="pet-shop-note">アイテムは装着スロットごとに整理しました。同じスロットでは1つだけ装備でき、あたま・かお・エフェクト・背景は同時に楽しめます。</div><div id="petShopGrid" class="pet-shop-groups"></div><div class="pet-shop-specials"><div class="pet-shop-special"><strong>✏️ 名前変更　🪙50</strong><p>変更するたびに50コイン使います。1〜12文字で入力してください。</p><input id="petRenameInput" maxlength="12" autocomplete="off" placeholder="新しい名前"><button id="petRenameButton" class="pet-shop-action" type="button">50コインで変更</button></div><div class="pet-shop-special"><strong>🔄 ペットの種類変更　🪙100</strong><p>色・目・模様などはそのままで、種類だけ変更します。</p><select id="petSpeciesSelect"></select><button id="petSpeciesButton" class="pet-shop-action" type="button">100コインで変更</button></div></div></div>`;
   document.body.appendChild(dialog);
 
   confirmDialog=document.createElement('dialog');confirmDialog.className='pet-shop-confirm-dialog';confirmDialog.id='petShopConfirmDialog';
@@ -128,12 +142,20 @@ function renderShop(){
   speciesSelect.value=currentSpecies;
   if(document.activeElement!==nameInput)nameInput.value=validPetName(currentData.petName)?normalizePetName(currentData.petName):'';
   grid.innerHTML='';
-  for(const item of ITEMS){
-    const owned=shop.ownedItems.includes(item.id),equipped=shop.equipped?.[item.slot]===item.id;
-    const card=document.createElement('div');card.className='pet-shop-item';
-    const action=equipped?'はずす':owned?'装備':`${item.price}コインで購入`;
-    card.innerHTML=`<div class="pet-shop-icon">${item.icon}</div><div class="pet-shop-name">${item.name}</div><div class="pet-shop-price">${owned?'購入済み':`🪙 ${item.price}`}</div><button class="pet-shop-action ${owned?'owned':''} ${equipped?'equipped':''}" type="button">${action}</button>`;
-    const btn=card.querySelector('button');btn.disabled=busy||(!owned&&coins<item.price);btn.addEventListener('click',()=>handleItem(item));grid.appendChild(card);
+  for(const group of SLOT_GROUPS){
+    const items=ITEMS.filter(item=>item.slot===group.slot);
+    if(!items.length)continue;
+    const section=document.createElement('section');section.className='pet-shop-group';
+    const heading=document.createElement('div');heading.className='pet-shop-group-title';heading.innerHTML=`<span>${group.icon}</span><span>${group.label}</span><span class="pet-shop-group-slot">装着スロット</span>`;section.appendChild(heading);
+    const itemGrid=document.createElement('div');itemGrid.className='pet-shop-grid';
+    for(const item of items){
+      const owned=shop.ownedItems.includes(item.id),equipped=equippedIdFor(shop,item.slot)===item.id;
+      const card=document.createElement('div');card.className='pet-shop-item';
+      const action=equipped?'はずす':owned?'装備':`${item.price}コインで購入`;
+      card.innerHTML=`<div class="pet-shop-icon">${item.icon}</div><div class="pet-shop-name">${item.name}</div><div class="pet-shop-price">${owned?'購入済み':`🪙 ${item.price}`}</div><button class="pet-shop-action ${owned?'owned':''} ${equipped?'equipped':''}" type="button">${action}</button>`;
+      const btn=card.querySelector('button');btn.disabled=busy||(!owned&&coins<item.price);btn.addEventListener('click',()=>handleItem(item));itemGrid.appendChild(card);
+    }
+    section.appendChild(itemGrid);grid.appendChild(section);
   }
   const rename=dialog.querySelector('#petRenameButton'),species=dialog.querySelector('#petSpeciesButton');
   rename.disabled=busy||coins<50;species.disabled=busy||coins<100;
@@ -148,7 +170,8 @@ async function handleItem(item){
   const user=currentUser;if(!user)return;
   const previewShop=shopOf(currentData);
   if(!previewShop.ownedItems.includes(item.id)){
-    const ok=await requestCoinConfirm({title:'購入の確認',message:`${item.price}コインを消費して「${item.name}」を購入します。\nよろしいですか？`,confirmLabel:'購入する'});
+    const ok=await requestCoinConfirm({title:'購入の確認',message:`${item.price}コインを消費して「${item.name}」を購入します。
+よろしいですか？`,confirmLabel:'購入する'});
     if(!ok)return;
   }
   await withBusy(async()=>{
@@ -157,14 +180,24 @@ async function handleItem(item){
       await runTransaction(db,async tx=>{
         const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};
         if(!hasPet(data))throw Error('ペットが誕生してから使えます。');
-        const coins=coinsOf(data),shop=shopOf(data),owned=shop.ownedItems.includes(item.id),equipped=shop.equipped?.[item.slot]===item.id;
+        const coins=coinsOf(data),shop=shopOf(data),owned=shop.ownedItems.includes(item.id),equipped=equippedIdFor(shop,item.slot)===item.id;
         const next={ownedItems:[...shop.ownedItems],equipped:{...shop.equipped}};
         let nextCoins=coins;
-        if(equipped){next.equipped[item.slot]=null;result=`${item.name}をはずしました。`;}
-        else if(owned){next.equipped[item.slot]=item.id;result=`${item.name}を装備しました！`;}
-        else{
+        if(equipped){
+          if(next.equipped[item.slot]===item.id)next.equipped[item.slot]=null;
+          if(next.equipped.accessories===item.id)next.equipped.accessories=null;
+          result=`${item.name}をはずしました。`;
+        } else if(owned){
+          next.equipped[item.slot]=item.id;
+          const legacy=next.equipped.accessories;
+          if(typeof legacy==='string' && ACCESSORY_ITEM_SLOTS[legacy]===item.slot)next.equipped.accessories=null;
+          result=`${item.name}を装備しました！`;
+        } else {
           if(coins<item.price)throw Error('コインが足りません。');
-          nextCoins=coins-item.price;next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;result=`${item.name}をゲット！`;
+          nextCoins=coins-item.price;next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;
+          const legacy=next.equipped.accessories;
+          if(typeof legacy==='string' && ACCESSORY_ITEM_SLOTS[legacy]===item.slot)next.equipped.accessories=null;
+          result=`${item.name}をゲット！`;
         }
         tx.set(ref,{coins:nextCoins,petShop:next,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
       });

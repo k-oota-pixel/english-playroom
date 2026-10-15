@@ -35,8 +35,8 @@ export const SHOP_LAYERS = Object.freeze({
   }),
   patterns: Object.freeze({}),
   accessories: Object.freeze({
-    'red-ribbon': '<g aria-hidden="true" stroke="#8f3343" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#e55f72"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#e55f72"/><circle cx="120" cy="172" r="9" fill="#ef7e8d"/></g>',
-    'blue-ribbon': '<g aria-hidden="true" stroke="#355985" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#6ea8e5"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#6ea8e5"/><circle cx="120" cy="172" r="9" fill="#8ebbed"/></g>',
+    'red-ribbon': '<g aria-hidden="true" transform="translate(30 -100) rotate(18 120 172)" stroke="#8f3343" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#e55f72"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#e55f72"/><circle cx="120" cy="172" r="9" fill="#ef7e8d"/></g>',
+    'blue-ribbon': '<g aria-hidden="true" transform="translate(30 -100) rotate(18 120 172)" stroke="#355985" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#6ea8e5"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#6ea8e5"/><circle cx="120" cy="172" r="9" fill="#8ebbed"/></g>',
     'sunglasses': '<g aria-hidden="true" stroke="#26352f" stroke-width="5" stroke-linecap="round" fill="#344b58" opacity=".96"><path d="M78 101 H109 L105 122 Q94 132 82 120Z"/><path d="M131 101 H162 L158 120 Q146 132 135 122Z"/><path d="M109 105 Q120 99 131 105" fill="none"/><path d="M78 104 L66 101 M162 104 L174 101" fill="none"/></g>',
     'crown': '<g aria-hidden="true" stroke="#8d6a14" stroke-width="3" stroke-linejoin="round"><path d="M83 72 L76 38 L101 55 L120 29 L139 55 L164 38 L157 72Z" fill="#f6c94d"/><rect x="84" y="68" width="72" height="13" rx="5" fill="#eeb93f"/><circle cx="120" cy="51" r="5" fill="#ef7180" stroke="none"/></g>',
     'wizard-hat': '<g aria-hidden="true" stroke="#433b67" stroke-width="3" stroke-linejoin="round"><path d="M85 74 Q112 38 132 11 Q141 45 157 71Z" fill="#655b9c"/><ellipse cx="121" cy="75" rx="51" ry="10" fill="#544c86"/><path d="M113 44 l4 7 8 2 -6 5 1 8 -7-4 -7 4 1-8 -6-5 8-2Z" fill="#ffd76c" stroke="none"/></g>',
@@ -48,13 +48,38 @@ export const SHOP_LAYERS = Object.freeze({
     'sparkle-effect': '<g aria-hidden="true" fill="none" stroke="#ffe68a" stroke-width="4" stroke-linecap="round" opacity=".95"><path d="M35 62 v22 M24 73 h22 M199 82 v26 M186 95 h26 M191 174 v19 M181 184 h20 M48 170 v17 M40 179 h16"/><g stroke="#fff" stroke-width="2"><path d="M35 66 v14 M28 73 h14 M199 87 v16 M191 95 h16"/></g></g>'
   })
 });
+export const ACCESSORY_ITEM_SLOTS = Object.freeze({
+  'red-ribbon':'head',
+  'blue-ribbon':'head',
+  'crown':'head',
+  'wizard-hat':'head',
+  'pirate-hat':'head',
+  'flower-crown':'head',
+  'sunglasses':'face'
+});
+
 export function equippedLayers(shop={}) {
   const owned=Array.isArray(shop.ownedItems)?shop.ownedItems:[];
-  const equipped=shop.equipped||{};
-  return Object.fromEntries(Object.entries(SHOP_LAYERS).map(([slot,registry])=>{
+  const equipped=shop.equipped&&typeof shop.equipped==='object'?shop.equipped:{};
+  const directLayer=slot=>{
+    const registry=SHOP_LAYERS[slot],id=equipped[slot];
+    return typeof id==='string' && owned.includes(id) && Object.hasOwn(registry,id)?registry[id]:'';
+  };
+  const accessoryIds=[];
+  for(const slot of ['head','face','neck','body']){
     const id=equipped[slot];
-    return [slot,typeof id==='string' && owned.includes(id) && Object.hasOwn(registry,id)?registry[id]:''];
-  }));
+    if(typeof id==='string' && owned.includes(id) && Object.hasOwn(SHOP_LAYERS.accessories,id))accessoryIds.push(id);
+  }
+  const legacy=equipped.accessories;
+  const legacySlot=typeof legacy==='string'?ACCESSORY_ITEM_SLOTS[legacy]:null;
+  if(typeof legacy==='string' && owned.includes(legacy) && Object.hasOwn(SHOP_LAYERS.accessories,legacy) && (!legacySlot || !equipped[legacySlot]))accessoryIds.push(legacy);
+  const uniqueAccessories=[...new Set(accessoryIds)].map(id=>SHOP_LAYERS.accessories[id]).join('');
+  return {
+    backgrounds:directLayer('backgrounds'),
+    patterns:directLayer('patterns'),
+    accessories:uniqueAccessories,
+    effects:directLayer('effects')
+  };
 }
 
 // Every species remains possible; the answer gives two species triple weight.
