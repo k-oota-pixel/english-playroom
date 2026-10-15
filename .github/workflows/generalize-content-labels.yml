@@ -13,16 +13,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Update content card labels
+      - name: Update content labels
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           replacements={
-            '<h3>英検 空所補充</h3>':'<h3>長文空所補充ライティング</h3>',
-            '<h3>英検 タイトル</h3>':'<h3>長文概要把握ライティング</h3>',
-            '<h3>英検リトライノート</h3>':'<h3>語彙文法問題リトライノート</h3>',
+            '<span id="todayRetry" class="today-pill">○ リトライノート</span>':'<span id="todayRetry" class="today-pill">○ 語彙文法問題リトライノート</span>',
+            '<span id="todayCloze" class="today-pill">○ 英検 空所補充</span>':'<span id="todayCloze" class="today-pill">○ 長文空所補充ライティング</span>',
+            '<span id="todayTitle" class="today-pill">○ 英検 タイトル</span>':'<span id="todayTitle" class="today-pill">○ 長文概要把握ライティング</span>',
+            '<div class="stat-name">リトライノート</div>':'<div class="stat-name">語彙文法問題リトライノート</div>',
+            '<div class="stat-name">英検 空所補充</div>':'<div class="stat-name">長文空所補充ライティング</div>',
+            '<div class="stat-name">英検 タイトル</div>':'<div class="stat-name">長文概要把握ライティング</div>',
+            '<div class="eyebrow">EIKEN RETRY NOTE</div>':'<div class="eyebrow">VOCABULARY &amp; GRAMMAR</div>',
+            '<div class="title">英検 リトライノート</div>':'<div class="title">語彙文法問題リトライノート</div>',
+            '<div class="desc">英検の問題に挑戦して、間違えた問題をあとから復習。全選択肢の意味とワンポイント解説つき。</div>':'<div class="desc">語彙・文法問題に挑戦して、間違えた問題をあとから復習。全選択肢の意味とワンポイント解説つき。</div>',
+            '<span class="chip">準1〜4級</span>':'<span class="chip">準1〜4級程度</span>',
+            '<div class="play">リトライノートへ <span aria-hidden="true">↗</span></div>':'<div class="play">語彙文法問題リトライノートへ <span aria-hidden="true">↗</span></div>',
+            '<div class="title">英検 空所補充</div>':'<div class="title">長文空所補充ライティング</div>',
+            '<div class="title">英検 タイトルを考える</div>':'<div class="title">長文概要把握ライティング</div>',
           }
           missing=[]
           for old,new in replacements.items():
