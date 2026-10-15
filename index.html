@@ -142,7 +142,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="stat"><div class="stat-name">英検 タイトル</div><div id="titleStat" class="stat-main">— / 17</div><div id="titleSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">Task-Quest</div><div id="taskStat" class="stat-main">— / 50</div><div id="taskSub" class="stat-sub">ログイン後に表示</div></div>
     </div>
-    <div id="dashNote" class="dash-note">Googleログインすると、各教材のクラウド記録をまとめて表示します。</div>
+    <div id="dashNote" class="dash-note">ログインすると、各教材のクラウド記録をまとめて表示します。</div>
   </section>
 
   <div class="cards">
@@ -514,21 +514,9 @@ dashRefresh.addEventListener("click",()=>refreshDashboard());
 window.addEventListener("focus",()=>{if(dashboardUser)refreshDashboard();});
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dashboardUser)refreshDashboard();});
 
-loginBtn.addEventListener("click",async()=>{
-  if(signingIn||auth.currentUser)return;
-  signingIn=true;
-  loginBtn.disabled=true;
-  setAuthUI("busy","Googleを開いています…","認証中");
-  try{
-    await signInWithPopup(auth,provider);
-  }catch(err){
-    console.error(err);
-    setAuthUI("error","Googleログイン","再試行できます");
-    petStatus.textContent=loginErrorMessage(err);
-  }finally{
-    signingIn=false;
-    if(!auth.currentUser)loginBtn.disabled=false;
-  }
+loginBtn.addEventListener("click",()=>{
+  const back=encodeURIComponent(location.href);
+  location.href=`./login.html?return=${back}`;
 });
 
 logoutBtn.addEventListener("click",async()=>{
@@ -553,8 +541,8 @@ onAuthStateChanged(auth,async user=>{
   if(!user){
     dashboardUser=null;
     logoutBtn.hidden=true;
-    setAuthUI("","Googleログイン","端末保存");
-    renderPet({},"Googleログインすると、たまごの育成が始まります。");
+    setAuthUI("","ログイン","端末保存");
+    renderPet({},"ログインすると、たまごの育成が始まります。");
     resetDashboard();
     return;
   }
