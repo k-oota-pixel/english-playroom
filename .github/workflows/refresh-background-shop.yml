@@ -23,3 +23,4 @@ jobs:
           git add pet-model.js pet-shop.js .github/scripts/refresh-background-shop.py .github/workflows/refresh-background-shop.yml
           git commit -m "Refresh pet shop backgrounds and add Halloween"
           git push
+# retry after fixing the patch script
