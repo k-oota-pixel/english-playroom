@@ -1,0 +1,32 @@
+name: Upgrade pet shop v2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/upgrade-pet-shop-v2.yml'
+      - '.github/scripts/upgrade-pet-shop-v2.py'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate upgraded pet shop
+        run: |
+          python .github/scripts/upgrade-pet-shop-v2.py
+          node --check pet-shop.js
+          node --check pet-model.js
+          node --check pet-art.js
+          npm test
+      - name: Commit upgrade and remove one-off files
+        run: |
+          rm .github/workflows/upgrade-pet-shop-v2.yml
+          rm .github/scripts/upgrade-pet-shop-v2.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pet-shop.js pet-model.js pet-art.js tests/pet-model.test.js .github/workflows/upgrade-pet-shop-v2.yml .github/scripts/upgrade-pet-shop-v2.py
+          git commit -m 'Upgrade pet shop with live preview and full customization'
+          git push
