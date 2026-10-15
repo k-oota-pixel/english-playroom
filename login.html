@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ログイン｜ENGLISH PLAYROOM</title>
+<style>
+:root{--ink:#193d38;--green:#246a57;--muted:#6d7c75;--line:#dce5da;--pale:#f4f8f4;--gold:#d6a93d;--error:#9b453b;--ok:#2f6f50}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f6f5ef;color:var(--ink);font:14px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;place-items:center;padding:22px}
+button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;letter-spacing:.15em;font-weight:900;color:#55776e;margin:0 0 8px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 12px 36px #193d3810}h1{font-size:30px;line-height:1.25;margin:0 0 7px}.lead{margin:0 0 23px;color:var(--muted);font-size:13px}.btn{width:100%;border:1px solid #cfdbd2;background:#fff;color:var(--ink);border-radius:12px;padding:12px 14px;font-weight:850;cursor:pointer}.btn:hover{background:#f7faf7}.btn.primary{background:var(--green);border-color:var(--green);color:#fff}.btn:disabled{opacity:.55;cursor:wait}.google{display:flex;align-items:center;justify-content:center;gap:9px}.gmark{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid #d9e0da;font-weight:900;font-size:12px;background:#fff}.divider{display:flex;align-items:center;gap:12px;color:#8b9892;font-size:11px;margin:20px 0}.divider:before,.divider:after{content:"";height:1px;background:#e2e9e3;flex:1}.label{display:block;font-size:11px;font-weight:850;margin:0 0 6px}.email-row{display:grid;gap:9px}input[type=email]{width:100%;border:1px solid #cbd8cf;border-radius:12px;padding:12px 13px;background:#fff;color:var(--ink);outline:none}input[type=email]:focus{border-color:#6a9a87;box-shadow:0 0 0 3px #70a28c1c}.hint{font-size:10.5px;color:#7a8982;margin-top:7px}.status{display:none;margin-top:15px;padding:11px 12px;border-radius:12px;background:#f0f5f1;color:#5c7067;font-size:12px;white-space:pre-wrap}.status.show{display:block}.status.ok{background:#eaf6ee;color:var(--ok)}.status.error{background:#fff0ed;color:var(--error)}.help{margin-top:18px;padding-top:16px;border-top:1px solid #edf0ed}.help button{appearance:none;border:0;background:none;padding:0;color:#55786d;text-decoration:underline;font-size:11px;cursor:pointer}.helpbox{display:none;margin-top:10px;background:var(--pale);border-radius:12px;padding:12px;color:#687870;font-size:11px}.helpbox.show{display:block}.signed{display:none;margin-top:17px;padding:14px;border-radius:14px;background:#edf7f0;border:1px solid #d7eadc}.signed.show{display:block}.signed strong{display:block;font-size:13px}.signed span{display:block;color:#66766f;font-size:11px;overflow-wrap:anywhere;margin-top:2px}.signed-actions{display:flex;gap:8px;margin-top:11px}.signed-actions .btn{padding:9px 11px;font-size:11px}.foot{font-size:10px;text-align:center;color:#84918b;margin-top:12px}.back{display:inline-block;margin-bottom:12px;text-decoration:none;color:#61786f;font-size:11px;font-weight:800}.magic-pending{display:none}.magic-pending.show{display:block;margin-top:16px;padding-top:16px;border-top:1px solid #edf0ed}.magic-pending h2{font-size:16px;margin:0 0 5px}.magic-pending p{font-size:11px;color:#6c7c75;margin:0 0 10px}@media(max-width:560px){body{padding:12px}.card{padding:21px 17px;border-radius:18px}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <a class="back" href="./">← English Playroomへ戻る</a>
+  <section class="card">
+    <div class="brand">ENGLISH PLAYROOM</div>
+    <h1>ログイン</h1>
+    <p class="lead">Googleでも、学校・iCloudなど好きなメールアドレスでもログインできます。</p>
+
+    <button id="googleBtn" class="btn google" type="button"><span class="gmark">G</span>Googleでログイン</button>
+
+    <div class="divider">または</div>
+
+    <form id="emailForm" class="email-row">
+      <label class="label" for="email">メールアドレスでログイン</label>
+      <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="example@icloud.com" required>
+      <button id="sendBtn" class="btn primary" type="submit">ログイン用メールを送る</button>
+      <div class="hint">パスワードは不要です。届いたメールのリンクを押すだけでログインできます。初めての方は、そのまま新規登録されます。</div>
+    </form>
+
+    <div id="pending" class="magic-pending">
+      <h2>このメールアドレスを確認してください</h2>
+      <p>別の端末やブラウザでメールのリンクを開いた場合は、本人確認のため同じメールアドレスをもう一度入力してください。</p>
+      <div class="email-row">
+        <input id="confirmEmail" type="email" inputmode="email" autocomplete="email" placeholder="リンクを送ったメールアドレス">
+        <button id="completeBtn" class="btn primary" type="button">このメールでログインを完了</button>
+      </div>
+    </div>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <div id="signed" class="signed">
+      <strong>ログイン中</strong><span id="signedEmail"></span>
+      <div class="signed-actions"><button id="continueBtn" class="btn primary" type="button">続ける</button><button id="logoutBtn" class="btn" type="button">ログアウト</button></div>
+    </div>
+
+    <div class="help">
+      <button id="helpBtn" type="button">パスワードを忘れた方・メールが届かない方はこちら</button>
+      <div id="helpBox" class="helpbox">メールアドレスでのログインにはパスワードを使いません。上の欄にメールアドレスを入力して、ログイン用メールをもう一度送ってください。届かない場合は迷惑メールフォルダも確認してください。</div>
+    </div>
+  </section>
+  <div class="foot">ログイン情報はFirebase Authenticationで管理されます。</div>
+</main>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import {
+  getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,
+  setPersistence,browserLocalPersistence,sendSignInLinkToEmail,
+  isSignInWithEmailLink,signInWithEmailLink,getAdditionalUserInfo
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
+  authDomain:"eiken-retry.firebaseapp.com",
+  projectId:"eiken-retry",
+  storageBucket:"eiken-retry.firebasestorage.app",
+  messagingSenderId:"231308672297",
+  appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"
+};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),provider=new GoogleAuthProvider();
+auth.languageCode='ja';
+provider.setCustomParameters({prompt:'select_account'});
+await setPersistence(auth,browserLocalPersistence);
+
+const $=id=>document.getElementById(id);
+const status=$('status'),emailInput=$('email'),sendBtn=$('sendBtn'),googleBtn=$('googleBtn');
+let magicLink=isSignInWithEmailLink(auth,location.href);
+
+function safeReturn(raw){
+  try{
+    const u=new URL(raw||'./',location.href);
+    if(u.origin!==location.origin)return new URL('./',location.href).href;
+    if(u.pathname.endsWith('/login.html'))return new URL('./',location.href).href;
+    return u.href;
+  }catch{return new URL('./',location.href).href;}
+}
+const params=new URLSearchParams(location.search);
+const storedReturn=localStorage.getItem('englishPlayroomLoginReturn')||'';
+const returnUrl=safeReturn(params.get('return')||storedReturn||'./');
+localStorage.setItem('englishPlayroomLoginReturn',returnUrl);
+
+function setStatus(text,kind=''){
+  status.textContent=text;status.className='status show'+(kind?' '+kind:'');
+}
+function clearStatus(){status.textContent='';status.className='status';}
+function errText(e){
+  const c=e?.code||'';
+  if(c==='auth/invalid-email')return 'メールアドレスの形式を確認してください。';
+  if(c==='auth/too-many-requests')return '短時間に送信が集中しました。少し待ってから再試行してください。';
+  if(c==='auth/network-request-failed')return '通信できませんでした。ネット接続を確認してください。';
+  if(c==='auth/unauthorized-continue-uri'||c==='auth/invalid-continue-uri')return '先生へ：Firebaseの「承認済みドメイン」設定を確認してください。';
+  if(c==='auth/operation-not-allowed')return '先生へ：Firebase Authenticationで「メールリンク認証」を有効にしてください。';
+  if(c==='auth/invalid-action-code'||c==='auth/expired-action-code')return 'このログインリンクは期限切れ、またはすでに使用済みです。新しいメールを送ってください。';
+  if(c==='auth/account-exists-with-different-credential')return 'このメールは別のログイン方法ですでに登録されています。Googleで登録した場合はGoogleログインを使ってください。';
+  return 'ログイン処理に失敗しました。もう一度お試しください。';
+}
+function actionUrl(){
+  const u=new URL('./login.html',location.href);u.searchParams.set('return',returnUrl);return u.href;
+}
+async function finishMagic(email){
+  if(!email){$('pending').classList.add('show');setStatus('リンクを送ったメールアドレスを入力してください。');return;}
+  $('completeBtn').disabled=true;sendBtn.disabled=true;googleBtn.disabled=true;
+  setStatus('ログインを確認しています…');
+  try{
+    const cred=await signInWithEmailLink(auth,email.trim(),location.href);
+    const info=getAdditionalUserInfo(cred);
+    localStorage.removeItem('emailForSignIn');
+    if(info?.isNewUser)setStatus('登録ありがとうございます！ ログインできました。','ok');
+    else setStatus('ログインできました。','ok');
+    setTimeout(()=>location.href=returnUrl,650);
+  }catch(e){console.error(e);setStatus(errText(e),'error');$('pending').classList.add('show');}
+  finally{$('completeBtn').disabled=false;sendBtn.disabled=false;googleBtn.disabled=false;}
+}
+
+$('emailForm').addEventListener('submit',async e=>{
+  e.preventDefault();clearStatus();
+  const email=emailInput.value.trim();if(!email)return;
+  sendBtn.disabled=true;googleBtn.disabled=true;
+  setStatus('ログイン用メールを送信しています…');
+  try{
+    await sendSignInLinkToEmail(auth,email,{url:actionUrl(),handleCodeInApp:true});
+    localStorage.setItem('emailForSignIn',email);
+    localStorage.setItem('englishPlayroomLoginReturn',returnUrl);
+    setStatus(`${email} にログイン用メールを送りました。\nメール内のリンクを押してください。`,'ok');
+    sendBtn.textContent='もう一度送る';
+  }catch(e2){console.error(e2);setStatus(errText(e2),'error');}
+  finally{sendBtn.disabled=false;googleBtn.disabled=false;}
+});
+
+googleBtn.addEventListener('click',async()=>{
+  googleBtn.disabled=true;sendBtn.disabled=true;setStatus('Googleログインを開いています…');
+  try{await signInWithPopup(auth,provider);setStatus('ログインできました。','ok');setTimeout(()=>location.href=returnUrl,350);}
+  catch(e){console.error(e);if(e?.code!=='auth/popup-closed-by-user')setStatus(errText(e),'error');else clearStatus();}
+  finally{googleBtn.disabled=false;sendBtn.disabled=false;}
+});
+
+$('completeBtn').addEventListener('click',()=>finishMagic($('confirmEmail').value.trim()));
+$('helpBtn').addEventListener('click',()=>{$('helpBox').classList.toggle('show');if(!$('helpBox').classList.contains('show'))return;emailInput.focus();});
+$('continueBtn').addEventListener('click',()=>location.href=returnUrl);
+$('logoutBtn').addEventListener('click',async()=>{await signOut(auth);setStatus('ログアウトしました。','ok');});
+
+onAuthStateChanged(auth,user=>{
+  $('signed').classList.toggle('show',!!user);
+  $('signedEmail').textContent=user?.email||user?.displayName||'';
+});
+
+if(magicLink){
+  $('pending').classList.add('show');
+  const saved=localStorage.getItem('emailForSignIn')||'';
+  $('confirmEmail').value=saved;
+  if(saved)finishMagic(saved);
+  else setStatus('メールのリンクを確認しました。本人確認のため、リンクを送ったメールアドレスを入力してください。');
+}
+</script>
+</body>
+</html>
