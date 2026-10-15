@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>英語学習｜ENGLISH PLAYROOM</title>
+<title>英語学習｜おおたまごっち</title>
 <link rel="stylesheet" href="./pet.css">
 <style>
 *{box-sizing:border-box}
@@ -86,7 +86,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo">ENGLISH PLAYROOM</div>
+    <div class="logo">おおたまごっち</div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -559,7 +559,7 @@ onAuthStateChanged(auth,async user=>{
     setAuthUI("ok",shortName(user),"クラウド同期済み");
   }catch(err){
     if(generation!==petAuthGeneration)return;
-    console.error("English Playroom sync failed",err);
+    console.error("おおたまごっち sync failed",err);
     setAuthUI("error",shortName(user),"同期エラー");
     petStatus.textContent="ログイン済みですがクラウド同期に失敗しました。Firestoreのルールを確認してください。";
   }finally{
