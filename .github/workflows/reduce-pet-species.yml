@@ -1,0 +1,37 @@
+name: Reduce pet species and refresh survey
+
+on:
+  push:
+    paths:
+      - '.github/workflows/reduce-pet-species.yml'
+      - '.github/scripts/reduce-pet-species.py'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply pet species and survey changes
+        run: |
+          python .github/scripts/reduce-pet-species.py
+          node --check pet-model.js
+          node --check pet-maker.js
+          node --check tests/pet-model.test.js
+          grep -q "species: \[{id:'cat'.*{id:'penguin'" pet-model.js
+          ! grep -q "{id:'rabbit',label:'うさぎ'}" pet-model.js
+          ! grep -q "{id:'fox',label:'きつね'}" pet-model.js
+          ! grep -q "{id:'dragon',label:'ドラゴン'}" pet-model.js
+          ! grep -q "{id:'mystery',label:'ふしぎな子'}" pet-model.js
+          grep -q "6種類の中から" pet-maker.js
+      - name: Commit change and remove one-off files
+        run: |
+          rm .github/workflows/reduce-pet-species.yml
+          rm .github/scripts/reduce-pet-species.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pet-model.js pet-maker.js tests/pet-model.test.js .github/workflows/reduce-pet-species.yml .github/scripts/reduce-pet-species.py
+          git commit -m 'Reduce pet species and refresh survey'
+          git push
