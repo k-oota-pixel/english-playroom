@@ -1,0 +1,111 @@
+name: Add shop purchase confirmation
+on:
+  push:
+    paths:
+      - '.github/workflows/add-shop-purchase-confirm.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch pet shop confirmation UI
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('pet-shop.js')
+          s=p.read_text()
+          if 'pet-shop-confirm-dialog' in s:
+              print('Confirmation UI already present')
+          else:
+              style_anchor=".pet-shop-special p{font-size:10.5px;color:#746d5c;line-height:1.45;margin:4px 0 9px}.pet-shop-special input,.pet-shop-special select{width:100%;border:1px solid #d7ddcf;border-radius:9px;padding:8px;background:white;font:inherit;font-size:12px;margin-bottom:7px}\n"
+              style_add=style_anchor+".pet-shop-confirm-dialog{width:min(420px,calc(100vw - 28px));border:0;border-radius:20px;padding:0;background:#fffdf7;color:#193d38;box-shadow:0 22px 80px #10251f66}.pet-shop-confirm-dialog::backdrop{background:#17342fa6;backdrop-filter:blur(3px)}.pet-shop-confirm-card{padding:24px 22px 20px;text-align:center}.pet-shop-confirm-icon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;background:#fff3c5;border:1px solid #ecd690;font-size:26px}.pet-shop-confirm-title{font-size:20px;font-weight:900;margin:0 0 9px}.pet-shop-confirm-message{font-size:13px;line-height:1.75;color:#5f6f68;margin:0;white-space:pre-line}.pet-shop-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}.pet-shop-confirm-cancel,.pet-shop-confirm-ok{appearance:none;border-radius:11px;padding:10px 12px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}.pet-shop-confirm-cancel{border:1px solid #d7dfd8;background:#fff;color:#52645d}.pet-shop-confirm-ok{border:1px solid #236d58;background:#236d58;color:#fff}.pet-shop-confirm-ok:hover{filter:brightness(.96)}.pet-shop-confirm-cancel:hover{background:#f5f8f5}\n"
+              if style_anchor not in s: raise SystemExit('style anchor not found')
+              s=s.replace(style_anchor,style_add,1)
+
+              decl="let wallet=null,coinText=null,shopBtn=null,toast=null,dialog=null,grid=null,balance=null,nameInput=null,speciesSelect=null;"
+              repl=decl+"\nlet confirmDialog=null,confirmMessage=null,confirmTitle=null,confirmOk=null,confirmResolve=null;"
+              if decl not in s: raise SystemExit('declaration anchor not found')
+              s=s.replace(decl,repl,1)
+
+              append_anchor="  document.body.appendChild(dialog);\n  grid=dialog.querySelector('#petShopGrid');"
+              append_repl="""  document.body.appendChild(dialog);
+
+  confirmDialog=document.createElement('dialog');confirmDialog.className='pet-shop-confirm-dialog';confirmDialog.id='petShopConfirmDialog';
+  confirmDialog.innerHTML=`<div class=\"pet-shop-confirm-card\"><div class=\"pet-shop-confirm-icon\">🪙</div><h2 id=\"petShopConfirmTitle\" class=\"pet-shop-confirm-title\">購入の確認</h2><p id=\"petShopConfirmMessage\" class=\"pet-shop-confirm-message\"></p><div class=\"pet-shop-confirm-actions\"><button id=\"petShopConfirmCancel\" class=\"pet-shop-confirm-cancel\" type=\"button\">キャンセル</button><button id=\"petShopConfirmOk\" class=\"pet-shop-confirm-ok\" type=\"button\">購入する</button></div></div>`;
+  document.body.appendChild(confirmDialog);
+  confirmTitle=confirmDialog.querySelector('#petShopConfirmTitle');confirmMessage=confirmDialog.querySelector('#petShopConfirmMessage');confirmOk=confirmDialog.querySelector('#petShopConfirmOk');
+  confirmDialog.querySelector('#petShopConfirmCancel').addEventListener('click',()=>finishCoinConfirm(false));
+  confirmOk.addEventListener('click',()=>finishCoinConfirm(true));
+  confirmDialog.addEventListener('cancel',e=>{e.preventDefault();finishCoinConfirm(false);});
+  confirmDialog.addEventListener('click',e=>{if(e.target===confirmDialog)finishCoinConfirm(false);});
+
+  grid=dialog.querySelector('#petShopGrid');"""
+              if append_anchor not in s: raise SystemExit('append anchor not found')
+              s=s.replace(append_anchor,append_repl,1)
+
+              helper_anchor="function renderPetFromData(data){"
+              helper="""function finishCoinConfirm(ok){
+  const resolve=confirmResolve;confirmResolve=null;
+  if(confirmDialog?.open)confirmDialog.close();
+  if(resolve)resolve(!!ok);
+}
+function requestCoinConfirm({title='購入の確認',message='',confirmLabel='購入する'}={}){
+  if(!confirmDialog||confirmResolve)return Promise.resolve(false);
+  confirmTitle.textContent=title;confirmMessage.textContent=message;confirmOk.textContent=confirmLabel;
+  confirmDialog.showModal();
+  return new Promise(resolve=>{confirmResolve=resolve;});
+}
+
+"""+helper_anchor
+              if helper_anchor not in s: raise SystemExit('helper anchor not found')
+              s=s.replace(helper_anchor,helper,1)
+
+              item_anchor="async function handleItem(item){\n  const user=currentUser;if(!user)return;\n  await withBusy(async()=>{"
+              item_repl="""async function handleItem(item){
+  const user=currentUser;if(!user)return;
+  const previewShop=shopOf(currentData);
+  if(!previewShop.ownedItems.includes(item.id)){
+    const ok=await requestCoinConfirm({title:'購入の確認',message:`${item.price}コインを消費して「${item.name}」を購入します。\\nよろしいですか？`,confirmLabel:'購入する'});
+    if(!ok)return;
+  }
+  await withBusy(async()=>{"""
+              if item_anchor not in s: raise SystemExit('item anchor not found')
+              s=s.replace(item_anchor,item_repl,1)
+
+              rename_anchor="""  if(!validPetName(newName)){setToast('名前は1〜12文字で入力してください。','error');return;}
+  await withBusy(async()=>{"""
+              rename_repl="""  if(!validPetName(newName)){setToast('名前は1〜12文字で入力してください。','error');return;}
+  if(normalizePetName(currentData.petName)===newName){setToast('今と同じ名前です。','error');return;}
+  const renameOk=await requestCoinConfirm({title:'名前変更の確認',message:`50コインを消費して「${newName}」に名前を変更します。\\nよろしいですか？`,confirmLabel:'変更する'});
+  if(!renameOk)return;
+  await withBusy(async()=>{"""
+              if rename_anchor not in s: raise SystemExit('rename anchor not found')
+              s=s.replace(rename_anchor,rename_repl,1)
+
+              species_anchor="""  if(!OPTIONS.species.some(x=>x.id===nextSpecies)){setToast('種類を選び直してください。','error');return;}
+  await withBusy(async()=>{
+    try{
+      const label=OPTIONS.species.find(x=>x.id===nextSpecies)?.label||nextSpecies;"""
+              species_repl="""  if(!OPTIONS.species.some(x=>x.id===nextSpecies)){setToast('種類を選び直してください。','error');return;}
+  const currentSpecies=normalizeAppearance(currentData.petAppearance).species;
+  if(currentSpecies===nextSpecies){setToast('今と同じ種類です。','error');return;}
+  const label=OPTIONS.species.find(x=>x.id===nextSpecies)?.label||nextSpecies;
+  const speciesOk=await requestCoinConfirm({title:'種類変更の確認',message:`100コインを消費して「${label}」に変更します。\\nよろしいですか？`,confirmLabel:'変更する'});
+  if(!speciesOk)return;
+  await withBusy(async()=>{
+    try{"""
+              if species_anchor not in s: raise SystemExit('species anchor not found')
+              s=s.replace(species_anchor,species_repl,1)
+              p.write_text(s)
+          PY
+          node --check pet-shop.js
+      - name: Commit change and remove workflow
+        run: |
+          rm .github/workflows/add-shop-purchase-confirm.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pet-shop.js .github/workflows/add-shop-purchase-confirm.yml
+          git commit -m 'Add shop purchase confirmation dialog'
+          git push
