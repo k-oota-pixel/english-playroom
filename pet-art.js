@@ -1,3 +1,4 @@
+import './nickname-profile.js';
 import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js';
 const outline='#40564e';
 const bodies={
