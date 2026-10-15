@@ -8,98 +8,67 @@ export const OPTIONS = Object.freeze({
   baseBackground: [{id:'ivory',label:'アイボリー',color:'#fff3d9'},{id:'sky',label:'そら',color:'#e3f0fc'},{id:'leaf',label:'わかば',color:'#e4f2e5'},{id:'rose',label:'さくら',color:'#fae6ed'}]
 });
 export const DEFAULT_APPEARANCE = Object.freeze(Object.fromEntries(Object.entries(OPTIONS).map(([key,items])=>[key,items[0].id])));
-export function normalizeAppearance(value={}) {
-  return Object.fromEntries(Object.entries(OPTIONS).map(([key,items])=>[key,items.some(item=>item.id===value?.[key])?value[key]:items[0].id]));
-}
-export function validAppearance(value) {
-  return !!value && Object.entries(OPTIONS).every(([key,items])=>items.some(item=>item.id===value[key]));
-}
-export function loginProgress(data,today) {
-  const raw=Number(data.petLoginDays);
-  const days=Number.isFinite(raw)?Math.max(0,Math.floor(raw)):0;
-  // Do not count a clock moved backwards as another login day.
-  const last=typeof data.petLastLoginDate==='string'?data.petLastLoginDate:'';
-  const count=!last || today>last;
-  return {petLoginDays:days+(count?1:0),petLastLoginDate:count?today:last};
-}
-export function readyToHatch(data) { return !!data.petHatched || Number(data.petLoginDays)>=3; }
-export function hasPet(data) { return !!data.petHatched && validAppearance(data.petAppearance); }
+export function normalizeAppearance(value={}) {return Object.fromEntries(Object.entries(OPTIONS).map(([key,items])=>[key,items.some(item=>item.id===value?.[key])?value[key]:items[0].id]));}
+export function validAppearance(value) {return !!value && Object.entries(OPTIONS).every(([key,items])=>items.some(item=>item.id===value[key]));}
+export function loginProgress(data,today) {const raw=Number(data.petLoginDays),days=Number.isFinite(raw)?Math.max(0,Math.floor(raw)):0,last=typeof data.petLastLoginDate==='string'?data.petLastLoginDate:'',count=!last||today>last;return {petLoginDays:days+(count?1:0),petLastLoginDate:count?today:last};}
+export function readyToHatch(data) {return !!data.petHatched||Number(data.petLoginDays)>=3;}
+export function hasPet(data) {return !!data.petHatched&&validAppearance(data.petAppearance);}
 
-// Shop art is trusted local SVG only. Saved data contains IDs only; it never becomes markup or a URL.
 export const SHOP_LAYERS = Object.freeze({
-  backgrounds: Object.freeze({
-    'forest-bg': '<g aria-hidden="true"><circle cx="38" cy="58" r="31" fill="#8fc69c" opacity=".7"/><circle cx="68" cy="43" r="28" fill="#76b788" opacity=".72"/><circle cx="199" cy="53" r="34" fill="#78b989" opacity=".68"/><rect x="31" y="73" width="10" height="61" rx="5" fill="#866849" opacity=".55"/><rect x="194" y="78" width="10" height="58" rx="5" fill="#866849" opacity=".55"/><path d="M0 205 Q45 180 86 204 T168 202 T240 200 V240 H0Z" fill="#b9d8a7" opacity=".7"/></g>',
-    'ocean-bg': '<g aria-hidden="true"><circle cx="198" cy="43" r="20" fill="#ffd36f" opacity=".85"/><path d="M0 150 Q30 137 60 150 T120 150 T180 150 T240 150 V240 H0Z" fill="#8fd0ea" opacity=".82"/><path d="M0 172 Q30 159 60 172 T120 172 T180 172 T240 172" fill="none" stroke="#ffffff" stroke-width="6" opacity=".65"/><path d="M18 72 Q30 60 42 72 Q54 60 66 72" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity=".78"/></g>',
-    'space-bg': '<g aria-hidden="true"><rect width="240" height="240" rx="32" fill="#202747"/><g fill="#fff5bd"><circle cx="31" cy="41" r="3"/><circle cx="72" cy="28" r="2"/><circle cx="202" cy="38" r="3"/><circle cx="220" cy="91" r="2"/><circle cx="27" cy="112" r="2.5"/><circle cx="188" cy="118" r="2"/><circle cx="47" cy="191" r="2"/></g><circle cx="181" cy="70" r="22" fill="#b8c6ff" opacity=".68"/><path d="M156 70 Q181 56 206 70 Q181 86 156 70Z" fill="none" stroke="#e8ecff" stroke-width="5" opacity=".55"/></g>',
-    'castle-bg': '<g aria-hidden="true"><path d="M0 196 H38 V125 H53 V109 H68 V125 H91 V98 H105 V80 H120 V98 H135 V125 H159 V108 H174 V125 H201 V196 H240 V240 H0Z" fill="#c4b3cf" opacity=".62"/><path d="M103 196 V158 Q120 137 137 158 V196" fill="#fff" opacity=".56"/><rect x="54" y="144" width="13" height="18" rx="5" fill="#fff" opacity=".65"/><rect x="173" y="144" width="13" height="18" rx="5" fill="#fff" opacity=".65"/></g>'
+  backgrounds:Object.freeze({
+    'forest-bg':'<g aria-hidden="true"><circle cx="38" cy="58" r="31" fill="#8fc69c" opacity=".7"/><circle cx="68" cy="43" r="28" fill="#76b788" opacity=".72"/><circle cx="199" cy="53" r="34" fill="#78b989" opacity=".68"/><rect x="31" y="73" width="10" height="61" rx="5" fill="#866849" opacity=".55"/><rect x="194" y="78" width="10" height="58" rx="5" fill="#866849" opacity=".55"/><path d="M0 205 Q45 180 86 204 T168 202 T240 200 V240 H0Z" fill="#b9d8a7" opacity=".7"/></g>',
+    'ocean-bg':'<g aria-hidden="true"><circle cx="198" cy="43" r="20" fill="#ffd36f" opacity=".85"/><path d="M0 150 Q30 137 60 150 T120 150 T180 150 T240 150 V240 H0Z" fill="#8fd0ea" opacity=".82"/><path d="M0 172 Q30 159 60 172 T120 172 T180 172 T240 172" fill="none" stroke="#fff" stroke-width="6" opacity=".65"/></g>',
+    'space-bg':'<g aria-hidden="true"><rect width="240" height="240" rx="32" fill="#202747"/><g fill="#fff5bd"><circle cx="31" cy="41" r="3"/><circle cx="72" cy="28" r="2"/><circle cx="202" cy="38" r="3"/><circle cx="220" cy="91" r="2"/><circle cx="27" cy="112" r="2.5"/><circle cx="188" cy="118" r="2"/></g><circle cx="181" cy="70" r="22" fill="#b8c6ff" opacity=".68"/></g>',
+    'castle-bg':'<g aria-hidden="true"><path d="M0 196 H38 V125 H53 V109 H68 V125 H91 V98 H105 V80 H120 V98 H135 V125 H159 V108 H174 V125 H201 V196 H240 V240 H0Z" fill="#c4b3cf" opacity=".62"/><path d="M103 196 V158 Q120 137 137 158 V196" fill="#fff" opacity=".56"/></g>',
+    'sunset-bg':'<g aria-hidden="true"><rect width="240" height="240" rx="32" fill="#f8c7a2" opacity=".65"/><circle cx="187" cy="65" r="27" fill="#ffd56d"/><path d="M0 170 Q40 145 82 170 T165 168 T240 166 V240 H0Z" fill="#c69ac7" opacity=".65"/></g>',
+    'classroom-bg':'<g aria-hidden="true"><rect x="18" y="24" width="204" height="92" rx="8" fill="#47765e" opacity=".55"/><rect x="31" y="37" width="178" height="65" rx="3" fill="#315c49" opacity=".7"/><path d="M33 198 H207 M55 155 V203 M185 155 V203" stroke="#aa845d" stroke-width="10" opacity=".45"/></g>',
+    'cafe-bg':'<g aria-hidden="true"><rect x="20" y="30" width="200" height="95" rx="12" fill="#ecd7bd" opacity=".72"/><path d="M35 78 H205" stroke="#b47f61" stroke-width="7" opacity=".45"/><circle cx="190" cy="47" r="17" fill="#ffd681" opacity=".8"/><path d="M25 203 H215" stroke="#9e7158" stroke-width="12" opacity=".4"/></g>',
+    'snow-bg':'<g aria-hidden="true"><rect width="240" height="240" rx="32" fill="#e5f3fb"/><g fill="#fff"><circle cx="35" cy="45" r="5"/><circle cx="72" cy="83" r="4"/><circle cx="197" cy="45" r="5"/><circle cx="213" cy="105" r="4"/><circle cx="27" cy="132" r="3"/></g><path d="M0 190 Q48 167 92 190 T176 188 T240 186 V240 H0Z" fill="#fff"/></g>'
   }),
-  patterns: Object.freeze({}),
-  accessories: Object.freeze({
-    'red-ribbon': '<g aria-hidden="true" transform="translate(30 -100) rotate(18 120 172)" stroke="#8f3343" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#e55f72"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#e55f72"/><circle cx="120" cy="172" r="9" fill="#ef7e8d"/></g>',
-    'blue-ribbon': '<g aria-hidden="true" transform="translate(30 -100) rotate(18 120 172)" stroke="#355985" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#6ea8e5"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#6ea8e5"/><circle cx="120" cy="172" r="9" fill="#8ebbed"/></g>',
-    'sunglasses': '<g aria-hidden="true" stroke="#26352f" stroke-width="5" stroke-linecap="round" fill="#344b58" opacity=".96"><path d="M78 101 H109 L105 122 Q94 132 82 120Z"/><path d="M131 101 H162 L158 120 Q146 132 135 122Z"/><path d="M109 105 Q120 99 131 105" fill="none"/><path d="M78 104 L66 101 M162 104 L174 101" fill="none"/></g>',
-    'crown': '<g aria-hidden="true" stroke="#8d6a14" stroke-width="3" stroke-linejoin="round"><path d="M83 72 L76 38 L101 55 L120 29 L139 55 L164 38 L157 72Z" fill="#f6c94d"/><rect x="84" y="68" width="72" height="13" rx="5" fill="#eeb93f"/><circle cx="120" cy="51" r="5" fill="#ef7180" stroke="none"/></g>',
-    'wizard-hat': '<g aria-hidden="true" stroke="#433b67" stroke-width="3" stroke-linejoin="round"><path d="M85 74 Q112 38 132 11 Q141 45 157 71Z" fill="#655b9c"/><ellipse cx="121" cy="75" rx="51" ry="10" fill="#544c86"/><path d="M113 44 l4 7 8 2 -6 5 1 8 -7-4 -7 4 1-8 -6-5 8-2Z" fill="#ffd76c" stroke="none"/></g>',
-    'pirate-hat': '<g aria-hidden="true" stroke="#2e3834" stroke-width="3" stroke-linejoin="round"><path d="M75 69 Q87 36 120 46 Q153 36 165 69 Q145 82 120 70 Q95 82 75 69Z" fill="#34433e"/><path d="M81 65 Q120 89 159 65" fill="none"/><circle cx="120" cy="57" r="6" fill="#fff" stroke="none"/><path d="M108 66 L132 48 M108 48 L132 66" stroke="#fff" stroke-width="3"/></g>',
-    'flower-crown': '<g aria-hidden="true" stroke="#6b8159" stroke-width="2"><path d="M81 70 Q120 49 159 70" fill="none" stroke="#6f9b64" stroke-width="5"/><g fill="#f7c8d9" stroke="none"><circle cx="92" cy="64" r="8"/><circle cx="120" cy="57" r="9"/><circle cx="149" cy="65" r="8"/></g><g fill="#ffe47b" stroke="none"><circle cx="92" cy="64" r="3"/><circle cx="120" cy="57" r="3"/><circle cx="149" cy="65" r="3"/></g></g>'
+  patterns:Object.freeze({}),
+  accessories:Object.freeze({
+    'red-ribbon':'<g aria-hidden="true" transform="translate(30 -100) rotate(18 120 172)" stroke="#8f3343" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#e55f72"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#e55f72"/><circle cx="120" cy="172" r="9" fill="#ef7e8d"/></g>',
+    'blue-ribbon':'<g aria-hidden="true" transform="translate(30 -100) rotate(18 120 172)" stroke="#355985" stroke-width="3" stroke-linejoin="round"><path d="M108 168 Q89 153 84 169 Q87 185 108 176Z" fill="#6ea8e5"/><path d="M132 168 Q151 153 156 169 Q153 185 132 176Z" fill="#6ea8e5"/><circle cx="120" cy="172" r="9" fill="#8ebbed"/></g>',
+    'sunglasses':'<g aria-hidden="true" stroke="#26352f" stroke-width="5" stroke-linecap="round" fill="#344b58" opacity=".96"><path d="M78 101 H109 L105 122 Q94 132 82 120Z"/><path d="M131 101 H162 L158 120 Q146 132 135 122Z"/><path d="M109 105 Q120 99 131 105" fill="none"/><path d="M78 104 L66 101 M162 104 L174 101" fill="none"/></g>',
+    'round-glasses':'<g aria-hidden="true" fill="none" stroke="#394b48" stroke-width="4"><circle cx="94" cy="109" r="17"/><circle cx="146" cy="109" r="17"/><path d="M111 108 Q120 103 129 108 M77 106 L66 102 M163 106 L174 102"/></g>',
+    'star-glasses':'<g aria-hidden="true" fill="#f6d75f" stroke="#735d21" stroke-width="3" stroke-linejoin="round"><path d="M94 91 l6 12 13 2 -10 9 3 14 -12-7 -12 7 3-14 -10-9 13-2Z"/><path d="M146 91 l6 12 13 2 -10 9 3 14 -12-7 -12 7 3-14 -10-9 13-2Z"/><path d="M107 108 H133" fill="none"/></g>',
+    'eyepatch':'<g aria-hidden="true" stroke="#28342f" stroke-width="4" stroke-linecap="round"><path d="M64 92 Q120 109 176 94" fill="none"/><path d="M126 101 Q146 92 160 104 L156 123 Q143 135 129 122Z" fill="#2d3934"/></g>',
+    'crown':'<g aria-hidden="true" stroke="#8d6a14" stroke-width="3" stroke-linejoin="round"><path d="M83 72 L76 38 L101 55 L120 29 L139 55 L164 38 L157 72Z" fill="#f6c94d"/><rect x="84" y="68" width="72" height="13" rx="5" fill="#eeb93f"/></g>',
+    'wizard-hat':'<g aria-hidden="true" stroke="#433b67" stroke-width="3" stroke-linejoin="round"><path d="M85 74 Q112 38 132 11 Q141 45 157 71Z" fill="#655b9c"/><ellipse cx="121" cy="75" rx="51" ry="10" fill="#544c86"/></g>',
+    'pirate-hat':'<g aria-hidden="true" stroke="#2e3834" stroke-width="3" stroke-linejoin="round"><path d="M75 69 Q87 36 120 46 Q153 36 165 69 Q145 82 120 70 Q95 82 75 69Z" fill="#34433e"/><path d="M81 65 Q120 89 159 65" fill="none"/></g>',
+    'flower-crown':'<g aria-hidden="true" stroke="#6b8159" stroke-width="2"><path d="M81 70 Q120 49 159 70" fill="none" stroke="#6f9b64" stroke-width="5"/><g fill="#f7c8d9" stroke="none"><circle cx="92" cy="64" r="8"/><circle cx="120" cy="57" r="9"/><circle cx="149" cy="65" r="8"/></g></g>',
+    'knit-hat':'<g aria-hidden="true" stroke="#36506e" stroke-width="3"><path d="M82 69 Q84 31 120 31 Q156 31 158 69Z" fill="#6f9fd2"/><rect x="79" y="65" width="82" height="16" rx="8" fill="#86b2df"/><circle cx="120" cy="27" r="9" fill="#86b2df"/></g>',
+    'beret':'<g aria-hidden="true" stroke="#7d3343" stroke-width="3"><ellipse cx="120" cy="59" rx="47" ry="19" fill="#c8556d" transform="rotate(-7 120 59)"/><path d="M119 41 q3-11 11-10" fill="none"/></g>',
+    'baseball-cap':'<g aria-hidden="true" stroke="#3f5361" stroke-width="3"><path d="M85 67 Q90 38 124 38 Q153 39 159 66Z" fill="#72a6c9"/><path d="M118 66 Q159 62 180 72 Q144 79 112 73Z" fill="#5e91b4"/></g>',
+    'halo':'<g aria-hidden="true"><ellipse cx="120" cy="34" rx="44" ry="12" fill="none" stroke="#f4d85b" stroke-width="7" opacity=".9"/></g>',
+    'red-bowtie':'<g aria-hidden="true" stroke="#8f3343" stroke-width="3"><path d="M111 158 Q91 147 88 164 Q93 178 112 169Z" fill="#e55f72"/><path d="M129 158 Q149 147 152 164 Q147 178 128 169Z" fill="#e55f72"/><circle cx="120" cy="164" r="8" fill="#ef7e8d"/></g>',
+    'blue-scarf':'<g aria-hidden="true" stroke="#355985" stroke-width="3"><path d="M79 153 Q120 170 161 153 L158 171 Q120 183 82 171Z" fill="#77a9df"/><path d="M145 169 L160 196 L145 189 L136 171Z" fill="#6095ce"/></g>',
+    'bell-collar':'<g aria-hidden="true"><path d="M82 157 Q120 171 158 157" fill="none" stroke="#b34e56" stroke-width="7"/><circle cx="120" cy="169" r="10" fill="#f1c64d" stroke="#8d6a14" stroke-width="3"/><path d="M116 169 H124" stroke="#8d6a14" stroke-width="2"/></g>',
+    'pearl-necklace':'<g aria-hidden="true" fill="#fffdf5" stroke="#b9a989" stroke-width="2"><circle cx="88" cy="158" r="5"/><circle cx="99" cy="163" r="5"/><circle cx="110" cy="167" r="5"/><circle cx="120" cy="169" r="5"/><circle cx="130" cy="167" r="5"/><circle cx="141" cy="163" r="5"/><circle cx="152" cy="158" r="5"/></g>',
+    'white-shirt':'<g aria-hidden="true" stroke="#8aa0a0" stroke-width="3"><path d="M73 153 Q90 147 101 154 Q120 164 139 154 Q150 147 167 153 L160 190 Q120 201 80 190Z" fill="#fff"/></g>',
+    'star-shirt':'<g aria-hidden="true" stroke="#8aa0a0" stroke-width="3"><path d="M73 153 Q90 147 101 154 Q120 164 139 154 Q150 147 167 153 L160 190 Q120 201 80 190Z" fill="#fff4cf"/><path d="M120 161 l5 10 11 2 -8 8 2 11 -10-5 -10 5 2-11 -8-8 11-2Z" fill="#f3c844" stroke="none"/></g>',
+    'hoodie':'<g aria-hidden="true" stroke="#4f557b" stroke-width="3"><path d="M78 151 Q94 142 105 153 Q120 163 135 153 Q146 142 162 151 L160 193 Q120 202 80 193Z" fill="#8e91c9"/><path d="M100 153 Q120 174 140 153" fill="none"/><path d="M111 171 v14 M129 171 v14"/></g>',
+    'cape':'<g aria-hidden="true" stroke="#7a3540" stroke-width="3"><path d="M86 151 Q120 164 154 151 L177 198 Q120 210 63 198Z" fill="#d85a68" opacity=".9"/><path d="M93 153 Q120 165 147 153" fill="none"/></g>',
+    'overalls':'<g aria-hidden="true" stroke="#3d6284" stroke-width="3"><path d="M91 153 L100 190 Q120 198 140 190 L149 153" fill="#75a7cf"/><path d="M101 153 V176 H139 V153 M108 178 H132" fill="none"/></g>'
   }),
-  effects: Object.freeze({
-    'star-effect': '<g aria-hidden="true" fill="#f4c84f" stroke="#fff4bd" stroke-width="2" opacity=".95"><path d="M35 87 l5 10 11 2 -8 8 2 11 -10-5 -10 5 2-11 -8-8 11-2Z"/><path d="M204 118 l4 8 9 2 -7 6 2 9 -8-4 -8 4 2-9 -7-6 9-2Z"/><path d="M188 41 l3 6 7 1 -5 5 1 7 -6-3 -6 3 1-7 -5-5 7-1Z"/></g>',
-    'sparkle-effect': '<g aria-hidden="true" fill="none" stroke="#ffe68a" stroke-width="4" stroke-linecap="round" opacity=".95"><path d="M35 62 v22 M24 73 h22 M199 82 v26 M186 95 h26 M191 174 v19 M181 184 h20 M48 170 v17 M40 179 h16"/><g stroke="#fff" stroke-width="2"><path d="M35 66 v14 M28 73 h14 M199 87 v16 M191 95 h16"/></g></g>'
+  effects:Object.freeze({
+    'star-effect':'<g aria-hidden="true" fill="#f4c84f" stroke="#fff4bd" stroke-width="2" opacity=".95"><path d="M35 87 l5 10 11 2 -8 8 2 11 -10-5 -10 5 2-11 -8-8 11-2Z"/><path d="M204 118 l4 8 9 2 -7 6 2 9 -8-4 -8 4 2-9 -7-6 9-2Z"/><path d="M188 41 l3 6 7 1 -5 5 1 7 -6-3 -6 3 1-7 -5-5 7-1Z"/></g>',
+    'sparkle-effect':'<g aria-hidden="true" fill="none" stroke="#ffe68a" stroke-width="4" stroke-linecap="round" opacity=".95"><path d="M35 62 v22 M24 73 h22 M199 82 v26 M186 95 h26 M191 174 v19 M181 184 h20 M48 170 v17 M40 179 h16"/></g>',
+    'heart-effect':'<g aria-hidden="true" fill="#ef87a0" opacity=".9"><path d="M26 85 C13 69 40 58 47 78 C54 58 81 69 68 85 L47 105Z"/><path d="M177 128 C164 112 191 101 198 121 C205 101 232 112 219 128 L198 148Z"/></g>',
+    'music-effect':'<g aria-hidden="true" fill="#6b72b8" stroke="#fff" stroke-width="2"><path d="M32 73 v37 q-14-6-14 7 q3 12 16 5 q7-4 6-14 V81 l24-6 v25 q-14-6-14 7 q3 12 16 5 q7-4 6-14 V65Z"/><path d="M191 79 v31 q-12-5-12 6 q3 10 14 4 q6-3 5-12 V87 l20-5 v21 q-12-5-12 6 q3 10 14 4 q6-3 5-12 V73Z"/></g>',
+    'confetti-effect':'<g aria-hidden="true" stroke-width="5" stroke-linecap="round"><path d="M28 47 l8 10 M52 29 l-2 13 M201 41 l-8 10 M216 75 l-12 2 M31 158 l11-4 M203 166 l9 7" stroke="#e66f7c"/><path d="M72 31 l5 12 M184 25 l-4 13 M218 132 l-11-3 M49 190 l7-10" stroke="#5fa3cf"/><path d="M20 116 l12 2 M103 25 l2 12 M193 193 l-8-9" stroke="#e7bd42"/></g>',
+    'rainbow-effect':'<g aria-hidden="true" fill="none" stroke-linecap="round" opacity=".65"><path d="M22 119 Q120 9 218 119" stroke="#e87575" stroke-width="7"/><path d="M27 123 Q120 23 213 123" stroke="#eab95c" stroke-width="7"/><path d="M33 127 Q120 37 207 127" stroke="#70b58e" stroke-width="7"/><path d="M39 131 Q120 51 201 131" stroke="#71a9d4" stroke-width="7"/></g>'
   })
 });
-export const ACCESSORY_ITEM_SLOTS = Object.freeze({
-  'red-ribbon':'head',
-  'blue-ribbon':'head',
-  'crown':'head',
-  'wizard-hat':'head',
-  'pirate-hat':'head',
-  'flower-crown':'head',
-  'sunglasses':'face'
+export const ACCESSORY_ITEM_SLOTS=Object.freeze({
+  'red-ribbon':'head','blue-ribbon':'head','crown':'head','wizard-hat':'head','pirate-hat':'head','flower-crown':'head','knit-hat':'head','beret':'head','baseball-cap':'head','halo':'head',
+  'sunglasses':'face','round-glasses':'face','star-glasses':'face','eyepatch':'face',
+  'red-bowtie':'neck','blue-scarf':'neck','bell-collar':'neck','pearl-necklace':'neck',
+  'white-shirt':'body','star-shirt':'body','hoodie':'body','cape':'body','overalls':'body'
 });
-
-export function equippedLayers(shop={}) {
-  const owned=Array.isArray(shop.ownedItems)?shop.ownedItems:[];
-  const equipped=shop.equipped&&typeof shop.equipped==='object'?shop.equipped:{};
-  const directLayer=slot=>{
-    const registry=SHOP_LAYERS[slot],id=equipped[slot];
-    return typeof id==='string' && owned.includes(id) && Object.hasOwn(registry,id)?registry[id]:'';
-  };
-  const accessoryIds=[];
-  for(const slot of ['head','face','neck','body']){
-    const id=equipped[slot];
-    if(typeof id==='string' && owned.includes(id) && Object.hasOwn(SHOP_LAYERS.accessories,id))accessoryIds.push(id);
-  }
-  const legacy=equipped.accessories;
-  const legacySlot=typeof legacy==='string'?ACCESSORY_ITEM_SLOTS[legacy]:null;
-  if(typeof legacy==='string' && owned.includes(legacy) && Object.hasOwn(SHOP_LAYERS.accessories,legacy) && (!legacySlot || !equipped[legacySlot]))accessoryIds.push(legacy);
-  const uniqueAccessories=[...new Set(accessoryIds)].map(id=>SHOP_LAYERS.accessories[id]).join('');
-  return {
-    backgrounds:directLayer('backgrounds'),
-    patterns:directLayer('patterns'),
-    accessories:uniqueAccessories,
-    effects:directLayer('effects')
-  };
-}
-
-// Every species remains possible; the answer gives two species triple weight.
-export const PERSONALITY_POOLS = Object.freeze({
- calm:['cat','panda'], playful:['dog','hamster'], curious:['bird','penguin'],
- gentle:['rabbit','fox'], magical:['mystery','dragon']
-});
-export function chooseSpecies(preference, random=Math.random) {
- const favorites=Object.hasOwn(PERSONALITY_POOLS,preference)?PERSONALITY_POOLS[preference]:[];
- const tickets=OPTIONS.species.flatMap(({id})=>Array(favorites.includes(id)?3:1).fill(id));
- return tickets[Math.min(tickets.length-1,Math.max(0,Math.floor(random()*tickets.length)))];
-}
-export function appearanceFromAnswers(answers,random=Math.random) {
- const {personality,...appearance}=answers;
- return {...appearance,species:chooseSpecies(personality,random)};
-}
-
-export function normalizePetName(value) {
- return typeof value==='string'?value.replace(/[\u0000-\u001f\u007f]/g,'').trim():'';
-}
-export function validPetName(value) {
- const name=normalizePetName(value);return name.length>0 && [...name].length<=12;
-}
+export function equippedLayers(shop={}){const owned=Array.isArray(shop.ownedItems)?shop.ownedItems:[],equipped=shop.equipped&&typeof shop.equipped==='object'?shop.equipped:{};const directLayer=slot=>{const registry=SHOP_LAYERS[slot],id=equipped[slot];return typeof id==='string'&&owned.includes(id)&&Object.hasOwn(registry,id)?registry[id]:'';};const accessoryIds=[];for(const slot of ['head','face','neck','body']){const id=equipped[slot];if(typeof id==='string'&&owned.includes(id)&&Object.hasOwn(SHOP_LAYERS.accessories,id))accessoryIds.push(id);}const legacy=equipped.accessories,legacySlot=typeof legacy==='string'?ACCESSORY_ITEM_SLOTS[legacy]:null;if(typeof legacy==='string'&&owned.includes(legacy)&&Object.hasOwn(SHOP_LAYERS.accessories,legacy)&&(!legacySlot||!equipped[legacySlot]))accessoryIds.push(legacy);return {backgrounds:directLayer('backgrounds'),patterns:directLayer('patterns'),accessories:[...new Set(accessoryIds)].map(id=>SHOP_LAYERS.accessories[id]).join(''),effects:directLayer('effects')};}
+export const PERSONALITY_POOLS=Object.freeze({calm:['cat','panda'],playful:['dog','hamster'],curious:['bird','penguin'],gentle:['rabbit','fox'],magical:['mystery','dragon']});
+export function chooseSpecies(preference,random=Math.random){const favorites=Object.hasOwn(PERSONALITY_POOLS,preference)?PERSONALITY_POOLS[preference]:[],tickets=OPTIONS.species.flatMap(({id})=>Array(favorites.includes(id)?3:1).fill(id));return tickets[Math.min(tickets.length-1,Math.max(0,Math.floor(random()*tickets.length)))];}
+export function appearanceFromAnswers(answers,random=Math.random){const {personality,...appearance}=answers;return {...appearance,species:chooseSpecies(personality,random)};}
+export function normalizePetName(value){return typeof value==='string'?value.replace(/[\u0000-\u001f\u007f]/g,'').trim():'';}
+export function validPetName(value){const name=normalizePetName(value);return name.length>0&&[...name].length<=12;}

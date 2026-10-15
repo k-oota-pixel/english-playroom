@@ -30,7 +30,7 @@ test('untrusted saved IDs do not become SVG or shop markup',()=>{
   assert.deepEqual(normalizeAppearance(hostile),DEFAULT_APPEARANCE);
   assert.equal(validAppearance(hostile),false);
   assert.ok(!renderPetSVG(hostile).includes('<script'));
-  assert.deepEqual(equippedLayers({ownedItems:['__proto__'],equipped:{accessories:'__proto__'}}),{backgrounds:'',patterns:'',accessories:''});
+  assert.deepEqual(equippedLayers({ownedItems:['__proto__'],equipped:{accessories:'__proto__'}}),{backgrounds:'',patterns:'',accessories:'',effects:''});
 });
 
 import {chooseSpecies,PERSONALITY_POOLS,appearanceFromAnswers} from '../pet-model.js';
@@ -50,4 +50,9 @@ test('pet names trim blanks, reject empty/long values and count Unicode code poi
  for(const value of ['', '  ', null, {}, 'a'.repeat(13)])assert.equal(validPetName(value),false);
  for(const value of ['ぽんた','Luna','あ'.repeat(12),'🐱'.repeat(12)])assert.equal(validPetName(value),true);
  assert.equal(normalizePetName('A\nB'),'AB');
+});
+
+test('multiple accessory slots render together',()=>{
+ const shop={ownedItems:['red-ribbon','sunglasses','red-bowtie','star-shirt'],equipped:{head:'red-ribbon',face:'sunglasses',neck:'red-bowtie',body:'star-shirt'}};
+ const layers=equippedLayers(shop);assert.ok(layers.accessories.includes('#e55f72'));assert.ok(layers.accessories.includes('#344b58'));assert.ok(layers.accessories.includes('#fff4cf'));
 });
