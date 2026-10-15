@@ -1,0 +1,44 @@
+name: Generalize content labels
+
+on:
+  push:
+    paths:
+      - '.github/workflows/generalize-content-labels.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update content card labels
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+            '<h3>英検 空所補充</h3>':'<h3>長文空所補充ライティング</h3>',
+            '<h3>英検 タイトル</h3>':'<h3>長文概要把握ライティング</h3>',
+            '<h3>英検リトライノート</h3>':'<h3>語彙文法問題リトライノート</h3>',
+          }
+          missing=[]
+          for old,new in replacements.items():
+              if old not in s:
+                  missing.append(old)
+              else:
+                  s=s.replace(old,new,1)
+          if missing:
+              raise SystemExit('targets not found: '+repr(missing))
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Rename generalized learning content"
+          git push
