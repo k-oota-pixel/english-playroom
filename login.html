@@ -105,6 +105,7 @@ function errText(e){
   if(c==='auth/operation-not-allowed')return '先生へ：Firebase Authenticationで「メールリンク認証」を有効にしてください。';
   if(c==='auth/invalid-action-code'||c==='auth/expired-action-code')return 'このログインリンクは期限切れ、またはすでに使用済みです。新しいメールを送ってください。';
   if(c==='auth/account-exists-with-different-credential')return 'このメールは別のログイン方法ですでに登録されています。Googleで登録した場合はGoogleログインを使ってください。';
+  if(c==='custom/mail')return e?.message||'ログインメールを送信できませんでした。';
   return 'ログイン処理に失敗しました。もう一度お試しください。';
 }
 function actionUrl(){
@@ -131,7 +132,15 @@ $('emailForm').addEventListener('submit',async e=>{
   sendBtn.disabled=true;googleBtn.disabled=true;
   setStatus('ログイン用メールを送信しています…');
   try{
-    await sendSignInLinkToEmail(auth,email,{url:actionUrl(),handleCodeInApp:true});
+    const response=await fetch('https://task-quest.onrender.com/api/auth/magic-link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,continueUrl:actionUrl()})});
+    if(!response.ok){
+      let body={};try{body=await response.json();}catch{}
+      if(response.status===503&&body.code==='MAIL_NOT_CONFIGURED'){
+        await sendSignInLinkToEmail(auth,email,{url:actionUrl(),handleCodeInApp:true});
+      }else{
+        const err=new Error(body.error||'ログインメールを送信できませんでした。');err.code='custom/mail';throw err;
+      }
+    }
     localStorage.setItem('emailForSignIn',email);
     localStorage.setItem('englishPlayroomLoginReturn',returnUrl);
     setStatus(`${email} にログイン用メールを送りました。\nメール内のリンクを押してください。`,'ok');
