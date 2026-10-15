@@ -1,0 +1,25 @@
+name: Update tab branding
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/update-tab-branding.py'
+      - '.github/workflows/update-tab-branding.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update tab title and favicon
+        run: |
+          python .github/scripts/update-tab-branding.py
+      - name: Commit change and remove one-off files
+        run: |
+          rm .github/scripts/update-tab-branding.py .github/workflows/update-tab-branding.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html favicon.svg .github/scripts/update-tab-branding.py .github/workflows/update-tab-branding.yml
+          git commit -m "Update browser tab branding"
+          git push
