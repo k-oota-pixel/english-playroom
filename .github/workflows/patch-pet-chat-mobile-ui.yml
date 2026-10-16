@@ -1,0 +1,39 @@
+name: Patch pet chat mobile UI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-pet-chat-mobile-ui.yml'
+      - '.github/patch-pet-chat-mobile-ui.py'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch mobile chat UI and typing indicator
+        run: python .github/patch-pet-chat-mobile-ui.py
+      - name: Validate module syntax
+        run: |
+          python - <<'PY2'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          start=s.index('<script type="module">')+len('<script type="module">')
+          end=s.index('</script>',start)
+          Path('/tmp/index.mjs').write_text(s[start:end],encoding='utf-8')
+          assert 'pet-chat-dots' in s
+          assert 'overflow-x:auto' in s
+          assert "typing:true" in s
+          PY2
+          node --check /tmp/index.mjs
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Improve pet chat mobile layout and add typing indicator"
+          git push
