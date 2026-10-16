@@ -1,0 +1,25 @@
+name: Validate pet chat UI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/validate-pet-chat-ui.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check module syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          start=s.index('<script type="module">')+len('<script type="module">')
+          end=s.index('</script>',start)
+          Path('/tmp/index.mjs').write_text(s[start:end],encoding='utf-8')
+          assert 'MY PET' not in s
+          assert 'petChatButton' in s
+          assert '/api/pet-chat' in s
+          PY
+          node --check /tmp/index.mjs
