@@ -1,0 +1,53 @@
+name: Rename game to Monstudy
+
+on:
+  push:
+    paths:
+      - '.github/workflows/rename-monstudy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace old game name
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          old = 'おお' + 'たまごっち'
+          new = 'もんすたでぃ'
+          changed = []
+          for p in Path('.').rglob('*'):
+              if not p.is_file() or '.git' in p.parts:
+                  continue
+              try:
+                  s = p.read_text(encoding='utf-8')
+              except (UnicodeDecodeError, OSError):
+                  continue
+              if old in s:
+                  p.write_text(s.replace(old, new), encoding='utf-8')
+                  changed.append(str(p))
+          print('changed:', changed)
+          remaining=[]
+          for p in Path('.').rglob('*'):
+              if not p.is_file() or '.git' in p.parts:
+                  continue
+              try:
+                  if old in p.read_text(encoding='utf-8'):
+                      remaining.append(str(p))
+              except (UnicodeDecodeError, OSError):
+                  pass
+          if remaining:
+              raise SystemExit('Old name still remains: '+', '.join(remaining))
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Rename game to もんすたでぃ"
+          git push
