@@ -478,6 +478,9 @@ async function sendPetChat(quickText=''){
   }catch(error){
     petChatTyping=false;
     petChatHistory=petChatHistory.filter(item=>!item.typing);
+    const last=petChatHistory[petChatHistory.length-1];
+    if(last?.role==='user' && last.text===text)petChatHistory.pop();
+    if(!quickText)petChatInput.value=text;
     petChatError.textContent=error.name==='TimeoutError'?'返事に時間がかかっています。もう一度話しかけてみてください。':error.message;
     petChatError.hidden=false;
     renderPetChat();
