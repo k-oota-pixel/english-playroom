@@ -84,23 +84,23 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 
 
 [hidden]{display:none!important}
-.pet-chat-button{margin-top:8px}
-.pet-chat-modal{position:fixed;inset:0;z-index:10000;background:#183b386f;display:grid;place-items:center;padding:14px}
-.pet-chat-panel{width:min(560px,100%);height:min(680px,88vh);background:#fff;border:1px solid #dbe4dc;border-radius:20px;box-shadow:0 18px 50px #183b3835;display:flex;flex-direction:column;overflow:hidden}
-.pet-chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #e7ede7;background:#fbfcf8}
-.pet-chat-avatar{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;overflow:hidden;border-radius:13px;background:#fff7df}
+.pet-chat-modal{position:static;inset:auto;z-index:auto;background:transparent;padding:0;min-width:0}
+.pet-chat-panel{width:100%;height:330px;background:#fff;border:1px solid #dbe4dc;border-radius:18px;box-shadow:0 8px 24px #183b3810;display:flex;flex-direction:column;overflow:hidden}
+.pet-chat-head{display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid #e7ede7;background:#fbfcf8}
+.pet-chat-avatar{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;overflow:hidden;border-radius:11px;background:#fff7df}
 .pet-chat-avatar svg{width:100%;height:100%;display:block}
-.pet-chat-heading{min-width:0;flex:1}.pet-chat-heading strong{display:block;font-size:16px}.pet-chat-heading span{display:block;font-size:10px;color:#718078;margin-top:2px}
-.pet-chat-close{border:1px solid #d6e1d8;background:#fff;color:#48645b;border-radius:999px;width:34px;height:34px;font-size:18px;cursor:pointer}
-.pet-chat-messages{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:9px;background:#f7f8f4}
-.pet-chat-row{display:flex}.pet-chat-row.user{justify-content:flex-end}.pet-chat-bubble{max-width:82%;padding:10px 12px;border-radius:15px;white-space:pre-wrap;line-height:1.5;font-size:14px;word-break:break-word}
+.pet-chat-heading{min-width:0;flex:1}.pet-chat-heading strong{display:block;font-size:14px}.pet-chat-heading span{display:block;font-size:9px;color:#718078;margin-top:2px;letter-spacing:.08em}
+.pet-chat-close{display:none}
+.pet-chat-messages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#f7f8f4;scrollbar-width:thin}
+.pet-chat-row{display:flex}.pet-chat-row.user{justify-content:flex-end}.pet-chat-bubble{max-width:86%;padding:9px 11px;border-radius:14px;white-space:pre-wrap;line-height:1.45;font-size:13px;word-break:break-word}
 .pet-chat-row.assistant .pet-chat-bubble{background:#fff;border:1px solid #dce5da;border-bottom-left-radius:5px}.pet-chat-row.user .pet-chat-bubble{background:#245f50;color:#fff;border-bottom-right-radius:5px}
-.pet-chat-note{font-size:10px;color:#7b8980;text-align:center;padding:0 14px 7px;background:#fff}
-.pet-chat-form{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid #e7ede7;background:#fff}
-.pet-chat-input{flex:1;min-width:0;border:1px solid #cddbd2;border-radius:12px;padding:11px 12px;font:inherit;font-size:14px;color:#193d38;background:#fff}.pet-chat-input:focus{outline:3px solid #2d796326;border-color:#2d7963}
-.pet-chat-send{border:0;border-radius:12px;background:#245f50;color:#fff;padding:10px 15px;font:inherit;font-size:13px;font-weight:850;cursor:pointer}.pet-chat-send:disabled{opacity:.55;cursor:wait}
-.pet-chat-error{font-size:11px;color:#b45239;text-align:center;padding:0 12px 8px;background:#fff}
-@media(max-width:560px){.pet-chat-modal{padding:0;align-items:end}.pet-chat-panel{width:100%;height:88vh;border-radius:20px 20px 0 0}.pet-chat-bubble{max-width:88%}}
+.pet-chat-note{font-size:9px;color:#7b8980;text-align:center;padding:0 10px 6px;background:#fff}
+.pet-chat-form{display:flex;gap:7px;padding:9px 10px 10px;border-top:1px solid #e7ede7;background:#fff}
+.pet-chat-input{flex:1;min-width:0;border:1px solid #cddbd2;border-radius:11px;padding:10px 11px;font:inherit;font-size:13px;color:#193d38;background:#fff}.pet-chat-input:focus{outline:3px solid #2d796326;border-color:#2d7963}
+.pet-chat-send{border:0;border-radius:11px;background:#245f50;color:#fff;padding:9px 13px;font:inherit;font-size:12px;font-weight:850;cursor:pointer}.pet-chat-send:disabled{opacity:.55;cursor:wait}
+.pet-chat-error{font-size:10px;color:#b45239;text-align:center;padding:0 10px 7px;background:#fff}
+@media(max-width:900px){.pet-chat-panel{height:300px}}
+@media(max-width:560px){.pet-chat-panel{height:310px;border-radius:16px}.pet-chat-bubble{max-width:90%;font-size:12.5px}.pet-chat-form{position:sticky;bottom:0}.pet-chat-note{font-size:8.5px}}
 
 </style>
 </head>
@@ -123,6 +123,22 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="intro">単語・語順・英作文・読解。今日は何にチャレンジする？<br>好きなゲームを選んで始めよう。</p>
   </div>
 
+<section id="petChatModal" class="pet-chat-modal" hidden role="dialog" aria-modal="true" aria-labelledby="petChatTitle">
+  <div class="pet-chat-panel">
+    <div class="pet-chat-head">
+      <div id="petChatAvatar" class="pet-chat-avatar" aria-hidden="true"></div>
+      <div class="pet-chat-heading"><strong id="petChatTitle">ペットと英語で話す</strong><span>ENGLISH CHAT</span></div>
+    </div>
+    <div id="petChatMessages" class="pet-chat-messages" aria-live="polite"></div>
+    <div id="petChatError" class="pet-chat-error" hidden></div>
+    <div class="pet-chat-note">英語で自由に話しかけてみよう。個人情報は入力しないでください。</div>
+    <form id="petChatForm" class="pet-chat-form">
+      <input id="petChatInput" class="pet-chat-input" type="text" maxlength="500" autocomplete="off" placeholder="Type in English…" aria-label="ペットへのメッセージ">
+      <button id="petChatSend" class="pet-chat-send" type="submit">送信</button>
+    </form>
+  </div>
+</section>
+
   <section class="pet-card" aria-label="ペット育成">
     <div class="pet-visual-wrap">
       <div id="petVisual" class="pet-visual egg" role="img" aria-label="ふしぎなたまご">🥚</div>
@@ -133,7 +149,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
         <span id="petDays" class="pet-days">ログイン 0 / 3日</span>
       </div>
       <div id="petStatus" class="pet-status" role="status" aria-live="polite">ログイン状態を確認しています…</div>
-      <button id="petChatButton" class="pet-button pet-chat-button" type="button" hidden>英語で話す</button>
       <button id="petCreate" class="pet-button" type="button" hidden>どんな子がいい？</button>
       <button id="petNameButton" class="pet-button" type="button" hidden>名前をつける</button>
       <button id="petRetry" class="pet-button secondary" type="button" hidden>ペットをリセットして孵化からやり直す</button>
@@ -237,23 +252,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 
-<div id="petChatModal" class="pet-chat-modal" hidden role="dialog" aria-modal="true" aria-labelledby="petChatTitle">
-  <div class="pet-chat-panel">
-    <div class="pet-chat-head">
-      <div id="petChatAvatar" class="pet-chat-avatar" aria-hidden="true"></div>
-      <div class="pet-chat-heading"><strong id="petChatTitle">ペットと英語で話す</strong><span>ENGLISH CHAT</span></div>
-      <button id="petChatClose" class="pet-chat-close" type="button" aria-label="会話を閉じる">×</button>
-    </div>
-    <div id="petChatMessages" class="pet-chat-messages" aria-live="polite"></div>
-    <div id="petChatError" class="pet-chat-error" hidden></div>
-    <div class="pet-chat-note">英語で自由に話しかけてみよう。個人情報は入力しないでください。</div>
-    <form id="petChatForm" class="pet-chat-form">
-      <input id="petChatInput" class="pet-chat-input" type="text" maxlength="500" autocomplete="off" placeholder="Type in English…" aria-label="ペットへのメッセージ">
-      <button id="petChatSend" class="pet-chat-send" type="submit">送信</button>
-    </form>
-  </div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -294,7 +292,6 @@ const petTitle=document.getElementById("petTitle");
 const petDays=document.getElementById("petDays");
 const petStatus=document.getElementById("petStatus");
 const petBar=document.getElementById("petBar");
-const petChatButton=document.getElementById('petChatButton');
 const petChatModal=document.getElementById('petChatModal');
 const petChatAvatar=document.getElementById('petChatAvatar');
 const petChatTitle=document.getElementById('petChatTitle');
@@ -303,7 +300,6 @@ const petChatError=document.getElementById('petChatError');
 const petChatForm=document.getElementById('petChatForm');
 const petChatInput=document.getElementById('petChatInput');
 const petChatSend=document.getElementById('petChatSend');
-const petChatClose=document.getElementById('petChatClose');
 const PET_CHAT_ENDPOINT='https://task-quest.onrender.com/api/pet-chat';
 const dashRefresh=document.getElementById("dashRefresh");
 const todayAteru=document.getElementById("todayAteru");
@@ -394,16 +390,15 @@ function resetPetChatIfNeeded(){
   if(identity===petChatIdentity&&petChatHistory.length)return;
   petChatIdentity=identity;petChatHistory=[{role:'assistant',text:PET_GREETINGS[species]||PET_GREETINGS.cat}];
 }
-function openPetChat(){
-  if(!petUser||!hasPet(petData))return;
+function showPetChatBuiltIn(){
+  if(!petUser||!hasPet(petData)){petChatModal.hidden=true;return;}
   resetPetChatIfNeeded();
   petChatTitle.textContent=petChatName()+'と話す';
   petChatAvatar.innerHTML=renderPetSVG(petData.petAppearance,petData.petShop);
   petChatError.hidden=true;petChatError.textContent='';
-  renderPetChat();petChatModal.hidden=false;document.body.style.overflow='hidden';
-  setTimeout(()=>petChatInput.focus(),30);
+  renderPetChat();petChatModal.hidden=false;
 }
-function closePetChat(){petChatModal.hidden=true;document.body.style.overflow='';}
+function hidePetChatBuiltIn(){petChatModal.hidden=true;}
 function setPetChatBusy(value){petChatBusy=value;petChatInput.disabled=value;petChatSend.disabled=value;petChatSend.textContent=value?'…':'送信';}
 async function sendPetChat(){
   if(petChatBusy||!petUser||!hasPet(petData))return;
@@ -423,11 +418,7 @@ async function sendPetChat(){
     petChatError.hidden=false;
   }finally{setPetChatBusy(false);petChatInput.focus();}
 }
-petChatButton.addEventListener('click',openPetChat);
-petChatClose.addEventListener('click',closePetChat);
-petChatModal.addEventListener('click',event=>{if(event.target===petChatModal)closePetChat();});
 petChatForm.addEventListener('submit',event=>{event.preventDefault();sendPetChat();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!petChatModal.hidden)closePetChat();});
 const petMaker=createPetMaker(async (appearance,name)=>{
   const user=petUser,generation=petAuthGeneration;
   if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
@@ -500,13 +491,14 @@ function renderPet(data={},message=''){
   petCreate.hidden=!petUser || !ready || hatched;
   petRetry.hidden=!retryMode || !petUser || !ready;
   petNameButton.hidden=!petUser || !hatched || validPetName(data.petName);
-  petChatButton.hidden=!petUser || !hatched;
   if(hatched){
+    showPetChatBuiltIn();
     petVisual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);
     petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
     petTitle.textContent=validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
     petStatus.textContent=message||'あなたのペットと一緒に、今日も英語を楽しもう。';
   }else{
+    hidePetChatBuiltIn();
     petVisual.textContent='🥚';
     petVisual.setAttribute('aria-label','ふしぎなたまご');
     petTitle.textContent=ready?'たまごがかえりそう！':'ふしぎなたまご';
@@ -647,7 +639,7 @@ try{
 
 onAuthStateChanged(auth,async user=>{
   const generation=++petAuthGeneration;
-  petUser=null;petData={};petMaker.close();petNameDialog.close();closePetChat();petChatHistory=[];petChatIdentity='';petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;petChatButton.hidden=true;
+  petUser=null;petData={};petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
   loginBtn.disabled=false;
   if(!user){
     dashboardUser=null;
