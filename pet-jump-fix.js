@@ -57,7 +57,7 @@ function installInPlacePetJump(){
 
     const shadowJump=shadow?.animate([
       {opacity:.09,transform:'scale(1)'},
-      {opacity:.045,transform:`scale(${isBaby?.8:.72})`},
+      {opacity:.045,transform:`scale(${isBaby ? .8 : .72})`},
       {opacity:.09,transform:'scale(1)'}
     ],{duration,easing:'ease-in-out'});
 
