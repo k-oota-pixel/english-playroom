@@ -13,16 +13,32 @@ function installPetSleepMode(){
   style.id='petSleepModeStyles';
   style.textContent=`
 .pet-visual-wrap{position:relative}
-.pet-sleep-zzz,.pet-grumpy-bubble{position:absolute;z-index:4;pointer-events:none;user-select:none;font-weight:900;letter-spacing:.04em}
-.pet-sleep-zzz{right:7px;top:7px;color:#705f8f;font-size:12px;opacity:.9;animation:petSleepFloat 2.3s ease-in-out infinite}
-.pet-grumpy-bubble{left:5px;top:6px;color:#865445;background:#fff9ea;border:1px solid #e6d5b4;border-radius:999px;padding:3px 7px;font-size:10px;box-shadow:0 2px 7px #4b392018}
-@keyframes petSleepFloat{0%,100%{transform:translateY(2px);opacity:.66}50%{transform:translateY(-3px);opacity:1}}
-@media(prefers-reduced-motion:reduce){.pet-sleep-zzz{animation:none}}
+.pet-sleep-zzz,.pet-grumpy-bubble{position:absolute;z-index:8;pointer-events:none;user-select:none;font-weight:900}
+.pet-sleep-zzz{right:-3px;top:-8px;width:44px;height:48px;color:#705f8f;filter:drop-shadow(0 2px 2px #fff9)}
+.pet-sleep-zzz span{position:absolute;left:3px;bottom:3px;opacity:0;line-height:1;animation:petSleepZFloat 2.4s ease-out infinite}
+.pet-sleep-zzz .z1{font-size:14px;animation-delay:0s}
+.pet-sleep-zzz .z2{font-size:11px;animation-delay:.72s}
+.pet-sleep-zzz .z3{font-size:9px;animation-delay:1.44s}
+.pet-grumpy-bubble{left:5px;top:6px;color:#865445;background:#fff9ea;border:1px solid #e6d5b4;border-radius:999px;padding:3px 7px;font-size:10px;box-shadow:0 2px 7px #4b392018;letter-spacing:.04em}
+@keyframes petSleepZFloat{
+  0%{transform:translate(0,7px) scale(.86);opacity:0}
+  18%{opacity:1}
+  72%{opacity:.92}
+  100%{transform:translate(22px,-24px) scale(1.14);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .pet-sleep-zzz span{animation:none;opacity:1}
+  .pet-sleep-zzz .z1{left:3px;bottom:4px}.pet-sleep-zzz .z2{left:15px;bottom:17px}.pet-sleep-zzz .z3{left:27px;bottom:29px}
+}
 `;
   if(!document.getElementById(style.id))document.head.appendChild(style);
 
   const wrap=visual.closest('.pet-visual-wrap');
-  const zzz=document.createElement('span');zzz.className='pet-sleep-zzz';zzz.textContent='Z z z…';zzz.hidden=true;zzz.setAttribute('aria-hidden','true');
+  const zzz=document.createElement('span');
+  zzz.className='pet-sleep-zzz';
+  zzz.innerHTML='<span class="z1">Z</span><span class="z2">z</span><span class="z3">z</span>';
+  zzz.hidden=true;
+  zzz.setAttribute('aria-hidden','true');
   const grumpy=document.createElement('span');grumpy.className='pet-grumpy-bubble';grumpy.textContent='むぅ…';grumpy.hidden=true;grumpy.setAttribute('aria-hidden','true');
   if(wrap){wrap.append(zzz,grumpy);}
 
