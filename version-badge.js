@@ -10,7 +10,7 @@ import './pet-eye-emphasis-v144.js';
 
 queueMicrotask(()=>import('./pet-admin-panel.js').catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.4.4';
+const APP_VERSION='1.4.5';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
