@@ -175,8 +175,8 @@ function careAnimation(kind) {
     const frames=kind==='approach'?[{transform:'scale(1)'},{transform:'translateY(10px) scale(1.13)'},{transform:'scale(1)'}]:kind==='jump'||kind==='celebrate'?[{transform:'translateY(0)'},{transform:'translateY(-24px) rotate(-5deg)'},{transform:'translateY(0)'},{transform:'translateY(-12px) rotate(5deg)'},{transform:'translateY(0)'}]:[{transform:'rotate(0)'},{transform:'rotate(-4deg)'},{transform:'rotate(4deg)'},{transform:'rotate(0)'}];
     const character=visual.querySelector('.pet-character');
     if(character){
-      let layer=character.parentNode;
-      if(!layer.classList.contains('pet-care-motion-layer')){
+      let layer=character.closest('.pet-care-motion-layer');
+      if(!layer){
         layer=document.createElementNS('http://www.w3.org/2000/svg','g');
         layer.classList.add('pet-care-motion-layer');
         layer.style.transformBox='fill-box';layer.style.transformOrigin='center bottom';
