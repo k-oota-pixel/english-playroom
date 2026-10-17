@@ -32,6 +32,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await sleepingEyes();
  // Reproduce a wallet redraw while sleeping: the SVG is replaced, state is retained.
  await page.evaluate(()=>{const v=document.getElementById('petVisual');v.innerHTML=v.innerHTML;});await page.waitForTimeout(100);await sleepingEyes();
+ assert.equal(await page.locator('#petPet').count(),0);
+ assert.equal(await page.locator('#petFriendship').count(),0);
  for(const food of ['snack','meal','special']){
  await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();await page.waitForTimeout(200);
  assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),null);
@@ -41,9 +43,13 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  return {outerMoving:v.getAnimations().some(a=>a.playState==='running'),bodyMoving:layer.getAnimations().some(a=>a.playState==='running'),backgroundInside:!!layer.querySelector('.pet-background'),eyes:[...v.querySelectorAll('[data-shared-legacy-eyes]')].map(el=>getComputedStyle(el).opacity)};
  });
  assert.equal(result.outerMoving,false);assert.equal(result.bodyMoving,true);assert.equal(result.backgroundInside,false);assert.ok(result.eyes.length);assert.ok(result.eyes.every(opacity=>opacity==='1'));
+ const effective=await page.locator('#petVisual [data-pet-eyes]').evaluateAll(eyes=>eyes.map(eye=>{
+   let opacity=1;for(let node=eye;node&&node.id!=='petVisual';node=node.parentElement)opacity*=Number(getComputedStyle(node).opacity);return opacity;
+ }));
+ assert.ok(effective.length>0);assert.ok(effective.every(opacity=>opacity===1),'cloned nested eyes must actually be visible');
  }
  await page.waitForTimeout(7400);await sleepingEyes();
- await page.locator('#petVisual').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),1);assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),null);
+ await page.locator('#petVisual').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),undefined);assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),null);
  assert.equal(await page.evaluate(()=>window.petStore.coins),21);
 
  async function motionSurvives(action,label){
@@ -68,11 +74,13 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  for(const food of ['snack','meal','special']){
    await motionSurvives(async()=>{await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();},food);
  }
- await motionSurvives(()=>page.locator('#petPet').click(),'PET');
- await motionSurvives(()=>page.locator('#petVisual').click(),'body tap');
 
- await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#petPet').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),3);
+ const beforeTap=await page.evaluate(()=>JSON.stringify(window.petStore));
+ for(let i=0;i<4;i++)await motionSurvives(()=>page.locator('#petVisual').click(),'body tap '+i);
+ assert.equal(await page.evaluate(()=>JSON.stringify(window.petStore)),beforeTap,'tapping never writes rewards or any other saved data');
+
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#petVisual').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),undefined);
  assert.equal(await page.locator('#petVisual').evaluate(v=>v.getAnimations().filter(a=>a.playState==='running').length),0);
- assert.deepEqual(errors,[]);console.log('PASS: sleeping redraw keeps closed eyes; all foods wake with visible eyes; only character animates; sleeping body tap awards friendship; sleep returns; reduced motion honored.');
+ assert.deepEqual(errors,[]);console.log('PASS: sleeping redraw keeps closed eyes; all foods wake with visible eyes; only character animates; sleeping body tap is free with no saved changes; sleep returns; reduced motion honored.');
  }finally{await browser.close();}
 })();

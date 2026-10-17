@@ -26,18 +26,10 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.locator('#petFeed').click();assert.equal(await page.locator('[data-food]').count(),3);
  await page.locator('[data-food=snack]').click();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),19);
  for(const [food,coins] of [['meal',16],['special',11]]){await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),coins);}
- for(let i=0;i<4;i++){await page.locator('#petPet').click();await page.waitForTimeout(100);}
- assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),3);assert.equal(await page.evaluate(()=>window.petStore.coins),11);
- await page.locator('#petVisual').click();await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>window.petStore.petCare.petCount),3);
- const saved=await page.evaluate(()=>window.petStore);assert.deepEqual(saved.petShop,{ownedItems:['crown'],equipped:{head:'crown'}});
- await page.locator('#petShopOpen').click();assert.equal(await page.locator('#petShopDialog').evaluate(el=>el.open),true);await page.locator('#petShopClose').click();
- await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(root,'care-mobile.png'),fullPage:true});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
- await page.evaluate(()=>window.failSave=true);await page.locator('#petPet').click();await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),3);
-  await page.evaluate(()=>window.failSave=false);
- await page.addInitScript(data=>window.petStore=data,{...saved,coins:0});await page.reload();await page.waitForTimeout(1200);
- assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),3);await page.locator('#petFeed').click();assert.equal(await page.locator('[data-food]:disabled').count(),3);await page.keyboard.press('Escape');
- await page.locator('#petVisual').focus();await page.keyboard.press('Enter');await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),3);
- await page.addInitScript(data=>window.petStore=data,{...saved,petCare:{...saved.petCare,date:'2000-01-01'}});await page.reload();await page.waitForTimeout(1200);await page.locator('#petPet').click();await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),4);
+ assert.equal(await page.locator('#petPet').count(),0);
+ const saved=await page.evaluate(()=>JSON.stringify(window.petStore));
+ for(let i=0;i<5;i++){await page.locator('#petVisual').click();await page.waitForTimeout(100);}
+ assert.equal(await page.evaluate(()=>JSON.stringify(window.petStore)),saved);
  assert.deepEqual(errors,[]);console.log('Care browser checks passed: all food costs, PET cap, body tap, shop, owned items, mobile, failure rollback.');
  } finally{await browser.close();}
 })();

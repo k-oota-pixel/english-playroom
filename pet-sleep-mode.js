@@ -58,11 +58,6 @@ function installPetSleepMode(){
   }
   function shouldSleep(){return !!sleepPeriod()&&Date.now()>=awakeUntil;}
 
-  function eyeGroup(){
-    const faceGroup=visual.querySelector('.pet-character > g');
-    if(!faceGroup)return null;
-    return [...faceGroup.children].find(el=>el.tagName?.toLowerCase()==='g'&&el.getAttribute('fill')==='#40564e'&&!el.hasAttribute('opacity'))||null;
-  }
   function svgEl(name,attrs={}){const el=document.createElementNS('http://www.w3.org/2000/svg',name);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,v);return el;}
   function ensureFaceOverlay(kind){
     const character=visual.querySelector('.pet-character');if(!character)return null;
@@ -102,7 +97,12 @@ function installPetSleepMode(){
     return layer;
   }
   function setEyes(mode){
-    const eyes=eyeGroup();if(eyes)eyes.style.opacity=mode==='normal'?'':'0';
+    // Both the shared holder and its cloned eye group may carry sleep opacity.
+    // Restore every semantic eye group, including clones nested by species art.
+    visual.querySelectorAll('[data-pet-eyes],[data-shared-legacy-eyes]').forEach(eyes=>{
+      eyes.style.opacity=mode==='normal'?'':'0';
+      eyes.style.pointerEvents=mode==='normal'?'':'none';
+    });
     const sleep=ensureFaceOverlay('sleep'),grumpyFace=ensureFaceOverlay('grumpy');
     if(sleep)sleep.style.display=mode==='sleep'?'':'none';
     if(grumpyFace)grumpyFace.style.display=mode==='grumpy'?'':'none';
@@ -220,8 +220,9 @@ function installPetSleepMode(){
   // state on the container. Rebuild the pose immediately for every renderer.
   const renderObserver=new MutationObserver(records=>{
     if(records.some(record=>[...record.addedNodes].some(node=>node.nodeName?.toLowerCase()==='svg')))syncState();
+    if(records.some(record=>record.type==='childList'))setEyes(visual.dataset.petSleeping==='1'?'sleep':visual.dataset.petGrumpy==='1'?'grumpy':'normal');
   });
-  renderObserver.observe(visual,{childList:true});
+  renderObserver.observe(visual,{childList:true,subtree:true});
   visual.addEventListener('pet-care-reaction',()=>{
     awakeUntil=Date.now()+7000;
     clearTimeout(grumpyTimer);clearTimeout(sleepTimer);

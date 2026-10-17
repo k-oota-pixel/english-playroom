@@ -1,17 +1,17 @@
 import './pet-jump-fix.js?v=1.5.1-motion';
 import './pet-motion-polish.js';
-import './pet-sleep-mode.js?v=1.5.1-motion';
+import './pet-sleep-mode.js?v=1.5.1-touch';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
-import './pet-lifecycle-v141.js?v=1.5.1-reaction2';
+import './pet-lifecycle-v141.js?v=1.5.1-touch';
 import './pet-egg-ui-v141.js';
 import './pet-six-species-v141.js';
 import './pet-eye-emphasis-v144.js';
 import './pet-cat-dog-v1425.js?v=1.4.25';
-import './pet-sleep-eye-fix-v1426.js?v=1.4.26';
+// Sleep mode now owns original and cloned eye visibility together.
 import './pet-lion-v149.js?v=1.4.12';
 
-queueMicrotask(()=>import('./pet-admin-panel.js?v=1.5.1-reaction2').then(()=>import('./pet-admin-limit-v1420.js?v=1.4.28')).catch(error=>console.error('Admin pet panel failed to load',error)));
+queueMicrotask(()=>import('./pet-admin-panel.js?v=1.5.1-touch').then(()=>import('./pet-admin-limit-v1420.js?v=1.4.28')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
 const APP_VERSION='1.5.1';
 
