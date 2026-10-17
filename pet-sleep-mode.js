@@ -13,13 +13,12 @@ function installPetSleepMode(){
   style.id='petSleepModeStyles';
   style.textContent=`
 .pet-visual-wrap{position:relative}
-.pet-sleep-zzz,.pet-grumpy-bubble{position:absolute;z-index:8;pointer-events:none;user-select:none;font-weight:900}
+.pet-sleep-zzz{position:absolute;z-index:8;pointer-events:none;user-select:none;font-weight:900}
 .pet-sleep-zzz{right:-3px;top:-8px;width:44px;height:48px;color:#705f8f;filter:drop-shadow(0 2px 2px #fff9)}
 .pet-sleep-zzz span{position:absolute;left:3px;bottom:3px;opacity:0;line-height:1;animation:petSleepZFloat 2.4s ease-out infinite}
 .pet-sleep-zzz .z1{font-size:14px;animation-delay:0s}
 .pet-sleep-zzz .z2{font-size:11px;animation-delay:.72s}
 .pet-sleep-zzz .z3{font-size:9px;animation-delay:1.44s}
-.pet-grumpy-bubble{left:5px;top:6px;color:#865445;background:#fff9ea;border:1px solid #e6d5b4;border-radius:999px;padding:3px 7px;font-size:10px;box-shadow:0 2px 7px #4b392018;letter-spacing:.04em}
 @keyframes petSleepZFloat{
   0%{transform:translate(0,7px) scale(.86);opacity:0}
   18%{opacity:1}
@@ -39,8 +38,7 @@ function installPetSleepMode(){
   zzz.innerHTML='<span class="z1">Z</span><span class="z2">z</span><span class="z3">z</span>';
   zzz.hidden=true;
   zzz.setAttribute('aria-hidden','true');
-  const grumpy=document.createElement('span');grumpy.className='pet-grumpy-bubble';grumpy.textContent='むぅ…';grumpy.hidden=true;grumpy.setAttribute('aria-hidden','true');
-  if(wrap){wrap.append(zzz,grumpy);}
+  if(wrap)wrap.append(zzz);
 
   function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
   function hashString(value){let h=2166136261;for(const ch of value){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return h>>>0;}
@@ -75,7 +73,11 @@ function installPetSleepMode(){
     if(kind==='sleep'){
       overlay.append(svgEl('path',{d:'M84 109 Q94 117 104 109'}),svgEl('path',{d:'M136 109 Q146 117 156 109'}));
     }else{
-      overlay.append(svgEl('path',{d:'M84 105 Q94 112 104 108'}),svgEl('path',{d:'M136 108 Q146 112 156 105'}));
+      // Half-lidded eyes: annoyed, but still cute rather than angry.
+      overlay.append(
+        svgEl('path',{d:'M84 104 Q94 111 104 107'}),
+        svgEl('path',{d:'M136 107 Q146 111 156 104'})
+      );
     }
     character.appendChild(overlay);return overlay;
   }
@@ -105,7 +107,7 @@ function installPetSleepMode(){
     setMotionPaused(true);setEyes('sleep');
     if(layer)layer.style.transform='translateY(8px) rotate(-7deg) scale(.98,.94)';
     const shadow=visual.querySelector('.pet-shadow');if(shadow){shadow.style.opacity='.065';shadow.style.transformOrigin='center';}
-    zzz.hidden=false;grumpy.hidden=true;
+    zzz.hidden=false;
   }
   function clearSleepPose({resume=true}={}){
     delete visual.dataset.petSleeping;
@@ -114,8 +116,8 @@ function installPetSleepMode(){
     if(resume)setMotionPaused(false);
   }
   function finishGrumpy(){
-    delete visual.dataset.petGrumpy;grumpy.hidden=true;setEyes('normal');
-    if(shouldSleep())applySleep();else{clearSleepPose({resume:true});}
+    delete visual.dataset.petGrumpy;setEyes('normal');
+    if(shouldSleep())applySleep();else clearSleepPose({resume:true});
   }
   function wakeGrumpy(){
     if(visual.dataset.petSleeping!=='1')return;
@@ -123,23 +125,28 @@ function installPetSleepMode(){
     clearTimeout(grumpyTimer);clearTimeout(sleepTimer);
     clearSleepPose({resume:false});
     visual.dataset.petGrumpy='1';
-    setEyes('grumpy');grumpy.hidden=false;
+    setEyes('grumpy');
     const layer=visual.querySelector('.pet-sleep-layer');
     if(layer){
-      layer.animate([
-        {transform:'translateY(8px) rotate(-7deg) scale(.98,.94)'},
-        {transform:'translateY(1px) rotate(2deg) scale(1.02,.98)'},
-        {transform:'translateY(0) rotate(0deg) scale(1,1)'}
-      ],{duration:420,easing:'ease-out'}).finished.catch(()=>{});
-      layer.style.transform='none';
+      layer.style.transition='none';
+      const reaction=layer.animate([
+        {transform:'translateY(8px) rotate(-7deg) scale(.98,.94)',offset:0},
+        {transform:'translateY(-3px) rotate(3deg) scale(1.03,.97)',offset:.18},
+        {transform:'translateX(-3px) translateY(0) rotate(-2deg)',offset:.35},
+        {transform:'translateX(3px) translateY(0) rotate(2deg)',offset:.48},
+        {transform:'translateX(-2px) translateY(0) rotate(-1.3deg)',offset:.61},
+        {transform:'translateX(2px) translateY(0) rotate(1.2deg)',offset:.73},
+        {transform:'translateX(0) translateY(0) rotate(0deg) scale(1)',offset:1}
+      ],{duration:720,easing:'ease-out'});
+      reaction.finished.catch(()=>{}).finally(()=>{layer.style.transition='transform .38s ease';layer.style.transform='none';});
     }
     grumpyTimer=setTimeout(()=>{
-      delete visual.dataset.petGrumpy;grumpy.hidden=true;setEyes('normal');setMotionPaused(false);
-    },2600);
+      delete visual.dataset.petGrumpy;setEyes('normal');setMotionPaused(false);
+    },2000);
     sleepTimer=setTimeout(()=>{if(shouldSleep())applySleep();else finishGrumpy();},7200);
   }
   function resetIfNoPet(){
-    delete visual.dataset.petSleeping;delete visual.dataset.petGrumpy;zzz.hidden=true;grumpy.hidden=true;setMotionPaused(false);
+    delete visual.dataset.petSleeping;delete visual.dataset.petGrumpy;zzz.hidden=true;setMotionPaused(false);
   }
   function syncState(){
     if(!visual.classList.contains('hatched')){resetIfNoPet();return;}
