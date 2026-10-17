@@ -37,7 +37,7 @@ function babyLion(body,eyeMarkup){
     <circle cx="163" cy="78" r="10" fill="#f3b7b7" stroke="none"/>
     <ellipse cx="120" cy="113" rx="49" ry="44" fill="${body}"/>
     <path d="M91 82 Q98 62 109 68 Q120 52 130 68 Q143 60 151 82 Q141 93 120 90 Q100 93 91 82Z" fill="${BABY_MANE}"/>
-    <ellipse cx="120" cy="172" rx="25" ry="27" fill="${CREAM}" stroke="none" opacity=".9"/>
+    <ellipse cx="120" cy="181" rx="22" ry="18" fill="${CREAM}" stroke="none" opacity=".9"/>
     <ellipse cx="91" cy="190" rx="18" ry="11" fill="${body}"/>
     <ellipse cx="149" cy="190" rx="18" ry="11" fill="${body}"/>
     <path d="M84 190 q7 5 14 0 M142 190 q7 5 14 0" fill="none" stroke-width="2.5" opacity=".75"/>
@@ -62,7 +62,7 @@ function adultLion(body,eyeMarkup){
     <circle cx="169" cy="66" r="12" fill="#f3b7b7" stroke="none"/>
     <ellipse cx="120" cy="105" rx="49" ry="44" fill="${body}"/>
     <path d="M86 72 Q95 49 109 57 Q120 39 132 58 Q148 48 157 72 Q146 86 120 83 Q95 86 86 72Z" fill="${ADULT_MANE}"/>
-    <ellipse cx="120" cy="172" rx="31" ry="31" fill="${CREAM}" stroke="none" opacity=".9"/>
+    <ellipse cx="120" cy="181" rx="27" ry="20" fill="${CREAM}" stroke="none" opacity=".9"/>
     <ellipse cx="91" cy="195" rx="19" ry="11" fill="${body}"/>
     <ellipse cx="149" cy="195" rx="19" ry="11" fill="${body}"/>
     <path d="M82 195 q9 5 18 0 M140 195 q9 5 18 0" fill="none" stroke-width="2.5" opacity=".75"/>
