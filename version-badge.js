@@ -11,7 +11,7 @@ import './pet-lion-v149.js';
 
 queueMicrotask(()=>import('./pet-admin-panel.js').catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.4.9';
+const APP_VERSION='1.4.10';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
