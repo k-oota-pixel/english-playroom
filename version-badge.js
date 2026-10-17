@@ -4,7 +4,7 @@ import './pet-sleep-mode.js';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
 
-const APP_VERSION='1.3.10';
+const APP_VERSION='1.3.11';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
