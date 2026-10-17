@@ -11,16 +11,16 @@ function isLegacyCat(character){
 }
 
 function redrawCat(svg){
-  if(!(svg instanceof SVGElement)||svg.dataset.catDedicatedV1415==='1')return;
+  if(!(svg instanceof SVGElement)||svg.dataset.catDedicatedV1416==='1')return;
   const character=svg.querySelector('.pet-character');
   if(!character||!isLegacyCat(character))return;
 
   const stage=svg.dataset.petStage==='baby'?'baby':'adult';
   const accessories=[...character.children].slice(1).map(el=>el.outerHTML).join('');
-  const href=stage==='baby'?'./cat_baby_exact2.png?v=1.4.15':'./cat_adult_exact2.png?v=1.4.15';
+  const href=stage==='baby'?'./cat_baby_exact2.png?v=1.4.16':'./cat_adult_exact2.png?v=1.4.16';
 
   character.innerHTML=`<g data-cat-png="1"><image href="${href}" x="0" y="0" width="240" height="240" preserveAspectRatio="xMidYMid meet"/></g>${accessories}`;
-  svg.dataset.catDedicatedV1415='1';
+  svg.dataset.catDedicatedV1416='1';
 }
 
 function scan(root=document){
