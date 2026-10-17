@@ -7,12 +7,13 @@ import './pet-lifecycle-v141.js';
 import './pet-egg-ui-v141.js';
 import './pet-six-species-v141.js';
 import './pet-eye-emphasis-v144.js';
-import './pet-five-species-v1420.js?v=1.4.21';
+import './pet-five-species-v1420.js?v=1.4.23';
+import './pet-eye-legacy-v1423.js?v=1.4.23';
 import './pet-lion-v149.js?v=1.4.12';
 
 queueMicrotask(()=>import('./pet-admin-panel.js').then(()=>import('./pet-admin-limit-v1420.js?v=1.4.22')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.4.22';
+const APP_VERSION='1.4.23';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
