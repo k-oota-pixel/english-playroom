@@ -11,7 +11,7 @@
 body{margin:0;background:#f6f5ef;color:#193d38;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 a{color:inherit}a:focus-visible{outline:3px solid #e4af37;outline-offset:3px}
 .home{max-width:1060px;margin:auto;padding:28px 20px 30px}
-.logo{font-weight:850;font-size:13px;letter-spacing:.12em;color:#447367}
+.logo{display:flex;align-items:baseline;gap:7px;font-weight:850;font-size:13px;letter-spacing:.12em;color:#447367}
 .label{margin-top:20px;font-size:10px;letter-spacing:.16em;color:#698479}
 h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-height:1.28}
 .intro{color:#65756e;line-height:1.6;font-size:13px;margin:0}
@@ -113,12 +113,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 @media(max-width:900px){.pet-chat-panel{height:320px}}
 @media(max-width:560px){.pet-chat-panel{height:360px;border-radius:16px}.pet-chat-head{padding:10px 10px 8px}.pet-chat-avatar{width:34px;height:34px;flex-basis:34px}.pet-chat-heading strong{font-size:13px}.pet-chat-heading span{font-size:8.5px}.pet-chat-messages{padding:10px;gap:7px}.pet-chat-bubble{max-width:92%;font-size:12.5px;padding:8px 10px}.pet-chat-form{position:sticky;bottom:0;padding:8px}.pet-chat-input{font-size:12.5px;padding:9px 10px}.pet-chat-send{padding:8px 12px;font-size:11.5px}.pet-chat-note{display:none}.pet-chat-choices{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:6px;padding:7px 8px 6px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}.pet-chat-choice{font-size:10px;padding:7px 10px;white-space:nowrap;flex:0 0 auto}.pet-chat-error{font-size:9px;padding:2px 8px 6px}}
 
+.app-version-badge{font-size:9px;letter-spacing:.02em;font-weight:700;color:#8a9b94;white-space:nowrap}
 </style>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo">もんすたでぃ</div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.1">ver1.5.1</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -754,5 +755,6 @@ onAuthStateChanged(auth,async user=>{
 });
 </script>
 
+<script type="module" src="./version-badge.js?v=1.5.1-ui"></script>
 </body>
 </html>

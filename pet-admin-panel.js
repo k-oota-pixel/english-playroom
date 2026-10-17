@@ -27,6 +27,7 @@ function petRef(user){return doc(db,'users',user.uid,'apps','english-playroom');
 function ensureStyle(){
   if(document.getElementById('petAdminPanelStyle'))return;
   const style=document.createElement('style');style.id='petAdminPanelStyle';style.textContent=`
+.pet-admin-toolbar{display:flex;justify-content:center;width:100%}
 .pet-admin-open{appearance:none;border:1px solid #9b8ac3;background:#f7f1ff;color:#5d4a88;border-radius:999px;padding:6px 11px;font:inherit;font-size:11px;font-weight:900;cursor:pointer}.pet-admin-open:hover{background:#efe6ff}
 .pet-admin-dialog{width:min(760px,calc(100vw - 20px));max-height:92vh;border:0;border-radius:22px;padding:0;background:#fffdf9;color:#193d38;box-shadow:0 24px 80px #10251f66}.pet-admin-dialog::backdrop{background:#17342f88;backdrop-filter:blur(2px)}
 .pet-admin-shell{padding:18px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}.pet-admin-preview-card{background:#fff8e8;border:1px solid #eadfc7;border-radius:18px;padding:12px}.pet-admin-kicker{font-size:9px;letter-spacing:.14em;font-weight:900;color:#7f6a9d}.pet-admin-title{font-size:22px;font-weight:900;margin:2px 0 10px}.pet-admin-preview{width:100%;max-width:230px;margin:0 auto}.pet-admin-preview svg{display:block;width:100%;height:auto}.pet-admin-stage{display:flex;gap:6px;margin-top:9px}.pet-admin-stage button{flex:1;border:1px solid #d9d1e9;background:#fff;border-radius:999px;padding:7px 8px;font:inherit;font-size:10px;font-weight:900;color:#6b5a8a;cursor:pointer}.pet-admin-stage button.active{background:#6e5a9c;color:#fff;border-color:#6e5a9c}
@@ -56,7 +57,14 @@ async function openPanel(){if(!adminVerified||!currentUser)return;const d=ensure
 
 async function saveAppearance(){if(!adminVerified||!currentUser||!draft)return;draft={...draft,eyes:legacyEye(draft.eyeStyle),feature:'classic',pattern:'none'};if(!validAppearance(draft))return;const status=dialog.querySelector('#petAdminStatus'),save=dialog.querySelector('[data-save]');save.disabled=true;status.textContent='保存しています…';try{const ref=petRef(currentUser);await runTransaction(db,async tx=>{const snap=await tx.get(ref);if(!snap.exists())throw Error('ペット情報が見つかりません。');const data=snap.data()||{};if(!data.petHatched||data.petAdult===false)throw Error('成体になってから見た目を変更できます。');tx.set(ref,{petAppearance:{...draft},petUpdatedAt:serverTimestamp(),petAdminEditedAt:serverTimestamp()},{merge:true});});currentData={...(currentData||{}),petAppearance:{...draft}};status.textContent='見た目を変更しました！';const toast=document.getElementById('petShopToast');if(toast){toast.textContent='🛠 ペットの見た目を管理者変更しました';toast.dataset.kind='ok';}setTimeout(()=>{if(dialog?.open)dialog.close();},450);}catch(error){status.textContent=error?.message||'保存できませんでした。';}finally{save.disabled=false;}}
 
-function ensureButton(){if(!adminVerified||!currentUser)return;if(button?.isConnected)return;const shop=document.querySelector('#petShopOpen,.pet-shop-open');const wallet=shop?.parentElement||document.querySelector('.pet-wallet');if(!wallet){setTimeout(ensureButton,250);return;}button=document.createElement('button');button.type='button';button.className='pet-admin-open';button.textContent='🛠 ペット管理';button.setAttribute('aria-label','管理者用ペット見た目変更');button.addEventListener('click',openPanel);shop?.after(button);if(!shop)wallet.appendChild(button);}
-function removeButton(){button?.remove();button=null;if(dialog?.open)dialog.close();}
+function ensureButton(){
+  if(!adminVerified||!currentUser)return;
+  if(button?.isConnected)return;
+  const card=document.querySelector('.pet-card'),visual=card?.querySelector('.pet-visual-wrap');
+  if(!card||!visual){setTimeout(ensureButton,250);return;}
+  button=document.createElement('button');button.type='button';button.className='pet-admin-open';button.textContent='🛠 ペット管理';button.setAttribute('aria-label','管理者用ペット見た目変更');button.addEventListener('click',openPanel);
+  const toolbar=document.createElement('div');toolbar.className='pet-admin-toolbar';toolbar.appendChild(button);card.insertBefore(toolbar,visual);
+}
+function removeButton(){button?.closest('.pet-admin-toolbar')?.remove();button?.remove();button=null;if(dialog?.open)dialog.close();}
 function start(){if(!getApps().length){setTimeout(start,120);return;}ensureStyle();const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,async user=>{currentUser=user;adminVerified=false;removeButton();if(!user)return;adminVerified=await verifyAdmin(user);if(auth.currentUser?.uid!==user.uid||!adminVerified)return;ensureButton();});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
