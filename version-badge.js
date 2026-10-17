@@ -6,10 +6,11 @@ import './pet-grumpy-cleanup-v139.js';
 import './pet-lifecycle-v141.js';
 import './pet-egg-ui-v141.js';
 import './pet-six-species-v141.js';
+import './pet-eye-emphasis-v144.js';
 
 queueMicrotask(()=>import('./pet-admin-panel.js').catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.4.3';
+const APP_VERSION='1.4.4';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
