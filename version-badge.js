@@ -1,6 +1,7 @@
 import './pet-jump-fix.js';
+import './pet-motion-polish.js';
 
-const APP_VERSION='1.3.3';
+const APP_VERSION='1.3.4';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
