@@ -64,37 +64,10 @@ export function renderPetSVG(value,shop={}) {
     markings=path('M105 147 Q120 140 135 147 L143 180 Q120 196 97 180Z','#fff3df')+path('M108 159 L132 159 M105 171 L135 171');
   }
   const cheeks='<g fill="#e69c9c" opacity=".5" stroke="none"><ellipse cx="80" cy="128" rx="9" ry="5"/><ellipse cx="160" cy="128" rx="9" ry="5"/></g>';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${layers.backgrounds}<ellipse cx="120" cy="207" rx="66" ry="9" fill="${outline}" opacity=".09"/><g class="pet-walker"><g class="pet-facing"><g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${rear}${feature}${path('M78 180 Q65 205 87 204 L103 186 M137 186 L153 204 Q175 205 162 180',color)}${path(bodies[a.species],color)}${markings}<g fill="${outline}" stroke="${outline}" opacity=".22">${pattern}${layers.patterns}</g>${wings}<g fill="${outline}">${eyes}</g>${cheeks}${face}</g>${layers.accessories}</g></g>${layers.effects||''}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${layers.backgrounds}<ellipse cx="120" cy="207" rx="66" ry="9" fill="${outline}" opacity=".09"/><g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${rear}${feature}${path('M78 180 Q65 205 87 204 L103 186 M137 186 L153 204 Q175 205 162 180',color)}${path(bodies[a.species],color)}${markings}<g fill="${outline}" stroke="${outline}" opacity=".22">${pattern}${layers.patterns}</g>${wings}<g fill="${outline}">${eyes}</g>${cheeks}${face}</g>${layers.accessories}${layers.effects||''}</svg>`;
 }
 export function appearanceLabel(value) {const a=normalizeAppearance(value);return Object.entries(OPTIONS).map(([key,items])=>items.find(x=>x.id===a[key]).label).join('・');}
 
-function installPetClickJump(){
-  const visual=document.getElementById('petVisual');
-  if(!visual||visual.dataset.petMotionReady==='1')return;
-  visual.dataset.petMotionReady='1';
-  let jumpTimer=0;
-  const sync=()=>{
-    const hatched=visual.classList.contains('hatched');
-    if(hatched){visual.tabIndex=0;visual.title='クリックすると、ぴょん！';visual.setAttribute('aria-keyshortcuts','Enter Space');}
-    else{visual.removeAttribute('tabindex');visual.removeAttribute('title');visual.removeAttribute('aria-keyshortcuts');visual.classList.remove('pet-jumping');}
-  };
-  const jump=()=>{
-    if(!visual.classList.contains('hatched')||visual.classList.contains('pet-jumping'))return;
-    const walker=visual.querySelector('.pet-walker');
-    if(!walker)return;
-    visual.classList.add('pet-jumping');walker.classList.add('pet-click-jump');
-    const finish=()=>{clearTimeout(jumpTimer);visual.classList.remove('pet-jumping');walker.classList.remove('pet-click-jump');};
-    jumpTimer=setTimeout(finish,760);
-    walker.addEventListener('animationend',event=>{if(event.animationName==='petJump')finish();},{once:true});
-  };
-  visual.addEventListener('click',jump);
-  visual.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();jump();}});
-  new MutationObserver(sync).observe(visual,{attributes:true,attributeFilter:['class']});
-  sync();
-}
-
 if(typeof window!=='undefined'){
-  const install=()=>installPetClickJump();
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else queueMicrotask(install);
   queueMicrotask(()=>import('./pet-shop.js').catch(error=>console.error('Pet shop failed to load',error)));
 }
