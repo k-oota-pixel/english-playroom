@@ -4,7 +4,6 @@ function installPetSleepMode(){
   if(visual.dataset.sleepModeInstalled==='1')return;
   visual.dataset.sleepModeInstalled='1';
 
-  const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)');
   let awakeUntil=0;
   let grumpyTimer=0;
   let sleepTimer=0;
@@ -46,8 +45,8 @@ function installPetSleepMode(){
   function petIdentity(){return `${document.getElementById('petTitle')?.textContent||''}|${visual.getAttribute('aria-label')||''}`;}
   function napWindow(d){
     const h=hashString(`${dateKey(d)}|${petIdentity()}`);
-    const start=13*60+(h%76); // 13:00–14:15
-    const duration=35+((h>>>8)%21); // 35–55 min
+    const start=13*60+(h%76);
+    const duration=35+((h>>>8)%21);
     return {start,end:start+duration};
   }
   function sleepPeriod(d=new Date()){
@@ -73,21 +72,34 @@ function installPetSleepMode(){
     if(kind==='sleep'){
       overlay.append(svgEl('path',{d:'M84 109 Q94 117 104 109'}),svgEl('path',{d:'M136 109 Q146 117 156 109'}));
     }else{
-      // Half-lidded eyes: annoyed, but still cute rather than angry.
-      overlay.append(
-        svgEl('path',{d:'M84 104 Q94 111 104 107'}),
-        svgEl('path',{d:'M136 107 Q146 111 156 104'})
-      );
+      overlay.append(svgEl('path',{d:'M84 104 Q94 111 104 107'}),svgEl('path',{d:'M136 107 Q146 111 156 104'}));
     }
     character.appendChild(overlay);return overlay;
   }
+
+  function removeSleepLayers(){
+    const layers=[...visual.querySelectorAll('.pet-sleep-layer')].reverse();
+    for(const layer of layers){
+      try{layer.getAnimations().forEach(animation=>animation.cancel());}catch{}
+      const parent=layer.parentNode;
+      if(!parent)continue;
+      while(layer.firstChild)parent.insertBefore(layer.firstChild,layer);
+      layer.remove();
+    }
+  }
   function ensureSleepLayer(){
     const character=visual.querySelector('.pet-character');if(!character)return null;
-    const parent=character.parentNode;
-    if(parent?.classList?.contains('pet-sleep-layer'))return parent;
+    if(character.parentNode?.classList?.contains('pet-sleep-layer'))return character.parentNode;
+    // Never stack sleep wrappers. Old wrappers are fully removed first.
+    removeSleepLayers();
+    const currentCharacter=visual.querySelector('.pet-character');if(!currentCharacter)return null;
+    const parent=currentCharacter.parentNode;
     const layer=svgEl('g',{class:'pet-sleep-layer'});
-    layer.style.transformBox='fill-box';layer.style.transformOrigin='center bottom';layer.style.transition='transform .38s ease';
-    parent.insertBefore(layer,character);layer.appendChild(character);return layer;
+    layer.style.transformBox='fill-box';
+    layer.style.transformOrigin='center bottom';
+    parent.insertBefore(layer,currentCharacter);
+    layer.appendChild(currentCharacter);
+    return layer;
   }
   function setEyes(mode){
     const eyes=eyeGroup();if(eyes)eyes.style.opacity=mode==='normal'?'':'0';
@@ -100,32 +112,53 @@ function installPetSleepMode(){
     if(character)character.style.animationPlayState=paused?'paused':'';
     if(shadow)shadow.style.animationPlayState=paused?'paused':'';
   }
+  function resetShadow(){
+    const shadow=visual.querySelector('.pet-shadow');
+    if(!shadow)return;
+    shadow.style.opacity='';
+    shadow.style.transformOrigin='';
+  }
   function applySleep(){
     if(!visual.classList.contains('hatched'))return;
     const layer=ensureSleepLayer();
     visual.dataset.petSleeping='1';delete visual.dataset.petGrumpy;
     setMotionPaused(true);setEyes('sleep');
-    if(layer)layer.style.transform='translateY(8px) rotate(-7deg) scale(.98,.94)';
+    if(layer){
+      layer.style.transition='transform .38s ease';
+      layer.style.transform='translateY(8px) rotate(-7deg) scale(.98,.94)';
+    }
     const shadow=visual.querySelector('.pet-shadow');if(shadow){shadow.style.opacity='.065';shadow.style.transformOrigin='center';}
     zzz.hidden=false;
   }
-  function clearSleepPose({resume=true}={}){
+  function clearSleepPose({resume=true,removeLayer=true}={}){
     delete visual.dataset.petSleeping;
-    const layer=visual.querySelector('.pet-sleep-layer');if(layer)layer.style.transform='none';
     zzz.hidden=true;
+    if(removeLayer)removeSleepLayers();
+    else{
+      const layer=visual.querySelector('.pet-sleep-layer');
+      if(layer)layer.style.transform='none';
+    }
+    resetShadow();
     if(resume)setMotionPaused(false);
   }
   function finishGrumpy(){
-    delete visual.dataset.petGrumpy;setEyes('normal');
-    if(shouldSleep())applySleep();else clearSleepPose({resume:true});
+    delete visual.dataset.petGrumpy;
+    setEyes('normal');
+    removeSleepLayers();
+    resetShadow();
+    if(shouldSleep())applySleep();
+    else setMotionPaused(false);
   }
   function wakeGrumpy(){
     if(visual.dataset.petSleeping!=='1')return;
     awakeUntil=Date.now()+7000;
     clearTimeout(grumpyTimer);clearTimeout(sleepTimer);
-    clearSleepPose({resume:false});
+    delete visual.dataset.petSleeping;
+    zzz.hidden=true;
     visual.dataset.petGrumpy='1';
     setEyes('grumpy');
+    resetShadow();
+
     const layer=visual.querySelector('.pet-sleep-layer');
     if(layer){
       layer.style.transition='none';
@@ -138,24 +171,41 @@ function installPetSleepMode(){
         {transform:'translateX(2px) translateY(0) rotate(1.2deg)',offset:.73},
         {transform:'translateX(0) translateY(0) rotate(0deg) scale(1)',offset:1}
       ],{duration:720,easing:'ease-out'});
-      reaction.finished.catch(()=>{}).finally(()=>{layer.style.transition='transform .38s ease';layer.style.transform='none';});
+      reaction.finished.catch(()=>{}).finally(()=>removeSleepLayers());
+    }else{
+      removeSleepLayers();
     }
+
     grumpyTimer=setTimeout(()=>{
-      delete visual.dataset.petGrumpy;setEyes('normal');setMotionPaused(false);
+      delete visual.dataset.petGrumpy;
+      setEyes('normal');
+      removeSleepLayers();
+      resetShadow();
+      setMotionPaused(false);
     },2000);
     sleepTimer=setTimeout(()=>{if(shouldSleep())applySleep();else finishGrumpy();},7200);
   }
   function resetIfNoPet(){
-    delete visual.dataset.petSleeping;delete visual.dataset.petGrumpy;zzz.hidden=true;setMotionPaused(false);
+    delete visual.dataset.petSleeping;delete visual.dataset.petGrumpy;
+    zzz.hidden=true;
+    removeSleepLayers();
+    resetShadow();
+    setMotionPaused(false);
   }
   function syncState(){
     if(!visual.classList.contains('hatched')){resetIfNoPet();return;}
     if(visual.dataset.petGrumpy==='1')return;
     if(shouldSleep())applySleep();
-    else if(visual.dataset.petSleeping==='1'){clearSleepPose({resume:true});setEyes('normal');}
+    else if(visual.dataset.petSleeping==='1'){
+      clearSleepPose({resume:true,removeLayer:true});
+      setEyes('normal');
+    }else{
+      // Defensive cleanup in case an old sleep wrapper survived a previous version.
+      removeSleepLayers();
+      resetShadow();
+    }
   }
 
-  // Sleeping taps wake the pet before the normal jump handler sees the event.
   document.addEventListener('click',event=>{
     const target=event.target instanceof Element?event.target.closest('#petVisual'):null;
     if(!target)return;
