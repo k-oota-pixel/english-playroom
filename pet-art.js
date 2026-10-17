@@ -5,9 +5,10 @@ const outline='#40564e';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
 const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',dragon:'bird',mystery:'cat'};
 const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'パンダ',penguin:'ペンギン'};
+const EYE_STYLES=['round','gentle','watery','smile','sleepy','sparkle'];
+const EYE_LABELS={round:'まんまる',gentle:'たれ目',watery:'うるうる',smile:'にっこり',sleepy:'ねむねむ',sparkle:'きらきら'};
+const BACKGROUND_LABELS={ivory:'おうち',sky:'青空',leaf:'お庭',rose:'花畑'};
 
-// Baby = low, round and plush-like. Adult = a little taller with visible paws
-// and belly, but still deliberately soft and cute rather than realistic.
 const BODIES={
   baby:{
     cat:'M54 124 Q54 77 120 72 Q186 77 186 124 L185 153 Q181 192 120 196 Q59 192 55 153Z',
@@ -34,102 +35,70 @@ function resolvedAppearance(value={}){
   const species=LEGACY_SPECIES[value?.species]||value?.species;
   const a=normalizeAppearance({...value,species});
   a.species=OFFICIAL_SPECIES.includes(species)?species:'cat';
+  const legacy=a.eyes==='sleepy'?'sleepy':a.eyes==='sparkle'?'sparkle':a.eyes==='cool'?'gentle':'round';
+  a.eyeStyle=EYE_STYLES.includes(value?.eyeStyle)?value.eyeStyle:legacy;
   return a;
 }
-function resolvedStage(stage){
-  const candidate=stage||(typeof document!=='undefined'?document.documentElement.dataset.petStage:'');
-  return candidate==='baby'?'baby':'adult';
-}
+function resolvedStage(stage){const candidate=stage||(typeof document!=='undefined'?document.documentElement.dataset.petStage:'');return candidate==='baby'?'baby':'adult';}
 function bodyColor(a){return OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.color||'#f5d99b';}
 function backgroundColor(a){return OPTIONS.baseBackground.find(x=>x.id===a.baseBackground)?.color||'#fff3d9';}
 
-function featureFor(a,color,stage){
+function flower(x,y,color='#f6a7bd',scale=1){return `<g transform="translate(${x} ${y}) scale(${scale})"><g fill="${color}" stroke="none"><circle cx="0" cy="-7" r="5"/><circle cx="7" cy="0" r="5"/><circle cx="0" cy="7" r="5"/><circle cx="-7" cy="0" r="5"/></g><circle cx="0" cy="0" r="4" fill="#f5c94f" stroke="none"/><path d="M0 10 V29" stroke="#639567" stroke-width="3"/><path d="M0 20 q-9-7-12 1 q8 5 12 2 M0 23 q9-7 12 1 q-8 5-12 2" fill="#79ae76" stroke="none"/></g>`;}
+function backgroundTheme(id){
+  if(id==='sky')return `<g aria-hidden="true"><circle cx="194" cy="42" r="20" fill="#ffd86f" opacity=".9"/><g fill="#fff" opacity=".82"><path d="M18 60 Q25 43 41 52 Q49 36 64 51 Q78 49 83 62 H18Z"/><path d="M151 78 Q158 62 171 69 Q181 52 194 69 Q210 66 218 80 H151Z"/></g><path d="M0 173 Q42 143 84 170 T166 168 T240 165 V240 H0Z" fill="#b8d99b" opacity=".72"/><path d="M0 190 Q46 167 91 190 T177 187 T240 185 V240 H0Z" fill="#9fc983" opacity=".82"/></g>`;
+  if(id==='leaf')return `<g aria-hidden="true"><path d="M0 176 H240 V240 H0Z" fill="#cbe2ac" opacity=".72"/><g stroke="#d2b27c" stroke-width="5" opacity=".72"><path d="M12 143 V199 M38 143 V199 M64 143 V199 M176 143 V199 M202 143 V199 M228 143 V199"/><path d="M4 156 H72 M168 156 H236"/></g><g fill="#86b978" opacity=".9"><circle cx="20" cy="134" r="18"/><circle cx="47" cy="126" r="22"/><circle cx="194" cy="129" r="21"/><circle cx="224" cy="136" r="18"/></g><g fill="#f6c65e"><path d="M31 80 q8-10 16 0 q-8 3-16 0Z"/><path d="M31 80 q8 10 16 0 q-8-3-16 0Z"/></g><path d="M39 80 q12 12 18 3" fill="none" stroke="#7c8c79" stroke-width="2"/></g>`;
+  if(id==='rose')return `<g aria-hidden="true"><path d="M0 166 Q44 150 88 167 T174 164 T240 166 V240 H0Z" fill="#b8d99d" opacity=".66"/><g opacity=".94">${flower(24,170,'#f39ab5',.72)}${flower(53,183,'#b9a3df',.58)}${flower(82,174,'#ffd47a',.52)}${flower(159,176,'#f39ab5',.55)}${flower(188,183,'#b9a3df',.62)}${flower(217,169,'#ffd47a',.7)}</g><g fill="#fff" opacity=".55"><circle cx="42" cy="61" r="4"/><circle cx="195" cy="73" r="5"/><circle cx="214" cy="50" r="3"/></g></g>`;
+  return `<g aria-hidden="true"><rect x="18" y="28" width="57" height="48" rx="8" fill="#d9edf7" stroke="#c6b494" stroke-width="3"/><path d="M46.5 28 V76 M18 52 H75" stroke="#fff" stroke-width="3"/><path d="M12 25 Q25 45 17 82" fill="#f0c4b7" opacity=".8"/><path d="M81 25 Q68 45 76 82" fill="#f0c4b7" opacity=".8"/><ellipse cx="120" cy="206" rx="86" ry="24" fill="#edcfaa" opacity=".45"/><g transform="translate(202 135)"><rect x="-13" y="24" width="26" height="28" rx="5" fill="#d79a72"/><g fill="#78ab78"><circle cx="-9" cy="19" r="12"/><circle cx="7" cy="15" r="14"/><circle cx="1" cy="3" r="11"/></g></g></g>`;
+}
+
+function anatomyFor(a,color,stage){
   const baby=stage==='baby';
-  if(a.feature==='horns')return baby?path('M88 78 Q86 56 98 49 L107 70 M133 70 L142 49 Q154 56 152 78',color):path('M82 68 Q79 38 93 31 L105 61 M135 61 L147 31 Q161 38 158 68',color);
-  if(a.species==='cat')return path(baby?'M67 91 L70 52 L101 72 M139 72 L170 52 L173 91':a.feature==='long'?'M64 82 L61 23 Q84 29 100 58 M140 58 Q156 29 179 23 L176 82':'M65 82 L68 38 L101 60 M139 60 L172 38 L175 82',color);
-  if(a.species==='dog')return path(baby?'M78 76 Q47 64 47 103 Q55 122 72 101 L89 81 M162 76 Q193 64 193 103 Q185 122 168 101 L151 81':a.feature==='long'?'M78 60 Q36 48 37 117 Q46 143 66 118 L86 73 M162 60 Q204 48 203 117 Q194 143 174 118 L154 73':'M78 61 Q45 49 44 94 Q53 116 70 95 L86 74 M162 61 Q195 49 196 94 Q187 116 170 95 L154 74',color);
-  if(a.species==='bird')return path(baby?'M108 71 Q105 50 116 56 L122 65 Q131 47 134 62 L132 72':a.feature==='long'?'M101 58 Q91 12 112 31 L120 50 Q132 8 139 32 L136 60':'M108 59 Q99 29 115 39 L123 51 Q133 25 137 46 L133 61',color);
+  if(a.species==='cat')return path(baby?'M67 91 L70 52 L101 72 M139 72 L170 52 L173 91':'M65 82 L68 38 L101 60 M139 60 L172 38 L175 82',color);
+  if(a.species==='dog')return path(baby?'M78 76 Q47 64 47 103 Q55 122 72 101 L89 81 M162 76 Q193 64 193 103 Q185 122 168 101 L151 81':'M78 61 Q45 49 44 94 Q53 116 70 95 L86 74 M162 61 Q195 49 196 94 Q187 116 170 95 L154 74',color);
+  if(a.species==='bird')return path(baby?'M108 71 Q105 50 116 56 L122 65 Q131 47 134 62 L132 72':'M108 59 Q99 29 115 39 L123 51 Q133 25 137 46 L133 61',color);
   if(a.species==='hamster'||a.species==='panda'){
-    const earColor=a.species==='panda'?outline:color;
-    const cy=baby?78:67,rx=baby?21:25,ry=baby?21:(a.feature==='long'?34:25);
-    const inner=a.species==='panda'?'#f2ccd3':'#f8d8d9';
-    return `<g><ellipse cx="72" cy="${cy}" rx="${rx}" ry="${ry}" fill="${earColor}"/><ellipse cx="168" cy="${cy}" rx="${rx}" ry="${ry}" fill="${earColor}"/><ellipse cx="72" cy="${cy}" rx="${Math.max(10,rx-8)}" ry="${Math.max(10,ry-8)}" fill="${inner}" stroke="none" opacity=".88"/><ellipse cx="168" cy="${cy}" rx="${Math.max(10,rx-8)}" ry="${Math.max(10,ry-8)}" fill="${inner}" stroke="none" opacity=".88"/></g>`;
+    const earColor=a.species==='panda'?outline:color,cy=baby?78:67,rx=baby?21:25,ry=baby?21:25,inner=a.species==='panda'?'#f2ccd3':'#f8d8d9';
+    return `<g><ellipse cx="72" cy="${cy}" rx="${rx}" ry="${ry}" fill="${earColor}"/><ellipse cx="168" cy="${cy}" rx="${rx}" ry="${ry}" fill="${earColor}"/><ellipse cx="72" cy="${cy}" rx="${rx-8}" ry="${ry-8}" fill="${inner}" stroke="none" opacity=".88"/><ellipse cx="168" cy="${cy}" rx="${rx-8}" ry="${ry-8}" fill="${inner}" stroke="none" opacity=".88"/></g>`;
   }
-  if(a.species==='penguin')return path(baby?'M108 72 L115 57 L121 65 L132 56 L134 73':a.feature==='long'?'M103 61 Q94 17 115 30 L121 49 Q140 15 141 42 L133 62':'M106 62 L112 43 L121 53 L133 42 L136 63',color);
+  if(a.species==='penguin')return path(baby?'M108 72 L115 57 L121 65 L132 56 L134 73':'M106 62 L112 43 L121 53 L133 42 L136 63',color);
   return '';
 }
 
+function eyeHighlights(left,right,y,big=false){return `<g fill="white" stroke="none"><circle cx="${left-2.7}" cy="${y-4.5}" r="${big?3.8:3}"/><circle cx="${right-2.7}" cy="${y-4.5}" r="${big?3.8:3}"/><circle cx="${left+3.2}" cy="${y+4.5}" r="${big?1.9:1.4}" opacity=".55"/><circle cx="${right+3.2}" cy="${y+4.5}" r="${big?1.9:1.4}" opacity=".55"/></g>`;}
 function eyesFor(a,stage){
-  const baby=stage==='baby',y=baby?114:108,left=94,right=146,rx=baby?8.5:9,ry=baby?11.5:12;
-  if(a.eyes==='round')return `<ellipse cx="${left}" cy="${y}" rx="${rx}" ry="${ry}"/><ellipse cx="${right}" cy="${y}" rx="${rx}" ry="${ry}"/><g fill="white" stroke="none"><circle cx="${left-2.5}" cy="${y-4.5}" r="3"/><circle cx="${right-2.5}" cy="${y-4.5}" r="3"/><circle cx="${left+3}" cy="${y+4}" r="1.4" opacity=".5"/><circle cx="${right+3}" cy="${y+4}" r="1.4" opacity=".5"/></g>`;
-  if(a.eyes==='sleepy')return path(`M84 ${y+2} Q94 ${y-9} 104 ${y+2} M136 ${y+2} Q146 ${y-9} 156 ${y+2}`);
-  if(a.eyes==='cool')return path(`M83 ${y-8} L105 ${y-4} M135 ${y-4} L157 ${y-8}`)+`<ellipse cx="95" cy="${y+2}" rx="5.5" ry="7"/><ellipse cx="145" cy="${y+2}" rx="5.5" ry="7"/>`;
-  return star(left,y,baby?1.02:.92)+star(right,y,baby?1.02:.92);
-}
-function patternFor(a,stage){
-  const baby=stage==='baby';
-  if(a.pattern==='spots')return `<circle cx="78" cy="${baby?157:166}" r="8"/><circle cx="159" cy="${baby?163:171}" r="10"/><circle cx="114" cy="${baby?180:187}" r="6.5"/>`;
-  if(a.pattern==='stripes')return path(baby?'M61 154 L85 160 M62 169 L82 175 M179 154 L155 160 M178 169 L158 175':'M62 153 L91 161 M62 170 L87 177 M178 153 L149 161 M178 170 L153 177');
-  if(a.pattern==='star')return star(82,baby?158:151,.76)+star(158,baby?158:151,.76);
-  return '';
+  const baby=stage==='baby',y=baby?114:108,left=94,right=146,style=a.eyeStyle;
+  if(style==='gentle')return `<ellipse cx="${left}" cy="${y+1}" rx="9" ry="11.5" transform="rotate(8 ${left} ${y+1})"/><ellipse cx="${right}" cy="${y+1}" rx="9" ry="11.5" transform="rotate(-8 ${right} ${y+1})"/>${eyeHighlights(left,right,y+1)}`;
+  if(style==='watery')return `<ellipse cx="${left}" cy="${y}" rx="10.5" ry="14"/><ellipse cx="${right}" cy="${y}" rx="10.5" ry="14"/>${eyeHighlights(left,right,y,true)}<g fill="white" stroke="none" opacity=".82"><circle cx="${left-4}" cy="${y+5}" r="2.2"/><circle cx="${right-4}" cy="${y+5}" r="2.2"/></g>`;
+  if(style==='smile')return path(`M83 ${y+1} Q94 ${y-10} 105 ${y+1} M135 ${y+1} Q146 ${y-10} 157 ${y+1}`,'none','stroke-width="5"');
+  if(style==='sleepy')return path(`M83 ${y-1} Q94 ${y+5} 105 ${y-1} M135 ${y-1} Q146 ${y+5} 157 ${y-1}`,'none','stroke-width="5"');
+  if(style==='sparkle')return star(left,y,baby?1.02:.92)+star(right,y,baby?1.02:.92)+`<g fill="white" stroke="none"><circle cx="${left}" cy="${y-2}" r="2"/><circle cx="${right}" cy="${y-2}" r="2"/></g>`;
+  const rx=baby?8.5:9,ry=baby?11.5:12;return `<ellipse cx="${left}" cy="${y}" rx="${rx}" ry="${ry}"/><ellipse cx="${right}" cy="${y}" rx="${rx}" ry="${ry}"/>${eyeHighlights(left,right,y)}`;
 }
 
-function feetFor(color,stage,species){
-  const baby=stage==='baby';
-  if(species==='bird'||species==='penguin'){
-    const foot='#edaa48';
-    return baby?path('M84 188 Q72 204 98 202 M142 202 Q168 204 156 188',foot):path('M82 190 Q67 210 101 206 M139 206 Q173 210 158 190',foot);
-  }
-  return baby?path('M72 183 Q62 204 91 202 L103 188 M137 188 L149 202 Q178 204 168 183',color):path('M72 184 Q59 210 94 207 L106 189 M134 189 L146 207 Q181 210 168 184',color);
-}
-function bellyFor(species,stage){
-  if(stage!=='adult')return '';
-  if(species==='penguin')return '';
-  if(species==='bird')return '<ellipse cx="120" cy="169" rx="35" ry="34" fill="#fff3df" opacity=".58" stroke="none"/>';
-  return '<ellipse cx="120" cy="171" rx="38" ry="33" fill="#fff3df" opacity=".64" stroke="none"/>';
-}
-function armLines(species,stage){
-  if(stage!=='adult')return '';
-  if(species==='bird'||species==='penguin')return '';
-  return '<path d="M82 151 Q84 174 104 181 Q113 181 116 170 M158 151 Q156 174 136 181 Q127 181 124 170" fill="none"/>';
-}
-function tailFor(species,color,stage){
-  if(species==='hamster')return stage==='baby'?'<circle cx="55" cy="169" r="11" fill="'+color+'"/>':'<circle cx="57" cy="172" r="13" fill="'+color+'"/>';
-  if(species==='dog')return path(stage==='baby'?'M178 161 Q205 145 202 174 Q190 181 176 171':'M176 159 Q211 137 207 176 Q193 188 174 174',color);
-  if(species==='cat')return path(stage==='baby'?'M177 166 Q206 158 202 187 Q189 191 176 179':'M176 164 Q211 151 207 190 Q191 197 174 181',color);
-  return '';
-}
+function feetFor(color,stage,species){const baby=stage==='baby';if(species==='bird'||species==='penguin'){const foot='#edaa48';return baby?path('M84 188 Q72 204 98 202 M142 202 Q168 204 156 188',foot):path('M82 190 Q67 210 101 206 M139 206 Q173 210 158 190',foot);}return baby?path('M72 183 Q62 204 91 202 L103 188 M137 188 L149 202 Q178 204 168 183',color):path('M72 184 Q59 210 94 207 L106 189 M134 189 L146 207 Q181 210 168 184',color);}
+function bellyFor(species,stage){if(stage!=='adult'||species==='penguin')return '';if(species==='bird')return '<ellipse cx="120" cy="169" rx="35" ry="34" fill="#fff3df" opacity=".58" stroke="none"/>';return '<ellipse cx="120" cy="171" rx="38" ry="33" fill="#fff3df" opacity=".64" stroke="none"/>';}
+function armLines(species,stage){if(stage!=='adult'||species==='bird'||species==='penguin')return '';return '<path d="M82 151 Q84 174 104 181 Q113 181 116 170 M158 151 Q156 174 136 181 Q127 181 124 170" fill="none"/>';}
+function tailFor(species,color,stage){if(species==='hamster')return stage==='baby'?`<circle cx="55" cy="169" r="11" fill="${color}"/>`:`<circle cx="57" cy="172" r="13" fill="${color}"/>`;if(species==='dog')return path(stage==='baby'?'M178 161 Q205 145 202 174 Q190 181 176 171':'M176 159 Q211 137 207 176 Q193 188 174 174',color);if(species==='cat')return path(stage==='baby'?'M177 166 Q206 158 202 187 Q189 191 176 179':'M176 164 Q211 151 207 190 Q191 197 174 181',color);return '';}
 
 function speciesDetails(a,color,stage){
-  const baby=stage==='baby',mouthY=baby?135:132,cheekY=baby?139:136;
-  let rear=tailFor(a.species,color,stage),markings='',face='',wings='';
-  const nose=path(`M115 ${mouthY} Q120 ${mouthY-5} 125 ${mouthY} L120 ${mouthY+5}Z`,outline);
-  const smile=path(`M120 ${mouthY+5} Q114 ${mouthY+14} 108 ${mouthY+9} M120 ${mouthY+5} Q126 ${mouthY+14} 132 ${mouthY+9}`);
-  face=nose+smile;
+  const baby=stage==='baby',mouthY=baby?135:132,cheekY=baby?139:136;let rear=tailFor(a.species,color,stage),markings='',face='',wings='';
+  const nose=path(`M115 ${mouthY} Q120 ${mouthY-5} 125 ${mouthY} L120 ${mouthY+5}Z`,outline),smile=path(`M120 ${mouthY+5} Q114 ${mouthY+14} 108 ${mouthY+9} M120 ${mouthY+5} Q126 ${mouthY+14} 132 ${mouthY+9}`);face=nose+smile;
   if(a.species==='bird'||a.species==='penguin')face=path(`M110 ${mouthY-2} L120 ${mouthY+10} L130 ${mouthY-2} Z`,'#edaa48');
   if(a.species==='cat')face+=path(`M70 ${mouthY-4} L51 ${mouthY-8} M70 ${mouthY+4} L50 ${mouthY+8} M170 ${mouthY-4} L189 ${mouthY-8} M170 ${mouthY+4} L190 ${mouthY+8}`);
   if(a.species==='dog')face=`<ellipse cx="120" cy="${mouthY+4}" rx="${baby?22:25}" ry="${baby?17:19}" fill="#fff" opacity=".38" stroke="none"/>`+face;
   if(a.species==='hamster')face=`<g fill="#fff3df" stroke="none" opacity=".95"><ellipse cx="78" cy="${cheekY}" rx="${baby?22:23}" ry="${baby?17:18}"/><ellipse cx="162" cy="${cheekY}" rx="${baby?22:23}" ry="${baby?17:18}"/></g>`+face+`<path d="M114 ${mouthY+13} v${baby?9:11} h12 v-${baby?9:11}" fill="white"/>`;
   if(a.species==='bird')wings=path(baby?'M60 146 Q76 132 82 160 M180 146 Q164 132 158 160':'M64 141 Q82 119 88 164 M176 141 Q158 119 152 164');
   if(a.species==='panda')markings=`<g fill="${outline}" stroke="none" opacity=".32"><ellipse cx="94" cy="${baby?116:110}" rx="${baby?17:19}" ry="${baby?21:24}" transform="rotate(25 94 ${baby?116:110})"/><ellipse cx="146" cy="${baby?116:110}" rx="${baby?17:19}" ry="${baby?21:24}" transform="rotate(-25 146 ${baby?116:110})"/></g>`;
-  if(a.species==='penguin'){
-    rear+=path(baby?'M65 128 Q42 137 43 166 Q56 164 71 151 M175 128 Q198 137 197 166 Q184 164 169 151':'M70 112 Q38 125 40 170 Q56 166 74 146 M170 112 Q202 125 200 170 Q184 166 166 146',color);
-    markings=path(baby?'M82 113 Q84 84 104 95 Q120 108 136 95 Q156 84 158 113 L161 160 Q158 185 120 188 Q82 185 79 160Z':'M80 103 Q80 72 104 87 Q120 103 136 87 Q160 72 160 103 L164 163 Q163 190 120 194 Q77 190 76 163Z','#fff3df');
-  }
-  const cheeks=a.species==='hamster'?'':`<g fill="#e69c9c" opacity=".48" stroke="none"><ellipse cx="80" cy="${cheekY}" rx="${baby?11:10}" ry="${baby?7:6}"/><ellipse cx="160" cy="${cheekY}" rx="${baby?11:10}" ry="${baby?7:6}"/></g>`;
-  return {rear,markings,face,wings,cheeks};
+  if(a.species==='penguin'){rear+=path(baby?'M65 128 Q42 137 43 166 Q56 164 71 151 M175 128 Q198 137 197 166 Q184 164 169 151':'M70 112 Q38 125 40 170 Q56 166 74 146 M170 112 Q202 125 200 170 Q184 166 166 146',color);markings=path(baby?'M82 113 Q84 84 104 95 Q120 108 136 95 Q156 84 158 113 L161 160 Q158 185 120 188 Q82 185 79 160Z':'M80 103 Q80 72 104 87 Q120 103 136 87 Q160 72 160 103 L164 163 Q163 190 120 194 Q77 190 76 163Z','#fff3df');}
+  const cheeks=a.species==='hamster'?'':`<g fill="#e69c9c" opacity=".48" stroke="none"><ellipse cx="80" cy="${cheekY}" rx="${baby?11:10}" ry="${baby?7:6}"/><ellipse cx="160" cy="${cheekY}" rx="${baby?11:10}" ry="${baby?7:6}"/></g>`;return {rear,markings,face,wings,cheeks};
 }
 
 export function renderPetSVG(value,shop={},stage=''){
-  const a=resolvedAppearance(value),layers=equippedLayers(shop),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a);
-  const details=speciesDetails(a,color,resolved),feature=featureFor(a,color,resolved),eyes=eyesFor(a,resolved),pattern=patternFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="${resolved}" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${layers.backgrounds}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-character"><g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${feature}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}<g fill="${outline}" stroke="${outline}" opacity="${resolved==='baby'?'.20':'.24'}">${pattern}${layers.patterns}</g>${details.wings}<g fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>${layers.accessories}</g>${layers.effects||''}</svg>`;
+  const a=resolvedAppearance(value),layers=equippedLayers(shop),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a),details=speciesDetails(a,color,resolved),anatomy=anatomyFor(a,color,resolved),eyes=eyesFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
+  const theme=layers.backgrounds?'':backgroundTheme(a.baseBackground);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="${resolved}" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${theme}${layers.backgrounds}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-jump-layer"><g class="pet-character"><g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${anatomy}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}${details.wings}<g fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>${layers.accessories}</g></g>${layers.effects||''}</svg>`;
 }
 
-export function appearanceLabel(value){
-  const a=resolvedAppearance(value),labels=[SPECIES_LABELS[a.species]||a.species];
-  for(const [key,items] of Object.entries(OPTIONS)){if(key==='species')continue;const found=items.find(x=>x.id===a[key]);if(found)labels.push(found.label);}
-  return labels.join('・');
-}
+export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
 if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js').then(()=>import('./pet-enhancements.js')).catch(error=>console.error('Pet shop failed to load',error)));
