@@ -17,6 +17,21 @@ function installInPlacePetJump(){
     return layer;
   }
 
+  // Prepare the jump wrapper as soon as the pet SVG appears, rather than on
+  // the first tap. Re-parenting .pet-character restarts its CSS walk animation,
+  // which was why the very first tap briefly sent the pet back to the left.
+  // Once the wrapper exists, every tap can jump without changing the SVG tree.
+  function primeJumpLayer(){
+    if(visual.dataset.petSleeping==='1'||visual.dataset.petGrumpy==='1')return;
+    const character=visual.querySelector('.pet-character');
+    if(!character)return;
+    if(character.parentNode?.classList?.contains('pet-jump-layer'))return;
+    ensureJumpLayer(character);
+  }
+  primeJumpLayer();
+  const primeTimer=setInterval(primeJumpLayer,100);
+  window.addEventListener('pagehide',()=>clearInterval(primeTimer),{once:true});
+
   visual.addEventListener('click',async event=>{
     if(!visual.classList.contains('hatched'))return;
 
