@@ -7,7 +7,9 @@ import './pet-lifecycle-v141.js';
 import './pet-egg-ui-v141.js';
 import './pet-six-species-v141.js';
 
-const APP_VERSION='1.4.1';
+queueMicrotask(()=>import('./pet-admin-panel.js').catch(error=>console.error('Admin pet panel failed to load',error)));
+
+const APP_VERSION='1.4.2';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
