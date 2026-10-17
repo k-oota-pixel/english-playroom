@@ -146,6 +146,7 @@ async function refreshResurveyCard(section){
   const button=section.querySelector('[data-pet-resurvey]'),status=section.querySelector('[data-pet-resurvey-status]');
   const state=await readResurveyState();
   if(!section.isConnected||!button||!status)return;
+  section.dataset.stateLoading='0';
   if(!state){button.disabled=false;return;}
   if(state.pending){button.textContent='アンケートを続ける';status.textContent='支払い済みです。続きから再開できます。';button.disabled=false;}
   else{button.textContent='30コインで再診断';status.textContent=state.coins<RESURVEY_PRICE?'コインが足りません。':'';button.disabled=!state.hasPet||state.coins<RESURVEY_PRICE;}
@@ -156,31 +157,37 @@ function decorateShop(){
   decorateQueued=false;
   const shop=document.getElementById('petShopDialog');if(!shop)return;
   for(const tab of shop.querySelectorAll('.pet-shop-tab')){
-    if(tab.textContent.includes('見た目変更'))tab.textContent='🐾 ペット';
+    if(tab.textContent.includes('見た目変更')&&tab.textContent.trim()!=='🐾 ペット')tab.textContent='🐾 ペット';
   }
   const panel=shop.querySelector('#petShopPanel'),title=panel?.querySelector('.pet-shop-panel-title');
   if(!panel||!title)return;
-  if(!title.textContent.includes('見た目変更')&&title.textContent.trim()!=='🐾 ペット')return;
-  title.textContent='🐾 ペット';
+  const titleText=title.textContent.trim();
+  if(!titleText.includes('見た目変更')&&titleText!=='🐾 ペット')return;
+  if(titleText!=='🐾 ペット')title.textContent='🐾 ペット';
+
+  const existingResurvey=panel.querySelector('.pet-resurvey-section');
+  if(existingResurvey)return;
+
   for(const section of [...panel.querySelectorAll('.pet-custom-section')])section.remove();
-  let resurvey=panel.querySelector('.pet-resurvey-section');
-  if(!resurvey){
-    resurvey=document.createElement('section');
-    resurvey.className='pet-resurvey-section';
-    resurvey.innerHTML=`<div class="pet-custom-heading"><span>🐾</span><span>ペット再診断</span><span class="pet-custom-price">🪙 ${RESURVEY_PRICE}</span></div><p style="margin:0 0 10px;font-size:11px;line-height:1.65;color:#6d756f">もう一度6つの質問に答えて、新しい姿のペットに出会えます。同じ答えでも、どの動物になるかにはランダム性があります。</p><button class="pet-shop-action" data-pet-resurvey type="button">30コインで再診断</button><div data-pet-resurvey-status style="min-height:1.4em;margin-top:7px;font-size:10px;color:#8a6a19"></div>`;
-    const rename=panel.querySelector('.pet-shop-rename');panel.insertBefore(resurvey,rename||null);
-    const button=resurvey.querySelector('[data-pet-resurvey]'),status=resurvey.querySelector('[data-pet-resurvey-status]');
-    button.addEventListener('click',()=>beginResurvey(button,status));
-    refreshResurveyCard(resurvey);
-  }
+  const resurvey=document.createElement('section');
+  resurvey.className='pet-resurvey-section';
+  resurvey.innerHTML=`<div class="pet-custom-heading"><span>🐾</span><span>ペット再診断</span><span class="pet-custom-price">🪙 ${RESURVEY_PRICE}</span></div><p style="margin:0 0 10px;font-size:11px;line-height:1.65;color:#6d756f">もう一度6つの質問に答えて、新しい姿のペットに出会えます。同じ答えでも、どの動物になるかにはランダム性があります。</p><button class="pet-shop-action" data-pet-resurvey type="button">30コインで再診断</button><div data-pet-resurvey-status style="min-height:1.4em;margin-top:7px;font-size:10px;color:#8a6a19"></div>`;
+  const rename=panel.querySelector('.pet-shop-rename');panel.insertBefore(resurvey,rename||null);
+  const button=resurvey.querySelector('[data-pet-resurvey]'),status=resurvey.querySelector('[data-pet-resurvey-status]');
+  button.addEventListener('click',()=>beginResurvey(button,status));
+  refreshResurveyCard(resurvey);
 }
-function queueDecorate(){if(decorateQueued)return;decorateQueued=true;queueMicrotask(decorateShop);}
+function queueDecorate(){
+  if(decorateQueued)return;
+  decorateQueued=true;
+  requestAnimationFrame(decorateShop);
+}
 
 function installShopEnhancement(){
   const shop=document.getElementById('petShopDialog');
   if(!shop){setTimeout(installShopEnhancement,50);return;}
   const observer=new MutationObserver(queueDecorate);
-  observer.observe(shop,{subtree:true,childList:true,characterData:true});
+  observer.observe(shop,{subtree:true,childList:true});
   decorateShop();
 }
 
