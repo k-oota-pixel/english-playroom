@@ -3,8 +3,9 @@ import './pet-motion-polish.js';
 import './pet-sleep-mode.js';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
+import './pet-lifecycle-v141.js';
 
-const APP_VERSION='1.3.11';
+const APP_VERSION='1.4.1';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
