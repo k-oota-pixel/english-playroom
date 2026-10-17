@@ -1,9 +1,10 @@
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import { appearanceFromAnswers, hasPet, validAppearance } from './pet-model.js';
+import { appearanceFromAnswers, hasPet, validAppearance, normalizePetName, validPetName } from './pet-model.js';
 
 const RESURVEY_PRICE=30;
+const RENAME_PRICE=50;
 const QUESTIONS=[
   {key:'personality',title:'一緒に過ごすなら、どんな相棒がいい？',answers:[['calm','のんびり落ち着いて過ごせる子'],['playful','元気いっぱい、一緒に遊べる子'],['curious','好奇心旺盛で、一緒に冒険できる子']]},
   {key:'bodyColor',title:'その子に似合いそうな色は？',answers:[['cream','やさしいクリーム'],['pink','あたたかなピンク'],['blue','さわやかなブルー'],['mint','落ち着くミント'],['lavender','夢みたいなラベンダー'],['orange','明るいオレンジ']]},
@@ -25,6 +26,18 @@ function setPageToast(message,kind='ok'){
   if(!toast)return;
   toast.textContent=message;
   toast.dataset.kind=kind;
+}
+async function readPetState(){
+  const ctx=firebaseContext();if(!ctx)return null;
+  try{
+    const snap=await getDoc(playroomRef(ctx.db,ctx.user)),data=snap.exists()?(snap.data()||{}):{};
+    return {
+      pending:data.petResurveyPending===true,
+      coins:Math.max(0,Math.floor(Number(data.coins)||0)),
+      hasPet:hasPet(data),
+      petName:validPetName(data.petName)?normalizePetName(data.petName):''
+    };
+  }catch{return null;}
 }
 
 let surveyDialog=null;
@@ -103,14 +116,6 @@ function ensureSurveyDialog(){
   return surveyDialog;
 }
 
-async function readResurveyState(){
-  const ctx=firebaseContext();if(!ctx)return null;
-  try{
-    const snap=await getDoc(playroomRef(ctx.db,ctx.user)),data=snap.exists()?(snap.data()||{}):{};
-    return {pending:data.petResurveyPending===true,coins:Math.max(0,Math.floor(Number(data.coins)||0)),hasPet:hasPet(data)};
-  }catch{return null;}
-}
-
 async function beginResurvey(button,status){
   if(button.disabled)return;
   const ctx=firebaseContext();if(!ctx){status.textContent='Googleログインすると利用できます。';return;}
@@ -122,8 +127,7 @@ async function beginResurvey(button,status){
     if(!pending){
       const coins=Math.max(0,Math.floor(Number(data.coins)||0));
       if(coins<RESURVEY_PRICE)throw Error('コインが足りません。');
-      const ok=window.confirm(`${RESURVEY_PRICE}コインを使って、ペットアンケートをもう一度行いますか？\n今の名前・購入済みアイテム・学習記録はそのまま残ります。`);
-      if(!ok){status.textContent='';return;}
+      if(!window.confirm(`${RESURVEY_PRICE}コインを使って、ペットアンケートをもう一度行いますか？\n今の名前・購入済みアイテム・学習記録はそのまま残ります。`)){status.textContent='';return;}
       await runTransaction(ctx.db,async tx=>{
         const ref=playroomRef(ctx.db,ctx.user),freshSnap=await tx.get(ref),fresh=freshSnap.exists()?(freshSnap.data()||{}):{};
         if(!hasPet(fresh))throw Error('先にペットを迎えてください。');
@@ -140,55 +144,131 @@ async function beginResurvey(button,status){
   finally{button.disabled=false;}
 }
 
-async function refreshResurveyCard(section){
-  if(section.dataset.stateLoading==='1')return;
-  section.dataset.stateLoading='1';
-  const button=section.querySelector('[data-pet-resurvey]'),status=section.querySelector('[data-pet-resurvey-status]');
-  const state=await readResurveyState();
-  if(!section.isConnected||!button||!status)return;
-  section.dataset.stateLoading='0';
-  if(!state){button.disabled=false;return;}
-  if(state.pending){button.textContent='アンケートを続ける';status.textContent='支払い済みです。続きから再開できます。';button.disabled=false;}
-  else{button.textContent='30コインで再診断';status.textContent=state.coins<RESURVEY_PRICE?'コインが足りません。':'';button.disabled=!state.hasPet||state.coins<RESURVEY_PRICE;}
+async function renamePet(input,button,status){
+  const newName=normalizePetName(input.value);
+  if(!validPetName(newName)){status.textContent='名前は1〜12文字で入力してください。';return;}
+  const ctx=firebaseContext();if(!ctx){status.textContent='もう一度ログインしてください。';return;}
+  button.disabled=true;status.textContent='確認しています…';
+  try{
+    const snap=await getDoc(playroomRef(ctx.db,ctx.user)),data=snap.exists()?(snap.data()||{}):{};
+    if(!hasPet(data))throw Error('先にペットを迎えてください。');
+    const current=validPetName(data.petName)?normalizePetName(data.petName):'';
+    if(current===newName)throw Error('今と同じ名前です。');
+    const coins=Math.max(0,Math.floor(Number(data.coins)||0));
+    if(coins<RENAME_PRICE)throw Error('コインが足りません。');
+    if(!window.confirm(`${RENAME_PRICE}コインを使って、名前を「${newName}」に変更しますか？`)){status.textContent='';return;}
+    await runTransaction(ctx.db,async tx=>{
+      const ref=playroomRef(ctx.db,ctx.user),freshSnap=await tx.get(ref),fresh=freshSnap.exists()?(freshSnap.data()||{}):{};
+      if(!hasPet(fresh))throw Error('先にペットを迎えてください。');
+      const freshCoins=Math.max(0,Math.floor(Number(fresh.coins)||0));
+      if(freshCoins<RENAME_PRICE)throw Error('コインが足りません。');
+      tx.set(ref,{coins:freshCoins-RENAME_PRICE,petName:newName,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
+    });
+    status.textContent='名前を変更しました！';
+    setPageToast(`✏️ 名前を「${newName}」に変更しました！`,'ok');
+    const shop=document.getElementById('petShopDialog');if(shop?.open)shop.close();
+  }catch(error){status.textContent=error?.message||'名前を変更できませんでした。';}
+  finally{button.disabled=false;}
 }
 
-let decorateQueued=false;
-function decorateShop(){
-  decorateQueued=false;
+async function refreshPetPanel(panel){
+  const state=await readPetState();
+  if(!panel.isConnected||panel.dataset.petPanel!=='1')return;
+  const resurveyButton=panel.querySelector('[data-pet-resurvey]');
+  const resurveyStatus=panel.querySelector('[data-pet-resurvey-status]');
+  const nameInput=panel.querySelector('[data-pet-rename-input]');
+  const renameButton=panel.querySelector('[data-pet-rename]');
+  const renameStatus=panel.querySelector('[data-pet-rename-status]');
+  if(!state){
+    if(resurveyStatus)resurveyStatus.textContent='ログイン状態を確認できませんでした。';
+    return;
+  }
+  if(nameInput&&!nameInput.value)nameInput.value=state.petName;
+  if(state.pending){
+    resurveyButton.textContent='アンケートを続ける';
+    resurveyButton.disabled=false;
+    resurveyStatus.textContent='支払い済みです。追加のコインなしで再開できます。';
+  }else{
+    resurveyButton.textContent='30コインで再診断';
+    resurveyButton.disabled=!state.hasPet||state.coins<RESURVEY_PRICE;
+    resurveyStatus.textContent=state.coins<RESURVEY_PRICE?'コインが足りません。':'';
+  }
+  renameButton.disabled=!state.hasPet||state.coins<RENAME_PRICE;
+  if(state.coins<RENAME_PRICE)renameStatus.textContent='50コインで名前を変更できます。';
+}
+
+function renderPetPanel(){
+  const shop=document.getElementById('petShopDialog');
+  const panel=shop?.querySelector('#petShopPanel');
+  const tabs=shop?.querySelectorAll('.pet-shop-tab');
+  if(!shop||!panel)return;
+  for(const tab of tabs||[]){
+    const petTab=tab.dataset.petTab==='1'||tab.textContent.includes('見た目変更')||tab.textContent.includes('🐾 ペット');
+    tab.classList.toggle('active',petTab);
+    if(petTab){tab.dataset.petTab='1';tab.textContent='🐾 ペット';}
+  }
+  panel.dataset.petPanel='1';
+  panel.scrollTop=0;
+  panel.innerHTML=`
+    <div class="pet-shop-panel-title">🐾 ペット</div>
+    <section class="pet-custom-section">
+      <div class="pet-custom-heading"><span>🐾</span><span>ペット再診断</span><span class="pet-custom-price">🪙 ${RESURVEY_PRICE}</span></div>
+      <p style="margin:0 0 10px;font-size:11px;line-height:1.65;color:#6d756f">もう一度6つの質問に答えて、新しい姿のペットに出会えます。同じ答えでも、どの動物になるかにはランダム性があります。名前・購入済みアイテム・学習記録はそのまま残ります。</p>
+      <button class="pet-shop-action" data-pet-resurvey type="button">30コインで再診断</button>
+      <div data-pet-resurvey-status style="min-height:1.4em;margin-top:7px;font-size:10px;color:#8a6a19"></div>
+    </section>
+    <section class="pet-shop-rename">
+      <div class="pet-custom-heading"><span>✏️</span><span>名前変更</span><span class="pet-custom-price">🪙 ${RENAME_PRICE}</span></div>
+      <div class="pet-shop-rename-row"><input data-pet-rename-input maxlength="12" autocomplete="off" placeholder="新しい名前"><button data-pet-rename class="pet-shop-action" type="button">50コインで変更</button></div>
+      <div data-pet-rename-status style="min-height:1.4em;margin-top:7px;font-size:10px;color:#8a6a19"></div>
+    </section>`;
+  const resurveyButton=panel.querySelector('[data-pet-resurvey]');
+  const resurveyStatus=panel.querySelector('[data-pet-resurvey-status]');
+  const nameInput=panel.querySelector('[data-pet-rename-input]');
+  const renameButton=panel.querySelector('[data-pet-rename]');
+  const renameStatus=panel.querySelector('[data-pet-rename-status]');
+  resurveyButton.addEventListener('click',()=>beginResurvey(resurveyButton,resurveyStatus));
+  renameButton.addEventListener('click',()=>renamePet(nameInput,renameButton,renameStatus));
+  refreshPetPanel(panel);
+}
+
+function relabelPetTab(){
   const shop=document.getElementById('petShopDialog');if(!shop)return;
   for(const tab of shop.querySelectorAll('.pet-shop-tab')){
-    if(tab.textContent.includes('見た目変更')&&tab.textContent.trim()!=='🐾 ペット')tab.textContent='🐾 ペット';
+    if(tab.textContent.includes('見た目変更')){
+      tab.dataset.petTab='1';
+      tab.textContent='🐾 ペット';
+    }
   }
-  const panel=shop.querySelector('#petShopPanel'),title=panel?.querySelector('.pet-shop-panel-title');
-  if(!panel||!title)return;
-  const titleText=title.textContent.trim();
-  if(!titleText.includes('見た目変更')&&titleText!=='🐾 ペット')return;
-  if(titleText!=='🐾 ペット')title.textContent='🐾 ペット';
-
-  const existingResurvey=panel.querySelector('.pet-resurvey-section');
-  if(existingResurvey)return;
-
-  for(const section of [...panel.querySelectorAll('.pet-custom-section')])section.remove();
-  const resurvey=document.createElement('section');
-  resurvey.className='pet-resurvey-section';
-  resurvey.innerHTML=`<div class="pet-custom-heading"><span>🐾</span><span>ペット再診断</span><span class="pet-custom-price">🪙 ${RESURVEY_PRICE}</span></div><p style="margin:0 0 10px;font-size:11px;line-height:1.65;color:#6d756f">もう一度6つの質問に答えて、新しい姿のペットに出会えます。同じ答えでも、どの動物になるかにはランダム性があります。</p><button class="pet-shop-action" data-pet-resurvey type="button">30コインで再診断</button><div data-pet-resurvey-status style="min-height:1.4em;margin-top:7px;font-size:10px;color:#8a6a19"></div>`;
-  const rename=panel.querySelector('.pet-shop-rename');panel.insertBefore(resurvey,rename||null);
-  const button=resurvey.querySelector('[data-pet-resurvey]'),status=resurvey.querySelector('[data-pet-resurvey-status]');
-  button.addEventListener('click',()=>beginResurvey(button,status));
-  refreshResurveyCard(resurvey);
-}
-function queueDecorate(){
-  if(decorateQueued)return;
-  decorateQueued=true;
-  requestAnimationFrame(decorateShop);
 }
 
 function installShopEnhancement(){
   const shop=document.getElementById('petShopDialog');
-  if(!shop){setTimeout(installShopEnhancement,50);return;}
-  const observer=new MutationObserver(queueDecorate);
-  observer.observe(shop,{subtree:true,childList:true});
-  decorateShop();
+  if(!shop){setTimeout(installShopEnhancement,80);return;}
+
+  shop.addEventListener('click',event=>{
+    const tab=event.target.closest?.('.pet-shop-tab');
+    if(!tab)return;
+    const isPet=tab.dataset.petTab==='1'||tab.textContent.includes('見た目変更')||tab.textContent.includes('🐾 ペット');
+    if(isPet){
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      try{renderPetPanel();}
+      catch(error){
+        console.error('Pet panel failed',error);
+        const panel=shop.querySelector('#petShopPanel');
+        if(panel)panel.innerHTML='<div class="pet-shop-panel-title">🐾 ペット</div><p style="font-size:12px;color:#8a5d4b">ペット画面を表示できませんでした。ページを再読み込みしてください。</p>';
+      }
+      return;
+    }
+    requestAnimationFrame(relabelPetTab);
+  },true);
+
+  document.addEventListener('click',event=>{
+    if(event.target.closest?.('#petShopOpen'))requestAnimationFrame(relabelPetTab);
+  });
+  relabelPetTab();
 }
 
 function installPetMotion(){
