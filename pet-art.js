@@ -81,7 +81,13 @@ function eyesFor(a,stage){
 }
 
 function feetFor(color,stage,species){const baby=stage==='baby';if(species==='bird'||species==='penguin'){const foot='#edaa48';return baby?path('M84 188 Q72 204 98 202 M142 202 Q168 204 156 188',foot):path('M82 190 Q67 210 101 206 M139 206 Q173 210 158 190',foot);}return baby?path('M72 183 Q62 204 91 202 L103 188 M137 188 L149 202 Q178 204 168 183',color):path('M72 184 Q59 210 94 207 L106 189 M134 189 L146 207 Q181 210 168 184',color);}
-function bellyFor(species,stage){if(stage!=='adult'||species==='penguin')return '';if(species==='bird')return '<ellipse cx="120" cy="169" rx="35" ry="34" fill="#fff3df" opacity=".58" stroke="none"/>';if(species==='panda')return '<ellipse cx="120" cy="176" rx="33" ry="27" fill="#fff3df" opacity=".64" stroke="none"/>';return '<ellipse cx="120" cy="171" rx="38" ry="33" fill="#fff3df" opacity=".64" stroke="none"/>';}
+function bellyFor(species,stage){
+  if(species==='penguin')return '';
+  if(species==='bird')return stage==='adult'?'<ellipse cx="120" cy="169" rx="35" ry="34" fill="#fff3df" opacity=".58" stroke="none"/>':'';
+  if(species==='panda')return stage==='adult'?'<ellipse cx="120" cy="182" rx="29" ry="21" fill="#fff3df" opacity=".64" stroke="none"/>':'<ellipse cx="120" cy="181" rx="27" ry="20" fill="#fff3df" opacity=".64" stroke="none"/>';
+  if(stage!=='adult')return '';
+  return '<ellipse cx="120" cy="171" rx="38" ry="33" fill="#fff3df" opacity=".64" stroke="none"/>';
+}
 function armLines(species,stage){if(stage!=='adult'||species==='bird'||species==='penguin')return '';return '<path d="M82 151 Q84 174 104 181 Q113 181 116 170 M158 151 Q156 174 136 181 Q127 181 124 170" fill="none"/>';}
 function tailFor(species,color,stage){
   if(species==='hamster')return stage==='baby'?`<circle cx="55" cy="169" r="11" fill="${color}"/>`:`<circle cx="57" cy="172" r="13" fill="${color}"/>`;
