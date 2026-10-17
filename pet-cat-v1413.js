@@ -4,7 +4,7 @@ const OUTLINE='#40564e';
 const CAT_BABY_EARS='M67 91 L70 52 L101 72 M139 72 L170 52 L173 91';
 const CAT_ADULT_EARS='M68 81 L64 23 L102 58 M138 58 L176 23 L172 81';
 const BODY_COLORS=new Set(['#f5d99b','#f3b5c4','#a4cce9','#a9d9bc','#c6b8e3','#efb478']);
-let maskSerial=0;
+let filterSerial=0;
 
 function isLegacyCat(character){
   for(const el of character.querySelectorAll('path[d]')){
@@ -16,7 +16,7 @@ function isLegacyCat(character){
 
 function assetUrl(name){
   const url=new URL(`./${name}`,import.meta.url);
-  url.searchParams.set('v','1.4.18');
+  url.searchParams.set('v','1.4.19');
   return url.href;
 }
 
@@ -104,42 +104,38 @@ function adultGroup(character,legacy){
   group.setAttribute('data-cat-layered','adult');
   const color=bodyColorFrom(character);
   const eyeStyle=eyeStyleFrom(character);
-  const maskId=`catAdultBodyMask${++maskSerial}`;
+  const filterId=`catAdultTint${++filterSerial}`;
 
   const defs=document.createElementNS(SVG_NS,'defs');
-  const mask=document.createElementNS(SVG_NS,'mask');
-  mask.setAttribute('id',maskId);
-  mask.setAttribute('maskUnits','userSpaceOnUse');
-  mask.setAttribute('x','0');
-  mask.setAttribute('y','0');
-  mask.setAttribute('width','240');
-  mask.setAttribute('height','240');
-  const maskImage=svgImage(assetUrl('cat_adult_body_mask.png'));
-  mask.appendChild(maskImage);
-  defs.appendChild(mask);
+  const filter=document.createElementNS(SVG_NS,'filter');
+  filter.setAttribute('id',filterId);
+  filter.setAttribute('filterUnits','userSpaceOnUse');
+  filter.setAttribute('x','0');
+  filter.setAttribute('y','0');
+  filter.setAttribute('width','240');
+  filter.setAttribute('height','240');
+  filter.setAttribute('color-interpolation-filters','sRGB');
+  filter.innerHTML=`<feFlood flood-color="${color}" result="tint"/><feComposite in="tint" in2="SourceAlpha" operator="in"/>`;
+  defs.appendChild(filter);
 
-  const body=document.createElementNS(SVG_NS,'rect');
-  body.setAttribute('x','0');
-  body.setAttribute('y','0');
-  body.setAttribute('width','240');
-  body.setAttribute('height','240');
-  body.setAttribute('fill',color);
-  body.setAttribute('mask',`url(#${maskId})`);
+  const body=svgImage(assetUrl('cat_adult_body_mask.png'));
+  body.setAttribute('filter',`url(#${filterId})`);
+
+  const fixed=svgImage(assetUrl('cat_adult_fixed.png'));
 
   const eyes=document.createElementNS(SVG_NS,'g');
   eyes.innerHTML=adultEyesMarkup(eyeStyle);
 
-  const fixed=svgImage(assetUrl('cat_adult_fixed.png'));
   const fallback=()=>{if(legacy&&group.isConnected)group.replaceWith(legacy.cloneNode(true));};
+  body.addEventListener('error',fallback,{once:true});
   fixed.addEventListener('error',fallback,{once:true});
-  maskImage.addEventListener('error',fallback,{once:true});
 
-  group.append(defs,body,eyes,fixed);
+  group.append(defs,body,fixed,eyes);
   return group;
 }
 
 function redrawCat(svg){
-  if(!(svg instanceof SVGElement)||svg.dataset.catDedicatedV1418==='1')return;
+  if(!(svg instanceof SVGElement)||svg.dataset.catDedicatedV1419==='1')return;
   const character=svg.querySelector('.pet-character');
   if(!character||!isLegacyCat(character))return;
 
@@ -149,7 +145,7 @@ function redrawCat(svg){
   const group=stage==='baby'?babyGroup(legacy):adultGroup(character,legacy);
 
   character.replaceChildren(group,...accessories);
-  svg.dataset.catDedicatedV1418='1';
+  svg.dataset.catDedicatedV1419='1';
 }
 
 function scan(root=document){
