@@ -1,8 +1,9 @@
 import './pet-jump-fix.js';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js';
+import './pet-sleep-visibility.js';
 
-const APP_VERSION='1.3.6';
+const APP_VERSION='1.3.7';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
