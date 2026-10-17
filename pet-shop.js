@@ -135,7 +135,7 @@ function renderCare() {
   for(const id of ['petFeed','petPet']){const button=document.getElementById(id);if(button)button.disabled=!enabled;}
   const state=careState(currentData),label=document.getElementById('petFriendship');
   if(label)label.textContent=currentUser&&hasPet(currentData)?`♡ Friendship ${state.friendship} · 今日 ${state.petCount}/3 · HAPPY ${state.happy}`:'';
-  const visual=document.getElementById('petVisual');if(visual){visual.setAttribute('role',enabled?'button':'img');visual.tabIndex=enabled?0:-1;}
+  const visual=document.getElementById('petVisual');if(visual){visual.dataset.petCareEnabled=currentUser&&hasPet(currentData)?'1':'0';visual.setAttribute('role',enabled?'button':'img');visual.tabIndex=enabled?0:-1;}
   const balance=document.getElementById('petFeedBalance');if(balance)balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;
   document.querySelectorAll('[data-food]').forEach(button=>{button.disabled=!enabled||coinsOf(currentData)<FOODS.find(f=>f.id===button.dataset.food).price;});
   if(!currentUser)document.getElementById('petFeedDialog')?.close();
@@ -166,13 +166,25 @@ async function performCare(foodId) {
 }
 function careAnimation(kind) {
   const visual=document.getElementById('petVisual');if(!visual)return;
+  visual.dispatchEvent(new CustomEvent('pet-care-reaction'));
   visual.querySelectorAll('.pet-care-particles').forEach(el=>el.remove());
   const particle=document.createElement('span');particle.className='pet-care-particles';particle.textContent=kind==='celebrate'?'✨ ♡ ✨ ♡':kind==='music'?'♡ ♪ ♫':'♡ ♥ ♡';visual.append(particle);
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!reduced){
     particle.animate([{opacity:0,transform:'translateY(0)'},{opacity:1,offset:.25},{opacity:0,transform:'translateY(-65px)'}],{duration:1600});
     const frames=kind==='approach'?[{transform:'scale(1)'},{transform:'translateY(10px) scale(1.13)'},{transform:'scale(1)'}]:kind==='jump'||kind==='celebrate'?[{transform:'translateY(0)'},{transform:'translateY(-24px) rotate(-5deg)'},{transform:'translateY(0)'},{transform:'translateY(-12px) rotate(5deg)'},{transform:'translateY(0)'}]:[{transform:'rotate(0)'},{transform:'rotate(-4deg)'},{transform:'rotate(4deg)'},{transform:'rotate(0)'}];
-    visual.animate(frames,{duration:kind==='celebrate'?1400:850});
+    const character=visual.querySelector('.pet-character');
+    if(character){
+      let layer=character.parentNode;
+      if(!layer.classList.contains('pet-care-motion-layer')){
+        layer=document.createElementNS('http://www.w3.org/2000/svg','g');
+        layer.classList.add('pet-care-motion-layer');
+        layer.style.transformBox='fill-box';layer.style.transformOrigin='center bottom';
+        character.parentNode.insertBefore(layer,character);layer.appendChild(character);
+      }
+      layer.getAnimations().forEach(animation=>animation.cancel());
+      layer.animate(frames,{duration:kind==='celebrate'?1400:850});
+    }
   }
   setTimeout(()=>particle.remove(),1600);
 }

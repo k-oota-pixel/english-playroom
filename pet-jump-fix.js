@@ -29,7 +29,7 @@ function installInPlacePetJump(){
   window.addEventListener('pagehide',()=>clearInterval(primeTimer),{once:true});
 
   visual.addEventListener('click',async event=>{
-    if(!visual.classList.contains('hatched'))return;
+    if(!visual.classList.contains('hatched')||visual.dataset.petCareEnabled==='1')return;
     event.preventDefault();
     event.stopImmediatePropagation();
     if(jumping||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;

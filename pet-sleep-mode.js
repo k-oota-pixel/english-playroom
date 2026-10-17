@@ -208,7 +208,7 @@ function installPetSleepMode(){
 
   document.addEventListener('click',event=>{
     const target=event.target instanceof Element?event.target.closest('#petVisual'):null;
-    if(!target)return;
+    if(!target||visual.dataset.petCareEnabled==='1')return;
     if(visual.dataset.petSleeping==='1'){
       event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();wakeGrumpy();
     }else if(visual.dataset.petGrumpy==='1'){
@@ -216,6 +216,20 @@ function installPetSleepMode(){
     }
   },true);
 
+  // Any SVG replacement discards the closed-eye overlay, but leaves sleeping
+  // state on the container. Rebuild the pose immediately for every renderer.
+  const renderObserver=new MutationObserver(records=>{
+    if(records.some(record=>[...record.addedNodes].some(node=>node.nodeName?.toLowerCase()==='svg')))syncState();
+  });
+  renderObserver.observe(visual,{childList:true});
+  visual.addEventListener('pet-care-reaction',()=>{
+    awakeUntil=Date.now()+7000;
+    clearTimeout(grumpyTimer);clearTimeout(sleepTimer);
+    delete visual.dataset.petGrumpy;
+    clearSleepPose({resume:true,removeLayer:true});
+    setEyes('normal');
+    sleepTimer=setTimeout(syncState,7200);
+  });
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncState();});
   setInterval(syncState,15000);
   setTimeout(syncState,600);

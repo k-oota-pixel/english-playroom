@@ -1,0 +1,25 @@
+name: Pet care reaction regression
+on:
+  push:
+    paths:
+      - pet-shop.js
+      - pet-sleep-mode.js
+      - pet-jump-fix.js
+      - tests/pet-care-reaction-browser.cjs
+      - .github/workflows/pet-care-reactions.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - run: node tests/pet-care-reaction-browser.cjs

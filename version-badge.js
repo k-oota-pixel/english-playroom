@@ -1,6 +1,6 @@
-import './pet-jump-fix.js';
+import './pet-jump-fix.js?v=1.5.1-motion';
 import './pet-motion-polish.js';
-import './pet-sleep-mode.js';
+import './pet-sleep-mode.js?v=1.5.1-motion';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
 import './pet-lifecycle-v141.js';
