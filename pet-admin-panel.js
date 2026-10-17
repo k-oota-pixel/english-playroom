@@ -6,20 +6,22 @@ import {renderPetSVG} from './pet-art.js';
 
 const ADMIN_API='https://task-quest.onrender.com/api/admin/users';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
-const GROUPS=[
-  ['species','動物の種類'],
-  ['bodyColor','からだの色'],
-  ['eyes','目'],
-  ['feature','特徴'],
-  ['pattern','模様'],
-  ['baseBackground','ベース背景']
-];
+const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'}];
+const BACKGROUNDS=[{id:'ivory',label:'おうち'},{id:'sky',label:'青空'},{id:'leaf',label:'お庭'},{id:'rose',label:'花畑'}];
+const GROUPS=[['species','動物の種類'],['bodyColor','からだの色'],['eyeStyle','目'],['baseBackground','背景テーマ']];
 
 let auth=null,db=null,currentUser=null,adminVerified=false,button=null,dialog=null,currentData=null,draft=null,previewStage='baby';
 
-function officialOptions(key){
-  const items=OPTIONS[key]||[];
-  return key==='species'?items.filter(item=>OFFICIAL_SPECIES.includes(item.id)):items;
+function choices(key){
+  if(key==='species')return (OPTIONS.species||[]).filter(item=>OFFICIAL_SPECIES.includes(item.id));
+  if(key==='eyeStyle')return EYES;
+  if(key==='baseBackground')return BACKGROUNDS;
+  return OPTIONS[key]||[];
+}
+function legacyEye(style){return style==='sleepy'?'sleepy':style==='sparkle'?'sparkle':'round';}
+function normalizeDraft(value={}){
+  const base=normalizeAppearance(value),legacy=base.eyes==='sleepy'?'sleepy':base.eyes==='sparkle'?'sparkle':base.eyes==='cool'?'gentle':'round';
+  return {...base,species:OFFICIAL_SPECIES.includes(base.species)?base.species:'cat',eyeStyle:EYES.some(x=>x.id===value.eyeStyle)?value.eyeStyle:legacy,feature:'classic',pattern:'none'};
 }
 function petRef(user){return doc(db,'users',user.uid,'apps','english-playroom');}
 function ensureStyle(){
@@ -34,120 +36,27 @@ function ensureStyle(){
   document.head.appendChild(style);
 }
 
-async function verifyAdmin(user){
-  if(!user)return false;
-  try{
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),20000);
-    const token=await user.getIdToken();
-    const res=await fetch(ADMIN_API,{headers:{Authorization:`Bearer ${token}`},signal:controller.signal});
-    clearTimeout(timeout);
-    try{await res.body?.cancel();}catch{}
-    return res.ok;
-  }catch{return false;}
-}
+async function verifyAdmin(user){if(!user)return false;try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),20000);const token=await user.getIdToken();const res=await fetch(ADMIN_API,{headers:{Authorization:`Bearer ${token}`},signal:controller.signal});clearTimeout(timeout);try{await res.body?.cancel();}catch{}return res.ok;}catch{return false;}}
 
 function ensureDialog(){
-  if(dialog)return dialog;
-  ensureStyle();
-  dialog=document.createElement('dialog');dialog.className='pet-admin-dialog';dialog.id='petAdminDialog';
-  dialog.innerHTML=`<div class="pet-admin-shell">
-    <section class="pet-admin-preview-card">
-      <div><div class="pet-admin-kicker">ADMIN ONLY</div><div class="pet-admin-title">ペット管理</div></div>
-      <div id="petAdminPreview" class="pet-admin-preview"></div>
-      <div class="pet-admin-stage"><button type="button" data-stage="baby">幼体プレビュー</button><button type="button" data-stage="adult">成体プレビュー</button></div>
-    </section>
-    <section class="pet-admin-controls">
-      <div class="pet-admin-note">この画面は管理者アカウントだけに表示されます。変更は0コインで、ペットの名前・コイン・装備・学習記録・成長日数には触れません。幼体/成体ボタンはプレビュー専用です。</div>
-      <div id="petAdminGrid" class="pet-admin-grid"></div>
-      <div id="petAdminStatus" class="pet-admin-status" role="status" aria-live="polite"></div>
-      <div class="pet-admin-actions"><button type="button" data-reset>現在に戻す</button><button type="button" data-random>ランダム</button><button type="button" data-close>閉じる</button><button type="button" class="primary" data-save>この見た目に変更</button></div>
-    </section>
-  </div>`;
+  if(dialog)return dialog;ensureStyle();dialog=document.createElement('dialog');dialog.className='pet-admin-dialog';dialog.id='petAdminDialog';
+  dialog.innerHTML=`<div class="pet-admin-shell"><section class="pet-admin-preview-card"><div><div class="pet-admin-kicker">ADMIN ONLY</div><div class="pet-admin-title">ペット管理</div></div><div id="petAdminPreview" class="pet-admin-preview"></div><div class="pet-admin-stage"><button type="button" data-stage="baby">幼体プレビュー</button><button type="button" data-stage="adult">成体プレビュー</button></div></section><section class="pet-admin-controls"><div class="pet-admin-note">変更できるのは「動物・体色・目・背景テーマ」の4項目です。特徴と模様は廃止しました。変更は0コインで、名前・コイン・装備・学習記録・成長日数には触れません。幼体/成体ボタンはプレビュー専用です。</div><div id="petAdminGrid" class="pet-admin-grid"></div><div id="petAdminStatus" class="pet-admin-status" role="status" aria-live="polite"></div><div class="pet-admin-actions"><button type="button" data-reset>現在に戻す</button><button type="button" data-random>ランダム</button><button type="button" data-close>閉じる</button><button type="button" class="primary" data-save>この見た目に変更</button></div></section></div>`;
   document.body.appendChild(dialog);
-  dialog.querySelector('[data-close]').addEventListener('click',()=>dialog.close());
-  dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
+  dialog.querySelector('[data-close]').addEventListener('click',()=>dialog.close());dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
   for(const b of dialog.querySelectorAll('[data-stage]'))b.addEventListener('click',()=>{previewStage=b.dataset.stage;renderPreview();});
-  dialog.querySelector('[data-reset]').addEventListener('click',()=>{if(!currentData)return;draft=normalizeAppearance(currentData.petAppearance||{});renderControls();renderPreview();});
-  dialog.querySelector('[data-random]').addEventListener('click',()=>{
-    draft=Object.fromEntries(GROUPS.map(([key])=>{const items=officialOptions(key);return [key,items[Math.floor(Math.random()*items.length)]?.id||''];}));
-    renderControls();renderPreview();
-  });
-  dialog.querySelector('[data-save]').addEventListener('click',saveAppearance);
-  return dialog;
+  dialog.querySelector('[data-reset]').addEventListener('click',()=>{if(!currentData)return;draft=normalizeDraft(currentData.petAppearance||{});renderControls();renderPreview();});
+  dialog.querySelector('[data-random]').addEventListener('click',()=>{const base=normalizeDraft(currentData?.petAppearance||{});for(const [key] of GROUPS){const items=choices(key);base[key]=items[Math.floor(Math.random()*items.length)]?.id||base[key];}base.eyes=legacyEye(base.eyeStyle);base.feature='classic';base.pattern='none';draft=base;renderControls();renderPreview();});
+  dialog.querySelector('[data-save]').addEventListener('click',saveAppearance);return dialog;
 }
 
-function renderControls(){
-  if(!dialog||!draft)return;
-  const grid=dialog.querySelector('#petAdminGrid');grid.replaceChildren();
-  for(const [key,label] of GROUPS){
-    const wrap=document.createElement('div');wrap.className='pet-admin-field';
-    const l=document.createElement('label');l.textContent=label;
-    const select=document.createElement('select');select.dataset.key=key;
-    for(const item of officialOptions(key)){
-      const option=document.createElement('option');option.value=item.id;option.textContent=item.label;option.selected=draft[key]===item.id;select.appendChild(option);
-    }
-    select.addEventListener('change',()=>{draft={...draft,[key]:select.value};renderPreview();});
-    wrap.append(l,select);grid.appendChild(wrap);
-  }
-}
-function renderPreview(){
-  if(!dialog||!draft)return;
-  for(const b of dialog.querySelectorAll('[data-stage]'))b.classList.toggle('active',b.dataset.stage===previewStage);
-  const preview=dialog.querySelector('#petAdminPreview');
-  try{preview.innerHTML=renderPetSVG(draft,currentData?.petShop||{},previewStage);}catch(error){preview.textContent='プレビューを表示できませんでした。';console.error(error);}
-}
+function renderControls(){if(!dialog||!draft)return;const grid=dialog.querySelector('#petAdminGrid');grid.replaceChildren();for(const [key,label] of GROUPS){const wrap=document.createElement('div');wrap.className='pet-admin-field';const l=document.createElement('label');l.textContent=label;const select=document.createElement('select');select.dataset.key=key;for(const item of choices(key)){const option=document.createElement('option');option.value=item.id;option.textContent=item.label;option.selected=draft[key]===item.id;select.appendChild(option);}select.addEventListener('change',()=>{draft={...draft,[key]:select.value};if(key==='eyeStyle')draft.eyes=legacyEye(select.value);draft.feature='classic';draft.pattern='none';renderPreview();});wrap.append(l,select);grid.appendChild(wrap);}}
+function renderPreview(){if(!dialog||!draft)return;for(const b of dialog.querySelectorAll('[data-stage]'))b.classList.toggle('active',b.dataset.stage===previewStage);const preview=dialog.querySelector('#petAdminPreview');try{preview.innerHTML=renderPetSVG(draft,currentData?.petShop||{},previewStage);}catch(error){preview.textContent='プレビューを表示できませんでした。';console.error(error);}}
 
-async function openPanel(){
-  if(!adminVerified||!currentUser)return;
-  const d=ensureDialog(),status=d.querySelector('#petAdminStatus');status.textContent='読み込んでいます…';
-  try{
-    const snap=await getDoc(petRef(currentUser));currentData=snap.exists()?(snap.data()||{}):{};
-    if(!currentData.petHatched||!currentData.petAppearance)throw Error('まだペットがいません。');
-    draft=normalizeAppearance(currentData.petAppearance);
-    if(!OFFICIAL_SPECIES.includes(draft.species))draft.species='cat';
-    const stage=document.documentElement.dataset.petStage;previewStage=stage==='baby'?'baby':'adult';
-    renderControls();renderPreview();status.textContent='';d.showModal();
-  }catch(error){status.textContent=error?.message||'ペット情報を読み込めませんでした。';if(!d.open)d.showModal();}
-}
+async function openPanel(){if(!adminVerified||!currentUser)return;const d=ensureDialog(),status=d.querySelector('#petAdminStatus');status.textContent='読み込んでいます…';try{const snap=await getDoc(petRef(currentUser));currentData=snap.exists()?(snap.data()||{}):{};if(!currentData.petHatched||!currentData.petAppearance)throw Error('まだペットがいません。');draft=normalizeDraft(currentData.petAppearance);const stage=document.documentElement.dataset.petStage;previewStage=stage==='baby'?'baby':'adult';renderControls();renderPreview();status.textContent='';d.showModal();}catch(error){status.textContent=error?.message||'ペット情報を読み込めませんでした。';if(!d.open)d.showModal();}}
 
-async function saveAppearance(){
-  if(!adminVerified||!currentUser||!draft||!validAppearance(draft))return;
-  const status=dialog.querySelector('#petAdminStatus'),save=dialog.querySelector('[data-save]');save.disabled=true;status.textContent='保存しています…';
-  try{
-    const ref=petRef(currentUser);
-    await runTransaction(db,async tx=>{
-      const snap=await tx.get(ref);if(!snap.exists())throw Error('ペット情報が見つかりません。');
-      const data=snap.data()||{};if(!data.petHatched)throw Error('まだペットがいません。');
-      tx.set(ref,{petAppearance:{...draft},petUpdatedAt:serverTimestamp(),petAdminEditedAt:serverTimestamp()},{merge:true});
-    });
-    currentData={...(currentData||{}),petAppearance:{...draft}};status.textContent='見た目を変更しました！';
-    const toast=document.getElementById('petShopToast');if(toast){toast.textContent='🛠 ペットの見た目を管理者変更しました';toast.dataset.kind='ok';}
-    setTimeout(()=>{if(dialog?.open)dialog.close();},450);
-  }catch(error){status.textContent=error?.message||'保存できませんでした。';}
-  finally{save.disabled=false;}
-}
+async function saveAppearance(){if(!adminVerified||!currentUser||!draft)return;draft={...draft,eyes:legacyEye(draft.eyeStyle),feature:'classic',pattern:'none'};if(!validAppearance(draft))return;const status=dialog.querySelector('#petAdminStatus'),save=dialog.querySelector('[data-save]');save.disabled=true;status.textContent='保存しています…';try{const ref=petRef(currentUser);await runTransaction(db,async tx=>{const snap=await tx.get(ref);if(!snap.exists())throw Error('ペット情報が見つかりません。');const data=snap.data()||{};if(!data.petHatched)throw Error('まだペットがいません。');tx.set(ref,{petAppearance:{...draft},petUpdatedAt:serverTimestamp(),petAdminEditedAt:serverTimestamp()},{merge:true});});currentData={...(currentData||{}),petAppearance:{...draft}};status.textContent='見た目を変更しました！';const toast=document.getElementById('petShopToast');if(toast){toast.textContent='🛠 ペットの見た目を管理者変更しました';toast.dataset.kind='ok';}setTimeout(()=>{if(dialog?.open)dialog.close();},450);}catch(error){status.textContent=error?.message||'保存できませんでした。';}finally{save.disabled=false;}}
 
-function ensureButton(){
-  if(!adminVerified||!currentUser)return;
-  if(button?.isConnected)return;
-  const shop=document.querySelector('#petShopOpen,.pet-shop-open');
-  const wallet=shop?.parentElement||document.querySelector('.pet-wallet');
-  if(!wallet){setTimeout(ensureButton,250);return;}
-  button=document.createElement('button');button.type='button';button.className='pet-admin-open';button.textContent='🛠 ペット管理';button.setAttribute('aria-label','管理者用ペット見た目変更');button.addEventListener('click',openPanel);
-  shop?.after(button);if(!shop)wallet.appendChild(button);
-}
+function ensureButton(){if(!adminVerified||!currentUser)return;if(button?.isConnected)return;const shop=document.querySelector('#petShopOpen,.pet-shop-open');const wallet=shop?.parentElement||document.querySelector('.pet-wallet');if(!wallet){setTimeout(ensureButton,250);return;}button=document.createElement('button');button.type='button';button.className='pet-admin-open';button.textContent='🛠 ペット管理';button.setAttribute('aria-label','管理者用ペット見た目変更');button.addEventListener('click',openPanel);shop?.after(button);if(!shop)wallet.appendChild(button);}
 function removeButton(){button?.remove();button=null;if(dialog?.open)dialog.close();}
-
-function start(){
-  if(!getApps().length){setTimeout(start,120);return;}
-  ensureStyle();const app=getApp();auth=getAuth(app);db=getFirestore(app);
-  onAuthStateChanged(auth,async user=>{
-    currentUser=user;adminVerified=false;removeButton();if(!user)return;
-    adminVerified=await verifyAdmin(user);
-    if(auth.currentUser?.uid!==user.uid||!adminVerified)return;
-    ensureButton();
-  });
-}
-
+function start(){if(!getApps().length){setTimeout(start,120);return;}ensureStyle();const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,async user=>{currentUser=user;adminVerified=false;removeButton();if(!user)return;adminVerified=await verifyAdmin(user);if(auth.currentUser?.uid!==user.uid||!adminVerified)return;ensureButton();});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
