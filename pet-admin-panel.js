@@ -13,7 +13,7 @@ const GROUPS=[['species','動物の種類'],['bodyColor','からだの色'],['ey
 let auth=null,db=null,currentUser=null,adminVerified=false,button=null,dialog=null,currentData=null,draft=null,previewStage='baby';
 
 function choices(key){
-  if(key==='species')return (OPTIONS.species||[]).filter(item=>OFFICIAL_SPECIES.includes(item.id));
+  if(key==='species')return (OPTIONS.species||[]).filter(item=>OFFICIAL_SPECIES.includes(item.id)).map(item=>item.id==='panda'?{...item,label:'ライオン'}:item);
   if(key==='eyeStyle')return EYES;
   if(key==='baseBackground')return BACKGROUNDS;
   return OPTIONS[key]||[];
