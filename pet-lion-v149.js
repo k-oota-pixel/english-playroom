@@ -30,6 +30,7 @@ function babyLion(body,eyeMarkup){
     <path d="M165 166 Q194 168 201 143" fill="none" stroke="${body}" stroke-width="6"/>
     <path d="M194 136 Q201 126 210 132 Q220 138 215 148 Q211 156 202 153 Q194 159 188 151 Q182 143 188 138 Q191 136 194 136Z" fill="${BABY_MANE}"/>
     <path d="M79 151 Q73 169 80 187 Q91 203 120 203 Q149 203 160 187 Q167 169 161 151 Q144 140 120 140 Q96 140 79 151Z" fill="${body}"/>
+    <ellipse cx="120" cy="181" rx="22" ry="18" fill="${CREAM}" stroke="none" opacity=".9"/>
     <path d="${babyMane()}" fill="${BABY_MANE}"/>
     <circle cx="77" cy="78" r="19" fill="${body}"/>
     <circle cx="163" cy="78" r="19" fill="${body}"/>
@@ -37,7 +38,6 @@ function babyLion(body,eyeMarkup){
     <circle cx="163" cy="78" r="10" fill="#f3b7b7" stroke="none"/>
     <ellipse cx="120" cy="113" rx="49" ry="44" fill="${body}"/>
     <path d="M91 82 Q98 62 109 68 Q120 52 130 68 Q143 60 151 82 Q141 93 120 90 Q100 93 91 82Z" fill="${BABY_MANE}"/>
-    <ellipse cx="120" cy="181" rx="22" ry="18" fill="${CREAM}" stroke="none" opacity=".9"/>
     <ellipse cx="91" cy="190" rx="18" ry="11" fill="${body}"/>
     <ellipse cx="149" cy="190" rx="18" ry="11" fill="${body}"/>
     <path d="M84 190 q7 5 14 0 M142 190 q7 5 14 0" fill="none" stroke-width="2.5" opacity=".75"/>
@@ -55,6 +55,7 @@ function adultLion(body,eyeMarkup){
     <path d="M168 169 Q207 165 211 121" fill="none" stroke="${body}" stroke-width="6"/>
     <path d="M202 111 Q211 99 222 106 Q232 114 225 126 Q220 136 210 132 Q201 140 193 132 Q185 124 191 116 Q195 112 202 111Z" fill="${ADULT_MANE}"/>
     <path d="M70 140 Q60 165 68 190 Q80 205 95 205 L145 205 Q160 205 172 190 Q180 165 170 140 Q149 126 120 126 Q91 126 70 140Z" fill="${body}"/>
+    <ellipse cx="120" cy="181" rx="27" ry="20" fill="${CREAM}" stroke="none" opacity=".9"/>
     <path d="${adultMane()}" fill="${ADULT_MANE}"/>
     <circle cx="71" cy="66" r="22" fill="${body}"/>
     <circle cx="169" cy="66" r="22" fill="${body}"/>
@@ -62,7 +63,6 @@ function adultLion(body,eyeMarkup){
     <circle cx="169" cy="66" r="12" fill="#f3b7b7" stroke="none"/>
     <ellipse cx="120" cy="105" rx="49" ry="44" fill="${body}"/>
     <path d="M86 72 Q95 49 109 57 Q120 39 132 58 Q148 48 157 72 Q146 86 120 83 Q95 86 86 72Z" fill="${ADULT_MANE}"/>
-    <ellipse cx="120" cy="181" rx="27" ry="20" fill="${CREAM}" stroke="none" opacity=".9"/>
     <ellipse cx="91" cy="195" rx="19" ry="11" fill="${body}"/>
     <ellipse cx="149" cy="195" rx="19" ry="11" fill="${body}"/>
     <path d="M82 195 q9 5 18 0 M140 195 q9 5 18 0" fill="none" stroke-width="2.5" opacity=".75"/>
