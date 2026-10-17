@@ -1,3 +1,4 @@
+import { FOODS, careState, petReward, feedReward, petReaction } from './pet-care-model.js';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -85,7 +86,7 @@ function injectUI(){
   const style=document.createElement('style');style.id='petShopStyles';style.textContent=STYLE;document.head.appendChild(style);
   const info=document.querySelector('.pet-info');if(!info)return;
   wallet=document.createElement('div');wallet.className='pet-wallet';wallet.innerHTML=`<span id="petCoinText" class="pet-coins">🪙 —</span><button id="petShopOpen" class="pet-shop-open" type="button" disabled>SHOP</button><span id="petShopToast" class="pet-shop-toast" aria-live="polite"></span>`;
-  const bar=info.querySelector('.pet-bar');info.insertBefore(wallet,bar||null);coinText=wallet.querySelector('#petCoinText');shopBtn=wallet.querySelector('#petShopOpen');toast=wallet.querySelector('#petShopToast');
+  installCareUI(wallet);const bar=info.querySelector('.pet-bar');info.insertBefore(wallet,bar||null);coinText=wallet.querySelector('#petCoinText');shopBtn=wallet.querySelector('#petShopOpen');toast=wallet.querySelector('#petShopToast');
   dialog=document.createElement('dialog');dialog.className='pet-shop-dialog';dialog.id='petShopDialog';dialog.innerHTML=`<div class="pet-shop-shell"><div class="pet-shop-head"><div><div class="pet-shop-kicker">PET SHOP</div><div class="pet-shop-title">ペットショップ</div><div id="petShopBalance" class="pet-shop-balance">🪙 —</div></div><button id="petShopClose" class="pet-shop-close" type="button" aria-label="閉じる">×</button></div><div class="pet-shop-workspace"><aside class="pet-shop-preview-card"><div><div class="pet-shop-preview-label">LIVE PREVIEW</div><div id="petShopPreview" class="pet-shop-preview"></div></div><div><div id="petShopPreviewName" class="pet-shop-preview-name"></div><div class="pet-shop-preview-hint">商品や見た目をタップすると、購入前に自分のペットで試せます。</div></div></aside><main class="pet-shop-catalog"><div class="pet-shop-note">タブで商品を選び、気になるものをタップして試着できます。別の装着スロットなら同時に装備できます。</div><div id="petShopTabs" class="pet-shop-tabs"></div><div id="petShopPanel" class="pet-shop-panel"></div></main></div></div>`;document.body.appendChild(dialog);
   confirmDialog=document.createElement('dialog');confirmDialog.className='pet-shop-confirm-dialog';confirmDialog.id='petShopConfirmDialog';confirmDialog.innerHTML=`<div class="pet-shop-confirm-card"><div class="pet-shop-confirm-icon">🪙</div><h2 id="petShopConfirmTitle" class="pet-shop-confirm-title">購入の確認</h2><p id="petShopConfirmMessage" class="pet-shop-confirm-message"></p><div class="pet-shop-confirm-actions"><button id="petShopConfirmCancel" class="pet-shop-confirm-cancel" type="button">キャンセル</button><button id="petShopConfirmOk" class="pet-shop-confirm-ok" type="button">購入する</button></div></div>`;document.body.appendChild(confirmDialog);
   balance=dialog.querySelector('#petShopBalance');tabBar=dialog.querySelector('#petShopTabs');panel=dialog.querySelector('#petShopPanel');previewEl=dialog.querySelector('#petShopPreview');previewName=dialog.querySelector('#petShopPreviewName');confirmTitle=confirmDialog.querySelector('#petShopConfirmTitle');confirmMessage=confirmDialog.querySelector('#petShopConfirmMessage');confirmOk=confirmDialog.querySelector('#petShopConfirmOk');
@@ -96,7 +97,7 @@ function injectUI(){
 function finishCoinConfirm(ok){const resolve=confirmResolve;confirmResolve=null;if(confirmDialog?.open)confirmDialog.close();if(resolve)resolve(!!ok);}
 function requestCoinConfirm({title='購入の確認',message='',confirmLabel='購入する'}={}){if(!confirmDialog||confirmResolve)return Promise.resolve(false);confirmTitle.textContent=title;confirmMessage.textContent=message;confirmOk.textContent=confirmLabel;confirmDialog.showModal();return new Promise(resolve=>{confirmResolve=resolve;});}
 function renderPetFromData(data){if(!hasPet(data))return;const visual=document.getElementById('petVisual');if(visual){visual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);visual.setAttribute('aria-label',appearanceLabel(data.petAppearance));}const title=document.getElementById('petTitle');if(title&&validPetName(data.petName))title.textContent=normalizePetName(data.petName);}
-function renderWallet(){if(!wallet)return;const logged=!!currentUser,hatched=hasPet(currentData),coins=coinsOf(currentData);coinText.textContent=logged?`🪙 ${coins}`:'🪙 —';shopBtn.disabled=!logged||!hatched||busy;shopBtn.title=!logged?'Googleログインすると使えます':!hatched?'ペットが誕生すると使えます':'';if(balance)balance.textContent=`🪙 ${coins} コイン`;renderPetFromData(currentData);if(dialog?.open)renderShop();}
+function renderWallet(){if(!wallet)return;renderCare();const logged=!!currentUser,hatched=hasPet(currentData),coins=coinsOf(currentData);coinText.textContent=logged?`🪙 ${coins}`:'🪙 —';shopBtn.disabled=!logged||!hatched||busy;shopBtn.title=!logged?'Googleログインすると使えます':!hatched?'ペットが誕生すると使えます':'';if(balance)balance.textContent=`🪙 ${coins} コイン`;renderPetFromData(currentData);if(dialog?.open)renderShop();}
 function previewShop(){const base=shopOf(currentData),item=itemById(selectedItemId);if(!item)return base;const next={ownedItems:[...base.ownedItems],equipped:{...base.equipped}};if(!next.ownedItems.includes(item.id))next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;const legacy=next.equipped.accessories;if(typeof legacy==='string'&&ACCESSORY_ITEM_SLOTS[legacy]===item.slot)next.equipped.accessories=null;return next;}
 function previewAppearanceValue(){const base=normalizeAppearance(currentData.petAppearance);return selectedAppearance?{...base,[selectedAppearance.key]:selectedAppearance.id}:base;}
 function renderPreview(){if(!previewEl)return;previewEl.innerHTML=renderPetSVG(previewAppearanceValue(),previewShop());previewName.textContent=validPetName(currentData.petName)?normalizePetName(currentData.petName):'MY PET';}
@@ -112,3 +113,66 @@ async function renamePet(){const user=currentUser,newName=normalizePetName(nameI
 async function grantBirthBonusIfNeeded(user,data){if(!hasPet(data)||data.petBirthBonusGranted===true)return;try{let granted=false;await runTransaction(db,async tx=>{const ref=refFor(user),snap=await tx.get(ref),fresh=snap.exists()?snap.data():{};if(!hasPet(fresh)||fresh.petBirthBonusGranted===true)return;const coins=coinsOf(fresh);tx.set(ref,{coins:coins+10,petBirthBonusGranted:true,petBirthBonusGrantedAt:serverTimestamp(),coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});granted=true;});if(granted&&!birthToastShown){birthToastShown=true;setToast('🎉 誕生記念に10コインプレゼント！','ok');}}catch(e){console.error('Birth coin bonus failed',e);}}
 function watchUser(user){if(unsubDoc){unsubDoc();unsubDoc=null;}currentUser=user;currentData={};birthToastShown=false;setToast('');renderWallet();if(!user)return;unsubDoc=onSnapshot(refFor(user),snap=>{currentData=snap.exists()?(snap.data()||{}):{};renderWallet();grantBirthBonusIfNeeded(user,currentData);},err=>{console.error('Pet shop sync failed',err);setToast('ショップの同期に失敗しました。','error');});}
 function boot(){injectUI();if(!getApps().length){setTimeout(boot,0);return;}const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,watchUser);}boot();
+
+
+function installCareUI(wallet) {
+  const shop=wallet.querySelector('#petShopOpen');
+  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petPet" class="pet-shop-open" type="button" disabled>PET</button><span id="petFriendship" class="pet-coins" aria-live="polite"></span>');
+  const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
+  dialog.innerHTML=`<div class="pet-shop-confirm-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2>Choose food for your pet!</h2><p>エサをあげると HAPPY が増えます。</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-shop-action" data-food="${f.id}" style="display:block;width:100%;margin:10px 0">${f.icon} ${f.name} · ${f.price} ${f.price===1?'COIN':'COINS'}</button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
+  document.body.append(dialog);
+  dialog.querySelector('.pet-shop-close').onclick=()=>dialog.close();
+  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();const id=event.target.closest('[data-food]')?.dataset.food;if(id)performCare(id);});
+  wallet.querySelector('#petFeed').onclick=()=>{renderCare();dialog.showModal();};
+  wallet.querySelector('#petPet').onclick=()=>performCare();
+  const visual=document.getElementById('petVisual');
+  visual?.addEventListener('click',event=>{if(!currentUser||!hasPet(currentData))return;event.preventDefault();event.stopImmediatePropagation();performCare();},true);
+  visual?.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&currentUser&&hasPet(currentData)){event.preventDefault();performCare();}});
+  const style=document.createElement('style');style.textContent='#petVisual{position:relative} .pet-care-particles{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-size:26px;z-index:10;white-space:nowrap} #petVisual[role=button]{cursor:pointer}';document.head.append(style);
+}
+function renderCare() {
+  const enabled=!!currentUser&&hasPet(currentData)&&!busy;
+  for(const id of ['petFeed','petPet']){const button=document.getElementById(id);if(button)button.disabled=!enabled;}
+  const state=careState(currentData),label=document.getElementById('petFriendship');
+  if(label)label.textContent=currentUser&&hasPet(currentData)?`♡ Friendship ${state.friendship} · 今日 ${state.petCount}/3 · HAPPY ${state.happy}`:'';
+  const visual=document.getElementById('petVisual');if(visual){visual.setAttribute('role',enabled?'button':'img');visual.tabIndex=enabled?0:-1;}
+  const balance=document.getElementById('petFeedBalance');if(balance)balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;
+  document.querySelectorAll('[data-food]').forEach(button=>{button.disabled=!enabled||coinsOf(currentData)<FOODS.find(f=>f.id===button.dataset.food).price;});
+  if(!currentUser)document.getElementById('petFeedDialog')?.close();
+}
+async function performCare(foodId) {
+  const user=currentUser;if(!user||busy||!hasPet(currentData))return;
+  await withBusy(async()=>{
+    try {
+      const result=await runTransaction(db,async tx=>{
+        const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};
+        if(!hasPet(data))throw Error('ペットが誕生してから使えます。');
+        const reward=foodId?feedReward(data,foodId):petReward(data);
+        const patch={petCare:reward.petCare,petUpdatedAt:serverTimestamp()};
+        if(foodId){patch.coins=reward.coins;patch.coinUpdatedAt=serverTimestamp();}
+        tx.set(ref,patch,{merge:true});
+        return {reward,data:{...data,...patch}};
+      });
+      if(currentUser?.uid!==user.uid)return;
+      currentData=result.data;
+      const message=foodId?'エサをあげました！ HAPPY +'+FOODS.find(f=>f.id===foodId).price:result.reward.awarded?'+1 Friendship ♡':'Your pet looks happy!（今日の加算は3回まで）';
+      setToast(message,'ok');document.getElementById('petFeedStatus').textContent=message;
+      if(foodId)document.getElementById('petFeedDialog').close();
+      // Render before animating: wallet refresh replaces the SVG.
+      renderWallet();
+      requestAnimationFrame(()=>careAnimation(foodId?FOODS.find(f=>f.id===foodId).reaction:petReaction(result.reward.petCare.friendship)));
+    } catch(error) {setToast(error.message||'保存できませんでした。もう一度お試しください。','error');document.getElementById('petFeedStatus').textContent=error.message;}
+  });
+}
+function careAnimation(kind) {
+  const visual=document.getElementById('petVisual');if(!visual)return;
+  visual.querySelectorAll('.pet-care-particles').forEach(el=>el.remove());
+  const particle=document.createElement('span');particle.className='pet-care-particles';particle.textContent=kind==='celebrate'?'✨ ♡ ✨ ♡':kind==='music'?'♡ ♪ ♫':'♡ ♥ ♡';visual.append(particle);
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced){
+    particle.animate([{opacity:0,transform:'translateY(0)'},{opacity:1,offset:.25},{opacity:0,transform:'translateY(-65px)'}],{duration:1600});
+    const frames=kind==='approach'?[{transform:'scale(1)'},{transform:'translateY(10px) scale(1.13)'},{transform:'scale(1)'}]:kind==='jump'||kind==='celebrate'?[{transform:'translateY(0)'},{transform:'translateY(-24px) rotate(-5deg)'},{transform:'translateY(0)'},{transform:'translateY(-12px) rotate(5deg)'},{transform:'translateY(0)'}]:[{transform:'rotate(0)'},{transform:'rotate(-4deg)'},{transform:'rotate(4deg)'},{transform:'rotate(0)'}];
+    visual.animate(frames,{duration:kind==='celebrate'?1400:850});
+  }
+  setTimeout(()=>particle.remove(),1600);
+}
