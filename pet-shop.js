@@ -3,7 +3,7 @@ import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/fireb
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, appearanceLabel } from './pet-art.js';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.1-reaction2';
 
 const ITEMS = Object.freeze([
   {id:'red-ribbon',name:'赤いリボン',price:5,slot:'head',icon:'🎀'},
@@ -96,7 +96,7 @@ function injectUI(){
 }
 function finishCoinConfirm(ok){const resolve=confirmResolve;confirmResolve=null;if(confirmDialog?.open)confirmDialog.close();if(resolve)resolve(!!ok);}
 function requestCoinConfirm({title='購入の確認',message='',confirmLabel='購入する'}={}){if(!confirmDialog||confirmResolve)return Promise.resolve(false);confirmTitle.textContent=title;confirmMessage.textContent=message;confirmOk.textContent=confirmLabel;confirmDialog.showModal();return new Promise(resolve=>{confirmResolve=resolve;});}
-function renderPetFromData(data){if(!hasPet(data))return;const visual=document.getElementById('petVisual');if(visual){visual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);visual.setAttribute('aria-label',appearanceLabel(data.petAppearance));}const title=document.getElementById('petTitle');if(title&&validPetName(data.petName))title.textContent=normalizePetName(data.petName);}
+function renderPetFromData(data){if(!hasPet(data))return;const visual=document.getElementById('petVisual');if(visual){renderPetVisual(visual,data);visual.setAttribute('aria-label',appearanceLabel(data.petAppearance));}const title=document.getElementById('petTitle');if(title&&validPetName(data.petName))title.textContent=normalizePetName(data.petName);}
 function renderWallet(){if(!wallet)return;renderCare();const logged=!!currentUser,hatched=hasPet(currentData),coins=coinsOf(currentData);coinText.textContent=logged?`🪙 ${coins}`:'🪙 —';shopBtn.disabled=!logged||!hatched||busy;shopBtn.title=!logged?'Googleログインすると使えます':!hatched?'ペットが誕生すると使えます':'';if(balance)balance.textContent=`🪙 ${coins} コイン`;renderPetFromData(currentData);if(dialog?.open)renderShop();}
 function previewShop(){const base=shopOf(currentData),item=itemById(selectedItemId);if(!item)return base;const next={ownedItems:[...base.ownedItems],equipped:{...base.equipped}};if(!next.ownedItems.includes(item.id))next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;const legacy=next.equipped.accessories;if(typeof legacy==='string'&&ACCESSORY_ITEM_SLOTS[legacy]===item.slot)next.equipped.accessories=null;return next;}
 function previewAppearanceValue(){const base=normalizeAppearance(currentData.petAppearance);return selectedAppearance?{...base,[selectedAppearance.key]:selectedAppearance.id}:base;}
@@ -183,7 +183,17 @@ function careAnimation(kind) {
         character.parentNode.insertBefore(layer,character);layer.appendChild(character);
       }
       layer.getAnimations().forEach(animation=>animation.cancel());
-      layer.animate(frames,{duration:kind==='celebrate'?1400:850});
+      const shadow=visual.querySelector('.pet-shadow');
+      character.style.animationPlayState='paused';
+      if(shadow)shadow.style.animationPlayState='paused';
+      const reaction=layer.animate(frames,{duration:kind==='celebrate'?1600:1200,easing:'ease-in-out'});
+      reaction.finished.catch(()=>{}).finally(()=>{
+        if(layer.getAnimations().some(animation=>animation.playState==='running'))return;
+        if(visual.dataset.petSleeping!=='1'&&visual.dataset.petGrumpy!=='1'){
+          character.style.animationPlayState='';
+          if(shadow)shadow.style.animationPlayState='';
+        }
+      });
     }
   }
   setTimeout(()=>particle.remove(),1600);

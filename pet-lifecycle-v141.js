@@ -4,6 +4,7 @@ import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https:
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 
 import {growthPatch,hatchDay} from './pet-growth.js';
+import {renderPetVisual} from './pet-art.js?v=1.5.1-reaction2';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
@@ -140,7 +141,7 @@ function ensureMemoriesDialog(){
 }
 
 async function svgFor(appearance,shop,stage='adult'){
-  const mod=await import('./pet-art.js');return mod.renderPetSVG(appearance,shop,stage);
+  const mod=await import('./pet-art.js?v=1.5.1-reaction2');return mod.renderPetSVG(appearance,shop,stage);
 }
 async function openMemories(){
   const memories=memoriesOf(currentData);if(!memories.length)return;
@@ -166,18 +167,11 @@ async function showDeparture(memory,user){
   setTimeout(()=>{if(!dialog.open)dialog.showModal();},350);
 }
 
-async function rerenderIfNeeded(data){
+function rerenderIfNeeded(data){
   if(!hasPet(data))return;
-  const stage=visualStage(data),appearance=data.petAppearance,equipped=data.petShop?.equipped||{};
-  const signature=`${stage}|${JSON.stringify(appearance)}|${JSON.stringify(equipped)}`;
   const visual=document.getElementById('petVisual');if(!visual)return;
-  const svg=visual.querySelector('svg');
-  if(signature===lastSvgSignature&&svg?.dataset?.petStage===stage)return;
-  lastSvgSignature=signature;
-  try{
-    visual.innerHTML=await svgFor(appearance,data.petShop,stage);
-    visual.classList.remove('egg');visual.classList.add('hatched');
-  }catch(error){console.error('Pet lifecycle render failed',error);}
+  renderPetVisual(visual,data);
+  visual.classList.remove('egg');visual.classList.add('hatched');
 }
 
 function applyUi(data={}){

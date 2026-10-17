@@ -277,7 +277,7 @@ import {
 
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,appearanceLabel} from './pet-art.js';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=1.5.1-reaction2';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js';
 
 const firebaseConfig = {
@@ -577,7 +577,7 @@ function renderPet(data={},message=''){
   petNameButton.hidden=!petUser || !hatched || validPetName(data.petName);
   if(hatched){
     showPetChatBuiltIn();
-    petVisual.innerHTML=renderPetSVG(data.petAppearance,data.petShop);
+    renderPetVisual(petVisual,data);
     petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
     petTitle.textContent=validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
     petStatus.textContent=message||'あなたのペットと一緒に、今日も英語を楽しもう。';
@@ -755,6 +755,6 @@ onAuthStateChanged(auth,async user=>{
 });
 </script>
 
-<script type="module" src="./version-badge.js?v=1.5.1-motion"></script>
+<script type="module" src='./version-badge.js?v=1.5.1-reaction2'></script>
 </body>
 </html>

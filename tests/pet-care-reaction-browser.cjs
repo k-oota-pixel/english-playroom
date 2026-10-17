@@ -13,7 +13,7 @@ const listeners=[];const snapshot=ref=>({exists:()=>true,data:()=>({...structure
 export async function runTransaction(db,fn){
 if(window.failSave && window.petStore.petLoginDays>=3)throw Object.assign(Error('offline'),{code:'unavailable'});
 let staged;const result=await fn({get:async()=>({exists:()=>!!window.petStore,data:()=>structuredClone(window.petStore||{})}),set:(ref,payload)=>{staged={...window.petStore,...payload};}});
-if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for(const [ref,cb] of listeners)queueMicrotask(()=>cb(snapshot(ref)));}return result;}`;
+if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for(const [ref,cb] of listeners){queueMicrotask(()=>cb(snapshot(ref)));setTimeout(()=>cb(snapshot(ref)),450);setTimeout(()=>cb(snapshot(ref)),1100);}}return result;}`;
 (async()=>{
  const browser=await chromium.launch({headless:true});
  try{
@@ -23,7 +23,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
  const RealDate=Date;const fixed=new RealDate(2026,9,18,0,30).getTime();
- window.Date=class extends RealDate {constructor(...args){super(...(args.length?args:[fixed]));}getHours(){return 0;}getMinutes(){return 30;}};
+ window.Date=class extends RealDate {constructor(...args){super(...(args.length?args:[fixed]));}getHours(){return window.forceDay?12:0;}getMinutes(){return 30;}};
  const d=new Date();const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
  window.petStore={petHatched:true,petAdult:true,petGrowthVersion:1427,petLifecycleVersion:141,petLoginDays:7,petLifeDays:7,petLastLoginDate:key,petLastLifeLoginDate:key,petBirthBonusGranted:true,petName:'ふわ',coins:30,petAppearance:{species:'dog',bodyColor:'blue',eyes:'round',feature:'classic',pattern:'none',baseBackground:'sky'},petShop:{ownedItems:['crown'],equipped:{head:'crown'}}};
  });
@@ -45,7 +45,33 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.waitForTimeout(7400);await sleepingEyes();
  await page.locator('#petVisual').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),1);assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),null);
  assert.equal(await page.evaluate(()=>window.petStore.coins),21);
- await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#petPet').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),2);
+
+ async function motionSurvives(action,label){
+   await page.evaluate(()=>{
+     const v=document.getElementById('petVisual'),svg=v.querySelector('svg');
+     window.motionSamples=[];
+     window.motionTimer=setInterval(()=>{
+       const c=v.querySelector('.pet-character'),layer=v.querySelector('.pet-care-motion-layer'),rect=svg.querySelector('rect').getBoundingClientRect(),b=c.getBoundingClientRect();
+       window.motionSamples.push({sameSvg:svg===v.querySelector('svg'),x:b.x,y:b.y,bgx:rect.x,bgy:rect.y,motion:layer?getComputedStyle(layer).transform:null});
+     },80);
+   });
+   await action();await page.waitForTimeout(1700);
+   const samples=await page.evaluate(()=>{clearInterval(window.motionTimer);return window.motionSamples;});
+   assert.ok(samples.length>=12,label+' has enough frames');
+   assert.ok(samples.every(s=>s.sameSvg),label+' must retain SVG through wallet/lifecycle/server updates');
+   assert.ok(samples.every(s=>Math.abs(s.bgx-samples[0].bgx)<.2&&Math.abs(s.bgy-samples[0].bgy)<.2),label+' background stays fixed');
+   const poses=new Set(samples.slice(1,12).map(s=>s.motion).filter(Boolean));
+   assert.ok(poses.size>=4,label+' visible character transform changes over time');
+ }
+ // Daytime is also exercised: several renderers send the same saved state.
+ await page.evaluate(()=>{window.forceDay=true;document.dispatchEvent(new Event('visibilitychange'));});
+ for(const food of ['snack','meal','special']){
+   await motionSurvives(async()=>{await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();},food);
+ }
+ await motionSurvives(()=>page.locator('#petPet').click(),'PET');
+ await motionSurvives(()=>page.locator('#petVisual').click(),'body tap');
+
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#petPet').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),3);
  assert.equal(await page.locator('#petVisual').evaluate(v=>v.getAnimations().filter(a=>a.playState==='running').length),0);
  assert.deepEqual(errors,[]);console.log('PASS: sleeping redraw keeps closed eyes; all foods wake with visible eyes; only character animates; sleeping body tap awards friendship; sleep returns; reduced motion honored.');
  }finally{await browser.close();}
