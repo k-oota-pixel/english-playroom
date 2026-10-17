@@ -9,7 +9,7 @@ import './pet-six-species-v141.js';
 
 queueMicrotask(()=>import('./pet-admin-panel.js').catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.4.2';
+const APP_VERSION='1.4.3';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
