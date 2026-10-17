@@ -1,5 +1,16 @@
 .pet-visual:has(svg){width:100%;height:100%;font-size:0;filter:none}
 .pet-visual svg{width:100%;height:100%;display:block;border-radius:17px}
+.pet-visual.hatched{position:relative;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.pet-visual.hatched .pet-walker{transform-box:fill-box;transform-origin:center bottom;animation:petWaddle 9s ease-in-out .55s infinite both}
+.pet-visual.hatched .pet-facing{transform-box:fill-box;transform-origin:center center;animation:petTurn 9s steps(1,end) .55s infinite both}
+.pet-visual.hatched.pet-jumping .pet-walker{animation:petJump .65s cubic-bezier(.22,.78,.31,1) both!important}
+.pet-visual.hatched.pet-jumping .pet-facing{animation-play-state:paused}
+.pet-visual.hatched.pet-jumping::after{content:'ぴょん！';position:absolute;z-index:2;left:50%;top:7%;transform:translateX(-50%);font-size:11px;line-height:1;font-weight:900;letter-spacing:.05em;color:#7f641c;background:#fff9de;border:1px solid #ead38b;border-radius:999px;padding:5px 7px;pointer-events:none;animation:petJumpWord .65s ease-out both}
+.pet-visual.hatched:focus-visible{outline:3px solid #d49c22;outline-offset:4px;border-radius:18px}
+@keyframes petWaddle{0%,8%{transform:translate(-8px,0) rotate(0)}12%{transform:translate(-6px,-2px) rotate(-1.5deg)}16%{transform:translate(-4px,0) rotate(1.5deg)}20%{transform:translate(-2px,-2px) rotate(-1.5deg)}24%{transform:translate(0,0) rotate(1.5deg)}28%{transform:translate(2px,-2px) rotate(-1.5deg)}32%{transform:translate(4px,0) rotate(1.5deg)}36%{transform:translate(6px,-2px) rotate(-1deg)}40%,50%{transform:translate(8px,0) rotate(0)}54%{transform:translate(6px,-2px) rotate(1.5deg)}58%{transform:translate(4px,0) rotate(-1.5deg)}62%{transform:translate(2px,-2px) rotate(1.5deg)}66%{transform:translate(0,0) rotate(-1.5deg)}70%{transform:translate(-2px,-2px) rotate(1.5deg)}74%{transform:translate(-4px,0) rotate(-1.5deg)}78%{transform:translate(-6px,-2px) rotate(1deg)}82%,100%{transform:translate(-8px,0) rotate(0)}}
+@keyframes petTurn{0%,49%{transform:scaleX(1)}50%,93%{transform:scaleX(-1)}94%,100%{transform:scaleX(1)}}
+@keyframes petJump{0%{transform:translate(0,0) scale(1)}18%{transform:translate(0,3px) scale(1.04,.94)}48%{transform:translate(0,-18px) scale(.97,1.04)}72%{transform:translate(0,0) scale(1.03,.96)}86%{transform:translate(0,-4px) scale(.99,1.01)}100%{transform:translate(0,0) scale(1)}}
+@keyframes petJumpWord{0%{opacity:0;transform:translate(-50%,7px) scale(.8)}28%{opacity:1;transform:translate(-50%,-2px) scale(1.05)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-12px) scale(.94)}}
 .pet-button{margin-top:9px;border:0;background:#286851;color:white;border-radius:10px;padding:9px 14px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .pet-button:disabled{opacity:.55;cursor:wait}
 .pet-button.secondary{background:#edf3ed;color:#285b4b}
@@ -20,7 +31,7 @@
 .pet-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
 .pet-save-status{min-height:20px;font-size:12px;color:#a14933}
 @media(max-width:560px){.pet-dialog{padding:18px}.pet-maker{grid-template-columns:1fr;gap:16px}.pet-preview{position:static;width:145px;margin:auto}.pet-dialog h2{font-size:21px}}
-@media(prefers-reduced-motion:reduce){.pet-visual.egg,.pet-visual.hatched{animation:none}.pet-bar>i{transition:none}}
+@media(prefers-reduced-motion:reduce){.pet-visual.egg,.pet-visual.hatched,.pet-visual.hatched .pet-walker,.pet-visual.hatched .pet-facing,.pet-visual.hatched.pet-jumping .pet-walker,.pet-visual.hatched.pet-jumping::after{animation:none!important}.pet-bar>i{transition:none}}
 
 body .home{max-width:1240px}
 .hero{display:grid;grid-template-columns:minmax(270px,.82fr) minmax(430px,1.45fr) minmax(220px,.68fr);grid-template-areas:"intro chat pet";gap:26px;align-items:center;margin-top:20px}
