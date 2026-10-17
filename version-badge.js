@@ -5,6 +5,7 @@ import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
 import './pet-lifecycle-v141.js';
 import './pet-egg-ui-v141.js';
+import './pet-six-species-v141.js';
 
 const APP_VERSION='1.4.1';
 
