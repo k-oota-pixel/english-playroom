@@ -26,32 +26,32 @@ function emphasizeGentle(group,eyes){
   const [left,right]=eyes;
   const leftCx=Number(left.getAttribute('cx'))||94;
   const rightCx=Number(right.getAttribute('cx'))||146;
-  const leftCy=Number(left.getAttribute('cy'))||115;
-  const rightCy=Number(right.getAttribute('cy'))||115;
+  const leftCy=(Number(left.getAttribute('cy'))||115)-1;
+  const rightCy=(Number(right.getAttribute('cy'))||115)-1;
 
-  // A clearly different silhouette from round eyes: wider, flatter ovals.
-  // Each eye tilts downward toward the outside for a soft, droopy expression.
-  left.setAttribute('rx','12.2');
-  left.setAttribute('ry','8.4');
-  left.setAttribute('cy',String(leftCy+1.5));
-  left.setAttribute('transform',`rotate(-14 ${leftCx} ${leftCy+1.5})`);
+  // Droopy eyes are exactly the same large oval as round eyes.
+  // Only the angle changes: each eye tilts downward toward the outside.
+  left.setAttribute('rx','10.8');
+  left.setAttribute('ry','14.6');
+  left.setAttribute('cy',String(leftCy));
+  left.setAttribute('transform',`rotate(14 ${leftCx} ${leftCy})`);
 
-  right.setAttribute('rx','12.2');
-  right.setAttribute('ry','8.4');
-  right.setAttribute('cy',String(rightCy+1.5));
-  right.setAttribute('transform',`rotate(14 ${rightCx} ${rightCy+1.5})`);
+  right.setAttribute('rx','10.8');
+  right.setAttribute('ry','14.6');
+  right.setAttribute('cy',String(rightCy));
+  right.setAttribute('transform',`rotate(-14 ${rightCx} ${rightCy})`);
 
   const highlights=group.querySelector(':scope > g[fill="white"]');
   if(highlights){
     const circles=[...highlights.querySelectorAll('circle')];
-    if(circles[0]){circles[0].setAttribute('cx',String(leftCx-3.2));circles[0].setAttribute('cy',String(leftCy-2));circles[0].setAttribute('r','2.6');}
-    if(circles[1]){circles[1].setAttribute('cx',String(rightCx-3.2));circles[1].setAttribute('cy',String(rightCy-2));circles[1].setAttribute('r','2.6');}
-    if(circles[2]){circles[2].setAttribute('cx',String(leftCx+3.6));circles[2].setAttribute('cy',String(leftCy+4.3));circles[2].setAttribute('r','1.2');}
-    if(circles[3]){circles[3].setAttribute('cx',String(rightCx+3.6));circles[3].setAttribute('cy',String(rightCy+4.3));circles[3].setAttribute('r','1.2');}
+    if(circles[0]){circles[0].setAttribute('cx',String(leftCx-2.7));circles[0].setAttribute('cy',String(leftCy-4.5));circles[0].setAttribute('r','3.8');}
+    if(circles[1]){circles[1].setAttribute('cx',String(rightCx-2.7));circles[1].setAttribute('cy',String(rightCy-4.5));circles[1].setAttribute('r','3.8');}
+    if(circles[2]){circles[2].setAttribute('cx',String(leftCx+3.2));circles[2].setAttribute('cy',String(leftCy+4.5));circles[2].setAttribute('r','1.7');}
+    if(circles[3]){circles[3].setAttribute('cx',String(rightCx+3.2));circles[3].setAttribute('cy',String(rightCy+4.5));circles[3].setAttribute('r','1.7');}
   }
 }
 function patchSvg(svg){
-  if(!(svg instanceof SVGElement)||svg.dataset.eyeEmphasisV145==='1')return;
+  if(!(svg instanceof SVGElement)||svg.dataset.eyeEmphasisV146==='1')return;
   const group=eyeGroup(svg);if(!group)return;
   const eyes=directEllipses(group);if(eyes.length<2)return;
   const first=eyes[0],rx=Number(first.getAttribute('rx'))||0;
@@ -60,7 +60,7 @@ function patchSvg(svg){
   if(isGentle)emphasizeGentle(group,eyes);
   else if(isRound)emphasizeRound(group,eyes);
   else return;
-  svg.dataset.eyeEmphasisV145='1';
+  svg.dataset.eyeEmphasisV146='1';
 }
 function scan(root=document){
   if(root instanceof SVGElement)patchSvg(root);
