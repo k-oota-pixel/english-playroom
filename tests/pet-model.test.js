@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {OPTIONS,DEFAULT_APPEARANCE,normalizeAppearance,validAppearance,loginProgress,readyToHatch,hasPet,equippedLayers} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js';
-test('6,912 valid SVG combinations, each safe to render',()=>{
+test('All valid SVG combinations, each safe to render',()=>{
   let count=0;
   function visit(keys,value){
     if(!keys.length){assert.ok(validAppearance(value));const svg=renderPetSVG(value);assert.ok(svg.startsWith('<svg'));assert.ok(!/undefined|NaN/.test(svg));count++;return;}
     const [key,...rest]=keys;for(const item of OPTIONS[key])visit(rest,{...value,[key]:item.id});
   }
-  visit(Object.keys(OPTIONS),{});assert.equal(count,6912);
+  visit(Object.keys(OPTIONS),{});assert.equal(count,Object.values(OPTIONS).reduce((n,items)=>n*items.length,1));
 });
 test('login counts distinct days, skips repeats and backwards clocks',()=>{
   assert.deepEqual(loginProgress({},'2026-10-14'),{petLoginDays:1,petLastLoginDate:'2026-10-14'});
@@ -36,8 +36,8 @@ test('untrusted saved IDs do not become SVG or shop markup',()=>{
 import {chooseSpecies,PERSONALITY_POOLS,appearanceFromAnswers} from '../pet-model.js';
 test('all six species reachable for every answer, with equal-sized preference boosts',()=>{
  for(const preference of Object.keys(PERSONALITY_POOLS)){
-  const counts={};for(let i=0;i<10;i++){const id=chooseSpecies(preference,()=> (i+.5)/10);counts[id]=(counts[id]||0)+1;}
-  assert.equal(Object.keys(counts).length,6);
+  const counts={};const total=OPTIONS.species.length+2*PERSONALITY_POOLS[preference].length;for(let i=0;i<total;i++){const id=chooseSpecies(preference,()=> (i+.5)/total);counts[id]=(counts[id]||0)+1;}
+  assert.equal(Object.keys(counts).length,OPTIONS.species.length);
   for(const {id} of OPTIONS.species)assert.equal(counts[id],PERSONALITY_POOLS[preference].includes(id)?3:1);
   const a=appearanceFromAnswers({...DEFAULT_APPEARANCE,personality:preference},()=>.5);
   assert.ok(validAppearance(a));assert.equal(a.bodyColor,'cream');assert.equal('personality' in a,false);

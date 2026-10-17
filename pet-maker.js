@@ -45,7 +45,7 @@ export function createPetMaker(onSave){
    dialog.querySelector('.survey-progress').textContent='最後に、相棒の名前をつけよう';
    options.innerHTML='<label for="newPetName">ペットの名前</label><input id="newPetName" class="pet-name-input" type="text" autocomplete="off" aria-describedby="newPetNameHint"><p id="newPetNameHint">1〜12文字。日本語でも英語でもOK！</p>';
    const input=options.querySelector('input');input.value=petName;input.addEventListener('input',()=>{petName=input.value;next.disabled=!validPetName(petName);});
-   back.hidden=false;next.textContent='名前をつけて、たまごをかえす';next.disabled=!validPetName(petName);if(focus)input.focus();return;
+   back.hidden=false;next.textContent='この姿に成長する';next.disabled=!validPetName(petName);if(focus)input.focus();return;
   }
   const q=QUESTIONS[step];dialog.querySelector('.survey-progress').textContent=`質問 ${step+1} / ${QUESTIONS.length}`;
   const field=document.createElement('fieldset'),legend=document.createElement('legend'),choices=document.createElement('div');legend.textContent=q.title;choices.className='choices';field.append(legend,choices);
@@ -56,11 +56,11 @@ export function createPetMaker(onSave){
  back.addEventListener('click',()=>{if(!busy&&step>0){step--;status.textContent='';update(true);}});
  next.addEventListener('click',async()=>{
   if(busy)return;if(step<QUESTIONS.length){if(!answers[QUESTIONS[step].key])return;step++;update(true);return;}if(!validPetName(petName))return;
-  busy=true;status.textContent='たまごがかえりそう…';for(const b of dialog.querySelectorAll('button'))b.disabled=true;
+  busy=true;status.textContent='成長しています…';for(const b of dialog.querySelectorAll('button'))b.disabled=true;
   try{pendingAppearance ||= appearanceFromAnswers(answers);await onSave({...pendingAppearance},normalizePetName(petName));dialog.close();}catch(e){status.textContent=e.message||'保存できませんでした。通信状態を確認して再度お試しください。';}
   finally{busy=false;for(const b of dialog.querySelectorAll('button'))b.disabled=false;}
  });
- return {open(){if(dialog.open||busy)return;answers={};petName='';pendingAppearance=null;step=0;status.textContent='';update();dialog.showModal();},close(){dialog.close();}};
+ return {open(existingName=''){if(dialog.open||busy)return;answers={};petName=validPetName(existingName)?existingName:'';pendingAppearance=null;step=0;status.textContent='';update();dialog.showModal();},close(){dialog.close();}};
 }
 
 export function createPetNameDialog(onSave){

@@ -3,6 +3,7 @@ import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 
+import {growthPatch,hatchDay} from './pet-growth.js';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
@@ -17,11 +18,11 @@ function generationOf(data={}){return Math.max(1,int(data.petGeneration,1));}
 function stageOf(data={}){
   if(!hasPet(data))return 'egg';
   const days=lifeDays(data);
-  if(days<10)return 'baby';
+  if(data.petAdult===false)return 'baby';
   if(days<30)return 'adult';
   return 'elder';
 }
-function visualStage(data={}){return stageOf(data)==='baby'?'baby':'adult';}
+function visualStage(data={}){return data.petAdult===false?'mystery':'baby';}
 function chanceFor(days){if(days<30)return 0;if(days<40)return .01;if(days<50)return .03;if(days<60)return .06;return .10;}
 function hashString(value){let h=2166136261;for(const ch of String(value)){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return h>>>0;}
 function shouldDepart(uid,generation,today,days){const chance=chanceFor(days);if(!chance)return false;return (hashString(`${uid}|${generation}|${today}|${days}`)%10000)/10000<chance;}
@@ -39,7 +40,7 @@ function cumulativeLoginPatch(data,today){
 function advanceLifecycle(source,today,uid){
   const loginPatch=cumulativeLoginPatch(source,today);
   const data={...source,...loginPatch};
-  const patch={...loginPatch};
+  const patch={...loginPatch,...growthPatch(data,today,uid)};
   const oldVersion=int(data.petLifecycleVersion,0);
 
   if(oldVersion<LIFECYCLE_VERSION){
@@ -49,7 +50,7 @@ function advanceLifecycle(source,today,uid){
     patch.petLastLifeCheckDate='';
     if(hasPet(data)){
       // ver1.4.1 launch: every existing pet gets to experience the new juvenile form.
-      patch.petLifeDays=3;
+      patch.petLifeDays=Math.max(3,lifeDays(data));
       return {patch,data:{...data,...patch},event:'migrated'};
     }
     // Existing eggs keep the progress they had already earned, capped at hatch day.
@@ -86,6 +87,7 @@ function advanceLifecycle(source,today,uid){
         petLastDeparture:memory,
         petGeneration:generation+1,
         petHatched:false,
+        petAdult:false,petGrowthPending:false,petHatchDate:null,petGrowthCheckedDay:1,
         petName:null,
         petAppearance:null,
         petHatchedAt:null,
@@ -166,7 +168,7 @@ async function showDeparture(memory,user){
 
 async function rerenderIfNeeded(data){
   if(!hasPet(data))return;
-  const stage=visualStage(data),appearance=data.petAppearance||{},equipped=data.petShop?.equipped||{};
+  const stage=visualStage(data),appearance=data.petAppearance,equipped=data.petShop?.equipped||{};
   const signature=`${stage}|${JSON.stringify(appearance)}|${JSON.stringify(equipped)}`;
   const visual=document.getElementById('petVisual');if(!visual)return;
   const svg=visual.querySelector('svg');
@@ -179,28 +181,31 @@ async function rerenderIfNeeded(data){
 }
 
 function applyUi(data={}){
-  currentData=data;ensureStyles();const memoryButton=ensureMemoryButton();
+  currentData=data;document.dispatchEvent(new CustomEvent('pet-state-updated',{detail:data}));ensureStyles();const memoryButton=ensureMemoryButton();
   const stage=stageOf(data),days=lifeDays(data),hatched=hasPet(data),generation=generationOf(data);
   document.documentElement.dataset.petStage=stage;
   const petDays=document.getElementById('petDays'),status=document.getElementById('petStatus'),bar=document.getElementById('petBar'),create=document.getElementById('petCreate');
   if(memoryButton)memoryButton.hidden=!memoriesOf(data).length;
   if(hatched){
+    const title=document.getElementById('petTitle');if(title)title.textContent=validPetName(data.petName)?normalizePetName(data.petName):data.petAdult===false?'ふわふわの相棒':'わたしのペット';
+    const nameButton=document.getElementById('petNameButton');if(nameButton)nameButton.hidden=validPetName(data.petName);
     rerenderIfNeeded(data);
-    if(petDays)petDays.textContent=stage==='baby'?`幼体 · ${days}日目`:stage==='adult'?`成体 · ${days}日目`:`長寿期 · ${days}日目`;
+    if(petDays)petDays.textContent=stage==='baby'?`幼体 · 孵化後${hatchDay(data,localDateKey())}日目`:stage==='adult'?`成体 · ${days}日目`:`長寿期 · ${days}日目`;
     if(status){
-      if(stage==='baby')status.textContent=days<10?`あと${10-days}回ログインすると、おとなの姿に成長します。`:'今日も一緒に英語を楽しもう。';
+      if(data.petGrowthPending)status.textContent='成長のときが来ました！アンケートに答えて成体に育てよう。';
+      else if(stage==='baby')status.textContent=days<10?`孵化後${hatchDay(data,localDateKey())}日目。2日目から成長のチャンス、7日目には必ず成長します。`:'今日も一緒に英語を楽しもう。';
       else if(stage==='adult')status.textContent=`一緒に過ごして${days}日目。30日目から長寿期に入ります。`;
       else status.textContent=`長寿期${days}日目。今日も一緒に過ごせる大切な一日です。`;
     }
-    if(create)create.hidden=true;
+    if(create){create.hidden=!data.petGrowthPending;create.textContent='成長アンケートに答える';}
   }else if(currentUser){
     const ready=days>=3,shown=Math.min(3,days);
     if(petDays)petDays.textContent=generation>1?`新しいたまご ${shown} / 3日`:`ログイン ${shown} / 3日`;
     if(bar)bar.style.width=`${Math.min(100,(shown/3)*100)}%`;
-    if(create)create.hidden=!ready;
+    if(create){create.hidden=!ready;create.textContent='たまごをかえす';}
     const title=document.getElementById('petTitle');
     if(title)title.textContent=ready?'たまごがかえりそう！':generation>1?'新しいふしぎなたまご':'ふしぎなたまご';
-    if(status)status.textContent=ready?'アンケートに答えて、新しい相棒に出会おう。':days?`あと${3-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';
+    if(status)status.textContent=ready?'たまごをかえして、ふわふわの相棒を迎えよう。':days?`あと${3-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';
   }
 }
 
@@ -233,7 +238,8 @@ function start(){
     synchronize(user).catch(error=>console.error('Pet lifecycle sync failed',error));
   });
   // The legacy page renderer still updates some labels after auth; quietly re-apply lifecycle labels.
-  setInterval(()=>{if(currentUser)applyUi(currentData);},1200);
+  let checkedDate=localDateKey();
+  setInterval(()=>{if(currentUser){applyUi(currentData);const today=localDateKey();if(today>checkedDate){checkedDate=today;synchronize(currentUser).catch(console.error);}}},1200);
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

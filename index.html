@@ -274,6 +274,7 @@ import {
   getFirestore, doc, getDoc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
+import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
 import {renderPetSVG,appearanceLabel} from './pet-art.js';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js';
@@ -497,8 +498,9 @@ const petMaker=createPetMaker(async (appearance,name)=>{
       const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
       if(!readyToHatch(data))throw Error('3日ログインするとペットを迎えられます。');
       // First successful choice wins, even across devices or tabs.
-      if(hasPet(data))return data;
-      const payload={petName:normalizePetName(name),petAppearance:appearance,petSchemaVersion:1,petHatched:true,petCustomizedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()};
+      if(hasPet(data)&&data.petAdult!==false)return data;
+      if(!data.petGrowthPending)throw Error('成長のときを待ってください。');
+      const payload={petName:normalizePetName(name),petAppearance:appearance,petSchemaVersion:1,petHatched:true,petAdult:true,petGrowthPending:false,petCustomizedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()};
       if(!data.petHatchedAt)payload.petHatchedAt=serverTimestamp();
       transaction.set(ref,payload,{merge:true});
       return {...data,...payload};
@@ -509,7 +511,20 @@ const petMaker=createPetMaker(async (appearance,name)=>{
     throw error;
   }
 });
-petCreate.addEventListener('click',()=>{if(petUser && readyToHatch(petData) && !hasPet(petData))petMaker.open(petData.petAppearance);});
+let growthPromptKey='',petStateSignature='';
+document.addEventListener('pet-state-updated',event=>{
+ if(!petUser)return;petData=event.detail;const signature=JSON.stringify(petData);if(signature!==petStateSignature){petStateSignature=signature;renderPet(petData);}
+ if(petData.petGrowthPending){const key=petUser.uid+'|'+(petData.petGeneration||1);if(growthPromptKey!==key){growthPromptKey=key;petMaker.open(petData.petName);}}
+});
+petCreate.addEventListener('click',async()=>{
+ if(!petUser)return;
+ if(petData.petGrowthPending){petMaker.open(petData.petName);return;}
+ if(hasPet(petData))return;
+ const hatchUser=petUser;
+ petCreate.disabled=true;
+ try{await runTransaction(db,async tx=>{const ref=petRef(hatchUser),snap=await tx.get(ref),data=snap.data()||{};if(hasPet(data))return;if(Number(data.petLifeDays??data.petLoginDays)<3)throw Error('3日ログインすると孵化できます。');tx.set(ref,{...hatchPatch(localDateKey()),petHatchedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});});}
+ catch(e){petStatus.textContent=e.message;}finally{petCreate.disabled=false;}
+});
 
 const petNameDialog=createPetNameDialog(async name=>{
   const user=petUser,generation=petAuthGeneration;
@@ -531,19 +546,19 @@ petNameButton.addEventListener('click',()=>{if(petUser && hasPet(petData) && !va
 petRetry.addEventListener('click',async()=>{
   const user=petUser,generation=petAuthGeneration;
   if(!retryMode || !user || auth.currentUser?.uid!==user.uid || petRetry.disabled)return;
-  if(!confirm(`${user.displayName||'ログイン中のアカウント'} のペットをリセットして、3日目の孵化アンケートからやり直しますか？ 学習記録はそのままです。`))return;
+  if(!confirm(`${user.displayName||'ログイン中のアカウント'} のペットをリセットして、孵化直前からやり直しますか？ 学習記録はそのままです。`))return;
   petRetry.disabled=true;petMaker.close();petNameDialog.close();
   try{
     const saved=await runTransaction(db,async transaction=>{
       const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
       if(!readyToHatch(data))throw Error('3日ログインを達成してからお試しください。');
-      const payload={petLoginDays:3,petLastLoginDate:localDateKey(),petHatched:false,petName:null,petAppearance:null,petHatchedAt:null,petCustomizedAt:null,petUpdatedAt:serverTimestamp()};
+      const payload={petLoginDays:3,petLifeDays:3,petAdult:false,petGrowthPending:false,petHatchDate:null,petGrowthCheckedDay:1,petLastLoginDate:localDateKey(),petHatched:false,petName:null,petAppearance:null,petHatchedAt:null,petCustomizedAt:null,petUpdatedAt:serverTimestamp()};
       transaction.set(ref,payload,{merge:true});return {...data,...payload};
     });
     if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
     retryMode=false;
     const url=new URL(location.href);url.searchParams.delete('pet-retry');history.replaceState(null,'',url);
-    petData=saved;renderPet(saved,'3日目の孵化直前に戻しました。新しいアンケートをお楽しみください。');petMaker.open();
+    petData=saved;renderPet(saved,'3日目の孵化直前に戻しました。たまごをかえして育てよう。');petMaker.close();
   }catch(error){
     if(generation===petAuthGeneration)petStatus.textContent=error.code?'リセットを保存できませんでした。通信状態を確認して、もう一度お試しください。':error.message;
   }finally{petRetry.disabled=false;}
@@ -556,7 +571,7 @@ function renderPet(data={},message=''){
   petBar.style.width=`${Math.min(100,(shown/3)*100)}%`;
   petVisual.classList.toggle('egg',!hatched);
   petVisual.classList.toggle('hatched',hatched);
-  petCreate.hidden=!petUser || !ready || hatched;
+  petCreate.hidden=!petUser || (!data.petGrowthPending && (!ready || hatched));
   petRetry.hidden=!retryMode || !petUser || !ready;
   petNameButton.hidden=!petUser || !hatched || validPetName(data.petName);
   if(hatched){
@@ -579,8 +594,8 @@ async function syncPet(user,generation){
   const today=localDateKey();
   const data=await runTransaction(db,async transaction=>{
     const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?(snap.data()||{}):{};
-    const progress=loginProgress(data,today);
-    if(progress.petLoginDays!==data.petLoginDays || progress.petLastLoginDate!==data.petLastLoginDate){
+    const progress={...loginProgress(data,today),...growthPatch(data,today,user.uid)};
+    if(Object.keys(progress).some(key=>progress[key]!==data[key])){
       transaction.set(ref,{...progress,petUpdatedAt:serverTimestamp()},{merge:true});
     }
     return {...data,...progress};

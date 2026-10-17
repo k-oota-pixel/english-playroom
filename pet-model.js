@@ -12,7 +12,7 @@ export function normalizeAppearance(value={}) {return Object.fromEntries(Object.
 export function validAppearance(value) {return !!value && Object.entries(OPTIONS).every(([key,items])=>items.some(item=>item.id===value[key]));}
 export function loginProgress(data,today) {const raw=Number(data.petLoginDays),days=Number.isFinite(raw)?Math.max(0,Math.floor(raw)):0,last=typeof data.petLastLoginDate==='string'?data.petLastLoginDate:'',count=!last||today>last;return {petLoginDays:days+(count?1:0),petLastLoginDate:count?today:last};}
 export function readyToHatch(data) {return !!data.petHatched||Number(data.petLoginDays)>=3;}
-export function hasPet(data) {return !!data.petHatched&&validAppearance(data.petAppearance);}
+export function hasPet(data) {return !!data.petHatched&&(data.petAdult===false||validAppearance(data.petAppearance));}
 
 export const SHOP_LAYERS = Object.freeze({
   backgrounds:Object.freeze({
