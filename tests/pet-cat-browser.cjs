@@ -58,15 +58,23 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.waitForFunction(()=>document.querySelector('#petVisual [data-cat-eye-style]')?.dataset.catEyeStyle==='watery');
  const after=await page.evaluate(()=>window.petStore);
  for(const field of ['coins','petName','petShop','learningMarker','petLifeDays','petLoginDays'])assert.deepEqual(after[field],before[field],field+' is preserved');
+ // Save through the real admin UI so lifecycle/shop subscribers receive the same state.
+ async function saveAppearance(color,eye){
+  await page.locator('.pet-admin-open').click();
+  await page.locator('#petAdminDialog[open]').waitFor();
+  await page.locator('#petAdminGrid [data-key="bodyColor"]').selectOption(color);
+  await page.locator('#petAdminGrid [data-key="eyeStyle"]').selectOption(eye);
+  await page.locator('#petAdminDialog [data-save]').click();
+  await page.locator('#petAdminDialog').waitFor({state:'hidden'});
+  await page.waitForFunction(({color,eye})=>window.petStore.petAppearance.bodyColor===color&&document.querySelector('#petVisual [data-cat-eye-style]')?.dataset.catEyeStyle===eye,{color,eye});
+ }
  // Main renderer exercises the same 36 combinations with all legacy observers active.
- await page.evaluate(async()=>{window.catRenderer=await import('./pet-art.js?v=1.5.26');});
  for(const color of colors)for(const eye of eyes){
-  await page.evaluate(({color,eye})=>{const data={...window.petStore,petAppearance:{...window.petStore.petAppearance,bodyColor:color,eyeStyle:eye}};window.catRenderer.renderPetVisual(document.getElementById('petVisual'),data);},{color,eye});
-  await page.waitForTimeout(10);
+  await saveAppearance(color,eye);
   assert.equal(await page.locator('#petVisual [data-cat-eye-style]').getAttribute('data-cat-eye-style'),eye);
   assert.equal(await page.locator('#petVisual [data-pet-cat-art]').count(),1);
  }
- await page.evaluate(()=>window.catRenderer.renderPetVisual(document.getElementById('petVisual'),{...window.petStore,petAppearance:{...window.petStore.petAppearance,bodyColor:'orange',eyeStyle:'round'}}));
+ await saveAppearance('orange','round');
  await page.waitForTimeout(200);
  await page.screenshot({path:path.join(screenshotDir,'cat-desktop-implemented.png')});
  await page.setViewportSize({width:390,height:844});
