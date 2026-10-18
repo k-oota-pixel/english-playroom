@@ -14,3 +14,36 @@
 .world-records[data-active-course]:not([data-active-course=""]) .world-record-card{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .world-records[data-active-course]:not([data-active-course=""]) .world-record-card h3,.world-records[data-active-course]:not([data-active-course=""]) .world-record-name{margin:0}
 @media(max-width:600px){.world-record-list{grid-template-columns:repeat(2,minmax(0,1fr))}.world-records{padding:10px;top:4px}.world-record-card{padding:7px}.world-record-name{font-size:11px}}
+
+.feedback summary{font-size:11px;font-weight:750;color:#65756e;cursor:pointer;min-height:24px;line-height:24px}
+.feedback details[open]>summary{margin-bottom:12px}
+@media(max-width:720px){
+  html.word-breaker-playing,html.word-breaker-playing body{overflow:hidden;overscroll-behavior:none}
+  html.word-breaker-playing main>:not(#play){display:none}
+  html.word-breaker-playing #play{position:fixed;inset:auto 0 auto;top:var(--wb-visible-top,0px);height:var(--wb-visible-height,100dvh);z-index:20;display:flex;flex-direction:column;overflow:hidden;overflow-anchor:none;background:#f6f5ef;padding:6px max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+  html.word-breaker-playing .hud{flex:0 0 auto;gap:16px;padding:3px 0 6px;font-size:9px}
+  html.word-breaker-playing .hud b{font-size:20px}
+  html.word-breaker-playing .hud button{min-height:40px;padding:7px 12px}
+  html.word-breaker-playing .game-layout{display:flex;flex-direction:column;flex:1;min-height:0;gap:6px;margin-top:6px}
+  html.word-breaker-playing .game-layout>div{display:flex;flex-direction:column;flex:1;min-height:0}
+  html.word-breaker-playing .arena{height:auto;flex:1;min-height:60px;border-radius:12px}
+  html.word-breaker-playing .word{top:50%;font-size:clamp(24px,8vw,44px);line-height:1.05}
+  html.word-breaker-playing #answer-form{margin-top:6px;flex:0 0 auto}
+  html.word-breaker-playing .input-row{margin-top:3px}
+  html.word-breaker-playing #answer{font-size:17px;padding:10px;min-height:44px}
+  html.word-breaker-playing #submit{padding:8px 12px;min-height:44px}
+  html.word-breaker-playing #message{min-height:16px;margin:4px 0 0;font-size:11px;line-height:1.4}
+  html.word-breaker-playing .feedback{flex:0 0 auto;max-height:22%;overflow:auto;padding:4px 10px;border-radius:10px}
+  html.word-breaker-playing .feedback details[open]>summary{margin-bottom:3px}
+  html.word-breaker-playing .feedback strong{font-size:17px}
+  html.word-breaker-playing .feedback p{font-size:11px;line-height:1.4;margin:3px 0}
+}
+
+@media(max-width:720px){
+  html.word-breaker-playing.word-breaker-compact .hud{align-items:center;padding:0 0 4px}
+  html.word-breaker-playing.word-breaker-compact .hud b{display:inline;font-size:16px;margin-left:3px}
+  html.word-breaker-playing.word-breaker-compact .hud button{min-height:32px;padding:4px 10px}
+  html.word-breaker-playing.word-breaker-compact #answer-form label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  html.word-breaker-playing.word-breaker-compact #message{margin-top:2px;font-size:10px;min-height:14px}
+  html.word-breaker-playing.word-breaker-compact .arena{min-height:48px}
+}
