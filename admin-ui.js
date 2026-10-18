@@ -16,17 +16,18 @@ function fmtDate(v){if(!v)return '—';const d=new Date(Number(v)||v);return Num
 function mini(data={}){const keys=['lastPlayedDate','submissions','correctAnswers','completedStages','attemptedIds','rounds','clearCount','attempts','correct','petLoginDays','retryCoinProgress'];const lines=[];for(const k of keys){if(!(k in data))continue;const v=data[k];lines.push(`${k}: ${Array.isArray(v)?v.length:typeof v==='object'&&v!==null?Object.keys(v).length:v}`);}if(!lines.length){for(const [k,v] of Object.entries(data).slice(0,3))lines.push(`${k}: ${Array.isArray(v)?v.length:typeof v==='object'&&v!==null?'…':v}`);}return lines.slice(0,4).join('\n')||'記録なし';}
 async function token(){const u=auth.currentUser;if(!u)throw Error('ログインしてください。');return u.getIdToken();}
 async function api(path,opt={}){const idToken=await token();const res=await fetch(API+path,{...opt,signal:AbortSignal.timeout(20000),headers:{...(opt.headers||{}),'Authorization':`Bearer ${idToken}`,'Content-Type':'application/json'}});let body={};try{body=await res.json();}catch{}if(!res.ok)throw Error(body.error||`管理APIエラー (${res.status})`);return body;}
-function updateRefresh(){const remaining=Math.ceil((fetchedAt+TTL-Date.now())/1000);$('refresh').disabled=busy||remaining>0;$('refresh').textContent=remaining>0?'更新まで '+remaining+'秒':'↻ このページを更新';}
-async function load(index=pageIndex){
+function updateRefresh(){$('refresh').disabled=busy;$('refresh').textContent='↻ このページを更新';}
+async function load(index=pageIndex,force=false){
  if(busy||!auth.currentUser)return;const own=generation,request=++viewGeneration,key=cursors[index];if(key===undefined)return;
  busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('10人分の一覧を読み込んでいます…');
  try{
+  if(force)pageCache.delete(key);
   let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=10'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
   if(own!==generation||request!==viewGeneration)return;
-  allUsers=data.users||[];pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
+  allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLoginAt||0)-Number(a.lastLoginAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
-  $('updated').textContent='一覧の最終更新: '+fmtDate(fetchedAt)+' ／ 更新は60秒間隔です。';
-  setStatus('一覧は10人ずつ取得します。学習記録はユーザーを開くと読み込みます。','ok');render();
+  $('updated').textContent='一覧の最終更新: '+fmtDate(fetchedAt)+' ／ 自動更新はしません。';
+  setStatus('一覧は最終ログインが新しい順に10人ずつ表示します。学習記録はユーザーを開くと読み込みます。','ok');render();
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();$('prev').disabled=pageIndex===0;$('next').disabled=!nextToken;}}
 }
@@ -55,9 +56,8 @@ async function grant(card){const uid=card.dataset.uid,amount=Math.floor(Number(c
  setStatus(label+' に '+amount.toLocaleString('ja-JP')+'コイン付与しました。','ok');render();}catch(e){if(own===generation)setStatus(e.message,'error');}finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .grantBtn`);if(btn)btn.disabled=false;}}
 $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.message,'error'));
 $('logout').onclick=()=>signOut(auth);
-$('refresh').onclick=()=>load();$('search').oninput=render;
+$('refresh').onclick=()=>load(pageIndex,true);$('search').oninput=render;
 $('prev').onclick=()=>load(pageIndex-1);$('next').onclick=()=>load(pageIndex+1);
-setInterval(updateRefresh,1000); // Only updates the countdown; never reads Firestore.
 onAuthStateChanged(auth,user=>{generation++;viewGeneration++;allUsers=[];pageCache.clear();detailCache.clear();expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;fetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;
  if(!user){$('users').replaceChildren();$('who').textContent='';$('login').hidden=false;$('logout').hidden=true;setStatus('管理者ログインをしてください。');return;}
  $('who').textContent=user.email||'';$('login').hidden=true;$('logout').hidden=false;load(0);
