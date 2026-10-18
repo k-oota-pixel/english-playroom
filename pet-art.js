@@ -126,16 +126,16 @@ export function appearanceLabel(value){const a=resolvedAppearance(value);const c
 if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=1.5.3').then(()=>import('./pet-enhancements.js')).catch(error=>console.error('Pet shop failed to load',error)));
 function renderMysterySVG(shop){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物"><rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+'</svg>';}
 
-const livePetSignatures=new WeakMap();
+// Keep the render key on the SVG so cloned markup and module copies share it.
 // Wallet/lifecycle updates must retain the current SVG and its animation phase.
 export function renderPetVisual(visual,data){
   if(!visual)return false;
   const stage=data.petAdult===false?'mystery':'baby';
   const signature=JSON.stringify([stage,data.petAppearance||null,data.petShop||{}]);
   const current=visual.querySelector(':scope > svg');
-  if(current&&livePetSignatures.get(current)===signature)return false;
+  if(current&&current.dataset.petVisualSignature===signature)return false;
   visual.innerHTML=renderPetSVG(data.petAdult===false?null:data.petAppearance,data.petShop,stage);
   const svg=visual.querySelector(':scope > svg');
-  if(svg)livePetSignatures.set(svg,signature);
+  if(svg)svg.dataset.petVisualSignature=signature;
   return true;
 }
