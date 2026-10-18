@@ -134,7 +134,16 @@ export function renderPetVisual(visual,data){
   const signature=JSON.stringify([stage,data.petAppearance||null,data.petShop||{}]);
   const current=visual.querySelector(':scope > svg');
   if(current&&current.dataset.petVisualSignature===signature)return false;
+  const phases=[...visual.querySelectorAll('.pet-character,.pet-shadow')].flatMap(el=>
+    el.getAnimations().filter(a=>/^pet(Waddle|Shadow)/.test(a.animationName||'')).map(a=>({
+      selector:el.classList.contains('pet-character')?'.pet-character':'.pet-shadow',
+      name:a.animationName,time:a.currentTime
+    })));
   visual.innerHTML=renderPetSVG(data.petAdult===false?null:data.petAppearance,data.petShop,stage);
+  for(const phase of phases){
+    const walk=visual.querySelector(phase.selector)?.getAnimations().find(a=>a.animationName===phase.name);
+    if(walk&&phase.time!=null)walk.currentTime=phase.time;
+  }
   const svg=visual.querySelector(':scope > svg');
   if(svg)svg.dataset.petVisualSignature=signature;
   return true;

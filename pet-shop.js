@@ -1,3 +1,4 @@
+import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
 import { playCareReaction } from './pet-care-animation.js?v=1.5.7';
 import { FOODS, careState, feedReward } from './pet-care-model.js?v=1.5.1-touch';
@@ -7,7 +8,7 @@ import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
 import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.7';
 
-let wasteSaving=false;
+let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
   {id:'red-ribbon',name:'赤いリボン',price:5,slot:'head',icon:'🎀'},
   {id:'blue-ribbon',name:'青いリボン',price:5,slot:'head',icon:'🎗️'},
@@ -193,6 +194,7 @@ function renderWaste(){
   layer.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:8';
   visual.append(layer);
  }
+ layer.style.visibility=cleaningWaste?'hidden':'';
  if(layer.dataset.count===String(count))return;
  layer.dataset.count=String(count);
  layer.innerHTML=Array.from({length:count},(_,i)=>`<span style="position:absolute;left:${[8,76,25,61][i]}%;bottom:${[8,10,2,3][i]}%;font-size:clamp(18px,6vw,26px);line-height:1;filter:drop-shadow(0 2px 1px #0002)">💩</span>`).join('');
@@ -202,7 +204,8 @@ async function updateWaste(clean=false){
  if(!user||!hasPet(currentData)||wasteSaving||busy)return;
  const next=wasteState(currentData),saved=currentData.petWaste;
  if(!clean&&saved?.day===next.day&&saved?.count===next.count)return;
- wasteSaving=true;renderWaste();
+ const cleaning=clean?prepareCleaning(document.getElementById('petVisual')):null;
+ wasteSaving=true;cleaningWaste=clean;renderWaste();
  try{
   const result=await runTransaction(db,async tx=>{
    const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};
@@ -213,8 +216,8 @@ async function updateWaste(clean=false){
   });
   if(currentUser?.uid!==user.uid||!result)return;
   currentData={...currentData,petWaste:result};
-  if(clean)setToast('✨ きれいになりました！','ok');
+  if(clean){await cleaning.play();if(currentUser?.uid===user.uid)setToast('✨ きれいになりました！','ok');}
  }catch(error){
   if(currentUser?.uid===user.uid)setToast('掃除の状態を保存できませんでした。もう一度お試しください。','error');
- }finally{wasteSaving=false;renderWaste();}
+ }finally{cleaning?.stop();wasteSaving=false;cleaningWaste=false;renderWaste();}
 }
