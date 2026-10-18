@@ -15,7 +15,18 @@ const STYLE=`
 @media(prefers-reduced-motion:reduce){#petVisual .pet-care-motion-layer{animation:none!important}}
 `;
 
+// Reparenting an SVG node restarts its CSS animation. Retain the walk phase.
+function walkPhases(visual){
+  return [...visual.querySelectorAll('.pet-character,.pet-shadow')].flatMap(el=>
+    el.getAnimations().filter(a=>/^pet(Waddle|Shadow)/.test(a.animationName||'')).map(a=>({el,name:a.animationName,time:a.currentTime})));
+}
+function restoreWalk(phases){
+  for(const {el,name,time} of phases)if(time!=null){
+    const walk=el.getAnimations().find(a=>a.animationName===name);if(walk)walk.currentTime=time;
+  }
+}
 export function playCareReaction(visual,kind,food){
+  const phases=walkPhases(visual);
   active?.stop();
   if(!document.getElementById('petCareAnimation153')){
     const style=document.createElement('style');style.id='petCareAnimation153';style.textContent=STYLE;document.head.append(style);
@@ -23,8 +34,8 @@ export function playCareReaction(visual,kind,food){
   visual.dispatchEvent(new CustomEvent('pet-care-reaction'));
   const host=visual.closest('.pet-visual-wrap')||visual;
   const feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');
-  const icon=document.createElement('b');icon.textContent=food?.icon||'♥';
-  feedback.append(icon,document.createTextNode(food?'おいしい！':'うれしい！'));host.append(feedback);
+  if(food){const icon=document.createElement('b');icon.textContent=food.icon;
+    feedback.append(icon,document.createTextNode('おいしい！'));host.append(feedback);}
   const started=performance.now(),duration=kind==='celebrate'?2200:1800;
   visual.dataset.careReacting=kind;
   function attach(){
@@ -34,13 +45,15 @@ export function playCareReaction(visual,kind,food){
     // A CSS reaction stays independent from the child's walking animation.
     layer.style.animationDelay=`-${Math.max(0,performance.now()-started)}ms`;
     character.parentNode.insertBefore(layer,character);layer.append(character);
+    restoreWalk(phases);
   }
   // Snapshot refreshes can replace the rendered character during a transaction.
   const observer=new MutationObserver(attach);observer.observe(visual,{childList:true,subtree:true});attach();
   emitCareEffects(visual,kind);
   let timer;
-  const run={stop(){clearTimeout(timer);observer.disconnect();feedback.remove();delete visual.dataset.careReacting;
+  const run={stop(){clearTimeout(timer);observer.disconnect();feedback.remove();const endingPhases=walkPhases(visual);
     visual.querySelectorAll('.pet-care-motion-layer').forEach(layer=>layer.replaceWith(...layer.childNodes));
+    delete visual.dataset.careReacting;restoreWalk(endingPhases);
     if(active===run)active=null;
   }};active=run;timer=setTimeout(()=>run.stop(),Math.max(duration,2400));
 }

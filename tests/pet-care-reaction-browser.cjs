@@ -80,13 +80,30 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
    await motionSurvives(async()=>{await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();},food);
  }
 
+ // Touch at several walking phases and compare the actual rendered position.
+ for(const fraction of [.12,.5,.78]){
+ await page.waitForTimeout(2500);
+ const result=await page.evaluate(fraction=>{
+   const v=document.getElementById('petVisual'),c=v.querySelector('.pet-character');
+   const walk=c.getAnimations().find(a=>(a.animationName||'').startsWith('petWaddle'));
+   const target=walk.effect.getTiming().duration*fraction;walk.currentTime=target;
+   const pose=getComputedStyle(c).transform,before=c.getBoundingClientRect();v.click();
+   const after=c.getBoundingClientRect();const resumed=c.getAnimations().find(a=>(a.animationName||'').startsWith('petWaddle'));
+   return {pose,afterPose:getComputedStyle(c).transform,dx:after.x-before.x,dy:after.y-before.y,target,time:resumed.currentTime};
+ },fraction);
+ assert.ok(Math.abs(result.dx)<.5&&Math.abs(result.dy)<.5,'touch must begin exactly where the pet was: '+JSON.stringify(result));
+ assert.ok(Math.abs(result.time-result.target)<1,'walk phase must survive reparenting');
+ assert.equal(await page.locator('.pet-care-feedback').count(),0);
+ await page.waitForTimeout(300);
+ assert.equal(await page.locator('#petVisual').getAttribute('class').then(s=>s.includes('pet-hop')),false,'legacy click motion must not restart walking');
+ }
  // Verify recovery from an actual SVG redraw during the reaction.
  await page.locator('#petVisual').click();await page.waitForTimeout(250);
  await page.evaluate(()=>{const v=document.getElementById('petVisual');v.querySelector('svg').outerHTML=v.querySelector('svg').outerHTML;});
  await page.waitForTimeout(250);
  assert.equal(await page.locator('#petVisual .pet-care-motion-layer').count(),1);
  assert.notEqual(await page.locator('#petVisual .pet-care-motion-layer').evaluate(el=>getComputedStyle(el).animationName),'none');
- assert.equal(await page.locator('.pet-care-feedback').count(),1);
+ assert.equal(await page.locator('.pet-care-feedback').count(),0);
  const beforeTap=await page.evaluate(()=>JSON.stringify(window.petStore));
  for(let i=0;i<4;i++)await motionSurvives(()=>page.locator('#petVisual').click(),'body tap '+i);
  assert.equal(await page.evaluate(()=>JSON.stringify(window.petStore)),beforeTap,'tapping never writes rewards or any other saved data');
@@ -94,8 +111,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.screenshot({path:process.env.MOBILE?'feed-mobile.png':'feed-desktop.png'});
  await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#petVisual').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),undefined);
  assert.equal(await page.locator('#petVisual').evaluate(v=>v.getAnimations().filter(a=>a.playState==='running').length),0);
- assert.equal(await page.locator('.pet-care-feedback').count(),1,'reduced motion still shows visible feedback');
- assert.ok((await page.locator('.pet-care-feedback').innerText()).includes('うれしい'));
+ assert.equal(await page.locator('.pet-care-feedback').count(),0,'touch has no speech bubble, including reduced motion');
  await page.screenshot({path:process.env.MOBILE?'feed-mobile-reduced.png':'feed-desktop-reduced.png'});
  await page.waitForTimeout(2500);assert.equal(await page.locator('.pet-care-feedback').count(),0);
  assert.equal(await page.locator('#petVisual .pet-care-motion-layer').count(),0);
