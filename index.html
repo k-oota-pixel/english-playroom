@@ -127,6 +127,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       </button>
       <span id="authSub" class="auth-sub">Firebase接続中</span>
       <button id="petSyncRetry" class="logout-btn" type="button" hidden>再同期</button>
+      <span id="petSyncError" class="auth-sub" role="status" hidden></span>
       <button id="logoutBtn" class="logout-btn" type="button" hidden>ログアウト</button>
     </div>
   </div>
@@ -304,6 +305,7 @@ const authDot=document.getElementById("authDot");
 const authLabel=document.getElementById("authLabel");
 const authSub=document.getElementById("authSub");
 const petSyncRetry=document.getElementById("petSyncRetry");
+const petSyncError=document.getElementById("petSyncError");
 const petVisual=document.getElementById("petVisual");
 const petTitle=document.getElementById("petTitle");
 const petDays=document.getElementById("petDays");
@@ -736,7 +738,7 @@ try{
 
 onAuthStateChanged(auth,async user=>{
   const generation=++petAuthGeneration;
-  petUser=user;petData={};petSyncRetry.hidden=true;petSyncRetry.disabled=false;authSub.removeAttribute("title");petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petChatTyping=false;petChatSuggestions=[];petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
+  petUser=user;petData={};petSyncRetry.hidden=true;petSyncError.hidden=true;petSyncRetry.disabled=false;authSub.removeAttribute("title");petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petChatTyping=false;petChatSuggestions=[];petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
   loginBtn.disabled=false;
   if(!user){
     dashboardUser=null;
@@ -761,12 +763,14 @@ async function retryPetSync(user=auth.currentUser,generation=petAuthGeneration){
     await syncPet(user,generation);
     if(generation!==petAuthGeneration)return;
     setAuthUI('ok',shortName(user),'クラウド同期済み');
-    authSub.removeAttribute('title');petSyncRetry.hidden=true;
+    authSub.removeAttribute('title');petSyncRetry.hidden=true;petSyncError.hidden=true;
   }catch(error){
     if(generation!==petAuthGeneration)return;
     console.error('もんすたでぃ sync failed',error);
     setAuthUI('error',shortName(user),'同期未完了');
     authSub.title=String(error.code||error.message||'unknown');
+    const reason={'permission-denied':'データへのアクセス権限を確認できませんでした。','unavailable':'サーバーと通信できませんでした。','aborted':'データの保存が競合しました。'}[String(error.code||'').replace('firestore/','')];
+    petSyncError.textContent=(reason||'処理を完了できませんでした。')+'（'+String(error.code||error.message||'unknown')+'）';petSyncError.hidden=false;
     petSyncRetry.hidden=false;
     if(!hasPet(petData))petStatus.textContent='ペットのデータを読み込めませんでした。「再同期」を押してください。';
   }finally{
