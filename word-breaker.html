@@ -16,15 +16,14 @@
     <h2 id="course-title">コースを選ぶ</h2>
     <p id="data-status" role="status">語彙データを読み込んでいます…</p>
     <div id="courses" class="courses"></div>
-    <div class="rules"><strong>2 LIFE · 1 WORD = 1 SCORE · ENDLESS</strong><p>1語17秒。12秒から赤く点滅します。誤答は何度でも再入力OK。時間切れでLIFE −1、COMBOは0に戻ります。</p><p>最初の10語撃破で1コイン。さらに20 COMBOごとに1コイン。ログインすると共通SHOPで使えます。</p></div>
+    <div class="rules"><strong>2 LIFE · 1 WORD = 1 SCORE · ENDLESS</strong><p>1語17秒。終盤は単語が赤く点滅します。誤答は何度でも再入力OK。時間切れでLIFE −1、COMBOは0に戻ります。</p><p>最初の10語撃破で1コイン。さらに20 COMBOごとに1コイン。ログインすると共通SHOPで使えます。</p></div>
     <button id="demo" class="secondary" hidden>操作を体験する（サンプル・コイン対象外）</button>
   </section>
   <section id="play" hidden aria-label="ゲーム">
     <div class="hud"><span>LIFE <b id="life">♥ ♥</b></span><span>SCORE <b id="score">0</b></span><span>COMBO <b id="combo">0</b></span><button id="quit" class="secondary">終了</button></div>
     <div class="game-layout">
       <div>
-        <div id="arena" class="arena"><div class="horizon" aria-hidden="true"></div><div id="word" class="word"></div><div id="burst" class="burst" aria-hidden="true"></div><div id="timer" class="timer">17.0</div><span class="distance-label">BREAK BEFORE IMPACT</span></div>
-        <div class="time-track"><i id="time-bar"></i></div>
+        <div id="arena" class="arena"><div class="horizon" aria-hidden="true"></div><div id="word" class="word"></div><div id="burst" class="burst" aria-hidden="true"></div><span class="distance-label">BREAK BEFORE IMPACT</span></div>
         <form id="answer-form"><label for="answer">日本語の意味を入力</label><div class="input-row"><input id="answer" autocomplete="off" placeholder="意味をひとつ入力" enterkeyhint="send" maxlength="100"><button id="submit">撃破 ↵</button></div></form>
         <p id="message" role="status" aria-live="polite"></p>
       </div>
