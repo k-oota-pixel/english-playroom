@@ -543,19 +543,255 @@ petCreate.addEventListener('click',async()=>{
 
 const petNameDialog=createPetNameDialog(async name=>{
   const user=petUser,generation=petAuthGeneration;
- …5914 tokens truncated…答判定はローカル処理。Unicode・空白・句読点・カタカナを正規化し、許可した文法上の前後表現のみ除去して比較します。無制限の部分一致や一文字の漢字語幹は使用しません。
-- 前問の英単語・回答・模範訳は次問中にも表示します。
-- 初回10語撃破で1コイン、COMBOが20の倍数に達するごとに1コイン。日次上限はありません。
-- 共通の `coin-reward.js` から既存Firebase接続を再利用します。日次報酬関数の動作は変更していません。
-- `users/{uid}/apps/english-playroom` に `wordBreakerBests` と最大64プレイの `wordBreakerRuns` を追加します。既存 `coins` に差分を加算し、SHOP/PET等のフィールドを上書きしません。
-- 既存レシートの累積獲得数との差分をトランザクションで加算するため、保存再試行は二重加算しません。登録済みレシートが保持上限で除去された古いプレイは報酬保存できません。
-- サインアウト・アカウント切替後に元のユーザー以外へ報酬を付与しません。保存失敗時は結果画面から再試行でき、保存完了まで再挑戦・コース変更を停止します。保存中・失敗中にタブを閉じた場合の復元は未対応です。
-- ゲストの自己ベストはこのブラウザに保存し、アカウント記録とは混ぜません。
+  if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
+  if(!validPetName(name))throw Error('名前を1〜12文字で入力してください。');
+  try{
+    const saved=await runTransaction(db,async transaction=>{
+      const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
+      if(!hasPet(data))throw Error('先にペットを迎えてください。');
+      if(validPetName(data.petName))return data;
+      const payload={petName:normalizePetName(name),petUpdatedAt:serverTimestamp()};
+      transaction.set(ref,payload,{merge:true});return {...data,...payload};
+    });
+    if(generation===petAuthGeneration && auth.currentUser?.uid===user.uid){petData=saved;renderPet(saved);}
+  }catch(error){throw Error(error.code?'名前を保存できませんでした。通信状態を確認して、もう一度お試しください。':error.message);}
+});
+petNameButton.addEventListener('click',()=>{if(petUser && hasPet(petData) && !validPetName(petData.petName))petNameDialog.open();});
 
-## 検証
+petRetry.addEventListener('click',async()=>{
+  const user=petUser,generation=petAuthGeneration;
+  if(!retryMode || !user || auth.currentUser?.uid!==user.uid || petRetry.disabled)return;
+  if(!confirm(`${user.displayName||'ログイン中のアカウント'} のペットをリセットして、孵化直前からやり直しますか？ 学習記録はそのままです。`))return;
+  petRetry.disabled=true;petMaker.close();petNameDialog.close();
+  try{
+    const saved=await runTransaction(db,async transaction=>{
+      const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?snap.data():{};
+      if(!readyToHatch(data))throw Error('3日ログインを達成してからお試しください。');
+      const payload={petLoginDays:3,petLifeDays:3,petAdult:false,petGrowthPending:false,petHatchDate:null,petGrowthCheckedDay:1,petLastLoginDate:localDateKey(),petHatched:false,petName:null,petAppearance:null,petHatchedAt:null,petCustomizedAt:null,petUpdatedAt:serverTimestamp()};
+      transaction.set(ref,payload,{merge:true});return {...data,...payload};
+    });
+    if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
+    retryMode=false;
+    const url=new URL(location.href);url.searchParams.delete('pet-retry');history.replaceState(null,'',url);
+    petData=saved;renderPet(saved,'3日目の孵化直前に戻しました。たまごをかえして育てよう。');petMaker.close();
+  }catch(error){
+    if(generation===petAuthGeneration)petStatus.textContent=error.code?'リセットを保存できませんでした。通信状態を確認して、もう一度お試しください。':error.message;
+  }finally{petRetry.disabled=false;}
+});
 
-`node --test tests/*.test.js`：既存PETの11テストと新ゲームの5テスト。
+function renderPet(data={},message=''){
+  const days=Math.max(0,Number(data.petLoginDays)||0),shown=Math.min(3,days);
+  const hatched=hasPet(data),ready=readyToHatch(data);
+  petDays.textContent=hatched?'誕生しました！':`ログイン ${shown} / 3日`;
+  petBar.style.width=`${Math.min(100,(shown/3)*100)}%`;
+  petVisual.classList.toggle('egg',!hatched);
+  petVisual.classList.toggle('hatched',hatched);
+  petCreate.hidden=!petUser || (!data.petGrowthPending && (!ready || hatched));
+  petRetry.hidden=!retryMode || !petUser || !ready;
+  petNameButton.hidden=!petUser || !hatched || validPetName(data.petName);
+  if(hatched){
+    showPetChatBuiltIn();
+    renderPetVisual(petVisual,data);
+    petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
+    petTitle.textContent=validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
+    petStatus.textContent=message||'あなたのペットと一緒に、今日も英語を楽しもう。';
+  }else{
+    hidePetChatBuiltIn();
+    petVisual.textContent='🥚';
+    petVisual.setAttribute('aria-label','ふしぎなたまご');
+    petTitle.textContent=ready?'たまごがかえりそう！':'ふしぎなたまご';
+    const remain=Math.max(0,3-days);
+    petStatus.textContent=message||(ready?'アンケートに答えて、あなたのペットに出会おう。':days?`あと${remain}日ログインすると、たまごがかえります。`:'Googleログインすると、たまごの育成が始まります。');
+  }
+}
 
-`node tests/word-breaker-browser.cjs`：PlaywrightとChromeを使用。`PLAYWRIGHT_MODULE` / `CHROME_PATH` でインストール先を指定できます。全コース読み込み用のテスト専用語彙とFirebaseモックで、12/17秒の境界、誤答・タイムアウト、再挑戦、前問表示、40語で3コイン、二重加算防止、保存失敗からの復旧、他コースのベスト・SHOP/PET維持、390px表示を確認します。テスト専用語彙はリリース用マスターではありません。
+async function syncPet(user,generation){
+  const today=localDateKey();
+  let data;
+  try{data=await runTransaction(db,async transaction=>{
+    const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?(snap.data()||{}):{};
+    const progress={...loginProgress(data,today),...growthPatch(data,today,user.uid)};
+    if(Object.keys(progress).some(key=>progress[key]!==data[key])){
+      transaction.set(ref,{...progress,petUpdatedAt:serverTimestamp()},{merge:true});
+    }
+    return {...data,...progress};
+  });}catch(error){
+    // A failed progress write must not hide an already readable conversation.
+    try{
+      const snap=await getDoc(petRef(user));
+      if(generation===petAuthGeneration&&auth.currentUser?.uid===user.uid){
+        petData=snap.exists()?(snap.data()||{}):{};renderPet(petData);
+      }
+    }catch(readError){console.error('Pet data read failed',readError);}
+    throw error;
+  }
+  if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
+  petUser=user;petData=data;renderPet(data);
+}
 
-既存の `tests/pet-growth-browser.cjs` も実行し、孵化・成長・名前・装備・保存失敗・再読み込み・モバイル表示を確認しています。
+
+function dateKeyFromMs(ms){
+  if(!Number.isFinite(Number(ms))||Number(ms)<=0)return "";
+  const d=new Date(Number(ms));
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function setToday(el,done,label){
+  el.classList.toggle("done",!!done);
+  el.textContent=(done?"✓ ":"○ ")+label;
+}
+function resetDashboard(message="Googleログインすると、各教材のクラウド記録をまとめて表示します。"){
+  setToday(todayAteru,false,"アテル");setToday(todayBasic,false,"Basic Quest");setToday(todayRetry,false,"リトライノート");
+  setToday(todayCloze,false,"英検 空所補充");setToday(todayTitle,false,"英検 タイトル");setToday(todayTask,false,"Task-Quest");
+  ateruStat.textContent="—";ateruSub.textContent="ログイン後に表示";
+  basicStat.textContent="— / 60";basicSub.textContent="ログイン後に表示";
+  retryStat.textContent="— / 1,585";retrySub.textContent="ログイン後に表示";
+  clozeStat.textContent="— / 17";clozeSub.textContent="ログイン後に表示";
+  titleStat.textContent="— / 17";titleSub.textContent="ログイン後に表示";
+  taskStat.textContent="— / 50";taskSub.textContent="ログイン後に表示";
+  dashNote.textContent=message;
+}
+async function refreshDashboard(user=dashboardUser){
+  if(!user){resetDashboard();return;}
+  dashRefresh.disabled=true;
+  dashRefresh.textContent="更新中…";
+  dashNote.textContent="6つの教材の記録を読み込んでいます…";
+  try{
+    const [aSnap,bSnap,rSnap,cSnap,tSnap,qSnap]=await Promise.all([
+      getDoc(doc(db,"users",user.uid,"apps","ateru")),
+      getDoc(doc(db,"users",user.uid,"apps","basic-quest")),
+      getDoc(doc(db,"users",user.uid,"apps","eiken-retry")),
+      getDoc(doc(db,"users",user.uid,"apps","eiken-cloze")),
+      getDoc(doc(db,"users",user.uid,"apps","eiken-title")),
+      getDoc(doc(db,"users",user.uid,"apps","task-quest"))
+    ]);
+    const a=aSnap.exists()?aSnap.data():{};
+    const b=bSnap.exists()?bSnap.data():{};
+    const r=rSnap.exists()?rSnap.data():{};
+    const c=cSnap.exists()?cSnap.data():{};
+    const t=tSnap.exists()?tSnap.data():{};
+    const q=qSnap.exists()?qSnap.data():{};
+    const today=localDateKey();
+
+    const rounds=Math.max(0,Number(a.gamesCompleted)||0);
+    const solved=Math.max(0,Number(a.questionsSolved)||0);
+    ateruStat.textContent=`${rounds}回クリア`;
+    ateruSub.textContent=`正解 ${solved}問`;
+    setToday(todayAteru,a.lastPlayedDate===today,"アテル");
+
+    const completed=Array.isArray(b.completedStages)?b.completedStages.length:Math.max(0,Number(b.completedCount)||0);
+    basicStat.textContent=`${completed} / 60`;
+    basicSub.textContent=completed>=60?"全ステージ COMPLETE":"クリア済みステージ";
+    setToday(todayBasic,b.lastPlayedDate===today,"Basic Quest");
+
+    const records=r?.state?.records&&typeof r.state.records==="object"?r.state.records:{};
+    const attempted=Object.keys(records).length;
+    retryStat.textContent=`${attempted.toLocaleString()} / 1,585`;
+    retrySub.textContent=typeof r?.profile?.equippedTitle==="string"&&r.profile.equippedTitle?r.profile.equippedTitle:"挑戦した問題数";
+    const retryToday=dateKeyFromMs(r?.state?.updatedAt)===today;
+    setToday(todayRetry,retryToday,"リトライノート");
+
+    const clozeAttempted=Array.isArray(c.attemptedIds)?c.attemptedIds.length:Math.max(0,Number(c.attemptedCount)||0);
+    const clozeTotal=Math.max(0,Number(c.totalAnswers)||0),clozeCorrect=Math.max(0,Number(c.correctAnswers)||0);
+    clozeStat.textContent=`${clozeAttempted} / 17`;
+    clozeSub.textContent=clozeTotal?`正答・成立 ${clozeCorrect} / ${clozeTotal}`:`判定 ${Math.max(0,Number(c.submissions)||0)}回`;
+    setToday(todayCloze,c.lastPlayedDate===today,"英検 空所補充");
+
+    const titleAttempted=Array.isArray(t.attemptedIds)?t.attemptedIds.length:Math.max(0,Number(t.attemptedCount)||0);
+    const titleSubs=Math.max(0,Number(t.submissions)||0),positive=Math.max(0,Number(t.positiveCount)||0);
+    titleStat.textContent=`${titleAttempted} / 17`;
+    titleSub.textContent=titleSubs?`良判定 ${positive} / ${titleSubs}`:"タイトル挑戦数";
+    setToday(todayTitle,t.lastPlayedDate===today,"英検 タイトル");
+
+    const taskCompleted=Math.max(0,Number(q.completedCount)||0);
+    const taskTotal=Math.max(1,Number(q.totalTasks)||50);
+    taskStat.textContent=`${taskCompleted} / ${taskTotal}`;
+    taskSub.textContent=`挑戦 ${Math.max(0,Number(q.attempts)||0)}回`;
+    setToday(todayTask,q.lastPlayedDate===today,"Task-Quest");
+
+    const todayCount=[
+      a.lastPlayedDate===today,b.lastPlayedDate===today,retryToday,
+      c.lastPlayedDate===today,t.lastPlayedDate===today,q.lastPlayedDate===today
+    ].filter(Boolean).length;
+    dashNote.textContent=todayCount?`今日は ${todayCount} / 6 教材に取り組んでいます。`:"今日はまだ6教材の学習記録がありません。";
+  }catch(err){
+    console.error("Dashboard load failed",err);
+    dashNote.textContent="ダッシュボードの読み込みに失敗しました。もう一度「更新」を押してください。";
+  }finally{
+    dashRefresh.disabled=false;
+    dashRefresh.textContent="↻ 更新";
+  }
+}
+dashRefresh.addEventListener("click",()=>refreshDashboard());
+window.addEventListener("focus",()=>{if(dashboardUser)refreshDashboard();});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dashboardUser)refreshDashboard();});
+
+loginBtn.addEventListener("click",()=>{
+  const back=encodeURIComponent(location.href);
+  location.href=`./login.html?return=${back}`;
+});
+
+logoutBtn.addEventListener("click",async()=>{
+  try{
+    await signOut(auth);
+  }catch(err){
+    console.error(err);
+    petStatus.textContent="ログアウトできませんでした。";
+  }
+});
+
+try{
+  await setPersistence(auth,browserLocalPersistence);
+}catch(err){
+  console.error("Auth persistence setup failed",err);
+}
+
+onAuthStateChanged(auth,async user=>{
+  const generation=++petAuthGeneration;
+  petUser=user;petData={};petSyncRetry.hidden=true;petSyncError.hidden=true;petSyncRetry.disabled=false;authSub.removeAttribute("title");petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petChatTyping=false;petChatSuggestions=[];petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
+  loginBtn.disabled=false;
+  if(!user){
+    dashboardUser=null;
+    logoutBtn.hidden=true;
+    setAuthUI("","ログイン","端末保存");
+    renderPet({},"ログインすると、たまごの育成が始まります。");
+    resetDashboard();
+    return;
+  }
+
+  loginBtn.disabled=true;
+  logoutBtn.hidden=false;
+  dashboardUser=user;
+  await retryPetSync(user,generation);
+});
+
+async function retryPetSync(user=auth.currentUser,generation=petAuthGeneration){
+  if(!user||petSyncRetry.disabled)return;
+  petSyncRetry.disabled=true;
+  try{
+    setAuthUI('busy',shortName(user),'ペット同期中');
+    await syncPet(user,generation);
+    if(generation!==petAuthGeneration)return;
+    setAuthUI('ok',shortName(user),'クラウド同期済み');
+    authSub.removeAttribute('title');petSyncRetry.hidden=true;petSyncError.hidden=true;
+  }catch(error){
+    if(generation!==petAuthGeneration)return;
+    console.error('もんすたでぃ sync failed',error);
+    setAuthUI('error',shortName(user),'同期未完了');
+    authSub.title=String(error.code||error.message||'unknown');
+    const reason={'permission-denied':'データへのアクセス権限を確認できませんでした。','unavailable':'サーバーと通信できませんでした。','aborted':'データの保存が競合しました。'}[String(error.code||'').replace('firestore/','')];
+    petSyncError.textContent=(reason||'処理を完了できませんでした。')+'（'+String(error.code||error.message||'unknown')+'）';petSyncError.hidden=false;
+    petSyncRetry.hidden=false;
+    if(!hasPet(petData))petStatus.textContent='ペットのデータを読み込めませんでした。「再同期」を押してください。';
+  }finally{
+    if(generation===petAuthGeneration){petSyncRetry.disabled=false;loginBtn.disabled=false;}
+  }
+  if(generation===petAuthGeneration)await refreshDashboard(user);
+}
+petSyncRetry.addEventListener('click',()=>retryPetSync());
+window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
+window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
+</script>
+
+<script type="module" src='./version-badge.js?v=1.5.7'></script>
+</body>
+</html>
