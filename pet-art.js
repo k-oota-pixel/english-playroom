@@ -120,7 +120,7 @@ function speciesDetails(a,color,stage){
 export function renderPetSVG(value,shop={},stage=''){
   if(!value)return renderMysterySVG(shop);
   const a=resolvedAppearance(value),layers=equippedLayers(shop),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a),details=speciesDetails(a,color,resolved),anatomy=anatomyFor(a,color,resolved),eyes=eyesFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
-  // Editable dog parts are rendered at the source; legacy shape observers cannot replace them.
+  // Cat and dog parts are rendered at the source; legacy shape observers cannot replace them.
   const character=a.species==='cat'
     ? renderCatArt(color,a.eyeStyle)
     : a.species==='dog'

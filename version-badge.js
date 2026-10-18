@@ -8,7 +8,7 @@ import './pet-egg-ui-v141.js';
 import './pet-six-species-v141.js';
 import './pet-eye-emphasis-v144.js';
 import './pet-cat-dog-v1425.js?v=1.5.7';
-// Dog artwork is rendered directly by pet-art.js; no late dog redraw.
+// Cat and dog artwork are rendered directly by pet-art.js; no late redraw.
 // Sleep mode now owns original and cloned eye visibility together.
 import './pet-lion-v149.js?v=1.4.12';
 
