@@ -1,3 +1,4 @@
+import { emitCareEffects } from './pet-effects.js?v=1.5.1-effects';
 import { FOODS, careState, feedReward } from './pet-care-model.js?v=1.5.1-touch';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
@@ -171,11 +172,9 @@ function tapPet(){
 function careAnimation(kind) {
   const visual=document.getElementById('petVisual');if(!visual)return;
   visual.dispatchEvent(new CustomEvent('pet-care-reaction'));
-  visual.querySelectorAll('.pet-care-particles').forEach(el=>el.remove());
-  const particle=document.createElement('span');particle.className='pet-care-particles';particle.textContent=kind==='celebrate'?'✨ ♡ ✨ ♡':kind==='music'?'♡ ♪ ♫':'♡ ♥ ♡';visual.append(particle);
+  emitCareEffects(visual,kind);
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!reduced){
-    particle.animate([{opacity:0,transform:'translateY(0)'},{opacity:1,offset:.25},{opacity:0,transform:'translateY(-65px)'}],{duration:1600});
     const frames=kind==='jump'||kind==='celebrate'?[{transform:'translateY(0)'},{transform:'translateY(-24px) rotate(-5deg)'},{transform:'translateY(0)'},{transform:'translateY(-12px) rotate(5deg)'},{transform:'translateY(0)'}]:[{transform:'rotate(0)'},{transform:'rotate(-4deg)'},{transform:'rotate(4deg)'},{transform:'rotate(0)'}];
     const character=visual.querySelector('.pet-character');
     if(character){
@@ -200,5 +199,4 @@ function careAnimation(kind) {
       });
     }
   }
-  setTimeout(()=>particle.remove(),1600);
 }

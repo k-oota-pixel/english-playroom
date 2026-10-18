@@ -1,3 +1,4 @@
+import { renderEffect } from './pet-effects.js?v=1.5.1-effects';
 // Stable IDs are persisted; labels and SVG art may evolve independently.
 export const OPTIONS = Object.freeze({
   species: [{id:'cat',label:'ねこ'},{id:'dog',label:'いぬ'},{id:'bird',label:'ことり'},{id:'hamster',label:'ハムスター'},{id:'panda',label:'パンダ'},{id:'penguin',label:'ペンギン'},{id:'rabbit',label:'うさぎ'},{id:'fox',label:'きつね'},{id:'dragon',label:'ドラゴン'},{id:'mystery',label:'ミステリー'}],
@@ -48,10 +49,10 @@ export const SHOP_LAYERS = Object.freeze({
     'pearl-necklace':'<g aria-hidden="true" fill="#fffdf5" stroke="#b9a989" stroke-width="2"><circle cx="88" cy="158" r="5"/><circle cx="99" cy="163" r="5"/><circle cx="110" cy="167" r="5"/><circle cx="120" cy="169" r="5"/><circle cx="130" cy="167" r="5"/><circle cx="141" cy="163" r="5"/><circle cx="152" cy="158" r="5"/></g>',
   }),
   effects:Object.freeze({
-    'star-effect':'<g aria-hidden="true" fill="#f4c84f" stroke="#fff4bd" stroke-width="2" opacity=".95"><path d="M35 87 l5 10 11 2 -8 8 2 11 -10-5 -10 5 2-11 -8-8 11-2Z"/><path d="M204 118 l4 8 9 2 -7 6 2 9 -8-4 -8 4 2-9 -7-6 9-2Z"/><path d="M188 41 l3 6 7 1 -5 5 1 7 -6-3 -6 3 1-7 -5-5 7-1Z"/></g>',
-    'sparkle-effect':'<g aria-hidden="true" fill="none" stroke="#ffe68a" stroke-width="4" stroke-linecap="round" opacity=".95"><path d="M35 62 v22 M24 73 h22 M199 82 v26 M186 95 h26 M191 174 v19 M181 184 h20 M48 170 v17 M40 179 h16"/></g>',
-    'heart-effect':'<g aria-hidden="true" fill="#ef87a0" opacity=".9"><path d="M26 85 C13 69 40 58 47 78 C54 58 81 69 68 85 L47 105Z"/><path d="M177 128 C164 112 191 101 198 121 C205 101 232 112 219 128 L198 148Z"/></g>',
-    'music-effect':'<g aria-hidden="true" fill="#6b72b8" stroke="#fff" stroke-width="2"><path d="M32 73 v37 q-14-6-14 7 q3 12 16 5 q7-4 6-14 V81 l24-6 v25 q-14-6-14 7 q3 12 16 5 q7-4 6-14 V65Z"/><path d="M191 79 v31 q-12-5-12 6 q3 10 14 4 q6-3 5-12 V87 l20-5 v21 q-12-5-12 6 q3 10 14 4 q6-3 5-12 V73Z"/></g>',
+    'star-effect':renderEffect('star'),
+    'sparkle-effect':renderEffect('sparkle'),
+    'heart-effect':renderEffect('heart'),
+    'music-effect':renderEffect('music'),
     'confetti-effect':'<g aria-hidden="true" stroke-width="5" stroke-linecap="round"><path d="M28 47 l8 10 M52 29 l-2 13 M201 41 l-8 10 M216 75 l-12 2 M31 158 l11-4 M203 166 l9 7" stroke="#e66f7c"/><path d="M72 31 l5 12 M184 25 l-4 13 M218 132 l-11-3 M49 190 l7-10" stroke="#5fa3cf"/><path d="M20 116 l12 2 M103 25 l2 12 M193 193 l-8-9" stroke="#e7bd42"/></g>',
     'rainbow-effect':'<g aria-hidden="true" fill="none" stroke-linecap="round" opacity=".65"><path d="M22 119 Q120 9 218 119" stroke="#e87575" stroke-width="7"/><path d="M27 123 Q120 23 213 123" stroke="#eab95c" stroke-width="7"/><path d="M33 127 Q120 37 207 127" stroke="#70b58e" stroke-width="7"/><path d="M39 131 Q120 51 201 131" stroke="#71a9d4" stroke-width="7"/></g>'
   })

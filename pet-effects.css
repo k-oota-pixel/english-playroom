@@ -1,0 +1,36 @@
+.pet-motif{pointer-events:none;transform-box:fill-box;transform-origin:center;animation-duration:var(--duration);animation-delay:var(--delay);animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:ease-in-out}
+.pet-motif-star{color:#e8b639;animation-name:petMotifStar}
+.pet-motif-sparkle{color:#e6bd40;animation-name:petMotifSparkle}
+.pet-motif-heart{color:#e78ca7;animation-name:petMotifHeart}
+.pet-motif-music{color:#9c82cc;animation-name:petMotifMusic}
+.pet-care-particles>.pet-motif{position:absolute;line-height:1}
+@keyframes petMotifStar{
+  0%{opacity:0;transform:translate(0,0) scale(.2) rotate(-18deg)}
+  12%{opacity:1;transform:translate(0,0) scale(1.25) rotate(0deg)}
+  38%{opacity:1;transform:translate(calc(var(--dx)*.72),calc(var(--dy)*.72)) scale(.95) rotate(var(--turn))}
+  70%,100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.45) rotate(calc(var(--turn)*2))}
+}
+@keyframes petMotifSparkle{
+  0%{opacity:0;transform:scale(.2)}
+  18%{opacity:1;transform:translate(calc(var(--dx)*.2),calc(var(--dy)*.2)) scale(1.2)}
+  35%{opacity:.25;transform:translate(calc(var(--dx)*.4),calc(var(--dy)*.4)) scale(.45)}
+  52%{opacity:1;transform:translate(calc(var(--dx)*.65),calc(var(--dy)*.65)) scale(1.05)}
+  82%,100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.15)}
+}
+@keyframes petMotifHeart{
+  0%{opacity:0;transform:translate(0,8px) scale(.65)}
+  15%{opacity:.95;transform:translate(-5px,0) scale(1.12)}
+  30%{opacity:1;transform:translate(5px,calc(var(--dy)*.2)) scale(.92)}
+  45%{opacity:1;transform:translate(-6px,calc(var(--dy)*.4)) scale(1.08)}
+  65%{opacity:.8;transform:translate(6px,calc(var(--dy)*.65)) scale(1)}
+  95%,100%{opacity:0;transform:translate(-3px,var(--dy)) scale(.85)}
+}
+@keyframes petMotifMusic{
+  0%{opacity:0;transform:translate(0,7px) scale(.75) rotate(-12deg)}
+  16%{opacity:1;transform:translate(8px,-14px) scale(1.1) rotate(12deg)}
+  30%{opacity:1;transform:translate(4px,-8px) scale(1) rotate(5deg)}
+  48%{opacity:1;transform:translate(-9px,-30px) rotate(-14deg)}
+  62%{opacity:.9;transform:translate(-5px,-24px) rotate(-6deg)}
+  90%,100%{opacity:0;transform:translate(10px,var(--dy)) scale(.8) rotate(18deg)}
+}
+@media(prefers-reduced-motion:reduce){.pet-motif{animation:none!important;opacity:.85;transform:none}}
