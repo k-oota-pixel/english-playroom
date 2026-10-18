@@ -6,7 +6,7 @@ import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/fireb
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.25';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.26';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([

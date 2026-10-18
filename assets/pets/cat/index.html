@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>もんすたでぃ・ねこデザイン確認</title>
+<style>
+body{margin:0;background:#fcf8ef;color:#493821;font:16px/1.7 system-ui,sans-serif;text-align:center}main{max-width:760px;margin:32px auto;padding:20px}h1{font-size:24px}label{display:inline-flex;gap:8px;align-items:center;margin:8px}select,button{font:inherit;padding:8px;border:1px solid #c5b28b;border-radius:8px;background:white;color:inherit}#preview{max-width:420px;margin:20px auto}svg{display:block;width:100%;height:auto}#variants{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}#variants[hidden]{display:none}.variant{background:#fff;border-radius:12px;padding:8px;font-size:14px}a{color:#705526}
+</style>
+<main>
+<h1>もんすたでぃ・ねこ</h1>
+<p>実装と同じSVGで、体色と目を確認できます。</p>
+<label>体色<select id="color" aria-label="体色"><option value="cream">クリーム</option><option value="pink">ピンク</option><option value="blue">ブルー</option><option value="mint">ミント</option><option value="lavender">ラベンダー</option><option value="orange" selected>オレンジ</option></select></label>
+<label>目<select id="eyes" aria-label="目"><option value="round">まんまる</option><option value="gentle">たれ目</option><option value="watery">うるうる</option><option value="smile">にっこり</option><option value="sleepy">ねむねむ</option><option value="sparkle">きらきら</option></select></label>
+<div id="preview" role="img" aria-label="ネコのプレビュー"></div>
+<p><button id="compare" type="button" aria-expanded="false">6種類の目を並べる</button></p>
+<div id="variants" hidden></div>
+<p><a href="cat-base.svg">SVG</a> ／ <a href="cat-preview.png">PNG</a> ／ <a href="../../../">もんすたでぃへ</a></p>
+</main>
+<script type="module">
+import {renderCatArt} from '../../../pet-cat-art.js?v=1.5.26';
+const colors={cream:'#f5d99b',pink:'#f3b5c4',blue:'#a4cce9',mint:'#a9d9bc',lavender:'#c6b8e3',orange:'#efb478'};
+const color=document.getElementById('color'),eyes=document.getElementById('eyes'),variants=document.getElementById('variants');
+const art=style=>'<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 25 210 200" aria-hidden="true">'+renderCatArt(colors[color.value],style)+'</svg>';
+function update(){document.getElementById('preview').innerHTML=art(eyes.value);variants.replaceChildren();for(const option of eyes.options){const card=document.createElement('div');card.className='variant';card.innerHTML=art(option.value);card.append(document.createTextNode(option.textContent));variants.append(card);}}
+color.addEventListener('change',update);eyes.addEventListener('change',update);
+document.getElementById('compare').addEventListener('click',event=>{variants.hidden=!variants.hidden;event.currentTarget.setAttribute('aria-expanded',String(!variants.hidden));});
+update();
+</script>
+</html>
