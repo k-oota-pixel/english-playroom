@@ -35,7 +35,7 @@ function renderCourses() {
     const title=document.createElement('strong');title.textContent=label;button.append(title);
     const record=best(id),row=document.createElement('div');row.className='best';
     for(const [name,value] of [['BEST SCORE',record.score||0],['BEST COMBO',record.combo||0]]){const el=document.createElement('small');el.textContent=`${name}　${value}`;row.append(el);}
-    button.append(row);const count=document.createElement('small');count.textContent=vocabulary[id]?`${vocabulary[id].length} WORDS · ENDLESS`:'単語マスター待ち';button.append(count);
+    button.append(row);
     button.onclick=()=>start(id);$('courses').append(button);
   }
 }

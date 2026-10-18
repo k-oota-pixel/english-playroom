@@ -13,7 +13,7 @@ import './pet-lion-v149.js?v=1.4.12';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.5.10').then(()=>import('./pet-admin-limit-v1420.js?v=1.4.28')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.5.12';
+const APP_VERSION='1.5.13';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
