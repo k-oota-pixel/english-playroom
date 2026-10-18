@@ -1,17 +1,9 @@
-import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.26';
+import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.5.27';
 // Editable vector reconstruction of dog_pet_final.png. No raster filters or DOM redraws.
 // Colors and eye styles come from normalized appearance; shop and sleep own their layers.
 export function renderDogArt(color,eyeStyle){
  const ink='#513829',cream='#fff7e9';
- const shine=(x,y)=>`<g fill="white" stroke="none"><circle cx="${x-3.5}" cy="${y-5}" r="3.8"/><circle cx="${x+1}" cy="${y+5}" r="1.8"/></g>`;
- const eyes=eyeStyle==='sparkle'?renderSparkleEyes(96,144,106):[96,144].map(x=>{
-  if(eyeStyle==='smile')return `<path d="M${x-9} 111 Q${x} 94 ${x+9} 111" fill="none" stroke="${ink}" stroke-width="4" stroke-linecap="round"/>`;
-  if(eyeStyle==='sleepy')return `<path d="M${x-9} 108 Q${x} 117 ${x+9} 108" fill="none" stroke="${ink}" stroke-width="4" stroke-linecap="round"/>`;
-  const angle=eyeStyle==='gentle'?(x===96?14:-14):0;
-  const eye=`<ellipse cx="${x}" cy="106" rx="11" ry="${eyeStyle==='watery'?16:14.5}" fill="${ink}" stroke="none"/>${shine(x,106)}`;
-  const tears=eyeStyle==='watery'?`<ellipse cx="${x+5}" cy="114" rx="3" ry="4.5" fill="#b7e6ff" stroke="none"/>`:'';
-  return `<g transform="rotate(${angle} ${x} 106)">${eye}${tears}</g>`;
- }).join('');
+ const eyes=renderCompanionEyes(eyeStyle);
  return `<g data-pet-dog-art="editable" stroke="${ink}" stroke-width="4.3" stroke-linecap="round" stroke-linejoin="round">
  <path d="M158 177 Q192 166 192 141 Q198 130 205 143 Q219 168 201 187 Q193 200 164 197Z" fill="${color}"/>
  <path d="M192 141 Q198 130 205 143 Q211 153 207 162 Q199 169 193 165 Q202 157 199 151 Q195 156 187 154Z" fill="${cream}" stroke="none"/>
