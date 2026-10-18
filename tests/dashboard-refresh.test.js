@@ -18,7 +18,7 @@ function harness({storage=new Map(),fetchData=async()=>({})}={}){
  vm.createContext(context);vm.runInContext(html.slice(html.indexOf('function dateKeyFromMs'),html.indexOf('loginBtn.addEventListener("click"')),context);
  return {context,els,listeners,reads,storage,local};
 }
-test('login restores saved display without reads; first login invites manual update',async()=>{
+test('saved dashboard is restored from local cache without starting a fetch',async()=>{
  const h=harness();h.context.showSavedDashboard(h.context.dashboardUser);
  assert.equal(h.reads.length,0);assert.match(h.els.dashNote.textContent,/更新/);assert.equal(h.els.ateruStat.textContent,'—');
  assert.equal(h.listeners['window:focus'],undefined);assert.equal(h.listeners['document:visibilitychange'],undefined);
@@ -26,15 +26,15 @@ test('login restores saved display without reads; first login invites manual upd
  const reloaded=harness({storage:h.storage});reloaded.context.showSavedDashboard(reloaded.context.dashboardUser);
  assert.equal(reloaded.reads.length,0);assert.equal(reloaded.els.ateruStat.textContent,'0回クリア');assert.match(reloaded.els.dashNote.textContent,/前回取得/);
 });
-test('actual login handler restores cache and runs pet sync without fetching dashboard',async()=>{
+test('actual login handler restores cache, syncs pet, then refreshes dashboard',async()=>{
  const h=harness();let synced=0,login;
  Object.assign(h.context,{petAuthGeneration:0,petUser:null,petStateSignature:'',auth:{},petMaker:{close(){}},petNameDialog:{close(){}},
-  hidePetChatBuiltIn(){},renderPet(){},shortName:()=>'',setAuthUI(){},retryPetSync:async()=>{synced++;},
+  hidePetChatBuiltIn(){},renderPet(){},shortName:()=>'',setAuthUI(){},retryPetSync:async(user)=>{synced++;h.context.petDataUid=user.uid;},
   onAuthStateChanged:(auth,fn)=>{login=fn;}});
  h.els.authSub.removeAttribute=()=>{};
  vm.runInContext(html.slice(html.indexOf('onAuthStateChanged(auth,async user=>{'),html.indexOf('async function retryPetSync(')),h.context);
- await login({uid:'a'});assert.equal(synced,1);assert.equal(h.reads.length,0);assert.match(h.els.dashNote.textContent,/更新/);
- await login(null);assert.equal(h.els.ateruStat.textContent,'—');assert.equal(h.reads.length,0);
+ await login({uid:'a'});assert.equal(synced,1);assert.equal(h.reads.length,6);assert.match(h.els.dashNote.textContent,/今日はまだ/);
+ await login(null);assert.equal(h.els.ateruStat.textContent,'—');assert.equal(h.reads.length,6);
 });
 test('manual refresh reuses same-user pet snapshot: six reads, both shared subjects preserved',async()=>{
  const h=harness();h.context.petDataUid='a';h.context.petData={wordBreakerBests:{basic:{score:42,combo:12}},pre2InterviewA:{attemptedIds:['1'],lastPlayedDate:today}};

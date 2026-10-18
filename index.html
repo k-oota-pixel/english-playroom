@@ -121,7 +121,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.16">ver1.5.16</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.17">ver1.5.17</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -284,7 +284,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 
 <script type="module">
 import {extraDashboard} from './dashboard-extra.js?v=1';
-import {readDashboardCache,writeDashboardCache} from './dashboard-cache.js?v=1.5.11';
+import {readDashboardCache,writeDashboardCache} from './dashboard-cache.js?v=1.5.17';
 import { GAME_NAME as WORD_BREAKER_NAME } from './word-breaker-engine.js';
 document.querySelector('[data-word-breaker-title]').textContent=WORD_BREAKER_NAME;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
@@ -666,15 +666,15 @@ function dashboardEntries(){return [
   [interviewStat,interviewSub,todayInterview,"英検準2級面接A練習"]
 ];}
 function showSavedDashboard(user){
-  resetDashboard('「更新」を押すと、最新の学習記録を表示します。');
+  resetDashboard('ログイン時に最新の学習記録を確認します。必要な場合は「更新」も使えます。');
   const cached=readDashboardCache(user.uid);
-  if(!cached){for(const [,sub] of dashboardEntries())sub.textContent='「更新」で表示';return;}
+  if(!cached){for(const [,sub] of dashboardEntries())sub.textContent='ログイン時に取得';return;}
   const sameDay=cached.day===localDateKey();
   dashboardEntries().forEach(([main,sub,pill,label],i)=>{
     const entry=cached.entries[i];main.textContent=entry.main;sub.textContent=entry.sub;
     setToday(pill,sameDay&&entry.done,label);
   });
-  dashNote.textContent=`前回取得した記録（${new Date(cached.savedAt).toLocaleString('ja-JP')}）を表示しています。最新の記録は「更新」を押してください。`;
+  dashNote.textContent=`前回取得した記録（${new Date(cached.savedAt).toLocaleString('ja-JP')}）を表示しています。ログイン時に最新の記録を確認します。`;
 }
 function dashboardPetSnapshot(user){
   if(petDataUid===user.uid){const data=petData;return Promise.resolve({exists:()=>true,data:()=>data});}
@@ -821,6 +821,7 @@ onAuthStateChanged(auth,async user=>{
   dashboardUser=user;
   showSavedDashboard(user);
   await retryPetSync(user,generation);
+  if(generation===petAuthGeneration&&dashboardUser?.uid===user.uid)await refreshDashboard(user);
 });
 
 async function retryPetSync(user=auth.currentUser,generation=petAuthGeneration){
@@ -851,6 +852,6 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge.js?v=1.5.16'></script>
+<script type="module" src='./version-badge.js?v=1.5.17'></script>
 </body>
 </html>
