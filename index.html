@@ -121,7 +121,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.10">ver1.5.10</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.11">ver1.5.11</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -284,6 +284,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 
 <script type="module">
 import {extraDashboard} from './dashboard-extra.js?v=1';
+import {readDashboardCache,writeDashboardCache} from './dashboard-cache.js?v=1.5.11';
 import { GAME_NAME as WORD_BREAKER_NAME } from './word-breaker-engine.js';
 document.querySelector('[data-word-breaker-title]').textContent=WORD_BREAKER_NAME;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
@@ -401,6 +402,7 @@ function loginErrorMessage(err){
 }
 
 let petData={};
+let petDataUid=null;
 let petUser=null;
 let petAuthGeneration=0;
 const petCreate=document.getElementById('petCreate');
@@ -634,13 +636,13 @@ async function syncPet(user,generation){
     try{
       const snap=await getDoc(petRef(user));
       if(generation===petAuthGeneration&&auth.currentUser?.uid===user.uid){
-        petData=snap.exists()?(snap.data()||{}):{};renderPet(petData);
+        petData=snap.exists()?(snap.data()||{}):{};petDataUid=user.uid;renderPet(petData);
       }
     }catch(readError){console.error('Pet data read failed',readError);}
     throw error;
   }
   if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
-  petUser=user;petData=data;renderPet(data);
+  petUser=user;petData=data;petDataUid=user.uid;renderPet(data);
 }
 
 
@@ -653,7 +655,34 @@ function setToday(el,done,label){
   el.classList.toggle("done",!!done);
   el.textContent=(done?"✓ ":"○ ")+label;
 }
+function dashboardEntries(){return [
+  [wordBreakerStat,wordBreakerSub,todayWordBreaker,"WORD BREAKER"],
+  [ateruStat,ateruSub,todayAteru,"アテル"],
+  [basicStat,basicSub,todayBasic,"Basic Quest"],
+  [retryStat,retrySub,todayRetry,"リトライノート"],
+  [clozeStat,clozeSub,todayCloze,"英検 空所補充"],
+  [titleStat,titleSub,todayTitle,"英検 タイトル"],
+  [taskStat,taskSub,todayTask,"Task-Quest"],
+  [interviewStat,interviewSub,todayInterview,"英検準2級面接A練習"]
+];}
+function showSavedDashboard(user){
+  resetDashboard('「更新」を押すと、最新の学習記録を表示します。');
+  const cached=readDashboardCache(user.uid);
+  if(!cached){for(const [,sub] of dashboardEntries())sub.textContent='「更新」で表示';return;}
+  const sameDay=cached.day===localDateKey();
+  dashboardEntries().forEach(([main,sub,pill,label],i)=>{
+    const entry=cached.entries[i];main.textContent=entry.main;sub.textContent=entry.sub;
+    setToday(pill,sameDay&&entry.done,label);
+  });
+  dashNote.textContent=`前回取得した記録（${new Date(cached.savedAt).toLocaleString('ja-JP')}）を表示しています。最新の記録は「更新」を押してください。`;
+}
+function dashboardPetSnapshot(user){
+  if(petDataUid===user.uid){const data=petData;return Promise.resolve({exists:()=>true,data:()=>data});}
+  return getDoc(doc(db,"users",user.uid,"apps","english-playroom"));
+}
+let dashboardRequest=null;
 function resetDashboard(message="Googleログインすると、各教材のクラウド記録をまとめて表示します。"){
+  dashboardRequest=null;dashRefresh.disabled=false;dashRefresh.textContent="↻ 更新";
   setToday(todayAteru,false,"アテル");setToday(todayBasic,false,"Basic Quest");setToday(todayRetry,false,"リトライノート");
   setToday(todayCloze,false,"英検 空所補充");setToday(todayTitle,false,"英検 タイトル");setToday(todayTask,false,"Task-Quest");
   setToday(todayWordBreaker,false,"WORD BREAKER");setToday(todayInterview,false,"英検準2級面接A練習");
@@ -669,6 +698,9 @@ function resetDashboard(message="Googleログインすると、各教材のク�
 }
 async function refreshDashboard(user=dashboardUser){
   if(!user){resetDashboard();return;}
+  if(dashboardRequest?.uid===user.uid)return;
+  const request={uid:user.uid};dashboardRequest=request;
+  const isCurrent=()=>dashboardRequest===request&&dashboardUser?.uid===user.uid;
   dashRefresh.disabled=true;
   dashRefresh.textContent="更新中…";
   dashNote.textContent="8つの教材の記録を読み込んでいます…";
@@ -680,8 +712,9 @@ async function refreshDashboard(user=dashboardUser){
       getDoc(doc(db,"users",user.uid,"apps","eiken-cloze")),
       getDoc(doc(db,"users",user.uid,"apps","eiken-title")),
       getDoc(doc(db,"users",user.uid,"apps","task-quest")),
-      getDoc(doc(db,"users",user.uid,"apps","english-playroom"))
+      dashboardPetSnapshot(user)
     ]);
+    if(!isCurrent())return;
     const a=aSnap.exists()?aSnap.data():{};
     const b=bSnap.exists()?bSnap.data():{};
     const r=rSnap.exists()?rSnap.data():{};
@@ -738,18 +771,17 @@ async function refreshDashboard(user=dashboardUser){
       c.lastPlayedDate===today,t.lastPlayedDate===today,q.lastPlayedDate===today,
       extras.word.today,extras.interview.today
     ].filter(Boolean).length;
+    writeDashboardCache(user.uid,today,dashboardEntries().map(([main,sub,pill])=>({main:main.textContent,sub:sub.textContent,done:pill.classList.contains('done')})));
     dashNote.textContent=todayCount?`今日は ${todayCount} / 8 教材に取り組んでいます。`:"今日はまだ8教材の学習記録がありません。";
   }catch(err){
+    if(!isCurrent())return;
     console.error("Dashboard load failed",err);
     dashNote.textContent="ダッシュボードの読み込みに失敗しました。もう一度「更新」を押してください。";
   }finally{
-    dashRefresh.disabled=false;
-    dashRefresh.textContent="↻ 更新";
+    if(isCurrent()){dashboardRequest=null;dashRefresh.disabled=false;dashRefresh.textContent="↻ 更新";}
   }
 }
 dashRefresh.addEventListener("click",()=>refreshDashboard());
-window.addEventListener("focus",()=>{if(dashboardUser)refreshDashboard();});
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dashboardUser)refreshDashboard();});
 
 loginBtn.addEventListener("click",()=>{
   const back=encodeURIComponent(location.href);
@@ -773,7 +805,7 @@ try{
 
 onAuthStateChanged(auth,async user=>{
   const generation=++petAuthGeneration;
-  petUser=user;petData={};petSyncRetry.hidden=true;petSyncError.hidden=true;petSyncRetry.disabled=false;authSub.removeAttribute("title");petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petChatTyping=false;petChatSuggestions=[];petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
+  petUser=user;petData={};petDataUid=null;petSyncRetry.hidden=true;petSyncError.hidden=true;petSyncRetry.disabled=false;authSub.removeAttribute("title");petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petChatTyping=false;petChatSuggestions=[];petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
   loginBtn.disabled=false;
   if(!user){
     dashboardUser=null;
@@ -787,6 +819,7 @@ onAuthStateChanged(auth,async user=>{
   loginBtn.disabled=true;
   logoutBtn.hidden=false;
   dashboardUser=user;
+  showSavedDashboard(user);
   await retryPetSync(user,generation);
 });
 
@@ -811,13 +844,13 @@ async function retryPetSync(user=auth.currentUser,generation=petAuthGeneration){
   }finally{
     if(generation===petAuthGeneration){petSyncRetry.disabled=false;loginBtn.disabled=false;}
   }
-  if(generation===petAuthGeneration)await refreshDashboard(user);
+
 }
 petSyncRetry.addEventListener('click',()=>retryPetSync());
 window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge.js?v=1.5.10'></script>
+<script type="module" src='./version-badge.js?v=1.5.11'></script>
 </body>
 </html>

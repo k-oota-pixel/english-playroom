@@ -3,6 +3,7 @@ import test from 'node:test';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {extraDashboard,interviewAttemptPatch} from '../dashboard-extra.js';
+import {readDashboardCache,writeDashboardCache} from '../dashboard-cache.js';
 const today='2026-10-18',stamp=new Date(2026,9,18,14).getTime();
 test('existing WORD BREAKER records and legacy interview claims appear without new play',()=>{
  const data={wordBreakerBests:{junior1:{score:28,combo:12},high1:{score:17,combo:15},fake:{score:999}},wordBreakerRuns:{one:{course:'junior1',opened:stamp}},coinRewardDate:today,coinRewardClaims:['eiken-pre2-interview-a:theme-1','eiken-pre2-interview-a:theme-1','eiken-pre2-interview-a:theme-20','other:theme-2','eiken-pre2-interview-a:theme-21']};
@@ -25,9 +26,9 @@ test('dashboard reads shared wallet once, displays eight subjects, and clears on
  assert.equal((html.match(/class="stat"><div class="stat-name">/g)||[]).length,8);
  assert.equal((html.match(/class="today-pill"/g)||[]).length,8);
  const ids=[...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]),els={};
- for(const id of ids)els[id]={textContent:'',classList:{toggle(name,value){this[name]=value;}},addEventListener(){}};
+ for(const id of ids)els[id]={textContent:'',classList:{toggle(name,value){this[name]=value;},contains(name){return !!this[name];}},addEventListener(){}};
  const data={'english-playroom':{wordBreakerBests:{basic:{score:30,combo:25}},wordBreakerLastPlayedDate:today,pre2InterviewA:{attemptedIds:['1','2'],lastPlayedDate:today}}};
- const reads=[],context={...els,extraDashboard,Date,Number,Object,Array,console,localDateKey:()=>today,db:{},dashboardUser:{uid:'tester'},
+ const reads=[],context={...els,extraDashboard,readDashboardCache,writeDashboardCache,petDataUid:null,petData:{},Date,Number,Object,Array,console,localDateKey:()=>today,db:{},dashboardUser:{uid:'tester'},
   doc:(db,...parts)=>parts.join('/'),getDoc:async path=>{reads.push(path);return {exists:()=>true,data:()=>data[path.split('/').at(-1)]||{}};},window:{addEventListener(){}},document:{addEventListener(){}}};
  vm.createContext(context);
  const source=html.slice(html.indexOf('function dateKeyFromMs'),html.indexOf('loginBtn.addEventListener("click"'));
