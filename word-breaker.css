@@ -47,3 +47,5 @@
   html.word-breaker-playing.word-breaker-compact #message{margin-top:2px;font-size:10px;min-height:14px}
   html.word-breaker-playing.word-breaker-compact .arena{min-height:48px}
 }
+
+.game-title{display:flex;align-items:baseline;gap:8px}.game-title h1{margin-bottom:8px}.game-version{font-size:11px;font-weight:700;letter-spacing:.02em;color:#829087;white-space:nowrap}

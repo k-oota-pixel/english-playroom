@@ -96,10 +96,8 @@ function next(keepInput=false) {
 function tick(now) {
   if(!round?.active) return;
   const elapsed=now-round.started,p=Math.min(1,elapsed/LIMIT_MS);
-  if(mobile.matches) {
-    const word=$('word');word.style.top='50%';
-    word.style.transform=reduced?'translateY(-50%)':`translateY(-50%) scale(${.35+p*2.85})`;
-  } else $('word').style.transform=reduced?'none':`translateY(${p*38-28}px) scale(${.42+p*1.05})`;
+  const word=$('word');word.style.top='50%';
+  word.style.transform=reduced?'translateY(-50%)':`translateY(-50%) scale(${.35+p*2.85})`;
   $('word').classList.toggle('danger',elapsed>=WARNING_MS);
   if(elapsed>=LIMIT_MS) settle(round.timeout()); else animation=requestAnimationFrame(tick);
 }
