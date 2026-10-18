@@ -17,7 +17,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
 (async()=>{
  const browser=await chromium.launch({headless:true});
  try{
- const context=await browser.newContext();
+ const context=await browser.newContext({viewport:process.env.MOBILE?{width:390,height:844}:{width:1280,height:900}});
  await context.route('https://www.gstatic.com/firebasejs/**',route=>route.fulfill({contentType:'text/javascript',body:route.request().url().includes('firebase-app')?appMock:route.request().url().includes('firebase-auth')?authMock:firestoreMock}));
  await context.route('http://127.0.0.1:8765/**',route=>{const pathname=new URL(route.request().url()).pathname;const file=path.join(root,pathname==='/'?'index.html':pathname);return route.fulfill({contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html',body:fs.readFileSync(file,'utf8')});});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -58,7 +58,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
      window.motionSamples=[];
      window.motionTimer=setInterval(()=>{
        const c=v.querySelector('.pet-character'),layer=v.querySelector('.pet-care-motion-layer'),rect=svg.querySelector('rect').getBoundingClientRect(),b=c.getBoundingClientRect();
-       window.motionSamples.push({sameSvg:svg===v.querySelector('svg'),x:b.x,y:b.y,bgx:rect.x,bgy:rect.y,motion:layer?getComputedStyle(layer).transform:null});
+       window.motionSamples.push({sameSvg:svg===v.querySelector('svg'),x:b.x,y:b.y,height:b.height,bgx:rect.x,bgy:rect.y,motion:layer?getComputedStyle(layer).transform:null});
      },80);
    });
    await action();await page.waitForTimeout(1700);
@@ -66,6 +66,10 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
    assert.ok(samples.length>=12,label+' has enough frames');
    assert.ok(samples.every(s=>s.sameSvg),label+' must retain SVG through wallet/lifecycle/server updates');
    assert.ok(samples.every(s=>Math.abs(s.bgx-samples[0].bgx)<.2&&Math.abs(s.bgy-samples[0].bgy)<.2),label+' background stays fixed');
+   const active=samples.slice(1,12);
+   const travel=Math.max(...active.map(s=>s.y))-Math.min(...active.map(s=>s.y));
+   assert.ok(travel>4,label+' visibly moves vertically, not only sideways: '+travel);
+   assert.ok(samples.every(s=>s.height>30),label+' character stays visible');
    const poses=new Set(samples.slice(1,12).map(s=>s.motion).filter(Boolean));
    assert.ok(poses.size>=4,label+' visible character transform changes over time');
  }

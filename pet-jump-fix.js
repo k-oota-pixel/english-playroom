@@ -21,7 +21,7 @@ function installInPlacePetJump(){
     if(visual.dataset.petSleeping==='1'||visual.dataset.petGrumpy==='1')return;
     const character=visual.querySelector('.pet-character');
     if(!character)return;
-    if(character.parentNode?.classList?.contains('pet-jump-layer'))return;
+    if(character.closest('.pet-jump-layer'))return;
     ensureJumpLayer(character);
   }
   primeJumpLayer();
