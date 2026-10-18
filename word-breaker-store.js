@@ -26,14 +26,15 @@ export async function saveRun({id,course,uid,rewards,score,bestCombo}) {
     const receipts={...(data.wordBreakerRuns || {})}, receipt=receipts[id];
     if (!receipt || receipt.course!==course) throw new Error('このプレイの保存期限が切れました');
     earned=Math.max(receipt.earned,rewards);
-    receipts[id]={...receipt,earned};
+    receipts[id]={...receipt,earned,updatedAt:Date.now()};
     const previous=data.wordBreakerBests?.[course] || {};
     tx.set(ref,{
       coins:Math.max(0,Math.floor(Number(data.coins)||0))+earned-receipt.earned,
       coinUpdatedAt:serverTimestamp(),
+      wordBreakerLastPlayedDate:(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;})(),
       wordBreakerRuns:receipts,
       wordBreakerBests:{[course]:{score:Math.max(previous.score||0,score),combo:Math.max(previous.combo||0,bestCombo)}}
-    },{mergeFields:['coins','coinUpdatedAt','wordBreakerRuns',`wordBreakerBests.${course}`]});
+    },{mergeFields:['coins','coinUpdatedAt','wordBreakerLastPlayedDate','wordBreakerRuns',`wordBreakerBests.${course}`]});
   });
   return earned;
 }

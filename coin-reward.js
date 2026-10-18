@@ -1,3 +1,4 @@
+import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
 import './nickname-profile.js';
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
@@ -46,9 +47,13 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
       const sameDay=data.coinRewardDate===today;
       const claims=sameDay&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(x=>typeof x==='string'):[];
       const coins=Math.max(0,Math.floor(Number(data.coins)||0));
-      if(claims.includes(claim)){newCoins=coins;return;}
+      const interview=appId==='eiken-pre2-interview-a'?interviewAttemptPatch(data,itemId.replace(/^theme-/,''),today):null;
+      if(claims.includes(claim)){
+        if(interview)tx.set(ref,{pre2InterviewA:interview},{merge:true});
+        newCoins=coins;return;
+      }
       claims.push(claim);newCoins=coins+1;awarded=true;
-      tx.set(ref,{coins:newCoins,coinRewardDate:today,coinRewardClaims:claims,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
+      tx.set(ref,{...(interview?{pre2InterviewA:interview}:{}),coins:newCoins,coinRewardDate:today,coinRewardClaims:claims,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
     });
     if(awarded)toast(`🪙 +1　${label}`);
     return {awarded,coins:newCoins,reason:awarded?'awarded':'already-today'};

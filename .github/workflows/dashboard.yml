@@ -1,0 +1,23 @@
+name: Learning dashboard
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'dashboard-extra.js'
+      - 'coin-reward.js'
+      - 'word-breaker-store.js'
+      - 'tests/dashboard*'
+      - '.github/workflows/dashboard.yml'
+  workflow_dispatch:
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: node --test tests/dashboard-extra.test.js
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/dashboard-browser.cjs

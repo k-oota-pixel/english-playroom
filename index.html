@@ -75,12 +75,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .today-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .today-pill{font-size:10px;padding:5px 8px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff16;opacity:.72}
 .today-pill.done{background:#dff4e8;color:#18573f;border-color:#dff4e8;opacity:1;font-weight:800}
-.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
 .stat{background:#ffffff0d;border:1px solid #ffffff18;border-radius:12px;padding:10px;min-width:0}
 .stat-name{font-size:9px;letter-spacing:.08em;opacity:.68}
 .stat-main{font-size:18px;font-weight:900;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat-sub{font-size:9.5px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dash-note{font-size:9px;opacity:.58;margin-top:8px}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.stat-grid{grid-template-columns:1fr}.stat{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:4px 8px}.stat-name{grid-row:1 / span 2}.stat-main{font-size:16px}.dash-title{font-size:15px}}
 
 
@@ -179,20 +180,24 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <button id="dashRefresh" class="dash-refresh" type="button">↻ 更新</button>
     </div>
     <div class="today-row">
+      <span id="todayWordBreaker" class="today-pill">○ WORD BREAKER</span>
       <span id="todayAteru" class="today-pill">○ アテル</span>
       <span id="todayBasic" class="today-pill">○ Basic Quest</span>
       <span id="todayRetry" class="today-pill">○ 語彙文法問題リトライノート</span>
       <span id="todayCloze" class="today-pill">○ 長文空所補充ライティング</span>
       <span id="todayTitle" class="today-pill">○ 長文概要把握ライティング</span>
       <span id="todayTask" class="today-pill">○ Task-Quest</span>
+      <span id="todayInterview" class="today-pill">○ 英検準2級面接A練習</span>
     </div>
     <div class="stat-grid">
+      <div class="stat"><div class="stat-name">WORD BREAKER</div><div id="wordBreakerStat" class="stat-main">— SCORE</div><div id="wordBreakerSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">アテル</div><div id="ateruStat" class="stat-main">—</div><div id="ateruSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">Basic Quest</div><div id="basicStat" class="stat-main">— / 60</div><div id="basicSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">語彙文法問題リトライノート</div><div id="retryStat" class="stat-main">— / 1,585</div><div id="retrySub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">長文空所補充ライティング</div><div id="clozeStat" class="stat-main">— / 17</div><div id="clozeSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">長文概要把握ライティング</div><div id="titleStat" class="stat-main">— / 17</div><div id="titleSub" class="stat-sub">ログイン後に表示</div></div>
       <div class="stat"><div class="stat-name">Task-Quest</div><div id="taskStat" class="stat-main">— / 50</div><div id="taskSub" class="stat-sub">ログイン後に表示</div></div>
+      <div class="stat"><div class="stat-name">英検準2級面接A練習</div><div id="interviewStat" class="stat-main">— / 20</div><div id="interviewSub" class="stat-sub">ログイン後に表示</div></div>
     </div>
     <div id="dashNote" class="dash-note">ログインすると、各教材のクラウド記録をまとめて表示します。</div>
   </section>
@@ -278,6 +283,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 </main>
 
 <script type="module">
+import {extraDashboard} from './dashboard-extra.js?v=1';
 import { GAME_NAME as WORD_BREAKER_NAME } from './word-breaker-engine.js';
 document.querySelector('[data-word-breaker-title]').textContent=WORD_BREAKER_NAME;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
@@ -353,6 +359,12 @@ const titleSub=document.getElementById("titleSub");
 const taskStat=document.getElementById("taskStat");
 const taskSub=document.getElementById("taskSub");
 const dashNote=document.getElementById("dashNote");
+const todayWordBreaker=document.getElementById("todayWordBreaker");
+const todayInterview=document.getElementById("todayInterview");
+const wordBreakerStat=document.getElementById("wordBreakerStat");
+const wordBreakerSub=document.getElementById("wordBreakerSub");
+const interviewStat=document.getElementById("interviewStat");
+const interviewSub=document.getElementById("interviewSub");
 
 let signingIn=false;
 let dashboardUser=null;
@@ -644,6 +656,9 @@ function setToday(el,done,label){
 function resetDashboard(message="Googleログインすると、各教材のクラウド記録をまとめて表示します。"){
   setToday(todayAteru,false,"アテル");setToday(todayBasic,false,"Basic Quest");setToday(todayRetry,false,"リトライノート");
   setToday(todayCloze,false,"英検 空所補充");setToday(todayTitle,false,"英検 タイトル");setToday(todayTask,false,"Task-Quest");
+  setToday(todayWordBreaker,false,"WORD BREAKER");setToday(todayInterview,false,"英検準2級面接A練習");
+  wordBreakerStat.textContent="— SCORE";wordBreakerSub.textContent="ログイン後に表示";
+  interviewStat.textContent="— / 20";interviewSub.textContent="ログイン後に表示";
   ateruStat.textContent="—";ateruSub.textContent="ログイン後に表示";
   basicStat.textContent="— / 60";basicSub.textContent="ログイン後に表示";
   retryStat.textContent="— / 1,585";retrySub.textContent="ログイン後に表示";
@@ -656,15 +671,16 @@ async function refreshDashboard(user=dashboardUser){
   if(!user){resetDashboard();return;}
   dashRefresh.disabled=true;
   dashRefresh.textContent="更新中…";
-  dashNote.textContent="6つの教材の記録を読み込んでいます…";
+  dashNote.textContent="8つの教材の記録を読み込んでいます…";
   try{
-    const [aSnap,bSnap,rSnap,cSnap,tSnap,qSnap]=await Promise.all([
+    const [aSnap,bSnap,rSnap,cSnap,tSnap,qSnap,wSnap]=await Promise.all([
       getDoc(doc(db,"users",user.uid,"apps","ateru")),
       getDoc(doc(db,"users",user.uid,"apps","basic-quest")),
       getDoc(doc(db,"users",user.uid,"apps","eiken-retry")),
       getDoc(doc(db,"users",user.uid,"apps","eiken-cloze")),
       getDoc(doc(db,"users",user.uid,"apps","eiken-title")),
-      getDoc(doc(db,"users",user.uid,"apps","task-quest"))
+      getDoc(doc(db,"users",user.uid,"apps","task-quest")),
+      getDoc(doc(db,"users",user.uid,"apps","english-playroom"))
     ]);
     const a=aSnap.exists()?aSnap.data():{};
     const b=bSnap.exists()?bSnap.data():{};
@@ -673,6 +689,13 @@ async function refreshDashboard(user=dashboardUser){
     const t=tSnap.exists()?tSnap.data():{};
     const q=qSnap.exists()?qSnap.data():{};
     const today=localDateKey();
+    const extras=extraDashboard(wSnap.exists()?wSnap.data():{},today);
+    wordBreakerStat.textContent=`${extras.word.score} SCORE`;
+    wordBreakerSub.textContent=`最高COMBO ${extras.word.combo} · ${extras.word.courses} / 6コース`;
+    interviewStat.textContent=`${extras.interview.attempted} / 20`;
+    interviewSub.textContent="挑戦した問題数";
+    setToday(todayWordBreaker,extras.word.today,"WORD BREAKER");
+    setToday(todayInterview,extras.interview.today,"英検準2級面接A練習");
 
     const rounds=Math.max(0,Number(a.gamesCompleted)||0);
     const solved=Math.max(0,Number(a.questionsSolved)||0);
@@ -712,9 +735,10 @@ async function refreshDashboard(user=dashboardUser){
 
     const todayCount=[
       a.lastPlayedDate===today,b.lastPlayedDate===today,retryToday,
-      c.lastPlayedDate===today,t.lastPlayedDate===today,q.lastPlayedDate===today
+      c.lastPlayedDate===today,t.lastPlayedDate===today,q.lastPlayedDate===today,
+      extras.word.today,extras.interview.today
     ].filter(Boolean).length;
-    dashNote.textContent=todayCount?`今日は ${todayCount} / 6 教材に取り組んでいます。`:"今日はまだ6教材の学習記録がありません。";
+    dashNote.textContent=todayCount?`今日は ${todayCount} / 8 教材に取り組んでいます。`:"今日はまだ8教材の学習記録がありません。";
   }catch(err){
     console.error("Dashboard load failed",err);
     dashNote.textContent="ダッシュボードの読み込みに失敗しました。もう一度「更新」を押してください。";
