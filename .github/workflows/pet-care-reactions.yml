@@ -2,6 +2,10 @@ name: Pet care reaction regression
 on:
   push:
     paths:
+      - admin.html
+      - admin-ui.js
+      - pet-admin-panel.js
+      - tests/admin-browser.cjs
       - index.html
       - pet-art.js
       - pet-care-animation.js
@@ -26,6 +30,7 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npx playwright install --with-deps chromium
       - run: npm test
+      - run: node tests/admin-browser.cjs
       - run: node tests/pet-sync-chat-browser.cjs
       - run: node tests/pet-sync-chat-browser.cjs
         env:
