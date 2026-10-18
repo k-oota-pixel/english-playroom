@@ -1,12 +1,12 @@
 import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
-import { playCareReaction } from './pet-care-animation.js?v=1.5.7';
-import { FOODS, careState, feedReward } from './pet-care-model.js?v=1.5.1-touch';
+import { playCareReaction } from './pet-care-animation.js?v=1.5.8';
+import { FOODS, careState, feedReward, happyDay, happyLabel } from './pet-care-model.js?v=1.5.8';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.7';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.8';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
@@ -121,7 +121,7 @@ function boot(){injectUI();if(!getApps().length){setTimeout(boot,0);return;}cons
 
 function installCareUI(wallet) {
   const shop=wallet.querySelector('#petShopOpen');
-  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><span id="petHappy" class="pet-coins" aria-live="polite"></span>');
+  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>今日のHAPPY</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="今日のHAPPY" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><small>毎日リセット（0時にリセット）</small></div>');
   const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
   dialog.innerHTML=`<div class="pet-shop-confirm-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2>Choose food for your pet!</h2><p>エサをあげると HAPPY が増えます。</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-shop-action" data-food="${f.id}" style="display:block;width:100%;margin:10px 0">${f.icon} ${f.name} · ${f.price} ${f.price===1?'COIN':'COINS'}</button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
   document.body.append(dialog);
@@ -131,6 +131,11 @@ function installCareUI(wallet) {
   wallet.querySelector('#petClean').onclick=()=>updateWaste(true);
   const visual=document.getElementById('petVisual');
   if(visual)new MutationObserver(()=>renderWaste()).observe(visual,{childList:true});
+  let displayedDay=happyDay();
+  function refreshHappyDay(){const today=happyDay();if(today!==displayedDay){displayedDay=today;renderCare();}}
+  setInterval(refreshHappyDay,1000);
+  window.addEventListener('focus',refreshHappyDay);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshHappyDay();});
   setInterval(()=>updateWaste(),60000);
   window.addEventListener('focus',()=>updateWaste());
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateWaste();});
@@ -142,7 +147,12 @@ function renderCare() {
   const enabled=!!currentUser&&hasPet(currentData)&&!busy;
   for(const id of ['petFeed']){const button=document.getElementById(id);if(button)button.disabled=!enabled;}
   const state=careState(currentData),label=document.getElementById('petHappy');
-  if(label)label.textContent=currentUser&&hasPet(currentData)?`♡ HAPPY ${state.happy}`:'';
+  if(label){
+    label.hidden=!(currentUser&&hasPet(currentData));
+    document.getElementById('petHappyValue').textContent=`${state.happy}/10 · ${happyLabel(state.happy)}`;
+    const gauge=document.getElementById('petHappyGauge');gauge.setAttribute('aria-valuenow',String(state.happy));gauge.setAttribute('aria-valuetext',`${state.happy}/10 ${happyLabel(state.happy)}`);
+    document.getElementById('petHappyFill').style.width=`${state.happy*10}%`;
+  }
   const visual=document.getElementById('petVisual');if(visual){visual.dataset.petCareEnabled=currentUser&&hasPet(currentData)?'1':'0';visual.setAttribute('role',enabled?'button':'img');visual.tabIndex=enabled?0:-1;}
   const balance=document.getElementById('petFeedBalance');if(balance)balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;
   document.querySelectorAll('[data-food]').forEach(button=>{button.disabled=!enabled||coinsOf(currentData)<FOODS.find(f=>f.id===button.dataset.food).price;});
@@ -155,11 +165,12 @@ async function performCare(foodId) {
       const result=await runTransaction(db,async tx=>{
         const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};
         if(!hasPet(data))throw Error('ペットが誕生してから使えます。');
-        const reward=feedReward(data,foodId);
+        const today=happyDay(),before=careState(data,today).happy;
+        const reward=feedReward(data,foodId,today);
         const patch={petCare:reward.petCare,petUpdatedAt:serverTimestamp()};
         if(foodId){patch.coins=reward.coins;patch.coinUpdatedAt=serverTimestamp();}
         tx.set(ref,patch,{merge:true});
-        return {reward,data:{...data,...patch}};
+        return {reward,reachedMax:before<10&&reward.petCare.happy===10,data:{...data,...patch}};
       });
       if(currentUser?.uid!==user.uid)return;
       currentData=result.data;
@@ -168,7 +179,7 @@ async function performCare(foodId) {
       if(foodId)document.getElementById('petFeedDialog').close();
       // Render before animating: wallet refresh replaces the SVG.
       renderWallet();
-      requestAnimationFrame(()=>careAnimation(FOODS.find(f=>f.id===foodId).reaction,FOODS.find(f=>f.id===foodId)));
+      requestAnimationFrame(()=>careAnimation(result.reachedMax?'max':FOODS.find(f=>f.id===foodId).reaction,FOODS.find(f=>f.id===foodId)));
     } catch(error) {setToast(error.message||'保存できませんでした。もう一度お試しください。','error');document.getElementById('petFeedStatus').textContent=error.message;}
   });
 }
