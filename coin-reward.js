@@ -14,6 +14,8 @@ const firebaseConfig={
 };
 const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
+// Reuse the site's existing Firebase app and wallet without changing daily rewards.
+export { auth, db, authReady, walletRef };
 let currentUser=auth.currentUser||null;
 let authResolved=false,resolveAuth;
 const authReady=new Promise(r=>resolveAuth=r);
