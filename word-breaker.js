@@ -1,14 +1,16 @@
+import {mountRecords} from './word-breaker-records.js?v=1';
 import { GAME_NAME, COURSES, Round, LIMIT_MS, WARNING_MS } from './word-breaker-engine.js';
 import { DEMO, loadVocabulary } from './word-breaker-data.js';
 
 const $=id=>document.getElementById(id);
+const worldRecords=mountRecords();
 document.title=`${GAME_NAME} | もんすたでぃ`;
 document.querySelectorAll('[data-game-name]').forEach(el=>el.textContent=GAME_NAME);
 let vocabulary={},bests={},localBests={},store=null,user=null,round=null,course=null,run=null,playerUid=null;
 let animation=0,transition=0,wrongReset=0,generation=0,saveChain=Promise.resolve(),savedCoins=0,saving=0,unsaved=false,oldBest={};
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 try {localBests=JSON.parse(localStorage.getItem('word-breaker-guest-bests')||'{}');} catch {}
-function show(id) {for(const section of ['selection','play','result']) $(section).hidden=section!==id;}
+function show(id) {worldRecords.setCourse(id==='selection'||course==='demo'?null:course);for(const section of ['selection','play','result']) $(section).hidden=section!==id;}
 function best(id) {return user ? bests[id]||{} : localBests[id]||{};}
 function renderCourses() {
   $('courses').replaceChildren();
@@ -36,6 +38,7 @@ function saveProgress() {
   saveChain=saveChain.catch(()=>{}).then(async()=>{
     try {await run.ready;} catch {run.ready=run.register();await run.ready;}
     savedCoins=await store.saveRun(snapshot);unsaved=false;
+    document.dispatchEvent(new Event('word-breaker-record-saved'));
     bests[course]={score:Math.max(bests[course]?.score||0,snapshot.score),combo:Math.max(bests[course]?.combo||0,snapshot.bestCombo)};
     $('result-coins').textContent=savedCoins;
     $('save-status').textContent='共通コインと自己ベストを保存しました。';
