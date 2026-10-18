@@ -30,7 +30,7 @@ function safeGuestSave() {
   try {localStorage.setItem('word-breaker-guest-bests',JSON.stringify(localBests));} catch { $('message').textContent='このブラウザでは自己ベストを保存できません。'; }
 }
 function updateHUD() {$('score').textContent=round.score;$('combo').textContent=round.combo;$('life').textContent=round.life?'♥ '.repeat(round.life):'0';}
-function saveProgress() {
+function saveProgress(publishWorldRecord=false) {
   safeGuestSave();
   if(!run || !store || !user || course==='demo') return Promise.resolve();
   const snapshot={...run,rewards:round.rewards,score:round.score,bestCombo:round.bestCombo};
@@ -38,8 +38,10 @@ function saveProgress() {
   saveChain=saveChain.catch(()=>{}).then(async()=>{
     try {await run.ready;} catch {run.ready=run.register();await run.ready;}
     savedCoins=await store.saveRun(snapshot);unsaved=false;
-    document.dispatchEvent(new Event('word-breaker-record-saved'));
     bests[course]={score:Math.max(bests[course]?.score||0,snapshot.score),combo:Math.max(bests[course]?.combo||0,snapshot.bestCombo)};
+    if(publishWorldRecord&&store.publishRecord){
+      try {await store.publishRecord(course);document.dispatchEvent(new Event('word-breaker-record-saved'));} catch {}
+    }
     $('result-coins').textContent=savedCoins;
     $('save-status').textContent='共通コインと自己ベストを保存しました。';
   }).catch(error=>{unsaved=true;$('save-status').textContent=`保存できませんでした。画面を閉じずに再試行してください。${error.message}`;$('retry-save').hidden=false;})
@@ -117,11 +119,11 @@ function finish(abandoned=false) {
   $('record').hidden=course==='demo'||!(round.score>(oldBest.score||0)||round.bestCombo>(oldBest.combo||0));
   if(course==='demo') $('save-status').textContent='操作体験です。コイン・自己ベストは保存されません。';
   else if(!playerUid) $('save-status').textContent='ゲスト記録はこのブラウザに保存。コイン獲得にはプレイ前にログインしてください。';
-  show('result');$('result').focus();saveProgress();
+  show('result');$('result').focus();saveProgress(true);
 }
 $('answer-form').addEventListener('submit',e=>{e.preventDefault();if(e.isComposing || !round?.active || !$('answer').value.trim())return;settle(round.resolve($('answer').value,performance.now()));});
 $('answer').addEventListener('keydown',e=>{if(e.key==='Enter' && (e.isComposing||e.keyCode===229))e.preventDefault();});
-$('quit').onclick=()=>finish(true);$('retry').onclick=()=>start(course);$('choose').onclick=()=>{show('selection');renderCourses();};$('demo').onclick=()=>start('demo');$('retry-save').onclick=()=>saveProgress();
+$('quit').onclick=()=>finish(true);$('retry').onclick=()=>start(course);$('choose').onclick=()=>{show('selection');renderCourses();};$('demo').onclick=()=>start('demo');$('retry-save').onclick=()=>saveProgress(!round?.active);
 // Leaving the tab does not grant extra time. Expiry resolves once on return.
 document.addEventListener('visibilitychange',()=>{if(!document.hidden && round?.active && performance.now()-round.started>=LIMIT_MS)settle(round.timeout());});
 renderCourses();
