@@ -96,7 +96,14 @@ function next(keepInput=false) {
 function tick(now) {
   if(!round?.active) return;
   const elapsed=now-round.started,p=Math.min(1,elapsed/LIMIT_MS);
-  $('word').style.transform=mobile.matches?`translateY(-50%)${reduced?'':` scale(${.75+p*.25})`}`:reduced?'none':`translateY(${p*38-28}px) scale(${.42+p*1.05})`;
+  if(mobile.matches) {
+    const word=$('word'),arena=$('arena');
+    if(reduced) {word.style.top='50%';word.style.transform='translateY(-50%)';}
+    else {
+      const start=arena.clientHeight*.22,end=Math.max(start,arena.clientHeight-word.offsetHeight*.55-6);
+      word.style.top=`${start+(end-start)*p}px`;word.style.transform=`translateY(-50%) scale(${.75+p*.25})`;
+    }
+  } else $('word').style.transform=reduced?'none':`translateY(${p*38-28}px) scale(${.42+p*1.05})`;
   $('word').classList.toggle('danger',elapsed>=WARNING_MS);
   if(elapsed>=LIMIT_MS) settle(round.timeout()); else animation=requestAnimationFrame(tick);
 }
