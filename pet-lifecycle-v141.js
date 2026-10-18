@@ -4,7 +4,8 @@ import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https:
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 
 import {growthPatch,hatchDay} from './pet-growth.js';
-import {renderPetVisual} from './pet-art.js?v=1.5.8';
+import {renderPetVisual} from './pet-art.js?v=1.5.9';
+import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.9';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
@@ -20,13 +21,10 @@ function stageOf(data={}){
   if(!hasPet(data))return 'egg';
   const days=lifeDays(data);
   if(data.petAdult===false)return 'baby';
-  if(days<30)return 'adult';
+  if(days<10)return 'adult';
   return 'elder';
 }
 function visualStage(data={}){return data.petAdult===false?'mystery':'baby';}
-function chanceFor(days){if(days<30)return 0;if(days<40)return .01;if(days<50)return .03;if(days<60)return .06;return .10;}
-function hashString(value){let h=2166136261;for(const ch of String(value)){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return h>>>0;}
-function shouldDepart(uid,generation,today,days){const chance=chanceFor(days);if(!chance)return false;return (hashString(`${uid}|${generation}|${today}|${days}`)%10000)/10000<chance;}
 function safeAppearance(value){return value&&typeof value==='object'?JSON.parse(JSON.stringify(value)):null;}
 function petName(data){return validPetName(data?.petName)?normalizePetName(data.petName):'ペット';}
 function memoriesOf(data={}){return Array.isArray(data.petMemories)?data.petMemories.filter(x=>x&&typeof x==='object'):[];}
@@ -69,9 +67,9 @@ function advanceLifecycle(source,today,uid){
   }
 
   let merged={...data,...patch};
-  if(hasPet(merged)&&counted&&days>=30&&merged.petLastLifeCheckDate!==today){
+  if(hasPet(merged)&&counted&&days>=10&&merged.petLastLifeCheckDate!==today){
     patch.petLastLifeCheckDate=today;
-    if(shouldDepart(uid,generationOf(merged),today,days)){
+    if(shouldDepart(uid,generationOf(merged),today,days,merged)){
       const generation=generationOf(merged);
       const memory={
         id:`g${generation}-${today}`,
@@ -94,6 +92,7 @@ function advanceLifecycle(source,today,uid){
         petHatchedAt:null,
         petCustomizedAt:null,
         petLifeDays:0,
+        petCare:{happy:0,happyDate:today,previousHappy:0,previousHappyDate:''},
         petLastLifeLoginDate:today,
         petLastLifeCheckDate:today
       });
@@ -141,7 +140,7 @@ function ensureMemoriesDialog(){
 }
 
 async function svgFor(appearance,shop,stage='adult'){
-  const mod=await import('./pet-art.js?v=1.5.8');return mod.renderPetSVG(appearance,shop,stage);
+  const mod=await import('./pet-art.js?v=1.5.9');return mod.renderPetSVG(appearance,shop,stage);
 }
 async function openMemories(){
   const memories=memoriesOf(currentData);if(!memories.length)return;
@@ -188,8 +187,8 @@ function applyUi(data={}){
     if(status){
       if(data.petGrowthPending)status.textContent='成長のときが来ました！アンケートに答えて成体に育てよう。';
       else if(stage==='baby')status.textContent=days<10?`孵化後${hatchDay(data,localDateKey())}日目。2日目から成長のチャンス、7日目には必ず成長します。`:'今日も一緒に英語を楽しもう。';
-      else if(stage==='adult')status.textContent=`一緒に過ごして${days}日目。30日目から長寿期に入ります。`;
-      else status.textContent=`長寿期${days}日目。今日も一緒に過ごせる大切な一日です。`;
+      else if(stage==='adult')status.textContent=`一緒に過ごして${days}日目。10日目から長寿期に入ります。`;
+      else status.textContent=`長寿期${days}日目。前日のHAPPYが高いほど長生きしやすくなります。`;
     }
     if(create){create.hidden=!data.petGrowthPending;create.textContent='成長アンケートに答える';}
   }else if(currentUser){

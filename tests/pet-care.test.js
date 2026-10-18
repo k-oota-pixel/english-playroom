@@ -24,7 +24,7 @@ test('day changes and undated legacy totals read as zero without writes',()=>{
  for(const petCare of [undefined,{happy:999},{happy:9,happyDate:'2026-10-17'},{happy:9,happyDate:'2026-10-19'}]){
   const data={coins:10,petCare},original=structuredClone(data);
   assert.deepEqual(careState(data,today),{happy:0});assert.deepEqual(data,original);
-  assert.deepEqual(feedReward(data,'snack',today).petCare,{happy:1,happyDate:today});
+  assert.deepEqual(feedReward(data,'snack',today).petCare,{happy:1,happyDate:today,...(petCare?.happyDate==='2026-10-17'?{previousHappy:9,previousHappyDate:'2026-10-17'}:{})});
  }
 });
 test('local midnight and year rollover change the calendar key',()=>{
