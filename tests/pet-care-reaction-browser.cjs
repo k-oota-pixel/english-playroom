@@ -38,6 +38,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();await page.waitForTimeout(200);
  assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),null);
  assert.equal(await page.locator('#petVisual .pet-care-motion-layer').count(),1);
+ assert.equal(await page.locator('.pet-care-feedback').count(),1);
  const result=await page.evaluate(()=>{
  const v=document.getElementById('petVisual'),layer=v.querySelector('.pet-care-motion-layer');
  return {outerMoving:v.getAnimations().some(a=>a.playState==='running'),bodyMoving:layer.getAnimations().some(a=>a.playState==='running'),backgroundInside:!!layer.querySelector('.pet-background'),eyes:[...v.querySelectorAll('[data-shared-legacy-eyes]')].map(el=>getComputedStyle(el).opacity)};
