@@ -6,7 +6,7 @@ import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/fireb
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.9';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.10';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
@@ -121,7 +121,7 @@ function boot(){injectUI();if(!getApps().length){setTimeout(boot,0);return;}cons
 
 function installCareUI(wallet) {
   const shop=wallet.querySelector('#petShopOpen');
-  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>今日のHAPPY</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="今日のHAPPY" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><small>毎日リセット（0時にリセット）</small><small>今日のHAPPYが、明日の長生きにつながります。</small></div>');
+  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>TODAY’S HAPPY</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="TODAY’S HAPPY" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><small>毎日リセット（0時にリセット）</small></div>');
   const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
   dialog.innerHTML=`<div class="pet-shop-confirm-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2>Choose food for your pet!</h2><p>エサをあげると HAPPY が増えます。</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-shop-action" data-food="${f.id}" style="display:block;width:100%;margin:10px 0">${f.icon} ${f.name} · ${f.price} ${f.price===1?'COIN':'COINS'}</button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
   document.body.append(dialog);

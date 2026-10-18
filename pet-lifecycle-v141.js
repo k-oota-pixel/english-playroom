@@ -4,7 +4,7 @@ import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https:
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 
 import {growthPatch,hatchDay} from './pet-growth.js';
-import {renderPetVisual} from './pet-art.js?v=1.5.9';
+import {renderPetVisual} from './pet-art.js?v=1.5.10';
 import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.9';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
@@ -140,7 +140,7 @@ function ensureMemoriesDialog(){
 }
 
 async function svgFor(appearance,shop,stage='adult'){
-  const mod=await import('./pet-art.js?v=1.5.9');return mod.renderPetSVG(appearance,shop,stage);
+  const mod=await import('./pet-art.js?v=1.5.10');return mod.renderPetSVG(appearance,shop,stage);
 }
 async function openMemories(){
   const memories=memoriesOf(currentData);if(!memories.length)return;
@@ -183,11 +183,11 @@ function applyUi(data={}){
     const title=document.getElementById('petTitle');if(title)title.textContent=validPetName(data.petName)?normalizePetName(data.petName):data.petAdult===false?'ふわふわの相棒':'わたしのペット';
     const nameButton=document.getElementById('petNameButton');if(nameButton)nameButton.hidden=validPetName(data.petName);
     rerenderIfNeeded(data);
-    if(petDays)petDays.textContent=stage==='baby'?`幼体 · 孵化後${hatchDay(data,localDateKey())}日目`:stage==='adult'?`成体 · ${days}日目`:`長寿期 · ${days}日目`;
+    if(petDays)petDays.textContent=stage==='baby'?`幼体 · 孵化後${hatchDay(data,localDateKey())}日目`:stage==='adult'?`${days}日目`:`長寿期 · ${days}日目`;
     if(status){
       if(data.petGrowthPending)status.textContent='成長のときが来ました！アンケートに答えて成体に育てよう。';
       else if(stage==='baby')status.textContent=days<10?`孵化後${hatchDay(data,localDateKey())}日目。2日目から成長のチャンス、7日目には必ず成長します。`:'今日も一緒に英語を楽しもう。';
-      else if(stage==='adult')status.textContent=`一緒に過ごして${days}日目。10日目から長寿期に入ります。`;
+      else if(stage==='adult')status.textContent='';
       else status.textContent=`長寿期${days}日目。前日のHAPPYが高いほど長生きしやすくなります。`;
     }
     if(create){create.hidden=!data.petGrowthPending;create.textContent='成長アンケートに答える';}
