@@ -198,6 +198,15 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   </section>
 
   <div class="cards">
+    <a class="card" href="./word-breaker.html">
+      <div class="icon" aria-hidden="true">✦</div>
+      <div class="eyebrow">VOCABULARY · ENDLESS</div>
+      <div class="title" data-word-breaker-title>WORD BREAKER</div>
+      <div class="desc">迫る英単語を日本語で撃破！ 2 LIFEでコンボをつなぐ、エンドレス単語ゲーム。</div>
+      <div class="chips"><span class="chip">6コース</span><span class="chip">日本語入力</span><span class="chip">17秒</span></div>
+      <div class="play">単語を撃破する <span aria-hidden="true">→</span></div>
+      <div class="open-note">中1〜高2・基礎英単語の6コース</div>
+    </a>
     <a class="card" href="https://k-oota-pixel.github.io/ateru/" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">?</div>
       <div class="eyebrow">THREE-HINT WORD GAME</div>
@@ -269,6 +278,8 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 </main>
 
 <script type="module">
+import { GAME_NAME as WORD_BREAKER_NAME } from './word-breaker-engine.js';
+document.querySelector('[data-word-breaker-title]').textContent=WORD_BREAKER_NAME;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut,
