@@ -9,7 +9,8 @@ export async function runTransaction(db,fn){let staged;const result=await fn({ge
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
  try {
  const {DEMO}=await import('../word-breaker-data.js');
- const courses={};for(const id of ['junior1','junior2','junior3','high1','high2','basic'])courses[id]=DEMO;
+ const courses=JSON.parse(fs.readFileSync(path.join(root,'monstudy_vocab_master.json'),'utf8'));
+ const actualWords=courses.levels.junior1.words;
  async function setup(guest,missing=false){
    const context=await browser.newContext();const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
    await page.clock.install();
@@ -34,7 +35,7 @@ export async function runTransaction(db,fn){let staged;const result=await fn({ge
  await p.locator('#retry').click();assert.equal(await p.locator('#score').textContent(),'0');assert.deepEqual(guest.errors,[]);
  const signed=await setup(false),q=signed.page;
  await q.locator('#account').filter({hasText:'ログイン中'}).waitFor();await q.locator('.course').first().click();await q.locator('#answer:enabled').waitFor();
- async function correct(){const word=await q.locator('#word').textContent();const entry=DEMO.find(e=>e.word===word);await q.locator('#answer').fill(entry.answers[0]);await q.locator('#answer-form').evaluate(f=>f.requestSubmit());await q.clock.runFor(700);await q.locator('#answer:enabled').waitFor();}
+ async function correct(){const word=await q.locator('#word').textContent();const entry=actualWords.find(e=>e.word===word);await q.locator('#answer').fill(entry.answers[0]);await q.locator('#answer-form').evaluate(f=>f.requestSubmit());await q.clock.runFor(700);await q.locator('#answer:enabled').waitFor();}
  for(let i=0;i<40;i++)await correct();
  await q.waitForFunction(()=>window.wallet.coins===93);assert.equal(await q.locator('#score').textContent(),'40');
  assert.deepEqual(await q.evaluate(()=>window.wallet.petShop),{ownedItems:['crown']});assert.equal(await q.evaluate(()=>window.wallet.petName),'ふわ');assert.deepEqual(await q.evaluate(()=>window.wallet.wordBreakerBests.high2),{score:100,combo:90});

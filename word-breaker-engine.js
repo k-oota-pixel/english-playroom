@@ -14,7 +14,7 @@ function forms(value) {
   const result = new Set([normalize(value)]);
   const queue = [...result];
   const prefix = /^(?:とても|非常に|すごく|かなり|たいへん|大変|何かを|なにかを|何か|なにか|人を|ひとを|を|が)/;
-  const suffix = /(?:という意味|といういみ|ということ|ことです|こと|ものです|もの|なのです|なんです|です|である|だ|な|に|する|します|をする|で|く)$/;
+  const suffix = /(?:という意味|といういみ|ということ|ことです|こと|ものです|もの|なのです|なんです|でした|です|である|だ|な|に|していました|していた|しています|している|しました|します|する|をする|で)$/;
   while (queue.length) {
     const s = queue.shift();
     for (const t of [s.replace(prefix,''),s.replace(suffix,'')]) {
@@ -26,8 +26,16 @@ function forms(value) {
 export function judge(entry, input) {
   if (!normalize(input)) return false;
   const supplied = forms(input);
-  return [...entry.answers, ...(entry.keywords || [])].some(answer =>
-    [...forms(answer)].some(v => supplied.has(v)));
+  return [...entry.answers, ...(entry.keywords || [])].some(answer => {
+    const candidates=new Set([normalize(answer)]);
+    // Only shorten known grammatical endings on mixed kanji expressions.
+    // Normalized katakana nouns (カナダ, バナナ) must never lose their ends.
+    if (/[一-龯]/u.test(answer)) {
+      candidates.add(normalize(answer.replace(/(?:である|です|する|な|の)$/u,'')));
+      if (/い$/u.test(answer)) candidates.add(normalize(answer.slice(0,-1)+'く'));
+    }
+    return [...candidates].some(v=>v && supplied.has(v));
+  });
 }
 export function cleanEntries(entries) {
   const seen = new Set();

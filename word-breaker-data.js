@@ -1,6 +1,5 @@
 import { COURSES, cleanEntries } from './word-breaker-engine.js';
-// Recovered examples are explicitly a practice fixture, never presented as the
-// user's complete six-course master. Replace with the supplied JSON to release.
+// Small practice fixture, also used by engine tests. Course play uses the master.
 export const DEMO = cleanEntries([
   {word:'important',answers:['重要な','大切な','大事な'],keywords:['じゅうよう','たいせつ','だいじ']},
   {word:'light',answers:['光','明かり','軽い'],keywords:['ひかり','あかり','かるい','軽く','かるく']},
@@ -25,8 +24,12 @@ export const DEMO = cleanEntries([
 ]);
 export async function loadVocabulary() {
   const response=await fetch('./monstudy_vocab_master.json');
-  if (!response.ok) throw new Error('完全版の単語マスターの添付待ちです。現在は操作体験のみ利用できます。');
-  const data=await response.json(), source=data.courses || data;
+  if (!response.ok) throw new Error('単語データを読み込めませんでした。再読み込みするか操作体験をご利用ください。');
+  const data=await response.json();
+  return parseVocabulary(data);
+}
+export function parseVocabulary(data) {
+  const source=data.levels || data.courses || data;
   const result={};
   for (const [id,label] of COURSES) {
     const raw=Array.isArray(source)?source.find(c=>c.id===id || c.name===label || c.label===label):source[id] || source[label];

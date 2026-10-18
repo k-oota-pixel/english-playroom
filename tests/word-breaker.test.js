@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {judge,normalize,cleanEntries,Round,LIMIT_MS,WARNING_MS} from '../word-breaker-engine.js';
-import {DEMO} from '../word-breaker-data.js';
+import {DEMO,parseVocabulary} from '../word-breaker-data.js';
+import {readFileSync} from 'node:fs';
 const important=DEMO.find(e=>e.word==='important'),light=DEMO.find(e=>e.word==='light');
 test('Japanese normalization and grammatical variants, with semantic boundaries',()=>{
   for(const answer of ['重要な','大事','だいじ','とても大切です','重要なこと','　大切、です！'])assert.ok(judge(important,answer),answer);
@@ -35,4 +36,32 @@ test('endless bag and reward thresholds include a single score-ten reward',()=>{
 test('shuffle cycles continue without adjacent duplicate at cycle boundaries',()=>{
   const round=new Round(DEMO,()=>0.2);let previous;
   for(let i=0;i<DEMO.length*3;i++){round.next(i);assert.notEqual(round.current,previous);previous=round.current;round.active=false;}
+});
+const master=JSON.parse(readFileSync(new URL('../monstudy_vocab_master.json',import.meta.url),'utf8'));
+const vocabulary=parseVocabulary(master);
+test('complete supplied six-course master has expected counts and valid unique entries',()=>{
+  assert.deepEqual(Object.values(vocabulary).map(c=>c.length),[272,343,340,420,482,618]);
+  for(const entries of Object.values(vocabulary)){
+    assert.equal(new Set(entries.map(e=>e.word.toLowerCase())).size,entries.length);
+    for(const e of entries){assert.ok(e.answers.length && e.keywords.length,e.word);assert.ok(!/[～~（）]/.test(e.word),e.word);assert.notEqual(e.word,'nat');}
+  }
+  assert.ok(vocabulary.high2.find(e=>e.word==='elderly').note);
+});
+test('all declared meanings and aliases are accepted with real master readings',()=>{
+  for(const course of Object.values(vocabulary))for(const entry of course)for(const answer of [...entry.answers,...entry.keywords])assert.ok(judge(entry,answer),`${entry.word}: ${answer}`);
+  const light=vocabulary.basic.find(e=>e.word==='light');
+  for(const answer of ['ひかり','あかり','かるい','かるく','とても軽いです'])assert.ok(judge(light,answer),answer);
+  assert.equal(judge(light,'観光'),false);
+  assert.ok(judge(vocabulary.junior1.find(e=>e.word==='egg'),'たまご'));
+});
+test('noun endings and spelling mistakes cannot collapse to unrelated words',()=>{
+  assert.equal(judge({answers:['カナダ'],keywords:[]},'か'),false);
+  assert.equal(judge({answers:['バナナ'],keywords:[]},'ば'),false);
+  assert.equal(judge({answers:['ひらがな'],keywords:[]},'ひらが'),false);
+  assert.ok(judge({answers:['勉強する'],keywords:['勉強']},'勉強しています'));
+});
+test('ambiguous kanji readings use the English meaning, including common numeric months',()=>{
+  const word=name=>vocabulary.basic.find(e=>e.word===name)||Object.values(vocabulary).flat().find(e=>e.word===name);
+  for(const [name,answer] of [['water','みず'],['rice','こめ'],['tree','き'],['fire','ひ'],['April','しがつ'],['minute','ふん'],['empty','から'],['twice','にど']])assert.ok(judge(word(name),answer),`${name}: ${answer}`);
+  for(const [name,answer] of [['empty','そら'],['gold','かね'],['corner','つの'],['minute','ぶん']])assert.equal(judge(word(name),answer),false,`${name}: ${answer}`);
 });
