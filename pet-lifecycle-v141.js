@@ -4,7 +4,7 @@ import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https:
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 
 import {growthPatch,hatchDay} from './pet-growth.js';
-import {renderPetVisual} from './pet-art.js?v=1.5.10';
+import {renderPetVisual} from './pet-art.js?v=1.5.23';
 import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.9';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
@@ -140,7 +140,7 @@ function ensureMemoriesDialog(){
 }
 
 async function svgFor(appearance,shop,stage='adult'){
-  const mod=await import('./pet-art.js?v=1.5.10');return mod.renderPetSVG(appearance,shop,stage);
+  const mod=await import('./pet-art.js?v=1.5.23');return mod.renderPetSVG(appearance,shop,stage);
 }
 async function openMemories(){
   const memories=memoriesOf(currentData);if(!memories.length)return;

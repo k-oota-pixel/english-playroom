@@ -2,7 +2,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js';
-import {renderPetSVG} from './pet-art.js?v=1.5.10';
+import {renderPetSVG} from './pet-art.js?v=1.5.23';
 
 const ADMIN_API='https://task-quest.onrender.com/api/admin/session';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
@@ -50,7 +50,7 @@ function ensureDialog(){
   dialog.querySelector('[data-save]').addEventListener('click',saveAppearance);return dialog;
 }
 
-function renderControls(){if(!dialog||!draft)return;const grid=dialog.querySelector('#petAdminGrid');grid.replaceChildren();for(const [key,label] of GROUPS){const wrap=document.createElement('div');wrap.className='pet-admin-field';const l=document.createElement('label');l.textContent=label;const select=document.createElement('select');select.dataset.key=key;for(const item of choices(key)){const option=document.createElement('option');option.value=item.id;option.textContent=item.label;option.selected=draft[key]===item.id;select.appendChild(option);}select.addEventListener('change',()=>{draft={...draft,[key]:select.value};if(key==='eyeStyle')draft.eyes=legacyEye(select.value);draft.feature='classic';draft.pattern='none';renderPreview();});wrap.append(l,select);grid.appendChild(wrap);}}
+function renderControls(){if(!dialog||!draft)return;const grid=dialog.querySelector('#petAdminGrid');grid.replaceChildren();for(const [key,label] of GROUPS){const wrap=document.createElement('div');wrap.className='pet-admin-field';const l=document.createElement('label');l.textContent=label;const select=document.createElement('select');select.dataset.key=key;for(const item of choices(key)){const option=document.createElement('option');option.value=item.id;option.textContent=item.label;option.selected=draft[key]===item.id;select.appendChild(option);}select.addEventListener('change',()=>{draft={...draft,[key]:select.value};if(key==='eyeStyle')draft.eyes=legacyEye(select.value);draft.feature='classic';draft.pattern='none';renderControls();renderPreview();});wrap.append(l,select);grid.appendChild(wrap);}}
 function renderPreview(){if(!dialog||!draft)return;for(const b of dialog.querySelectorAll('[data-stage]'))b.classList.toggle('active',b.dataset.stage===previewStage);const preview=dialog.querySelector('#petAdminPreview');try{preview.innerHTML=renderPetSVG(previewStage==='baby'?null:draft,currentData?.petShop||{},previewStage);}catch(error){preview.textContent='プレビューを表示できませんでした。';console.error(error);}}
 
 async function openPanel(){if(!adminVerified||!currentUser)return;const d=ensureDialog(),status=d.querySelector('#petAdminStatus');status.textContent='読み込んでいます…';try{const snap=await getDoc(petRef(currentUser));currentData=snap.exists()?(snap.data()||{}):{};if(!currentData.petHatched||!currentData.petAppearance)throw Error('まだペットがいません。');draft=normalizeDraft(currentData.petAppearance);const stage=document.documentElement.dataset.petStage;previewStage=stage==='baby'?'baby':'adult';renderControls();renderPreview();status.textContent='';d.showModal();}catch(error){status.textContent=error?.message||'ペット情報を読み込めませんでした。';if(!d.open)d.showModal();}}
