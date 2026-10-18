@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
   <title>WORD BREAKER | もんすたでぃ</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./word-breaker.css">
+  <link rel="stylesheet" href="./word-breaker.css?v=1.5.12">
 </head>
 <body>
 <main>
@@ -32,11 +32,11 @@
         <form id="answer-form"><label for="answer">日本語の意味を入力</label><div class="input-row"><input id="answer" autocomplete="off" placeholder="意味をひとつ入力" enterkeyhint="send" maxlength="100"><button id="submit">撃破 ↵</button></div></form>
         <p id="message" role="status" aria-live="polite"></p>
       </div>
-      <aside class="feedback" aria-labelledby="feedback-title"><h2 id="feedback-title">PREVIOUS WORD</h2><p id="feedback-empty">直前の問題をここに表示します。</p><div id="feedback-detail" hidden><strong id="feedback-word"></strong><p id="feedback-result"></p><small>YOUR ANSWER</small><p id="feedback-user"></p><small>ANSWER</small><p id="feedback-answers"></p></div></aside>
+      <aside class="feedback" aria-labelledby="feedback-title"><details id="previous-feedback" open><summary id="feedback-title">前の解答を見る</summary><p id="feedback-empty">直前の問題をここに表示します。</p><div id="feedback-detail" hidden><strong id="feedback-word"></strong><p id="feedback-result"></p><small>YOUR ANSWER</small><p id="feedback-user"></p><small>ANSWER</small><p id="feedback-answers"></p></div></details></aside>
     </div>
   </section>
   <section id="result" class="result" hidden tabindex="-1"><div class="eyebrow">GAME OVER</div><h2 id="result-heading">おつかれさま！</h2><p id="record" class="record" hidden>NEW RECORD!</p><div class="result-stats"><p>SCORE <b id="result-score"></b></p><p>BEST COMBO <b id="result-combo"></b></p><p>COINS EARNED <b id="result-coins"></b></p></div><p id="save-status" role="status"></p><button id="retry-save" class="secondary" hidden>保存を再試行</button><div class="actions"><button id="retry">もう一度</button><button id="choose" class="secondary">コースを選ぶ</button></div></section>
-  <p class="footer">日本語の表記ゆれに対応 · ブラウザ内で即時判定</p>
+  <p class="footer">ver1.5.12 · 日本語の表記ゆれに対応 · ブラウザ内で即時判定</p>
 </main>
-<script type="module" src="./word-breaker.js"></script>
+<script type="module" src="./word-breaker.js?v=1.5.12"></script>
 </body></html>
