@@ -1,5 +1,6 @@
-import {renderDogArt} from './pet-dog-art.js?v=1.5.24';
-if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.24');
+import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.25';
+import {renderDogArt} from './pet-dog-art.js?v=1.5.25';
+if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.25');
 import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js';
 
 const outline='#40564e';
@@ -77,7 +78,7 @@ function eyesFor(a,stage){
   if(style==='watery')return `<ellipse cx="${left}" cy="${y}" rx="10.5" ry="14"/><ellipse cx="${right}" cy="${y}" rx="10.5" ry="14"/>${eyeHighlights(left,right,y,true)}<g fill="white" stroke="none" opacity=".82"><circle cx="${left-4}" cy="${y+5}" r="2.2"/><circle cx="${right-4}" cy="${y+5}" r="2.2"/></g>`;
   if(style==='smile')return path(`M83 ${y+1} Q94 ${y-10} 105 ${y+1} M135 ${y+1} Q146 ${y-10} 157 ${y+1}`,'none','stroke-width="5"');
   if(style==='sleepy')return path(`M83 ${y-1} Q94 ${y+5} 105 ${y-1} M135 ${y-1} Q146 ${y+5} 157 ${y-1}`,'none','stroke-width="5"');
-  if(style==='sparkle')return star(left,y,baby?1.02:.92)+star(right,y,baby?1.02:.92)+`<g fill="white" stroke="none"><circle cx="${left}" cy="${y-2}" r="2"/><circle cx="${right}" cy="${y-2}" r="2"/></g>`;
+  if(style==='sparkle')return renderSparkleEyes(left,right,y);
   const rx=baby?8.5:9,ry=baby?11.5:12;return `<ellipse cx="${left}" cy="${y}" rx="${rx}" ry="${ry}"/><ellipse cx="${right}" cy="${y}" rx="${rx}" ry="${ry}"/>${eyeHighlights(left,right,y)}`;
 }
 
@@ -128,7 +129,7 @@ export function renderPetSVG(value,shop={},stage=''){
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
-if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=1.5.24').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
+if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=1.5.25').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
 function renderMysterySVG(shop){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物"><rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+'</svg>';}
 
 // Keep the render key on the SVG so cloned markup and module copies share it.

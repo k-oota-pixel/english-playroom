@@ -2,7 +2,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js';
-import {renderPetSVG} from './pet-art.js?v=1.5.24';
+import {renderPetSVG} from './pet-art.js?v=1.5.25';
 
 const ADMIN_API='https://task-quest.onrender.com/api/admin/session';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
