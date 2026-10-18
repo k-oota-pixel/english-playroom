@@ -15,6 +15,7 @@ export function renderDogArt(color,eyeStyle){
  return `<g data-pet-dog-art="editable" stroke="${ink}" stroke-width="4.3" stroke-linecap="round" stroke-linejoin="round">
  <path d="M158 177 Q192 166 192 141 Q198 130 205 143 Q219 168 201 187 Q193 200 164 197Z" fill="${color}"/>
  <path d="M192 141 Q198 130 205 143 Q211 153 207 162 Q199 169 193 165 Q202 157 199 151 Q195 156 187 154Z" fill="${cream}" stroke="none"/>
+ <path d="M158 177 Q192 166 192 141 Q198 130 205 143 Q219 168 201 187 Q193 200 164 197Z" fill="none"/>
  <path d="M96 145 Q72 159 76 190 Q79 207 120 208 Q161 207 164 190 Q168 159 144 145Z" fill="${color}"/>
  <path d="M106 147 Q97 161 104 179 L120 204 L136 179 Q143 161 134 147Z" fill="${cream}" stroke="none"/>
  <ellipse cx="84" cy="192" rx="20" ry="18" fill="${color}"/><ellipse cx="156" cy="192" rx="20" ry="18" fill="${color}"/>
