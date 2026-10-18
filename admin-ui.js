@@ -21,7 +21,7 @@ async function load(index=pageIndex){
  if(busy||!auth.currentUser)return;const own=generation,request=++viewGeneration,key=cursors[index];if(key===undefined)return;
  busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('10人分の一覧を読み込んでいます…');
  try{
-  let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=10'+(key?'&pageToken='+encodeURIComponent(key):''));pageCache.set(key,data);}
+  let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=10'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
   if(own!==generation||request!==viewGeneration)return;
   allUsers=data.users||[];pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
@@ -52,7 +52,7 @@ async function grant(card){const uid=card.dataset.uid,amount=Math.floor(Number(c
  for(const page of pageCache.values())for(const u of page.users)if(u.uid===uid)u.coins=r.coins;
  const u=allUsers.find(x=>x.uid===uid);if(u)u.coins=r.coins;
  const detail=detailCache.get(uid);if(detail?.apps?.['english-playroom'])detail.apps['english-playroom'].coins=r.coins;
- setStatus(label+' に '+amount.toLocaleString('ja-JP')+'コイン付与しました。','ok');render();}catch(e){setStatus(e.message,'error');}finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .grantBtn`);if(btn)btn.disabled=false;}}
+ setStatus(label+' に '+amount.toLocaleString('ja-JP')+'コイン付与しました。','ok');render();}catch(e){if(own===generation)setStatus(e.message,'error');}finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .grantBtn`);if(btn)btn.disabled=false;}}
 $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.message,'error'));
 $('logout').onclick=()=>signOut(auth);
 $('refresh').onclick=()=>load();$('search').oninput=render;
