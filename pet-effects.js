@@ -16,14 +16,14 @@ export function emitCareEffects(visual,kind){
   visual.querySelectorAll('.pet-care-particles').forEach(el=>el.remove());
   const layer=document.createElement('span');
   layer.className='pet-care-particles';layer.setAttribute('aria-hidden','true');
-  const kinds=kind==='celebrate'?['sparkle','heart','star','sparkle','heart','star']:kind==='music'?['music','heart','music','music']:['heart','star','heart','star'];
+  const kinds=kind==='max'?['sparkle','heart','star','music','sparkle','star','heart','star','sparkle','music','heart','star']:kind==='celebrate'?['sparkle','heart','star','sparkle','heart','star']:kind==='music'?['music','heart','music','music']:['heart','star','heart','star'];
   const glyph={star:'★',sparkle:'✦',heart:'♥',music:'♪'};
   kinds.forEach((motif,i)=>{
     const p=document.createElement('span');p.className=`pet-motif pet-motif-${motif}`;p.textContent=glyph[motif];
     const angle=(i/kinds.length)*Math.PI*2;
-    p.style.cssText=`left:${24+i*9}%;top:${48+(i%2)*14}%;font-size:${18+Math.random()*7}px;--dx:${Math.cos(angle)*(24+Math.random()*16)}px;--dy:${-40-Math.random()*24}px;--turn:${i%2?-25:30}deg;--duration:${1.15+Math.random()*.45}s;--delay:${i*.055}s;animation-iteration-count:1`;
+    p.style.cssText=`left:${kind==='max'?8+i*7:24+i*9}%;top:${48+(i%2)*14}%;font-size:${18+Math.random()*7}px;--dx:${Math.cos(angle)*(24+Math.random()*16)}px;--dy:${-40-Math.random()*24}px;--turn:${i%2?-25:30}deg;--duration:${1.15+Math.random()*.45}s;--delay:${i*.055}s;animation-iteration-count:1`;
     layer.append(p);
   });
   visual.append(layer);
-  setTimeout(()=>layer.remove(),2100);
+  setTimeout(()=>layer.remove(),kind==='max'?2800:2100);
 }

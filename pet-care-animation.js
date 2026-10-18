@@ -1,4 +1,4 @@
-import { emitCareEffects } from './pet-effects.js?v=1.5.1-effects';
+import { emitCareEffects } from './pet-effects.js?v=1.5.8';
 
 let active=null;
 const STYLE=`
@@ -6,6 +6,7 @@ const STYLE=`
 #petVisual .pet-care-motion-layer{transform-box:view-box;transform-origin:120px 200px;animation-duration:1.8s;animation-timing-function:ease-in-out;animation-fill-mode:both}
 #petVisual[data-care-reacting=music] .pet-care-motion-layer{animation-name:petCareSnack153}
 #petVisual[data-care-reacting=jump] .pet-care-motion-layer{animation-name:petCareMeal153}
+#petVisual[data-care-reacting=max] .pet-care-motion-layer{animation-name:petCareSpecial153;animation-duration:2.8s}
 #petVisual[data-care-reacting=celebrate] .pet-care-motion-layer{animation-name:petCareSpecial153;animation-duration:2.2s}
 .pet-care-feedback{position:absolute;left:50%;top:-18px;transform:translateX(-50%);z-index:15;pointer-events:none;white-space:nowrap;padding:5px 9px;border:1px solid #eed398;border-radius:14px;background:#fff9e8;color:#80601f;font:800 12px/1.4 sans-serif;box-shadow:0 2px 6px #57452218}
 .pet-care-feedback b{display:inline-block;font-size:23px;vertical-align:middle;margin-right:4px}
@@ -33,10 +34,10 @@ export function playCareReaction(visual,kind,food){
   }
   visual.dispatchEvent(new CustomEvent('pet-care-reaction'));
   const host=visual.closest('.pet-visual-wrap')||visual;
-  const feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');
+  const feedback=document.createElement('span');feedback.className='pet-care-feedback'+(kind==='max'?' pet-care-max':'');feedback.setAttribute('role','status');
   if(food){const icon=document.createElement('b');icon.textContent=food.icon;
-    feedback.append(icon,document.createTextNode('おいしい！'));host.append(feedback);}
-  const started=performance.now(),duration=kind==='celebrate'?2200:1800;
+    feedback.append(icon,document.createTextNode(`HAPPY +${food.price}${kind==='max'?' · MAX HAPPY!':''}`));host.append(feedback);}
+  const started=performance.now(),duration=kind==='max'?2800:kind==='celebrate'?2200:1800;
   visual.dataset.careReacting=kind;
   function attach(){
     const character=visual.querySelector('.pet-character');if(!character)return;
