@@ -1,0 +1,40 @@
+name: Cat artwork regression
+on:
+  pull_request:
+    paths:
+      - 'pet-*.js'
+      - 'index.html'
+      - 'version-badge.js'
+      - 'assets/pets/cat/**'
+      - 'tests/pet-cat*'
+      - '.github/workflows/pet-cat-art.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'pet-*.js'
+      - 'index.html'
+      - 'version-badge.js'
+      - 'assets/pets/cat/**'
+      - 'tests/pet-cat*'
+      - '.github/workflows/pet-cat-art.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - run: node tests/pet-cat-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cat-artwork-screenshots
+          path: cat-test-artifacts/*.png

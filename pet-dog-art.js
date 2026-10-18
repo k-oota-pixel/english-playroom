@@ -1,4 +1,4 @@
-import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.25';
+import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.26';
 // Editable vector reconstruction of dog_pet_final.png. No raster filters or DOM redraws.
 // Colors and eye styles come from normalized appearance; shop and sleep own their layers.
 export function renderDogArt(color,eyeStyle){
