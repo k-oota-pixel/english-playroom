@@ -1,10 +1,10 @@
-import { playCareReaction } from './pet-care-animation.js?v=1.5.5';
+import { playCareReaction } from './pet-care-animation.js?v=1.5.6';
 import { FOODS, careState, feedReward } from './pet-care-model.js?v=1.5.1-touch';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.5';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.6';
 
 const ITEMS = Object.freeze([
   {id:'red-ribbon',name:'赤いリボン',price:5,slot:'head',icon:'🎀'},

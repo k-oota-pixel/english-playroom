@@ -2,6 +2,10 @@ name: Pet care reaction regression
 on:
   push:
     paths:
+      - index.html
+      - pet-art.js
+      - pet-care-animation.js
+      - tests/pet-sync-chat-browser.cjs
       - pet-shop.js
       - pet-sleep-mode.js
       - pet-jump-fix.js
@@ -22,9 +26,16 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npx playwright install --with-deps chromium
       - run: npm test
+      - run: node tests/pet-sync-chat-browser.cjs
+      - run: node tests/pet-sync-chat-browser.cjs
+        env:
+          MOBILE: '1'
       - run: node tests/pet-care-reaction-browser.cjs
       - run: node tests/pet-care-reaction-browser.cjs
         env:
           MOBILE: '1'
-
-      - run: node tests/pet-sync-chat-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: feed-reaction-screenshots
+          path: feed-*.png

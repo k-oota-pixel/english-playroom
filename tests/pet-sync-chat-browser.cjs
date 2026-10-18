@@ -11,6 +11,7 @@ export function onAuthStateChanged(a,cb){window.authCallback=cb;queueMicrotask((
 const firestoreMock=`export const getFirestore=()=>({}),doc=(db,...parts)=>parts.join('/'),serverTimestamp=()=>({timestamp:true});
 const listeners=[];const snapshot=ref=>({exists:()=>true,data:()=>({...structuredClone(window.petStore||{}),nickname:'テスト'})});export const getDoc=async ref=>snapshot(ref);export function onSnapshot(ref,cb){listeners.push([ref,cb]);queueMicrotask(()=>cb(snapshot(ref)));return ()=>{};}export const setDoc=async()=>{};
 export async function runTransaction(db,fn){
+if(window.failTransactions)throw Object.assign(Error('test unavailable'),{code:'unavailable'});
 if(window.failSave && window.petStore.petLoginDays>=3)throw Object.assign(Error('offline'),{code:'unavailable'});
 let staged;const result=await fn({get:async()=>({exists:()=>!!window.petStore,data:()=>structuredClone(window.petStore||{})}),set:(ref,payload)=>{staged={...window.petStore,...payload};}});
 if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for(const [ref,cb] of listeners){queueMicrotask(()=>cb(snapshot(ref)));setTimeout(()=>cb(snapshot(ref)),450);setTimeout(()=>cb(snapshot(ref)),1100);}}return result;}`;
@@ -22,6 +23,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await context.route('http://127.0.0.1:8765/**',route=>{const pathname=new URL(route.request().url()).pathname;const file=path.join(root,pathname==='/'?'index.html':pathname);return route.fulfill({contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html',body:fs.readFileSync(file,'utf8')});});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
+ window.failTransactions=new URLSearchParams(location.search).has('fail-sync');
  const RealDate=Date;const fixed=new RealDate(2026,9,18,0,30).getTime();
  window.Date=class extends RealDate {constructor(...args){super(...(args.length?args:[fixed]));}getHours(){return window.forceDay?12:0;}getMinutes(){return 30;}};
  const d=new Date();const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -29,6 +31,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  });
 
  const syncErrors=[];page.on('console',msg=>{if(msg.type()==='error'){syncErrors.push(msg.text());console.log('BROWSER ERROR:',msg.text());}});
+ await context.route('https://task-quest.onrender.com/api/admin/users',route=>route.fulfill({contentType:'application/json',body:'[]'}));
  await context.route('https://task-quest.onrender.com/api/pet-chat',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({reply:'Hello! What did you enjoy today?',suggestions:['I enjoyed lunch.']})}));
  await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(2200);
  console.log('AUTH:',await page.locator('#authSub').innerText());
@@ -36,6 +39,24 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  assert.equal(await page.locator('#authSub').innerText(),'クラウド同期済み',JSON.stringify(syncErrors));
  assert.equal(await page.locator('#petChatModal').isVisible(),true);
  assert.ok(await page.locator('.pet-chat-bubble').count()>0);
- assert.deepEqual(errors,[]);console.log('PASS sync and chat visibility');
+ await page.locator('#petChatInput').fill('Hello!');await page.locator('#petChatSend').click();
+ await page.getByText('Hello! What did you enjoy today?',{exact:true}).waitFor();
+ assert.equal(await page.locator('#petChatModal').isVisible(),true);
+ await page.goto('http://127.0.0.1:8765?fail-sync');await page.waitForTimeout(2200);
+ assert.equal(await page.locator('#authSub').innerText(),'同期未完了');
+ assert.equal(await page.locator('#authSub').getAttribute('title'),'unavailable');
+ assert.equal(await page.locator('#petChatModal').isVisible(),true,'failed progress transaction must not hide readable chat');
+ assert.equal(await page.locator('#petSyncRetry').isVisible(),true);
+ await page.locator('#petChatInput').fill('Hello!');await page.locator('#petChatSend').click();
+ await page.getByText('Hello! What did you enjoy today?',{exact:true}).waitFor();
+ const history=await page.locator('#petChatMessages').innerText();
+ await page.evaluate(()=>{window.failTransactions=false;});await page.locator('#petSyncRetry').click();await page.waitForTimeout(500);
+ assert.equal(await page.locator('#authSub').innerText(),'クラウド同期済み');
+ assert.equal(await page.locator('#petSyncRetry').isVisible(),false);
+ assert.equal(await page.locator('#petChatMessages').innerText(),history,'retry retains conversation history');
+ await page.locator('#logoutBtn').click();await page.waitForTimeout(150);
+ assert.equal(await page.locator('#petChatModal').isVisible(),false);
+ assert.equal(await page.locator('#petSyncRetry').isVisible(),false);
+ assert.deepEqual(errors,[]);console.log('PASS: normal sync/chat, chat request/reply, transaction failure with readable conversation, retry and history preservation, logout');
  }finally{await browser.close();}
 })();
