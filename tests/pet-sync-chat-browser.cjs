@@ -4,10 +4,10 @@ const root=path.resolve(__dirname,'..');
 const server=http.createServer((req,res)=>{const file=path.join(root,req.url==='/'?'index.html':req.url.split('?')[0]);try{res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(fs.readFileSync(file));}catch{res.statusCode=404;res.end();}});
 const appMock='export const initializeApp=()=>({}),getApps=()=>[{}],getApp=()=>({});';
 const authMock=`export const GoogleAuthProvider=class {setCustomParameters(){}};
-const auth={currentUser:window.testUser===false?null:{uid:'test-user',displayName:'テスト',getIdToken:async()=>'test-token'}};
-export const getAuth=()=>auth;export const browserLocalPersistence={};export const setPersistence=async()=>{};
-export const signInWithPopup=async()=>{};export const signOut=async()=>{auth.currentUser=null;window.authCallback(null);};
-export function onAuthStateChanged(a,cb){window.authCallback=cb;queueMicrotask(()=>cb(auth.currentUser));return ()=>{};}`;
+const auth={currentUser:{uid:'test-user',displayName:'テスト',getIdToken:async()=>'test-token'}};
+const listeners=new Set();export const getAuth=()=>auth;export const browserLocalPersistence={};export const setPersistence=async()=>{};
+export const signInWithPopup=async()=>{};export const signOut=async()=>{auth.currentUser=null;for(const cb of listeners)await cb(null);};
+export function onAuthStateChanged(a,cb){listeners.add(cb);queueMicrotask(()=>cb(auth.currentUser));return ()=>listeners.delete(cb);}`;
 const firestoreMock=`export const getFirestore=()=>({}),doc=(db,...parts)=>parts.join('/'),serverTimestamp=()=>({timestamp:true});
 const listeners=[];const snapshot=ref=>({exists:()=>true,data:()=>({...structuredClone(window.petStore||{}),nickname:'テスト'})});export const getDoc=async ref=>snapshot(ref);export function onSnapshot(ref,cb){listeners.push([ref,cb]);queueMicrotask(()=>cb(snapshot(ref)));return ()=>{};}export const setDoc=async()=>{};
 export async function runTransaction(db,fn){
