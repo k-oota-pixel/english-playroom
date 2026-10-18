@@ -1,5 +1,5 @@
 import {renderDogArt} from './pet-dog-art.js?v=1.5.23';
-if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.1-touch');
+if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.23');
 import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js';
 
 const outline='#40564e';
