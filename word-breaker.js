@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 document.title=`${GAME_NAME} | もんすたでぃ`;
 document.querySelectorAll('[data-game-name]').forEach(el=>el.textContent=GAME_NAME);
 let vocabulary={},bests={},localBests={},store=null,user=null,round=null,course=null,run=null,playerUid=null;
-let animation=0,transition=0,generation=0,saveChain=Promise.resolve(),savedCoins=0,saving=0,unsaved=false,oldBest={};
+let animation=0,transition=0,wrongReset=0,generation=0,saveChain=Promise.resolve(),savedCoins=0,saving=0,unsaved=false,oldBest={};
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 try {localBests=JSON.parse(localStorage.getItem('word-breaker-guest-bests')||'{}');} catch {}
 function show(id) {for(const section of ['selection','play','result']) $(section).hidden=section!==id;}
@@ -46,7 +46,7 @@ function saveProgress() {
 }
 async function start(id) {
   if(saving||unsaved) return;
-  cancelAnimationFrame(animation);clearTimeout(transition);generation++;
+  cancelAnimationFrame(animation);clearTimeout(transition);clearTimeout(wrongReset);generation++;
   const current=generation;
   course=id;round=new Round(id==='demo'?DEMO:vocabulary[id]);oldBest={...best(id)};savedCoins=0;run=null;playerUid=null;
   $('save-status').textContent='';$('retry-save').hidden=true;$('feedback-empty').hidden=false;$('feedback-detail').hidden=true;
@@ -67,16 +67,15 @@ async function start(id) {
   if(current===generation)next();
 }
 function next() {
+  clearTimeout(wrongReset);
   round.next(performance.now());$('word').textContent=round.current.word;$('word').className='word';$('word').style.opacity='1';
-  $('arena').classList.remove('explode');$('burst').replaceChildren();$('answer').value='';$('answer').disabled=false;$('submit').disabled=false;$('answer').focus();
+  $('arena').classList.remove('explode');$('burst').replaceChildren();$('answer').value='';$('answer').classList.remove('wrong');$('answer').disabled=false;$('submit').disabled=false;$('answer').focus();
   animation=requestAnimationFrame(tick);
 }
 function tick(now) {
   if(!round?.active) return;
   const elapsed=now-round.started,p=Math.min(1,elapsed/LIMIT_MS);
-  $('word').style.transform=reduced?'none':`translateY(${p*38-28}px) scale(${.38+p*.76})`;
-  $('timer').textContent=(Math.max(0,LIMIT_MS-elapsed)/1000).toFixed(1);
-  $('time-bar').style.transform=`scaleX(${1-p})`;$('time-bar').style.background=elapsed>=WARNING_MS?'#cb6650':'#4d9675';
+  $('word').style.transform=reduced?'none':`translateY(${p*38-28}px) scale(${.42+p*1.05})`;
   $('word').classList.toggle('danger',elapsed>=WARNING_MS);
   if(elapsed>=LIMIT_MS) settle(round.timeout()); else animation=requestAnimationFrame(tick);
 }
@@ -89,10 +88,18 @@ function feedback(type) {
 function particles() {
   for(let i=0;i<16;i++){const el=document.createElement('i');el.className='shard';const angle=i*Math.PI/8;el.style.setProperty('--x',`${Math.cos(angle)*(70+i*6)}px`);el.style.setProperty('--y',`${Math.sin(angle)*100}px`);el.style.setProperty('--angle',`${i*23}deg`);$('burst').append(el);}
 }
+function wrongFeedback() {
+  clearTimeout(wrongReset);
+  const word=$('word'),answer=$('answer');
+  word.classList.remove('wrong');answer.classList.remove('wrong');
+  void word.offsetWidth;
+  word.classList.add('wrong');answer.classList.add('wrong');
+  wrongReset=setTimeout(()=>{word.classList.remove('wrong');answer.classList.remove('wrong');},460);
+}
 function settle(result) {
   if(result.type==='ignored') return;
-  if(result.type==='wrong') {$('message').textContent='もう一度！ 制限時間内なら何回でも答えられます。';$('answer').select();return;}
-  cancelAnimationFrame(animation);$('answer').disabled=true;$('submit').disabled=true;
+  if(result.type==='wrong') {wrongFeedback();$('message').textContent='もう一度！ 制限時間内なら何回でも答えられます。';$('answer').select();return;}
+  cancelAnimationFrame(animation);clearTimeout(wrongReset);$('answer').classList.remove('wrong');$('answer').disabled=true;$('submit').disabled=true;
   feedback(result.type);updateHUD();particles();$('word').style.opacity='0';
   if(result.type!=='correct') $('arena').classList.add('explode');
   $('message').textContent=result.type==='correct'?`✓ 撃破！${result.reward?' コイン獲得条件達成！':''}`:'時間切れ。COMBOが0になりました。';
@@ -101,7 +108,7 @@ function settle(result) {
 }
 function finish(abandoned=false) {
   if(!round) return;
-  cancelAnimationFrame(animation);clearTimeout(transition);round.active=false;generation++;
+  cancelAnimationFrame(animation);clearTimeout(transition);clearTimeout(wrongReset);round.active=false;generation++;
   $('result-heading').textContent=abandoned?'今回の記録':course==='demo'?'操作体験の結果':'おつかれさま！';
   $('result-score').textContent=round.score;$('result-combo').textContent=round.bestCombo;$('result-coins').textContent=savedCoins;
   $('record').hidden=course==='demo'||!(round.score>(oldBest.score||0)||round.bestCombo>(oldBest.combo||0));
