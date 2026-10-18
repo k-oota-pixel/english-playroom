@@ -79,12 +79,25 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
    await motionSurvives(async()=>{await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();},food);
  }
 
+ // Verify recovery from an actual SVG redraw during the reaction.
+ await page.locator('#petVisual').click();await page.waitForTimeout(250);
+ await page.evaluate(()=>{const v=document.getElementById('petVisual');v.querySelector('svg').outerHTML=v.querySelector('svg').outerHTML;});
+ await page.waitForTimeout(250);
+ assert.equal(await page.locator('#petVisual .pet-care-motion-layer').count(),1);
+ assert.notEqual(await page.locator('#petVisual .pet-care-motion-layer').evaluate(el=>getComputedStyle(el).animationName),'none');
+ assert.equal(await page.locator('.pet-care-feedback').count(),1);
  const beforeTap=await page.evaluate(()=>JSON.stringify(window.petStore));
  for(let i=0;i<4;i++)await motionSurvives(()=>page.locator('#petVisual').click(),'body tap '+i);
  assert.equal(await page.evaluate(()=>JSON.stringify(window.petStore)),beforeTap,'tapping never writes rewards or any other saved data');
 
+ await page.screenshot({path:process.env.MOBILE?'feed-mobile.png':'feed-desktop.png'});
  await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#petVisual').click();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.petStore.petCare.friendship),undefined);
  assert.equal(await page.locator('#petVisual').evaluate(v=>v.getAnimations().filter(a=>a.playState==='running').length),0);
+ assert.equal(await page.locator('.pet-care-feedback').count(),1,'reduced motion still shows visible feedback');
+ assert.ok((await page.locator('.pet-care-feedback').innerText()).includes('うれしい'));
+ await page.screenshot({path:process.env.MOBILE?'feed-mobile-reduced.png':'feed-desktop-reduced.png'});
+ await page.waitForTimeout(2500);assert.equal(await page.locator('.pet-care-feedback').count(),0);
+ assert.equal(await page.locator('#petVisual .pet-care-motion-layer').count(),0);
  assert.deepEqual(errors,[]);console.log('PASS: sleeping redraw keeps closed eyes; all foods wake with visible eyes; only character animates; sleeping body tap is free with no saved changes; sleep returns; reduced motion honored.');
  }finally{await browser.close();}
 })();

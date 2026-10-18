@@ -78,4 +78,4 @@ onAuthStateChanged(auth,user=>{
 
 export function getRegisteredNickname(){return currentNickname;}
 
-queueMicrotask(()=>import('./version-badge.js?v=1.5.2').catch(error=>console.error('Version badge failed to load',error)));
+queueMicrotask(()=>import('./version-badge.js?v=1.5.3').catch(error=>console.error('Version badge failed to load',error)));

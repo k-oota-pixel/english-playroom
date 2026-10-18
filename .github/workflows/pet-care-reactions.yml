@@ -26,3 +26,8 @@ jobs:
       - run: node tests/pet-care-reaction-browser.cjs
         env:
           MOBILE: '1'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: feed-reaction-screenshots
+          path: feed-*.png

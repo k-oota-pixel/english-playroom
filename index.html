@@ -6,7 +6,7 @@
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css">
-<link rel="stylesheet" href="./pet-effects.css?v=1.5.2-effects">
+<link rel="stylesheet" href="./pet-effects.css?v=1.5.3-effects">
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f6f5ef;color:#193d38;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -120,7 +120,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.2">ver1.5.2</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.5.3">ver1.5.3</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -278,7 +278,7 @@ import {
 
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=1.5.2';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=1.5.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js';
 
 const firebaseConfig = {
@@ -756,6 +756,6 @@ onAuthStateChanged(auth,async user=>{
 });
 </script>
 
-<script type="module" src='./version-badge.js?v=1.5.2'></script>
+<script type="module" src='./version-badge.js?v=1.5.3'></script>
 </body>
 </html>

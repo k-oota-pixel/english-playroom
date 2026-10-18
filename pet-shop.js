@@ -1,10 +1,10 @@
-import { emitCareEffects } from './pet-effects.js?v=1.5.1-effects';
+import { playCareReaction } from './pet-care-animation.js?v=1.5.3';
 import { FOODS, careState, feedReward } from './pet-care-model.js?v=1.5.1-touch';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.2';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.3';
 
 const ITEMS = Object.freeze([
   {id:'red-ribbon',name:'赤いリボン',price:5,slot:'head',icon:'🎀'},
@@ -160,7 +160,7 @@ async function performCare(foodId) {
       if(foodId)document.getElementById('petFeedDialog').close();
       // Render before animating: wallet refresh replaces the SVG.
       renderWallet();
-      requestAnimationFrame(()=>careAnimation(FOODS.find(f=>f.id===foodId).reaction));
+      requestAnimationFrame(()=>careAnimation(FOODS.find(f=>f.id===foodId).reaction,FOODS.find(f=>f.id===foodId)));
     } catch(error) {setToast(error.message||'保存できませんでした。もう一度お試しください。','error');document.getElementById('petFeedStatus').textContent=error.message;}
   });
 }
@@ -169,58 +169,6 @@ function tapPet(){
   careAnimation('music');
   setToast('Your pet looks happy!','ok');
 }
-function careAnimation(kind) {
-  const visual=document.getElementById('petVisual');if(!visual)return;
-  visual.dispatchEvent(new CustomEvent('pet-care-reaction'));
-  emitCareEffects(visual,kind);
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(!reduced){
-    const frames=kind==='celebrate'?[
-      {transform:'translateY(0) scale(1)'},{transform:'translateY(4px) scale(1.08,.9)',offset:.12},
-      {transform:'translateY(-38px) rotate(-9deg) scale(.96,1.06)',offset:.3},
-      {transform:'translateY(0) scale(1.08,.92)',offset:.48},
-      {transform:'translateY(-28px) rotate(9deg)',offset:.68},
-      {transform:'translateY(0) scale(1.06,.94)',offset:.84},{transform:'translateY(0) scale(1)'}
-    ]:kind==='jump'?[
-      {transform:'translateY(0) scale(1)'},{transform:'translateY(5px) scale(1.12,.86)',offset:.16},
-      {transform:'translateY(-32px) scale(.94,1.08)',offset:.4},
-      {transform:'translateY(0) scale(1.12,.88)',offset:.65},
-      {transform:'translateY(-13px) scale(.98,1.03)',offset:.82},{transform:'translateY(0) scale(1)'}
-    ]:[
-      {transform:'translateY(0) rotate(0) scale(1)'},
-      {transform:'translateY(-8px) rotate(-9deg) scale(1.04)',offset:.2},
-      {transform:'translateY(2px) rotate(8deg) scale(1.06,.94)',offset:.4},
-      {transform:'translateY(-10px) rotate(-7deg) scale(1.04)',offset:.6},
-      {transform:'translateY(0) rotate(6deg)',offset:.8},{transform:'translateY(0) rotate(0) scale(1)'}
-    ];
-    const character=visual.querySelector('.pet-character');
-    if(character){
-      let layer=character.closest('.pet-care-motion-layer');
-      if(!layer){
-        layer=document.createElementNS('http://www.w3.org/2000/svg','g');
-        layer.classList.add('pet-care-motion-layer');
-        layer.style.transformBox='view-box';layer.style.transformOrigin='120px 200px';
-        character.parentNode.insertBefore(layer,character);layer.appendChild(character);
-      }
-      layer.getAnimations().forEach(animation=>animation.cancel());
-      const shadow=visual.querySelector('.pet-shadow');
-      // Freeze the exact walking pose instead of restarting at the left edge.
-      const walkingTime=character.getAnimations()[0]?.currentTime;
-      const pose=getComputedStyle(character).transform;
-      character.style.setProperty('animation','none','important');
-      character.style.setProperty('transform',pose==='none'?'none':pose,'important');
-      if(shadow)shadow.style.animationPlayState='paused';
-      const reaction=layer.animate(frames,{duration:kind==='celebrate'?1600:1200,easing:'ease-in-out'});
-      reaction.finished.catch(()=>{}).finally(()=>{
-        if(layer.getAnimations().some(animation=>animation.playState==='running'))return;
-        if(visual.dataset.petSleeping!=='1'&&visual.dataset.petGrumpy!=='1'){
-          character.style.removeProperty('animation');
-          character.style.removeProperty('transform');
-          character.style.animationPlayState='';
-          if(walkingTime!=null)for(const walk of character.getAnimations())walk.currentTime=walkingTime;
-          if(shadow)shadow.style.animationPlayState='';
-        }
-      });
-    }
-  }
+function careAnimation(kind,food) {
+  const visual=document.getElementById('petVisual');if(visual)playCareReaction(visual,kind,food);
 }
