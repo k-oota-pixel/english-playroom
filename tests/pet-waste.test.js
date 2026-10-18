@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { wasteState, cleanWaste, wasteDay } from '../pet-waste-model.js';
+const first={petWaste:wasteState({},100)};
+assert.deepEqual(first.petWaste,{count:1,day:100});
+assert.equal(wasteState(first,100).count,1);
+assert.equal(wasteState(first,102).count,3);
+assert.equal(wasteState(first,120).count,4);
+const clean={petWaste:cleanWaste(first,102)};
+assert.equal(wasteState(clean,102).count,0);
+assert.equal(wasteState(clean,103).count,1);
+assert.equal(wasteState(clean,101).count,0);
+assert.equal(wasteDay(new Date(2026,9,19))-wasteDay(new Date(2026,9,18)),1);
+console.log('Daily waste accumulation and cleaning checks passed');
