@@ -3,9 +3,9 @@ import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 
-import {growthPatch,hatchDay} from './pet-growth.js';
+import {growthPatch,hatchPatch,hatchDay} from './pet-growth.js';
 import {renderPetVisual} from './pet-art.js?v=1.5.27';
-import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.9';
+import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.30';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
@@ -21,7 +21,7 @@ function stageOf(data={}){
   if(!hasPet(data))return 'egg';
   const days=lifeDays(data);
   if(data.petAdult===false)return 'baby';
-  if(days<10)return 'adult';
+  if(days<6)return 'adult';
   return 'elder';
 }
 function visualStage(data={}){return data.petAdult===false?'mystery':'baby';}
@@ -48,12 +48,11 @@ function advanceLifecycle(source,today,uid){
     patch.petLastLifeLoginDate=today;
     patch.petLastLifeCheckDate='';
     if(hasPet(data)){
-      // ver1.4.1 launch: every existing pet gets to experience the new juvenile form.
-      patch.petLifeDays=Math.max(3,lifeDays(data));
+      patch.petLifeDays=Math.max(2,lifeDays(data));
       return {patch,data:{...data,...patch},event:'migrated'};
     }
-    // Existing eggs keep the progress they had already earned, capped at hatch day.
-    patch.petLifeDays=Math.min(3,int(data.petLoginDays,0));
+    // Existing eggs keep the progress they had already earned, capped at the new hatch day.
+    patch.petLifeDays=Math.min(2,int(data.petLoginDays,0));
     return {patch,data:{...data,...patch},event:''};
   }
 
@@ -67,7 +66,7 @@ function advanceLifecycle(source,today,uid){
   }
 
   let merged={...data,...patch};
-  if(hasPet(merged)&&counted&&days>=10&&merged.petLastLifeCheckDate!==today){
+  if(hasPet(merged)&&counted&&days>=6&&merged.petLastLifeCheckDate!==today){
     patch.petLastLifeCheckDate=today;
     if(shouldDepart(uid,generationOf(merged),today,days,merged)){
       const generation=generationOf(merged);
@@ -186,26 +185,42 @@ function applyUi(data={}){
     if(petDays)petDays.textContent=stage==='baby'?`幼体 · 孵化後${hatchDay(data,localDateKey())}日目`:stage==='adult'?`${days}日目`:`長寿期 · ${days}日目`;
     if(status){
       if(data.petGrowthPending)status.textContent='成長のときが来ました！アンケートに答えて成体に育てよう。';
-      else if(stage==='baby')status.textContent=days<10?`孵化後${hatchDay(data,localDateKey())}日目。2日目から成長のチャンス、7日目には必ず成長します。`:'今日も一緒に英語を楽しもう。';
+      else if(stage==='baby')status.textContent=`孵化後${hatchDay(data,localDateKey())}日目。2日目40%、3日目80%、4日目には必ず成長します。`;
       else if(stage==='adult')status.textContent='';
       else status.textContent=`長寿期${days}日目。前日のHAPPYが高いほど長生きしやすくなります。`;
     }
     if(create){create.hidden=!data.petGrowthPending;create.textContent='成長アンケートに答える';}
   }else if(currentUser){
-    const ready=days>=3,shown=Math.min(3,days);
-    if(petDays)petDays.textContent=generation>1?`新しいたまご ${shown} / 3日`:`ログイン ${shown} / 3日`;
-    if(bar)bar.style.width=`${Math.min(100,(shown/3)*100)}%`;
+    const ready=days>=2,shown=Math.min(2,days);
+    if(petDays)petDays.textContent=generation>1?`新しいたまご ${shown} / 2日`:`ログイン ${shown} / 2日`;
+    if(bar)bar.style.width=`${Math.min(100,(shown/2)*100)}%`;
     if(create){create.hidden=!ready;create.textContent='たまごをかえす';}
     const title=document.getElementById('petTitle');
     if(title)title.textContent=ready?'たまごがかえりそう！':generation>1?'新しいふしぎなたまご':'ふしぎなたまご';
-    if(status)status.textContent=ready?'たまごをかえして、ふわふわの相棒を迎えよう。':days?`あと${3-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';
+    if(status)status.textContent=ready?'たまごをかえして、ふわふわの相棒を迎えよう。':days?`あと${2-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';
   }
 }
 
 function installGuard(){
   document.addEventListener('click',event=>{
     const button=event.target instanceof Element?event.target.closest('#petCreate'):null;if(!button||!currentUser)return;
-    if(!hasPet(currentData)&&lifeDays(currentData)<3){event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();applyUi(currentData);}
+    if(hasPet(currentData))return;
+    const days=lifeDays(currentData);
+    if(days<2){
+      event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();applyUi(currentData);return;
+    }
+    // The legacy page still has a 3-day hatch check. On day 2, hatch here first and stop that older handler.
+    if(days===2){
+      event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
+      const user=currentUser,today=localDateKey();
+      runTransaction(db,async transaction=>{
+        const ref=dataRef(user),snap=await transaction.get(ref),data=snap.exists()?(snap.data()||{}):{};
+        if(hasPet(data))return;
+        const progress=Math.max(int(data.petLifeDays,0),int(data.petLoginDays,0));
+        if(progress<2)throw Error('2日ログインすると孵化できます。');
+        transaction.set(ref,{...hatchPatch(today),petHatchedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
+      }).catch(error=>{const status=document.getElementById('petStatus');if(status)status.textContent=error.message||'孵化できませんでした。';}).finally(()=>{button.disabled=false;});
+    }
   },true);
 }
 
