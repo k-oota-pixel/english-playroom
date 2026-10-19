@@ -16,10 +16,10 @@ export function validateQuestions(questions, meta = LISTENING_META) {
         q.choices.some(choice => typeof choice !== 'string' || !choice.trim()) ||
         !Number.isInteger(q.answer) || q.answer < 1 || q.answer > q.choices.length ||
         !Number.isFinite(q.start) || !Number.isFinite(q.end) || q.start < 0 || q.end <= q.start ||
-        typeof q.audio !== 'string' || !q.audio.startsWith('https://') ||
+        typeof q.audio !== 'string' || !/^(https:\/\/|audio\/)[^\s]+$/.test(q.audio) ||
         (!spoken && (typeof q.question !== 'string' || !q.question.trim())) ||
         (q.level === '3' && q.part === 1 &&
-          (!q.image || !q.image.key || !Number.isInteger(q.image.index) || q.image.index < 0 || q.image.index > 9))) {
+          (!q.image || (!q.image.src && (!q.image.key || !Number.isInteger(q.image.index) || q.image.index < 0 || q.image.index > 9))))) {
       throw new Error(`教材の項目が不正です: ${q.id || 'IDなし'}`);
     }
     ids.add(q.id);

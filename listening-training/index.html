@@ -47,7 +47,7 @@
       <div class="audio-box"><button id="listenBtn" class="listen-btn">▶ 音声を聞く</button><div id="audioNote" class="audio-note"></div></div>
       <div id="practiceHost"></div>
       <div id="dictationHost"></div>
-      <div id="feedbackHost"></div>
+      <div id="feedbackHost" aria-live="polite"></div>
       <div id="actionHost" class="actions"></div>
     </section>
     <section id="errorScreen" class="screen" hidden><div id="errorText" class="error"></div></section>
@@ -57,18 +57,15 @@
 <script type="module">
 import {LISTENING_META} from './data.js';
 import {validateQuestions} from './loader.js';
-import {PACK_1} from './pack-1.js';
-import {PACK_2} from './pack-2.js';
 import {IMG_2020_2} from './image-2020-2.js';
 import {IMG_2020_3} from './image-2020-3.js';
 import {IMG_2021_1} from './image-2021-1.js';
 import {IMG_2021_2} from './image-2021-2.js';
 import {IMG_2021_3} from './image-2021-3.js';
 async function unpackQuestions(){
-  const s=PACK_1+PACK_2,bin=atob(s),bytes=new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
-  const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-  return JSON.parse(await new Response(stream).text());
+  const response=await fetch('./questions.json');
+  if(!response.ok)throw new Error('教材を取得できませんでした。');
+  return response.json();
 }
 let LISTENING_QUESTIONS=[];
 const LISTENING_IMAGES={'g3-2020-2':IMG_2020_2,'g3-2020-3':IMG_2020_3,'g3-2021-1':IMG_2021_1,'g3-2021-2':IMG_2021_2,'g3-2021-3':IMG_2021_3};
@@ -77,35 +74,46 @@ const screens=['#levelScreen','#modeScreen','#quizScreen','#errorScreen'];
 const labels={'3':'3級','pre2':'準2級','2':'2級','pre1':'準1級'};
 const diffLabels={easy:'EASY',normal:'NORMAL',hard:'HARD'};
 let state={level:null,mode:null,diff:null,q:null,answered:false,masked:[]};
-const player=$('#player'); let stopHandler=null;
+const player=$('#player'); let stopHandler=null; let playbackId=0;
+player.addEventListener('ended',()=>stopAudio());
 function show(id){screens.forEach(s=>$(s).hidden=s!==id);$('#loading').hidden=true;}
 function fail(msg){$('#errorText').textContent=msg;show('#errorScreen');}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function eligible(){return LISTENING_QUESTIONS.filter(q=>q.level===state.level)}
 function queueKey(){return `monstudy-listening:${state.level}:${state.mode}:queue`}
+const memoryQueues=new Map();
+function saveQueue(arr){memoryQueues.set(queueKey(),arr.slice());try{localStorage.setItem(queueKey(),JSON.stringify(arr))}catch{}}
 function getQueue(){
   const valid=new Set(eligible().map(q=>q.id)); let arr=[];
-  try{arr=JSON.parse(localStorage.getItem(queueKey())||'[]')}catch{}
-  arr=Array.isArray(arr)?arr.filter(id=>valid.has(id)):[];
-  if(!arr.length){arr=shuffle([...valid]);localStorage.setItem(queueKey(),JSON.stringify(arr))}
+  if(memoryQueues.has(queueKey()))arr=memoryQueues.get(queueKey()).slice();
+  else try{arr=JSON.parse(localStorage.getItem(queueKey())||'[]')}catch{}
+  arr=Array.isArray(arr)?[...new Set(arr.filter(id=>valid.has(id)))]:[];
+  if(!arr.length){arr=shuffle([...valid]);if(arr.length>1&&arr[0]===state.q?.id)[arr[0],arr[1]]=[arr[1],arr[0]];saveQueue(arr)}
   return arr;
 }
 function nextQuestion(){
-  const qlist=getQueue(); const id=qlist.shift(); localStorage.setItem(queueKey(),JSON.stringify(qlist));
+  const qlist=getQueue(); const id=qlist.shift(); saveQueue(qlist);
   state.q=LISTENING_QUESTIONS.find(q=>q.id===id); state.answered=false; state.masked=[];
   renderQuestion(qlist.length);
 }
-function stopAudio(){if(stopHandler){player.removeEventListener('timeupdate',stopHandler);stopHandler=null}player.pause();$('#listenBtn').classList.remove('playing');$('#listenBtn').textContent='▶ もう一度聞く'}
+function stopAudio(){playbackId++;if(stopHandler){player.removeEventListener('timeupdate',stopHandler);stopHandler=null}player.pause();$('#listenBtn').classList.remove('playing');$('#listenBtn').textContent='▶ もう一度聞く'}
 async function playClip(){
-  const q=state.q;if(!q)return;stopAudio();
+  const q=state.q;if(!q)return;stopAudio();const requestId=playbackId;
   try{
     if(!player.src.endsWith(q.audio)){player.src=q.audio;player.load();await new Promise((res,rej)=>{if(player.readyState>=1)return res();const ok=()=>{cleanup();res()},bad=()=>{cleanup();rej()};const cleanup=()=>{player.removeEventListener('loadedmetadata',ok);player.removeEventListener('error',bad)};player.addEventListener('loadedmetadata',ok);player.addEventListener('error',bad)})}
-    player.currentTime=Math.max(0,q.start); stopHandler=()=>{if(player.currentTime>=q.end){stopAudio()}};player.addEventListener('timeupdate',stopHandler);
-    await player.play();$('#listenBtn').classList.add('playing');$('#listenBtn').textContent='■ 再生中';
-  }catch(e){$('#audioNote').textContent='音声を再生できませんでした。通信状況を確認して、もう一度お試しください。'}
+    if(requestId!==playbackId||state.q!==q)return;player.currentTime=Math.max(0,q.start); stopHandler=()=>{if(player.currentTime>=q.end){stopAudio()}};player.addEventListener('timeupdate',stopHandler);
+    await player.play();if(requestId!==playbackId){player.pause();return}$('#listenBtn').classList.add('playing');$('#listenBtn').textContent='■ 再生中';
+  }catch(e){if(requestId!==playbackId)return;$('#audioNote').textContent='音声を再生できませんでした。通信状況を確認して、もう一度お試しください。'}
 }
 $('#listenBtn').addEventListener('click',()=>{if(!player.paused)stopAudio();else playClip()});
-function renderImage(q){const host=$('#imageHost');host.replaceChildren();if(!q.image)return;const wrap=document.createElement('div');wrap.className='ill-wrap';const img=document.createElement('img');img.src=LISTENING_IMAGES[q.image.key]||q.image.src||'';img.alt='問題のイラスト';img.style.transform=`translateY(-${q.image.index*10}%)`;wrap.append(img);host.append(wrap)}
+function renderImage(q){
+ const host=$('#imageHost');host.replaceChildren();if(!q.image)return;
+ const wrap=document.createElement('div');wrap.className='ill-wrap';
+ const img=document.createElement('img');img.alt='問題のイラスト';
+ if(q.image.src){img.src=q.image.src;wrap.style.aspectRatio='auto'}
+ else{img.src=LISTENING_IMAGES[q.image.key]||'';img.style.transform=`translateY(-${q.image.index*10}%)`}
+ wrap.append(img);host.append(wrap);
+}
 function revealHTML(q,includeChoices=true){let h='<div class="reveal"><strong>Script</strong>';q.dialogue.forEach((x,i)=>h+=`<div class="line"><b>${i%2?'B':'A'}:</b> ${escapeHTML(x)}</div>`);if(q.question)h+=`<div class="line"><b>Question:</b> ${escapeHTML(q.question)}</div>`;if(includeChoices&&q.choiceMode==='spoken')q.choices.forEach((x,i)=>h+=`<div class="line"><b>${i+1}.</b> ${escapeHTML(x)}</div>`);return h+'</div>'}
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function renderPractice(q){
@@ -138,7 +146,7 @@ $('#backLevel').addEventListener('click',()=>show('#levelScreen'));$('#backMode'
 $('#practiceMode').addEventListener('click',()=>{state.mode='practice';state.diff=null;nextQuestion()});
 $('#dictationMode').addEventListener('click',()=>{$('#diffArea').hidden=false});
 document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>{state.mode='dictation';state.diff=b.dataset.diff;nextQuestion()}));
-try{LISTENING_QUESTIONS=validateQuestions(await unpackQuestions());show('#levelScreen')}catch(e){console.error('Listening Training:',e);fail('教材データが不完全なため、現在トレーニングを開始できません。教材の修復後に、ページを再読み込みしてください。')}
+try{LISTENING_QUESTIONS=validateQuestions(await unpackQuestions());show('#levelScreen')}catch(e){console.error('Listening Training:',e);fail('教材を読み込めませんでした。通信状況を確認して、ページを再読み込みしてください。')}
 </script>
 </body>
 </html>

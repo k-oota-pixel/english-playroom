@@ -44,11 +44,29 @@ test('the actual page leaves the loading screen when data is broken', async () =
   const context = vm.createContext({
     document: { querySelector: element, querySelectorAll: () => [] },
     console: { error() {} }, validateQuestions,
-    PACK_1: '', PACK_2: '', atob() { throw new Error('broken gzip'); },
+    fetch: async () => { throw new Error('offline'); },
     IMG_2020_2: '', IMG_2020_3: '', IMG_2021_1: '', IMG_2021_2: '', IMG_2021_3: ''
   });
   await vm.runInContext(`(async () => {${script}})()`, context);
   assert.equal(element('#loading').hidden, true);
   assert.equal(element('#errorScreen').hidden, false);
-  assert.match(element('#errorText').textContent, /教材データが不完全/);
+  assert.match(element('#errorText').textContent, /教材を読み込めません/);
+});
+
+test('all 335 restored questions have local audio and all 50 illustrations', () => {
+  const questions=JSON.parse(readFileSync(new URL('../listening-training/questions.json', import.meta.url)));
+  validateQuestions(questions);
+  const illustrated=questions.filter(q=>q.image);
+  assert.equal(illustrated.length,50);
+  for(const q of questions){
+    assert.match(q.audio,/^audio\/[a-z0-9-]+\.m4a$/);
+    const audio=readFileSync(new URL('../listening-training/'+q.audio,import.meta.url));
+    const mdhd=audio.indexOf(Buffer.from('mdhd'));
+    assert.ok(mdhd>0,q.id+' media header');
+    const duration=audio.readUInt32BE(mdhd+20)/audio.readUInt32BE(mdhd+16);
+    assert.ok(Math.abs(duration-q.end)<.3,q.id+' duration '+duration+' / '+q.end);
+    if(q.image){const image=readFileSync(new URL('../listening-training/'+q.image.src,import.meta.url));assert.equal(image.subarray(1,4).toString(),'PNG');}
+  }
+  const countSessions=level=>new Set(questions.filter(q=>q.level===level).map(q=>q.session)).size;
+  for(const level of ['3','pre2','2','pre1'])assert.equal(countSessions(level),5);
 });
