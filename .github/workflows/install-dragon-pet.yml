@@ -28,26 +28,12 @@ jobs:
               if old not in s: raise SystemExit('dog import anchor not found')
               s=s.replace(old,new,1)
 
-          old="const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];"
-          new="const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];"
-          if old in s: s=s.replace(old,new,1)
+          s=s.replace("const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];","const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];",1)
+          s=s.replace("const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',dragon:'bird',mystery:'cat'};","const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};",1)
+          s=s.replace("const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン'};","const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン'};",1)
 
-          old="const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',dragon:'bird',mystery:'cat'};"
-          new="const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};"
-          if old in s: s=s.replace(old,new,1)
-
-          old="const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン'};"
-          new="const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン'};"
-          if old in s: s=s.replace(old,new,1)
-
-          old="""    : a.species==='dog'
-    ? renderDogArt(color,a.eyeStyle)
-    : `<g stroke=\"${outline}\""""
-          new="""    : a.species==='dog'
-    ? renderDogArt(color,a.eyeStyle)
-    : a.species==='dragon'
-    ? renderDragonArt(color,a.eyeStyle)
-    : `<g stroke=\"${outline}\""""
+          old="    : a.species==='dog'\n    ? renderDogArt(color,a.eyeStyle)\n    : `<g stroke=\"${outline}\""
+          new="    : a.species==='dog'\n    ? renderDogArt(color,a.eyeStyle)\n    : a.species==='dragon'\n    ? renderDragonArt(color,a.eyeStyle)\n    : `<g stroke=\"${outline}\""
           if "a.species==='dragon'" not in s:
               if old not in s: raise SystemExit('render branch anchor not found')
               s=s.replace(old,new,1)
