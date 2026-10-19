@@ -1,14 +1,15 @@
 import {renderCatArt} from './pet-cat-art.js?v=1.5.27';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
 import {renderDogArt} from './pet-dog-art.js?v=1.5.27';
+import {renderDragonArt} from './pet-dragon-art.js?v=1.5.29';
 if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.27');
 import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js';
 
 const outline='#40564e';
-const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
-const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',dragon:'bird',mystery:'cat'};
+const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
+const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};
 // `panda` remains the persisted stable ID for backward compatibility, but is now the lion species.
-const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン'};
+const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン'};
 const EYE_STYLES=['round','gentle','watery','smile','sleepy','sparkle'];
 const EYE_LABELS={round:'まんまる',gentle:'たれ目',watery:'うるうる',smile:'にっこり',sleepy:'ねむねむ',sparkle:'きらきら'};
 const BACKGROUND_LABELS={ivory:'おうち',sky:'青空',leaf:'お庭',rose:'花畑'};
@@ -125,6 +126,8 @@ export function renderPetSVG(value,shop={},stage=''){
     ? renderCatArt(color,a.eyeStyle)
     : a.species==='dog'
     ? renderDogArt(color,a.eyeStyle)
+    : a.species==='dragon'
+    ? renderDragonArt(color,a.eyeStyle)
     : `<g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${anatomy}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}${details.wings}<g data-pet-eyes="1" fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>`;
   const theme=layers.backgrounds?'':backgroundTheme(a.baseBackground);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="${resolved}" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${theme}${layers.backgrounds}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-jump-layer"><g class="pet-character">${character}${layers.accessories}</g></g>${layers.effects||''}</svg>`;
