@@ -27,3 +27,15 @@ export function extraDashboard(data={},today){
   interview:{attempted:interviewIds(data).length,today:data.pre2InterviewA?.lastPlayedDate===today||(data.coinRewardDate===today&&legacyIds(data).length>0)}
  };
 }
+
+function installListeningTrainingCard(){
+ if(typeof document==='undefined'||document.querySelector('[data-listening-training-card]'))return;
+ const cards=document.querySelector('.cards');if(!cards)return;
+ const card=document.createElement('a');
+ card.className='card order';
+ card.href='./listening-training/';
+ card.dataset.listeningTrainingCard='1';
+ card.innerHTML='<div class="icon" aria-hidden="true">🎧</div><div class="eyebrow">LISTENING TRAINING</div><div class="title">Listening Training</div><div class="desc">3級・準2級・2級・準1級の335問。問題演習とDictationを、同じ音声でランダムに練習できます。</div><div class="chips"><span class="chip">335問</span><span class="chip">Dictation</span><span class="chip">ランダム出題</span></div><div class="play">リスニング練習を始める <span aria-hidden="true">→</span></div>';
+ cards.append(card);
+}
+if(typeof document!=='undefined')queueMicrotask(installListeningTrainingCard);
