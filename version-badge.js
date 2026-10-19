@@ -1,5 +1,6 @@
 import './pet-jump-fix.js?v=1.5.7';
 import './pet-enhancements.js?v=1.5.31';
+import './pet-shop-appearance-lock.js?v=1.5.32';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.5.7-touch';
 import './pet-sleep-visibility.js';
@@ -15,7 +16,7 @@ import './pet-lion-v149.js?v=1.4.12';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.5.27').then(()=>import('./pet-admin-limit-v1420.js?v=1.4.28')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.5.31';
+const APP_VERSION='1.5.32';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
