@@ -49,19 +49,17 @@ const ACCESSORY_LAYERS=Object.freeze({
   'detective-hat':'<g><path d="M75 68 Q82 42 116 43 Q146 42 161 60 L153 76 H87Z" fill="#8f8b78" stroke="#48564e" stroke-width="4"/><path d="M58 76 Q116 91 181 76 Q166 91 121 92 Q76 91 58 76Z" fill="#aaa38c" stroke="#48564e" stroke-width="4"/><path d="M107 43 V75 M143 49 L137 76" stroke="#6f6a5b" stroke-width="4"/></g>',
   'bunny-headband':'<g><path d="M86 77 Q88 40 100 20 Q112 38 108 76Z" fill="#fff6f7" stroke="#596a63" stroke-width="4"/><path d="M132 76 Q128 38 140 20 Q153 42 151 78Z" fill="#fff6f7" stroke="#596a63" stroke-width="4"/><path d="M95 62 Q120 51 146 63" fill="none" stroke="#e28ca7" stroke-width="7" stroke-linecap="round"/></g>',
   'top-hat':'<g><rect x="84" y="37" width="72" height="48" rx="6" fill="#3d4650" stroke="#263039" stroke-width="4"/><path d="M61 84 H179 Q170 98 120 98 Q70 98 61 84Z" fill="#49545f" stroke="#263039" stroke-width="4"/><path d="M87 72 H153" stroke="#a45c79" stroke-width="8"/></g>',
-
   'heart-glasses':'<g stroke="#c85578" stroke-width="4" fill="#f5a2bb" opacity=".95"><path d="M75 104 C75 91 92 87 99 99 C106 87 123 91 123 104 C123 119 99 130 99 130 C99 130 75 119 75 104Z"/><path d="M117 104 C117 91 134 87 141 99 C148 87 165 91 165 104 C165 119 141 130 141 130 C141 130 117 119 117 104Z"/></g><path d="M121 103 H119" stroke="#c85578" stroke-width="5"/>',
   'monocle':'<g fill="none" stroke="#6c5840" stroke-width="4"><circle cx="146" cy="112" r="18"/><path d="M160 125 Q169 146 160 167"/></g><circle cx="146" cy="112" r="12" fill="#d9eef7" opacity=".22"/>',
   'pixel-glasses':'<g fill="#263642" stroke="#263642" stroke-width="2"><path d="M75 101 H108 V123 H82 V116 H75Z"/><path d="M132 101 H165 V116 H158 V123 H132Z"/><rect x="108" y="106" width="24" height="6"/></g><g fill="#7bc9e8" opacity=".4"><rect x="82" y="105" width="20" height="11"/><rect x="138" y="105" width="20" height="11"/></g>',
   'flower-glasses':'<g fill="#f3a6bd" stroke="#8c5665" stroke-width="3"><circle cx="94" cy="111" r="15"/><circle cx="146" cy="111" r="15"/></g><g fill="#fff3c2"><circle cx="94" cy="111" r="7"/><circle cx="146" cy="111" r="7"/></g><path d="M109 111 H131" stroke="#8c5665" stroke-width="4"/>',
-  'hero-mask':'<path d="M73 98 Q94 88 120 98 Q146 88 167 98 L158 125 Q140 132 120 120 Q100 132 82 125Z" fill="#6c78c8" stroke="#3f496f" stroke-width="4"/><ellipse cx="95" cy="111" rx="10" ry="7" fill="#fff"/><ellipse cx="145" cy="111" rx="10" ry="7" fill="#fff"/>',
+  'hero-mask':'<g><path d="M73 98 Q94 88 120 98 Q146 88 167 98 L158 125 Q140 132 120 120 Q100 132 82 125Z" fill="#6c78c8" stroke="#3f496f" stroke-width="4"/><ellipse cx="95" cy="111" rx="10" ry="7" fill="#fff"/><ellipse cx="145" cy="111" rx="10" ry="7" fill="#fff"/></g>',
   'rosy-cheeks':'<g fill="#f29ab1" opacity=".7"><ellipse cx="76" cy="139" rx="15" ry="8"/><ellipse cx="164" cy="139" rx="15" ry="8"/></g>',
-
   'green-scarf':'<g><path d="M72 168 Q120 184 168 168 L158 190 Q120 203 82 190Z" fill="#68a77a" stroke="#456956" stroke-width="4"/><path d="M143 184 Q163 190 166 214 L147 217 Q147 199 137 192Z" fill="#76b789" stroke="#456956" stroke-width="4"/></g>',
   'gold-medal':'<g><path d="M103 163 L117 188 L137 163" fill="none" stroke="#4f79a7" stroke-width="8"/><circle cx="120" cy="191" r="16" fill="#f2c94c" stroke="#9a7620" stroke-width="4"/><path d="M120 181 l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z" fill="#fff0a0" stroke="none"/></g>',
   'star-pendant':'<g><path d="M92 164 Q120 181 148 164" fill="none" stroke="#b98942" stroke-width="4"/><path d="M120 176 l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z" fill="#f4c84f" stroke="#9c7627" stroke-width="3"/></g>',
   'striped-bowtie':'<g stroke="#6e4e5c" stroke-width="3" stroke-linejoin="round"><path d="M112 177 Q90 163 82 180 Q88 198 112 187Z" fill="#f08aa5"/><path d="M128 177 Q150 163 158 180 Q152 198 128 187Z" fill="#fff2a8"/><circle cx="120" cy="182" r="9" fill="#dd6f8b"/></g><path d="M92 174 L104 190 M139 172 L149 190" stroke="#fff" stroke-width="4"/>',
-  'flower-necklace':'<g>${[88,104,120,136,152].map((x,i)=>`<circle cx="${x}" cy="183" r="8" fill="${i%2?'#f5c75a':'#ef9bb4'}" stroke="#fff" stroke-width="2"/>`).join('')}<path d="M82 174 Q120 200 158 174" fill="none" stroke="#729b70" stroke-width="3"/></g>',
+  'flower-necklace':'<g><path d="M82 174 Q120 200 158 174" fill="none" stroke="#729b70" stroke-width="3"/><circle cx="88" cy="181" r="8" fill="#ef9bb4" stroke="#fff" stroke-width="2"/><circle cx="104" cy="187" r="8" fill="#f5c75a" stroke="#fff" stroke-width="2"/><circle cx="120" cy="190" r="8" fill="#ef9bb4" stroke="#fff" stroke-width="2"/><circle cx="136" cy="187" r="8" fill="#f5c75a" stroke="#fff" stroke-width="2"/><circle cx="152" cy="181" r="8" fill="#ef9bb4" stroke="#fff" stroke-width="2"/></g>',
   'bandana':'<g><path d="M76 167 Q120 185 164 167 L153 188 Q120 198 87 188Z" fill="#d96b5f" stroke="#7f453e" stroke-width="4"/><path d="M144 184 L169 207 L146 211Z" fill="#d96b5f" stroke="#7f453e" stroke-width="4"/><circle cx="96" cy="178" r="3" fill="#fff2d2"/><circle cx="119" cy="184" r="3" fill="#fff2d2"/><circle cx="142" cy="178" r="3" fill="#fff2d2"/></g>'
 });
 
@@ -99,80 +97,46 @@ const isOwned=(shop,id)=>shop.ownedItems.includes(id);
 const equippedFor=(shop,slot)=>typeof shop.equipped?.[slot]==='string'?shop.equipped[slot]:null;
 const isExtra=id=>!!ITEM_MAP[id];
 
-function parseLayer(markup){
-  const wrapper=document.createElementNS(SVG_NS,'svg');wrapper.innerHTML=markup;return wrapper.firstElementChild;
-}
+function parseLayer(markup){const wrapper=document.createElementNS(SVG_NS,'svg');wrapper.innerHTML=markup;return wrapper.firstElementChild;}
 function applyExpansionLayers(root,data,preview=false){
   const svg=root?.querySelector?.('svg');if(!svg)return;
   svg.querySelectorAll('[data-pet-extra-layer]').forEach(el=>el.remove());
-  const shop=shopOf(data),equipped={...shop.equipped};
-  if(preview&&previewSelection)equipped[previewSelection.slot]=previewSelection.id;
-  const active=id=>typeof id==='string'&&(preview&&previewSelection?.id===id||isOwned(shop,id));
+  const shop=shopOf(data),equipped={...shop.equipped};if(preview&&previewSelection)equipped[previewSelection.slot]=previewSelection.id;
+  const active=id=>typeof id==='string'&&((preview&&previewSelection?.id===id)||isOwned(shop,id));
   const bgId=equipped.backgrounds;
-  if(active(bgId)&&BACKGROUND_LAYERS[bgId]){
-    const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');
-    const baseRect=svg.querySelector(':scope > rect');if(baseRect)baseRect.insertAdjacentElement('afterend',node);else svg.prepend(node);
-  }
+  if(active(bgId)&&BACKGROUND_LAYERS[bgId]){const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');const anchor=svg.querySelector('.pet-shadow,.pet-jump-layer');if(anchor)svg.insertBefore(node,anchor);else svg.append(node);}
   const character=svg.querySelector('.pet-character');
   if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer(ACCESSORY_LAYERS[id]);node.setAttribute('data-pet-extra-layer',slot);character.append(node);}}}
-  const effectId=equipped.effects;
-  if(active(effectId)&&EFFECT_LAYERS[effectId]){const node=parseLayer(EFFECT_LAYERS[effectId]);node.setAttribute('data-pet-extra-layer','effects');svg.append(node);}
+  const effectId=equipped.effects;if(active(effectId)&&EFFECT_LAYERS[effectId]){const node=parseLayer(EFFECT_LAYERS[effectId]);node.setAttribute('data-pet-extra-layer','effects');svg.append(node);}
 }
-function renderAllLayers(){
-  applyExpansionLayers(document.getElementById('petVisual'),currentData,false);
-  applyExpansionLayers(document.getElementById('petShopPreview'),currentData,true);
-}
-function activeSlot(){
-  const active=document.querySelector('#petShopDialog .pet-shop-tab.active');const text=active?.textContent||'';
-  if(text.includes('あたま'))return 'head';if(text.includes('かお'))return 'face';if(text.includes('くび'))return 'neck';if(text.includes('エフェクト'))return 'effects';if(text.includes('背景'))return 'backgrounds';return null;
-}
+function renderAllLayers(){applyExpansionLayers(document.getElementById('petVisual'),currentData,false);applyExpansionLayers(document.getElementById('petShopPreview'),currentData,true);}
+function activeSlot(){const active=document.querySelector('#petShopDialog .pet-shop-tab.active');const text=active?.textContent||'';if(text.includes('あたま'))return 'head';if(text.includes('かお'))return 'face';if(text.includes('くび'))return 'neck';if(text.includes('エフェクト'))return 'effects';if(text.includes('背景'))return 'backgrounds';return null;}
 function queueAugment(){if(augmentQueued)return;augmentQueued=true;queueMicrotask(()=>{augmentQueued=false;augmentShop();renderAllLayers();});}
 function makeCard(item,shop){
-  const equipped=equippedFor(shop,item.slot)===item.id,owned=isOwned(shop,item.id),coins=coinsOf(currentData);
-  const card=document.createElement('div');card.className='pet-shop-item';card.dataset.extraItem='1';card.dataset.itemId=item.id;
-  const action=equipped?'はずす':owned?'装備':`${item.price}コインで購入`;
-  card.innerHTML=`<div class="pet-shop-icon">${item.icon}</div><div class="pet-shop-name">${item.name}</div><div class="pet-shop-price">${owned?'購入済み':`🪙 ${item.price}`}</div><button class="pet-shop-action ${owned?'owned':''} ${equipped?'equipped':''}" type="button">${action}</button>`;
+  const equipped=equippedFor(shop,item.slot)===item.id,owned=isOwned(shop,item.id),coins=coinsOf(currentData);const card=document.createElement('div');card.className='pet-shop-item';card.dataset.extraItem='1';card.dataset.itemId=item.id;
+  const action=equipped?'はずす':owned?'装備':`${item.price}コインで購入`;card.innerHTML=`<div class="pet-shop-icon">${item.icon}</div><div class="pet-shop-name">${item.name}</div><div class="pet-shop-price">${owned?'購入済み':`🪙 ${item.price}`}</div><button class="pet-shop-action ${owned?'owned':''} ${equipped?'equipped':''}" type="button">${action}</button>`;
   card.addEventListener('click',()=>{previewSelection={slot:item.slot,id:item.id};renderAllLayers();document.querySelectorAll('.pet-shop-item.selected').forEach(el=>el.classList.remove('selected'));card.classList.add('selected');});
   const button=card.querySelector('button');button.disabled=!owned&&coins<item.price;button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();handleItem(item);});return card;
 }
 function augmentShop(){
-  const shopDialog=document.getElementById('petShopDialog'),panel=document.getElementById('petShopPanel');if(!shopDialog||!panel)return;
-  const slot=activeSlot();if(!slot)return;
-  const grid=panel.querySelector('.pet-shop-grid');if(!grid)return;
-  const shop=shopOf(currentData);
+  const panel=document.getElementById('petShopPanel');if(!panel)return;const slot=activeSlot();if(!slot)return;const grid=panel.querySelector('.pet-shop-grid');if(!grid)return;const shop=shopOf(currentData);
   for(const item of EXTRA_ITEMS.filter(item=>item.slot===slot))if(!grid.querySelector(`[data-item-id="${item.id}"]`))grid.append(makeCard(item,shop));
-  const equipped=equippedFor(shop,slot);
-  if(isExtra(equipped)){
-    const old=panel.querySelector('.pet-shop-empty');
-    if(old&&!old.dataset.extraUnequip){const button=old.cloneNode(true);button.dataset.extraUnequip='1';button.replaceWith?old.replaceWith(button):null;button.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();unequipExtra(slot,equipped);},true);}
-  }
+  const equipped=equippedFor(shop,slot);if(isExtra(equipped)){const old=panel.querySelector('.pet-shop-empty');if(old&&!old.dataset.extraUnequip){const button=old.cloneNode(true);button.dataset.extraUnequip='1';old.replaceWith(button);button.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();unequipExtra(slot,equipped);},true);}}
 }
 async function handleItem(item){
-  if(!currentUser||!hasPet(currentData))return;
-  const snapshot=shopOf(currentData),owned=isOwned(snapshot,item.id),equipped=equippedFor(snapshot,item.slot)===item.id;
-  if(!owned&&!window.confirm(`${item.price}コインを使って「${item.name}」を購入しますか？\n購入後すぐに装備します。`))return;
-  try{
-    await runTransaction(db,async tx=>{
-      const ref=refFor(currentUser),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{};if(!hasPet(data))throw Error('ペットが誕生してから使えます。');
-      const shop=shopOf(data),next={ownedItems:[...shop.ownedItems],equipped:{...shop.equipped}},coins=coinsOf(data),has=next.ownedItems.includes(item.id),isEquipped=next.equipped[item.slot]===item.id;let nextCoins=coins;
-      if(isEquipped)next.equipped[item.slot]=null;else if(has)next.equipped[item.slot]=item.id;else{if(coins<item.price)throw Error('コインが足りません。');nextCoins=coins-item.price;next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;}
-      tx.set(ref,{coins:nextCoins,petShop:next,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
-    });
-    previewSelection=null;
-  }catch(error){window.alert(error?.message||'ショップの処理に失敗しました。');}
+  if(!currentUser||!hasPet(currentData))return;const snapshot=shopOf(currentData),owned=isOwned(snapshot,item.id);if(!owned&&!window.confirm(`${item.price}コインを使って「${item.name}」を購入しますか？\n購入後すぐに装備します。`))return;
+  try{await runTransaction(db,async tx=>{const ref=refFor(currentUser),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{};if(!hasPet(data))throw Error('ペットが誕生してから使えます。');const shop=shopOf(data),next={ownedItems:[...shop.ownedItems],equipped:{...shop.equipped}},coins=coinsOf(data),has=next.ownedItems.includes(item.id),isEquipped=next.equipped[item.slot]===item.id;let nextCoins=coins;if(isEquipped)next.equipped[item.slot]=null;else if(has)next.equipped[item.slot]=item.id;else{if(coins<item.price)throw Error('コインが足りません。');nextCoins=coins-item.price;next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;}tx.set(ref,{coins:nextCoins,petShop:next,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});});previewSelection=null;}catch(error){window.alert(error?.message||'ショップの処理に失敗しました。');}
 }
 async function unequipExtra(slot,id){
   if(!currentUser)return;try{await runTransaction(db,async tx=>{const ref=refFor(currentUser),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{},shop=shopOf(data),next={ownedItems:[...shop.ownedItems],equipped:{...shop.equipped}};if(next.equipped[slot]===id)next.equipped[slot]=null;tx.set(ref,{petShop:next,petUpdatedAt:serverTimestamp()},{merge:true});});previewSelection=null;}catch(error){window.alert(error?.message||'装備をはずせませんでした。');}
 }
-function watchUser(user){
-  if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};previewSelection=null;if(!user){queueAugment();return;}
-  unsubscribe=onSnapshot(refFor(user),snap=>{currentData=snap.exists()?(snap.data()||{}):{};queueAugment();},error=>console.error('Shop expansion sync failed',error));
-}
+function watchUser(user){if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};previewSelection=null;if(!user){queueAugment();return;}unsubscribe=onSnapshot(refFor(user),snap=>{currentData=snap.exists()?(snap.data()||{}):{};queueAugment();},error=>console.error('Shop expansion sync failed',error));}
+function mutationNeedsRefresh(mutations){return mutations.some(m=>[...m.addedNodes,...m.removedNodes].some(node=>{if(node.nodeType!==1)return false;const el=node;return !el.matches?.('[data-pet-extra-layer],[data-extra-item="1"]');}));}
 function boot(){
   if(!document.getElementById('petShopExpansionStyles')){const style=document.createElement('style');style.id='petShopExpansionStyles';style.textContent=STYLE;document.head.append(style);}
   if(!getApps().length){setTimeout(boot,80);return;}const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,watchUser);
-  const observer=new MutationObserver(queueAugment);observer.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen'))setTimeout(queueAugment,50);},true);
-  window.addEventListener('pagehide',()=>{observer.disconnect();unsubscribe?.();},{once:true});queueAugment();
+  const observer=new MutationObserver(mutations=>{if(mutationNeedsRefresh(mutations))queueAugment();});observer.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('click',event=>{const card=event.target.closest?.('.pet-shop-item');if(card&&!card.dataset.extraItem){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen'))setTimeout(queueAugment,50);},true);
+  document.addEventListener('pet-state-updated',queueAugment);window.addEventListener('pagehide',()=>{observer.disconnect();unsubscribe?.();},{once:true});queueAugment();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
