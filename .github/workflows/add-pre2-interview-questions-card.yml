@@ -1,0 +1,47 @@
+name: Add Pre-2 interview questions card
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-pre2-interview-questions-card.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add activity card
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          if 'pre2-interview-questions/' not in s:
+              anchor='    <a class="card order" href="https://k-oota-pixel.github.io/eiken-pre2-interview-a/"'
+              if anchor not in s:
+                  raise SystemExit('Pre-2 interview A card anchor not found')
+              card='''    <a class="card order" href="./pre2-interview-questions/">
+      <div class="icon" aria-hidden="true">Q</div>
+      <div class="eyebrow">EIKEN PRE-2 INTERVIEW</div>
+      <div class="title">準2級質問対策</div>
+      <div class="desc">2次試験のQuestion 4・5を100問収録。音声で聞く本番練習と英文を読む練習を選び、AIの5点評価と個別フィードバックで対策！</div>
+      <div class="chips"><span class="chip">100問</span><span class="chip">AI採点</span><span class="chip">音声対応</span></div>
+      <div class="play">質問対策に挑戦 <span aria-hidden="true">→</span></div>
+    </a>
+
+'''
+              s=s.replace(anchor,card+anchor,1)
+          s=s.replace('aria-label="version 1.5.27">ver1.5.27','aria-label="version 1.5.28">ver1.5.28')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit home update
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add Pre-2 interview question practice card"
+          git push
