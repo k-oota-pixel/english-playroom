@@ -11,7 +11,7 @@
 <body>
 <div class="app">
   <div class="top"><a class="back" href="../">← もんすたでぃ</a><div class="brand">LISTENING TRAINING</div></div>
-  <div class="hero"><div class="eyebrow">LISTEN · UNDERSTAND · WRITE</div><h1>Listening Training</h1><p>同じ音声で「問題演習」と「ディクテーション」に取り組めます。問題はランダムに出題され、一巡するまで同じ問題が出にくい仕組みです。</p></div>
+  <div class="hero"><div class="eyebrow">LISTEN · UNDERSTAND · WRITE</div><h1>Listening Training</h1><p>「問題演習」と「ディクテーション」はそれぞれ5問で1セット。5問完了で1コイン獲得できます（各モード1日1回）。問題はランダムに出題され、一巡するまで同じ問題が出にくい仕組みです。</p></div>
   <div class="panel">
     <section id="loading" class="loading">教材を読み込んでいます…</section>
     <section id="levelScreen" class="screen" hidden>
@@ -28,8 +28,8 @@
       <button id="backLevel" class="mini-back">← レベル選択</button>
       <h2 id="modeHeading" class="section-title"></h2>
       <div class="mode-grid">
-        <button class="mode" id="practiceMode"><div class="big">🎧</div><strong>問題演習</strong><span>本番形式で音声を聞いて、正しい選択肢を選びます。</span></button>
-        <button class="mode" id="dictationMode"><div class="big">✍️</div><strong>Dictation</strong><span>同じ会話音声を使って、空欄になった英語を書き取ります。</span></button>
+        <button class="mode" id="practiceMode"><div class="big">🎧</div><strong>問題演習</strong><span>本番形式で5問に挑戦。5問完了で1コイン。</span></button>
+        <button class="mode" id="dictationMode"><div class="big">✍️</div><strong>Dictation</strong><span>同じ会話音声を使って5問に挑戦。5問完了で1コイン。</span></button>
       </div>
       <div id="diffArea" hidden>
         <h3 class="section-title" style="margin-top:16px">難易度を選んでください</h3>
@@ -55,6 +55,7 @@
 </div>
 <audio id="player" preload="metadata"></audio>
 <script type="module">
+import '../coin-reward.js';
 import {LISTENING_META} from './data.js';
 import {validateQuestions} from './loader.js';
 import {IMG_2020_2} from './image-2020-2.js';
@@ -73,7 +74,8 @@ const $=s=>document.querySelector(s);
 const screens=['#levelScreen','#modeScreen','#quizScreen','#errorScreen'];
 const labels={'3':'3級','pre2':'準2級','2':'2級','pre1':'準1級'};
 const diffLabels={easy:'EASY',normal:'NORMAL',hard:'HARD'};
-let state={level:null,mode:null,diff:null,q:null,answered:false,masked:[]};
+const SET_TOTAL=5;
+let state={level:null,mode:null,diff:null,q:null,answered:false,masked:[],setDone:0,questionCounted:false,rewardHandled:false};
 const player=$('#player'); let stopHandler=null; let playbackId=0;
 player.addEventListener('ended',()=>stopAudio());
 function show(id){screens.forEach(s=>$(s).hidden=s!==id);$('#loading').hidden=true;}
@@ -91,10 +93,13 @@ function getQueue(){
   if(!arr.length){arr=shuffle([...valid]);if(arr.length>1&&arr[0]===state.q?.id)[arr[0],arr[1]]=[arr[1],arr[0]];saveQueue(arr)}
   return arr;
 }
+function startSet(mode,diff=null){
+  state.mode=mode;state.diff=diff;state.setDone=0;state.rewardHandled=false;state.questionCounted=false;nextQuestion();
+}
 function nextQuestion(){
   const qlist=getQueue(); const id=qlist.shift(); saveQueue(qlist);
-  state.q=LISTENING_QUESTIONS.find(q=>q.id===id); state.answered=false; state.masked=[];
-  renderQuestion(qlist.length);
+  state.q=LISTENING_QUESTIONS.find(q=>q.id===id); state.answered=false; state.masked=[]; state.questionCounted=false;
+  renderQuestion();
 }
 function stopAudio(){playbackId++;if(stopHandler){player.removeEventListener('timeupdate',stopHandler);stopHandler=null}player.pause();$('#listenBtn').classList.remove('playing');$('#listenBtn').textContent='▶ もう一度聞く'}
 async function playClip(){
@@ -121,7 +126,7 @@ function renderPractice(q){
  const choices=document.createElement('div');choices.className='choices'+(q.choiceMode==='spoken'?' spoken':'');
  q.choices.forEach((text,i)=>{const b=document.createElement('button');b.className='choice';b.innerHTML=`<span class="num">${i+1}</span>${q.choiceMode==='visual'?`<span>${escapeHTML(text)}</span>`:''}`;b.addEventListener('click',()=>answerPractice(i+1,b,choices));choices.append(b)});host.append(choices);
 }
-function answerPractice(ans,button,choices){if(state.answered)return;state.answered=true;const q=state.q;choices.querySelectorAll('.choice').forEach((b,i)=>{b.disabled=true;if(i+1===q.answer)b.classList.add('correct')});if(ans!==q.answer)button.classList.add('wrong');const ok=ans===q.answer;$('#feedbackHost').innerHTML=`<div class="feedback ${ok?'ok':'ng'}"><strong>${ok?'✓ Correct!':'✕ Try to catch the key information.'}</strong>${ok?'':'<br>正解は '+q.answer+' です。'}${revealHTML(q,true)}</div>`;renderActions(true)}
+function answerPractice(ans,button,choices){if(state.answered)return;state.answered=true;const q=state.q;choices.querySelectorAll('.choice').forEach((b,i)=>{b.disabled=true;if(i+1===q.answer)b.classList.add('correct')});if(ans!==q.answer)button.classList.add('wrong');const ok=ans===q.answer;$('#feedbackHost').innerHTML=`<div class="feedback ${ok?'ok':'ng'}"><strong>${ok?'✓ Correct!':'✕ Try to catch the key information.'}</strong>${ok?'':'<br>正解は '+q.answer+' です。'}${revealHTML(q,true)}</div>`;registerCompletedQuestion();renderActions(true)}
 function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function tokenizeLine(line){return line.split(/([A-Za-z]+(?:[’'][A-Za-z]+)?)/g).filter(x=>x!=='')}
 function makeMask(q){
@@ -137,15 +142,37 @@ function renderDictation(q){
  toks.forEach((arr,li)=>{const turn=document.createElement('div');turn.className='turn';const sp=document.createElement('span');sp.className='speaker';sp.textContent=(li%2?'B:':'A:');turn.append(sp);arr.forEach((t,ti)=>{if(set.has(li+':'+ti)){const inp=document.createElement('input');inp.className='blank';inp.autocomplete='off';inp.autocapitalize='none';inp.spellcheck=false;inp.dataset.answer=t;inp.setAttribute('aria-label','dictation blank');inp.style.width=Math.min(10,Math.max(3.2,t.length*.72+1.5))+'em';turn.append(inp);state.masked.push(inp)}else turn.append(document.createTextNode(t))});box.append(turn)});host.append(box);
  const legend=document.createElement('div');legend.className='legend';legend.innerHTML=`<span class="pill">${diffLabels[state.diff]}</span><span class="pill">${state.masked.length} blanks</span>`;host.append(legend);renderActions(false);
 }
-function checkDictation(){if(state.answered)return;state.answered=true;let good=0;state.masked.forEach(inp=>{const ok=norm(inp.value)===norm(inp.dataset.answer);inp.classList.add(ok?'good':'bad');inp.disabled=true;if(ok)good++});const pct=Math.round(good/state.masked.length*100);const ok=good===state.masked.length;const script=state.q.dialogue.map((x,i)=>`<div><b>${i%2?'B':'A'}:</b> ${escapeHTML(x)}</div>`).join('');$('#feedbackHost').innerHTML=`<div class="feedback ${ok?'ok':'ng'}"><strong>${ok?'✓ Perfect!':`${good} / ${state.masked.length} correct (${pct}%)`}</strong><div class="full-answer">${script}</div></div>`;renderActions(true)}
-function renderActions(answered){const h=$('#actionHost');h.replaceChildren();if(state.mode==='dictation'&&!answered){const c=document.createElement('button');c.className='next';c.textContent='CHECK';c.addEventListener('click',checkDictation);h.append(c);return}if(answered){const r=document.createElement('button');r.className='secondary';r.textContent='🔊 もう一度聞く';r.addEventListener('click',playClip);const n=document.createElement('button');n.className='next';n.textContent='次の問題へ →';n.addEventListener('click',()=>{stopAudio();nextQuestion()});h.append(r,n)}}
-function renderQuestion(left){const q=state.q;show('#quizScreen');$('#feedbackHost').replaceChildren();$('#actionHost').replaceChildren();renderImage(q);$('#quizLabel').textContent=`${labels[state.level]} · ${state.mode==='practice'?'問題演習':'DICTATION '+diffLabels[state.diff]}`;$('#quizTitle').textContent=state.mode==='practice'?(q.part===1?'Listening Question':'Listening Question'):'Dictation';$('#queueInfo').textContent=`このセット 残り ${left}問`;$('#audioNote').textContent=state.mode==='practice'?(q.choiceMode==='spoken'?'選択肢も音声で流れます。番号で答えてください。':'会話とQuestionを聞いて、最も適切な答えを選んでください。'):'会話を聞いて、空欄の英語を入力してください。';$('#listenBtn').textContent='▶ 音声を聞く';$('#listenBtn').classList.remove('playing');state.mode==='practice'?renderPractice(q):renderDictation(q)}
+function checkDictation(){if(state.answered)return;state.answered=true;let good=0;state.masked.forEach(inp=>{const ok=norm(inp.value)===norm(inp.dataset.answer);inp.classList.add(ok?'good':'bad');inp.disabled=true;if(ok)good++});const pct=Math.round(good/state.masked.length*100);const ok=good===state.masked.length;const script=state.q.dialogue.map((x,i)=>`<div><b>${i%2?'B':'A'}:</b> ${escapeHTML(x)}</div>`).join('');$('#feedbackHost').innerHTML=`<div class="feedback ${ok?'ok':'ng'}"><strong>${ok?'✓ Perfect!':`${good} / ${state.masked.length} correct (${pct}%)`}</strong><div class="full-answer">${script}</div></div>`;registerCompletedQuestion();renderActions(true)}
+function registerCompletedQuestion(){
+  if(state.questionCounted)return;state.questionCounted=true;state.setDone=Math.min(SET_TOTAL,state.setDone+1);$('#queueInfo').textContent=`${state.setDone} / ${SET_TOTAL} 問完了`;
+  if(state.setDone>=SET_TOTAL&&!state.rewardHandled){state.rewardHandled=true;awardSetCoin();}
+}
+async function awardSetCoin(){
+  const api=window.EnglishPlayroomCoins;if(!api?.awardOncePerDay)return;
+  const isPractice=state.mode==='practice';
+  const result=await api.awardOncePerDay('listening-training',isPractice?'practice-5':'dictation-5',isPractice?'Listening 問題演習 5問達成！':'Listening Dictation 5問達成！');
+  const host=$('#feedbackHost');if(state.setDone<SET_TOTAL)return;
+  if(result?.awarded)host.insertAdjacentHTML('beforeend','<div class="feedback ok"><strong>🎉 5問完了！ 🪙 1コインGET！</strong></div>');
+  else if(result?.reason==='already-today')host.insertAdjacentHTML('beforeend','<div class="feedback ok"><strong>🎉 5問完了！</strong><br>このモードの今日のコインは獲得済みです。</div>');
+}
+function renderActions(answered){
+ const h=$('#actionHost');h.replaceChildren();
+ if(state.mode==='dictation'&&!answered){const c=document.createElement('button');c.className='next';c.textContent='CHECK';c.addEventListener('click',checkDictation);h.append(c);return}
+ if(answered){
+   const r=document.createElement('button');r.className='secondary';r.textContent='🔊 もう一度聞く';r.addEventListener('click',playClip);
+   const n=document.createElement('button');n.className='next';
+   if(state.setDone>=SET_TOTAL){n.textContent='5問完了 → モード選択';n.addEventListener('click',()=>{stopAudio();$('#diffArea').hidden=true;show('#modeScreen')});}
+   else{n.textContent='次の問題へ →';n.addEventListener('click',()=>{stopAudio();nextQuestion()});}
+   h.append(r,n)
+ }
+}
+function renderQuestion(){const q=state.q;show('#quizScreen');$('#feedbackHost').replaceChildren();$('#actionHost').replaceChildren();renderImage(q);$('#quizLabel').textContent=`${labels[state.level]} · ${state.mode==='practice'?'問題演習':'DICTATION '+diffLabels[state.diff]}`;$('#quizTitle').textContent=state.mode==='practice'?'Listening Question':'Dictation';$('#queueInfo').textContent=`第 ${Math.min(state.setDone+1,SET_TOTAL)} / ${SET_TOTAL} 問`;$('#audioNote').textContent=state.mode==='practice'?(q.choiceMode==='spoken'?'選択肢も音声で流れます。番号で答えてください。':'会話とQuestionを聞いて、最も適切な答えを選んでください。'):'会話を聞いて、空欄の英語を入力してください。';$('#listenBtn').textContent='▶ 音声を聞く';$('#listenBtn').classList.remove('playing');state.mode==='practice'?renderPractice(q):renderDictation(q)}
 function selectLevel(level){state.level=level;$('#modeHeading').textContent=`${labels[level]} — トレーニングを選択`;$('#diffArea').hidden=true;show('#modeScreen')}
 document.querySelectorAll('.level').forEach(b=>b.addEventListener('click',()=>selectLevel(b.dataset.level)));
-$('#backLevel').addEventListener('click',()=>show('#levelScreen'));$('#backMode').addEventListener('click',()=>{stopAudio();show('#modeScreen')});
-$('#practiceMode').addEventListener('click',()=>{state.mode='practice';state.diff=null;nextQuestion()});
+$('#backLevel').addEventListener('click',()=>show('#levelScreen'));$('#backMode').addEventListener('click',()=>{stopAudio();$('#diffArea').hidden=true;show('#modeScreen')});
+$('#practiceMode').addEventListener('click',()=>startSet('practice'));
 $('#dictationMode').addEventListener('click',()=>{$('#diffArea').hidden=false});
-document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>{state.mode='dictation';state.diff=b.dataset.diff;nextQuestion()}));
+document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>startSet('dictation',b.dataset.diff)));
 try{LISTENING_QUESTIONS=validateQuestions(await unpackQuestions());show('#levelScreen')}catch(e){console.error('Listening Training:',e);fail('教材を読み込めませんでした。通信状況を確認して、ページを再読み込みしてください。')}
 </script>
 </body>
