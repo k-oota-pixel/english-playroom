@@ -56,6 +56,7 @@
 <audio id="player" preload="metadata"></audio>
 <script type="module">
 import {LISTENING_META} from './data.js';
+import {validateQuestions} from './loader.js';
 import {PACK_1} from './pack-1.js';
 import {PACK_2} from './pack-2.js';
 import {IMG_2020_2} from './image-2020-2.js';
@@ -69,7 +70,7 @@ async function unpackQuestions(){
   const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
 }
-const LISTENING_QUESTIONS=await unpackQuestions();
+let LISTENING_QUESTIONS=[];
 const LISTENING_IMAGES={'g3-2020-2':IMG_2020_2,'g3-2020-3':IMG_2020_3,'g3-2021-1':IMG_2021_1,'g3-2021-2':IMG_2021_2,'g3-2021-3':IMG_2021_3};
 const $=s=>document.querySelector(s);
 const screens=['#levelScreen','#modeScreen','#quizScreen','#errorScreen'];
@@ -137,7 +138,7 @@ $('#backLevel').addEventListener('click',()=>show('#levelScreen'));$('#backMode'
 $('#practiceMode').addEventListener('click',()=>{state.mode='practice';state.diff=null;nextQuestion()});
 $('#dictationMode').addEventListener('click',()=>{$('#diffArea').hidden=false});
 document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>{state.mode='dictation';state.diff=b.dataset.diff;nextQuestion()}));
-try{if(!Array.isArray(LISTENING_QUESTIONS)||LISTENING_QUESTIONS.length!==LISTENING_META.total)throw new Error('教材数が一致しません。');show('#levelScreen')}catch(e){fail('教材の読み込みに失敗しました。ページを再読み込みしてください。')}
+try{LISTENING_QUESTIONS=validateQuestions(await unpackQuestions());show('#levelScreen')}catch(e){console.error('Listening Training:',e);fail('教材データが不完全なため、現在トレーニングを開始できません。教材の修復後に、ページを再読み込みしてください。')}
 </script>
 </body>
 </html>
