@@ -2,14 +2,11 @@ import { previousHappy } from './pet-care-model.js?v=1.5.9';
 
 const HAPPY_MULTIPLIERS=Object.freeze([1,.9,.8,.7,.6,.5,.42,.34,.26,.18,.1]);
 export function chanceFor(days) {
-  if(days<10)return 0;
-  if(days<=15)return .05;
-  if(days<=20)return .10;
-  if(days<=25)return .15;
-  if(days<=30)return .20;
-  if(days<=35)return .25;
-  if(days<=40)return .50;
-  if(days<=45)return .75;
+  if(days<=5)return 0;
+  if(days<=10)return .10;
+  if(days<=15)return .25;
+  if(days<=20)return .50;
+  if(days<=25)return .80;
   return 1;
 }
 export function departureChance(data,today,days) {
