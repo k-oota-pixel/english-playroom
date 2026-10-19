@@ -56,16 +56,20 @@
 <audio id="player" preload="metadata"></audio>
 <script type="module">
 import {LISTENING_META} from './data.js';
-import {QUESTIONS_3} from './data-3.js';
-import {QUESTIONS_PRE2} from './data-pre2.js';
-import {QUESTIONS_2} from './data-2.js';
-import {QUESTIONS_PRE1} from './data-pre1.js';
+import {PACK_1} from './pack-1.js';
+import {PACK_2} from './pack-2.js';
 import {IMG_2020_2} from './image-2020-2.js';
 import {IMG_2020_3} from './image-2020-3.js';
 import {IMG_2021_1} from './image-2021-1.js';
 import {IMG_2021_2} from './image-2021-2.js';
 import {IMG_2021_3} from './image-2021-3.js';
-const LISTENING_QUESTIONS=[...QUESTIONS_3,...QUESTIONS_PRE2,...QUESTIONS_2,...QUESTIONS_PRE1];
+async function unpackQuestions(){
+  const s=PACK_1+PACK_2,bin=atob(s),bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+const LISTENING_QUESTIONS=await unpackQuestions();
 const LISTENING_IMAGES={'g3-2020-2':IMG_2020_2,'g3-2020-3':IMG_2020_3,'g3-2021-1':IMG_2021_1,'g3-2021-2':IMG_2021_2,'g3-2021-3':IMG_2021_3};
 const $=s=>document.querySelector(s);
 const screens=['#levelScreen','#modeScreen','#quizScreen','#errorScreen'];
