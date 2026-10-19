@@ -1,0 +1,98 @@
+name: Install dragon pet
+
+on:
+  push:
+    paths:
+      - '.github/workflows/install-dragon-pet.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wire dragon into pet rendering and hatching
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          art=Path('pet-art.js')
+          s=art.read_text(encoding='utf-8')
+
+          old="import {renderDogArt} from './pet-dog-art.js?v=1.5.27';"
+          new=old+"\nimport {renderDragonArt} from './pet-dragon-art.js?v=1.5.29';"
+          if "renderDragonArt" not in s:
+              if old not in s: raise SystemExit('dog import anchor not found')
+              s=s.replace(old,new,1)
+
+          old="const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];"
+          new="const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];"
+          if old in s: s=s.replace(old,new,1)
+
+          old="const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',dragon:'bird',mystery:'cat'};"
+          new="const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};"
+          if old in s: s=s.replace(old,new,1)
+
+          old="const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン'};"
+          new="const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン'};"
+          if old in s: s=s.replace(old,new,1)
+
+          old="""    : a.species==='dog'
+    ? renderDogArt(color,a.eyeStyle)
+    : `<g stroke=\"${outline}\""""
+          new="""    : a.species==='dog'
+    ? renderDogArt(color,a.eyeStyle)
+    : a.species==='dragon'
+    ? renderDragonArt(color,a.eyeStyle)
+    : `<g stroke=\"${outline}\""""
+          if "a.species==='dragon'" not in s:
+              if old not in s: raise SystemExit('render branch anchor not found')
+              s=s.replace(old,new,1)
+
+          art.write_text(s,encoding='utf-8')
+
+          maker=Path('pet-maker.js')
+          s=maker.read_text(encoding='utf-8')
+          s=s.replace("const SPECIES=['cat','dog','bird','hamster','panda','penguin'];","const SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];",1)
+          s=s.replace("curious:['bird','penguin']","curious:['bird','penguin','dragon']",1)
+          s=s.replace('6種類の中からあなたの相棒に出会おう。','7種類の中からあなたの相棒に出会おう。',1)
+          maker.write_text(s,encoding='utf-8')
+
+          home=Path('index.html')
+          s=home.read_text(encoding='utf-8')
+          s=s.replace("./pet-art.js?v=1.5.27","./pet-art.js?v=1.5.29")
+          s=s.replace('aria-label="version 1.5.28">ver1.5.28','aria-label="version 1.5.29">ver1.5.29')
+          home.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Validate JavaScript and dragon variants
+        run: |
+          node --check pet-dragon-art.js
+          node --check pet-art.js
+          node --check pet-maker.js
+          node --input-type=module <<'JS'
+          import {renderDragonArt} from './pet-dragon-art.js';
+          const colors=['#f5d99b','#f3b5c4','#a4cce9','#a9d9bc','#c6b8e3','#efb478'];
+          const eyes=['round','gentle','watery','smile','sleepy','sparkle'];
+          for(const color of colors){
+            for(const eye of eyes){
+              const svg=renderDragonArt(color,eye);
+              if(!svg.includes('data-pet-dragon-art="editable"')) throw new Error('dragon body missing');
+              if(!svg.includes('data-pet-eyes="1"')) throw new Error('shared eyes missing');
+              if(!svg.includes(color)) throw new Error('selected body color missing');
+            }
+          }
+          console.log('Dragon variants OK:', colors.length*eyes.length);
+          JS
+
+      - name: Commit dragon integration
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pet-art.js pet-maker.js index.html
+          git commit -m "Add dragon to pet system without changing eyes or colors"
+          git push
