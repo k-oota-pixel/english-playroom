@@ -1,0 +1,33 @@
+name: Check Pre-2 interview questions
+
+on:
+  push:
+    paths:
+      - 'pre2-interview-questions/**'
+      - '.github/workflows/check-pre2-interview-questions.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check pre2-interview-questions/questions.js
+          node --check pre2-interview-questions/app.js
+      - name: Validate question counts
+        run: |
+          node - <<'NODE'
+          global.window={};
+          require('./pre2-interview-questions/questions.js');
+          const q=window.PRE2_INTERVIEW_QUESTIONS;
+          if(!q || q[4]?.length!==50 || q[5]?.length!==50){
+            throw new Error(`Question count mismatch: Q4=${q?.[4]?.length}, Q5=${q?.[5]?.length}`);
+          }
+          for(const type of [4,5]){
+            q[type].forEach((text,i)=>{
+              if(typeof text!=='string'||text.trim().length<10)throw new Error(`Invalid Q${type}-${i+1}`);
+            });
+          }
+          console.log('Validated 50 Question 4 items and 50 Question 5 items.');
+          NODE
