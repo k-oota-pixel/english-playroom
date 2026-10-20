@@ -23,8 +23,9 @@ const authReady=new Promise(r=>resolveAuth=r);
 onAuthStateChanged(auth,user=>{currentUser=user||null;if(!authResolved){authResolved=true;resolveAuth();}});
 
 function todayKey(){
-  const d=new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const value=Object.fromEntries(parts.map(part=>[part.type,part.value]));
+  return `${value.year}-${value.month}-${value.day}`;
 }
 function cleanPart(value){return String(value??'').trim().replace(/[^A-Za-z0-9_-]+/g,'_').slice(0,80)||'item';}
 function walletRef(user){return doc(db,'users',user.uid,'apps','english-playroom');}
@@ -115,13 +116,14 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
       const sameDay=data.coinRewardDate===today;
       const claims=sameDay&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(x=>typeof x==='string'):[];
       const coins=Math.max(0,Math.floor(Number(data.coins)||0));
+      const coinsEarnedToday=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
       const interview=appId==='eiken-pre2-interview-a'?interviewAttemptPatch(data,itemId.replace(/^theme-/,''),today):null;
       if(claims.includes(claim)){
         if(interview)tx.set(ref,{pre2InterviewA:interview},{merge:true});
         newCoins=coins;return;
       }
       claims.push(claim);newCoins=coins+1;awarded=true;
-      tx.set(ref,{...(interview?{pre2InterviewA:interview}:{}),coins:newCoins,coinRewardDate:today,coinRewardClaims:claims,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
+      tx.set(ref,{...(interview?{pre2InterviewA:interview}:{}),coins:newCoins,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:coinsEarnedToday+1,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
     });
     if(awarded)toast(`🪙 +1　${label}`);
     return {awarded,coins:newCoins,reason:awarded?'awarded':'already-today'};
@@ -139,11 +141,12 @@ async function recordRetryAttempt(questionId){
       const sameDay=data.coinRewardDate===today;
       const claims=sameDay&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(x=>typeof x==='string'):[];
       const coins=Math.max(0,Math.floor(Number(data.coins)||0));
+      const coinsEarnedToday=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
       progress=Math.max(0,Math.min(4,Math.floor(Number(data.retryCoinProgress)||0)));
       if(claims.includes(claim)){newCoins=coins;return;}
       claims.push(claim);counted=true;progress+=1;newCoins=coins;
       if(progress>=5){progress-=5;newCoins=coins+1;awarded=true;}
-      tx.set(ref,{coins:newCoins,retryCoinProgress:progress,coinRewardDate:today,coinRewardClaims:claims,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
+      tx.set(ref,{coins:newCoins,retryCoinProgress:progress,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:coinsEarnedToday+(awarded?1:0),coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
     });
     if(awarded)toast('🪙 +1　リトライ5問達成！');
     else if(counted)toast(`リトライコインまで ${5-progress}問`);
