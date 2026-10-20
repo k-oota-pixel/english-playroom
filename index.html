@@ -20,6 +20,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .card{display:block;text-decoration:none;position:relative;text-align:left;background:#fff;border:1px solid #dce5da;border-radius:16px;padding:16px;color:inherit;box-shadow:0 4px 14px #203b3608;transition:transform .14s,box-shadow .14s,border-color .14s}
 .card:hover{transform:translateY(-2px);box-shadow:0 7px 18px #203b3610;border-color:#cbd9cf}
 .icon{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#e8f4ed;color:#23725c;font-size:18px;font-weight:900}
+.icon-row{display:flex;align-items:center;gap:8px;min-height:40px}.eiken-badge{display:inline-flex;align-items:center;height:24px;padding:0 9px;border:1px solid #d9e5d4;border-radius:999px;background:#f3f8ef;color:#527449;font-size:10px;font-weight:800;white-space:nowrap}
 .order .icon{background:#eaf0ff;color:#4068b0}.retry .icon{background:#e5efe7;color:#195f4a}.task .icon{background:#fff0dc;color:#ac6822}
 .eyebrow{font-size:9px;letter-spacing:.11em;color:#718478;margin-top:12px}
 .title{font-size:20px;font-weight:850;margin:3px 0 5px;line-height:1.35}
@@ -47,7 +48,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 @keyframes eggWiggle{0%,82%,100%{transform:rotate(0)}86%{transform:rotate(-5deg)}90%{transform:rotate(5deg)}94%{transform:rotate(-3deg)}98%{transform:rotate(3deg)}}
 @keyframes petPop{0%{transform:scale(.65);opacity:.4}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 
-@media(max-width:820px){.cards{gap:7px}.card{padding:9px;border-radius:12px}.icon{width:32px;height:32px;font-size:15px}.eyebrow{font-size:8px}.title{font-size:15px}.desc{font-size:10px;min-height:50px}.chips{gap:3px;margin:7px 0}.chip{font-size:8px;padding:2px 5px}.play{font-size:10px;padding-top:7px}.open-note{font-size:8px}.interview-card .play{text-decoration:none}}
+@media(max-width:820px){.cards{gap:7px}.card{padding:9px;border-radius:12px}.icon{width:32px;height:32px;font-size:15px}.icon-row{min-height:32px;gap:6px}.eiken-badge{height:20px;padding:0 7px;font-size:8px}.eyebrow{font-size:8px}.title{font-size:15px}.desc{font-size:10px;min-height:50px}.chips{gap:3px;margin:7px 0}.chip{font-size:8px;padding:2px 5px}.play{font-size:10px;padding-top:7px}.open-note{font-size:8px}.interview-card .play{text-decoration:none}}
 @media(max-width:560px){.home{padding:16px 14px 22px}.label{margin-top:12px}h1{font-size:28px}.pet-card{gap:10px;padding:8px 10px;margin-top:12px}.pet-visual-wrap{width:76px;height:76px;flex-basis:76px}.pet-visual{font-size:48px}.pet-title strong{font-size:16px}.pet-days{font-size:11px}.pet-status{font-size:10.5px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.card{padding:14px}.desc{min-height:0}.title{font-size:19px}}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -198,7 +199,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   </section>
 
   <div class="cards">
-    <a class="card" href="https://k-oota-pixel.github.io/word-breaker/" target="_blank" rel="noopener noreferrer">
+<a class="card" href="https://k-oota-pixel.github.io/word-breaker/" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">✦</div>
       <div class="eyebrow">VOCABULARY · ENDLESS</div>
       <div class="title">WORD BREAKER</div>
@@ -207,7 +208,8 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="play">単語を撃破する <span aria-hidden="true">→</span></div>
       <div class="open-note">中1〜高2・基礎英単語の6コース</div>
     </a>
-    <a class="card" href="https://k-oota-pixel.github.io/ateru/" target="_blank" rel="noopener noreferrer">
+
+<a class="card" href="https://k-oota-pixel.github.io/ateru/" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">?</div>
       <div class="eyebrow">THREE-HINT WORD GAME</div>
       <div class="title">アテル</div>
@@ -215,15 +217,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="chips"><span class="chip">320のお題</span><span class="chip">ランダム5問</span><span class="chip">単語・スペル</span></div>
       <div class="play">アテルであそぶ <span aria-hidden="true">↗</span></div>
       <div class="open-note">GitHub Pagesで開きます</div>
-    </a>
-
-        <a class="card task" href="./listening-training/">
-      <div class="icon" aria-hidden="true">♫</div>
-      <div class="eyebrow">ENGLISH LISTENING</div>
-      <div class="title">リスニング教材</div>
-      <div class="desc">英検3級〜準1級の335問。問題演習とディクテーションでリスニングを練習できます。</div>
-      <div class="chips"><span class="chip">3級〜準1級</span><span class="chip">335問</span><span class="chip">問題演習・Dictation</span></div>
-      <div class="play">リスニングを練習 <span aria-hidden="true">→</span></div>
     </a>
 
 <a class="card order" href="https://k-oota-pixel.github.io/basic-quest/" target="_blank" rel="noopener noreferrer">
@@ -236,44 +229,17 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="open-note">GitHub Pagesで開きます</div>
     </a>
 
-    <a class="card retry" href="https://k-oota-pixel.github.io/eiken-retry/" target="_blank" rel="noopener noreferrer">
-      <div class="icon" aria-hidden="true">↻</div>
+<a class="card retry" href="https://k-oota-pixel.github.io/eiken-retry/" target="_blank" rel="noopener noreferrer">
+      <div class="icon-row"><div class="icon" aria-hidden="true">↻</div><span class="eiken-badge">英検対応</span></div>
       <div class="eyebrow">VOCABULARY &amp; GRAMMAR</div>
-      <div class="title">語彙文法問題リトライノート</div>
+      <div class="title">リトライノート</div>
       <div class="desc">語彙・文法問題に挑戦して、間違えた問題をあとから復習。全選択肢の意味とワンポイント解説つき。</div>
       <div class="chips"><span class="chip">準1〜4級程度</span><span class="chip">1,585問</span><span class="chip">復習</span></div>
-      <div class="play">語彙文法問題リトライノートへ <span aria-hidden="true">↗</span></div>
+      <div class="play">リトライノートを開く <span aria-hidden="true">↗</span></div>
       <div class="open-note">GitHub Pagesで開きます</div>
     </a>
 
-    <a class="card order" href="https://k-oota-pixel.github.io/eiken-cloze/" target="_blank" rel="noopener noreferrer">
-      <div class="icon" aria-hidden="true">___</div>
-      <div class="eyebrow">READING &amp; CLOZE</div>
-      <div class="title">長文空所補充ライティング</div>
-      <div class="desc">長文を読んで、空所に入る英語を考えよう。自由入力はGeminiが判定。選択肢モードでも練習できます。</div>
-      <div class="chips"><span class="chip">自由入力</span><span class="chip">選択問題</span><span class="chip">読解</span></div>
-      <div class="play">空所補充に挑戦 <span aria-hidden="true">↗</span></div>
-    </a>
-
-    <a class="card" href="https://k-oota-pixel.github.io/eiken-title/" target="_blank" rel="noopener noreferrer">
-      <div class="icon" aria-hidden="true">Aa</div>
-      <div class="eyebrow">READING &amp; TITLES</div>
-      <div class="title">長文概要把握ライティング</div>
-      <div class="desc">本文を読んで、内容に合うタイトルを考えよう。本文の要点を捉える練習です。</div>
-      <div class="chips"><span class="chip">タイトル作成</span><span class="chip">Gemini判定</span><span class="chip">読解</span></div>
-      <div class="play">タイトル作成に挑戦 <span aria-hidden="true">↗</span></div>
-    </a>
-
-    <a class="card task" href="https://k-oota-pixel.github.io/talk-quest/" target="_blank" rel="noopener noreferrer">
-      <div class="icon" aria-hidden="true">💬</div>
-      <div class="eyebrow">EVERYDAY ENGLISH</div>
-      <div class="title">テーマ別日常英会話</div>
-      <div class="desc">毎回ちがうAIの相手と、80のテーマでおしゃべり。やさしい英語で答えたり、相手に質問したりしてみよう。</div>
-      <div class="chips"><span class="chip">初心者向け</span><span class="chip">文字チャット</span><span class="chip">80テーマ</span></div>
-      <div class="play">英語でおしゃべり <span aria-hidden="true">↗</span></div>
-    </a>
-
-    <a class="card task" href="https://k-oota-pixel.github.io/task-quest/" target="_blank" rel="noopener noreferrer">
+<a class="card task" href="https://k-oota-pixel.github.io/task-quest/" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">✎</div>
       <div class="eyebrow">SITUATION &amp; WRITING</div>
       <div class="title">タスク別日常英会話</div>
@@ -282,15 +248,52 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="play">タスク別日常英会話へ <span aria-hidden="true">↗</span></div>
     </a>
 
-    <div class="card order interview-card">
-      <div class="icon" aria-hidden="true">Q&amp;A</div>
+<a class="card order" href="https://k-oota-pixel.github.io/eiken-cloze/" target="_blank" rel="noopener noreferrer">
+      <div class="icon-row"><div class="icon" aria-hidden="true">___</div><span class="eiken-badge">英検対応</span></div>
+      <div class="eyebrow">READING &amp; CLOZE</div>
+      <div class="title">長文空所補充</div>
+      <div class="desc">長文を読んで、空所に入る英語を考えよう。自由入力はGeminiが判定。選択肢モードでも練習できます。</div>
+      <div class="chips"><span class="chip">自由入力</span><span class="chip">選択問題</span><span class="chip">読解</span></div>
+      <div class="play">空所補充に挑戦 <span aria-hidden="true">↗</span></div>
+    </a>
+
+<a class="card" href="https://k-oota-pixel.github.io/eiken-title/" target="_blank" rel="noopener noreferrer">
+      <div class="icon-row"><div class="icon" aria-hidden="true">Aa</div><span class="eiken-badge">英検対応</span></div>
+      <div class="eyebrow">READING &amp; TITLES</div>
+      <div class="title">長文概要把握</div>
+      <div class="desc">本文を読んで、内容に合うタイトルを考えよう。本文の要点を捉える練習です。</div>
+      <div class="chips"><span class="chip">タイトル作成</span><span class="chip">Gemini判定</span><span class="chip">読解</span></div>
+      <div class="play">タイトル作成に挑戦 <span aria-hidden="true">↗</span></div>
+    </a>
+
+<a class="card task" href="./listening-training/">
+      <div class="icon-row"><div class="icon" aria-hidden="true">♫</div><span class="eiken-badge">英検対応</span></div>
+      <div class="eyebrow">ENGLISH LISTENING</div>
+      <div class="title">リスニング演習＆ディクテーション</div>
+      <div class="desc">英検3級〜準1級の335問。問題演習とディクテーションでリスニングを練習できます。</div>
+      <div class="chips"><span class="chip">3級〜準1級</span><span class="chip">335問</span><span class="chip">問題演習・Dictation</span></div>
+      <div class="play">リスニングを練習 <span aria-hidden="true">→</span></div>
+    </a>
+
+<div class="card order interview-card">
+      <div class="icon-row"><div class="icon" aria-hidden="true">Q&amp;A</div><span class="eiken-badge">英検対応</span></div>
       <div class="eyebrow">EIKEN PRE-2 INTERVIEW</div>
-      <div class="title">準2級面接対策</div>
+      <div class="title">準２級面接対策</div>
       <div class="desc">質問4・5の応答練習と、イラストを見て説明する面接A練習に挑戦できます。</div>
       <div class="chips"><span class="chip">質問4・5 100問</span><span class="chip">面接A 20問</span><span class="chip">音声・AI採点</span></div>
       <a class="play" href="./pre2-interview-questions/">質問4・5対策 <span aria-hidden="true">→</span></a>
       <a class="play" href="https://k-oota-pixel.github.io/eiken-pre2-interview-a/" target="_blank" rel="noopener noreferrer">面接A練習 <span aria-hidden="true">↗</span></a>
     </div>
+
+<a class="card task" href="https://k-oota-pixel.github.io/talk-quest/" target="_blank" rel="noopener noreferrer">
+      <div class="icon-row"><div class="icon" aria-hidden="true">💬</div><span class="eiken-badge">英検対応</span></div>
+      <div class="eyebrow">EVERYDAY ENGLISH</div>
+      <div class="title">テーマ別日常英会話</div>
+      <div class="desc">毎回ちがうAIの相手と、80のテーマでおしゃべり。やさしい英語で答えたり、相手に質問したりしてみよう。</div>
+      <div class="chips"><span class="chip">初心者向け</span><span class="chip">文字チャット</span><span class="chip">80テーマ</span></div>
+      <div class="play">英語でおしゃべり <span aria-hidden="true">↗</span></div>
+    </a>
+</div>
   </div>
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
