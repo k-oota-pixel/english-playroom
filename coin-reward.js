@@ -36,6 +36,17 @@ function ensureToast(){
 let toastTimer=0;
 function toast(text){const el=ensureToast();el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
 
+// PET CATCH has its own login-state overlay. Keep its hidden login link truly hidden
+// even though the page's .login-link rule sets display:inline-block.
+function installPetCatchHiddenLinkFix(){
+  if(!location.pathname.includes('/pet-catch'))return;
+  const style=document.createElement('style');
+  style.id='petCatchHiddenLoginFix';
+  style.textContent='.login-link[hidden]{display:none!important}';
+  document.head.appendChild(style);
+}
+installPetCatchHiddenLinkFix();
+
 // TaskQuest keeps an in-tab draft for each quest so an AI quota/network error,
 // timeout, or the one-time Firebase sync reload cannot erase a student's answer.
 function installTaskQuestAnswerGuard(){
