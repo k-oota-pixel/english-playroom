@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 async function rewards(){
- let wallet={coins:10,petName:'ふわ',petShop:{ownedItems:['crown']}},signedIn=true;
+ let wallet={coins:10,petName:'ふわ',petShop:{ownedItems:['crown']}};
  const source=readFileSync(new URL('../coin-reward.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/^export .*;\r?\n/gm,'');
  const user={uid:'tester'};
- const context=vm.createContext({window:{},console,queueMicrotask,document:{readyState:'loading',addEventListener(){}},
+ const context=vm.createContext({window:{},console,queueMicrotask,location:{pathname:'/',href:'https://home.test/'},document:{readyState:'loading',addEventListener(){}},
  initializeApp:()=>({}),getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:user}),getFirestore:()=>({}),doc:()=>({}),serverTimestamp:()=>0,
  onAuthStateChanged:(_,fn)=>queueMicrotask(()=>fn(user)),interviewAttemptPatch:()=>({attempted:true}),
  runTransaction:async(_,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(wallet)}),set:(_,patch)=>Object.assign(wallet,patch)})});
@@ -25,14 +25,15 @@ test('daily rewards remain per stage, topic and question, without collisions bet
 test('listening sets and ateru rounds have no daily cap but cannot be paid twice',async()=>{
  const {api,wallet}=await rewards();
  for(let i=0;i<12;i++)for(const name of ['awardListening','awardAteru']){
-  assert.equal((await api[name](`round-${i}`)).awarded,true);
-  assert.equal((await api[name](`round-${i}`)).awarded,false);
+  const id='round-'+i;
+  assert.equal((await api[name](id)).awarded,true);
+  assert.equal((await api[name](id)).awarded,false);
  }
  assert.equal(wallet().coins,34);
 });
 test('retry grants one coin for five distinct answered questions and retains the remainder',async()=>{
  const {api,wallet}=await rewards();
- for(let i=0;i<12;i++){const r=await api.recordRetryAttempt(`q-${i}`);assert.equal(r.awarded,(i+1)%5===0);assert.equal((await api.recordRetryAttempt(`q-${i}`)).counted,false);}
+ for(let i=0;i<12;i++){const id='q-'+i;const r=await api.recordRetryAttempt(id);assert.equal(r.awarded,(i+1)%5===0);assert.equal((await api.recordRetryAttempt(id)).counted,false);}
  assert.equal(wallet().coins,12);assert.equal(wallet().retryCoinProgress,2);
 });
 test('signed-out learners cannot earn coins',async()=>{
