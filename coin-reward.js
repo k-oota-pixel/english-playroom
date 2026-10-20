@@ -147,6 +147,9 @@ window.EnglishPlayroomCoins=Object.freeze({
   awardBasic:stageId=>awardOncePerDay('basic-quest',`stage-${cleanPart(stageId)}`,'Basic Questクリア！'),
   awardCloze:themeId=>awardOncePerDay('eiken-cloze',`theme-${cleanPart(themeId)}`,'空所補充に挑戦！'),
   awardTitle:themeId=>awardOncePerDay('eiken-title',`theme-${cleanPart(themeId)}`,'タイトルに挑戦！'),
+  awardListening:setId=>awardOncePerDay('listening-training',`set-${cleanPart(setId)}`,'Listening 5問達成！'),
+  awardTalk:themeId=>awardOncePerDay('talk-quest',`theme-${cleanPart(themeId)}`,'日常英会話に挑戦！'),
+  awardPre2Questions:questionId=>awardOncePerDay('pre2-interview-questions',`question-${cleanPart(questionId)}`,'準2級質問対策に挑戦！'),
   awardTask:themeId=>awardOncePerDay('task-quest',`theme-${cleanPart(themeId)}`,'Task-Questに挑戦！'),
   awardPre2A:themeId=>awardOncePerDay('eiken-pre2-interview-a',`theme-${cleanPart(themeId)}`,'準2級面接Aに挑戦！')
 });

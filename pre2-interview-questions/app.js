@@ -118,12 +118,15 @@ async function grade(){
     answer=`${state.firstAnswer} ${extra}`;
   }
 
+  const rewardQuestionId=`${state.type}-${state.index+1}`;
   const btn=$('gradeBtn');btn.disabled=true;btn.textContent='AIが採点しています…';
   try{
     const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({questionType:state.type,question:question(),answer,repeatCount:state.repeatCount}),signal:AbortSignal.timeout(30000)});
     let data={};try{data=await response.json();}catch{}
     if(!response.ok)throw new Error(data.error||`採点できませんでした（${response.status}）。`);
+    if(!Number.isInteger(data.score)||data.score<0||data.score>5||typeof data.feedback!=='string')throw new Error('採点結果を読み取れませんでした。もう一度お試しください。');
     renderResult(data);
+    window.EnglishPlayroomCoins?.awardPre2Questions?.(rewardQuestionId);
   }catch(e){
     showError(e?.name==='TimeoutError'?'AIの返事に時間がかかっています。もう一度お試しください。':e?.message||'AI採点に接続できませんでした。');
     btn.disabled=false;btn.textContent=state.followUp?'回答をまとめてAIで採点する':'AIで採点する';

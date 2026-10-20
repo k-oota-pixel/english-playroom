@@ -11,7 +11,7 @@
 <body>
 <div class="app">
   <div class="top"><a class="back" href="../">← もんすたでぃ</a><div class="brand">LISTENING TRAINING</div></div>
-  <div class="hero"><div class="eyebrow">LISTEN · UNDERSTAND · WRITE</div><h1>Listening Training</h1><p>「問題演習」と「ディクテーション」はそれぞれ5問で1セット。5問完了で1コイン獲得できます（各モード1日1回）。問題はランダムに出題され、一巡するまで同じ問題が出にくい仕組みです。</p></div>
+  <div class="hero"><div class="eyebrow">LISTEN · UNDERSTAND · WRITE</div><h1>Listening Training</h1><p>「問題演習」と「ディクテーション」はそれぞれ5問で1セット。5問完了で1コイン獲得できます（回数制限なし）。問題はランダムに出題され、一巡するまで同じ問題が出にくい仕組みです。</p></div>
   <div class="panel">
     <section id="loading" class="loading">教材を読み込んでいます…</section>
     <section id="levelScreen" class="screen" hidden>
@@ -55,7 +55,7 @@
 </div>
 <audio id="player" preload="metadata"></audio>
 <script type="module">
-import '../coin-reward.js';
+import '../coin-reward.js?v=20261020';
 import {LISTENING_META} from './data.js';
 import {validateQuestions} from './loader.js';
 import {IMG_2020_2} from './image-2020-2.js';
@@ -94,7 +94,7 @@ function getQueue(){
   return arr;
 }
 function startSet(mode,diff=null){
-  state.mode=mode;state.diff=diff;state.setDone=0;state.rewardHandled=false;state.questionCounted=false;nextQuestion();
+  state.setId=crypto.randomUUID();state.mode=mode;state.diff=diff;state.setDone=0;state.rewardHandled=false;state.questionCounted=false;nextQuestion();
 }
 function nextQuestion(){
   const qlist=getQueue(); const id=qlist.shift(); saveQueue(qlist);
@@ -148,12 +148,13 @@ function registerCompletedQuestion(){
   if(state.setDone>=SET_TOTAL&&!state.rewardHandled){state.rewardHandled=true;awardSetCoin();}
 }
 async function awardSetCoin(){
-  const api=window.EnglishPlayroomCoins;if(!api?.awardOncePerDay)return;
+  const api=window.EnglishPlayroomCoins;if(!api?.awardListening)return;
+  const setId=state.setId;
   const isPractice=state.mode==='practice';
-  const result=await api.awardOncePerDay('listening-training',isPractice?'practice-5':'dictation-5',isPractice?'Listening 問題演習 5問達成！':'Listening Dictation 5問達成！');
-  const host=$('#feedbackHost');if(state.setDone<SET_TOTAL)return;
+  const result=await api.awardListening(setId);
+  const host=$('#feedbackHost');if(state.setId!==setId||state.setDone<SET_TOTAL)return;
   if(result?.awarded)host.insertAdjacentHTML('beforeend','<div class="feedback ok"><strong>🎉 5問完了！ 🪙 1コインGET！</strong></div>');
-  else if(result?.reason==='already-today')host.insertAdjacentHTML('beforeend','<div class="feedback ok"><strong>🎉 5問完了！</strong><br>このモードの今日のコインは獲得済みです。</div>');
+  else if(result?.reason==='already-today')host.insertAdjacentHTML('beforeend','<div class="feedback ok"><strong>🎉 5問完了！</strong><br>このセットのコインは獲得済みです。</div>');
 }
 function renderActions(answered){
  const h=$('#actionHost');h.replaceChildren();

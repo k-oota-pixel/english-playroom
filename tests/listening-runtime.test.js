@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {webcrypto as crypto} from 'node:crypto';
 import {validateQuestions} from '../listening-training/loader.js';
 const questions=JSON.parse(readFileSync(new URL('../listening-training/questions.json',import.meta.url)));
 class Element {
@@ -9,18 +10,20 @@ class Element {
  addEventListener(k,f){this.listeners[k]=f} removeEventListener(k){delete this.listeners[k]}
  append(...nodes){this.children.push(...nodes)} replaceChildren(...nodes){this.children=nodes}
  setAttribute(k,v){this[k]=v} querySelectorAll(selector){return this.children.filter(x=>x.className?.split(' ').includes(selector.slice(1)))}
+ insertAdjacentHTML(_,html){this.innerHTML=(this.innerHTML||'')+html}
  pause(){this.paused=true} async play(){this.paused=false} load(){}
 }
 async function page(blocked=false){
  const html=readFileSync(new URL('../listening-training/index.html',import.meta.url),'utf8');
  const script=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace(/^import .*;\r?\n/gm,'');
- const elements=new Map(),storage=new Map();const get=id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id)};
+ const elements=new Map(),storage=new Map(),claims=[];const get=id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id)};
  const context=vm.createContext({document:{querySelector:get,querySelectorAll:()=>[],createElement:()=>new Element(),createTextNode:text=>({textContent:text})},
-  fetch:async()=>({ok:true,json:async()=>structuredClone(questions)}),validateQuestions,console,
+  window:{EnglishPlayroomCoins:{awardListening:async id=>{claims.push(id);return {awarded:true}}}},
+  fetch:async()=>({ok:true,json:async()=>structuredClone(questions)}),validateQuestions,console,crypto,
   localStorage:{getItem:k=>{if(blocked)throw Error('blocked');return storage.get(k)},setItem:(k,v)=>{if(blocked)throw Error('blocked');storage.set(k,v)}},
   IMG_2020_2:'',IMG_2020_3:'',IMG_2021_1:'',IMG_2021_2:'',IMG_2021_3:''});
- const api=await vm.runInContext(`(async()=>{${script};return {state,selectLevel,nextQuestion,renderQuestion,answerPractice,checkDictation,makeMask,playClip,stopAudio}})()`,context);
- return {api,get};
+ const api=await vm.runInContext(`(async()=>{${script};return {state,startSet,registerCompletedQuestion,selectLevel,nextQuestion,renderQuestion,answerPractice,checkDictation,makeMask,playClip,stopAudio}})()`,context);
+ return {api,get,claims};
 }
 test('each level and both modes complete a cycle without duplicates, including blocked storage',async()=>{
  for(const blocked of [false,true]){
@@ -55,4 +58,10 @@ test('audio replay and ending restore the play control',async()=>{
  const {api,get}=await page();Object.assign(api.state,{q:questions[0]});await api.playClip();
  assert.equal(get('#player').paused,false);get('#player').listeners.ended();assert.equal(get('#player').paused,true);
  assert.equal(get('#listenBtn').textContent,'▶ もう一度聞く');
+});
+
+test('each five-question set can earn again on the same day, once per set',async()=>{
+ const {api,claims}=await page();api.selectLevel('3');
+ for(let n=0;n<3;n++){api.startSet(n===2?'dictation':'practice','easy');for(let i=0;i<5;i++){if(i)api.nextQuestion();api.registerCompletedQuestion();api.registerCompletedQuestion();}await Promise.resolve();assert.equal(claims.length,n+1);}
+ assert.equal(new Set(claims).size,3);
 });

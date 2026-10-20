@@ -45,7 +45,7 @@ test('interview tracking is saved in the existing reward transaction without dup
  const toast={classList:{add(){},remove(){}}};
  const context={interviewAttemptPatch,console,Date,Promise,Number,String,Math,setTimeout:()=>0,clearTimeout(){},window:{},
   getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:{uid:'tester'}}),getFirestore:()=>({}),onAuthStateChanged:(a,fn)=>queueMicrotask(()=>fn(a.currentUser)),doc:()=>({}),serverTimestamp:()=>0,
-  document:{getElementById:()=>toast},
+  document:{readyState:'loading',addEventListener(){},getElementById:()=>toast},
   runTransaction:async(db,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(wallet)}),set:(ref,patch)=>{wallet={...wallet,...patch};}})};
  vm.createContext(context);vm.runInContext(source,context);
  await context.window.EnglishPlayroomCoins.awardPre2A(1);
