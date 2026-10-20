@@ -6,8 +6,8 @@ const GAMES=Object.freeze([
     title:'PET CATCH',
     eyebrow:'VOCABULARY · ACTION',
     icon:'↓',
-    desc:'英単語の意味を見て、ペットを左右に動かして正しい日本語をキャッチ。',
-    meta:'3 LIFE · 10正解で1C',
+    desc:'WORD BREAKERの単語で、ペットを左右に動かして正しい日本語をキャッチ。中1から高2へレベルアップ！',
+    meta:'5 CATCHごとに加速 · 10正解で1C',
     href:'./pet-catch/'
   },
   {
