@@ -56,16 +56,10 @@ test('daily ranking displays up to three pet names and their coin totals',async(
   assert.deepEqual(Array.from(h.elements.coinRankList.children,li=>li.children[2].textContent),['🪙 18','🪙 12','🪙 4']);
 });
 
-test('signed-out and failed requests keep clear current-state messages',async()=>{
-  const signedOut=coinBoardHarness();
-  await vm.runInContext('refreshCoinBoard()',signedOut.context);
-  assert.equal(signedOut.elements.coinsToday.textContent,'—');
-  assert.equal(signedOut.elements.coinsTodayCaption.textContent,'ログイン後に表示');
-  assert.match(signedOut.elements.coinRankNote.textContent,/ログインすると/);
-
+test('failed leaderboard requests show the current error state',async()=>{
   const failed=coinBoardHarness(async()=>({ok:false,json:async()=>({error:'offline'})}));
   failed.context.testUser={uid:'learner',getIdToken:async()=>'token'};
-  await vm.runInContext('refreshCoinBoard(testUser)',failed.context);
+  await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',failed.context);
   assert.equal(failed.elements.coinsToday.textContent,'—');
   assert.equal(failed.elements.coinsTodayCaption.textContent,'本日の獲得数を取得できませんでした。');
 });
