@@ -15,6 +15,7 @@ const firebaseConfig={
 };
 const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
+const DAILY_COIN_LEADERBOARD_API='https://task-quest.onrender.com/api/coins/leaderboard';
 // Reuse the site's existing Firebase app and wallet without changing daily rewards.
 export { auth, db, authReady, walletRef };
 let currentUser=auth.currentUser||null;
@@ -36,6 +37,18 @@ function ensureToast(){
 }
 let toastTimer=0;
 function toast(text){const el=ensureToast();el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
+
+function notifyDailyCoinLeaderboard(user){
+  if(typeof fetch!=='function')return;
+  void (async()=>{
+    try{
+      const token=await user.getIdToken();
+      const response=await fetch(DAILY_COIN_LEADERBOARD_API,{method:'POST',headers:{Authorization:'Bearer '+token},cache:'no-store',keepalive:true});
+      if(!response.ok)throw new Error('HTTP '+response.status);
+    }catch(error){console.warn('Daily coin leaderboard update deferred',error);}
+  })();
+}
+
 
 // PET CATCH has its own login-state overlay. Keep its hidden login link truly hidden
 // even though the page's .login-link rule sets display:inline-block.
@@ -125,7 +138,7 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
       claims.push(claim);newCoins=coins+1;awarded=true;
       tx.set(ref,{...(interview?{pre2InterviewA:interview}:{}),coins:newCoins,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:coinsEarnedToday+1,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
     });
-    if(awarded)toast(`🪙 +1　${label}`);
+    if(awarded){toast(`🪙 +1　${label}`);notifyDailyCoinLeaderboard(user);}
     return {awarded,coins:newCoins,reason:awarded?'awarded':'already-today'};
   }catch(error){console.error('Coin reward failed',error);return {awarded:false,reason:'error',error};}
 }
@@ -148,7 +161,7 @@ async function recordRetryAttempt(questionId){
       if(progress>=5){progress-=5;newCoins=coins+1;awarded=true;}
       tx.set(ref,{coins:newCoins,retryCoinProgress:progress,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:coinsEarnedToday+(awarded?1:0),coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
     });
-    if(awarded)toast('🪙 +1　リトライ5問達成！');
+    if(awarded){toast('🪙 +1　リトライ5問達成！');notifyDailyCoinLeaderboard(user);}
     else if(counted)toast(`リトライコインまで ${5-progress}問`);
     return {awarded,counted,progress,coins:newCoins,reason:counted?'counted':'already-today'};
   }catch(error){console.error('Retry coin reward failed',error);return {awarded:false,counted:false,reason:'error',error};}
