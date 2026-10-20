@@ -127,7 +127,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.7.4">ver1.7.4</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.7.5">ver1.7.5</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -656,7 +656,7 @@ function renderCoinRanking(entries,emptyMessage="本日コインを獲得した�
   });
 }
 let coinBoardRequest=null,coinBoardLastAttempt=null;
-const COIN_BOARD_REFRESH_INTERVAL=5*60*1000;
+const COIN_BOARD_EVENT_DEDUPE_MS=1000;
 function resetCoinBoard(message="ログインすると、今日の獲得数とペット名ランキングが表示されます。",authenticated=false){
   coinBoardRequest=null;coinRankRefresh.disabled=true;coinRankRefresh.textContent="↻ 更新";
   coinsToday.textContent=authenticated?"0":"—";coinsTodayCaption.textContent=authenticated?"本日の獲得コイン数":"ログイン後に表示";
@@ -666,7 +666,7 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
   if(!user){resetCoinBoard();return;}
   if(coinBoardRequest?.uid===user.uid)return;
   const now=Date.now();
-  if(!force&&coinBoardLastAttempt?.uid===user.uid&&now-coinBoardLastAttempt.at<COIN_BOARD_REFRESH_INTERVAL)return;
+  if(!force&&coinBoardLastAttempt?.uid===user.uid&&now-coinBoardLastAttempt.at<COIN_BOARD_EVENT_DEDUPE_MS)return;
   const request={uid:user.uid};coinBoardRequest=request;
   coinBoardLastAttempt={uid:user.uid,at:now};
   const isCurrent=()=>coinBoardRequest===request&&coinBoardUser?.uid===user.uid;
@@ -768,10 +768,10 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge-v174.js'></script>
+<script type="module" src='./version-badge-v175.js'></script>
 <script>
 (() => {
-  const version = '1.7.4';
+  const version = '1.7.5';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
