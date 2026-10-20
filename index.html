@@ -127,7 +127,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.7.1">ver1.7.1</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.7.2">ver1.7.2</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -638,12 +638,14 @@ async function syncPet(user,generation){
 }
 
 
-function renderCoinRanking(entries){
+function renderCoinRanking(entries,emptyMessage="本日コインを獲得した方はまだいません"){
   coinRankList.replaceChildren();
   if(!entries.length){
     const item=document.createElement("li");item.className="coin-rank-item";
-    item.innerHTML='<span class="coin-rank-place">—</span><span class="coin-rank-name">本日コインを獲得した方はまだいません</span><span class="coin-rank-coins">—</span>';
-    coinRankList.appendChild(item);return;
+    const place=document.createElement("span");place.className="coin-rank-place";place.textContent="—";
+    const name=document.createElement("span");name.className="coin-rank-name";name.textContent=emptyMessage;
+    const amount=document.createElement("span");amount.className="coin-rank-coins";amount.textContent="—";
+    item.append(place,name,amount);coinRankList.appendChild(item);return;
   }
   entries.slice(0,3).forEach((entry,index)=>{
     const item=document.createElement("li");item.className="coin-rank-item";
@@ -653,16 +655,20 @@ function renderCoinRanking(entries){
     item.append(place,name,amount);coinRankList.appendChild(item);
   });
 }
-let coinBoardRequest=null;
+let coinBoardRequest=null,coinBoardLastAttempt=null;
+const COIN_BOARD_REFRESH_INTERVAL=5*60*1000;
 function resetCoinBoard(message="ログインすると、今日の獲得数とペット名ランキングが表示されます。",authenticated=false){
   coinBoardRequest=null;coinRankRefresh.disabled=true;coinRankRefresh.textContent="↻ 更新";
   coinsToday.textContent=authenticated?"0":"—";coinsTodayCaption.textContent=authenticated?"本日の獲得コイン数":"ログイン後に表示";
   renderCoinRanking([]);coinRankNote.textContent=message;
 }
-async function refreshCoinBoard(user=coinBoardUser){
+async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
   if(!user){resetCoinBoard();return;}
   if(coinBoardRequest?.uid===user.uid)return;
+  const now=Date.now();
+  if(!force&&coinBoardLastAttempt?.uid===user.uid&&now-coinBoardLastAttempt.at<COIN_BOARD_REFRESH_INTERVAL)return;
   const request={uid:user.uid};coinBoardRequest=request;
+  coinBoardLastAttempt={uid:user.uid,at:now};
   const isCurrent=()=>coinBoardRequest===request&&coinBoardUser?.uid===user.uid;
   coinRankRefresh.disabled=true;coinRankRefresh.textContent="取得中…";
   coinRankNote.textContent="本日のランキングを読み込んでいます。";
@@ -675,8 +681,9 @@ async function refreshCoinBoard(user=coinBoardUser){
     const count=Math.max(0,Math.floor(Number(result.coinsToday)||0));
     coinsToday.textContent=count.toLocaleString("ja-JP");
     coinsTodayCaption.textContent="今日、教材に取り組んで獲得したコイン";
-    renderCoinRanking(Array.isArray(result.top3)?result.top3:[]);
-    coinRankNote.textContent="ペット名ごとの本日の獲得数です。";
+    const rankingAvailable=result.rankingAvailable!==false;
+    renderCoinRanking(Array.isArray(result.top3)?result.top3:[],rankingAvailable?"本日コインを獲得した方はまだいません":"本日のランキングを取得できませんでした。");
+    coinRankNote.textContent=rankingAvailable?"ペット名ごとの本日の獲得数です。":"本日の獲得コイン数を表示しています。ランキングは再読み込みしてください。";
   }catch(error){
     if(!isCurrent())return;
     console.error("Coin ranking load failed",error);
@@ -686,7 +693,7 @@ async function refreshCoinBoard(user=coinBoardUser){
     if(isCurrent()){coinBoardRequest=null;coinRankRefresh.disabled=false;coinRankRefresh.textContent="↻ 更新";}
   }
 }
-coinRankRefresh.addEventListener("click",()=>refreshCoinBoard());
+coinRankRefresh.addEventListener("click",()=>refreshCoinBoard(coinBoardUser,{force:true}));
 window.addEventListener("focus",()=>{if(coinBoardUser)refreshCoinBoard();});
 window.addEventListener("pageshow",()=>{if(coinBoardUser)refreshCoinBoard();});
 
@@ -760,6 +767,6 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge.js?v=1.7.1'></script>
+<script type="module" src='./version-badge.js?v=1.7.2'></script>
 </body>
 </html>

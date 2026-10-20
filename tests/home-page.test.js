@@ -22,21 +22,21 @@ test('homepage cards follow the requested desktop order and exam labels',()=>{
 });
 
 function coinBoardHarness(fetchImpl=async()=>({ok:true,json:async()=>({coinsToday:0,top3:[]})})){
-  const elements={};
+  const elements={},listeners={};let fetchCalls=0;
   for(const id of ['coinsToday','coinsTodayCaption','coinRankRefresh','coinRankList','coinRankNote']){
     elements[id]={textContent:'',disabled:false,children:[],addEventListener(){},
       replaceChildren(){this.children=[];},appendChild(child){this.children.push(child);}};
   }
-  const context=vm.createContext({...elements,COIN_LEADERBOARD_API:'https://home.test/api/leaderboard',fetch:fetchImpl,
-    console:{error(){}},window:{addEventListener(){}},
+  const context=vm.createContext({...elements,COIN_LEADERBOARD_API:'https://home.test/api/leaderboard',fetch:(...args)=>{fetchCalls++;return fetchImpl(...args);},
+    console:{error(){}},window:{addEventListener(type,listener){listeners[type]=listener;}},
     document:{createElement(){return {className:'',innerHTML:'',textContent:'',children:[],
       append(...children){this.children.push(...children);}};}},
     Intl,Number,Math,Array,Promise});
-  const start=html.indexOf('function renderCoinRanking(entries){');
+  const start=html.indexOf('function renderCoinRanking(entries,emptyMessage=');
   const end=html.indexOf('loginBtn.addEventListener("click"',start);
   assert.notEqual(start,-1);assert.notEqual(end,-1);
   vm.runInContext('let coinBoardUser=null;\n'+html.slice(start,end),context);
-  return {context,elements};
+  return {context,elements,listeners,get fetchCalls(){return fetchCalls;}};
 }
 
 test('signed-in zero coin balance is shown as zero with the current empty ranking message',async()=>{
@@ -45,7 +45,7 @@ test('signed-in zero coin balance is shown as zero with the current empty rankin
   await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
   assert.equal(h.elements.coinsToday.textContent,'0');
   assert.equal(h.elements.coinsTodayCaption.textContent,'今日、教材に取り組んで獲得したコイン');
-  assert.match(h.elements.coinRankList.children[0].innerHTML,/本日コインを獲得した方はまだいません/);
+  assert.match(h.elements.coinRankList.children[0].children[1].textContent,/本日コインを獲得した方はまだいません/);
   assert.equal(h.elements.coinRankRefresh.disabled,false);
 });
 
@@ -65,4 +65,23 @@ test('failed leaderboard requests show the current error state',async()=>{
   await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',failed.context);
   assert.equal(failed.elements.coinsToday.textContent,'—');
   assert.equal(failed.elements.coinsTodayCaption.textContent,'本日の獲得数を取得できませんでした。');
+});
+
+test('ranking query failures keep the successfully fetched zero coin total visible',async()=>{
+  const h=coinBoardHarness(async()=>({ok:true,json:async()=>({coinsToday:0,top3:[],rankingAvailable:false})}));
+  h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
+  await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
+  assert.equal(h.elements.coinsToday.textContent,'0');
+  assert.match(h.elements.coinRankList.children[0].children[1].textContent,/本日のランキングを取得できませんでした/);
+});
+
+test('focus and page restoration share a five minute refresh window, while manual refresh bypasses it',async()=>{
+  const h=coinBoardHarness();
+  h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
+  await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
+  h.listeners.focus();h.listeners.pageshow();
+  await vm.runInContext('Promise.resolve()',h.context);
+  assert.equal(h.fetchCalls,1);
+  await vm.runInContext('refreshCoinBoard(testUser,{force:true})',h.context);
+  assert.equal(h.fetchCalls,2);
 });
