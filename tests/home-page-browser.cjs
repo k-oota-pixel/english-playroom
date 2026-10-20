@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 (async()=>{
   const root=path.resolve(__dirname,'..');
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  const fixture=html.replace(/<script\\b[\\s\\S]*?<\\/script>/g,'');
+  const fixture=html.replace(/<script\b[\s\S]*?<\/script>/g,'');
   const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
   try{
     const page=await browser.newPage({viewport:{width:1280,height:1000}});
