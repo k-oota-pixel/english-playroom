@@ -40,6 +40,7 @@ function advanceLifecycle(source,today,uid){
   const loginPatch=cumulativeLoginPatch(source,today);
   const data={...source,...loginPatch};
   const patch={...loginPatch,...growthPatch(data,today,uid)};
+  if(hasPet(data)&&data.petAdult===false&&validPetName(data.petName))patch.petName=null;
   const oldVersion=int(data.petLifecycleVersion,0);
 
   if(oldVersion<LIFECYCLE_VERSION){
@@ -179,25 +180,26 @@ function applyUi(data={}){
   const petDays=document.getElementById('petDays'),status=document.getElementById('petStatus'),bar=document.getElementById('petBar'),create=document.getElementById('petCreate');
   if(memoryButton)memoryButton.hidden=!memoriesOf(data).length;
   if(hatched){
-    const title=document.getElementById('petTitle');if(title)title.textContent=validPetName(data.petName)?normalizePetName(data.petName):data.petAdult===false?'ふわふわの相棒':'わたしのペット';
-    const nameButton=document.getElementById('petNameButton');if(nameButton)nameButton.hidden=validPetName(data.petName);
+    const title=document.getElementById('petTitle');if(title)title.textContent=data.petAdult===false?'なぞのいきもの':validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
+    const nameButton=document.getElementById('petNameButton');if(nameButton)nameButton.hidden=data.petAdult===false||validPetName(data.petName);
     rerenderIfNeeded(data);
-    if(petDays)petDays.textContent=stage==='baby'?`幼体 · 孵化後${hatchDay(data,localDateKey())}日目`:stage==='adult'?`${days}日目`:`長寿期 · ${days}日目`;
+    if(petDays){petDays.hidden=stage==='baby';petDays.textContent=stage==='baby'?'':stage==='adult'?`${days}日目`:`長寿期 · ${days}日目`;}
     if(status){
+      status.hidden=stage==='baby'&&!data.petGrowthPending;
       if(data.petGrowthPending)status.textContent='成長のときが来ました！アンケートに答えて成体に育てよう。';
-      else if(stage==='baby')status.textContent=`孵化後${hatchDay(data,localDateKey())}日目。2日目40%、3日目80%、4日目には必ず成長します。`;
+      else if(stage==='baby')status.textContent='';
       else if(stage==='adult')status.textContent='';
       else status.textContent=`長寿期${days}日目。前日のHAPPYが高いほど長生きしやすくなります。`;
     }
     if(create){create.hidden=!data.petGrowthPending;create.textContent='成長アンケートに答える';}
   }else if(currentUser){
     const ready=days>=2,shown=Math.min(2,days);
-    if(petDays)petDays.textContent=generation>1?`新しいたまご ${shown} / 2日`:`ログイン ${shown} / 2日`;
+    if(petDays){petDays.hidden=false;petDays.textContent=generation>1?`新しいたまご ${shown} / 2日`:`ログイン ${shown} / 2日`;}
     if(bar)bar.style.width=`${Math.min(100,(shown/2)*100)}%`;
     if(create){create.hidden=!ready;create.textContent='たまごをかえす';}
     const title=document.getElementById('petTitle');
     if(title)title.textContent=ready?'たまごがかえりそう！':generation>1?'新しいふしぎなたまご':'ふしぎなたまご';
-    if(status)status.textContent=ready?'たまごをかえして、ふわふわの相棒を迎えよう。':days?`あと${2-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';
+    if(status){status.hidden=false;status.textContent=ready?'たまごをかえして、なぞのいきものを迎えよう。':days?`あと${2-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';}
   }
 }
 
