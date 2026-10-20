@@ -183,13 +183,13 @@ function applyUi(data={}){
     const title=document.getElementById('petTitle');if(title)title.textContent=data.petAdult===false?'なぞのいきもの':validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
     const nameButton=document.getElementById('petNameButton');if(nameButton)nameButton.hidden=data.petAdult===false||validPetName(data.petName);
     rerenderIfNeeded(data);
-    if(petDays){petDays.hidden=stage==='baby';petDays.textContent=stage==='baby'?'':stage==='adult'?`${days}日目`:`長寿期 · ${days}日目`;}
+    if(petDays){petDays.hidden=stage==='baby';petDays.textContent=stage==='baby'?'':`${days}日目`;}
     if(status){
-      status.hidden=stage==='baby'&&!data.petGrowthPending;
+      status.hidden=(stage==='baby'||stage==='elder')&&!data.petGrowthPending;
       if(data.petGrowthPending)status.textContent='成長のときが来ました！アンケートに答えて成体に育てよう。';
       else if(stage==='baby')status.textContent='';
       else if(stage==='adult')status.textContent='';
-      else status.textContent=`長寿期${days}日目。前日のHAPPYが高いほど長生きしやすくなります。`;
+      else status.textContent='';
     }
     if(create){create.hidden=!data.petGrowthPending;create.textContent='成長アンケートに答える';}
   }else if(currentUser){
