@@ -36,6 +36,63 @@ function ensureToast(){
 let toastTimer=0;
 function toast(text){const el=ensureToast();el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
 
+// TaskQuest keeps an in-tab draft for each quest so an AI quota/network error,
+// timeout, or the one-time Firebase sync reload cannot erase a student's answer.
+function installTaskQuestAnswerGuard(){
+  const form=document.getElementById('form');
+  const answer=document.getElementById('answer');
+  const feedback=document.getElementById('feedback');
+  const questnum=document.getElementById('questnum');
+  if(!form||!answer||!feedback||!questnum)return;
+
+  const STORAGE_KEY='taskquest-answer-drafts-v1';
+  let drafts={};
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'{}');
+    if(saved&&typeof saved==='object'&&!Array.isArray(saved))drafts=saved;
+  }catch{}
+
+  const taskKey=()=>questnum.textContent.trim();
+  const persist=()=>{
+    try{sessionStorage.setItem(STORAGE_KEY,JSON.stringify(drafts));}catch{}
+  };
+  const saveCurrent=()=>{
+    const key=taskKey();if(!key)return;
+    if(answer.value)drafts[key]=answer.value;
+    else delete drafts[key];
+    persist();
+  };
+  const restoreCurrent=()=>{
+    const key=taskKey(),saved=key?drafts[key]:'';
+    if(saved&&!answer.value)answer.value=saved;
+  };
+  const clearCurrentDraft=()=>{
+    const key=taskKey();if(key&&Object.prototype.hasOwnProperty.call(drafts,key)){delete drafts[key];persist();}
+  };
+
+  answer.addEventListener('input',saveCurrent);
+  form.addEventListener('submit',saveCurrent,true);
+
+  const feedbackObserver=new MutationObserver(()=>{
+    const text=feedback.textContent||'';
+    if(text.includes('この回答は挑戦回数に含めていません。')){
+      restoreCurrent();
+      return;
+    }
+    if(text.includes('TASK CLEAR!')||text.includes('TRY AGAIN'))clearCurrentDraft();
+  });
+  feedbackObserver.observe(feedback,{childList:true,subtree:true,characterData:true});
+
+  const questObserver=new MutationObserver(()=>queueMicrotask(restoreCurrent));
+  questObserver.observe(questnum,{childList:true,subtree:true,characterData:true});
+  window.addEventListener('pageshow',restoreCurrent);
+  queueMicrotask(restoreCurrent);
+  window.addEventListener('pagehide',()=>{feedbackObserver.disconnect();questObserver.disconnect();},{once:true});
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installTaskQuestAnswerGuard,{once:true});
+else installTaskQuestAnswerGuard();
+
 async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
