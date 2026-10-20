@@ -1,16 +1,16 @@
-name: Learning dashboard
+name: Homepage and daily coin board
 on:
   push:
     paths:
       - 'index.html'
       - 'dashboard-extra.js'
       - 'coin-reward.js'
-      - 'word-breaker-store.js'
-      - 'tests/dashboard*'
+      - 'tests/home-page*'
+      - 'tests/coin-reward*'
       - '.github/workflows/dashboard.yml'
   workflow_dispatch:
 jobs:
-  dashboard:
+  homepage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,6 +18,6 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts
-      - run: node --test tests/dashboard-extra.test.js
+      - run: npm test
       - run: npx playwright install --with-deps chromium
-      - run: node tests/dashboard-browser.cjs
+      - run: node tests/home-page-browser.cjs
