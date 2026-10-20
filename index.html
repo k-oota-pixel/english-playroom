@@ -768,5 +768,26 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src='./version-badge-v172.js'></script>
+<script>
+(() => {
+  const version = '1.7.2';
+  const logo = document.querySelector('.logo');
+  if (!logo) return;
+  const enforceVersion = () => {
+    const badge = logo.querySelector('.app-version-badge');
+    if (!badge) return;
+    if (badge.textContent !== `ver${version}`) badge.textContent = `ver${version}`;
+    if (badge.getAttribute('aria-label') !== `version ${version}`) badge.setAttribute('aria-label', `version ${version}`);
+  };
+  enforceVersion();
+  new MutationObserver(enforceVersion).observe(logo, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['aria-label']
+  });
+})();
+</script>
 </body>
 </html>
