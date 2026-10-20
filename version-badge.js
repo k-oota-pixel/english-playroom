@@ -19,7 +19,7 @@ import './pet-play-v160.js?v=1.6.0';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.5.27').then(()=>import('./pet-admin-limit-v1420.js?v=1.4.28')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.6.0';
+const APP_VERSION='1.6.1';
 
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
