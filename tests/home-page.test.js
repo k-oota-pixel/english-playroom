@@ -50,7 +50,7 @@ test('daily ranking displays up to three pet names and their coin totals',async(
   const rows=[{petName:'えまめん',coinsToday:18},{petName:'ルル',coinsToday:12},{petName:'ポチ',coinsToday:4},{petName:'対象外',coinsToday:1}];
   const h=coinBoardHarness(async()=>({ok:true,json:async()=>({coinsToday:18,top3:rows})}));
   h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
-  await vm.runInContext('refreshCoinBoard(testUser)',h.context);
+  await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
   assert.equal(h.elements.coinRankList.children.length,3);
   assert.deepEqual(Array.from(h.elements.coinRankList.children,li=>li.children[1].textContent),['えまめん','ルル','ポチ']);
   assert.deepEqual(Array.from(h.elements.coinRankList.children,li=>li.children[2].textContent),['🪙 18','🪙 12','🪙 4']);
