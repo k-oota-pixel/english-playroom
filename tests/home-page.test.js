@@ -13,7 +13,7 @@ test('homepage shows the current learning cards in a five-by-two desktop grid',(
   assert.match(cards,/href="\.\/listening-training\/"[\s\S]*?<div class="title">リスニング教材<\/div>/);
   assert.match(cards,/<div class="title">並べ替え問題（基礎）<\/div>/);
   assert.match(cards,/<div class="title">タスク別日常英会話<\/div>/);
-  assert.equal((cards.match(/class="interview-card"/g)||[]).length,1);
+  assert.equal((cards.match(/class="[^"]*interview-card/g)||[]).length,1);
   assert.equal((cards.match(/eiken-pre2-interview-a|準2級面接/g)||[]).length>=2,true);
   assert.doesNotMatch(html,/stat-grid|dashRefresh|wordBreakerStat/);
 });
@@ -39,7 +39,7 @@ function coinBoardHarness(fetchImpl=async()=>({ok:true,json:async()=>({coinsToda
 test('signed-in zero coin balance is shown as zero with the current empty ranking message',async()=>{
   const h=coinBoardHarness();
   h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
-  await vm.runInContext('refreshCoinBoard(testUser)',h.context);
+  await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
   assert.equal(h.elements.coinsToday.textContent,'0');
   assert.equal(h.elements.coinsTodayCaption.textContent,'今日、教材に取り組んで獲得したコイン');
   assert.match(h.elements.coinRankList.children[0].innerHTML,/本日コインを獲得した方はまだいません/);
