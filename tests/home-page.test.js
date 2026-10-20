@@ -32,7 +32,7 @@ function coinBoardHarness(fetchImpl=async()=>({ok:true,json:async()=>({coinsToda
     document:{createElement(){return {className:'',innerHTML:'',textContent:'',children:[],
       append(...children){this.children.push(...children);}};}},
     Intl,Number,Math,Array,Promise});
-  const start=html.indexOf('function renderCoinRanking(entries){');
+  const start=html.indexOf('function renderCoinRanking(entries,emptyMessage=');
   const end=html.indexOf('loginBtn.addEventListener("click"',start);
   assert.notEqual(start,-1);assert.notEqual(end,-1);
   vm.runInContext('let coinBoardUser=null;\n'+html.slice(start,end),context);
