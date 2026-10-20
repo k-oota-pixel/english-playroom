@@ -17,7 +17,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
       ['WORD BREAKER','アテル','並べ替え問題（基礎）','リトライノート','タスク別日常英会話',
        '長文空所補充','長文概要把握','リスニング演習＆ディクテーション','準２級面接対策','テーマ別日常英会話']);
     assert.equal(await page.locator('.cards > .card').count(),10);
-    assert.equal(await page.locator('.app-version-badge').textContent(),'ver1.7.4');
+    assert.equal(await page.locator('.app-version-badge').textContent(),'ver1.7.5');
     assert.equal(await page.locator('.cards').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),5);
     assert.equal(await page.locator('.cards a[href="./listening-training/"]').count(),1);
     assert.equal(await page.locator('.eiken-badge').count(),6);
