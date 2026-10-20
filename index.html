@@ -658,7 +658,7 @@ function renderCoinRanking(entries,emptyMessage="本日コインを獲得した�
 let coinBoardRequest=null,coinBoardLastAttempt=null;
 const COIN_BOARD_EVENT_DEDUPE_MS=1000;
 function resetCoinBoard(message="ログインすると、今日の獲得数とペット名ランキングが表示されます。",authenticated=false){
-  coinBoardRequest=null;coinRankRefresh.disabled=true;coinRankRefresh.textContent="↻ 更新";
+  coinBoardRequest=null;coinBoardLastAttempt=null;coinRankRefresh.disabled=true;coinRankRefresh.textContent="↻ 更新";
   coinsToday.textContent=authenticated?"0":"—";coinsTodayCaption.textContent=authenticated?"本日の獲得コイン数":"ログイン後に表示";
   renderCoinRanking([]);coinRankNote.textContent=message;
 }
