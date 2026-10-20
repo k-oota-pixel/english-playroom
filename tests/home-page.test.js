@@ -45,7 +45,7 @@ test('signed-in zero coin balance is shown as zero with the current empty rankin
   await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
   assert.equal(h.elements.coinsToday.textContent,'0');
   assert.equal(h.elements.coinsTodayCaption.textContent,'今日、教材に取り組んで獲得したコイン');
-  assert.match(h.elements.coinRankList.children[0].innerHTML,/本日コインを獲得した方はまだいません/);
+  assert.match(h.elements.coinRankList.children[0].children[1].textContent,/本日コインを獲得した方はまだいません/);
   assert.equal(h.elements.coinRankRefresh.disabled,false);
 });
 
