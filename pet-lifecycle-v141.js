@@ -180,7 +180,7 @@ function applyUi(data={}){
   const petDays=document.getElementById('petDays'),status=document.getElementById('petStatus'),bar=document.getElementById('petBar'),create=document.getElementById('petCreate');
   if(memoryButton)memoryButton.hidden=!memoriesOf(data).length;
   if(hatched){
-    const title=document.getElementById('petTitle');if(title)title.textContent=data.petAdult===false?'なぞのいきもの':validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
+    const title=document.getElementById('petTitle');if(title)title.textContent=data.petAdult===false?'赤ちゃんペット':validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
     const nameButton=document.getElementById('petNameButton');if(nameButton)nameButton.hidden=data.petAdult===false||validPetName(data.petName);
     rerenderIfNeeded(data);
     if(petDays){petDays.hidden=stage==='baby';petDays.textContent=stage==='baby'?'':`${days}日目`;}
@@ -199,7 +199,7 @@ function applyUi(data={}){
     if(create){create.hidden=!ready;create.textContent='たまごをかえす';}
     const title=document.getElementById('petTitle');
     if(title)title.textContent=ready?'たまごがかえりそう！':generation>1?'新しいふしぎなたまご':'ふしぎなたまご';
-    if(status){status.hidden=false;status.textContent=ready?'たまごをかえして、なぞのいきものを迎えよう。':days?`あと${2-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';}
+    if(status){status.hidden=false;status.textContent=ready?'たまごをかえして、赤ちゃんペットを迎えよう。':days?`あと${2-days}回ログインすると、たまごがかえります。`:'新しいたまごを育てよう。';}
   }
 }
 
