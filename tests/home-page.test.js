@@ -66,3 +66,11 @@ test('failed leaderboard requests show the current error state',async()=>{
   assert.equal(failed.elements.coinsToday.textContent,'—');
   assert.equal(failed.elements.coinsTodayCaption.textContent,'本日の獲得数を取得できませんでした。');
 });
+
+test('ranking query failures keep the successfully fetched zero coin total visible',async()=>{
+  const h=coinBoardHarness(async()=>({ok:true,json:async()=>({coinsToday:0,top3:[],rankingAvailable:false})}));
+  h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
+  await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
+  assert.equal(h.elements.coinsToday.textContent,'0');
+  assert.match(h.elements.coinRankList.children[0].children[1].textContent,/本日のランキングを取得できませんでした/);
+});
