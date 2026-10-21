@@ -14,7 +14,7 @@ const EXTRA_ITEMS=Object.freeze([
   {id:'heart-glasses',name:'ハートメガネ',price:12,slot:'face',icon:'💗'},
   {id:'monocle',name:'モノクル',price:10,slot:'face',icon:'🧐'},
   {id:'pixel-glasses',name:'ピクセルメガネ',price:15,slot:'face',icon:'🕶️'},
-  {id:'flower-glasses',name:'お花メガネ',price:14,slot:'face',icon:'🌸'},
+  {id:'flower-glasses',name:'お花メガネ',price:14,slot:'face',icon:'<svg class="pet-flower-glasses-icon" viewBox="0 0 76 34" aria-hidden="true"><g fill="none" stroke="#a84e6c" stroke-width="2.2" stroke-linecap="round"><path d="M28 17 Q38 12 48 17"/><path d="M9 16 Q5 15 3 12 M67 16 Q71 15 73 12"/></g><g fill="#f49ab9" stroke="#a84e6c" stroke-width="1.4"><g transform="translate(22 17)"><circle cy="-8" r="5.2"/><circle cx="7.6" cy="-2.5" r="5.2"/><circle cx="4.7" cy="6.5" r="5.2"/><circle cx="-4.7" cy="6.5" r="5.2"/><circle cx="-7.6" cy="-2.5" r="5.2"/></g><g transform="translate(54 17)"><circle cy="-8" r="5.2"/><circle cx="7.6" cy="-2.5" r="5.2"/><circle cx="4.7" cy="6.5" r="5.2"/><circle cx="-4.7" cy="6.5" r="5.2"/><circle cx="-7.6" cy="-2.5" r="5.2"/></g></g><g fill="#ffd0df" fill-opacity=".78" stroke="#a84e6c" stroke-width="1.7"><circle cx="22" cy="17" r="6.2"/><circle cx="54" cy="17" r="6.2"/></g></svg>'},
   {id:'hero-mask',name:'ヒーローマスク',price:16,slot:'face',icon:'🦸'},
   {id:'rosy-cheeks',name:'ほっぺシール',price:8,slot:'face',icon:'😊'},
 
@@ -52,7 +52,7 @@ const ACCESSORY_LAYERS=Object.freeze({
   'heart-glasses':'<g stroke="#c85578" stroke-width="4" fill="#f5a2bb" opacity=".95"><path d="M75 104 C75 91 92 87 99 99 C106 87 123 91 123 104 C123 119 99 130 99 130 C99 130 75 119 75 104Z"/><path d="M117 104 C117 91 134 87 141 99 C148 87 165 91 165 104 C165 119 141 130 141 130 C141 130 117 119 117 104Z"/></g><path d="M121 103 H119" stroke="#c85578" stroke-width="5"/>',
   'monocle':'<g fill="none" stroke="#6c5840" stroke-width="4"><circle cx="146" cy="112" r="18"/><path d="M160 125 Q169 146 160 167"/></g><circle cx="146" cy="112" r="12" fill="#d9eef7" opacity=".22"/>',
   'pixel-glasses':'<g fill="#263642" stroke="#263642" stroke-width="2"><path d="M75 101 H108 V123 H82 V116 H75Z"/><path d="M132 101 H165 V116 H158 V123 H132Z"/><rect x="108" y="106" width="24" height="6"/></g><g fill="#7bc9e8" opacity=".4"><rect x="82" y="105" width="20" height="11"/><rect x="138" y="105" width="20" height="11"/></g>',
-  'flower-glasses':'<g fill="#f3a6bd" stroke="#8c5665" stroke-width="3"><circle cx="94" cy="111" r="15"/><circle cx="146" cy="111" r="15"/></g><g fill="#fff3c2"><circle cx="94" cy="111" r="7"/><circle cx="146" cy="111" r="7"/></g><path d="M109 111 H131" stroke="#8c5665" stroke-width="4"/>',
+  'flower-glasses':'<g><g fill="none" stroke="#a84e6c" stroke-width="3.5" stroke-linecap="round"><path d="M105 111 Q120 104 135 111"/><path d="M78 109 Q69 107 64 101 M162 109 Q171 107 176 101"/></g><g fill="#f49ab9" stroke="#a84e6c" stroke-width="2.5"><circle cx="94" cy="96" r="9"/><circle cx="108" cy="106" r="9"/><circle cx="103" cy="123" r="9"/><circle cx="85" cy="123" r="9"/><circle cx="80" cy="106" r="9"/><circle cx="146" cy="96" r="9"/><circle cx="160" cy="106" r="9"/><circle cx="155" cy="123" r="9"/><circle cx="137" cy="123" r="9"/><circle cx="132" cy="106" r="9"/></g><g fill="#ffd0df" fill-opacity=".62" stroke="#a84e6c" stroke-width="3"><circle cx="94" cy="111" r="11"/><circle cx="146" cy="111" r="11"/></g><g fill="#fff" opacity=".42"><circle cx="90" cy="107" r="3"/><circle cx="142" cy="107" r="3"/></g></g>',
   'hero-mask':'<g><path d="M73 98 Q94 88 120 98 Q146 88 167 98 L158 125 Q140 132 120 120 Q100 132 82 125Z" fill="#6c78c8" stroke="#3f496f" stroke-width="4"/><ellipse cx="95" cy="111" rx="10" ry="7" fill="#fff"/><ellipse cx="145" cy="111" rx="10" ry="7" fill="#fff"/></g>',
   'rosy-cheeks':'<g fill="#f29ab1" opacity=".7"><ellipse cx="76" cy="139" rx="15" ry="8"/><ellipse cx="164" cy="139" rx="15" ry="8"/></g>',
   'green-scarf':'<g><path d="M72 168 Q120 184 168 168 L158 190 Q120 203 82 190Z" fill="#68a77a" stroke="#456956" stroke-width="4"/><path d="M143 184 Q163 190 166 214 L147 217 Q147 199 137 192Z" fill="#76b789" stroke="#456956" stroke-width="4"/></g>',
@@ -84,6 +84,8 @@ const BACKGROUND_LAYERS=Object.freeze({
 const STYLE=`
 .pet-shop-item[data-extra-item="1"]{background:linear-gradient(180deg,#fff,#fffdf6)}
 .pet-shop-item[data-extra-item="1"] .pet-shop-name::after{content:" NEW";font-size:8px;letter-spacing:.08em;color:#a97918}
+.pet-shop-item[data-item-id="flower-glasses"] .pet-shop-icon{height:30px;display:flex;align-items:center}
+.pet-shop-item[data-item-id="flower-glasses"] .pet-flower-glasses-icon{display:block;width:60px;height:30px;overflow:visible}
 .pet-extra-effect{transform-box:fill-box;transform-origin:center;animation:petExtraFloat 3.2s ease-in-out infinite}
 @keyframes petExtraFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @media(prefers-reduced-motion:reduce){.pet-extra-effect{animation:none}}
