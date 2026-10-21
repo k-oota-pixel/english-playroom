@@ -91,6 +91,10 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 @media(max-width:620px){.coin-board{grid-template-columns:1fr;gap:10px}.coin-today{min-height:126px;padding:15px 17px}.coin-total strong{font-size:38px}}
 
 
+.learning-dashboard{margin-top:14px;padding:15px 16px;background:#fff;border:1px solid #dce5da;border-radius:16px}
+.learning-dashboard h2{margin:0}.learning-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.learning-item{padding:12px;border:1px solid #e1e9df;border-radius:12px;min-width:0}.learning-item strong{display:block;font-size:13px}.learning-item p{font-size:11px;color:#65756e;line-height:1.7;margin:7px 0 0;overflow-wrap:anywhere}.learning-today{display:inline-block;font-size:10px;margin-top:7px;padding:4px 8px;border-radius:99px;background:#f1f3ef;color:#748178}.learning-today.done{background:#e4f4e9;color:#24654a;font-weight:800}
+@media(max-width:620px){.learning-list{grid-template-columns:1fr}}
 [hidden]{display:none!important}
 .pet-chat-modal{position:static;inset:auto;z-index:auto;background:transparent;padding:0;min-width:0}
 .pet-chat-panel{width:100%;height:330px;background:#fff;border:1px solid #dbe4dc;border-radius:18px;box-shadow:0 8px 24px #183b3810;display:flex;flex-direction:column;overflow:hidden}
@@ -189,13 +193,19 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
     <div class="coin-ranking">
       <div class="coin-rank-head">
         <div class="coin-rank-title">本日の獲得コイン TOP3</div>
-        <button id="coinRankRefresh" class="coin-rank-refresh" type="button">↻ 更新</button>
+        <button id="coinRankRefresh" class="coin-rank-refresh" type="button" aria-controls="coinRankList" aria-expanded="false" disabled>表示する</button>
       </div>
-      <ol id="coinRankList" class="coin-rank-list" aria-live="polite">
+      <ol id="coinRankList" class="coin-rank-list" hidden aria-live="polite">
         <li class="coin-rank-item"><span class="coin-rank-place">—</span><span class="coin-rank-name">ログイン後に表示</span><span class="coin-rank-coins">—</span></li>
       </ol>
       <div id="coinRankNote" class="coin-rank-note" role="status">ログインすると、ペット名でランキングを表示します。</div>
     </div>
+  </section>
+
+  <section class="learning-dashboard" aria-labelledby="learningTitle">
+    <div class="coin-rank-head"><h2 id="learningTitle" class="coin-rank-title">学習ダッシュボード</h2><button id="learningShow" class="coin-rank-refresh" type="button" aria-controls="learningList" aria-expanded="false" disabled>表示する</button></div>
+    <p id="learningNote" class="coin-rank-note" role="status">ログインすると学習状況を確認できます。</p>
+    <div id="learningList" class="learning-list" hidden></div>
   </section>
 
   <div class="cards">
@@ -308,6 +318,7 @@ import {
   getFirestore, doc, getDoc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
+import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=1.5.29';
@@ -361,6 +372,11 @@ const COIN_LEADERBOARD_API="https://task-quest.onrender.com/api/coins/leaderboar
 
 let signingIn=false;
 let coinBoardUser=null;
+const learningDashboard=createLearningDashboard({button:document.getElementById('learningShow'),list:document.getElementById('learningList'),note:document.getElementById('learningNote'),getUser:()=>coinBoardUser,load:async user=>{
+ const token=await user.getIdToken();
+ const response=await fetch('https://task-quest.onrender.com/api/learning/dashboard',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
+ const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||'学習記録を取得できませんでした。');return result;
+}});
 
 function setAuthUI(mode,label,sub){
   authDot.className="auth-dot"+(mode?` ${mode}`:"");
@@ -588,6 +604,7 @@ petRetry.addEventListener('click',async()=>{
 });
 
 function renderPet(data={},message=''){
+  if(coinBoardUser){const today=localDateKey();coinsToday.textContent=(data.coinEarnedDate===today?Math.max(0,Number(data.coinsEarnedToday)||0):0).toLocaleString('ja-JP');coinsTodayCaption.textContent='今日、教材に取り組んで獲得したコイン';}
   const days=Math.max(0,Number(data.petLoginDays)||0),shown=Math.min(3,days);
   const hatched=hasPet(data),ready=readyToHatch(data);
   petDays.textContent=hatched?'誕生しました！':`ログイン ${shown} / 3日`;
@@ -658,7 +675,7 @@ function renderCoinRanking(entries,emptyMessage="本日コインを獲得した�
 let coinBoardRequest=null,coinBoardLastAttempt=null;
 const COIN_BOARD_EVENT_DEDUPE_MS=1000;
 function resetCoinBoard(message="ログインすると、今日の獲得数とペット名ランキングが表示されます。",authenticated=false){
-  coinBoardRequest=null;coinBoardLastAttempt=null;coinRankRefresh.disabled=true;coinRankRefresh.textContent="↻ 更新";
+  coinBoardRequest=null;coinBoardLastAttempt=null;coinRankRefresh.disabled=!authenticated;coinRankRefresh.textContent="表示する";coinRankRefresh.setAttribute("aria-expanded","false");coinRankList.hidden=true;
   coinsToday.textContent=authenticated?"0":"—";coinsTodayCaption.textContent=authenticated?"本日の獲得コイン数":"ログイン後に表示";
   renderCoinRanking([]);coinRankNote.textContent=message;
 }
@@ -675,13 +692,14 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
   try{
     const token=await user.getIdToken();
     const rankingUrl=force?`${COIN_LEADERBOARD_API}?refresh=1`:COIN_LEADERBOARD_API;
-    const response=await fetch(rankingUrl,{headers:{Authorization:`Bearer ${token}`},cache:"no-store"});
+    const response=await fetch(rankingUrl,{headers:{Authorization:`Bearer ${token}`},cache:"no-store",signal:AbortSignal.timeout(45000)});
     const result=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(result.error||"ランキングを取得できませんでした。");
     if(!isCurrent())return;
     const count=Math.max(0,Math.floor(Number(result.coinsToday)||0));
     coinsToday.textContent=count.toLocaleString("ja-JP");
     coinsTodayCaption.textContent="今日、教材に取り組んで獲得したコイン";
+    coinRankList.hidden=false;coinRankRefresh.setAttribute("aria-expanded","true");
     const rankingAvailable=result.rankingAvailable!==false;
     renderCoinRanking(Array.isArray(result.top3)?result.top3:[],rankingAvailable?"本日コインを獲得した方はまだいません":"本日のランキングを取得できませんでした。");
     coinRankNote.textContent=rankingAvailable?"ペット名ごとの本日の獲得数です。":"本日の獲得コイン数を表示しています。ランキングは再読み込みしてください。";
@@ -691,12 +709,12 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
     coinsToday.textContent="—";coinsTodayCaption.textContent="本日の獲得数を取得できませんでした。";
     coinRankNote.textContent=error.message||"ランキングを読み込めませんでした。もう一度お試しください。";
   }finally{
-    if(isCurrent()){coinBoardRequest=null;coinRankRefresh.disabled=false;coinRankRefresh.textContent="↻ 更新";}
+    if(isCurrent()){coinBoardRequest=null;coinRankRefresh.disabled=false;coinRankRefresh.textContent=coinRankList.hidden?"再試行":"↻ 更新";}
   }
 }
 coinRankRefresh.addEventListener("click",()=>refreshCoinBoard(coinBoardUser,{force:true}));
-window.addEventListener("focus",()=>{if(coinBoardUser)refreshCoinBoard();});
-window.addEventListener("pageshow",()=>{if(coinBoardUser)refreshCoinBoard();});
+
+
 
 
 loginBtn.addEventListener("click",()=>{
@@ -724,7 +742,7 @@ onAuthStateChanged(auth,async user=>{
   petUser=user;petData={};petDataUid=null;petSyncRetry.hidden=true;petSyncError.hidden=true;petSyncRetry.disabled=false;authSub.removeAttribute("title");petMaker.close();petNameDialog.close();hidePetChatBuiltIn();petChatHistory=[];petChatIdentity='';petChatTyping=false;petChatSuggestions=[];petCreate.hidden=true;petRetry.hidden=true;petNameButton.hidden=true;
   loginBtn.disabled=false;
   if(!user){
-    coinBoardUser=null;
+    coinBoardUser=null;learningDashboard.reset();
     logoutBtn.hidden=true;
     setAuthUI("","ログイン","端末保存");
     renderPet({},"ログインすると、たまごの育成が始まります。");
@@ -734,10 +752,10 @@ onAuthStateChanged(auth,async user=>{
 
   loginBtn.disabled=true;
   logoutBtn.hidden=false;
-  coinBoardUser=user;
-  resetCoinBoard("ランキングを読み込んでいます。",true);
+  coinBoardUser=user;learningDashboard.reset();
+  resetCoinBoard("「表示する」を押すと本日のTOP3を読み込みます。",true);
   await retryPetSync(user,generation);
-  if(generation===petAuthGeneration&&coinBoardUser?.uid===user.uid)await refreshCoinBoard(user);
+
 });
 
 async function retryPetSync(user=auth.currentUser,generation=petAuthGeneration){

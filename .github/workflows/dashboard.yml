@@ -4,6 +4,9 @@ on:
     paths:
       - 'index.html'
       - 'dashboard-extra.js'
+      - 'learning-dashboard.js'
+      - 'tests/learning-dashboard*'
+      - 'admin-content-model.js'
       - 'coin-reward.js'
       - 'tests/home-page*'
       - 'tests/coin-reward*'
@@ -21,3 +24,4 @@ jobs:
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: node tests/home-page-browser.cjs
+      - run: node tests/learning-dashboard-browser.cjs

@@ -24,14 +24,14 @@ test('homepage cards follow the requested desktop order and exam labels',()=>{
 function coinBoardHarness(fetchImpl=async()=>({ok:true,json:async()=>({coinsToday:0,top3:[]})})){
   const elements={},listeners={};let fetchCalls=0;
   for(const id of ['coinsToday','coinsTodayCaption','coinRankRefresh','coinRankList','coinRankNote']){
-    elements[id]={textContent:'',disabled:false,children:[],addEventListener(){},
+    elements[id]={textContent:'',disabled:false,children:[],setAttribute(){},addEventListener(){},
       replaceChildren(){this.children=[];},appendChild(child){this.children.push(child);}};
   }
   const context=vm.createContext({...elements,COIN_LEADERBOARD_API:'https://home.test/api/leaderboard',fetch:(...args)=>{fetchCalls++;return fetchImpl(...args);},
     console:{error(){}},window:{addEventListener(type,listener){listeners[type]=listener;}},
     document:{createElement(){return {className:'',innerHTML:'',textContent:'',children:[],
       append(...children){this.children.push(...children);}};}},
-    Intl,Number,Math,Array,Promise});
+    Intl,Number,Math,Array,Promise,AbortSignal});
   const start=html.indexOf('function renderCoinRanking(entries,emptyMessage=');
   const end=html.indexOf('loginBtn.addEventListener("click"',start);
   assert.notEqual(start,-1);assert.notEqual(end,-1);
@@ -75,11 +75,12 @@ test('ranking query failures keep the successfully fetched zero coin total visib
   assert.match(h.elements.coinRankList.children[0].children[1].textContent,/本日のランキングを取得できませんでした/);
 });
 
-test('focus and page restoration share a five minute refresh window, while manual refresh bypasses it',async()=>{
+test('ranking only loads on demand and never on focus or page restoration',async()=>{
   const h=coinBoardHarness();
   h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
   await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
-  h.listeners.focus();h.listeners.pageshow();
+  assert.equal(h.listeners.focus,undefined);assert.equal(h.listeners.pageshow,undefined);
+  assert.doesNotMatch(html,/await refreshCoinBoard\(user\)/);
   await vm.runInContext('Promise.resolve()',h.context);
   assert.equal(h.fetchCalls,1);
   await vm.runInContext('refreshCoinBoard(testUser,{force:true})',h.context);
