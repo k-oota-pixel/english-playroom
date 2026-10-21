@@ -17,7 +17,7 @@ const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
 const DAILY_COIN_LEADERBOARD_API='https://task-quest.onrender.com/api/coins/leaderboard';
 // Reuse the site's existing Firebase app and wallet without changing daily rewards.
-export { auth, db, authReady, walletRef };
+export { auth, db, authReady, walletRef, recordLearningActivity };
 let currentUser=auth.currentUser||null;
 let authResolved=false,resolveAuth;
 const authReady=new Promise(r=>resolveAuth=r);
@@ -118,9 +118,17 @@ function installTaskQuestAnswerGuard(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installTaskQuestAnswerGuard,{once:true});
 else installTaskQuestAnswerGuard();
 
+let lastLearningUid='',lastLearningSent=0;
+async function recordLearningActivity(){
+  await authReady;const user=currentUser;if(!user||typeof fetch!=='function')return;
+  if(lastLearningUid===user.uid&&Date.now()-lastLearningSent<1000)return;lastLearningUid=user.uid;lastLearningSent=Date.now();
+  try{const token=await user.getIdToken();const response=await fetch('https://task-quest.onrender.com/api/learning/activity',{method:'POST',headers:{Authorization:'Bearer '+token},keepalive:true});if(!response.ok)throw Error('HTTP '+response.status);}catch(error){console.warn('Learning activity update deferred',error);}
+}
+
 async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
+  void recordLearningActivity();
   const today=todayKey(),claim=`${cleanPart(appId)}:${cleanPart(itemId)}`;
   let awarded=false,newCoins=0;
   try{
@@ -168,6 +176,7 @@ async function recordRetryAttempt(questionId){
 }
 
 window.EnglishPlayroomCoins=Object.freeze({
+  recordLearningActivity,
   awardOncePerDay,
   recordRetryAttempt,
   awardAteru:roundId=>awardOncePerDay('ateru',`round-${cleanPart(roundId)}`,'アテル3問以上正解！'),

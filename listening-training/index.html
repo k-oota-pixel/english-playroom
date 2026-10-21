@@ -144,7 +144,7 @@ function renderDictation(q){
 }
 function checkDictation(){if(state.answered)return;state.answered=true;let good=0;state.masked.forEach(inp=>{const ok=norm(inp.value)===norm(inp.dataset.answer);inp.classList.add(ok?'good':'bad');inp.disabled=true;if(ok)good++});const pct=Math.round(good/state.masked.length*100);const ok=good===state.masked.length;const script=state.q.dialogue.map((x,i)=>`<div><b>${i%2?'B':'A'}:</b> ${escapeHTML(x)}</div>`).join('');$('#feedbackHost').innerHTML=`<div class="feedback ${ok?'ok':'ng'}"><strong>${ok?'✓ Perfect!':`${good} / ${state.masked.length} correct (${pct}%)`}</strong><div class="full-answer">${script}</div></div>`;registerCompletedQuestion();renderActions(true)}
 function registerCompletedQuestion(){
-  if(state.questionCounted)return;state.questionCounted=true;state.setDone=Math.min(SET_TOTAL,state.setDone+1);$('#queueInfo').textContent=`${state.setDone} / ${SET_TOTAL} 問完了`;
+  if(state.questionCounted)return;state.questionCounted=true;window.EnglishPlayroomCoins?.recordLearningActivity?.();state.setDone=Math.min(SET_TOTAL,state.setDone+1);$('#queueInfo').textContent=`${state.setDone} / ${SET_TOTAL} 問完了`;
   if(state.setDone>=SET_TOTAL&&!state.rewardHandled){state.rewardHandled=true;awardSetCoin();}
 }
 async function awardSetCoin(){

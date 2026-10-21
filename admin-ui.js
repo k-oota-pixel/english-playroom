@@ -13,7 +13,7 @@ const pageCache=new Map(),detailCache=new Map(),TTL=60000;
 const labels={'english-playroom':'ペット / コイン','ateru':'アテル','basic-quest':'Basic Quest','eiken-retry':'リトライノート','eiken-cloze':'英検 空所補充','eiken-title':'英検 タイトル','task-quest':'Task-Quest','eiken-pre2-interview-a':'英検準2級 面接A'};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function setStatus(text,kind=''){const el=$('status');el.textContent=text;el.className='status'+(kind?' '+kind:'');}
-function fmtDate(v){if(!v)return '—';const d=new Date(Number(v)||v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('ja-JP',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+function fmtDate(v){if(!v)return '未記録';const d=new Date(Number(v)||v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('ja-JP',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 function mini(data={}){const keys=['lastPlayedDate','submissions','correctAnswers','completedStages','attemptedIds','rounds','clearCount','attempts','correct','petLoginDays','retryCoinProgress'];const lines=[];for(const k of keys){if(!(k in data))continue;const v=data[k];lines.push(`${k}: ${Array.isArray(v)?v.length:typeof v==='object'&&v!==null?Object.keys(v).length:v}`);}if(!lines.length){for(const [k,v] of Object.entries(data).slice(0,3))lines.push(`${k}: ${Array.isArray(v)?v.length:typeof v==='object'&&v!==null?'…':v}`);}return lines.slice(0,4).join('\n')||'記録なし';}
 async function token(){const u=auth.currentUser;if(!u)throw Error('ログインしてください。');return u.getIdToken();}
 async function api(path,opt={}){const idToken=await token();const res=await fetch(API+path,{...opt,signal:AbortSignal.timeout(20000),headers:{...(opt.headers||{}),'Authorization':`Bearer ${idToken}`,'Content-Type':'application/json'}});let body={};try{body=await res.json();}catch{}if(!res.ok)throw Error(body.error||`管理APIエラー (${res.status})`);return body;}
@@ -30,10 +30,10 @@ async function load(index=pageIndex,force=false){
   if(force)pageCache.delete(key);
   let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=10'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
   if(own!==generation||request!==viewGeneration)return;
-  allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLoginAt||0)-Number(a.lastLoginAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
+  allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLearningAt||0)-Number(a.lastLearningAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
   restorePageMeta();
-  setStatus('一覧は最終ログインが新しい順に10人ずつ表示します。検索欄では登録者全員からニックネームを探せます。','ok');render();
+  setStatus('一覧は最終学習日時が新しい順に10人ずつ表示します。検索欄では登録者全員からニックネームを探せます。','ok');render();
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
@@ -54,7 +54,7 @@ async function runSearch(){
 function onSearchInput(){
  clearTimeout(searchTimer);searchSerial++;expandedUid='';detailCache.clear();
  const q=searchQuery();
- if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終ログインが新しい順に10人ずつ表示します。検索欄では登録者全員からニックネームを探せます。','ok');render();return;}
+ if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に10人ずつ表示します。検索欄では登録者全員からニックネームを探せます。','ok');render();return;}
  searchResults=null;searchTotal=0;searchTruncated=false;updateRefresh();$('prev').disabled=true;$('next').disabled=true;render();
  searchTimer=setTimeout(runSearch,320);
 }
@@ -66,7 +66,7 @@ async function expand(uid){
 }
 function appCards(apps={}){const order=['ateru','basic-quest','eiken-retry','eiken-cloze','eiken-title','task-quest','eiken-pre2-interview-a'];return order.map(id=>{const d=apps[id];return `<div class="app"><strong>${esc(labels[id]||id)}</strong><div class="mini">${esc(d?mini(d):'記録なし')}</div></div>`;}).join('');}
 function rawBlocks(apps={}){return Object.entries(apps).sort(([a],[b])=>a.localeCompare(b)).map(([id,d])=>`<pre><b>${esc(labels[id]||id)}</b>\n${esc(JSON.stringify(d,null,2))}</pre>`).join('')||'<div class="sub">学習記録はまだありません。</div>';}
-function userBody(u){return `<div class="user-body"><div class="meta"><span>最終ログイン: ${esc(fmtDate(u.lastLoginAt))}</span><span>登録: ${esc(fmtDate(u.createdAt))}</span><span>記録: ${Object.keys(u.apps||{}).length}教材</span></div><div class="apps">${appCards(u.apps)}</div><div class="grant"><strong>コイン付与</strong><input class="amount" type="number" min="1" max="1000000" step="1" value="10"><button class="quick" data-amount="10">+10</button><button class="quick" data-amount="100">+100</button><button class="quick" data-amount="1000">+1,000</button><button class="quick" data-amount="100000">+100,000</button><button class="btn primary grantBtn" type="button">付与する</button></div><details class="details"><summary>保存されている学習記録を詳しく見る</summary><div class="raw">${rawBlocks(u.apps)}</div></details></div>`;}
+function userBody(u){return `<div class="user-body"><div class="meta"><span>最終学習日時: ${esc(fmtDate(u.lastLearningAt))}</span><span>登録: ${esc(fmtDate(u.createdAt))}</span><span>記録: ${Object.keys(u.apps||{}).length}教材</span></div><div class="apps">${appCards(u.apps)}</div><div class="grant"><strong>コイン付与</strong><input class="amount" type="number" min="1" max="1000000" step="1" value="10"><button class="quick" data-amount="10">+10</button><button class="quick" data-amount="100">+100</button><button class="quick" data-amount="1000">+1,000</button><button class="quick" data-amount="100000">+100,000</button><button class="btn primary grantBtn" type="button">付与する</button></div><details class="details"><summary>保存されている学習記録を詳しく見る</summary><div class="raw">${rawBlocks(u.apps)}</div></details></div>`;}
 function render(){
  const q=searchQuery(),searching=!!q,list=searching?(searchResults||[]):allUsers;
  if(searching){
@@ -77,7 +77,7 @@ function render(){
  if(searching&&searchResults===null){$('users').innerHTML='<div class="empty">登録者全体から検索しています…</div>';return;}
  $('users').innerHTML=list.map(u=>{
   const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
-  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="identity"><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div></div><div class="summary-meta">最終ログイン '+esc(fmtDate(u.lastLoginAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
+  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="identity"><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">ペット：'+esc(u.petName||'ペット名未設定')+'</div></div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
  }).join('')||'<div class="empty">一致する登録者はいません。</div>';
  document.querySelectorAll('.user-summary').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));
  document.querySelectorAll('.detail-retry').forEach(b=>b.onclick=()=>{const uid=b.closest('.user').dataset.uid;detailCache.delete(uid);expandedUid='';expand(uid);});
