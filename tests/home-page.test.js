@@ -5,17 +5,18 @@ import vm from 'node:vm';
 
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const expectedTitles=['ワードブレイカー','アテル','並べ替え問題（基礎）','リトライノート','タスク別英会話',
-  '長文空所補充','長文概要把握','リスニング演習＆ディクテーション','準２級面接対策','テーマ別日常英会話'];
+  '長文空所補充','長文概要把握','長文演習','リスニング演習＆ディクテーション','準２級面接対策','テーマ別日常英会話'];
 
 test('homepage cards follow the requested desktop order and exam labels',()=>{
   const cards=html.slice(html.indexOf('<div class="cards">'));
   const titles=[...cards.matchAll(/<div class="title">([^<]+)<\/div>/g)].map(match=>match[1]);
   assert.deepEqual(titles,expectedTitles);
-  assert.equal((cards.match(/class="card(?: [^"]*)?"/g)||[]).length,10);
+  assert.equal((cards.match(/class="card(?: [^"]*)?"/g)||[]).length,11);
   assert.match(html,/\.cards\{display:grid;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(html,/\.cards\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(cards,/href="\.\/listening-training\/"[\s\S]*?<div class="title">リスニング演習＆ディクテーション<\/div>/);
-  assert.equal((cards.match(/<span class="eiken-badge">英検対応<\/span>/g)||[]).length,6);
+  assert.match(cards,/href="\.\/reading-training\/"[\s\S]*?<div class="title">長文演習<\/div>/);
+  assert.equal((cards.match(/<span class="eiken-badge">英検対応<\/span>/g)||[]).length,7);
   assert.equal((cards.match(/class="[^"]*interview-card/g)||[]).length,1);
   assert.equal((cards.match(/eiken-pre2-interview-a|準２級面接対策/g)||[]).length>=2,true);
   assert.doesNotMatch(html,/stat-grid|dashRefresh|wordBreakerStat/);
