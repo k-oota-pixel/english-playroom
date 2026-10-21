@@ -8,6 +8,7 @@ const shapes = {
 const positions=[[36,111,-17,-42],[199,139,16,-43],[65,56,-15,-25],[180,64,21,-31],[44,183,-12,-44]];
 const durations={star:2.5,sparkle:3.1,heart:3.8,music:3.3};
 export function renderEffect(kind){
+  if(kind==='confetti')return '<g class="pet-confetti-effect" aria-hidden="true" pointer-events="none">'+Array.from({length:14},(_,i)=>`<g transform="translate(${24+(i*47)%192} ${30+(i*31)%120})"><g class="pet-confetti-particle" style="--duration:${3.2+i%4*.3}s;--delay:${-i*.43}s;--drift:${i%2?12:-12}px;--turn:${i%2?180:-180}deg"><rect x="-3" y="-5" width="6" height="10" rx="1" fill="${['#e66f7c','#5fa3cf','#e7bd42','#8bbb89'][i%4]}"/></g></g>`).join('')+'</g>';
   if(!shapes[kind])return '';
   return `<g class="pet-motif-effect" aria-hidden="true" pointer-events="none">${positions.map(([x,y,dx,dy],i)=>`<g transform="translate(${x} ${y})"><g class="pet-motif pet-motif-${kind}" style="--dx:${dx}px;--dy:${dy}px;--turn:${i%2?-24:28}deg;--duration:${durations[kind]+i*.13}s;--delay:${-i*.71}s">${shapes[kind]}</g></g>`).join('')}</g>`;
 }

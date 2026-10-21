@@ -43,3 +43,7 @@
 .pet-happy small{display:block;margin-top:4px;font-size:10px;color:#887d70}
 .pet-care-feedback.pet-care-max{background:linear-gradient(120deg,#fff1ab,#ffe3f0);border:2px solid #e8b639;box-shadow:0 0 20px #f4ce6480;font-size:14px}
 @media(prefers-reduced-motion:reduce){.pet-happy-track>span{transition:none}}
+
+.pet-confetti-particle{transform-box:fill-box;transform-origin:center;animation:petShopFall var(--duration) linear var(--delay) infinite both}
+@keyframes petShopFall{0%{opacity:0;transform:translate(0,-45px) rotate(0deg)}12%{opacity:.95}75%{opacity:.95}100%{opacity:0;transform:translate(var(--drift),85px) rotate(var(--turn))}}
+@media(prefers-reduced-motion:reduce){.pet-confetti-particle{animation:none;opacity:.85}}

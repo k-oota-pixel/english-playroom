@@ -1,7 +1,7 @@
 import './pet-jump-fix.js?v=1.5.7';
 import './pet-enhancements.js?v=1.5.31';
 import './pet-shop-appearance-lock.js?v=1.5.32';
-import './pet-shop-expansion-v1533.js?v=1.5.33';
+import './pet-shop-expansion-v1533.js?v=1.7.7';
 import './pet-shop-preview-fix-v1534.js?v=1.6.2';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.5.7-touch';

@@ -86,9 +86,9 @@ const STYLE=`
 .pet-shop-item[data-extra-item="1"] .pet-shop-name::after{content:" NEW";font-size:8px;letter-spacing:.08em;color:#a97918}
 .pet-shop-item[data-item-id="flower-glasses"] .pet-shop-icon{height:30px;display:flex;align-items:center}
 .pet-shop-item[data-item-id="flower-glasses"] .pet-flower-glasses-icon{display:block;width:60px;height:30px;overflow:visible}
-.pet-extra-effect{transform-box:fill-box;transform-origin:center;animation:petExtraFloat 3.2s ease-in-out infinite}
-@keyframes petExtraFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@media(prefers-reduced-motion:reduce){.pet-extra-effect{animation:none}}
+.pet-extra-particle{transform-box:fill-box;transform-origin:center;animation:petExtraFall var(--duration) linear var(--delay) infinite both}
+@keyframes petExtraFall{0%{opacity:0;transform:translate(0,-65px) rotate(-8deg)}12%{opacity:.9}75%{opacity:.9}100%{opacity:0;transform:translate(var(--drift),100px) rotate(20deg)}}
+@media(prefers-reduced-motion:reduce){.pet-extra-particle{animation:none;opacity:.9}}
 `;
 
 let auth=null,db=null,currentUser=null,currentData={},unsubscribe=null,previewSelection=null,augmentQueued=false;
@@ -100,8 +100,12 @@ const equippedFor=(shop,slot)=>typeof shop.equipped?.[slot]==='string'?shop.equi
 const isExtra=id=>!!ITEM_MAP[id];
 
 function parseLayer(markup){const wrapper=document.createElementNS(SVG_NS,'svg');wrapper.innerHTML=markup;return wrapper.firstElementChild;}
+const appliedLayers=new WeakMap();
 function applyExpansionLayers(root,data,preview=false){
   const svg=root?.querySelector?.('svg');if(!svg)return;
+  const signature=JSON.stringify([shopOf(data),preview?previewSelection:null]);
+  if(appliedLayers.get(svg)===signature)return;
+  appliedLayers.set(svg,signature);
   svg.querySelectorAll('[data-pet-extra-layer]').forEach(el=>el.remove());
   const shop=shopOf(data),equipped={...shop.equipped};if(preview&&previewSelection)equipped[previewSelection.slot]=previewSelection.id;
   const active=id=>typeof id==='string'&&((preview&&previewSelection?.id===id)||isOwned(shop,id));
@@ -109,7 +113,22 @@ function applyExpansionLayers(root,data,preview=false){
   if(active(bgId)&&BACKGROUND_LAYERS[bgId]){const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');const anchor=svg.querySelector('.pet-shadow,.pet-jump-layer');if(anchor)svg.insertBefore(node,anchor);else svg.append(node);}
   const character=svg.querySelector('.pet-character');
   if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer(ACCESSORY_LAYERS[id]);node.setAttribute('data-pet-extra-layer',slot);character.append(node);}}}
-  const effectId=equipped.effects;if(active(effectId)&&EFFECT_LAYERS[effectId]){const node=parseLayer(EFFECT_LAYERS[effectId]);node.setAttribute('data-pet-extra-layer','effects');svg.append(node);}
+  const effectId=equipped.effects;if(active(effectId)&&EFFECT_LAYERS[effectId]){
+    // Base and expansion previews share the same equipment slot.
+    svg.querySelectorAll('.pet-motif-effect,.pet-confetti-effect,.pet-rainbow-effect').forEach(el=>el.remove());
+    const node=parseLayer(EFFECT_LAYERS[effectId]);
+    // Keep each shape's original SVG transform and animate a separate wrapper.
+    const particles=effectId==='flower-effect'?[0,1,2,3].map(i=>{
+      const group=document.createElementNS(SVG_NS,'g');
+      for(const source of node.children){const shape=source.children[i].cloneNode(true);shape.setAttribute('fill',source.getAttribute('fill'));group.append(shape);}return group;
+    }):[...node.children];
+    particles.forEach((shape,i)=>{
+      const motion=document.createElementNS(SVG_NS,'g');motion.classList.add('pet-extra-particle');
+      motion.style.cssText=`--duration:${3.5+i*.37}s;--delay:${-i*.91}s;--drift:${i%2?10:-10}px`;
+      motion.append(shape);if(i===0)node.replaceChildren();node.append(motion);
+    });
+    node.setAttribute('data-pet-extra-layer','effects');svg.append(node);
+  }
 }
 function renderAllLayers(){applyExpansionLayers(document.getElementById('petVisual'),currentData,false);applyExpansionLayers(document.getElementById('petShopPreview'),currentData,true);}
 function activeSlot(){const active=document.querySelector('#petShopDialog .pet-shop-tab.active');const text=active?.textContent||'';if(text.includes('あたま'))return 'head';if(text.includes('かお'))return 'face';if(text.includes('くび'))return 'neck';if(text.includes('エフェクト'))return 'effects';if(text.includes('背景'))return 'backgrounds';return null;}
@@ -138,7 +157,7 @@ function boot(){
   if(!document.getElementById('petShopExpansionStyles')){const style=document.createElement('style');style.id='petShopExpansionStyles';style.textContent=STYLE;document.head.append(style);}
   if(!getApps().length){setTimeout(boot,80);return;}const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,watchUser);
   const observer=new MutationObserver(mutations=>{if(mutationNeedsRefresh(mutations))queueAugment();});observer.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{const card=event.target.closest?.('.pet-shop-item');if(card&&!card.dataset.extraItem){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen'))setTimeout(queueAugment,50);},true);
+  document.addEventListener('click',event=>{const card=event.target.closest?.('.pet-shop-item');if(card&&!card.dataset.extraItem){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-empty')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen')){previewSelection=null;setTimeout(queueAugment,50);}},true);
   document.addEventListener('pet-state-updated',queueAugment);window.addEventListener('pagehide',()=>{observer.disconnect();unsubscribe?.();},{once:true});queueAugment();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();

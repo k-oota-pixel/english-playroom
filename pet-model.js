@@ -53,8 +53,8 @@ export const SHOP_LAYERS = Object.freeze({
     'sparkle-effect':renderEffect('sparkle'),
     'heart-effect':renderEffect('heart'),
     'music-effect':renderEffect('music'),
-    'confetti-effect':'<g aria-hidden="true" stroke-width="5" stroke-linecap="round"><path d="M28 47 l8 10 M52 29 l-2 13 M201 41 l-8 10 M216 75 l-12 2 M31 158 l11-4 M203 166 l9 7" stroke="#e66f7c"/><path d="M72 31 l5 12 M184 25 l-4 13 M218 132 l-11-3 M49 190 l7-10" stroke="#5fa3cf"/><path d="M20 116 l12 2 M103 25 l2 12 M193 193 l-8-9" stroke="#e7bd42"/></g>',
-    'rainbow-effect':'<g aria-hidden="true" fill="none" stroke-linecap="round" opacity=".65"><path d="M22 119 Q120 9 218 119" stroke="#e87575" stroke-width="7"/><path d="M27 123 Q120 23 213 123" stroke="#eab95c" stroke-width="7"/><path d="M33 127 Q120 37 207 127" stroke="#70b58e" stroke-width="7"/><path d="M39 131 Q120 51 201 131" stroke="#71a9d4" stroke-width="7"/></g>'
+    'confetti-effect':renderEffect('confetti'),
+    'rainbow-effect':'<g class="pet-rainbow-effect" transform="translate(0 -40)" aria-hidden="true" fill="none" stroke-linecap="round" opacity=".65"><path d="M22 119 Q120 9 218 119" stroke="#e87575" stroke-width="7"/><path d="M27 123 Q120 23 213 123" stroke="#eab95c" stroke-width="7"/><path d="M33 127 Q120 37 207 127" stroke="#70b58e" stroke-width="7"/><path d="M39 131 Q120 51 201 131" stroke="#71a9d4" stroke-width="7"/></g>'
   })
 });
 export const ACCESSORY_ITEM_SLOTS=Object.freeze({
