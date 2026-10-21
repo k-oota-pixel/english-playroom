@@ -109,10 +109,14 @@ function applyExpansionLayers(root,data,preview=false){
   svg.querySelectorAll('[data-pet-extra-layer]').forEach(el=>el.remove());
   const shop=shopOf(data),equipped={...shop.equipped};if(preview&&previewSelection)equipped[previewSelection.slot]=previewSelection.id;
   const active=id=>typeof id==='string'&&((preview&&previewSelection?.id===id)||isOwned(shop,id));
+  for(const slot of ['head','face','neck','effects','backgrounds']){
+    const id=equipped[slot];
+    if(active(id)&&ITEM_MAP[id])svg.querySelectorAll(`[data-pet-shop-slot="${slot}"]`).forEach(el=>el.remove());
+  }
   const bgId=equipped.backgrounds;
-  if(active(bgId)&&BACKGROUND_LAYERS[bgId]){const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');const anchor=svg.querySelector('.pet-shadow,.pet-jump-layer');if(anchor)svg.insertBefore(node,anchor);else svg.append(node);}
+  if(active(bgId)&&BACKGROUND_LAYERS[bgId]){const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');node.setAttribute('data-pet-extra-item',bgId);const anchor=svg.querySelector('.pet-shadow,.pet-jump-layer');if(anchor)svg.insertBefore(node,anchor);else svg.append(node);}
   const character=svg.querySelector('.pet-character');
-  if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer(ACCESSORY_LAYERS[id]);node.setAttribute('data-pet-extra-layer',slot);character.append(node);}}}
+  if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer(ACCESSORY_LAYERS[id]);node.setAttribute('data-pet-extra-layer',slot);node.setAttribute('data-pet-extra-item',id);character.append(node);}}}
   const effectId=equipped.effects;if(active(effectId)&&EFFECT_LAYERS[effectId]){
     // Base and expansion previews share the same equipment slot.
     svg.querySelectorAll('.pet-motif-effect,.pet-confetti-effect,.pet-rainbow-effect').forEach(el=>el.remove());
@@ -127,7 +131,7 @@ function applyExpansionLayers(root,data,preview=false){
       motion.style.cssText=`--duration:${3.5+i*.37}s;--delay:${-i*.91}s;--drift:${i%2?10:-10}px`;
       motion.append(shape);if(i===0)node.replaceChildren();node.append(motion);
     });
-    node.setAttribute('data-pet-extra-layer','effects');svg.append(node);
+    node.setAttribute('data-pet-extra-layer','effects');node.setAttribute('data-pet-extra-item',effectId);svg.append(node);
   }
 }
 function renderAllLayers(){applyExpansionLayers(document.getElementById('petVisual'),currentData,false);applyExpansionLayers(document.getElementById('petShopPreview'),currentData,true);}
@@ -157,7 +161,7 @@ function boot(){
   if(!document.getElementById('petShopExpansionStyles')){const style=document.createElement('style');style.id='petShopExpansionStyles';style.textContent=STYLE;document.head.append(style);}
   if(!getApps().length){setTimeout(boot,80);return;}const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,watchUser);
   const observer=new MutationObserver(mutations=>{if(mutationNeedsRefresh(mutations))queueAugment();});observer.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{const card=event.target.closest?.('.pet-shop-item');if(card&&!card.dataset.extraItem){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-empty')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen')){previewSelection=null;setTimeout(queueAugment,50);}},true);
+  document.addEventListener('click',event=>{const card=event.target.closest?.('.pet-shop-item');if(card&&!card.dataset.extraItem){previewSelection=card.dataset.itemSlot?{slot:card.dataset.itemSlot,id:card.dataset.itemId}:null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-empty')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen')){previewSelection=null;setTimeout(queueAugment,50);}},true);
   document.addEventListener('pet-state-updated',queueAugment);window.addEventListener('pagehide',()=>{observer.disconnect();unsubscribe?.();},{once:true});queueAugment();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
