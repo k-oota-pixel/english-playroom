@@ -2,12 +2,14 @@ import {GRADES,validatePassages,judge,nextRandom,validFeedback} from './model.js
 const app=document.getElementById('app');
 const API='https://eiken-title.onrender.com/api/reading/summary';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let passages=[],grade='4級',route='exercise',passage=null,index=0,answers=[],language='ja',busy=false,controller=null,requestId=0;
+let passages=[],grade='4級',route='exercise',passage=null,graded=false,answers=[],language='ja',busy=false,controller=null,requestId=0;
 const memory=new Map(),feedbacks=new Map();
 function read(k){try{return localStorage.getItem('monstudy-reading-v1:'+k)??memory.get(k)??'';}catch{return memory.get(k)||'';}}
 function save(k,v){memory.set(k,v);try{localStorage.setItem('monstudy-reading-v1:'+k,v);}catch{}}
 const draftKey=()=>`draft:${passage.id}:${language}`;
 const feedbackKey=()=>`${passage.id}:${language}`;
+function completed(p,kind){try{const r=JSON.parse(read((kind==='exercise'?'completed:':'summary-completed:')+p.id)||'null');return Boolean(r&&Number.isFinite(r.at)&&r.at>0&&(kind!=='exercise'||r.total===p.questions.length));}catch{return false;}}
+function completionBadges(p){return `<span class="completion-badges">${[['exercise','演習'],['summary','要約']].map(([k,n])=>`<span class="completion-chip ${completed(p,k)?'done':''}">${completed(p,k)?'✓ '+n+'済み':'○ '+n}</span>`).join('')}</span>`;}
 const pool=()=>passages.filter(p=>p.grade===grade);
 const meta=p=>`${p.grade} · ${p.year}年度 第${p.session}回 · ${p.text.match(/\b[\w’'-]+\b/g)?.length||0} words`;
 function cancel(){requestId++;controller?.abort();controller=null;busy=false;}
@@ -18,14 +20,14 @@ function renderHome(){
  <div class="section-top"><h2>レベルを選ぶ</h2><span class="step-label">01 / LEVEL</span></div>
  <div class="grades">${GRADES.map(g=>`<button class="grade ${g===grade?'active':''}" data-grade="${g}" aria-pressed="${g===grade}"><strong>${g}</strong><span>${passages.filter(p=>p.grade===g).length}長文</span></button>`).join('')}</div>
  <div class="section-top"><h2>取り組み方を選ぶ</h2><span class="step-label">02 / ROUTE</span></div>
- <div class="routes"><button class="route ${route==='exercise'?'active':''}" data-route="exercise" aria-pressed="${route==='exercise'}"><div class="route-icon" aria-hidden="true">✓</div><strong>問題演習</strong><p>本文と設問を読んで、選択肢をタップ。１問ずつ答え合わせできます。</p><span class="small">READ &amp; CHOOSE</span><span class="arrow" aria-hidden="true">↗</span></button><button class="route summary ${route==='summary'?'active':''}" data-route="summary" aria-pressed="${route==='summary'}"><div class="route-icon" aria-hidden="true">✎</div><strong>要約</strong><p>本文全体を短くまとめよう。Geminiが要点と内容を確認します。</p><span class="small">READ &amp; SUMMARIZE</span><span class="arrow" aria-hidden="true">↗</span></button></div>
- <section class="library"><div class="library-bar"><div><h2>${grade}の長文で${route==='exercise'?'問題演習':'要約'}</h2><p class="library-note">ランダムに始めるか、下の長文を選んでください。</p></div><button class="primary" id="randomStart">ランダムに始める →</button></div><div class="passage-list">${pool().map(p=>`<button class="passage-link" data-passage="${esc(p.id)}"><span><strong>${esc(p.title)}</strong><small>${esc(meta(p))}</small></span><span class="tag">${p.questions.length}問</span></button>`).join('')}</div></section>`;
+ <div class="routes"><button class="route ${route==='exercise'?'active':''}" data-route="exercise" aria-pressed="${route==='exercise'}"><div class="route-icon" aria-hidden="true">✓</div><strong>問題演習</strong><p>全設問を先に確認して取り組めます。回答後にまとめて答え合わせ。</p><span class="small">READ &amp; CHOOSE</span><span class="arrow" aria-hidden="true">↗</span></button><button class="route summary ${route==='summary'?'active':''}" data-route="summary" aria-pressed="${route==='summary'}"><div class="route-icon" aria-hidden="true">✎</div><strong>要約</strong><p>本文全体を短くまとめよう。Geminiが要点と内容を確認します。</p><span class="small">READ &amp; SUMMARIZE</span><span class="arrow" aria-hidden="true">↗</span></button></div>
+ <section class="library"><div class="library-bar"><div><h2>${grade}の長文で${route==='exercise'?'問題演習':'要約'}</h2><p class="library-note">ランダムに始めるか、下の長文を選んでください。</p></div><button class="primary" id="randomStart">ランダムに始める →</button></div><div class="passage-list">${pool().map(p=>`<button class="passage-link" data-passage="${esc(p.id)}"><span><strong>${esc(p.title)}</strong><small>${esc(meta(p))}</small>${completionBadges(p)}</span><span class="tag">${p.questions.length}問</span></button>`).join('')}</div></section>`;
  app.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{grade=b.dataset.grade;renderHome();});
  app.querySelectorAll('[data-route]').forEach(b=>b.onclick=()=>{route=b.dataset.route;renderHome();});
  app.querySelectorAll('[data-passage]').forEach(b=>b.onclick=()=>start(b.dataset.passage));
  app.querySelector('#randomStart').onclick=()=>start(nextRandom(pool(),read('last:'+grade))?.id);
 }
-function start(id){const p=passages.find(p=>p.id===id);if(!p)return;cancel();passage=p;grade=p.grade;index=0;answers=[];save('last:'+grade,p.id);renderLesson();window.scrollTo({top:0});}
+function start(id){const p=passages.find(p=>p.id===id);if(!p)return;cancel();passage=p;grade=p.grade;graded=false;answers=[];save('last:'+grade,p.id);renderLesson();window.scrollTo({top:0});}
 function renderLesson(){
  app.innerHTML=`<nav class="lesson-nav"><button id="back" class="text-button">← レベル・長文を選び直す</button><div class="segmented" aria-label="学習ルート"><button id="exerciseTab" class="${route==='exercise'?'active':''}" aria-pressed="${route==='exercise'}">問題演習</button><button id="summaryTab" class="${route==='summary'?'active':''}" aria-pressed="${route==='summary'}">要約</button></div></nav><div class="lesson-heading"><div><div class="eyebrow">${route==='exercise'?'READ &amp; CHOOSE':'READ &amp; SUMMARIZE'}</div><h1>${esc(passage.title)}</h1><div class="meta">${esc(meta(passage))}</div></div><a href="#work" class="jump">${route==='exercise'?'設問':'要約'}へ ↓</a></div><div class="workspace"><article class="reading-paper" aria-label="長文の本文"><div class="paper-label"><span>PASSAGE</span><span>本文</span></div><div class="passage-body" lang="en">${passage.text.split(/\n\s*\n/).map(p=>`<p>${esc(p)}</p>`).join('')}</div></article><section class="work-panel" id="work" tabindex="-1" aria-label="${route==='exercise'?'問題演習':'要約'}"></section></div>`;
  app.querySelector('#back').onclick=home;
@@ -34,17 +36,22 @@ function renderLesson(){
 }
 function focusWork(){document.getElementById('work').focus({preventScroll:true});if(matchMedia('(max-width:700px)').matches)document.getElementById('work').scrollIntoView({behavior:'smooth',block:'start'});}
 function renderExercise(){
- const work=document.getElementById('work'),q=passage.questions[index];
- if(!q){renderComplete();return;}
- const selected=answers[index],correct=selected===undefined?null:judge(q,selected);
- work.innerHTML=`<div class="progress-label"><span>QUESTION ${index+1} / ${passage.questions.length}</span><span>${answers.filter((a,i)=>judge(passage.questions[i],a)).length}問正解</span></div><div class="progress-track"><i style="width:${index/passage.questions.length*100}%"></i></div><span class="eyebrow">問題 ${index+1}</span><h2 class="question" lang="en">${esc(q.question)}</h2><div class="choices">${q.choices.map((c,i)=>`<button class="choice ${selected!==undefined?(i+1===q.answer?'correct':i+1===selected?'wrong':''):''}" data-answer="${i+1}" ${selected!==undefined?'disabled':''}><span class="num">${i+1}</span><span lang="en">${esc(c)}</span></button>`).join('')}</div>${selected!==undefined?`<div class="feedback ${correct?'':'wrong-feedback'}" role="status"><strong>${correct?'✓ 正解です！':'もう一度、本文の内容を確認しよう。'}</strong><p>正解：${q.answer}. <span lang="en">${esc(q.choices[q.answer-1])}</span></p>${correct?'':'<p>正解の選択肢と本文を照らし合わせてみましょう。</p>'}</div><div class="actions"><button class="primary" id="nextQuestion">${index+1===passage.questions.length?'結果を見る':'次の問題へ'} →</button></div>`:'<p class="micro" style="margin-top:14px">選択肢をタップすると答え合わせします。</p>'}`;
- work.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{if(answers[index]!==undefined)return;answers[index]=Number(b.dataset.answer);renderExercise();});
- work.querySelector('#nextQuestion')?.addEventListener('click',()=>{index++;renderExercise();focusWork();});
-}
-function renderComplete(){
- const correct=answers.filter((a,i)=>judge(passage.questions[i],a)).length;save('completed:'+passage.id,JSON.stringify({correct,total:answers.length,at:Date.now()}));
- document.getElementById('work').innerHTML=`<div class="complete"><div class="eyebrow">PRACTICE COMPLETE</div><h2>おつかれさまでした！</h2><div class="big-score">${correct}<small> / ${passage.questions.length}</small></div><p>本文を読んだら、要約にも挑戦してみよう。</p></div>${passage.questions.map((q,i)=>`<div class="question-log"><span>${judge(q,answers[i])?'✓':'×'} ${i+1}</span>${esc(q.question)}<div class="micro">正解：${q.answer}. ${esc(q.choices[q.answer-1])}</div></div>`).join('')}<div class="actions"><button class="secondary" id="retry">もう一度</button><button class="primary" id="toSummary">この長文を要約する →</button></div><div class="actions"><button class="text-button" id="another">別の長文を選ぶ →</button></div>`;
- document.getElementById('retry').onclick=()=>{index=0;answers=[];renderExercise();focusWork();};document.getElementById('toSummary').onclick=()=>{route='summary';renderLesson();focusWork();};document.getElementById('another').onclick=home;
+ const work=document.getElementById('work'),total=passage.questions.length,count=answers.filter(Number.isInteger).length;
+ const correct=graded?passage.questions.filter((q,i)=>judge(q,answers[i])).length:0;
+ work.innerHTML=`<div class="progress-label"><span>全${total}問</span><span id="answerCount" role="status">${graded?correct+' / '+total+'問正解':'回答 '+count+' / '+total}</span></div><div class="progress-track"><i id="answerProgress" style="width:${count/total*100}%"></i></div>${graded?`<div class="batch-result" role="status"><div class="eyebrow">PRACTICE COMPLETE · ✓ 演習済み</div><h2>答え合わせ</h2><div class="score">${correct}<small> / ${total}問正解</small></div><p class="micro">各設問の正解と本文を確認してみましょう。</p></div>`:'<p class="summary-help">設問を確認しながら本文を読み、各問の答えを選んでください。答え合わせの前なら選び直せます。</p>'}
+ ${passage.questions.map((q,qi)=>{const selected=answers[qi],ok=graded&&judge(q,selected);return `<section class="exercise-question" aria-labelledby="question-${qi}"><span class="eyebrow">問題 ${qi+1}</span><h2 class="question" id="question-${qi}" lang="en">${esc(q.question)}</h2><div class="choices" data-question="${qi}">${q.choices.map((c,i)=>`<button class="choice ${graded?(i+1===q.answer?'correct':i+1===selected?'wrong':''):(i+1===selected?'selected':'')}" data-question-index="${qi}" data-answer="${i+1}" aria-pressed="${i+1===selected}" ${graded?'disabled':''}><span class="num">${i+1}</span><span lang="en">${esc(c)}</span></button>`).join('')}</div>${graded?`<div class="feedback ${ok?'':'wrong-feedback'}"><strong>${ok?'✓ 正解':'× 不正解'}</strong><p>正解：${q.answer}. <span lang="en">${esc(q.choices[q.answer-1])}</span></p></div>`:''}</section>`;}).join('')}
+ <div class="batch-actions">${graded?'<button class="secondary" id="retry">もう一度取り組む</button><button class="primary" id="toSummary">この長文を要約する →</button>':`<span class="micro" id="answerHint">${count===total?'すべて回答済みです。答え合わせできます。':'あと'+(total-count)+'問を選んでください。'}</span><button class="primary" id="gradeExercise" ${count<total?'disabled':''}>まとめて答え合わせ →</button>`}</div>`;
+ work.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{
+  if(graded)return;const qi=Number(button.dataset.questionIndex);answers[qi]=Number(button.dataset.answer);
+  work.querySelectorAll(`[data-question="${qi}"] [data-answer]`).forEach(b=>{const selected=Number(b.dataset.answer)===answers[qi];b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
+  const answered=answers.filter(Number.isInteger).length;work.querySelector('#answerCount').textContent=`回答 ${answered} / ${total}`;work.querySelector('#answerProgress').style.width=`${answered/total*100}%`;work.querySelector('#gradeExercise').disabled=answered<total;work.querySelector('#answerHint').textContent=answered===total?'すべて回答済みです。答え合わせできます。':`あと${total-answered}問を選んでください。`;
+ });
+ work.querySelector('#gradeExercise')?.addEventListener('click',()=>{
+  if(graded||passage.questions.some((q,i)=>!Number.isInteger(answers[i])))return;
+  graded=true;const correct=passage.questions.filter((q,i)=>judge(q,answers[i])).length;save('completed:'+passage.id,JSON.stringify({correct,total,at:Date.now()}));renderExercise();focusWork();
+ });
+ work.querySelector('#retry')?.addEventListener('click',()=>{graded=false;answers=[];renderExercise();focusWork();});
+ work.querySelector('#toSummary')?.addEventListener('click',()=>{route='summary';renderLesson();focusWork();});
 }
 function renderSummary(){
  const draft=read(draftKey()),saved=feedbacks.get(feedbackKey());
@@ -66,7 +73,7 @@ async function submitSummary(){
  const timer=setTimeout(()=>controller?.abort(),65000);
  try{const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({passage_id:passage.id,summary:value,language})});let result;try{result=await response.json();}catch{throw new Error('AIに接続できませんでした。少し待って再試行してください。');}
  if(!response.ok)throw new Error(result.error||'要約を確認できませんでした。');if(!validFeedback(result))throw new Error('フィードバックを読み取れませんでした。もう一度お試しください。');if(token!==requestId)return;
- feedbacks.set(key,{input:value,result});document.getElementById('summaryStatus').innerHTML='';document.getElementById('summaryResult').innerHTML=feedbackHTML(result);
+ save('summary-completed:'+passage.id,JSON.stringify({at:Date.now(),language,total:result.total}));feedbacks.set(key,{input:value,result});document.getElementById('summaryStatus').innerHTML='';document.getElementById('summaryResult').innerHTML=feedbackHTML(result);
  }catch(e){if(token!==requestId)return;document.getElementById('summaryStatus').innerHTML=`<div class="error" role="alert">${esc(e.name==='AbortError'?'接続に時間がかかっています。要約は保存されています。もう一度お試しください。':e.message)}</div>`;
  }finally{clearTimeout(timer);if(token===requestId){busy=false;controller=null;input.readOnly=false;document.getElementById('language').disabled=false;document.getElementById('checkSummary').disabled=input.value.trim().length<5;}}
 }
