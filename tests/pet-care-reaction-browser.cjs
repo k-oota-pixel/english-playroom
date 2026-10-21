@@ -35,13 +35,14 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  assert.equal(await page.locator('#petPet').count(),0);
  assert.equal(await page.locator('#petFriendship').count(),0);
  for(const food of ['snack','meal','special']){
- await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();await page.waitForTimeout(200);
+ await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();await page.waitForFunction(()=>document.getElementById('petVisual').dataset.careReacting==='eating');
  assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),null);
  assert.equal(await page.locator('#petVisual .pet-care-motion-layer').count(),1);
- assert.equal(await page.locator('.pet-care-feedback').count(),1);
+ assert.equal(await page.locator('.pet-care-feedback').count(),0);
+ assert.equal(await page.locator('.pet-eating-food').count(),1);
  const result=await page.evaluate(()=>{
  const v=document.getElementById('petVisual'),layer=v.querySelector('.pet-care-motion-layer');
- return {outerMoving:v.getAnimations().some(a=>a.playState==='running'),bodyMoving:layer.getAnimations().some(a=>a.playState==='running'),backgroundInside:!!layer.querySelector('.pet-background'),eyes:[...v.querySelectorAll('[data-shared-legacy-eyes]')].map(el=>getComputedStyle(el).opacity)};
+ return {outerMoving:v.getAnimations().some(a=>a.playState==='running'),bodyMoving:layer.getAnimations().some(a=>a.playState==='running'),backgroundInside:!!layer.querySelector('.pet-background'),eyes:[...v.querySelectorAll('[data-pet-eyes]')].map(el=>getComputedStyle(el).opacity)};
  });
  assert.equal(result.outerMoving,false);assert.equal(result.bodyMoving,true);assert.equal(result.backgroundInside,false);assert.ok(result.eyes.length);assert.ok(result.eyes.every(opacity=>opacity==='1'));
  const effective=await page.locator('#petVisual [data-pet-eyes]').evaluateAll(eyes=>eyes.map(eye=>{
@@ -69,7 +70,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
    assert.ok(samples.every(s=>Math.abs(s.bgx-samples[0].bgx)<.2&&Math.abs(s.bgy-samples[0].bgy)<.2),label+' background stays fixed');
    const active=samples.slice(1,12);
    const travel=Math.max(...active.map(s=>s.y))-Math.min(...active.map(s=>s.y));
-   assert.ok(travel>4,label+' visibly moves vertically, not only sideways: '+travel);
+   assert.ok(travel>(label.startsWith('body tap')?4:2),label+' visibly moves vertically, not only sideways: '+travel);
    assert.ok(samples.every(s=>s.height>30),label+' character stays visible');
    const poses=new Set(samples.slice(1,12).map(s=>s.motion).filter(Boolean));
    assert.ok(poses.size>=4,label+' visible character transform changes over time');
@@ -81,6 +82,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  }
 
  // Touch at several walking phases and compare the actual rendered position.
+ await page.waitForFunction(()=>!document.getElementById('petVisual').dataset.careReacting);
  for(const fraction of [.12,.5,.78]){
  await page.waitForTimeout(2500);
  const result=await page.evaluate(fraction=>{

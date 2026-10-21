@@ -1,3 +1,4 @@
+import { foodArt } from './pet-food-art.js?v=1.8.0';
 import { emitCareEffects } from './pet-effects.js?v=1.5.8';
 
 let active=null;
@@ -26,7 +27,45 @@ function restoreWalk(phases){
     const walk=el.getAnimations().find(a=>a.animationName===name);if(walk)walk.currentTime=time;
   }
 }
+function playFeeding(visual,kind,food){
+ active?.stop();
+ if(!document.getElementById('petCareAnimation153')){const s=document.createElement('style');s.id='petCareAnimation153';s.textContent=STYLE;document.head.append(s);}
+ const phases=walkPhases(visual),timers=[];
+ visual.dispatchEvent(new CustomEvent('pet-care-reaction'));
+ visual.dataset.careReacting='eating';
+ const host=visual.closest('.pet-visual-wrap')||visual;
+ const plate=document.createElement('div');plate.className='pet-eating-food';plate.setAttribute('role','status');host.append(plate);
+ let remaining=3,open=false,finished=false;
+ function drawFood(){plate.dataset.remaining=remaining;plate.innerHTML=foodArt(food.id,remaining)+'<span>'+(finished?'ごちそうさま！':'もぐもぐ…')+'</span>';plate.setAttribute('aria-label',food.name+'：'+['食べ終わりました','残り3分の1','残り3分の2','食べ始めます'][remaining]);}
+ function attach(){
+  const character=visual.querySelector('.pet-character');if(!character)return;
+  if(!character.closest('.pet-care-motion-layer')){const layer=document.createElementNS('http://www.w3.org/2000/svg','g');layer.classList.add('pet-care-motion-layer');character.before(layer);layer.append(character);restoreWalk(phases);}
+  let mouth=character.querySelector('.pet-eating-mouth');
+  if(!mouth){
+   const cat=character.querySelector('[data-pet-cat-art]'),dog=character.querySelector('[data-pet-dog-art]'),dragon=character.querySelector('[data-pet-dragon-art]');
+   const target=cat||dog||dragon||character;
+   const [x,y,skin,scale]=cat?[127,165,'#fff5dc',1.4]:dog?[120,134,'#fff7e9',1]:dragon?[120,138,'#fff3d7',1]:[120,146,'#fff3df',1];
+   mouth=document.createElementNS('http://www.w3.org/2000/svg','g');mouth.classList.add('pet-eating-mouth');mouth.setAttribute('transform',`translate(${x} ${y}) scale(${scale})`);
+   mouth.innerHTML=`<ellipse rx="17" ry="10" fill="${skin}" stroke="none"/><g class="pet-eating-open"><ellipse rx="9" ry="9" fill="#593a32" stroke="#513829" stroke-width="2"/><ellipse cy="5" rx="5" ry="2.5" fill="#ef9c9d" stroke="none"/></g><path class="pet-eating-closed" d="M-8 0 Q0 7 8 0" fill="none" stroke="#513829" stroke-width="2.5" stroke-linecap="round"/>`;
+   target.append(mouth);
+  }
+  mouth.style.display=finished?'none':'';
+  mouth.querySelector('.pet-eating-open').style.display=open?'':'none';mouth.querySelector('.pet-eating-closed').style.display=open?'none':'';
+ }
+ const observer=new MutationObserver(attach);observer.observe(visual,{childList:true,subtree:true});
+ drawFood();attach();
+ function later(fn,ms){timers.push(setTimeout(fn,ms));}
+ for(let bite=0;bite<3;bite++){
+  for(const offset of [100,330]){later(()=>{open=true;attach();},bite*700+offset);later(()=>{open=false;attach();},bite*700+offset+130);}
+  later(()=>{remaining=2-bite;drawFood();},bite*700+580);
+ }
+ let feedback;
+ later(()=>{finished=true;open=false;drawFood();attach();visual.dataset.careReacting=kind;emitCareEffects(visual,kind);feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');feedback.textContent=`HAPPY +${food.price}${kind==='max'?' · MAX HAPPY!':''}`;host.append(feedback);},2200);
+ const run={stop(){timers.forEach(clearTimeout);observer.disconnect();plate.remove();feedback?.remove();visual.querySelectorAll('.pet-eating-mouth').forEach(m=>m.remove());const ending=walkPhases(visual);visual.querySelectorAll('.pet-care-motion-layer').forEach(l=>l.replaceWith(...l.childNodes));delete visual.dataset.careReacting;restoreWalk(ending);if(active===run)active=null;}};
+ active=run;later(()=>run.stop(),4600);
+}
 export function playCareReaction(visual,kind,food){
+  if(food)return playFeeding(visual,kind,food);
   const phases=walkPhases(visual);
   active?.stop();
   if(!document.getElementById('petCareAnimation153')){

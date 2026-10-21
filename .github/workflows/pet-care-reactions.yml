@@ -11,6 +11,8 @@ on:
       - index.html
       - pet-art.js
       - pet-care-animation.js
+      - pet-food-art.js
+      - tests/pet-feeding-browser.cjs
       - tests/pet-sync-chat-browser.cjs
       - pet-shop.js
       - pet-sleep-mode.js
@@ -39,6 +41,10 @@ jobs:
           MOBILE: '1'
       - run: node tests/pet-care-reaction-browser.cjs
       - run: node tests/pet-care-reaction-browser.cjs
+        env:
+          MOBILE: '1'
+      - run: node tests/pet-feeding-browser.cjs
+      - run: node tests/pet-feeding-browser.cjs
         env:
           MOBILE: '1'
       - uses: actions/upload-artifact@v4

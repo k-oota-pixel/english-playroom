@@ -1,6 +1,7 @@
+import { foodArt } from './pet-food-art.js?v=1.8.0';
 import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
-import { playCareReaction } from './pet-care-animation.js?v=1.5.8';
+import { playCareReaction } from './pet-care-animation.js?v=1.8.0';
 import { FOODS, careState, feedReward, happyDay, happyLabel } from './pet-care-model.js?v=1.7.8';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
@@ -150,7 +151,7 @@ function installCareUI(wallet) {
   const shop=wallet.querySelector('#petShopOpen');
   shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>TODAY’S HAPPY</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="TODAY’S HAPPY" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><small>毎日リセット（0時にリセット）</small></div>');
   const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
-  dialog.innerHTML=`<div class="pet-shop-confirm-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2>Choose food for your pet!</h2><p>エサをあげると HAPPY が増えます。</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-shop-action" data-food="${f.id}" style="display:block;width:100%;margin:10px 0">${f.icon} ${f.name} · ${f.price} ${f.price===1?'COIN':'COINS'}</button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
+  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2>エサをえらぼう</h2><p>エサをあげると HAPPY が増えます。</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-food-choice" data-food="${f.id}"><span class="pet-food-picture">${foodArt(f.id)}</span><span class="pet-food-copy"><strong>${f.name}</strong><small>HAPPY +${f.price}</small></span><span class="pet-food-price">🪙 ${f.price}<small>コイン</small></span></button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
   document.body.append(dialog);
   dialog.querySelector('.pet-shop-close').onclick=()=>dialog.close();
   dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();const id=event.target.closest('[data-food]')?.dataset.food;if(id)performCare(id);});
