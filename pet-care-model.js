@@ -1,7 +1,7 @@
 export const FOODS = Object.freeze([
-  {id:'snack',name:'SNACK',price:1,icon:'🍪',reaction:'music'},
-  {id:'meal',name:'MEAL',price:3,icon:'🍖',reaction:'jump'},
-  {id:'special',name:'SPECIAL TREAT',price:5,icon:'🎂',reaction:'celebrate'}
+  {id:'snack',name:'ふつうのエサ',price:1,icon:'🍪',reaction:'music'},
+  {id:'meal',name:'ちょっといいエサ',price:3,icon:'🍖',reaction:'jump'},
+  {id:'special',name:'ごちそう',price:5,icon:'🎂',reaction:'celebrate'}
 ]);
 const count = value => Number.isFinite(Number(value)) ? Math.max(0,Math.floor(Number(value))) : 0;
 // Use the user's local calendar day, matching other daily pet features.
