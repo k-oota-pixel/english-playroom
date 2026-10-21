@@ -118,17 +118,18 @@ function installTaskQuestAnswerGuard(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installTaskQuestAnswerGuard,{once:true});
 else installTaskQuestAnswerGuard();
 
-let lastLearningUid='',lastLearningSent=0;
-async function recordLearningActivity(){
+let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
+function learningContentFromPage(){const path=location.pathname;return ['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch'].find(id=>path.split('/').includes(id));}
+async function recordLearningActivity(appId=learningContentFromPage()){
   await authReady;const user=currentUser;if(!user||typeof fetch!=='function')return;
-  if(lastLearningUid===user.uid&&Date.now()-lastLearningSent<1000)return;lastLearningUid=user.uid;lastLearningSent=Date.now();
-  try{const token=await user.getIdToken();const response=await fetch('https://task-quest.onrender.com/api/learning/activity',{method:'POST',headers:{Authorization:'Bearer '+token},keepalive:true});if(!response.ok)throw Error('HTTP '+response.status);}catch(error){console.warn('Learning activity update deferred',error);}
+  if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
+  try{const token=await user.getIdToken();const response=await fetch('https://task-quest.onrender.com/api/learning/activity',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(appId?{appId}:{}),keepalive:true});if(!response.ok)throw Error('HTTP '+response.status);}catch(error){console.warn('Learning activity update deferred',error);}
 }
 
 async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
-  void recordLearningActivity();
+  void recordLearningActivity(appId);
   const today=todayKey(),claim=`${cleanPart(appId)}:${cleanPart(itemId)}`;
   let awarded=false,newCoins=0;
   try{
@@ -154,6 +155,7 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
 async function recordRetryAttempt(questionId){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
+  void recordLearningActivity('eiken-retry');
   const today=todayKey(),claim=`eiken-retry:${cleanPart(questionId)}`;
   let awarded=false,progress=0,newCoins=0,counted=false;
   try{

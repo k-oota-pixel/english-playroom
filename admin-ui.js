@@ -1,3 +1,4 @@
+import {adminContentRows} from './admin-content-model.js?v=all-contents-1';
 import {initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
@@ -64,9 +65,9 @@ async function expand(uid){
  const own=generation;try{const data=await api('/api/admin/user?uid='+encodeURIComponent(uid));if(own!==generation)return;detailCache.set(uid,data);if(expandedUid===uid)render();}
  catch(e){if(own===generation&&expandedUid===uid){detailCache.set(uid,{error:e.message,fetchedAt:0});render();}}
 }
-function appCards(apps={}){const order=['ateru','basic-quest','eiken-retry','eiken-cloze','eiken-title','task-quest','eiken-pre2-interview-a'];return order.map(id=>{const d=apps[id];return `<div class="app"><strong>${esc(labels[id]||id)}</strong><div class="mini">${esc(d?mini(d):'記録なし')}</div></div>`;}).join('');}
+function appCards(apps={},activity={}){return adminContentRows(apps,activity).map(row=>{const lines=[...(row.lastLearningAt?['最終学習日時：'+fmtDate(row.lastLearningAt)]:[]),...row.lines];return `<div class="app" data-content-id="${esc(row.id)}"><strong>${esc(row.label)}</strong><div class="mini">${esc(lines.length?lines.join('\n'):'記録なし')}</div></div>`;}).join('');}
 function rawBlocks(apps={}){return Object.entries(apps).sort(([a],[b])=>a.localeCompare(b)).map(([id,d])=>`<pre><b>${esc(labels[id]||id)}</b>\n${esc(JSON.stringify(d,null,2))}</pre>`).join('')||'<div class="sub">学習記録はまだありません。</div>';}
-function userBody(u){return `<div class="user-body"><div class="meta"><span>最終学習日時: ${esc(fmtDate(u.lastLearningAt))}</span><span>登録: ${esc(fmtDate(u.createdAt))}</span><span>記録: ${Object.keys(u.apps||{}).length}教材</span></div><div class="apps">${appCards(u.apps)}</div><div class="grant"><strong>コイン付与</strong><input class="amount" type="number" min="1" max="1000000" step="1" value="10"><button class="quick" data-amount="10">+10</button><button class="quick" data-amount="100">+100</button><button class="quick" data-amount="1000">+1,000</button><button class="quick" data-amount="100000">+100,000</button><button class="btn primary grantBtn" type="button">付与する</button></div><details class="details"><summary>保存されている学習記録を詳しく見る</summary><div class="raw">${rawBlocks(u.apps)}</div></details></div>`;}
+function userBody(u){return `<div class="user-body"><div class="meta"><span>最終学習日時: ${esc(fmtDate(u.lastLearningAt))}</span><span>登録: ${esc(fmtDate(u.createdAt))}</span><span>記録: ${adminContentRows(u.apps,u.activity).filter(row=>row.recorded).length} / ${adminContentRows().length}教材</span></div><div class="apps">${appCards(u.apps,u.activity)}</div><div class="grant"><strong>コイン付与</strong><input class="amount" type="number" min="1" max="1000000" step="1" value="10"><button class="quick" data-amount="10">+10</button><button class="quick" data-amount="100">+100</button><button class="quick" data-amount="1000">+1,000</button><button class="quick" data-amount="100000">+100,000</button><button class="btn primary grantBtn" type="button">付与する</button></div><details class="details"><summary>保存されている学習記録を詳しく見る</summary><div class="raw">${rawBlocks(u.apps)}</div></details></div>`;}
 function render(){
  const q=searchQuery(),searching=!!q,list=searching?(searchResults||[]):allUsers;
  if(searching){
@@ -76,7 +77,7 @@ function render(){
  }else $('count').textContent=(pageIndex+1)+'ページ目・'+list.length+' / '+allUsers.length+'人（10人ずつ）';
  if(searching&&searchResults===null){$('users').innerHTML='<div class="empty">登録者全体から検索しています…</div>';return;}
  $('users').innerHTML=list.map(u=>{
-  const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
+  const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps,activity:detail.activity}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
   return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="identity"><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">ペット：'+esc(u.petName||'ペット名未設定')+'</div></div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
  }).join('')||'<div class="empty">一致する登録者はいません。</div>';
  document.querySelectorAll('.user-summary').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));

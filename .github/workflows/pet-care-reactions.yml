@@ -4,6 +4,8 @@ on:
     paths:
       - admin.html
       - admin-ui.js
+      - admin-content-model.js
+      - tests/admin-content-model.test.js
       - pet-admin-panel.js
       - tests/admin-browser.cjs
       - index.html

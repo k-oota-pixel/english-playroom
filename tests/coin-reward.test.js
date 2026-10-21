@@ -46,6 +46,10 @@ test('learning activity is recorded without another daily coin, but not on login
  const f=await rewards({trackActivity:true});await Promise.resolve();assert.equal(f.activityCalls(),0);
  await f.api.awardTask('one');await new Promise(r=>setTimeout(r,0));assert.equal(f.activityCalls(),1);const coins=f.wallet().coins;
  f.advance();await f.api.awardTask('one');await new Promise(r=>setTimeout(r,0));assert.equal(f.activityCalls(),2);assert.equal(f.wallet().coins,coins);
- await f.api.recordLearningActivity();assert.equal(f.activityCalls(),2,'same action cannot create duplicate writes within one second');
+ await f.api.recordLearningActivity('task-quest');assert.equal(f.activityCalls(),2,'same action cannot create duplicate writes within one second');
  f.advance();f.signOut();await f.api.recordLearningActivity();assert.equal(f.activityCalls(),2);
+});
+test('retry learning updates its content timestamp even without earning a coin',async()=>{
+ const f=await rewards({trackActivity:true});await f.api.recordRetryAttempt('q1');await new Promise(r=>setTimeout(r,0));assert.equal(f.activityCalls(),1);assert.equal(f.wallet().coins,10);
+ f.advance();await f.api.recordRetryAttempt('q1');await new Promise(r=>setTimeout(r,0));assert.equal(f.activityCalls(),2);assert.equal(f.wallet().coins,10);
 });

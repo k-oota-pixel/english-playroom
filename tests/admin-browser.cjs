@@ -13,7 +13,7 @@ const root=path.resolve(__dirname,'..');
    if(u.pathname==='/api/admin/users'){
     lists++;assert.equal(u.searchParams.get('limit'),'10');const start=u.searchParams.get('pageToken')==='next'?10:0;
     body={users:Array.from({length:10},(_,i)=>({uid:'u'+(start+i),nickname:'User '+(start+i),hasNickname:true,petName:'Pet '+(start+i),coins:7,lastLearningAt:1700000000000-(start+i)*60000,lastLoginAt:1700000000000+(start+i)*60000})),nextPageToken:start?null:'next',fetchedAt};
-   }else if(u.pathname==='/api/admin/user'){details++;body={uid:u.searchParams.get('uid'),apps:{'english-playroom':{coins:7},ateru:{submissions:2}},fetchedAt};}
+   }else if(u.pathname==='/api/admin/user'){details++;body={uid:u.searchParams.get('uid'),apps:{'english-playroom':{coins:7,wordBreakerBests:{junior1:{score:42,combo:12}},petCatchGames:3,petCatchBestScore:18},ateru:{submissions:2}},activity:{contents:{'listening-training':{lastLearningAt:'2026-10-21T08:00:00Z'}}},fetchedAt};}
    else if(u.pathname==='/api/admin/coins'){grants++;assert.deepEqual(route.request().postDataJSON(),{uid:'u0',amount:10});body={coins:17};}
    else throw Error('unexpected admin endpoint');
    await route.fulfill({contentType:'application/json',body:JSON.stringify(body)});
@@ -27,6 +27,11 @@ const root=path.resolve(__dirname,'..');
   assert.ok((await page.locator('.summary-meta').first().textContent()).includes('最終学習日時'));assert.ok(!(await page.locator('#users').textContent()).includes('最終ログイン'));
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile has no horizontal overflow');
   await page.locator('.user-summary').first().click();await page.locator('.grantBtn').waitFor();assert.equal(details,1);
+  assert.equal(await page.locator('.apps .app').count(),12);
+  for(const id of ['word-breaker','listening-training','pre2-interview-questions','talk-quest','pet-catch'])assert.equal(await page.locator('[data-content-id="'+id+'"]').count(),1);
+  assert.ok((await page.locator('[data-content-id="word-breaker"] .mini').textContent()).includes('最高スコア：42'));
+  assert.ok((await page.locator('[data-content-id="listening-training"] .mini').textContent()).includes('最終学習日時'));
+  assert.equal(await page.locator('[data-content-id="talk-quest"] .mini').textContent(),'記録なし');
   await page.locator('.grantBtn').click();await page.waitForFunction(()=>document.querySelector('.coin').textContent.includes('17'));assert.equal(grants,1);assert.equal(lists,1);assert.equal(await page.locator('.pet-name').first().textContent(),'ペット：Pet 0');
   await page.locator('#next').click();await page.getByText('User 10',{exact:true}).waitFor();assert.equal(lists,2);assert.equal(await page.locator('.user').count(),10);
   await page.locator('#prev').click();await page.getByText('User 0',{exact:true}).waitFor();assert.equal(lists,2);assert.ok((await page.locator('.coin').first().textContent()).includes('17'));
