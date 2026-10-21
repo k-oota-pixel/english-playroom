@@ -79,3 +79,5 @@ onAuthStateChanged(auth,user=>{
 export function getRegisteredNickname(){return currentNickname;}
 
 queueMicrotask(()=>import('./version-badge.js?v=1.5.27').catch(error=>console.error('Version badge failed to load',error)));
+
+window.addEventListener('english-playroom-nickname-changed',event=>{if(event.detail?.uid===auth.currentUser?.uid&&validNickname(event.detail.nickname))publish(event.detail.nickname);});
