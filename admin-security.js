@@ -1,10 +1,9 @@
-import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
 const API='https://task-quest.onrender.com';
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function defaultApp(){for(let i=0;i<40;i++){if(getApps().length)return getApp();await sleep(50);}throw Error('管理画面の認証を初期化できませんでした。');}
-const app=await defaultApp(),auth=getAuth(app);
+async function defaultAuth(){for(let i=0;i<40;i++){try{return getAuth();}catch{}await sleep(50);}throw Error('管理画面の認証を初期化できませんでした。');}
+const auth=await defaultAuth();
 
 const style=document.createElement('style');
 style.textContent=`
@@ -31,15 +30,18 @@ function showSecurity(){usersTab.classList.remove('active');securityTab.classLis
 usersTab.onclick=showUsers;securityTab.onclick=showSecurity;refresh.onclick=()=>loadSecurity(true);
 
 function fmtDate(value){const d=new Date(Number(value)||value);if(Number.isNaN(d.getTime()))return '—';return d.toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function tokyoDay(value){const d=new Date(Number(value)||value);if(Number.isNaN(d.getTime()))return '';const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const m=Object.fromEntries(parts.map(part=>[part.type,part.value]));return `${m.year}-${m.month}-${m.day}`;}
+function eventTotal(events){return events.reduce((sum,event)=>sum+Math.max(1,Number(event.count)||1),0);}
 function card(label,value){const el=document.createElement('div');el.className='security-card';const k=document.createElement('div');k.className='k';k.textContent=label;const v=document.createElement('div');v.className='v';v.textContent=Number(value||0).toLocaleString('ja-JP');el.append(k,v);return el;}
 function badge(severity){const el=document.createElement('span');el.className='security-badge '+(severity||'low');el.textContent=severity==='high'?'高':severity==='medium'?'中':'低';return el;}
 function td(text,className=''){const cell=document.createElement('td');if(className)cell.className=className;cell.textContent=text;return cell;}
 function render(data){
   body.className='';body.replaceChildren();
-  const cards=document.createElement('div');cards.className='security-cards';
-  cards.append(card('今日',data.summary?.today),card('過去7日',data.summary?.last7Days),card('過去30日',data.summary?.last30Days),card('ブロック',data.summary?.blocked),card('高危険度',data.summary?.high));body.append(cards);
-  const note=document.createElement('div');note.className='security-note';note.textContent=`最終更新 ${fmtDate(data.fetchedAt)} ／ 保存対象 ${Number(data.retentionDays||30)}日 ／ 同種の連続アクセスはまとめて記録します。`;body.append(note);
   const events=Array.isArray(data.events)?data.events:[];
+  const todayKey=tokyoDay(Date.now()),today=eventTotal(events.filter(event=>tokyoDay(event.lastSeen)===todayKey));
+  const cards=document.createElement('div');cards.className='security-cards';
+  cards.append(card('今日',today),card('過去7日',data.summary?.last7Days),card('過去30日',data.summary?.last30Days),card('ブロック',data.summary?.blocked),card('高危険度',data.summary?.high));body.append(cards);
+  const note=document.createElement('div');note.className='security-note';note.textContent=`最終更新 ${fmtDate(data.fetchedAt)} ／ 保存対象 ${Number(data.retentionDays||30)}日 ／ 同種の連続アクセスはまとめて記録します。`;body.append(note);
   if(!events.length){const empty=document.createElement('div');empty.className='security-empty';empty.textContent='まだ不審アクセスの記録はありません。';body.append(empty);return;}
   const wrap=document.createElement('div');wrap.className='security-table-wrap';const table=document.createElement('table');table.className='security-table';
   const thead=document.createElement('thead'),hr=document.createElement('tr');for(const h of ['最終検知','危険度','内容','アクセス先','送信元（マスク済）','回数','結果']){const th=document.createElement('th');th.textContent=h;hr.append(th);}thead.append(hr);table.append(thead);
