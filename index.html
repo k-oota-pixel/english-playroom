@@ -135,7 +135,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.2">ver1.8.2</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.3">ver1.8.3</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -334,6 +334,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 </main>
 
 <script type="module">
+import {enableAppCheck,apiHeaders} from './firebase-security.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut,
@@ -359,7 +360,7 @@ const firebaseConfig = {
   measurementId: "G-8CWR37L5K0"
 };
 
-const app=initializeApp(firebaseConfig);
+const app=initializeApp(firebaseConfig);enableAppCheck(app);
 const auth=getAuth(app);
 const db=getFirestore(app);
 const provider=new GoogleAuthProvider();
@@ -532,7 +533,7 @@ async function sendPetChat(quickText=''){
   try{
     const user=auth.currentUser;if(!user)throw Error('ログインし直してください。');
     const token=await user.getIdToken();
-    const response=await fetch(PET_CHAT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({species:petChatSpecies(),petName:petChatName(),topic:petDailyTopic().id,message:text,history:previous}),signal:AbortSignal.timeout(45000)});
+    const response=await fetch(PET_CHAT_ENDPOINT,{method:'POST',headers:await apiHeaders(),body:JSON.stringify({species:petChatSpecies(),petName:petChatName(),topic:petDailyTopic().id,message:text,history:previous}),signal:AbortSignal.timeout(45000)});
     let result={};try{result=await response.json();}catch{}
     if(!response.ok)throw Error(result.error||'ペットとおしゃべりできませんでした。');
     if(typeof result.reply!=='string'||!result.reply.trim())throw Error('返事を読み取れませんでした。');
@@ -811,10 +812,10 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge-v176.js?v=1.8.2'></script>
+<script type="module" src='./version-badge-v176.js?v=1.8.3'></script>
 <script>
 (() => {
-  const version = '1.8.2';
+  const version = '1.8.3';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

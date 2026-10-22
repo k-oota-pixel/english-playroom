@@ -8,7 +8,7 @@ async function rewards({trackActivity=false}={}){
  const source=readFileSync(new URL('../coin-reward.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/^export .*;\r?\n/gm,'');
  const user={uid:'tester',getIdToken:async()=>'token'};
  const context=vm.createContext({window:{},console,queueMicrotask,Date:class extends Date{static now(){return clock;}},...(trackActivity?{fetch:async url=>{if(url.endsWith('/api/learning/activity'))activityCalls++;return {ok:true};}}:{}),location:{pathname:'/',href:'https://home.test/'},document:{readyState:'loading',addEventListener(){}},
- initializeApp:()=>({}),getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:user}),getFirestore:()=>({}),doc:()=>({}),serverTimestamp:()=>0,
+ enableAppCheck:()=>null,initializeApp:()=>({}),getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:user}),getFirestore:()=>({}),doc:()=>({}),serverTimestamp:()=>0,
  onAuthStateChanged:(_,fn)=>queueMicrotask(()=>fn(user)),interviewAttemptPatch:()=>({attempted:true}),
  runTransaction:async(_,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(wallet)}),set:(_,patch)=>Object.assign(wallet,patch)})});
  vm.runInContext(source+'\n toast=()=>{};window.signOutForTest=()=>{currentUser=null;};',context);

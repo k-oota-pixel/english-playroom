@@ -1,3 +1,4 @@
+import {apiHeaders} from '../firebase-security.js';
 import {GRADES,validatePassages,judge,nextRandom,validFeedback} from './model.js';
 const coinsReady=import('../coin-reward.js?v=1.8.2').catch(error=>console.warn('Coin rewards unavailable',error));
 async function rewardPassage(id){await coinsReady;return window.EnglishPlayroomCoins?.awardReading?.(id);}
@@ -73,7 +74,7 @@ async function submitSummary(){
  document.getElementById('checkSummary').disabled=true;input.readOnly=true;document.getElementById('language').disabled=true;
  document.getElementById('summaryStatus').innerHTML='<div class="busy"><span class="spinner" aria-hidden="true"></span>本文と要約を照らし合わせています…</div>';document.getElementById('summaryResult').innerHTML='';
  const timer=setTimeout(()=>controller?.abort(),65000);
- try{const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({passage_id:passage.id,summary:value,language})});let result;try{result=await response.json();}catch{throw new Error('AIに接続できませんでした。少し待って再試行してください。');}
+ try{const response=await fetch(API,{method:'POST',headers:await apiHeaders(),signal:controller.signal,body:JSON.stringify({passage_id:passage.id,summary:value,language})});let result;try{result=await response.json();}catch{throw new Error('AIに接続できませんでした。少し待って再試行してください。');}
  if(!response.ok)throw new Error(result.error||'要約を確認できませんでした。');if(!validFeedback(result))throw new Error('フィードバックを読み取れませんでした。もう一度お試しください。');if(token!==requestId)return;
  save('summary-completed:'+passage.id,JSON.stringify({at:Date.now(),language,total:result.total}));void rewardPassage(passage.id);feedbacks.set(key,{input:value,result});document.getElementById('summaryStatus').innerHTML='';document.getElementById('summaryResult').innerHTML=feedbackHTML(result);
  }catch(e){if(token!==requestId)return;document.getElementById('summaryStatus').innerHTML=`<div class="error" role="alert">${esc(e.name==='AbortError'?'接続に時間がかかっています。要約は保存されています。もう一度お試しください。':e.message)}</div>`;

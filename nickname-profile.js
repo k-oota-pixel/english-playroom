@@ -1,4 +1,5 @@
-import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import {enableAppCheck} from './firebase-security.js';
+import { initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
@@ -12,7 +13,7 @@ const firebaseConfig={
   measurementId:"G-8CWR37L5K0"
 };
 const API='https://task-quest.onrender.com';
-const app=getApps().length?getApp():initializeApp(firebaseConfig);
+const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 let generation=0,currentNickname='';
 
