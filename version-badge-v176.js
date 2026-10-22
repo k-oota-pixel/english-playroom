@@ -23,6 +23,12 @@ queueMicrotask(()=>import('./pet-admin-panel.js?v=1.8.2').then(()=>import('./pet
 
 const APP_VERSION='1.8.2';
 
+function updateHomeHeroCopy(){
+  const heading=document.querySelector('.hero-intro h1');
+  if(!heading)return;
+  heading.textContent='今日はどの教材を使う？';
+}
+
 function installVersionBadge(){
   const logo=document.querySelector('.logo');
   if(!logo)return;
@@ -43,5 +49,10 @@ function installVersionBadge(){
   logo.appendChild(badge);
 }
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installVersionBadge,{once:true});
-else installVersionBadge();
+function installHomeUi(){
+  updateHomeHeroCopy();
+  installVersionBadge();
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installHomeUi,{once:true});
+else installHomeUi();
