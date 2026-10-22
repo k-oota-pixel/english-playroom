@@ -1,13 +1,13 @@
 import { foodArt } from './pet-food-art.js?v=1.8.0';
 import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
-import { playCareReaction } from './pet-care-animation.js?v=1.8.0';
+import { playCareReaction } from './pet-care-animation.js?v=1.8.1';
 import { FOODS, careState, feedReward, happyDay, happyLabel } from './pet-care-model.js?v=1.7.8';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.5.27';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.8.1';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([

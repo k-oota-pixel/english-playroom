@@ -3,6 +3,9 @@ import { emitCareEffects } from './pet-effects.js?v=1.5.8';
 
 let active=null;
 const STYLE=`
+#petVisual [data-feeding-native-face] path{transform-box:fill-box;transform-origin:center;transition:transform .1s ease-out}
+#petVisual [data-feeding-native-face=bird][data-feeding-open] path{transform:scaleY(1.5)}
+#petVisual [data-feeding-native-face=hamster][data-feeding-open] path[fill=none]{transform:scaleY(.55)}
 #petVisual[data-care-reacting] .pet-character,#petVisual[data-care-reacting] .pet-shadow{animation-play-state:paused!important}
 #petVisual .pet-care-motion-layer{transform-box:view-box;transform-origin:120px 200px;animation-duration:1.8s;animation-timing-function:ease-in-out;animation-fill-mode:both}
 #petVisual[data-care-reacting=music] .pet-care-motion-layer{animation-name:petCareSnack153}
@@ -40,6 +43,8 @@ function playFeeding(visual,kind,food){
  function attach(){
   const character=visual.querySelector('.pet-character');if(!character)return;
   if(!character.closest('.pet-care-motion-layer')){const layer=document.createElementNS('http://www.w3.org/2000/svg','g');layer.classList.add('pet-care-motion-layer');character.before(layer);layer.append(character);restoreWalk(phases);}
+  const nativeFace=character.querySelector('[data-feeding-native-face]');
+  if(nativeFace){nativeFace.toggleAttribute('data-feeding-open',open&&!finished);return;}
   let mouth=character.querySelector('.pet-eating-mouth');
   if(!mouth){
    const cat=character.querySelector('[data-pet-cat-art]'),dog=character.querySelector('[data-pet-dog-art]'),dragon=character.querySelector('[data-pet-dragon-art]');
@@ -61,7 +66,7 @@ function playFeeding(visual,kind,food){
  }
  let feedback;
  later(()=>{finished=true;open=false;drawFood();attach();visual.dataset.careReacting=kind;emitCareEffects(visual,kind);feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');feedback.textContent=`HAPPY +${food.price}${kind==='max'?' · MAX HAPPY!':''}`;host.append(feedback);},2200);
- const run={stop(){timers.forEach(clearTimeout);observer.disconnect();plate.remove();feedback?.remove();visual.querySelectorAll('.pet-eating-mouth').forEach(m=>m.remove());const ending=walkPhases(visual);visual.querySelectorAll('.pet-care-motion-layer').forEach(l=>l.replaceWith(...l.childNodes));delete visual.dataset.careReacting;restoreWalk(ending);if(active===run)active=null;}};
+ const run={stop(){timers.forEach(clearTimeout);observer.disconnect();visual.querySelectorAll('[data-feeding-open]').forEach(el=>el.removeAttribute('data-feeding-open'));plate.remove();feedback?.remove();visual.querySelectorAll('.pet-eating-mouth').forEach(m=>m.remove());const ending=walkPhases(visual);visual.querySelectorAll('.pet-care-motion-layer').forEach(l=>l.replaceWith(...l.childNodes));delete visual.dataset.careReacting;restoreWalk(ending);if(active===run)active=null;}};
  active=run;later(()=>run.stop(),4600);
 }
 export function playCareReaction(visual,kind,food){

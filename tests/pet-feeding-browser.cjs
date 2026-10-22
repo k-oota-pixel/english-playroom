@@ -37,23 +37,30 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  assert.ok(await page.locator('.pet-food-picture').first().evaluate(e=>e.getBoundingClientRect().width)>=64);
  if(species==='cat')await page.screenshot({path:path.join(process.env.FEED_SCREENSHOT_DIR||'.','feed-menu.png')});
  await page.locator('[data-food=meal]').click();
- await page.waitForTimeout(160);
+ await page.waitForFunction(()=>document.getElementById('petVisual').dataset.careReacting==='eating');
  assert.equal(await page.locator('.pet-eating-food').getAttribute('data-remaining'),'3');
- assert.equal(await page.locator('.pet-eating-mouth').count(),1);
- assert.equal(await page.locator('.pet-eating-open').evaluate(e=>getComputedStyle(e).display),'inline');
+ const native=await page.locator('#petVisual [data-feeding-native-face]').count()>0;
+ if(species==='bird'||species==='hamster')assert.ok(native,'original face retained for '+species);
+ await page.waitForFunction(native=>native?!!document.querySelector('#petVisual [data-feeding-native-face]'):!!document.querySelector('#petVisual .pet-eating-mouth'),native);
+ if(native){
+ await page.waitForFunction(()=>document.querySelector('#petVisual [data-feeding-native-face][data-feeding-open]'));
+ await page.waitForFunction(()=>{const face=document.querySelector('#petVisual [data-feeding-native-face]');const part=face.querySelector(face.dataset.feedingNativeFace==='hamster'?'path[fill=none]':'path');return getComputedStyle(part).transform!=='none';});
+ await page.screenshot({path:path.join(process.env.FEED_SCREENSHOT_DIR||'.','feed-'+species+'.png')});
+ }else await page.waitForFunction(()=>getComputedStyle(document.querySelector('#petVisual .pet-eating-open')).display==='inline');
  if(species==='cat')await page.screenshot({path:path.join(process.env.FEED_SCREENSHOT_DIR||'.','feed-eating.png')});
- await page.waitForTimeout(520);
+ await page.waitForFunction(()=>document.querySelector('.pet-eating-food')?.dataset.remaining==='2');
  assert.equal(await page.locator('.pet-eating-food').getAttribute('data-remaining'),'2');
- await page.waitForTimeout(700);
+ await page.waitForFunction(()=>document.querySelector('.pet-eating-food')?.dataset.remaining==='1');
  assert.equal(await page.locator('.pet-eating-food').getAttribute('data-remaining'),'1');
  await page.evaluate(()=>{const v=document.getElementById('petVisual');v.querySelector('svg').outerHTML=v.querySelector('svg').outerHTML;});
- await page.waitForTimeout(700);
+ await page.waitForFunction(()=>document.querySelector('.pet-eating-food')?.dataset.remaining==='0');
  assert.equal(await page.locator('.pet-eating-food').getAttribute('data-remaining'),'0');
- assert.equal(await page.locator('.pet-eating-mouth').count(),1);
+ assert.equal(await page.locator('.pet-eating-mouth').count(),native?0:1);
  await page.waitForTimeout(300);
  assert.equal(await page.locator('.pet-care-feedback').count(),1);
  await page.waitForTimeout(2400);
  assert.equal(await page.locator('.pet-eating-food,.pet-eating-mouth,.pet-care-motion-layer').count(),0);
+ assert.equal(await page.locator('[data-feeding-open]').count(),0);
  }
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.locator('#petFeed').click();await page.locator('[data-food=snack]').click();await page.waitForTimeout(200);
