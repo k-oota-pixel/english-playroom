@@ -1,0 +1,11 @@
+// Snapshot of the published eiken-retry/(default) rules, inspected 2026-10-22 JST.
+// Evidence only: this change does not deploy or replace production rules.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+  }
+}

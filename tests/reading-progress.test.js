@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {GRADES,judge,validFeedback} from '../reading-training/model.js';
-const source=readFileSync(new URL('../reading-training/app.js',import.meta.url),'utf8').replace(/^import[^\n]+\n/,'').replace(/^const coinsReady=.*\r?\n/m,'const coinsReady=Promise.resolve();\n').replace(/\nload\(\);\s*$/,'');
+const source=readFileSync(new URL('../reading-training/app.js',import.meta.url),'utf8').replace(/^import[^\n]+\n/gm,'').replace(/^const coinsReady=.*\r?\n/m,'const coinsReady=Promise.resolve();\n').replace(/\nload\(\);\s*$/,'');
 const p=JSON.parse(readFileSync(new URL('../reading-training/passages.json',import.meta.url))).passages[0];
 const good={verdict:'good',scores:{main_idea:3,key_points:2,accuracy:3,concision:2},total:10,feedback:'要点を捉えています。',example:'要約の例。',good_points:['主題が明確です。'],improvements:[],language_notes:[]};
 function harness(response={ok:true,json:async()=>good}){
  const storage=new Map(),elements=new Map();
  function element(id){if(!elements.has(id))elements.set(id,{innerHTML:'',textContent:'',value:'本文の要点をまとめました。',style:{},focus(){},querySelectorAll(){return [];},querySelector(sel){return element(sel.slice(1));},addEventListener(type,fn){this[type]=fn;}});return elements.get(id);}
- const context=vm.createContext({GRADES,judge,validFeedback,passageFixture:p,window:{EnglishPlayroomCoins:{awardReading:()=>({awarded:true})}},document:{getElementById:element},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},AbortController,setTimeout,clearTimeout,fetch:async()=>response,matchMedia:()=>({matches:false}),console});
+ const context=vm.createContext({apiHeaders:async()=>({}),GRADES,judge,validFeedback,passageFixture:p,window:{EnglishPlayroomCoins:{awardReading:()=>({awarded:true})}},document:{getElementById:element},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)},AbortController,setTimeout,clearTimeout,fetch:async()=>response,matchMedia:()=>({matches:false}),console});
  vm.runInContext(source,context);vm.runInContext('passage=passageFixture;',context);return {context,storage,elements,element};
 }
 test('all questions visible before batch grading; incomplete attempts never complete',()=>{

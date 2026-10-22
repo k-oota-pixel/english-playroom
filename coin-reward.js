@@ -1,5 +1,6 @@
 import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
 import './nickname-profile.js';
+import {enableAppCheck} from './firebase-security.js';
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -13,7 +14,7 @@ const firebaseConfig={
   appId:"1:231308672297:web:5e8b8ede3a0246c2318b38",
   measurementId:"G-8CWR37L5K0"
 };
-const app=getApps().length?getApp():initializeApp(firebaseConfig);
+const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 const DAILY_COIN_LEADERBOARD_API='https://task-quest.onrender.com/api/coins/leaderboard';
 // Reuse the site's existing Firebase app and wallet without changing daily rewards.

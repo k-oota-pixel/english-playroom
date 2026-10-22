@@ -1,0 +1,26 @@
+{
+  "score": 3,
+  "summary": "Published eiken-retry/(default) rules inspected in Firebase Console on 2026-10-22 JST. Ownership checks protect other users' data. No rule deployment was performed: the existing client wallet, shop, pet and learning transactions need owner writes. App Check does not validate learning achievements or wallet changes.",
+  "findings": [
+    {
+      "check": "Business Logic vs. Rules / Update Bypass",
+      "severity": "major",
+      "issue": "An authenticated owner can directly change their own coins, reward claims and owned shop items. The existing client performs these writes legitimately, so blocking them in Rules alone would break rewards and purchases.",
+      "recommendation": "Move reward claims and spending to authenticated, atomic server transactions, update every consumer, then restrict client changes to those fields. Do not treat App Check as a solution to wallet cheating."
+    },
+    {
+      "check": "Type Safety / Storage Abuse",
+      "severity": "minor",
+      "issue": "Owner writes have no field type, length or collection schema checks. This permits owner data corruption and storage abuse within Firestore document limits.",
+      "recommendation": "Inventory all consumers of the shared project, including repositories beyond this change, and introduce compatible per-collection create/update validators with emulator tests."
+    }
+  ],
+  "accessReview": {
+    "anonymous_user_document_read_write": "denied by published predicate",
+    "other_user_document_read_write": "denied by published predicate",
+    "owner_nested_learning_and_wallet_writes": "allowed by published predicate",
+    "client_root_learning_activity_nickname_registry_leaderboard_writes": "denied by absence of a matching allow",
+    "server_admin_writes": "controlled by server IAM and admin authorization, not Firestore client Rules",
+    "executionLimitation": "Static review of actual published rules; emulator and live negative tests have not been performed. No production learner documents were modified."
+  }
+}

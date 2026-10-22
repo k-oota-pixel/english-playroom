@@ -61,7 +61,8 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
 </main>
 
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import {enableAppCheck} from './firebase-security.js';
+import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,
   setPersistence,browserLocalPersistence,signInWithEmailAndPassword,
@@ -76,7 +77,7 @@ const firebaseConfig={
   messagingSenderId:"231308672297",
   appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"
 };
-const app=initializeApp(firebaseConfig),auth=getAuth(app),provider=new GoogleAuthProvider();
+const app=initializeApp(firebaseConfig);enableAppCheck(app);const auth=getAuth(app),provider=new GoogleAuthProvider();
 auth.languageCode='ja';
 provider.setCustomParameters({prompt:'select_account'});
 await setPersistence(auth,browserLocalPersistence);

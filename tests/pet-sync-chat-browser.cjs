@@ -5,7 +5,7 @@ const server=http.createServer((req,res)=>{const file=path.join(root,req.url==='
 const appMock='export const initializeApp=()=>({}),getApps=()=>[{}],getApp=()=>({});';
 const authMock=`export const GoogleAuthProvider=class {setCustomParameters(){}};
 const auth={currentUser:{uid:'test-user',displayName:'テスト',getIdToken:async()=>'test-token'}};
-const listeners=new Set();export const getAuth=()=>auth;export const browserLocalPersistence={};export const setPersistence=async()=>{};
+const listeners=new Set();auth.authStateReady=async()=>{};export const getAuth=()=>auth;export const browserLocalPersistence={};export const setPersistence=async()=>{};
 export const signInWithPopup=async()=>{};export const signOut=async()=>{auth.currentUser=null;for(const cb of listeners)await cb(null);};
 export function onAuthStateChanged(a,cb){listeners.add(cb);queueMicrotask(()=>cb(auth.currentUser));return ()=>listeners.delete(cb);}`;
 const firestoreMock=`export const getFirestore=()=>({}),doc=(db,...parts)=>parts.join('/'),serverTimestamp=()=>({timestamp:true});
@@ -16,10 +16,10 @@ if(window.failSave && window.petStore.petLoginDays>=3)throw Object.assign(Error(
 let staged;const result=await fn({get:async()=>({exists:()=>!!window.petStore,data:()=>structuredClone(window.petStore||{})}),set:(ref,payload)=>{staged={...window.petStore,...payload};}});
 if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for(const [ref,cb] of listeners){queueMicrotask(()=>cb(snapshot(ref)));setTimeout(()=>cb(snapshot(ref)),450);setTimeout(()=>cb(snapshot(ref)),1100);}}return result;}`;
 (async()=>{
- const browser=await chromium.launch({headless:true});
+ const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{
  const context=await browser.newContext({viewport:process.env.MOBILE?{width:390,height:844}:{width:1280,height:900}});
- await context.route('https://www.gstatic.com/firebasejs/**',route=>route.fulfill({contentType:'text/javascript',body:route.request().url().includes('firebase-app')?appMock:route.request().url().includes('firebase-auth')?authMock:firestoreMock}));
+ await context.route('https://www.gstatic.com/firebasejs/**',route=>route.fulfill({contentType:'text/javascript',body:route.request().url().includes('firebase-app-check')?'export const initializeAppCheck=()=>({}),ReCaptchaEnterpriseProvider=class{},getToken=async()=>({token:"test-app-check"});':route.request().url().includes('firebase-app')?appMock:route.request().url().includes('firebase-auth')?authMock:firestoreMock}));
  await context.route('http://127.0.0.1:8765/**',route=>{const pathname=new URL(route.request().url()).pathname;const file=path.join(root,pathname==='/'?'index.html':pathname);return route.fulfill({contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html',body:fs.readFileSync(file,'utf8')});});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
