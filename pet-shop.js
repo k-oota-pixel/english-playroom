@@ -1,3 +1,4 @@
+import {injectionPatch} from './pet-health-model.js?v=1.8.1';
 import { foodArt } from './pet-food-art.js?v=1.8.0';
 import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
@@ -7,7 +8,7 @@ import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/fireb
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=1.8.1';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=health181';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
@@ -52,6 +53,7 @@ const TABS = Object.freeze([
   {id:'neck',label:'くび',icon:'🧣'},
   {id:'effects',label:'エフェクト',icon:'✨'},
   {id:'backgrounds',label:'背景',icon:'🖼️'},
+  {id:'health',label:'おくすり',icon:'💉'},
   {id:'names',label:'名前変更',icon:'✏️'},
   {id:'custom',label:'見た目変更',icon:'🎨'}
 ]);
@@ -107,8 +109,17 @@ function renderWallet(){if(!wallet)return;renderCare();const logged=!!currentUse
 function previewShop(){const base=shopOf(currentData),item=itemById(selectedItemId);if(!item)return base;const next={ownedItems:[...base.ownedItems],equipped:{...base.equipped}};if(!next.ownedItems.includes(item.id))next.ownedItems.push(item.id);next.equipped[item.slot]=item.id;const legacy=next.equipped.accessories;if(typeof legacy==='string'&&ACCESSORY_ITEM_SLOTS[legacy]===item.slot)next.equipped.accessories=null;return next;}
 function previewAppearanceValue(){const base=normalizeAppearance(currentData.petAppearance);return selectedAppearance?{...base,[selectedAppearance.key]:selectedAppearance.id}:base;}
 function renderPreview(){if(!previewEl)return;previewEl.innerHTML=renderPetSVG(previewAppearanceValue(),previewShop());previewName.textContent=validPetName(currentData.petName)?normalizePetName(currentData.petName):'MY PET';}
+function renderMedicine(){
+ const sick=!!currentData.petHealth?.sick;
+ panel.innerHTML='<h3 class="pet-shop-panel-title">💉 おくすり</h3><div class="pet-shop-item"><div class="pet-shop-icon">💉</div><div class="pet-shop-name">おくすり注射</div><div class="pet-shop-price">5コイン · 購入するとすぐに回復</div><p style="font-size:12px">'+(sick?'🌡️ 病気です。注射で治療してあげよう。':'いまは元気です。病気になったときに使えます。')+'</p><button id="petInjectionBuy" class="pet-shop-action" '+(!sick||busy||coinsOf(currentData)<5?'disabled':'')+'>5コインで治療する</button></div>';
+ panel.querySelector('#petInjectionBuy').onclick=async()=>{
+  const user=currentUser;if(!user||busy)return;
+  const ok=await requestCoinConfirm({title:'注射で治療',message:'5コインを消費して、病気を治します。',confirmLabel:'治療する'});if(!ok||currentUser?.uid!==user.uid)return;
+  await withBusy(async()=>{try{const patch=await runTransaction(db,async tx=>{const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};const patch=injectionPatch(data,happyDay());tx.set(ref,{...patch,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});return patch;});if(currentUser?.uid!==user.uid)return;currentData={...currentData,...patch};setToast('💉 元気になりました！','ok');}catch(e){setToast(e.message,'error');}});
+ };
+}
 function renderTabs(){tabBar.innerHTML='';for(const tab of TABS){const btn=document.createElement('button');btn.type='button';btn.className='pet-shop-tab'+(activeTab===tab.id?' active':'');btn.textContent=`${tab.icon} ${tab.label}`;btn.addEventListener('click',()=>{activeTab=tab.id;selectedItemId=null;selectedAppearance=null;renderShop();});tabBar.appendChild(btn);}}
-function renderShop(){if(!panel)return;const scroll=panel.scrollTop;balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;renderPreview();renderTabs();if(activeTab==='names')renderNameProducts();else if(activeTab==='custom')renderCustomPanel();else renderItemPanel(activeTab);requestAnimationFrame(()=>{panel.scrollTop=scroll;});}
+function renderShop(){if(!panel)return;const scroll=panel.scrollTop;balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;renderPreview();renderTabs();if(activeTab==='health')renderMedicine();else if(activeTab==='names')renderNameProducts();else if(activeTab==='custom')renderCustomPanel();else renderItemPanel(activeTab);requestAnimationFrame(()=>{panel.scrollTop=scroll;});}
 function renderItemPanel(slot){const tab=TABS.find(x=>x.id===slot),coins=coinsOf(currentData),shop=shopOf(currentData),items=ITEMS.filter(item=>item.slot===slot);panel.innerHTML='';const title=document.createElement('div');title.className='pet-shop-panel-title';title.textContent=`${tab?.icon||'🛍️'} ${tab?.label||''}`;panel.appendChild(title);const equipped=equippedIdFor(shop,slot);if(equipped){const none=document.createElement('button');none.className='pet-shop-empty';none.type='button';none.textContent='装備をはずす';none.addEventListener('click',()=>handleUnequip(slot,equipped));panel.appendChild(none);}const grid=document.createElement('div');grid.className='pet-shop-grid';for(const item of items){const owned=shop.ownedItems.includes(item.id),isEquipped=equipped===item.id;const card=document.createElement('div');card.className='pet-shop-item'+(selectedItemId===item.id?' selected':'');card.dataset.itemId=item.id;card.dataset.itemSlot=item.slot;const action=isEquipped?'はずす':owned?'装備':`${item.price}コインで購入`;card.innerHTML=`<div class="pet-shop-icon">${item.icon}</div><div class="pet-shop-name">${item.name}</div><div class="pet-shop-price">${owned?'購入済み':`🪙 ${item.price}`}</div><button class="pet-shop-action ${owned?'owned':''} ${isEquipped?'equipped':''}" type="button">${action}</button>`;card.addEventListener('click',()=>{selectedItemId=item.id;selectedAppearance=null;renderShop();});const btn=card.querySelector('button');btn.disabled=busy||(!owned&&coins<item.price);btn.addEventListener('click',e=>{e.stopPropagation();selectedItemId=item.id;renderPreview();handleItem(item);});grid.appendChild(card);}panel.appendChild(grid);}
 function renderCustomPanel(){const current=normalizeAppearance(currentData.petAppearance),coins=coinsOf(currentData);panel.innerHTML='<div class="pet-shop-panel-title">🎨 見た目変更</div>';for(const group of APPEARANCE_GROUPS){const section=document.createElement('section');section.className='pet-custom-section';const heading=document.createElement('div');heading.className='pet-custom-heading';heading.innerHTML=`<span>${group.icon}</span><span>${group.label}</span><span class="pet-custom-price">変更 🪙${group.price}</span>`;section.appendChild(heading);const grid=document.createElement('div');grid.className='pet-custom-grid';for(const option of OPTIONS[group.key]){const isCurrent=current[group.key]===option.id,isSelected=selectedAppearance?.key===group.key&&selectedAppearance?.id===option.id;const card=document.createElement('button');card.type='button';card.className=`pet-custom-option${isCurrent?' current':''}${isSelected?' selected':''}`;const swatch=option.color?`<span class="pet-color-dot" style="background:${option.color}"></span>`:`<span style="font-size:20px">${group.icon}</span>`;card.innerHTML=`${swatch}<span class="pet-custom-option-name">${option.label}</span><span class="pet-custom-option-sub">${isCurrent?'現在の設定':`🪙 ${group.price}`}</span><span class="pet-custom-buy">${isCurrent?'現在':`${group.price}コインで変更`}</span>`;const buy=card.querySelector('.pet-custom-buy');if(isCurrent){buy.style.pointerEvents='none';}card.addEventListener('click',()=>{selectedItemId=null;selectedAppearance={key:group.key,id:option.id};renderShop();});buy.addEventListener('click',e=>{e.stopPropagation();if(!isCurrent){selectedItemId=null;selectedAppearance={key:group.key,id:option.id};renderPreview();changeAppearance(group.key,option.id,group.price,option.label);}});if(!isCurrent&&coins<group.price){buy.style.opacity='.5';buy.style.pointerEvents='none';}grid.appendChild(card);}section.appendChild(grid);panel.appendChild(section);}}
 async function withBusy(fn){if(busy)return;busy=true;renderWallet();try{await fn();}finally{busy=false;renderWallet();}}
@@ -196,6 +207,7 @@ async function performCare(foodId) {
         const today=happyDay(),before=careState(data,today).happy;
         const reward=feedReward(data,foodId,today);
         const patch={petCare:reward.petCare,petUpdatedAt:serverTimestamp()};
+        if(data.petHealth)patch.petHealth={...data.petHealth,zeroDays:0};
         if(foodId){patch.coins=reward.coins;patch.coinUpdatedAt=serverTimestamp();}
         tx.set(ref,patch,{merge:true});
         return {reward,reachedMax:before<10&&reward.petCare.happy===10,data:{...data,...patch}};
@@ -250,7 +262,7 @@ async function updateWaste(clean=false){
    const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};
    if(!hasPet(data))return null;
    const petWaste=clean?cleanWaste(data):wasteState(data);
-   tx.set(ref,{petWaste,petUpdatedAt:serverTimestamp()},{merge:true});
+   tx.set(ref,{petWaste,...(clean&&data.petHealth?{petHealth:{...data.petHealth,wasteSeen:0}}:{}),petUpdatedAt:serverTimestamp()},{merge:true});
    return petWaste;
   });
   if(currentUser?.uid!==user.uid||!result)return;

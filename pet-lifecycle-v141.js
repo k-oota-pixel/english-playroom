@@ -6,6 +6,7 @@ import {hasPet,normalizePetName,validPetName} from './pet-model.js';
 import {growthPatch,hatchPatch,hatchDay} from './pet-growth.js';
 import {renderPetVisual} from './pet-art.js?v=1.5.27';
 import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.30';
+import {advanceHealth} from './pet-health-model.js?v=1.8.1';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
@@ -41,6 +42,7 @@ function advanceLifecycle(source,today,uid){
   const data={...source,...loginPatch};
   const patch={...loginPatch,...growthPatch(data,today,uid)};
   if(hasPet(data)&&data.petAdult===false&&validPetName(data.petName))patch.petName=null;
+  const health=advanceHealth(data,today,uid);Object.assign(patch,health.patch);Object.assign(data,health.patch);
   const oldVersion=int(data.petLifecycleVersion,0);
 
   if(oldVersion<LIFECYCLE_VERSION){
@@ -67,9 +69,10 @@ function advanceLifecycle(source,today,uid){
   }
 
   let merged={...data,...patch};
-  if(hasPet(merged)&&counted&&days>=6&&merged.petLastLifeCheckDate!==today){
+  if(hasPet(merged)&&counted&&(health.fatal||(days>=6&&merged.petLastLifeCheckDate!==today))){
     patch.petLastLifeCheckDate=today;
-    if(shouldDepart(uid,generationOf(merged),today,days,merged)){
+    const newlySick=health.patch.petHealth?.sick&&!source.petHealth?.sick;
+    if(health.fatal||(!newlySick&&shouldDepart(uid,generationOf(merged),today,days,merged))){
       const generation=generationOf(merged);
       const memory={
         id:`g${generation}-${today}`,
@@ -82,6 +85,7 @@ function advanceLifecycle(source,today,uid){
       };
       const memories=[...memoriesOf(merged),memory].slice(-MAX_MEMORIES);
       Object.assign(patch,{
+        petHealth:null,petWaste:{count:0,day:Math.floor(Date.parse(today+'T00:00:00Z')/86400000)},
         petMemories:memories,
         petLastDeparture:memory,
         petGeneration:generation+1,
@@ -103,10 +107,18 @@ function advanceLifecycle(source,today,uid){
   return {patch,data:{...data,...patch},event:''};
 }
 
+function renderHealth(data){
+ const visual=document.getElementById('petVisual'),host=visual?.closest('.pet-visual-wrap');if(!host)return;
+ const sick=hasPet(data)&&data.petHealth?.sick===true;visual.toggleAttribute('data-pet-sick',sick);
+ let badge=host.querySelector('.pet-health-indicator');if(!sick){badge?.remove();return;}
+ if(!badge){badge=document.createElement('span');badge.className='pet-health-indicator';badge.setAttribute('role','status');badge.style.cssText='position:absolute;right:3px;top:5px;z-index:14;padding:4px 7px;border-radius:12px;background:#fff3e9;color:#92513e;font-size:12px;font-weight:800;pointer-events:none';host.append(badge);}
+ badge.textContent='🌡️ 病気';badge.title='SHOPの「おくすり」で注射（5コイン）を使うと回復します。';
+}
 function ensureStyles(){
   if(document.getElementById('petLifecycle141Styles'))return;
   const style=document.createElement('style');style.id='petLifecycle141Styles';
   style.textContent=`
+#petVisual[data-pet-sick] .pet-character{animation-duration:14s!important}
 .pet-memory-button{margin-left:6px}.pet-life-chip{display:inline-flex;align-items:center;gap:4px;margin-top:7px;padding:4px 8px;border-radius:999px;background:#f4efe2;color:#766027;font-size:10px;font-weight:850}
 .pet-life-dialog{width:min(620px,calc(100% - 24px))}.pet-life-dialog .pet-actions{position:sticky;bottom:-24px;background:#fffdf8;padding-top:10px}.pet-departure-card{text-align:center}.pet-departure-visual{width:150px;height:150px;margin:10px auto}.pet-departure-visual svg{width:100%;height:100%;display:block;border-radius:24px}.pet-departure-days{font-size:26px;font-weight:900;color:#2d6656;margin:8px 0}.pet-memory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.pet-memory-card{display:grid;grid-template-columns:74px 1fr;gap:10px;align-items:center;border:1px solid #e5dfcf;background:#fff;border-radius:15px;padding:9px}.pet-memory-thumb{width:74px;height:74px}.pet-memory-thumb svg{width:100%;height:100%;display:block;border-radius:13px}.pet-memory-name{font-weight:900}.pet-memory-meta{font-size:10px;color:#748078;line-height:1.5;margin-top:3px}
 html[data-pet-stage="baby"] #petVisual.hatched .pet-character{animation-duration:11.4s!important}
@@ -174,7 +186,7 @@ function rerenderIfNeeded(data){
 }
 
 function applyUi(data={}){
-  currentData=data;document.dispatchEvent(new CustomEvent('pet-state-updated',{detail:data}));ensureStyles();const memoryButton=ensureMemoryButton();
+  currentData=data;renderHealth(data);document.dispatchEvent(new CustomEvent('pet-state-updated',{detail:data}));ensureStyles();const memoryButton=ensureMemoryButton();
   const stage=stageOf(data),days=lifeDays(data),hatched=hasPet(data),generation=generationOf(data);
   document.documentElement.dataset.petStage=stage;
   const petDays=document.getElementById('petDays'),status=document.getElementById('petStatus'),bar=document.getElementById('petBar'),create=document.getElementById('petCreate');
@@ -242,7 +254,7 @@ function start(){
   if(!auth||!db)return;ensureStyles();ensureMemoryButton();installGuard();
   onAuthStateChanged(auth,user=>{
     if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';
-    if(!user){delete document.documentElement.dataset.petStage;const b=ensureMemoryButton();if(b)b.hidden=true;return;}
+    if(!user){renderHealth({});delete document.documentElement.dataset.petStage;const b=ensureMemoryButton();if(b)b.hidden=true;return;}
     const ref=dataRef(user);
     unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);},error=>console.error('Pet lifecycle snapshot failed',error));
     synchronize(user).catch(error=>console.error('Pet lifecycle sync failed',error));

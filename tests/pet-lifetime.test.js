@@ -5,15 +5,25 @@ import vm from 'node:vm';
 import {chanceFor,departureChance,shouldDepart} from '../pet-lifetime-model.js';
 import {previousHappy,yesterdayKey,feedReward,careState} from '../pet-care-model.js';
 import {growthPatch} from '../pet-growth.js';
+import {advanceHealth} from '../pet-health-model.js';
 import {hasPet,normalizePetName,validPetName} from '../pet-model.js';
 const today='2026-10-19',yesterday='2026-10-18';
 const saved=happy=>({petCare:{happy,happyDate:yesterday}});
 const source=fs.readFileSync(new URL('../pet-lifecycle-v141.js',import.meta.url),'utf8');
-const ctx=vm.createContext({growthPatch,hasPet,normalizePetName,validPetName,chanceFor,shouldDepart,LIFECYCLE_VERSION:141,MAX_MEMORIES:40});
+const ctx=vm.createContext({advanceHealth,growthPatch,hasPet,normalizePetName,validPetName,chanceFor,shouldDepart,LIFECYCLE_VERSION:141,MAX_MEMORIES:40});
 vm.runInContext(source.slice(source.indexOf('function localDateKey'),source.indexOf('function ensureStyles')),ctx);
 const advance=ctx.advanceLifecycle;
 const pet=(days=45)=>({petHatched:true,petAdult:true,petAppearance:{species:'cat',bodyColor:'cream',eyes:'round',feature:'classic',pattern:'none',baseBackground:'ivory'},petName:'ふわ',petLifeDays:days,petLoginDays:100,petLastLoginDate:yesterday,petLastLifeLoginDate:yesterday,petLastLifeCheckDate:yesterday,petLifecycleVersion:141,petGrowthVersion:1428,petGeneration:2,coins:30,petShop:{ownedItems:['crown'],equipped:{head:'crown'}},petWaste:{count:2,day:20744}});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-12,`${actual} != ${expected}`);
+test('illness death uses the existing memory and new egg path even before age checks begin',()=>{
+ const data={...pet(3),petHealth:{generation:2,checkedDate:yesterday,sick:true,sickDays:0,zeroDays:0,wasteSeen:0,sickSince:yesterday}};
+ let result;for(let i=0;i<2000;i++){result=advance(data,today,'ill-'+i);if(result.event==='departed')break;}
+ assert.equal(result.event,'departed');assert.equal(result.memory.lifetimeDays,4);assert.equal(result.data.petHealth,null);assert.equal(result.data.petHatched,false);assert.equal(result.data.coins,30);
+});
+test('new illness day is protected from departure, including the age roll',()=>{
+ const data=pet(25);let uid;for(let i=0;i<2000;i++){const id='new-sick-'+i;if(advanceHealth(data,today,id).patch.petHealth?.sick){uid=id;break;}}
+ assert.ok(uid);const result=advance(data,today,uid);assert.equal(result.event,'');assert.equal(result.data.petHealth.sick,true);assert.equal(result.data.petHealth.sickDays,0);
+});
 test('all age band boundaries use the shortened base probabilities',()=>{
  for(const [day,chance] of [[0,0],[5,0],[6,.1],[10,.1],[11,.25],[15,.25],[16,.5],[20,.5],[21,.8],[25,.8],[26,1],[10000,1]])assert.equal(chanceFor(day),chance);
 });
@@ -68,7 +78,7 @@ test('26+ without yesterday HAPPY departs and preserves wallet/shop/memories',()
  assert.equal(result.data.petGeneration,3);assert.equal(result.data.petHatched,false);
  assert.equal(result.memory.lifetimeDays,26);assert.equal(result.memory.name,'ふわ');
  assert.equal(result.data.coins,30);assert.equal(JSON.stringify(result.data.petShop),JSON.stringify(data.petShop));
- assert.equal(JSON.stringify(result.data.petWaste),JSON.stringify(data.petWaste));
+ assert.equal(result.data.petWaste.count,0);assert.equal(result.data.petHealth,null);
  assert.equal(previousHappy(result.data,today),0);assert.equal(careState(result.data,today).happy,0);
  assert.equal(previousHappy(result.data,'2026-10-20'),0);
 });
