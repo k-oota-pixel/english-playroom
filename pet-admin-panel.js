@@ -88,12 +88,23 @@ async function savePetState(){
 
 function ensureButton(){
   if(!adminVerified||!currentUser)return;
-  if(button?.isConnected)return;
+  if(button?.isConnected){removeDuplicateButtons();return;}
   const card=document.querySelector('.pet-card'),visual=card?.querySelector('.pet-visual-wrap');
   if(!card||!visual){setTimeout(ensureButton,250);return;}
   button=document.createElement('button');button.type='button';button.className='pet-admin-open';button.textContent='🛠 ペット管理';button.setAttribute('aria-label','管理者用ペット状態変更');button.addEventListener('click',openPanel);
   const toolbar=document.createElement('div');toolbar.className='pet-admin-toolbar';toolbar.appendChild(button);card.insertBefore(toolbar,visual);
+  removeDuplicateButtons();
+}
+function removeDuplicateButtons(){
+ if(!button?.isConnected)return;
+ document.querySelectorAll('.pet-admin-open').forEach(other=>{if(other!==button){const toolbar=other.closest('.pet-admin-toolbar');if(toolbar&&!toolbar.contains(button))toolbar.remove();else other.remove();}});
 }
 function removeButton(){button?.closest('.pet-admin-toolbar')?.remove();button?.remove();button=null;if(dialog?.open)dialog.close();}
 function start(){if(!getApps().length){setTimeout(start,120);return;}ensureStyle();const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,async user=>{currentUser=user;adminVerified=false;removeButton();if(!user)return;adminVerified=await verifyAdmin(user);if(auth.currentUser?.uid!==user.uid||!adminVerified)return;ensureButton();});}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+// Query-string module aliases share one installation and one auth subscription.
+const installKey=Symbol.for('monstudy.petAdminPanel');
+if(!window[installKey]){
+ window[installKey]=true;
+ new MutationObserver(removeDuplicateButtons).observe(document.documentElement,{childList:true,subtree:true});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+}

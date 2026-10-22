@@ -18,6 +18,8 @@ on:
       - tests/pet-health.test.js
       - tests/pet-health-browser.cjs
       - tests/pet-touch-browser.cjs
+      - tests/pet-admin-singleton-browser.cjs
+      - tests/release-version.test.js
       - coin-reward.js
       - reading-training/**
       - tests/reading-coins-browser.cjs
@@ -55,6 +57,7 @@ jobs:
       - run: node tests/reading-coins-browser.cjs
       - run: node tests/pet-health-browser.cjs
       - run: node tests/pet-touch-browser.cjs
+      - run: node tests/pet-admin-singleton-browser.cjs
       - run: node tests/pet-feeding-browser.cjs
       - run: node tests/pet-feeding-browser.cjs
         env:

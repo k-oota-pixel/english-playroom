@@ -31,7 +31,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.addInitScript(()=>{const d=new Date(),today=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');window.petStore.petGeneration=1;window.petStore.petHealth={generation:1,checkedDate:today,sick:true,sickDays:0,zeroDays:3,wasteSeen:2,sickSince:today,curedDate:''};window.petStore.coins=10;window.forceDay=true;});
  await context.route('https://task-quest.onrender.com/**',route=>route.fulfill({contentType:'application/json',body:'{}'}));
  await page.goto('http://127.0.0.1:8765');await page.locator('.pet-health-indicator').waitFor();
- assert.match(await page.locator('.app-version-badge').textContent(),/1.8.1/);
+ const version=fs.readFileSync(path.join(root,'version-badge-v176.js'),'utf8').match(/const APP_VERSION='([^']+)'/)[1];
+ assert.equal(await page.locator('.app-version-badge').textContent(),'ver'+version);
  await page.locator('#petShopOpen').click();await page.locator('.pet-shop-tab').filter({hasText:'おくすり'}).click();
  assert.equal(await page.locator('#petInjectionBuy').isEnabled(),true);
  await page.screenshot({path:path.join(process.env.FEED_SCREENSHOT_DIR||'.','health-shop.png')});
