@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'..');
 const appMock='export const initializeApp=()=>({}),getApps=()=>[{}],getApp=()=>({});';
 const authMock=`export const GoogleAuthProvider=class {setCustomParameters(){}};
 const auth={currentUser:window.testUser===false?null:{uid:'test-user',displayName:'テスト',getIdToken:async()=> 'test-token'}};
-export const getAuth=()=>auth;export const browserLocalPersistence={};export const setPersistence=async()=>{};
+auth.authStateReady=async()=>{};export const getAuth=()=>auth;export const browserLocalPersistence={};export const setPersistence=async()=>{};
 export const signInWithPopup=async()=>{};export const signOut=async()=>{auth.currentUser=null;window.authCallback(null);};
 export function onAuthStateChanged(a,cb){window.authCallback=cb;queueMicrotask(()=>cb(auth.currentUser));return ()=>{};}`;
 const firestoreMock=`export const getFirestore=()=>({}),doc=(db,...parts)=>parts.join('/'),serverTimestamp=()=>({timestamp:true});
@@ -18,7 +18,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{
  const context=await browser.newContext({viewport:{width:1280,height:950},reducedMotion: 'no-preference'});
- await context.route('https://www.gstatic.com/firebasejs/**',route=>route.fulfill({contentType:'text/javascript',body:route.request().url().includes('firebase-app')?appMock:route.request().url().includes('firebase-auth')?authMock:firestoreMock}));
+ await context.route('https://www.gstatic.com/firebasejs/**',route=>route.fulfill({contentType:'text/javascript',body:route.request().url().includes('firebase-app-check')?'export const initializeAppCheck=()=>({}),ReCaptchaEnterpriseProvider=class{},getToken=async()=>({token:"test-app-check"});':route.request().url().includes('firebase-app')?appMock:route.request().url().includes('firebase-auth')?authMock:firestoreMock}));
  await context.route('https://task-quest.onrender.com/**',route=>route.fulfill({contentType:'application/json',body:'{}'}));
  if(!process.env.CAT_LIVE_URL)await context.route('http://127.0.0.1:8765/**',route=>{
   const file=path.join(root,new URL(route.request().url()).pathname==='/'?'index.html':new URL(route.request().url()).pathname);

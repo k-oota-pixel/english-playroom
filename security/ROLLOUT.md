@@ -54,3 +54,5 @@ App Checkサイトキーの作成・登録、本番反映、実アカウント�
 - https://firebase.google.com/docs/app-check/custom-resource-backend
 - https://firebase.google.com/docs/auth/admin/verify-id-tokens
 - https://docs.cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/lookup
+
+追加確認: Firebase Consoleの承認済みドメインに k-oota-pixel.github.io、task-quest.onrender.com、eiken-cloze.onrender.com、eiken-title.onrender.com が登録済み。GitHub上の4リポジトリのSecurity regression checksも成功。ペットのデスクトップ/モバイル、管理保存、コイン保持、および読解演習のコイン重複防止はモックFirebaseを使ったブラウザーテストでも成功。本番の実アカウントでの確認は未完了。
