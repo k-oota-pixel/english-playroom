@@ -2,12 +2,12 @@ import './pet-jump-fix.js?v=1.5.7';
 import './pet-enhancements.js?v=1.5.31';
 import './pet-shop-appearance-lock.js?v=1.5.32';
 import './pet-shop-expansion-v1533.js?v=1.7.7';
-import './pet-shop-preview-fix-v1534.js?v=1.6.2';
+import './pet-shop-preview-fix-v1534.js?v=touch1812';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.5.7-touch';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
-import './pet-lifecycle-v141.js?v=health181';
+import './pet-lifecycle-v141.js?v=touch1812';
 import './pet-egg-ui-v141.js';
 import './pet-six-species-v141.js';
 import './pet-eye-emphasis-v144.js';
@@ -15,11 +15,11 @@ import './pet-cat-dog-v1425.js?v=1.5.7';
 // Cat and dog artwork are rendered directly by pet-art.js; no late redraw.
 // Sleep mode now owns original and cloned eye visibility together.
 import './pet-lion-v149.js?v=1.4.12';
-import './pet-play-v160.js?v=1.6.0';
+import './pet-play-v160.js?v=touch1812';
 import './pet-play-menu-v164.js?v=1.8.1';
 import './pet-catch-card.js?v=1.6.4';
 
-queueMicrotask(()=>import('./pet-admin-panel.js?v=1.6.2').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
+queueMicrotask(()=>import('./pet-admin-panel.js?v=touch1812').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
 const APP_VERSION='1.8.1';
 

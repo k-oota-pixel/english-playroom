@@ -1,5 +1,5 @@
 import { foodArt } from './pet-food-art.js?v=1.8.0';
-import { emitCareEffects } from './pet-effects.js?v=1.5.8';
+import { emitCareEffects } from './pet-effects.js?v=touch1812';
 
 let active=null;
 const STYLE=`
@@ -27,8 +27,16 @@ function walkPhases(visual){
 }
 function restoreWalk(phases){
   for(const {el,name,time} of phases)if(time!=null){
-    const walk=el.getAnimations().find(a=>a.animationName===name);if(walk)walk.currentTime=time;
+    const target=el.isConnected?el:document.getElementById('petVisual')?.querySelector(el.classList.contains('pet-character')?'.pet-character':'.pet-shadow');
+    const walk=target?.getAnimations().find(a=>a.animationName===name);if(walk)walk.currentTime=time;
   }
+}
+// Pin the rendered walk pose as well as its clock: CSS restarts caused by
+// waking, wrappers, or a server redraw must not move the reaction to frame zero.
+function pinWalkPose(visual){
+ const poses=['.pet-character','.pet-shadow'].map(selector=>{const el=visual.querySelector(selector);if(!el)return null;const css=getComputedStyle(el);return {selector,transform:css.transform,origin:css.transformOrigin,box:css.transformBox,original:['transform','transform-origin','transform-box'].map(key=>[key,el.style.getPropertyValue(key),el.style.getPropertyPriority(key)])};}).filter(Boolean);
+ const originals=new Map();
+ return {attach(){for(const pose of poses){const el=visual.querySelector(pose.selector);if(!el)continue;if(!originals.has(el))originals.set(el,pose.original);el.style.setProperty('transform',pose.transform,'important');el.style.setProperty('transform-origin',pose.origin,'important');el.style.setProperty('transform-box',pose.box,'important');}},release(){for(const [el,props] of originals)for(const [key,value,priority] of props){if(value)el.style.setProperty(key,value,priority);else el.style.removeProperty(key);}}};
 }
 function playFeeding(visual,kind,food){
  active?.stop();
@@ -73,6 +81,7 @@ export function playCareReaction(visual,kind,food){
   if(food)return playFeeding(visual,kind,food);
   const phases=walkPhases(visual);
   active?.stop();
+  const pose=pinWalkPose(visual);
   if(!document.getElementById('petCareAnimation153')){
     const style=document.createElement('style');style.id='petCareAnimation153';style.textContent=STYLE;document.head.append(style);
   }
@@ -85,12 +94,12 @@ export function playCareReaction(visual,kind,food){
   visual.dataset.careReacting=kind;
   function attach(){
     const character=visual.querySelector('.pet-character');if(!character)return;
-    if(character.closest('.pet-care-motion-layer'))return;
+    if(character.closest('.pet-care-motion-layer')){pose.attach();restoreWalk(phases);return;}
     const layer=document.createElementNS('http://www.w3.org/2000/svg','g');layer.classList.add('pet-care-motion-layer');
     // A CSS reaction stays independent from the child's walking animation.
     layer.style.animationDelay=`-${Math.max(0,performance.now()-started)}ms`;
     character.parentNode.insertBefore(layer,character);layer.append(character);
-    restoreWalk(phases);
+    restoreWalk(phases);pose.attach();
   }
   // Snapshot refreshes can replace the rendered character during a transaction.
   const observer=new MutationObserver(attach);observer.observe(visual,{childList:true,subtree:true});attach();
@@ -98,7 +107,7 @@ export function playCareReaction(visual,kind,food){
   let timer;
   const run={stop(){clearTimeout(timer);observer.disconnect();feedback.remove();const endingPhases=walkPhases(visual);
     visual.querySelectorAll('.pet-care-motion-layer').forEach(layer=>layer.replaceWith(...layer.childNodes));
-    delete visual.dataset.careReacting;restoreWalk(endingPhases);
+    delete visual.dataset.careReacting;restoreWalk(endingPhases);pose.release();
     if(active===run)active=null;
   }};active=run;timer=setTimeout(()=>run.stop(),Math.max(duration,2400));
 }

@@ -2,7 +2,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG} from './pet-art.js?v=1.5.29';
+import {renderPetSVG} from './pet-art.js?v=touch1812';
 import {careState,happyDay,previousHappy,yesterdayKey} from './pet-care-model.js?v=1.5.9';
 
 const CLEAR_SCORE=4;
