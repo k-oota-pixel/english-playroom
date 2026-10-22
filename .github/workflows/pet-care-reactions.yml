@@ -12,6 +12,9 @@ on:
       - pet-art.js
       - pet-care-animation.js
       - pet-food-art.js
+      - coin-reward.js
+      - reading-training/**
+      - tests/reading-coins-browser.cjs
       - tests/pet-feeding-browser.cjs
       - tests/pet-sync-chat-browser.cjs
       - pet-shop.js
@@ -43,6 +46,7 @@ jobs:
       - run: node tests/pet-care-reaction-browser.cjs
         env:
           MOBILE: '1'
+      - run: node tests/reading-coins-browser.cjs
       - run: node tests/pet-feeding-browser.cjs
       - run: node tests/pet-feeding-browser.cjs
         env:

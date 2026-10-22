@@ -16,12 +16,12 @@ async function rewards({trackActivity=false}={}){
 }
 test('daily rewards remain per stage, topic and question, without collisions between apps',async()=>{
  const {api,wallet}=await rewards();
- for(const name of ['awardBasic','awardCloze','awardTitle','awardTask','awardPre2A','awardTalk','awardPre2Questions']){
+ for(const name of ['awardBasic','awardCloze','awardTitle','awardTask','awardPre2A','awardTalk','awardPre2Questions','awardReading']){
   assert.equal((await api[name]('1')).awarded,true,name);
   assert.equal((await api[name]('1')).awarded,false,name);
   assert.equal((await api[name]('2')).awarded,true,name);
  }
- assert.equal(wallet().coins,24);assert.equal(wallet().petName,'ふわ');assert.deepEqual(wallet().petShop,{ownedItems:['crown']});
+ assert.equal(wallet().coins,26);assert.equal(wallet().petName,'ふわ');assert.deepEqual(wallet().petShop,{ownedItems:['crown']});
 });
 test('listening sets and ateru rounds have no daily cap but cannot be paid twice',async()=>{
  const {api,wallet}=await rewards();
