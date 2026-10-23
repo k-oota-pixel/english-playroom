@@ -14,6 +14,18 @@ test('private handoff, recheck preserves order, translation, reveal and next top
 test('correct order celebrates after final reveal only',()=>{const h=harness();h.click({action:'start'});for(let i=0;i<4;i++)h.click({action:'hide'});vm.runInContext('order=numbers.map((_,i)=>i).sort((a,b)=>numbers[a]-numbers[b])',h.context);fillSlots(h);h.click({action:'finish'});for(let i=0;i<3;i++)h.tick();assert.doesNotMatch(h.game.innerHTML,/クリア！/);h.tick();assert.match(h.game.innerHTML,/クリア！/);});
 
 function fillSlots(h){for(let i=0;i<4;i++)if(h.get('order['+i+']')===null){h.click({slot:String(i)});h.click({player:String(i)});}}
+test('reveals retain viewport and row scroll and leave completion unfocused',()=>{
+ const h=harness();h.click({action:'start'});for(let i=0;i<4;i++)h.click({action:'hide'});fillSlots(h);
+ let blurred=0;h.document.activeElement={blur(){blurred++;}};
+ const positions=[];h.context.window.scrollX=0;h.context.window.scrollY=320;
+ h.context.window.scrollTo=position=>positions.push(position);
+ const row={scrollLeft:160};h.game.querySelector=()=>row;
+ h.click({action:'finish'});assert.equal(blurred,1);
+ for(let i=0;i<4;i++)h.tick();
+ assert.equal(blurred,2);assert.equal(positions.length,4);
+ for(const position of positions){assert.equal(position.top,320);assert.equal(position.left,0);assert.equal(position.behavior,'instant');}
+ assert.equal(row.scrollLeft,160);assert.match(h.game.innerHTML,/<div class="order-scale"><span>小さい 1<\/span>/);
+});
 test('pointer drag routes placement, swaps, pool returns, cancellation and suppresses trailing click',()=>{
  const h=harness();h.click({action:'start'});for(let i=0;i<4;i++)h.click({action:'hide'});
  const classList={add(){},remove(){}};let target;
