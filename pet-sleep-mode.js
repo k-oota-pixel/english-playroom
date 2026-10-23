@@ -1,3 +1,4 @@
+import {GRUMPY_VARIANTS,renderGrumpyEyes} from './pet-grumpy-eyes.js?v=1.8.25';
 import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.17';
 
 function installPetSleepMode(){
@@ -7,6 +8,7 @@ function installPetSleepMode(){
   visual.dataset.sleepModeInstalled='1';
 
   let awakeUntil=0;
+  let grumpyIndex=-1;
   let grumpyTimer=0;
   let sleepTimer=0;
 
@@ -72,22 +74,17 @@ function installPetSleepMode(){
   function ensureFaceOverlay(kind){
     const character=visual.querySelector('.pet-character');if(!character)return null;
     let overlay=character.querySelector(`.pet-${kind}-face`);
+    if(overlay&&kind==='grumpy'&&overlay.dataset.grumpyEyeStyle!==(visual.dataset.grumpyVariant||'musu')){overlay.remove();overlay=null;}
     if(overlay)return overlay;
     const nativeEyes=character.querySelector('[data-cat-eye-style],[data-dog-eye-style]');
     if(kind==='grumpy'){
       const eyes=nativeEyes||character.querySelector('[data-dragon-eye-style],[data-pet-eyes]');
       if(eyes){
-        overlay=svgEl('g',{class:'pet-grumpy-face','data-grumpy-eye-style':'jito'});
+        overlay=svgEl('g',{class:'pet-grumpy-face','data-grumpy-eye-style':visual.dataset.grumpyVariant||'musu'});
         const local=svgEl('g',{fill:'none',stroke:nativeEyes||eyes.hasAttribute('data-dragon-eye-style')?'#513829':'#40564e','stroke-width':'4','stroke-linecap':'round'});
         const companion=!!nativeEyes||eyes.hasAttribute('data-dragon-eye-style');
         if(eyes.hasAttribute('data-cat-eye-style'))local.setAttribute('transform',eyes.firstElementChild.getAttribute('transform'));
-        // Flat upper lids cover the top of each pupil: a half-open, unimpressed gaze.
-        const lidY=companion?103:111;
-        for(const x of companion?[96,144]:[94,146]){
-          local.append(svgEl('path',{'data-grumpy-sclera':'1',d:`M${x-10} ${lidY} H${x+10} V${lidY+4} Q${x+10} ${lidY+12} ${x} ${lidY+12} Q${x-10} ${lidY+12} ${x-10} ${lidY+4}Z`,fill:'#fffaf1','stroke-width':'2'}));
-          local.append(svgEl('path',{'data-grumpy-pupil':'1',d:`M${x-4} ${lidY} H${x+4} V${lidY+6} Q${x} ${lidY+12} ${x-4} ${lidY+6}Z`,fill:local.getAttribute('stroke'),stroke:'none'}));
-          local.append(svgEl('path',{'data-grumpy-lid':'1',d:`M${x-11} ${lidY} H${x+11}`,'stroke-width':'4'}));
-        }
+        local.innerHTML=renderGrumpyEyes(companion?96:94,companion?144:146,companion?106:114,visual.dataset.grumpyVariant||'musu',local.getAttribute('stroke'));
         overlay.append(local);eyes.parentNode.insertBefore(overlay,eyes.nextSibling);return overlay;
       }
     }
@@ -195,6 +192,8 @@ function installPetSleepMode(){
     clearTimeout(grumpyTimer);clearTimeout(sleepTimer);
     delete visual.dataset.petSleeping;
     zzz.hidden=true;
+    grumpyIndex=(grumpyIndex+1)%GRUMPY_VARIANTS.length;
+    visual.dataset.grumpyVariant=GRUMPY_VARIANTS[grumpyIndex];
     visual.dataset.petGrumpy='1';
     setEyes('grumpy');
     resetShadow();

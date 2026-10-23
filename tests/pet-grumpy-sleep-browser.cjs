@@ -15,7 +15,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
  await page.locator('#petVisual').click();await page.waitForFunction(()=>document.querySelector('#petVisual').dataset.petGrumpy==='1');
  assert.equal(await page.locator('.pet-grumpy-swirl').isVisible(),true);assert.equal(await page.locator('.pet-sleep-zzz').isVisible(),false);
  assert.equal(await page.evaluate(()=>window.careTaps),0);
- assert.equal(await page.locator('[data-grumpy-pupil]').count(),2);assert.equal(await page.locator('[data-grumpy-lid]').count(),2);for(const lid of await page.locator('[data-grumpy-lid]').all()){assert.match(await lid.getAttribute('d'),/H/);assert.doesNotMatch(await lid.getAttribute('d'),/[QC]/);}
+ assert.equal(await page.locator('.pet-grumpy-face').getAttribute('data-grumpy-eye-style'),'musu');
  await page.locator('#petVisual').click();assert.equal(await page.evaluate(()=>window.careTaps),0);
  if(species==='cat'||species==='dog')await page.locator('.pet-visual-wrap').screenshot({path:path.resolve(root,'../../outputs/jito-'+species+'.png')});
  await page.waitForFunction(()=>!document.querySelector('#petVisual').dataset.petGrumpy);
@@ -23,7 +23,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
  await page.evaluate(()=>{window.testNowOffset=8000;document.dispatchEvent(new Event('visibilitychange'));});await page.waitForSelector('[data-pet-sleeping="1"]');
  assert.equal(await page.locator('.pet-sleep-zzz').isVisible(),true);
  await page.locator('#petVisual').focus();await page.keyboard.press('Enter');await page.waitForSelector('[data-pet-grumpy="1"]');
- assert.equal(await page.locator('.pet-grumpy-swirl').isVisible(),true);assert.deepEqual(errors,[]);
+ assert.equal(await page.locator('.pet-grumpy-swirl').isVisible(),true);assert.equal(await page.locator('.pet-grumpy-face').getAttribute('data-grumpy-eye-style'),'komari');
+ await page.waitForFunction(()=>!document.querySelector('#petVisual').dataset.petGrumpy);await page.evaluate(()=>{window.testNowOffset=16000;document.dispatchEvent(new Event('visibilitychange'));});await page.waitForSelector('[data-pet-sleeping="1"]');await page.locator('#petVisual').click();assert.equal(await page.locator('.pet-grumpy-face').getAttribute('data-grumpy-eye-style'),'pui');assert.deepEqual(errors,[]);
  await page.close();console.log(species+': sleepy artwork, local coordinates, hidden awake eyes, wake restoration passed');
  }} finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
