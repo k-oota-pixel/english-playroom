@@ -8,7 +8,7 @@ import './pet-sleep-mode.js?v=1.5.7-touch';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
 import './pet-lifecycle-v141.js?v=touch1812';
-import './pet-egg-ui-v141.js';
+import './pet-egg-ui-v141.js?v=1.8.4';
 import './pet-six-species-v141.js';
 import './pet-eye-emphasis-v144.js';
 import './pet-cat-dog-v1425.js?v=1.5.7';
@@ -21,7 +21,7 @@ import './pet-catch-card.js?v=1.6.4';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.8.3').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.8.3';
+const APP_VERSION='1.8.4';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
