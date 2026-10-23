@@ -57,7 +57,13 @@ function emphasizeGentle(group,eyes){
 function patchSvg(svg){
   // Care reactions move SVG groups. Only the SVG root owns the patch marker.
   if(!(svg instanceof SVGElement)||svg.tagName.toLowerCase()!=='svg'||svg.dataset.eyeEmphasisV146==='1')return;
+  // Modern compound eye styles contain decorative ellipses, not just pupils.
+  const semantic=svg.querySelector('[data-pet-eye-style],[data-cat-eye-style],[data-dog-eye-style],[data-dragon-eye-style]');
+  const eyeStyle=semantic&&(semantic.dataset.petEyeStyle||semantic.dataset.catEyeStyle||semantic.dataset.dogEyeStyle||semantic.dataset.dragonEyeStyle);
+  if(eyeStyle&&!['round','gentle'].includes(eyeStyle))return;
   const group=eyeGroup(svg);if(!group)return;
+  // Also recognize cached renderers that predate semantic eye-style metadata.
+  if(group.querySelector('[fill="#d3c5eb"]'))return;
   const eyes=directEllipses(group);if(eyes.length<2)return;
   const first=eyes[0],rx=Number(first.getAttribute('rx'))||0;
   const isGentle=eyes.slice(0,2).some(eye=>(eye.getAttribute('transform')||'').includes('rotate'));
