@@ -135,7 +135,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.7">ver1.8.7</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.8">ver1.8.8</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -214,6 +214,15 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
   <div class="cards">
+<a class="card" href="./eigo-meter/">
+  <div class="icon" aria-hidden="true">📊</div>
+  <div class="eyebrow">GROUP TALK GAME</div>
+  <div class="title">エイゴメーター</div>
+  <div class="desc">数字を言わずに英語で伝えよう！ 相談して1〜100の小さい順に並べる協力ゲーム。</div>
+  <div class="chips"><span class="chip">2〜12人</span><span class="chip">お題40題</span><span class="chip">日本語訳切替</span></div>
+  <div class="play">みんなであそぶ <span aria-hidden="true">→</span></div>
+  <div class="open-note">タブレット1台・コイン付与なし</div>
+</a>
 <a class="card" href="./word-wolf/">
   <div class="icon" aria-hidden="true">🐺</div>
   <div class="eyebrow">GROUP TALK GAME</div>
@@ -821,10 +830,10 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge-v176.js?v=1.8.7'></script>
+<script type="module" src='./version-badge-v176.js?v=1.8.8'></script>
 <script>
 (() => {
-  const version = '1.8.7';
+  const version = '1.8.8';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

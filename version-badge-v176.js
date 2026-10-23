@@ -21,7 +21,7 @@ import './pet-catch-card.js?v=1.6.4';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.8.3').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.8.7';
+const APP_VERSION='1.8.8';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
