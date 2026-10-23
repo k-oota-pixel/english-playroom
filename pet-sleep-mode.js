@@ -1,4 +1,4 @@
-import {GRUMPY_VARIANTS,renderGrumpyEyes} from './pet-grumpy-eyes.js?v=1.8.26';
+import {GRUMPY_VARIANTS,renderGrumpyEyes} from './pet-grumpy-eyes.js?v=1.8.27';
 import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.17';
 
 function installPetSleepMode(){
@@ -74,17 +74,17 @@ function installPetSleepMode(){
   function ensureFaceOverlay(kind){
     const character=visual.querySelector('.pet-character');if(!character)return null;
     let overlay=character.querySelector(`.pet-${kind}-face`);
-    if(overlay&&kind==='grumpy'&&overlay.dataset.grumpyEyeStyle!==(visual.dataset.grumpyVariant||'tsuri')){overlay.remove();overlay=null;}
+    if(overlay&&kind==='grumpy'&&overlay.dataset.grumpyEyeStyle!==(visual.dataset.grumpyVariant||'neboke')){overlay.remove();overlay=null;}
     if(overlay)return overlay;
     const nativeEyes=character.querySelector('[data-cat-eye-style],[data-dog-eye-style]');
     if(kind==='grumpy'){
       const eyes=nativeEyes||character.querySelector('[data-dragon-eye-style],[data-pet-eyes]');
       if(eyes){
-        overlay=svgEl('g',{class:'pet-grumpy-face','data-grumpy-eye-style':visual.dataset.grumpyVariant||'tsuri'});
+        overlay=svgEl('g',{class:'pet-grumpy-face','data-grumpy-eye-style':visual.dataset.grumpyVariant||'neboke'});
         const local=svgEl('g',{fill:'none',stroke:nativeEyes||eyes.hasAttribute('data-dragon-eye-style')?'#513829':'#40564e','stroke-width':'4','stroke-linecap':'round'});
         const companion=!!nativeEyes||eyes.hasAttribute('data-dragon-eye-style');
         if(eyes.hasAttribute('data-cat-eye-style'))local.setAttribute('transform',eyes.firstElementChild.getAttribute('transform'));
-        local.innerHTML=renderGrumpyEyes(companion?96:94,companion?144:146,companion?106:114,visual.dataset.grumpyVariant||'tsuri',local.getAttribute('stroke'));
+        local.innerHTML=renderGrumpyEyes(companion?96:94,companion?144:146,companion?106:114,visual.dataset.grumpyVariant||'neboke',local.getAttribute('stroke'));
         overlay.append(local);eyes.parentNode.insertBefore(overlay,eyes.nextSibling);return overlay;
       }
     }

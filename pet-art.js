@@ -1,18 +1,18 @@
-import {renderMugyuEyes} from './pet-grumpy-eyes.js?v=1.8.26';
-import {renderCatArt} from './pet-cat-art.js?v=1.8.26';
+import {renderMugyuEyes,renderKiriEyes} from './pet-grumpy-eyes.js?v=1.8.27';
+import {renderCatArt} from './pet-cat-art.js?v=1.8.27';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
-import {renderDogArt} from './pet-dog-art.js?v=1.8.26';
-import {renderDragonArt} from './pet-dragon-art.js?v=1.8.26';
+import {renderDogArt} from './pet-dog-art.js?v=1.8.27';
+import {renderDragonArt} from './pet-dragon-art.js?v=1.8.27';
 if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.27');
-import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=1.8.26';
+import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=1.8.27';
 
 const outline='#40564e';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
 const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};
 // `panda` remains the persisted stable ID for backward compatibility, but is now the lion species.
 const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン'};
-const EYE_STYLES=['round','gentle','watery','smile','sleepy','sparkle','oyoyo','mugyu'];
-const EYE_LABELS={round:'まんまる',gentle:'たれ目',watery:'うるうる',smile:'にっこり',sleepy:'ねむねむ',sparkle:'きらきら',oyoyo:'およよ',mugyu:'むぎゅ'};
+const EYE_STYLES=['round','gentle','watery','smile','sleepy','sparkle','oyoyo','mugyu','kiri'];
+const EYE_LABELS={round:'まんまる',gentle:'たれ目',watery:'うるうる',smile:'にっこり',sleepy:'ねむねむ',sparkle:'きらきら',oyoyo:'およよ',mugyu:'むぎゅ',kiri:'きりっ'};
 const BACKGROUND_LABELS={ivory:'おうち',sky:'青空',leaf:'お庭',rose:'花畑'};
 
 const BODIES={
@@ -81,6 +81,7 @@ function eyesFor(a,stage){
   if(style==='watery')return `<ellipse cx="${left}" cy="${y}" rx="10.5" ry="14"/><ellipse cx="${right}" cy="${y}" rx="10.5" ry="14"/>${eyeHighlights(left,right,y,true)}<g fill="white" stroke="none" opacity=".82"><circle cx="${left-4}" cy="${y+5}" r="2.2"/><circle cx="${right-4}" cy="${y+5}" r="2.2"/></g>`;
   if(style==='smile')return path(`M83 ${y+1} Q94 ${y-10} 105 ${y+1} M135 ${y+1} Q146 ${y-10} 157 ${y+1}`,'none','stroke-width="5"');
   if(style==='sleepy')return path(`M83 ${y-1} Q94 ${y+5} 105 ${y-1} M135 ${y-1} Q146 ${y+5} 157 ${y-1}`,'none','stroke-width="5"');
+  if(style==='kiri')return renderKiriEyes(left,right,y,outline);
   if(style==='mugyu')return renderMugyuEyes(left,right,y,outline);
   if(style==='oyoyo')return path(`M85 ${y} H103 M137 ${y} H155`,'none','stroke-width="4" stroke-linecap="round"');
   if(style==='sparkle')return renderSparkleEyes(left,right,y);
