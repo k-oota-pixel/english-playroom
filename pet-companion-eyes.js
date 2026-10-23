@@ -1,9 +1,10 @@
-import {renderMugyuEyes,renderKiriEyes} from './pet-grumpy-eyes.js?v=1.8.27';
+import {renderMugyuEyes,renderKiriEyes,renderPunsukaEyes} from './pet-grumpy-eyes.js?v=1.8.30';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
 // Preserve the existing dog eye artwork for both companions.
 export function renderCompanionEyes(eyeStyle){
  const ink='#513829';
  const shine=(x,y)=>`<g fill="white" stroke="none"><circle cx="${x-3.5}" cy="${y-5}" r="3.8"/><circle cx="${x+1}" cy="${y+5}" r="1.8"/></g>`;
+ if(eyeStyle==='punsuka')return renderPunsukaEyes(96,144,106,ink);
  if(eyeStyle==='kiri')return renderKiriEyes(96,144,106,ink);
  if(eyeStyle==='mugyu')return renderMugyuEyes(96,144,106,ink);
  const eyes=eyeStyle==='sparkle'?renderSparkleEyes(96,144,106):[96,144].map(x=>{

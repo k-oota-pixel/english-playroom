@@ -1,8 +1,8 @@
-import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.27';
+import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.30';
 
 // Dragon body only. Existing body-color choices and shared companion eyes are reused as-is.
 const ALLOWED_COLORS=new Set(['#f5d99b','#f3b5c4','#a4cce9','#a9d9bc','#c6b8e3','#efb478']);
-const ALLOWED_EYES=new Set(['round','gentle','watery','smile','sleepy','sparkle','oyoyo','mugyu','kiri']);
+const ALLOWED_EYES=new Set(['round','gentle','watery','smile','sleepy','sparkle','oyoyo','mugyu','kiri','punsuka']);
 
 function mix(hex,target='#000000',amount=.16){
   const clean=String(hex).replace('#','');

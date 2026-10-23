@@ -1,4 +1,4 @@
-import {GRUMPY_VARIANTS,renderGrumpyEyes} from './pet-grumpy-eyes.js?v=1.8.29';
+import {GRUMPY_VARIANTS,renderGrumpyEyes} from './pet-grumpy-eyes.js?v=1.8.30';
 import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.17';
 
 function installPetSleepMode(){

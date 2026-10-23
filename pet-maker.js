@@ -1,4 +1,4 @@
-import {normalizePetName,validPetName} from './pet-model.js?v=1.8.27';
+import {normalizePetName,validPetName} from './pet-model.js?v=1.8.30';
 
 const SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
 const PERSONALITY_POOLS={calm:['cat','panda'],playful:['dog','hamster'],curious:['bird','penguin','dragon']};
@@ -6,6 +6,7 @@ const EYE_POOLS={
  oyoyo:['oyoyo'],
  mugyu:['mugyu'],
  kiri:['kiri'],
+ punsuka:['punsuka'],
  bright:['round','round','round','sparkle','sparkle'],
  gentle:['gentle','gentle','gentle','watery','watery'],
  happy:['smile','smile','smile','round','round'],
@@ -35,7 +36,7 @@ function appearanceFromAnswers(answers,random=Math.random){
 export const QUESTIONS=[
  {key:'personality',title:'一緒に過ごすなら、どんな相棒がいい？',answers:[['calm','のんびり落ち着いて過ごせる子'],['playful','元気いっぱい、一緒に遊べる子'],['curious','好奇心旺盛で、一緒に冒険できる子']]},
  {key:'bodyColor',title:'その子に似合いそうな色は？',answers:[['cream','やさしいクリーム'],['pink','あたたかなピンク'],['blue','さわやかなブルー'],['mint','落ち着くミント'],['lavender','夢みたいなラベンダー'],['orange','明るいオレンジ']]},
- {key:'eyeMood',title:'目が合ったとき、どんな表情だとうれしい？',answers:[['bright','ぱっちり元気なまなざし'],['gentle','やさしく見つめてくれる'],['happy','いつもごきげんな笑顔'],['drowsy','ちょっと眠たそうでおっとり'],['oyoyo','およよ：すっと横線のおとぼけ顔'],['mugyu','むぎゅ：ぎゅっと目を閉じた顔'],['kiri','きりっ：きらっと凛々しいまなざし']]}
+ {key:'eyeMood',title:'目が合ったとき、どんな表情だとうれしい？',answers:[['bright','ぱっちり元気なまなざし'],['gentle','やさしく見つめてくれる'],['happy','いつもごきげんな笑顔'],['drowsy','ちょっと眠たそうでおっとり'],['oyoyo','およよ：すっと横線のおとぼけ顔'],['mugyu','むぎゅ：ぎゅっと目を閉じた顔'],['kiri','きりっ：きらっと凛々しいまなざし'],['punsuka','ぷんすか：ちょっとむすっとした顔']]}
 ];
 export function createPetMaker(onSave){
  const dialog=document.createElement('dialog');dialog.className='pet-dialog pet-survey';dialog.setAttribute('aria-labelledby','petMakerTitle');
