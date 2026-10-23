@@ -24,7 +24,7 @@ test('reveals retain viewport and row scroll and leave completion unfocused',()=
  for(let i=0;i<4;i++)h.tick();
  assert.equal(blurred,2);assert.equal(positions.length,4);
  for(const position of positions){assert.equal(position.top,320);assert.equal(position.left,0);assert.equal(position.behavior,'instant');}
- assert.equal(row.scrollLeft,160);assert.match(h.game.innerHTML,/<div class="order-scale"><span>小さい 1<\/span>/);
+ assert.equal(row.scrollLeft,160);assert.ok(h.game.innerHTML.includes('<div class="order-scale"><span>'+h.get('topics[topicIndex].lowJa')+' 1</span>'));
 });
 test('pointer drag routes placement, swaps, pool returns, cancellation and suppresses trailing click',()=>{
  const h=harness();h.click({action:'start'});for(let i=0;i<4;i++)h.click({action:'hide'});
