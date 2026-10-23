@@ -1,9 +1,9 @@
-import {renderCatArt} from './pet-cat-art.js?v=1.8.19';
+import {renderCatArt} from './pet-cat-art.js?v=1.8.20';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
-import {renderDogArt} from './pet-dog-art.js?v=1.8.19';
+import {renderDogArt} from './pet-dog-art.js?v=1.8.20';
 import {renderDragonArt} from './pet-dragon-art.js?v=1.5.29';
 if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.27');
-import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=1.8.19';
+import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=1.8.20';
 
 const outline='#40564e';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
