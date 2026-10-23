@@ -135,7 +135,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.3">ver1.8.3</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.5">ver1.8.5</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -214,6 +214,15 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
   <div class="cards">
+<a class="card" href="./word-wolf/">
+  <div class="icon" aria-hidden="true">🐺</div>
+  <div class="eyebrow">GROUP TALK GAME</div>
+  <div class="title">ワードウルフ</div>
+  <div class="desc">ひとりだけ違う単語！ タブレットを回して自分の単語を確認し、会話から少数派を見つけよう。</div>
+  <div class="chips"><span class="chip">3〜12人</span><span class="chip">タブレット1台</span><span class="chip">英単語・日本語</span></div>
+  <div class="play">みんなであそぶ <span aria-hidden="true">→</span></div>
+  <div class="open-note">単語を隠して回そう・コイン付与なし</div>
+</a>
 <a class="card" href="https://k-oota-pixel.github.io/word-breaker/" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">✦</div>
       <div class="eyebrow">VOCABULARY · ENDLESS</div>
@@ -812,10 +821,10 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge-v176.js?v=1.8.3'></script>
+<script type="module" src='./version-badge-v176.js?v=1.8.5'></script>
 <script>
 (() => {
-  const version = '1.8.3';
+  const version = '1.8.5';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
