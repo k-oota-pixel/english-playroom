@@ -1,4 +1,4 @@
-import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.20';
+import {equipmentTransform,normalizeEquipmentSlots} from './pet-equipment-fit.js?v=1.8.21';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -24,7 +24,7 @@ const EXTRA_ITEMS=Object.freeze([
   {id:'star-pendant',name:'星のペンダント',price:15,slot:'neck',icon:'⭐'},
   {id:'striped-bowtie',name:'しましま蝶ネクタイ',price:10,slot:'neck',icon:'🎀'},
   {id:'flower-necklace',name:'お花のネックレス',price:16,slot:'neck',icon:'🌺'},
-  {id:'bandana',name:'バンダナ',price:12,slot:'neck',icon:'🔻'},
+  {id:'bandana',name:'バンダナ',price:12,slot:'head',icon:'🔻'},
 
   {id:'bubble-effect',name:'シャボン玉エフェクト',price:20,slot:'effects',icon:'🫧'},
   {id:'snowflake-effect',name:'雪の結晶エフェクト',price:22,slot:'effects',icon:'❄️'},
@@ -61,7 +61,7 @@ const ACCESSORY_LAYERS=Object.freeze({
   'star-pendant':'<g><path d="M92 164 Q120 181 148 164" fill="none" stroke="#b98942" stroke-width="4"/><path d="M120 176 l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z" fill="#f4c84f" stroke="#9c7627" stroke-width="3"/></g>',
   'striped-bowtie':'<g stroke="#6e4e5c" stroke-width="3" stroke-linejoin="round"><path d="M112 177 Q90 163 82 180 Q88 198 112 187Z" fill="#f08aa5"/><path d="M128 177 Q150 163 158 180 Q152 198 128 187Z" fill="#fff2a8"/><circle cx="120" cy="182" r="9" fill="#dd6f8b"/></g><path d="M92 174 L104 190 M139 172 L149 190" stroke="#fff" stroke-width="4"/>',
   'flower-necklace':'<g><path d="M82 174 Q120 200 158 174" fill="none" stroke="#729b70" stroke-width="3"/><circle cx="88" cy="181" r="8" fill="#ef9bb4" stroke="#fff" stroke-width="2"/><circle cx="104" cy="187" r="8" fill="#f5c75a" stroke="#fff" stroke-width="2"/><circle cx="120" cy="190" r="8" fill="#ef9bb4" stroke="#fff" stroke-width="2"/><circle cx="136" cy="187" r="8" fill="#f5c75a" stroke="#fff" stroke-width="2"/><circle cx="152" cy="181" r="8" fill="#ef9bb4" stroke="#fff" stroke-width="2"/></g>',
-  'bandana':'<g><path d="M76 167 Q120 185 164 167 L153 188 Q120 198 87 188Z" fill="#d96b5f" stroke="#7f453e" stroke-width="4"/><path d="M144 184 L169 207 L146 211Z" fill="#d96b5f" stroke="#7f453e" stroke-width="4"/><circle cx="96" cy="178" r="3" fill="#fff2d2"/><circle cx="119" cy="184" r="3" fill="#fff2d2"/><circle cx="142" cy="178" r="3" fill="#fff2d2"/></g>'
+  'bandana':'<g stroke="#7f453e" stroke-width="3" stroke-linejoin="round"><path d="M68 82 Q120 68 172 82 L169 99 Q120 87 71 99Z" fill="#d96b5f"/><path d="M169 85 Q188 69 193 83 L179 96 L193 108 L171 102Z" fill="#d96b5f"/><circle cx="173" cy="92" r="7" fill="#e98574"/><g fill="#fff2d2" stroke="none"><circle cx="87" cy="87" r="3"/><circle cx="108" cy="83" r="3"/><circle cx="130" cy="83" r="3"/><circle cx="151" cy="87" r="3"/></g></g>'
 });
 
 const EFFECT_LAYERS=Object.freeze({
@@ -94,7 +94,7 @@ const STYLE=`
 
 let auth=null,db=null,currentUser=null,currentData={},unsubscribe=null,previewSelection=null,augmentQueued=false;
 const coinsOf=data=>Math.max(0,Math.floor(Number(data?.coins)||0));
-const shopOf=data=>({ownedItems:Array.isArray(data?.petShop?.ownedItems)?data.petShop.ownedItems.filter(x=>typeof x==='string'):[],equipped:data?.petShop?.equipped&&typeof data.petShop.equipped==='object'?data.petShop.equipped:{}});
+const shopOf=data=>({ownedItems:Array.isArray(data?.petShop?.ownedItems)?data.petShop.ownedItems.filter(x=>typeof x==='string'):[],equipped:normalizeEquipmentSlots(data?.petShop?.equipped&&typeof data.petShop.equipped==='object'?data.petShop.equipped:{})});
 const refFor=user=>doc(db,'users',user.uid,'apps','english-playroom');
 const isOwned=(shop,id)=>shop.ownedItems.includes(id);
 const equippedFor=(shop,slot)=>typeof shop.equipped?.[slot]==='string'?shop.equipped[slot]:null;

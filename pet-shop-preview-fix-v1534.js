@@ -1,13 +1,14 @@
+import {normalizeEquipmentSlots} from './pet-equipment-fit.js?v=1.8.21';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,onSnapshot} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet} from './pet-model.js';
-import {renderPetSVG} from './pet-art.js?v=touch1812';
+import {renderPetSVG} from './pet-art.js?v=touch1821';
 
 const EXTRA_SLOTS=Object.freeze({
   'chef-hat':'head','cowboy-hat':'head','party-hat':'head','detective-hat':'head','bunny-headband':'head','top-hat':'head',
   'heart-glasses':'face','monocle':'face','pixel-glasses':'face','flower-glasses':'face','hero-mask':'face','rosy-cheeks':'face',
-  'green-scarf':'neck','gold-medal':'neck','star-pendant':'neck','striped-bowtie':'neck','flower-necklace':'neck','bandana':'neck',
+  'green-scarf':'neck','gold-medal':'neck','star-pendant':'neck','striped-bowtie':'neck','flower-necklace':'neck','bandana':'head',
   'bubble-effect':'effects','snowflake-effect':'effects','leaf-effect':'effects','lightning-effect':'effects','flower-effect':'effects','candy-effect':'effects',
   'beach-bg':'backgrounds','library-bg':'backgrounds','night-city-bg':'backgrounds','park-bg':'backgrounds','festival-bg':'backgrounds','candy-bg':'backgrounds'
 });
@@ -23,7 +24,7 @@ const BASE_ITEMS=Object.freeze({
 let currentData={},unsubscribe=null,selectedBase=null,selectedExtra=null,renderQueued=false;
 const shopOf=data=>({
   ownedItems:Array.isArray(data?.petShop?.ownedItems)?data.petShop.ownedItems.filter(x=>typeof x==='string'):[],
-  equipped:data?.petShop?.equipped&&typeof data.petShop.equipped==='object'?data.petShop.equipped:{}
+  equipped:normalizeEquipmentSlots(data?.petShop?.equipped&&typeof data.petShop.equipped==='object'?data.petShop.equipped:{})
 });
 const isJuvenile=()=>hasPet(currentData)&&(currentData.petAdult===false||!currentData.petAppearance);
 
