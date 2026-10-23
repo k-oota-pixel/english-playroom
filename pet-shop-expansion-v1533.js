@@ -1,4 +1,4 @@
-import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.15';
+import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.16';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
