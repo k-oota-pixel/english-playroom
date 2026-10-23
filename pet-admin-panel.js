@@ -1,12 +1,12 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=1.8.23';
-import {renderPetSVG} from './pet-art.js?v=1.8.23';
+import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=1.8.26';
+import {renderPetSVG} from './pet-art.js?v=1.8.26';
 
 const ADMIN_API='https://task-quest.onrender.com/api/admin/session';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
-const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'oyoyo',label:'およよ'}];
+const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'oyoyo',label:'およよ'},{id:'mugyu',label:'むぎゅ'}];
 const BACKGROUNDS=[{id:'ivory',label:'おうち'},{id:'sky',label:'青空'},{id:'leaf',label:'お庭'},{id:'rose',label:'花畑'}];
 const GROUPS=[['species','動物の種類'],['bodyColor','からだの色'],['eyeStyle','目'],['baseBackground','背景テーマ']];
 
