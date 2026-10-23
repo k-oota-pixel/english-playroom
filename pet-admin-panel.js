@@ -1,12 +1,12 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js';
-import {renderPetSVG} from './pet-art.js?v=touch1812';
+import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=1.8.23';
+import {renderPetSVG} from './pet-art.js?v=1.8.23';
 
 const ADMIN_API='https://task-quest.onrender.com/api/admin/session';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
-const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'}];
+const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'oyoyo',label:'およよ'}];
 const BACKGROUNDS=[{id:'ivory',label:'おうち'},{id:'sky',label:'青空'},{id:'leaf',label:'お庭'},{id:'rose',label:'花畑'}];
 const GROUPS=[['species','動物の種類'],['bodyColor','からだの色'],['eyeStyle','目'],['baseBackground','背景テーマ']];
 
@@ -20,7 +20,7 @@ function choices(key){
 }
 function legacyEye(style){return style==='sleepy'?'sleepy':style==='sparkle'?'sparkle':'round';}
 function normalizeDraft(value={}){
-  const base=normalizeAppearance(value),legacy=base.eyes==='sleepy'?'sleepy':base.eyes==='sparkle'?'sparkle':base.eyes==='cool'?'gentle':'round';
+  const base=normalizeAppearance(value),legacy=base.eyes==='oyoyo'?'oyoyo':base.eyes==='sleepy'?'sleepy':base.eyes==='sparkle'?'sparkle':base.eyes==='cool'?'gentle':'round';
   return {...base,species:OFFICIAL_SPECIES.includes(base.species)?base.species:'cat',eyeStyle:EYES.some(x=>x.id===value.eyeStyle)?value.eyeStyle:legacy,feature:'classic',pattern:'none'};
 }
 function draftSource(data={}){return data.petAppearance||data.petAdminAdultAppearanceBackup||{};}

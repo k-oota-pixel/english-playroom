@@ -1,4 +1,4 @@
-import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.5.27';
+import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.23';
 // Editable vector reconstruction of dog_pet_final.png. No raster filters or DOM redraws.
 // Colors and eye styles come from normalized appearance; shop and sleep own their layers.
 export function renderDogArt(color,eyeStyle){
