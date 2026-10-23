@@ -1,3 +1,5 @@
+import {renderCompanionEyes} from './pet-companion-eyes.js?v=1.8.17';
+
 function installPetSleepMode(){
   const visual=document.getElementById('petVisual');
   if(!visual){setTimeout(installPetSleepMode,100);return;}
@@ -61,8 +63,20 @@ function installPetSleepMode(){
   function svgEl(name,attrs={}){const el=document.createElementNS('http://www.w3.org/2000/svg',name);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,v);return el;}
   function ensureFaceOverlay(kind){
     const character=visual.querySelector('.pet-character');if(!character)return null;
-    let overlay=character.querySelector(`:scope > .pet-${kind}-face`);
+    let overlay=character.querySelector(`.pet-${kind}-face`);
     if(overlay)return overlay;
+    const nativeEyes=character.querySelector('[data-cat-eye-style],[data-dog-eye-style]');
+    if(kind==='sleep'&&nativeEyes){
+      // Use the same eye art and local coordinate system as the sleepy choice.
+      overlay=svgEl('g',{class:'pet-sleep-face','data-sleep-eye-style':'sleepy'});
+      const local=svgEl('g');
+      const catTransform=nativeEyes.hasAttribute('data-cat-eye-style')?nativeEyes.firstElementChild?.getAttribute('transform'):null;
+      if(catTransform)local.setAttribute('transform',catTransform);
+      local.innerHTML=renderCompanionEyes('sleepy');
+      overlay.append(local);
+      nativeEyes.parentNode.insertBefore(overlay,nativeEyes.nextSibling);
+      return overlay;
+    }
     overlay=svgEl('g',{class:`pet-${kind}-face`,fill:'none',stroke:'#40564e','stroke-width':'5','stroke-linecap':'round'});
     if(kind==='sleep'){
       overlay.append(svgEl('path',{d:'M84 109 Q94 117 104 109'}),svgEl('path',{d:'M136 109 Q146 117 156 109'}));
