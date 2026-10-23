@@ -21,7 +21,7 @@ test('dog supports every saved body color and six distinct eye styles without mu
 test('dog keeps shop layers and animation wrappers; other species and mystery retain their own art',()=>{
  const shop={ownedItems:['red-ribbon','sunglasses','red-bowtie'],equipped:{head:'red-ribbon',face:'sunglasses',neck:'red-bowtie'}};
  const svg=renderPetSVG({...DEFAULT_APPEARANCE,species:'dog'},shop,'baby');
- assert.ok(svg.includes(equippedLayers(shop).accessories));
+ assert.ok(svg.includes(equippedLayers(shop,'dog').accessories));
  assert.match(svg,/class="pet-jump-layer"/);assert.match(svg,/class="pet-character"/);
  for(const species of ['cat','bird','hamster','panda','penguin']){
   const other=renderPetSVG({...DEFAULT_APPEARANCE,species});

@@ -32,7 +32,7 @@ test('cat keeps fixed white parts and unique local SVG references across simulta
 test('cat preserves equipment, background, effects and animation containers; other animals are unchanged',()=>{
  const shop={ownedItems:['red-ribbon','sunglasses','red-bowtie','forest-bg','star-effect'],equipped:{head:'red-ribbon',face:'sunglasses',neck:'red-bowtie',backgrounds:'forest-bg',effects:'star-effect'}};
  const svg=renderPetSVG({...DEFAULT_APPEARANCE,species:'cat'},shop);
- for(const layer of Object.values(equippedLayers(shop)).filter(Boolean))assert.ok(svg.includes(layer));
+ for(const layer of Object.values(equippedLayers(shop,'cat')).filter(Boolean))assert.ok(svg.includes(layer));
  assert.match(svg,/class="pet-jump-layer"/);assert.match(svg,/class="pet-character"/);
  for(const species of ['dog','bird','hamster','panda','penguin'])assert.doesNotMatch(renderPetSVG({...DEFAULT_APPEARANCE,species}),/data-pet-cat-art/);
  assert.doesNotMatch(renderPetSVG(null),/data-pet-cat-art/);

@@ -1,9 +1,9 @@
-import {renderCatArt} from './pet-cat-art.js?v=1.8.14';
+import {renderCatArt} from './pet-cat-art.js?v=1.8.15';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
-import {renderDogArt} from './pet-dog-art.js?v=1.8.14';
+import {renderDogArt} from './pet-dog-art.js?v=1.8.15';
 import {renderDragonArt} from './pet-dragon-art.js?v=1.5.29';
 if(typeof window!=='undefined')import('./nickname-profile.js?v=1.5.27');
-import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=1.8.14';
+import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=1.8.15';
 
 const outline='#40564e';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
@@ -121,7 +121,7 @@ function speciesDetails(a,color,stage){
 
 export function renderPetSVG(value,shop={},stage=''){
   if(!value)return renderMysterySVG(shop);
-  const a=resolvedAppearance(value),layers=equippedLayers(shop),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a),details=speciesDetails(a,color,resolved),anatomy=anatomyFor(a,color,resolved),eyes=eyesFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
+  const a=resolvedAppearance(value),layers=equippedLayers(shop,a.species),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a),details=speciesDetails(a,color,resolved),anatomy=anatomyFor(a,color,resolved),eyes=eyesFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
   // Cat and dog parts are rendered at the source; legacy shape observers cannot replace them.
   const character=a.species==='cat'
     ? renderCatArt(color,a.eyeStyle)
@@ -131,7 +131,7 @@ export function renderPetSVG(value,shop={},stage=''){
     ? renderDragonArt(color,a.eyeStyle)
     : `<g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${anatomy}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}${details.wings}<g data-pet-eyes="1" fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>`;
   const theme=layers.backgrounds?'':backgroundTheme(a.baseBackground);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="${resolved}" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${theme}${layers.backgrounds}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-jump-layer"><g class="pet-character">${character}${layers.accessories}</g></g>${layers.effects||''}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-species="${a.species}" data-pet-stage="${resolved}" aria-hidden="true" focusable="false"><rect width="240" height="240" rx="32" fill="${bg}"/>${theme}${layers.backgrounds}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-jump-layer"><g class="pet-character">${character}${layers.accessories}</g></g>${layers.effects||''}</svg>`;
 }
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}

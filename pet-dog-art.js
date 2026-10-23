@@ -15,7 +15,7 @@ export function renderDogArt(color,eyeStyle){
  <ellipse cx="86" cy="204" rx="12" ry="10" fill="${cream}"/><ellipse cx="154" cy="204" rx="12" ry="10" fill="${cream}"/>
  <ellipse cx="106" cy="205" rx="15" ry="12" fill="${cream}"/><ellipse cx="134" cy="205" rx="15" ry="12" fill="${cream}"/>
  <path d="M102 204 v6 M110 204 v6 M130 204 v6 M138 204 v6" stroke-width="2.2"/>
- <g data-pet-head-aligned="dog" transform="translate(0 30) scale(1 .8)">
+ <g data-pet-head-aligned="dog" transform="translate(0 20)">
  <path d="M72 73 Q83 49 120 49 Q157 49 168 73 L167 114 Q164 151 120 151 Q76 151 73 114Z" fill="${color}"/>
  <ellipse cx="120" cy="127" rx="36" ry="23" fill="${cream}" stroke="none"/>
  <path d="M81 74 Q58 63 39 94 Q26 115 42 135 Q62 156 76 132Z M159 74 Q182 63 201 94 Q214 115 198 135 Q178 156 164 132Z" fill="${color}"/>
