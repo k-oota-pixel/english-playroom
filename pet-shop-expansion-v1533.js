@@ -1,4 +1,4 @@
-import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.16';
+import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.18';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -48,7 +48,7 @@ const ACCESSORY_LAYERS=Object.freeze({
   'cowboy-hat':'<g><path d="M74 67 Q83 38 120 38 Q157 38 166 67 L153 78 H87Z" fill="#b98249" stroke="#5b4938" stroke-width="4"/><path d="M55 75 Q120 91 185 75 Q174 92 120 94 Q66 92 55 75Z" fill="#c99457" stroke="#5b4938" stroke-width="4"/><path d="M88 65 H152" stroke="#754c2f" stroke-width="5"/></g>',
   'party-hat':'<g><path d="M120 29 L153 87 H87Z" fill="#7eb7e6" stroke="#475f68" stroke-width="4"/><path d="M102 58 L140 70 M111 43 L132 50" stroke="#fff0a6" stroke-width="6" stroke-linecap="round"/><circle cx="120" cy="27" r="8" fill="#f19ab5"/></g>',
   'detective-hat':'<g><path d="M75 68 Q82 42 116 43 Q146 42 161 60 L153 76 H87Z" fill="#8f8b78" stroke="#48564e" stroke-width="4"/><path d="M58 76 Q116 91 181 76 Q166 91 121 92 Q76 91 58 76Z" fill="#aaa38c" stroke="#48564e" stroke-width="4"/><path d="M107 43 V75 M143 49 L137 76" stroke="#6f6a5b" stroke-width="4"/></g>',
-  'bunny-headband':'<g><path d="M86 77 Q88 40 100 20 Q112 38 108 76Z" fill="#fff6f7" stroke="#596a63" stroke-width="4"/><path d="M132 76 Q128 38 140 20 Q153 42 151 78Z" fill="#fff6f7" stroke="#596a63" stroke-width="4"/><path d="M95 62 Q120 51 146 63" fill="none" stroke="#e28ca7" stroke-width="7" stroke-linecap="round"/></g>',
+  'bunny-headband':'<g stroke="#725a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M91 72 C78 53 72 16 82 10 C94 3 109 46 108 70Z" fill="#fff7f5"/><path d="M132 70 C131 44 145 3 157 10 C168 17 160 52 149 73Z" fill="#fff7f5"/><path d="M95 61 C87 46 81 20 84 19 C89 16 100 47 101 62Z M139 62 C140 45 151 17 155 19 C159 23 153 48 145 63Z" fill="#f3a9be" stroke="none"/><path d="M82 83 Q86 65 120 65 Q154 65 158 83" fill="none" stroke="#725a67" stroke-width="9"/><path d="M82 82 Q87 67 120 67 Q153 67 158 82" fill="none" stroke="#eaa3bb" stroke-width="5"/></g>',
   'top-hat':'<g><rect x="84" y="37" width="72" height="48" rx="6" fill="#3d4650" stroke="#263039" stroke-width="4"/><path d="M61 84 H179 Q170 98 120 98 Q70 98 61 84Z" fill="#49545f" stroke="#263039" stroke-width="4"/><path d="M87 72 H153" stroke="#a45c79" stroke-width="8"/></g>',
   'heart-glasses':'<g stroke="#c85578" stroke-width="4" fill="#f5a2bb" opacity=".95"><path d="M75 104 C75 91 92 87 99 99 C106 87 123 91 123 104 C123 119 99 130 99 130 C99 130 75 119 75 104Z"/><path d="M117 104 C117 91 134 87 141 99 C148 87 165 91 165 104 C165 119 141 130 141 130 C141 130 117 119 117 104Z"/></g><path d="M121 103 H119" stroke="#c85578" stroke-width="5"/>',
   'monocle':'<g fill="none" stroke="#6c5840" stroke-width="4"><circle cx="146" cy="112" r="18"/><path d="M160 125 Q169 146 160 167"/></g><circle cx="146" cy="112" r="12" fill="#d9eef7" opacity=".22"/>',
@@ -117,7 +117,7 @@ function applyExpansionLayers(root,data,preview=false){
   const bgId=equipped.backgrounds;
   if(active(bgId)&&BACKGROUND_LAYERS[bgId]){const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');node.setAttribute('data-pet-extra-item',bgId);const anchor=svg.querySelector('.pet-shadow,.pet-jump-layer');if(anchor)svg.insertBefore(node,anchor);else svg.append(node);}
   const character=svg.querySelector('.pet-character');
-  if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer('<g transform="'+equipmentTransform(slot,svg.dataset.petSpecies)+'">'+ACCESSORY_LAYERS[id]+'</g>');node.setAttribute('data-pet-extra-layer',slot);node.setAttribute('data-pet-extra-item',id);character.append(node);}}}
+  if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer('<g transform="'+equipmentTransform(slot,svg.dataset.petSpecies,id)+'">'+ACCESSORY_LAYERS[id]+'</g>');node.setAttribute('data-pet-extra-layer',slot);node.setAttribute('data-pet-extra-item',id);character.append(node);}}}
   const effectId=equipped.effects;if(active(effectId)&&EFFECT_LAYERS[effectId]){
     // Base and expansion previews share the same equipment slot.
     svg.querySelectorAll('.pet-motif-effect,.pet-confetti-effect,.pet-rainbow-effect').forEach(el=>el.remove());
