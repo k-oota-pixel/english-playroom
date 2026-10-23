@@ -81,7 +81,13 @@ function installPetSleepMode(){
         const local=svgEl('g',{fill:'none',stroke:nativeEyes||eyes.hasAttribute('data-dragon-eye-style')?'#513829':'#40564e','stroke-width':'4','stroke-linecap':'round'});
         const companion=!!nativeEyes||eyes.hasAttribute('data-dragon-eye-style');
         if(eyes.hasAttribute('data-cat-eye-style'))local.setAttribute('transform',eyes.firstElementChild.getAttribute('transform'));
-        local.append(svgEl('path',{d:companion?'M87 106 H105 M135 106 H153':'M85 114 H103 M137 114 H155'}));
+        // Flat upper lids cover the top of each pupil: a half-open, unimpressed gaze.
+        const lidY=companion?103:111;
+        for(const x of companion?[96,144]:[94,146]){
+          local.append(svgEl('path',{'data-grumpy-sclera':'1',d:`M${x-10} ${lidY} H${x+10} V${lidY+4} Q${x+10} ${lidY+12} ${x} ${lidY+12} Q${x-10} ${lidY+12} ${x-10} ${lidY+4}Z`,fill:'#fffaf1','stroke-width':'2'}));
+          local.append(svgEl('path',{'data-grumpy-pupil':'1',d:`M${x-4} ${lidY} H${x+4} V${lidY+6} Q${x} ${lidY+12} ${x-4} ${lidY+6}Z`,fill:local.getAttribute('stroke'),stroke:'none'}));
+          local.append(svgEl('path',{'data-grumpy-lid':'1',d:`M${x-11} ${lidY} H${x+11}`,'stroke-width':'4'}));
+        }
         overlay.append(local);eyes.parentNode.insertBefore(overlay,eyes.nextSibling);return overlay;
       }
     }

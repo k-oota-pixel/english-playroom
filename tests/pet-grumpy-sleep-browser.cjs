@@ -15,9 +15,9 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
  await page.locator('#petVisual').click();await page.waitForFunction(()=>document.querySelector('#petVisual').dataset.petGrumpy==='1');
  assert.equal(await page.locator('.pet-grumpy-swirl').isVisible(),true);assert.equal(await page.locator('.pet-sleep-zzz').isVisible(),false);
  assert.equal(await page.evaluate(()=>window.careTaps),0);
- assert.match(await page.locator('.pet-grumpy-face path').getAttribute('d'),/H/);assert.doesNotMatch(await page.locator('.pet-grumpy-face path').getAttribute('d'),/[QC]/);
+ assert.equal(await page.locator('[data-grumpy-pupil]').count(),2);assert.equal(await page.locator('[data-grumpy-lid]').count(),2);for(const lid of await page.locator('[data-grumpy-lid]').all()){assert.match(await lid.getAttribute('d'),/H/);assert.doesNotMatch(await lid.getAttribute('d'),/[QC]/);}
  await page.locator('#petVisual').click();assert.equal(await page.evaluate(()=>window.careTaps),0);
- if(species==='cat'||species==='dog')await page.screenshot({path:path.resolve(root,'../../outputs/grumpy-'+species+'.png')});
+ if(species==='cat'||species==='dog')await page.locator('.pet-visual-wrap').screenshot({path:path.resolve(root,'../../outputs/jito-'+species+'.png')});
  await page.waitForFunction(()=>!document.querySelector('#petVisual').dataset.petGrumpy);
  assert.equal(await page.locator('#petVisual [data-pet-eyes]').evaluate(el=>el.style.opacity),'');assert.equal(await page.locator('.pet-sleep-face').evaluate(el=>el.style.display),'none');assert.equal(await page.locator('.pet-grumpy-swirl').isVisible(),false);
  await page.evaluate(()=>{window.testNowOffset=8000;document.dispatchEvent(new Event('visibilitychange'));});await page.waitForSelector('[data-pet-sleeping="1"]');
