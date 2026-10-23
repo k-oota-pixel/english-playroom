@@ -1,3 +1,4 @@
+import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.14';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -116,7 +117,7 @@ function applyExpansionLayers(root,data,preview=false){
   const bgId=equipped.backgrounds;
   if(active(bgId)&&BACKGROUND_LAYERS[bgId]){const node=parseLayer(BACKGROUND_LAYERS[bgId]);node.setAttribute('data-pet-extra-layer','backgrounds');node.setAttribute('data-pet-extra-item',bgId);const anchor=svg.querySelector('.pet-shadow,.pet-jump-layer');if(anchor)svg.insertBefore(node,anchor);else svg.append(node);}
   const character=svg.querySelector('.pet-character');
-  if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer(ACCESSORY_LAYERS[id]);node.setAttribute('data-pet-extra-layer',slot);node.setAttribute('data-pet-extra-item',id);character.append(node);}}}
+  if(character){for(const slot of ['head','face','neck']){const id=equipped[slot];if(active(id)&&ACCESSORY_LAYERS[id]){const node=parseLayer('<g transform="'+equipmentTransform(slot)+'">'+ACCESSORY_LAYERS[id]+'</g>');node.setAttribute('data-pet-extra-layer',slot);node.setAttribute('data-pet-extra-item',id);character.append(node);}}}
   const effectId=equipped.effects;if(active(effectId)&&EFFECT_LAYERS[effectId]){
     // Base and expansion previews share the same equipment slot.
     svg.querySelectorAll('.pet-motif-effect,.pet-confetti-effect,.pet-rainbow-effect').forEach(el=>el.remove());

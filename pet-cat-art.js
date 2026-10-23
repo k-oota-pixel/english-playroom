@@ -9,6 +9,7 @@ export function renderCatArt(color,eyeStyle){
  color=COLORS.has(color)?color:'#f5d99b';
  eyeStyle=EYES.has(eyeStyle)?eyeStyle:'round';
  const id='pet-cat-'+(++instance);
- const art=ART.replaceAll('__CAT_ID__',id).replaceAll('__CAT_COLOR__',color).replaceAll('__EYE_STYLE__',eyeStyle).replace('__CAT_EYES__','<g transform="translate(-64.5 -50.6) scale(1.6)">'+renderCompanionEyes(eyeStyle)+'</g>');
+ const aligned=ART.replace('<g id="__CAT_ID__-cat-head">','<g data-pet-head-aligned="cat" transform="translate(0 37) scale(1 .79)"><g id="__CAT_ID__-cat-head">').replace('<g id="__CAT_ID__-cat-paws">','</g><g id="__CAT_ID__-cat-paws">');
+ const art=aligned.replaceAll('__CAT_ID__',id).replaceAll('__CAT_COLOR__',color).replaceAll('__EYE_STYLE__',eyeStyle).replace('__CAT_EYES__','<g transform="translate(-64.5 -50.6) scale(1.6)">'+renderCompanionEyes(eyeStyle)+'</g>');
  return '<g data-pet-cat-art="editable" transform="translate(40 31) scale(.63)">'+art+'</g>';
 }
