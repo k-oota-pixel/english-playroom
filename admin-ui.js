@@ -100,3 +100,24 @@ onAuthStateChanged(auth,user=>{generation++;viewGeneration++;searchSerial++;clea
  if(!user){$('users').replaceChildren();$('who').textContent='';$('login').hidden=false;$('logout').hidden=true;setStatus('管理者ログインをしてください。');return;}
  $('who').textContent=user.email||'';$('login').hidden=true;$('logout').hidden=false;load(0);
 });
+
+// No automatic request: the button reads only the displayed users, at most ten.
+const retryLogsButton=document.createElement('button');retryLogsButton.type='button';retryLogsButton.className='btn';retryLogsButton.textContent='リトライノートの画面離脱記録を取得';
+const retryLogsNote=document.createElement('div');retryLogsNote.className='sub';retryLogsNote.textContent='表示中の最大10人が対象。取得時のみ各1件読み取り（直近100プレイ）。再表示はキャッシュを使用します。';
+const retryLogsResult=document.createElement('div');retryLogsResult.className='sub';
+$('updated').before(retryLogsButton,retryLogsNote,retryLogsResult);
+const retryLogCache=new Map();
+retryLogsButton.onclick=async()=>{
+ const selected=(searchQuery()?(searchResults||[]):allUsers).slice(0,10),own=generation;
+ if(!selected.length){retryLogsResult.textContent='対象の利用者がいません。';return;}
+ retryLogsButton.disabled=true;retryLogsResult.textContent='画面離脱記録を取得しています…';
+ try{
+  const missing=selected.filter(u=>!retryLogCache.has(u.uid));
+  if(missing.length){const data=await api('/api/admin/retry-screen-logs?uids='+encodeURIComponent(missing.map(u=>u.uid).join(',')));if(own!==generation)return;for(const row of data.users||[])retryLogCache.set(row.uid,row.logs||[]);}
+  if(own!==generation)return;
+  retryLogsResult.innerHTML=selected.map(u=>{const logs=retryLogCache.get(u.uid)||[];return '<details><summary>'+esc(u.nickname||'ニックネーム未登録')+'：'+logs.length+'プレイ ／ 離脱 '+logs.reduce((n,r)=>n+(Number(r.count)||0),0)+'回</summary>'+ (logs.length?logs.slice().reverse().map(r=>'<div>'+esc(fmtDate(r.endedAt))+' ／ '+esc(r.correct)+' / '+esc(r.total)+'問正解 ／ 画面離脱 '+esc(r.count)+'回・'+Math.round((Number(r.totalMs)||0)/1000)+'秒</div>').join(''):'記録がありません。機能追加後に終了したプレイから記録されます。')+'</details>';}).join('')+'<p>通知や誤操作でも発生するため、不正の判定には使えません。最新記録の再取得は下のボタンで行います。</p>';
+ }catch(e){if(own===generation)retryLogsResult.textContent=e.message;}finally{retryLogsButton.disabled=false;}
+};
+const retryLogsRefresh=document.createElement('button');retryLogsRefresh.type='button';retryLogsRefresh.className='btn';retryLogsRefresh.textContent='画面離脱記録を再取得';retryLogsResult.after(retryLogsRefresh);
+retryLogsRefresh.onclick=()=>{retryLogCache.clear();retryLogsButton.click();};
+onAuthStateChanged(auth,()=>{retryLogCache.clear();retryLogsResult.replaceChildren();});
