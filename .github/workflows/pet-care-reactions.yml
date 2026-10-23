@@ -9,6 +9,8 @@ on:
       - pet-admin-panel.js
       - tests/admin-browser.cjs
       - index.html
+      - pet-eye-emphasis-v144.js
+      - tests/pet-gentle-eyes-browser.cjs
       - pet-art.js
       - pet-care-animation.js
       - pet-food-art.js
@@ -56,6 +58,7 @@ jobs:
           MOBILE: '1'
       - run: node tests/reading-coins-browser.cjs
       - run: node tests/pet-health-browser.cjs
+      - run: node tests/pet-gentle-eyes-browser.cjs
       - run: node tests/pet-touch-browser.cjs
       - run: node tests/pet-admin-singleton-browser.cjs
       - run: node tests/pet-feeding-browser.cjs

@@ -26,8 +26,12 @@ function emphasizeGentle(group,eyes){
   const [left,right]=eyes;
   const leftCx=Number(left.getAttribute('cx'))||94;
   const rightCx=Number(right.getAttribute('cx'))||146;
-  const leftCy=(Number(left.getAttribute('cy'))||115)-1;
-  const rightCy=(Number(right.getAttribute('cy'))||115)-1;
+  // Keep the original coordinates with the artwork, including cloned markup.
+  for(const eye of [left,right]){
+    if(!eye.hasAttribute('data-gentle-base-cy'))eye.setAttribute('data-gentle-base-cy',eye.getAttribute('cy')||'115');
+  }
+  const leftCy=Number(left.getAttribute('data-gentle-base-cy'))-1;
+  const rightCy=Number(right.getAttribute('data-gentle-base-cy'))-1;
 
   // Droopy eyes are exactly the same large oval as round eyes.
   // Only the angle changes: each eye tilts downward toward the outside.
@@ -51,7 +55,8 @@ function emphasizeGentle(group,eyes){
   }
 }
 function patchSvg(svg){
-  if(!(svg instanceof SVGElement)||svg.dataset.eyeEmphasisV146==='1')return;
+  // Care reactions move SVG groups. Only the SVG root owns the patch marker.
+  if(!(svg instanceof SVGElement)||svg.tagName.toLowerCase()!=='svg'||svg.dataset.eyeEmphasisV146==='1')return;
   const group=eyeGroup(svg);if(!group)return;
   const eyes=directEllipses(group);if(eyes.length<2)return;
   const first=eyes[0],rx=Number(first.getAttribute('rx'))||0;
