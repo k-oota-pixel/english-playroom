@@ -1,4 +1,4 @@
-import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.18';
+import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.19';
 import { renderEffect } from './pet-effects.js?v=1.5.1-effects';
 // Stable IDs are persisted; labels and SVG art may evolve independently.
 export const OPTIONS = Object.freeze({
