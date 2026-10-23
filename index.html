@@ -135,7 +135,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.27">ver1.8.27</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.28">ver1.8.28</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -365,8 +365,8 @@ import {
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch1827';
-import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.8.27';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch1828';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.8.28';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -830,10 +830,10 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge-v176.js?v=1.8.27'></script>
+<script type="module" src='./version-badge-v176.js?v=1.8.28'></script>
 <script>
 (() => {
-  const version = '1.8.27';
+  const version = '1.8.28';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

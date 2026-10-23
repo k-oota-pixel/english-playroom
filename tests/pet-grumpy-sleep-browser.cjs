@@ -15,7 +15,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
  await page.locator('#petVisual').click();await page.waitForFunction(()=>document.querySelector('#petVisual').dataset.petGrumpy==='1');
  assert.equal(await page.locator('.pet-grumpy-swirl').isVisible(),true);assert.equal(await page.locator('.pet-sleep-zzz').isVisible(),false);
  assert.equal(await page.evaluate(()=>window.careTaps),0);
- assert.equal(await page.locator('.pet-grumpy-face').getAttribute('data-grumpy-eye-style'),'neboke');
+ assert.equal(await page.locator('.pet-grumpy-face').getAttribute('data-grumpy-eye-style'),'punsuka');
  await page.locator('#petVisual').click();assert.equal(await page.evaluate(()=>window.careTaps),0);
  if(species==='cat'||species==='dog')await page.locator('.pet-visual-wrap').screenshot({path:path.resolve(root,'../../outputs/jito-'+species+'.png')});
  await page.waitForFunction(()=>!document.querySelector('#petVisual').dataset.petGrumpy);
