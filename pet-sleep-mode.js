@@ -41,6 +41,14 @@ function installPetSleepMode(){
   zzz.setAttribute('aria-hidden','true');
   if(wrap)wrap.append(zzz);
 
+  const swirl=document.createElement('span');
+  swirl.className='pet-grumpy-swirl';swirl.hidden=true;swirl.setAttribute('aria-hidden','true');
+  swirl.innerHTML='<svg viewBox="0 0 64 64" focusable="false"><g fill="none" stroke="#80728f" stroke-width="3.5" stroke-linecap="round"><path d="M49 17 C43 8 18 10 14 20 C9 31 49 34 52 24 C55 14 19 17 18 29 C17 39 47 42 47 34 C47 28 22 31 24 41 C26 49 41 48 39 43 C37 39 28 44 32 52 L36 57"/></g></svg>';
+  if(wrap)wrap.append(swirl);
+  const swirlStyle=document.createElement('style');
+  swirlStyle.textContent=`.pet-grumpy-swirl{position:absolute;right:5px;top:3px;width:62px;height:64px;z-index:20;pointer-events:none}.pet-grumpy-swirl[hidden]{display:none!important}.pet-grumpy-swirl svg{width:100%;height:100%;animation:petGrumpySwirl 1.1s ease-in-out infinite}@keyframes petGrumpySwirl{0%,100%{transform:translateY(0) rotate(-7deg)}50%{transform:translateY(-3px) rotate(8deg)}}@media(prefers-reduced-motion:reduce){.pet-grumpy-swirl svg{animation:none}}`;
+  document.head.append(swirlStyle);
+
   function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
   function hashString(value){let h=2166136261;for(const ch of value){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return h>>>0;}
   function minutesNow(d){return d.getHours()*60+d.getMinutes();}
@@ -66,6 +74,17 @@ function installPetSleepMode(){
     let overlay=character.querySelector(`.pet-${kind}-face`);
     if(overlay)return overlay;
     const nativeEyes=character.querySelector('[data-cat-eye-style],[data-dog-eye-style]');
+    if(kind==='grumpy'){
+      const eyes=nativeEyes||character.querySelector('[data-dragon-eye-style],[data-pet-eyes]');
+      if(eyes){
+        overlay=svgEl('g',{class:'pet-grumpy-face','data-grumpy-eye-style':'jito'});
+        const local=svgEl('g',{fill:'none',stroke:nativeEyes||eyes.hasAttribute('data-dragon-eye-style')?'#513829':'#40564e','stroke-width':'4','stroke-linecap':'round'});
+        const companion=!!nativeEyes||eyes.hasAttribute('data-dragon-eye-style');
+        if(eyes.hasAttribute('data-cat-eye-style'))local.setAttribute('transform',eyes.firstElementChild.getAttribute('transform'));
+        local.append(svgEl('path',{d:companion?'M87 106 H105 M135 106 H153':'M85 114 H103 M137 114 H155'}));
+        overlay.append(local);eyes.parentNode.insertBefore(overlay,eyes.nextSibling);return overlay;
+      }
+    }
     if(kind==='sleep'&&nativeEyes){
       // Use the same eye art and local coordinate system as the sleepy choice.
       overlay=svgEl('g',{class:'pet-sleep-face','data-sleep-eye-style':'sleepy'});
@@ -81,7 +100,7 @@ function installPetSleepMode(){
     if(kind==='sleep'){
       overlay.append(svgEl('path',{d:'M84 109 Q94 117 104 109'}),svgEl('path',{d:'M136 109 Q146 117 156 109'}));
     }else{
-      overlay.append(svgEl('path',{d:'M84 104 Q94 111 104 107'}),svgEl('path',{d:'M136 107 Q146 111 156 104'}));
+      overlay.append(svgEl('path',{d:'M84 110 H104'}),svgEl('path',{d:'M136 110 H156'}));
     }
     character.appendChild(overlay);return overlay;
   }
@@ -111,6 +130,7 @@ function installPetSleepMode(){
     return layer;
   }
   function setEyes(mode){
+    swirl.hidden=mode!=='grumpy';
     // Both the shared holder and its cloned eye group may carry sleep opacity.
     // Restore every semantic eye group, including clones nested by species art.
     visual.querySelectorAll('[data-pet-eyes],[data-shared-legacy-eyes]').forEach(eyes=>{
@@ -222,11 +242,19 @@ function installPetSleepMode(){
 
   document.addEventListener('click',event=>{
     const target=event.target instanceof Element?event.target.closest('#petVisual'):null;
-    if(!target||visual.dataset.petCareEnabled==='1')return;
+    if(!target)return;
     if(visual.dataset.petSleeping==='1'){
       event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();wakeGrumpy();
     }else if(visual.dataset.petGrumpy==='1'){
       event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+    }
+  },true);
+
+  document.addEventListener('keydown',event=>{
+    if(!['Enter',' '].includes(event.key)||!event.target.closest?.('#petVisual'))return;
+    if(visual.dataset.petSleeping==='1'||visual.dataset.petGrumpy==='1'){
+      event.preventDefault();event.stopImmediatePropagation();
+      if(visual.dataset.petSleeping==='1')wakeGrumpy();
     }
   },true);
 
