@@ -16,7 +16,12 @@ html[data-pet-stage="egg"] #petStatus::after{content:'たまごがもうすぐ�
     const visual=document.getElementById('petVisual');
     let stage=document.documentElement.dataset.petStage;
     const looksLikeEgg=stage==='egg'||(!stage&&visual?.classList.contains('egg')&&!visual.classList.contains('hatched'));
-    if(!looksLikeEgg)return;
+
+    if(!looksLikeEgg){
+      const bar=document.getElementById('petBar')?.closest('.pet-bar');
+      if(bar&&bar.hidden)bar.hidden=false;
+      return;
+    }
 
     if(!stage){
       document.documentElement.dataset.petStage='egg';
@@ -31,16 +36,13 @@ html[data-pet-stage="egg"] #petStatus::after{content:'たまごがもうすぐ�
     }
 
     const days=document.getElementById('petDays');
-    if(days){days.hidden=true;days.textContent='';}
+    if(days&&days.textContent)days.textContent='';
 
     const status=document.getElementById('petStatus');
     if(status&&status.textContent!=='たまごがもうすぐかえりそう！'){
       status.hidden=false;
       status.textContent='たまごがもうすぐかえりそう！';
     }
-
-    const bar=document.getElementById('petBar')?.closest('.pet-bar');
-    if(bar)bar.hidden=true;
 
     const chat=document.getElementById('petChatModal');
     if(chat)chat.hidden=true;
@@ -58,7 +60,7 @@ html[data-pet-stage="egg"] #petStatus::after{content:'たまごがもうすぐ�
   const status=document.getElementById('petStatus');
   if(status)observer.observe(status,{childList:true,characterData:true,subtree:true});
   const days=document.getElementById('petDays');
-  if(days)observer.observe(days,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['hidden']});
+  if(days)observer.observe(days,{childList:true,characterData:true,subtree:true});
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installEggUiGuard,{once:true});
