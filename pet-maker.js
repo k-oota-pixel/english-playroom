@@ -3,14 +3,11 @@ import {normalizePetName,validPetName} from './pet-model.js?v=1.8.30';
 const SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
 const PERSONALITY_POOLS={calm:['cat','panda'],playful:['dog','hamster'],curious:['bird','penguin','dragon']};
 const EYE_POOLS={
- oyoyo:['oyoyo'],
- mugyu:['mugyu'],
- kiri:['kiri'],
- punsuka:['punsuka'],
- bright:['round','round','round','sparkle','sparkle'],
+ bright:['sparkle','sparkle','sparkle','round','round'],
  gentle:['gentle','gentle','gentle','watery','watery'],
- happy:['smile','smile','smile','round','round'],
- drowsy:['sleepy','sleepy','sleepy','gentle','gentle']
+ happy:['smile','smile','smile','mugyu','mugyu'],
+ drowsy:['sleepy','sleepy','sleepy','oyoyo','oyoyo'],
+ spirited:['kiri','kiri','kiri','punsuka','punsuka']
 };
 function pick(list,random=Math.random){return list[Math.min(list.length-1,Math.max(0,Math.floor(random()*list.length)))];}
 function chooseSpecies(preference,random=Math.random){
@@ -20,7 +17,7 @@ function chooseSpecies(preference,random=Math.random){
 }
 function chooseEyes(mood,random=Math.random){return pick(EYE_POOLS[mood]||['round'],random);}
 function legacyEye(style){return style==='sleepy'?'sleepy':style==='sparkle'?'sparkle':'round';}
-function appearanceFromAnswers(answers,random=Math.random){
+export function appearanceFromAnswers(answers,random=Math.random){
  const eyeStyle=chooseEyes(answers.eyeMood,random);
  return {
   species:chooseSpecies(answers.personality,random),
@@ -34,13 +31,13 @@ function appearanceFromAnswers(answers,random=Math.random){
 }
 
 export const QUESTIONS=[
- {key:'personality',title:'一緒に過ごすなら、どんな相棒がいい？',answers:[['calm','のんびり落ち着いて過ごせる子'],['playful','元気いっぱい、一緒に遊べる子'],['curious','好奇心旺盛で、一緒に冒険できる子']]},
- {key:'bodyColor',title:'その子に似合いそうな色は？',answers:[['cream','やさしいクリーム'],['pink','あたたかなピンク'],['blue','さわやかなブルー'],['mint','落ち着くミント'],['lavender','夢みたいなラベンダー'],['orange','明るいオレンジ']]},
- {key:'eyeMood',title:'目が合ったとき、どんな表情だとうれしい？',answers:[['bright','ぱっちり元気なまなざし'],['gentle','やさしく見つめてくれる'],['happy','いつもごきげんな笑顔'],['drowsy','ちょっと眠たそうでおっとり'],['oyoyo','およよ：すっと横線のおとぼけ顔'],['mugyu','むぎゅ：ぎゅっと目を閉じた顔'],['kiri','きりっ：きらっと凛々しいまなざし'],['punsuka','ぷんすか：ちょっとむすっとした顔']]}
+ {key:'personality',title:'ふたりで過ごす休日。何をしたい？',answers:[['calm','おうちで、のんびりひと休み'],['playful','いっしょに遊んで、いっぱい笑いたい'],['curious','知らない場所へ、小さな冒険に出たい']]},
+ {key:'bodyColor',title:'相棒にぴったりなのは、どんな色？',answers:[['cream','おひさまみたいなクリーム'],['pink','お花みたいなピンク'],['blue','晴れた空みたいなブルー'],['mint','若葉みたいなミント'],['lavender','夢みたいなラベンダー'],['orange','夕焼けみたいなオレンジ']]},
+ {key:'eyeMood',title:'相棒に、どんな一面があるとうれしい？',answers:[['bright','新しいものに目を輝かせる、わくわく派'],['gentle','そっと寄り添ってくれる、やさしい子'],['happy','うれしさが顔に出る、にこにこ派'],['drowsy','ちょっととぼけた、のんびり屋さん'],['spirited','負けず嫌いで、がんばり屋さん']]}
 ];
 export function createPetMaker(onSave){
  const dialog=document.createElement('dialog');dialog.className='pet-dialog pet-survey';dialog.setAttribute('aria-labelledby','petMakerTitle');
- dialog.innerHTML=`<div class="survey-eyebrow">MEET YOUR PET</div><h2 id="petMakerTitle">どんな子に出会いたい？</h2><p>3つの質問に答えて、7種類の中からあなたの相棒に出会おう。答えによって出会いやすい子や目の表情が変わりますが、少しだけ偶然も入ります。最後に名前をつけて迎えよう。</p><div class="survey-progress" aria-live="polite"></div><div class="pet-options"></div><div class="pet-save-status" role="status" aria-live="polite"></div><div class="pet-actions"><button type="button" class="pet-button secondary" data-close>あとで</button><button type="button" class="pet-button secondary" data-back>戻る</button><button type="button" class="pet-button" data-next>次へ</button></div>`;document.body.append(dialog);
+ dialog.innerHTML=`<div class="survey-eyebrow">MEET YOUR PET</div><h2 id="petMakerTitle">どんな子に出会いたい？</h2><p>過ごし方・色・相棒らしさ。3つの質問をヒントに、7種類の動物と10種類の目の中から、あなたの相棒に出会おう。選んだ色はそのまま、動物と表情には少しだけ偶然も。最後に名前をつけよう。</p><div class="survey-progress" aria-live="polite"></div><div class="pet-options"></div><div class="pet-save-status" role="status" aria-live="polite"></div><div class="pet-actions"><button type="button" class="pet-button secondary" data-close>あとで</button><button type="button" class="pet-button secondary" data-back>戻る</button><button type="button" class="pet-button" data-next>次へ</button></div>`;document.body.append(dialog);
  let answers={},step=0,busy=false,pendingAppearance=null,petName='';
  const status=dialog.querySelector('.pet-save-status'),next=dialog.querySelector('[data-next]'),back=dialog.querySelector('[data-back]'),options=dialog.querySelector('.pet-options');
  function update(focus=false){
