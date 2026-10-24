@@ -1,4 +1,4 @@
-import {recordLearningActivity} from './coin-reward.js?v=1.10.2';
+import {recordLearningActivity} from './coin-reward.js?v=1.10.3';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
