@@ -1,4 +1,4 @@
-import {makeDialog} from './learning-titles.js?v=1.10.3';
+import {makeDialog} from './learning-titles.js?v=1.10.4';
 export function createChallengeBoard({root,getUser,load,claim}){
  const refreshButton=root.querySelector('[data-challenge-refresh]'),note=root.querySelector('[data-challenge-note]'),grid=root.querySelector('[data-challenge-grid]');
  const dialog=makeDialog('チャレンジ');dialog.classList.add('challenge-dialog');note.hidden=false;const footer=root.querySelector('.challenge-footer');if(footer)footer.hidden=false;const reload=document.createElement('button');reload.type='button';reload.textContent='更新';dialog.append(reload,note,grid);if(footer)dialog.append(footer);reload.addEventListener('click',()=>refresh());

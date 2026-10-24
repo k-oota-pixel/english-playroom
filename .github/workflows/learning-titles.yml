@@ -31,6 +31,14 @@ jobs:
         with:
           repository: k-oota-pixel/word-breaker
           path: work/word-breaker
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/ateru
+          path: work/ateru
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/eiken-cloze
+          path: work/eiken-cloze
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -38,13 +46,17 @@ jobs:
         working-directory: work/english-playroom
       - run: npx playwright install --with-deps chromium
         working-directory: work/english-playroom
-      - run: node --test work/task-quest/learning-titles.test.mjs work/task-quest/learning-challenges.test.mjs work/task-quest/learning-activity.test.mjs work/task-quest/daily-coins.test.mjs work/task-quest/word-breaker-records.test.mjs
-      - run: node --test tests/home-page.test.js
+      - run: node --test work/task-quest/creative-title-events.test.mjs work/task-quest/learning-titles.test.mjs work/task-quest/learning-challenges.test.mjs work/task-quest/learning-activity.test.mjs work/task-quest/daily-coins.test.mjs work/task-quest/word-breaker-records.test.mjs
+      - run: node --test tests/home-page.test.js tests/title-events.test.js
         working-directory: work/english-playroom
       - run: node tests/pet-actions-browser.cjs
         working-directory: work/english-playroom
       - run: node tests/learning-titles-browser.cjs
         working-directory: work/english-playroom
       - run: node work/word-breaker/tests/word-breaker-records-browser.cjs
+        env:
+          PLAYWRIGHT_MODULE: ${{ github.workspace }}/work/english-playroom/node_modules/playwright
+
+      - run: node work/english-playroom/tests/material-titles-browser.cjs
         env:
           PLAYWRIGHT_MODULE: ${{ github.workspace }}/work/english-playroom/node_modules/playwright

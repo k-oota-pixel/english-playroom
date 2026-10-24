@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./pet.css?v=1.10.3">
-<link rel="stylesheet" href="./learning-challenges.css?v=1.10.3">
+<link rel="stylesheet" href="./pet.css?v=1.10.4">
+<link rel="stylesheet" href="./learning-challenges.css?v=1.10.4">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.7">
 <style>
 *{box-sizing:border-box}
@@ -134,13 +134,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .app-version-badge{font-size:9px;letter-spacing:.02em;font-weight:700;color:#8a9b94;white-space:nowrap}
 .material-nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 26px}.material-nav a{border:1px solid #cdded5;background:#fff;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:750;text-decoration:none;color:#355e50}.material-nav a:hover{background:#e9f3ec;border-color:#75a18a}.material-groups{display:grid;gap:28px}.material-group{scroll-margin-top:20px}.material-group-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid #dce6dd;padding-bottom:10px}.material-group-head h2{font-size:20px;margin:0;letter-spacing:.03em}.material-group-head>span{font-size:11px;color:#6b8073;background:#eaf0e7;border-radius:99px;padding:3px 9px}.material-group .cards{margin-top:12px}.material-group .desc{min-height:0}.material-group .card-reward:last-child{margin-bottom:0}@media(max-width:900px) and (min-width:561px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:560px){.material-nav{gap:6px;margin:20px 0}.material-nav a{font-size:11px;padding:7px 11px}.material-groups{gap:24px}.material-group-head h2{font-size:18px}}
 </style>
-<link rel="stylesheet" href="./learning-titles.css?v=1.10.3">
-<script type="module" src="./learning-titles.js?v=1.10.3"></script>
+<link rel="stylesheet" href="./learning-titles.css?v=1.10.4">
+<script type="module" src="./learning-titles.js?v=1.10.4"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.10.3">ver1.10.3</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.10.4">ver1.10.4</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -348,7 +348,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 </main>
 
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=1.10.3";
+import {recordLearningActivity} from "./coin-reward.js?v=1.10.4";
 import {enableAppCheck,apiHeaders} from './firebase-security.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -363,7 +363,7 @@ import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch196';
-import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.3';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.4';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -536,9 +536,11 @@ function showPetChatBuiltIn(){
 }
 function hidePetChatBuiltIn(){petChatModal.hidden=true;}
 function setPetChatBusy(value){petChatBusy=value;petChatInput.disabled=value;petChatSend.disabled=value;petChatSend.textContent=value?'…':'送信';renderPetChatChoices();}
+const petTitleSession=crypto.randomUUID();
 async function sendPetChat(quickText=''){
   if(petChatBusy||!petUser||!hasPet(petData))return;
   const text=(quickText||petChatInput.value).trim();if(!text)return;
+  const titleData={kind:'chat',sessionId:petTitleSession,itemId:String(petDailyTopic().id),answer:text,manual:!quickText,question:/\b(what|why|when|where|who|which|how|do|does|did|can|could|would|are|is|have)\b.*\?/i.test(text)};
   const previous=petChatHistory.filter(item=>!item.typing).slice(-10);
   petChatHistory.push({role:'user',text});
   petChatTyping=true;
@@ -555,7 +557,7 @@ async function sendPetChat(quickText=''){
     petChatTyping=false;
     petChatHistory=petChatHistory.filter(item=>!item.typing);
     petChatSuggestions=Array.isArray(result.suggestions)?result.suggestions.filter(x=>typeof x==='string'&&x.trim()).slice(0,3):[];
-    petChatHistory.push({role:'assistant',text:result.reply.trim()});renderPetChat();void recordLearningActivity('pet-chat');
+    petChatHistory.push({role:'assistant',text:result.reply.trim()});renderPetChat();if(auth.currentUser?.uid===user.uid)window.EnglishPlayroomCoins?.recordTitleEvent?.('pet-chat',titleData);void recordLearningActivity('pet-chat');
   }catch(error){
     petChatTyping=false;
     petChatHistory=petChatHistory.filter(item=>!item.typing);
@@ -829,11 +831,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=1.10.3"></script>
-<script type="module" src='./version-badge-v176.js?v=1.10.3'></script>
+<script type="module" src="./learning-challenges.js?v=1.10.4"></script>
+<script type="module" src='./version-badge-v176.js?v=1.10.4'></script>
 <script>
 (() => {
-  const version = '1.10.3';
+  const version = '1.10.4';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

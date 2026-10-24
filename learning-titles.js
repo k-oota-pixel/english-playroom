@@ -5,7 +5,7 @@ export function makeDialog(title){
  const header=el('div');header.className='titles-heading';const close=el('button','閉じる');close.type='button';close.addEventListener('click',()=>dialog.close());header.append(el('h2',title),close);dialog.append(header);
  dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});document.body.append(dialog);return dialog;
 }
-function styles(){if(document.getElementById('titleStyles'))return;const link=el('link');link.id='titleStyles';link.rel='stylesheet';link.href=new URL('./learning-titles.css?v=1.10.3',import.meta.url).href;document.head.append(link);}
+function styles(){if(document.getElementById('titleStyles'))return;const link=el('link');link.id='titleStyles';link.rel='stylesheet';link.href=new URL('./learning-titles.css?v=1.10.4',import.meta.url).href;document.head.append(link);}
 export function announceTitles(titles){
  if(!Array.isArray(titles)||!titles.length)return;styles();
  const dialog=makeDialog('🏆 新しい称号を解放！');for(const t of titles){const row=el('article');row.className='title-award';row.append(el('small',t.label),el('h3',t.name),el('p',t.condition));dialog.append(row);}

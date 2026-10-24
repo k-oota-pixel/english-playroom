@@ -119,14 +119,14 @@ async function grade(){
     answer=`${state.firstAnswer} ${extra}`;
   }
 
-  const rewardQuestionId=`${state.type}-${state.index+1}`;
+  const titleOwner=window.EnglishPlayroomCoins?.getUserId?.()||'';const rewardQuestionId=`${state.type}-${state.index+1}`;
   const btn=$('gradeBtn');btn.disabled=true;btn.textContent='AIが採点しています…';
   try{
     const response=await fetch(API,{method:'POST',headers:await apiHeaders(),body:JSON.stringify({questionType:state.type,question:question(),answer,repeatCount:state.repeatCount}),signal:AbortSignal.timeout(30000)});
     let data={};try{data=await response.json();}catch{}
     if(!response.ok)throw new Error(data.error||`採点できませんでした（${response.status}）。`);
     if(!Number.isInteger(data.score)||data.score<0||data.score>5||typeof data.feedback!=='string')throw new Error('採点結果を読み取れませんでした。もう一度お試しください。');
-    renderResult(data);
+    renderResult(data);window.EnglishPlayroomCoins?.recordTitleEvent?.('pre2-interview-questions',{kind:'answer',expectedUid:titleOwner,itemId:rewardQuestionId,score:data.score,total:5,questionType:'q'+state.type,followUp:state.followUp,reason:/\b(because|since|as)\b/i.test(answer)});
     window.EnglishPlayroomCoins?.awardPre2Questions?.(rewardQuestionId);
   }catch(e){
     showError(e?.name==='TimeoutError'?'AIの返事に時間がかかっています。もう一度お試しください。':e?.message||'AI採点に接続できませんでした。');

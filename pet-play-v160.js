@@ -1,4 +1,4 @@
-import {recordLearningActivity} from './coin-reward.js?v=1.10.3';
+import {recordLearningActivity} from './coin-reward.js?v=1.10.4';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -68,6 +68,8 @@ const ROUND_TEMPLATES=Object.freeze([
 ]);
 
 let auth=null,db=null,currentUser=null,currentData={};
+let titleRun='',titleRoundWrong=false,titleUid='';
+const titleEvent=e=>{if(currentUser?.uid===titleUid)window.EnglishPlayroomCoins?.recordTitleEvent?.('pet-instructions',e);};
 let roundIndex=0,score=0,busy=false;
 let dialog=null;
 
@@ -147,7 +149,7 @@ function openIntro(){
 }
 
 function startGame(){
-  roundIndex=0;score=0;busy=false;
+  titleRun=crypto.randomUUID();titleUid=currentUser?.uid||'';roundIndex=0;score=0;busy=false;
   renderRound();
 }
 
@@ -158,7 +160,7 @@ function objectHtml(choice){
 function choiceLabel(choice){return `${choice.size==='small'?'small ':choice.size==='big'?'big ':''}${choice.color} ${choice.noun}`;}
 
 function renderRound(){
-  if(roundIndex>=ROUND_TEMPLATES.length){finishGame();return;}
+  if(roundIndex>=ROUND_TEMPLATES.length){finishGame();return;}titleRoundWrong=false;
   const round=ROUND_TEMPLATES[roundIndex];
   dialog.innerHTML=`<div class="pet-play-shell">${headerHtml()}<div class="pet-play-game"><div class="pet-play-gamehead"><span class="pet-play-progress">ROUND ${roundIndex+1} / ${ROUND_TEMPLATES.length}</span><span class="pet-play-score">SCORE ${score}</span></div><div class="pet-play-mini-pet">${petSVG()}<span class="pet-play-mood" aria-hidden="true"></span></div><div class="pet-play-prompt">${round.instruction}</div><div class="pet-play-choices"></div><div class="pet-play-feedback" role="status"></div></div></div>`;
   wireClose();
@@ -177,9 +179,9 @@ function answerRound(button,correct){
   const buttons=[...dialog.querySelectorAll('.pet-play-choice')];buttons.forEach(b=>b.disabled=true);
   const feedback=dialog.querySelector('.pet-play-feedback'),mood=dialog.querySelector('.pet-play-mood');
   if(correct){
-    score+=1;button.classList.add('correct');feedback.className='pet-play-feedback ok';feedback.textContent='Nice catch!';mood.textContent='♥';
+    if(!titleRoundWrong)score+=1;titleEvent({kind:'round',eventId:titleRun+'-'+roundIndex,correct:true,color:true,shape:true,size:roundIndex>=2,recovered:titleRoundWrong});button.classList.add('correct');feedback.className='pet-play-feedback ok';feedback.textContent='Nice catch!';mood.textContent='♥';
   }else{
-    button.classList.add('wrong');const target=buttons.find(b=>b.dataset.id===round.target);if(target)target.classList.add('correct');feedback.className='pet-play-feedback no';feedback.textContent='Oops! Look at the words again.';mood.textContent='？';
+    button.classList.add('wrong');const target=buttons.find(b=>b.dataset.id===round.target);if(target)target.classList.add('correct');feedback.className='pet-play-feedback no';feedback.textContent='Oops! Look at the words again.';mood.textContent='？';titleRoundWrong=true;busy=false;buttons.forEach(b=>b.disabled=b===button);feedback.textContent='もう一度、ことばを見て選んでみよう。';return;
   }
   mood.classList.add('show');
   setTimeout(()=>{roundIndex+=1;busy=false;renderRound();},850);
@@ -216,7 +218,7 @@ function resultMood(){
 }
 
 async function finishGame(){
-  void recordLearningActivity('pet-instructions');
+  titleEvent({kind:'run',eventId:titleRun,score});void recordLearningActivity('pet-instructions');
   const clear=score>=CLEAR_SCORE,mood=resultMood();
   dialog.innerHTML=`<div class="pet-play-shell">${headerHtml()}<div class="pet-play-result"><div class="pet-play-result-pet ${mood.cls}">${petSVG()}<span class="pet-play-emotion" aria-hidden="true">${mood.emotion}</span></div><div class="pet-play-result-title">${mood.title}</div><div class="pet-play-result-score">${score} / ${ROUND_TEMPLATES.length}</div><p class="pet-play-result-message">${mood.message}</p><div id="petPlayRewardResult"></div><button class="pet-play-again" type="button">PLAY AGAIN</button></div></div>`;
   wireClose();dialog.querySelector('.pet-play-again').addEventListener('click',startGame);
