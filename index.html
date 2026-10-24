@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./pet.css?v=1.9.4">
-<link rel="stylesheet" href="./learning-challenges.css?v=1.9.4">
+<link rel="stylesheet" href="./pet.css?v=1.9.5">
+<link rel="stylesheet" href="./learning-challenges.css?v=1.9.5">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.7">
 <style>
 *{box-sizing:border-box}
@@ -17,7 +17,7 @@ a{color:inherit}a:focus-visible{outline:3px solid #e4af37;outline-offset:3px}
 .label{margin-top:20px;font-size:10px;letter-spacing:.16em;color:#698479}
 h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-height:1.28}
 .intro{color:#65756e;line-height:1.6;font-size:13px;margin:0}
-.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:20px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:20px}
 .card{display:block;text-decoration:none;position:relative;text-align:left;background:#fff;border:1px solid #dce5da;border-radius:16px;padding:16px;color:inherit;box-shadow:0 4px 14px #203b3608;transition:transform .14s,box-shadow .14s,border-color .14s}
 .card:hover{transform:translateY(-2px);box-shadow:0 7px 18px #203b3610;border-color:#cbd9cf}
 .icon{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#e8f4ed;color:#23725c;font-size:18px;font-weight:900}
@@ -132,12 +132,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 @media(max-width:560px){.pet-chat-panel{height:360px;border-radius:16px}.pet-chat-head{padding:10px 10px 8px}.pet-chat-avatar{width:34px;height:34px;flex-basis:34px}.pet-chat-heading strong{font-size:13px}.pet-chat-heading span{font-size:8.5px}.pet-chat-messages{padding:10px;gap:7px}.pet-chat-bubble{max-width:92%;font-size:12.5px;padding:8px 10px}.pet-chat-form{position:sticky;bottom:0;padding:8px}.pet-chat-input{font-size:12.5px;padding:9px 10px}.pet-chat-send{padding:8px 12px;font-size:11.5px}.pet-chat-note{display:none}.pet-chat-choices{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:6px;padding:7px 8px 6px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}.pet-chat-choice{font-size:10px;padding:7px 10px;white-space:nowrap;flex:0 0 auto}.pet-chat-error{font-size:9px;padding:2px 8px 6px}}
 
 .app-version-badge{font-size:9px;letter-spacing:.02em;font-weight:700;color:#8a9b94;white-space:nowrap}
+.material-nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 26px}.material-nav a{border:1px solid #cdded5;background:#fff;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:750;text-decoration:none;color:#355e50}.material-nav a:hover{background:#e9f3ec;border-color:#75a18a}.material-groups{display:grid;gap:28px}.material-group{scroll-margin-top:20px}.material-group-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid #dce6dd;padding-bottom:10px}.material-group-head h2{font-size:20px;margin:0;letter-spacing:.03em}.material-group-head>span{font-size:11px;color:#6b8073;background:#eaf0e7;border-radius:99px;padding:3px 9px}.material-group .cards{margin-top:12px}.material-group .desc{min-height:0}.material-group .card-reward:last-child{margin-bottom:0}@media(max-width:900px) and (min-width:561px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:560px){.material-nav{gap:6px;margin:20px 0}.material-nav a{font-size:11px;padding:7px 11px}.material-groups{gap:24px}.material-group-head h2{font-size:18px}}
 </style>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.9.4">ver1.9.4</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.9.5">ver1.9.5</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -218,7 +219,9 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
     <p class="challenge-footer">毎日0時・毎週月曜0時に更新（日本時間）。通常の教材コインとは別のボーナスです。報酬は各期間1回。エイゴメーター・ワードウルフは対象外です。</p>
   </section>
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
-  <div class="cards">
+<nav class="material-nav" aria-label="教材のジャンル"><a href="#materials-group-games">グループゲーム</a><a href="#materials-vocabulary-grammar">語彙文法学習</a><a href="#materials-reading">長文演習</a><a href="#materials-listening">リスニング</a><a href="#materials-conversation">英会話</a><a href="#materials-exam">英検対策</a></nav>
+<div class="material-groups">
+<section class="material-group" id="materials-group-games" aria-labelledby="heading-group-games"><div class="material-group-head"><h2 id="heading-group-games">グループゲーム</h2><span>2教材</span></div><div class="cards">
 <a class="card" href="./eigo-meter/">
   
   <div class="eyebrow">GROUP TALK GAME</div>
@@ -235,6 +238,8 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <div class="chips"><span class="chip">3〜12人</span><span class="chip">タブレット1台</span><span class="chip">英単語・日本語</span></div>
   <div class="open-note">単語を隠して回そう・コイン付与なし</div>
 </a>
+</div></section>
+<section class="material-group" id="materials-vocabulary-grammar" aria-labelledby="heading-vocabulary-grammar"><div class="material-group-head"><h2 id="heading-vocabulary-grammar">語彙文法学習</h2><span>4教材</span></div><div class="cards">
 <a class="card" href="https://k-oota-pixel.github.io/word-breaker/" target="_blank" rel="noopener noreferrer">
       
       <div class="eyebrow">VOCABULARY · ENDLESS</div>
@@ -244,7 +249,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>10語撃破で獲得。以後15語ごと</span><small>プレイごとに獲得できます</small></div></div>
       <div class="open-note">中1〜高2・基礎英単語の6コース</div>
     </a>
-
 <a class="card" href="https://k-oota-pixel.github.io/ateru/" target="_blank" rel="noopener noreferrer">
       
       <div class="eyebrow">THREE-HINT WORD GAME</div>
@@ -254,7 +258,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>5問中3問以上正解</span><small>1プレイごと</small></div></div>
       <div class="open-note">GitHub Pagesで開きます</div>
     </a>
-
 <a class="card order" href="https://k-oota-pixel.github.io/basic-quest/" target="_blank" rel="noopener noreferrer">
       
       <div class="eyebrow">WORD ORDER TRAINING</div>
@@ -264,7 +267,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>初回の回答で4問中3問以上正解</span><small>同じステージは1日1回</small></div></div>
       <div class="open-note">GitHub Pagesで開きます</div>
     </a>
-
 <a class="card retry" href="https://k-oota-pixel.github.io/eiken-retry/" target="_blank" rel="noopener noreferrer">
       <div class="eyebrow">VOCABULARY &amp; GRAMMAR</div>
       <div class="title">リトライノート<span class="eiken-badge">英検対応</span></div>
@@ -273,7 +275,40 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>5問回答するごと</span><small>同じ問題のカウントは1日1回</small></div></div>
       <div class="open-note">GitHub Pagesで開きます</div>
     </a>
-
+</div></section>
+<section class="material-group" id="materials-reading" aria-labelledby="heading-reading"><div class="material-group-head"><h2 id="heading-reading">長文演習</h2><span>3教材</span></div><div class="cards">
+<a class="card order" href="https://k-oota-pixel.github.io/eiken-cloze/" target="_blank" rel="noopener noreferrer">
+      <div class="eyebrow">READING &amp; CLOZE</div>
+      <div class="title">長文空所補充<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">長文を読んで、空所に入る英語を考えよう。自由入力はGeminiが判定。選択肢モードでも練習できます。</div>
+      <div class="chips"><span class="chip">自由入力</span><span class="chip">選択問題</span><span class="chip">読解</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>回答して判定を受ける</span><small>同じ長文は1日1回</small></div></div>
+    </a>
+<a class="card" href="https://k-oota-pixel.github.io/eiken-title/" target="_blank" rel="noopener noreferrer">
+      <div class="eyebrow">READING &amp; TITLES</div>
+      <div class="title">長文概要把握<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">本文を読んで、内容に合うタイトルを考えよう。本文の要点を捉える練習です。</div>
+      <div class="chips"><span class="chip">タイトル作成</span><span class="chip">Gemini判定</span><span class="chip">読解</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>タイトルを回答して判定を受ける</span><small>同じ長文は1日1回</small></div></div>
+    </a>
+<a class="card" href="./reading-training/">
+      <div class="eyebrow">READING &amp; SUMMARY</div>
+      <div class="title">長文演習<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">4級〜準1級の長文を読んで、問題演習と要約に挑戦。要約はGeminiが確認します。</div>
+      <div class="chips"><span class="chip">126長文</span><span class="chip">526問</span><span class="chip">演習・要約</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>全設問の答え合わせ、または要約のAI確認</span><small>同じテーマは1日1回（演習・要約共通）</small></div></div>
+    </a>
+</div></section>
+<section class="material-group" id="materials-listening" aria-labelledby="heading-listening"><div class="material-group-head"><h2 id="heading-listening">リスニング</h2><span>1教材</span></div><div class="cards">
+<a class="card task" href="./listening-training/">
+      <div class="eyebrow">ENGLISH LISTENING</div>
+      <div class="title">リスニング演習＆ディクテーション<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">英検3級〜準1級の335問。問題演習とディクテーションでリスニングを練習できます。</div>
+      <div class="chips"><span class="chip">3級〜準1級</span><span class="chip">335問</span><span class="chip">問題演習・Dictation</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>問題演習・書き取りを5問完了</span><small>1セットごと・正誤は問いません</small></div></div>
+    </a>
+</div></section>
+<section class="material-group" id="materials-conversation" aria-labelledby="heading-conversation"><div class="material-group-head"><h2 id="heading-conversation">英会話</h2><span>2教材</span></div><div class="cards">
 <a class="card task" href="https://k-oota-pixel.github.io/task-quest/" target="_blank" rel="noopener noreferrer">
       
       <div class="eyebrow">SITUATION &amp; WRITING</div>
@@ -282,55 +317,6 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="chips"><span class="chip">シチュエーション</span><span class="chip">英作文</span><span class="chip">オンライン</span></div>
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>英文を回答して採点を受ける</span><small>同じタスクは1日1回</small></div></div>
     </a>
-
-<a class="card order" href="https://k-oota-pixel.github.io/eiken-cloze/" target="_blank" rel="noopener noreferrer">
-      <div class="eyebrow">READING &amp; CLOZE</div>
-      <div class="title">長文空所補充<span class="eiken-badge">英検対応</span></div>
-      <div class="desc">長文を読んで、空所に入る英語を考えよう。自由入力はGeminiが判定。選択肢モードでも練習できます。</div>
-      <div class="chips"><span class="chip">自由入力</span><span class="chip">選択問題</span><span class="chip">読解</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>回答して判定を受ける</span><small>同じ長文は1日1回</small></div></div>
-    </a>
-
-<a class="card" href="https://k-oota-pixel.github.io/eiken-title/" target="_blank" rel="noopener noreferrer">
-      <div class="eyebrow">READING &amp; TITLES</div>
-      <div class="title">長文概要把握<span class="eiken-badge">英検対応</span></div>
-      <div class="desc">本文を読んで、内容に合うタイトルを考えよう。本文の要点を捉える練習です。</div>
-      <div class="chips"><span class="chip">タイトル作成</span><span class="chip">Gemini判定</span><span class="chip">読解</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>タイトルを回答して判定を受ける</span><small>同じ長文は1日1回</small></div></div>
-    </a>
-
-<a class="card" href="./reading-training/">
-      <div class="eyebrow">READING &amp; SUMMARY</div>
-      <div class="title">長文演習<span class="eiken-badge">英検対応</span></div>
-      <div class="desc">4級〜準1級の長文を読んで、問題演習と要約に挑戦。要約はGeminiが確認します。</div>
-      <div class="chips"><span class="chip">126長文</span><span class="chip">526問</span><span class="chip">演習・要約</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>全設問の答え合わせ、または要約のAI確認</span><small>同じテーマは1日1回（演習・要約共通）</small></div></div>
-    </a>
-
-<a class="card task" href="./listening-training/">
-      <div class="eyebrow">ENGLISH LISTENING</div>
-      <div class="title">リスニング演習＆ディクテーション<span class="eiken-badge">英検対応</span></div>
-      <div class="desc">英検3級〜準1級の335問。問題演習とディクテーションでリスニングを練習できます。</div>
-      <div class="chips"><span class="chip">3級〜準1級</span><span class="chip">335問</span><span class="chip">問題演習・Dictation</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>問題演習・書き取りを5問完了</span><small>1セットごと・正誤は問いません</small></div></div>
-    </a>
-
-<a class="card order interview-card" href="./pre2-interview-questions/">
-      <div class="eyebrow">EIKEN PRE-2 INTERVIEW · QUESTIONS</div>
-      <div class="title">準２級面接対策：質問4・5<span class="eiken-badge">英検対応</span></div>
-      <div class="desc">質問4・5の応答を練習。自分の意見や経験を英語で答え、AIのフィードバックで振り返ろう。</div>
-      <div class="chips"><span class="chip">100問</span><span class="chip">音声・AI採点</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>回答してAI採点を受ける</span><small>同じ問題は1日1回</small></div></div>
-    </a>
-
-<a class="card order interview-card" href="https://k-oota-pixel.github.io/eiken-pre2-interview-a/" target="_blank" rel="noopener noreferrer">
-      <div class="eyebrow">EIKEN PRE-2 INTERVIEW · PICTURES</div>
-      <div class="title">準２級面接対策：面接A<span class="eiken-badge">英検対応</span></div>
-      <div class="desc">イラストを見て、人物や状況を英語で説明しよう。音声とAI採点で面接の練習ができます。</div>
-      <div class="chips"><span class="chip">20問</span><span class="chip">音声・AI採点</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>2つ以上正解</span><small>同じ問題は1日1回</small></div></div>
-    </a>
-
 <a class="card task" href="https://k-oota-pixel.github.io/talk-quest/" target="_blank" rel="noopener noreferrer">
       <div class="eyebrow">EVERYDAY ENGLISH</div>
       <div class="title">テーマ別日常英会話<span class="eiken-badge">英検対応</span></div>
@@ -338,8 +324,24 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="chips"><span class="chip">初心者向け</span><span class="chip">文字チャット</span><span class="chip">80テーマ</span></div>
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>英語を送ってAIの返事を受け取る</span><small>同じテーマは1日1回</small></div></div>
     </a>
+</div></section>
+<section class="material-group" id="materials-exam" aria-labelledby="heading-exam"><div class="material-group-head"><h2 id="heading-exam">英検対策</h2><span>2教材</span></div><div class="cards">
+<a class="card order interview-card" href="./pre2-interview-questions/">
+      <div class="eyebrow">EIKEN PRE-2 INTERVIEW · QUESTIONS</div>
+      <div class="title">準２級質問４/５対策<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">質問4・5の応答を練習。自分の意見や経験を英語で答え、AIのフィードバックで振り返ろう。</div>
+      <div class="chips"><span class="chip">100問</span><span class="chip">音声・AI採点</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>回答してAI採点を受ける</span><small>同じ問題は1日1回</small></div></div>
+    </a>
+<a class="card order interview-card" href="https://k-oota-pixel.github.io/eiken-pre2-interview-a/" target="_blank" rel="noopener noreferrer">
+      <div class="eyebrow">EIKEN PRE-2 INTERVIEW · PICTURES</div>
+      <div class="title">準２級面接A練習<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">イラストを見て、人物や状況を英語で説明しよう。音声とAI採点で面接の練習ができます。</div>
+      <div class="chips"><span class="chip">20問</span><span class="chip">音声・AI採点</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>2つ以上正解</span><small>同じ問題は1日1回</small></div></div>
+    </a>
+</div></section>
 </div>
-  </div>
   <section class="learning-dashboard" aria-labelledby="learningTitle">
     <div class="coin-rank-head"><h2 id="learningTitle" class="coin-rank-title">学習ダッシュボード</h2><button id="learningShow" class="coin-rank-refresh" type="button" aria-controls="learningList" aria-expanded="false" disabled>表示する</button></div>
     <p id="learningNote" class="coin-rank-note" role="status">ログインすると学習状況を確認できます。</p>
@@ -362,8 +364,8 @@ import {
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch194';
-import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.9.4';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch195';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.9.5';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -827,11 +829,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=1.9.4"></script>
-<script type="module" src='./version-badge-v176.js?v=1.9.4'></script>
+<script type="module" src="./learning-challenges.js?v=1.9.5"></script>
+<script type="module" src='./version-badge-v176.js?v=1.9.5'></script>
 <script>
 (() => {
-  const version = '1.9.4';
+  const version = '1.9.5';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
