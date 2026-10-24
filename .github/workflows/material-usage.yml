@@ -1,0 +1,30 @@
+name: Material usage
+on:
+  push:
+    paths:
+      - admin-material-usage.js
+      - admin-ui.js
+      - admin.html
+      - eigo-meter/**
+      - word-wolf/**
+      - tests/admin-material-usage-browser.cjs
+      - tests/material-open.test.js
+      - material-open.js
+      - coin-reward.js
+      - .github/workflows/material-usage.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  usage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+      - run: node --test tests/home-page.test.js tests/admin-content-model.test.js
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/admin-material-usage-browser.cjs
+      - run: node --test tests/material-open.test.js

@@ -1,3 +1,4 @@
+import './material-open.js?v=1.9.6';
 import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
 import './nickname-profile.js';
 import {enableAppCheck} from './firebase-security.js';

@@ -1,3 +1,4 @@
+import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.6';
 import {adminContentRows} from './admin-content-model.js?v=all-contents-1';
 import {enableAppCheck} from './firebase-security.js';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
@@ -92,11 +93,12 @@ async function grant(card){const uid=card.dataset.uid,amount=Math.floor(Number(c
  if(searchResults)for(const item of searchResults)if(item.uid===uid)item.coins=r.coins;
  const detail=detailCache.get(uid);if(detail?.apps?.['english-playroom'])detail.apps['english-playroom'].coins=r.coins;
  setStatus(label+' に '+amount.toLocaleString('ja-JP')+'コイン付与しました。','ok');render();}catch(e){if(own===generation)setStatus(e.message,'error');}finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .grantBtn`);if(btn)btn.disabled=false;}}
+const usagePanel=createMaterialUsagePanel({host:$('updated'),request:()=>api('/api/admin/material-usage'),getIdentity:()=>auth.currentUser?.uid});
 $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.message,'error'));
 $('logout').onclick=()=>signOut(auth);
 $('refresh').onclick=()=>searchQuery()?runSearch():load(pageIndex,true);$('search').oninput=onSearchInput;
 $('prev').onclick=()=>load(pageIndex-1);$('next').onclick=()=>load(pageIndex+1);
-onAuthStateChanged(auth,user=>{generation++;viewGeneration++;searchSerial++;clearTimeout(searchTimer);allUsers=[];searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;pageCache.clear();detailCache.clear();expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;fetchedAt=0;searchFetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;$('search').value='';
+onAuthStateChanged(auth,user=>{usagePanel.reset();generation++;viewGeneration++;searchSerial++;clearTimeout(searchTimer);allUsers=[];searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;pageCache.clear();detailCache.clear();expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;fetchedAt=0;searchFetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;$('search').value='';
  if(!user){$('users').replaceChildren();$('who').textContent='';$('login').hidden=false;$('logout').hidden=true;setStatus('管理者ログインをしてください。');return;}
  $('who').textContent=user.email||'';$('login').hidden=true;$('logout').hidden=false;load(0);
 });
