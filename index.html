@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./pet.css?v=1.9.1">
-<link rel="stylesheet" href="./learning-challenges.css?v=1.9.1">
+<link rel="stylesheet" href="./pet.css?v=1.9.2">
+<link rel="stylesheet" href="./learning-challenges.css?v=1.9.2">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.7">
 <style>
 *{box-sizing:border-box}
@@ -136,7 +136,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.9.1">ver1.9.1</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.9.2">ver1.9.2</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -374,8 +374,8 @@ import {
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch191';
-import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.9.1';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch192';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.9.2';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -839,11 +839,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=1.9.1"></script>
-<script type="module" src='./version-badge-v176.js?v=1.9.1'></script>
+<script type="module" src="./learning-challenges.js?v=1.9.2"></script>
+<script type="module" src='./version-badge-v176.js?v=1.9.2'></script>
 <script>
 (() => {
-  const version = '1.9.1';
+  const version = '1.9.2';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

@@ -4,7 +4,7 @@ import { emitCareEffects } from './pet-effects.js?v=touch1812';
 let active=null;
 const STYLE=`
 #petVisual [data-feeding-native-face] path{transform-box:fill-box;transform-origin:center;transition:transform .1s ease-out}
-#petVisual [data-feeding-native-face=bird][data-feeding-open] path{transform:scaleY(1.5)}
+#petVisual [data-feeding-native-face=bird][data-feeding-open] path,#petVisual [data-feeding-native-face=penguin][data-feeding-open] path{transform:scaleY(1.5)}
 #petVisual [data-feeding-native-face=hamster][data-feeding-open] path[fill=none]{transform:scaleY(.55)}
 #petVisual[data-care-reacting] .pet-character,#petVisual[data-care-reacting] .pet-shadow{animation-play-state:paused!important}
 #petVisual .pet-care-motion-layer{transform-box:view-box;transform-origin:120px 200px;animation-duration:1.8s;animation-timing-function:ease-in-out;animation-fill-mode:both}

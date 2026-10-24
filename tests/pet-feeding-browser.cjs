@@ -40,7 +40,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await page.waitForFunction(()=>document.getElementById('petVisual').dataset.careReacting==='eating');
  assert.equal(await page.locator('.pet-eating-food').getAttribute('data-remaining'),'3');
  const native=await page.locator('#petVisual [data-feeding-native-face]').count()>0;
- if(species==='bird'||species==='hamster')assert.ok(native,'original face retained for '+species);
+ if(species==='bird'||species==='hamster'||species==='penguin')assert.ok(native,'original face retained for '+species);
  await page.waitForFunction(native=>native?!!document.querySelector('#petVisual [data-feeding-native-face]'):!!document.querySelector('#petVisual .pet-eating-mouth'),native);
  if(native){
  await page.waitForFunction(()=>document.querySelector('#petVisual [data-feeding-native-face][data-feeding-open]'));
