@@ -19,7 +19,7 @@ test('interview tracking is saved in the existing reward transaction without dup
     .replace(/^import .*;\r?\n/gm,'').replace(/export \{[^}]+\};/,'')
     .replace(/function todayKey\(\)\{[\s\S]*?\n\}/,'function todayKey(){return "2026-10-18";}');
   const toast={classList:{add(){},remove(){}}};
-  const context={interviewAttemptPatch,console,Date,Promise,Number,String,Math,setTimeout:()=>0,clearTimeout(){},window:{},location:{pathname:'/',href:'https://home.test/'},
+  const context={interviewAttemptPatch,queueMicrotask,console,Date,Promise,Number,String,Math,setTimeout:()=>0,clearTimeout(){},window:{addEventListener(){}},location:{pathname:'/',href:'https://home.test/'},
     enableAppCheck:()=>null,getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:{uid:'tester'}}),getFirestore:()=>({}),onAuthStateChanged:(app,fn)=>queueMicrotask(()=>fn(app.currentUser)),doc:()=>({}),serverTimestamp:()=>0,
     document:{readyState:'loading',addEventListener(){},getElementById:()=>toast},
     runTransaction:async(db,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(wallet)}),set:(ref,patch)=>{wallet={...wallet,...patch};}})};
