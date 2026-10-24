@@ -9,13 +9,13 @@ const expectedTitles=['エイゴメーター','ワードウルフ','ワードブ
 
 test('homepage cards follow the requested desktop order and exam labels',()=>{
   const cards=html.slice(html.indexOf('<div class="cards">'));
-  const titles=[...cards.matchAll(/<div class="title">([^<]+)<\/div>/g)].map(match=>match[1]);
+  const titles=[...cards.matchAll(/<div class="title">([^<]+)(?:<span class="eiken-badge">英検対応<\/span>)?<\/div>/g)].map(match=>match[1]);
   assert.deepEqual(titles,expectedTitles);
   assert.equal((cards.match(/class="card(?: [^"]*)?"/g)||[]).length,14);
   assert.match(html,/\.cards\{display:grid;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(html,/\.cards\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(cards,/href="\.\/listening-training\/"[\s\S]*?<div class="title">リスニング演習＆ディクテーション<\/div>/);
-  assert.match(cards,/href="\.\/reading-training\/"[\s\S]*?<div class="title">長文演習<\/div>/);
+  assert.match(cards,/href="\.\/listening-training\/"[\s\S]*?<div class="title">リスニング演習＆ディクテーション<span class="eiken-badge">英検対応<\/span><\/div>/);
+  assert.match(cards,/href="\.\/reading-training\/"[\s\S]*?<div class="title">長文演習<span class="eiken-badge">英検対応<\/span><\/div>/);
   assert.equal((cards.match(/<span class="eiken-badge">英検対応<\/span>/g)||[]).length,8);
   assert.equal((cards.match(/class="[^"]*interview-card/g)||[]).length,2);
   assert.equal((cards.match(/eiken-pre2-interview-a|準２級面接対策/g)||[]).length>=2,true);
