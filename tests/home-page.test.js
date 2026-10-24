@@ -59,7 +59,7 @@ test('daily ranking displays up to three pet names and their coin totals',async(
   h.context.testUser={uid:'learner',getIdToken:async()=>'token'};
   await vm.runInContext('coinBoardUser=testUser; refreshCoinBoard(testUser)',h.context);
   assert.equal(h.elements.coinRankList.children.length,3);
-  assert.deepEqual(Array.from(h.elements.coinRankList.children,li=>li.children[1].textContent),['えまめん','ルル','ポチ']);
+  assert.deepEqual(Array.from(h.elements.coinRankList.children,li=>li.children[1].textContent),['えまめん ー称号なしー','ルル ー称号なしー','ポチ ー称号なしー']);
   assert.deepEqual(Array.from(h.elements.coinRankList.children,li=>li.children[2].textContent),['🪙 18','🪙 12','🪙 4']);
 });
 
