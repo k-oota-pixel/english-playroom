@@ -1,0 +1,23 @@
+name: Learning challenges
+on:
+  push:
+    paths:
+      - 'learning-challenges*'
+      - 'coin-reward.js'
+      - 'tests/learning-challenges*'
+      - '.github/workflows/learning-challenges.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  challenge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+      - run: node --test tests/coin-reward.test.js tests/home-page.test.js tests/learning-dashboard.test.js
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/learning-challenges-browser.cjs

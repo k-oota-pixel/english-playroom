@@ -6,6 +6,7 @@
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css">
+<link rel="stylesheet" href="./learning-challenges.css?v=1.8.33">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.7">
 <style>
 *{box-sizing:border-box}
@@ -135,7 +136,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.32">ver1.8.32</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.33">ver1.8.33</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -212,6 +213,12 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
     <div id="learningList" class="learning-list" hidden></div>
   </section>
 
+  <section id="learningChallenges" class="learning-challenges" aria-labelledby="challengeTitle">
+    <div class="challenge-header"><h2 id="challengeTitle">今日と今週のチャレンジ</h2><button type="button" class="coin-rank-refresh" data-challenge-refresh disabled>更新</button></div>
+    <p class="challenge-note" data-challenge-note role="status" aria-live="polite">ログインすると、毎日・毎週のチャレンジに参加できます。</p>
+    <div class="challenge-grid" data-challenge-grid hidden></div>
+    <p class="challenge-footer">毎日0時・毎週月曜0時に更新（日本時間）。通常の教材コインとは別のボーナスです。報酬は各期間1回。エイゴメーター・ワードウルフは対象外です。</p>
+  </section>
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
   <div class="cards">
 <a class="card" href="./eigo-meter/">
@@ -365,8 +372,8 @@ import {
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch1832';
-import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.8.32';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch1833';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.8.33';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -830,10 +837,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src='./version-badge-v176.js?v=1.8.32'></script>
+<script type="module" src="./learning-challenges.js?v=1.8.33"></script>
+<script type="module" src='./version-badge-v176.js?v=1.8.33'></script>
 <script>
 (() => {
-  const version = '1.8.32';
+  const version = '1.8.33';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

@@ -120,7 +120,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else installTaskQuestAnswerGuard();
 
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
-function learningContentFromPage(){const path=location.pathname;return ['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch'].find(id=>path.split('/').includes(id));}
+function learningContentFromPage(){const path=location.pathname;return ['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training'].find(id=>path.split('/').includes(id));}
 async function recordLearningActivity(appId=learningContentFromPage()){
   await authReady;const user=currentUser;if(!user||typeof fetch!=='function')return;
   if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();

@@ -1,0 +1,282 @@
+{
+  "initial": {
+    "serverNow": 1792810800000,
+    "day": "2026-10-24",
+    "week": "2026-10-19",
+    "weekEnd": "2026-10-25",
+    "nextDaily": "2026-10-24T15:00:00.000Z",
+    "nextWeekly": "2026-10-25T15:00:00.000Z",
+    "daily": {
+      "id": "2026-10-24",
+      "reward": 10,
+      "target": 2,
+      "count": 0,
+      "complete": false,
+      "claimed": false,
+      "tasks": [
+        {
+          "id": "basic-quest",
+          "label": "並べ替え問題（基礎）",
+          "url": "https://k-oota-pixel.github.io/basic-quest/",
+          "hint": "1ステージの結果を確認する",
+          "group": "light",
+          "done": false
+        },
+        {
+          "id": "reading-training",
+          "label": "長文演習",
+          "url": "https://k-oota-pixel.github.io/english-playroom/reading-training/",
+          "hint": "答え合わせ、または要約の確認をする",
+          "group": "practice",
+          "done": false
+        }
+      ]
+    },
+    "weekly": {
+      "id": "2026-10-19",
+      "reward": 20,
+      "target": 4,
+      "count": 0,
+      "complete": false,
+      "claimed": false,
+      "contents": [
+        {
+          "id": "word-breaker",
+          "label": "ワードブレイカー",
+          "url": "https://k-oota-pixel.github.io/word-breaker/",
+          "hint": "1プレイ取り組んで記録する",
+          "group": "light",
+          "done": false
+        },
+        {
+          "id": "ateru",
+          "label": "アテル",
+          "url": "https://k-oota-pixel.github.io/ateru/",
+          "hint": "5問の結果を確認する",
+          "group": "light",
+          "done": false
+        },
+        {
+          "id": "basic-quest",
+          "label": "並べ替え問題（基礎）",
+          "url": "https://k-oota-pixel.github.io/basic-quest/",
+          "hint": "1ステージの結果を確認する",
+          "group": "light",
+          "done": false
+        },
+        {
+          "id": "eiken-retry",
+          "label": "リトライノート",
+          "url": "https://k-oota-pixel.github.io/eiken-retry/",
+          "hint": "1問以上回答する",
+          "group": "light",
+          "done": false
+        },
+        {
+          "id": "eiken-cloze",
+          "label": "長文空所補充",
+          "url": "https://k-oota-pixel.github.io/eiken-cloze/",
+          "hint": "回答して判定を受ける",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "eiken-title",
+          "label": "長文概要把握",
+          "url": "https://k-oota-pixel.github.io/eiken-title/",
+          "hint": "タイトルを回答して判定を受ける",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "reading-training",
+          "label": "長文演習",
+          "url": "https://k-oota-pixel.github.io/english-playroom/reading-training/",
+          "hint": "答え合わせ、または要約の確認をする",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "listening-training",
+          "label": "リスニング演習＆ディクテーション",
+          "url": "https://k-oota-pixel.github.io/english-playroom/listening-training/",
+          "hint": "1問以上取り組んで結果を確認する",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "task-quest",
+          "label": "タスク別英会話",
+          "url": "https://k-oota-pixel.github.io/task-quest/",
+          "hint": "英文を回答して採点を受ける",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "pre2-interview-questions",
+          "label": "準2級面接・質問4・5対策",
+          "url": "https://k-oota-pixel.github.io/english-playroom/pre2-interview-questions/",
+          "hint": "回答してフィードバックを受ける",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "eiken-pre2-interview-a",
+          "label": "準2級面接A練習",
+          "url": "https://k-oota-pixel.github.io/eiken-pre2-interview-a/",
+          "hint": "説明を回答して答え合わせをする",
+          "group": "practice",
+          "done": false
+        },
+        {
+          "id": "talk-quest",
+          "label": "テーマ別日常英会話",
+          "url": "https://k-oota-pixel.github.io/talk-quest/",
+          "hint": "英語を送って返事を受け取る",
+          "group": "practice",
+          "done": false
+        }
+      ]
+    }
+  },
+  "ready": {
+    "serverNow": 1792810800000,
+    "day": "2026-10-24",
+    "week": "2026-10-19",
+    "weekEnd": "2026-10-25",
+    "nextDaily": "2026-10-24T15:00:00.000Z",
+    "nextWeekly": "2026-10-25T15:00:00.000Z",
+    "daily": {
+      "id": "2026-10-24",
+      "reward": 10,
+      "target": 2,
+      "count": 2,
+      "complete": true,
+      "claimed": false,
+      "tasks": [
+        {
+          "id": "basic-quest",
+          "label": "並べ替え問題（基礎）",
+          "url": "https://k-oota-pixel.github.io/basic-quest/",
+          "hint": "1ステージの結果を確認する",
+          "group": "light",
+          "done": true
+        },
+        {
+          "id": "reading-training",
+          "label": "長文演習",
+          "url": "https://k-oota-pixel.github.io/english-playroom/reading-training/",
+          "hint": "答え合わせ、または要約の確認をする",
+          "group": "practice",
+          "done": true
+        }
+      ]
+    },
+    "weekly": {
+      "id": "2026-10-19",
+      "reward": 20,
+      "target": 4,
+      "count": 12,
+      "complete": true,
+      "claimed": false,
+      "contents": [
+        {
+          "id": "word-breaker",
+          "label": "ワードブレイカー",
+          "url": "https://k-oota-pixel.github.io/word-breaker/",
+          "hint": "1プレイ取り組んで記録する",
+          "group": "light",
+          "done": true
+        },
+        {
+          "id": "ateru",
+          "label": "アテル",
+          "url": "https://k-oota-pixel.github.io/ateru/",
+          "hint": "5問の結果を確認する",
+          "group": "light",
+          "done": true
+        },
+        {
+          "id": "basic-quest",
+          "label": "並べ替え問題（基礎）",
+          "url": "https://k-oota-pixel.github.io/basic-quest/",
+          "hint": "1ステージの結果を確認する",
+          "group": "light",
+          "done": true
+        },
+        {
+          "id": "eiken-retry",
+          "label": "リトライノート",
+          "url": "https://k-oota-pixel.github.io/eiken-retry/",
+          "hint": "1問以上回答する",
+          "group": "light",
+          "done": true
+        },
+        {
+          "id": "eiken-cloze",
+          "label": "長文空所補充",
+          "url": "https://k-oota-pixel.github.io/eiken-cloze/",
+          "hint": "回答して判定を受ける",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "eiken-title",
+          "label": "長文概要把握",
+          "url": "https://k-oota-pixel.github.io/eiken-title/",
+          "hint": "タイトルを回答して判定を受ける",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "reading-training",
+          "label": "長文演習",
+          "url": "https://k-oota-pixel.github.io/english-playroom/reading-training/",
+          "hint": "答え合わせ、または要約の確認をする",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "listening-training",
+          "label": "リスニング演習＆ディクテーション",
+          "url": "https://k-oota-pixel.github.io/english-playroom/listening-training/",
+          "hint": "1問以上取り組んで結果を確認する",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "task-quest",
+          "label": "タスク別英会話",
+          "url": "https://k-oota-pixel.github.io/task-quest/",
+          "hint": "英文を回答して採点を受ける",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "pre2-interview-questions",
+          "label": "準2級面接・質問4・5対策",
+          "url": "https://k-oota-pixel.github.io/english-playroom/pre2-interview-questions/",
+          "hint": "回答してフィードバックを受ける",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "eiken-pre2-interview-a",
+          "label": "準2級面接A練習",
+          "url": "https://k-oota-pixel.github.io/eiken-pre2-interview-a/",
+          "hint": "説明を回答して答え合わせをする",
+          "group": "practice",
+          "done": true
+        },
+        {
+          "id": "talk-quest",
+          "label": "テーマ別日常英会話",
+          "url": "https://k-oota-pixel.github.io/talk-quest/",
+          "hint": "英語を送って返事を受け取る",
+          "group": "practice",
+          "done": true
+        }
+      ]
+    }
+  }
+}
