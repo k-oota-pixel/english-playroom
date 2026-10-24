@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./pet.css">
-<link rel="stylesheet" href="./learning-challenges.css?v=1.8.33">
+<link rel="stylesheet" href="./pet.css?v=1.9.1">
+<link rel="stylesheet" href="./learning-challenges.css?v=1.9.1">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.7">
 <style>
 *{box-sizing:border-box}
@@ -136,7 +136,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.8.33">ver1.8.33</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.9.1">ver1.9.1</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -150,8 +150,25 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <div class="hero">
   <div class="hero-intro">
   <div class="label">LET’S PRACTICE ENGLISH</div>
-  <h1>今日は、どれで<br>英語を練習する？</h1>
+  <h1>今日はどの教材を<br>使う？</h1>
   <p class="intro">単語・語順・英作文・読解。今日は何にチャレンジする？<br>好きなゲームを選んで始めよう。</p>
+  <section class="coin-board" aria-label="本日のコイン">
+    <div class="coin-today">
+      <div class="coin-eyebrow">TODAY'S COINS</div>
+      <div class="coin-total"><strong id="coinsToday">—</strong><span>コイン</span></div>
+      <div id="coinsTodayCaption" class="coin-caption">ログインすると今日の獲得数が表示されます。</div>
+    </div>
+    <div class="coin-ranking">
+      <div class="coin-rank-head">
+        <div class="coin-rank-title">本日の獲得コイン TOP3</div>
+        <button id="coinRankRefresh" class="coin-rank-refresh" type="button" aria-controls="coinRankList" aria-expanded="false" disabled>表示する</button>
+      </div>
+      <ol id="coinRankList" class="coin-rank-list" hidden aria-live="polite">
+        <li class="coin-rank-item"><span class="coin-rank-place">—</span><span class="coin-rank-name">ログイン後に表示</span><span class="coin-rank-coins">—</span></li>
+      </ol>
+      <div id="coinRankNote" class="coin-rank-note" role="status">ログインすると、ペット名でランキングを表示します。</div>
+    </div>
+  </section>
   </div>
 
 <section id="petChatModal" class="pet-chat-modal" hidden aria-labelledby="petChatTitle">
@@ -189,34 +206,14 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   </section>
   </div>
 
-  <section class="coin-board" aria-label="本日のコイン">
-    <div class="coin-today">
-      <div class="coin-eyebrow">TODAY'S COINS</div>
-      <div class="coin-total"><strong id="coinsToday">—</strong><span>コイン</span></div>
-      <div id="coinsTodayCaption" class="coin-caption">ログインすると今日の獲得数が表示されます。</div>
-    </div>
-    <div class="coin-ranking">
-      <div class="coin-rank-head">
-        <div class="coin-rank-title">本日の獲得コイン TOP3</div>
-        <button id="coinRankRefresh" class="coin-rank-refresh" type="button" aria-controls="coinRankList" aria-expanded="false" disabled>表示する</button>
-      </div>
-      <ol id="coinRankList" class="coin-rank-list" hidden aria-live="polite">
-        <li class="coin-rank-item"><span class="coin-rank-place">—</span><span class="coin-rank-name">ログイン後に表示</span><span class="coin-rank-coins">—</span></li>
-      </ol>
-      <div id="coinRankNote" class="coin-rank-note" role="status">ログインすると、ペット名でランキングを表示します。</div>
-    </div>
-  </section>
 
-  <section class="learning-dashboard" aria-labelledby="learningTitle">
-    <div class="coin-rank-head"><h2 id="learningTitle" class="coin-rank-title">学習ダッシュボード</h2><button id="learningShow" class="coin-rank-refresh" type="button" aria-controls="learningList" aria-expanded="false" disabled>表示する</button></div>
-    <p id="learningNote" class="coin-rank-note" role="status">ログインすると学習状況を確認できます。</p>
-    <div id="learningList" class="learning-list" hidden></div>
-  </section>
+
+
 
   <section id="learningChallenges" class="learning-challenges" aria-labelledby="challengeTitle">
-    <div class="challenge-header"><h2 id="challengeTitle">今日と今週のチャレンジ</h2><button type="button" class="coin-rank-refresh" data-challenge-refresh disabled>更新</button></div>
+    <div class="challenge-header"><h2 id="challengeTitle">今日と今週のチャレンジ</h2><button type="button" class="coin-rank-refresh" data-challenge-refresh aria-expanded="false" aria-controls="challengeGrid" disabled>すべて表示する</button></div>
     <p class="challenge-note" data-challenge-note role="status" aria-live="polite">ログインすると、毎日・毎週のチャレンジに参加できます。</p>
-    <div class="challenge-grid" data-challenge-grid hidden></div>
+    <div id="challengeGrid" class="challenge-grid" data-challenge-grid hidden></div>
     <p class="challenge-footer">毎日0時・毎週月曜0時に更新（日本時間）。通常の教材コインとは別のボーナスです。報酬は各期間1回。エイゴメーター・ワードウルフは対象外です。</p>
   </section>
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
@@ -355,6 +352,11 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
     </a>
 </div>
   </div>
+  <section class="learning-dashboard" aria-labelledby="learningTitle">
+    <div class="coin-rank-head"><h2 id="learningTitle" class="coin-rank-title">学習ダッシュボード</h2><button id="learningShow" class="coin-rank-refresh" type="button" aria-controls="learningList" aria-expanded="false" disabled>表示する</button></div>
+    <p id="learningNote" class="coin-rank-note" role="status">ログインすると学習状況を確認できます。</p>
+    <div id="learningList" class="learning-list" hidden></div>
+  </section>
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 
@@ -372,8 +374,8 @@ import {
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch1833';
-import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.8.33';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=touch191';
+import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.9.1';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -837,11 +839,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=1.8.33"></script>
-<script type="module" src='./version-badge-v176.js?v=1.8.33'></script>
+<script type="module" src="./learning-challenges.js?v=1.9.1"></script>
+<script type="module" src='./version-badge-v176.js?v=1.9.1'></script>
 <script>
 (() => {
-  const version = '1.8.33';
+  const version = '1.9.1';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

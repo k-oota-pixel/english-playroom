@@ -24,7 +24,7 @@
 
 body .home{max-width:1240px}
 .hero{display:grid;grid-template-columns:minmax(270px,.82fr) minmax(430px,1.45fr) minmax(220px,.68fr);grid-template-areas:"intro chat pet";gap:26px;align-items:center;margin-top:20px}
-.hero-intro{grid-area:intro;min-width:0}
+.hero-intro{grid-area:intro;min-width:0;align-self:start}.hero-intro .coin-board{grid-template-columns:1fr;gap:10px;margin-top:20px}.hero-intro .coin-today{min-height:0;padding:14px 16px}.hero-intro .coin-total strong{font-size:34px}.hero-intro .coin-ranking{padding:14px 16px}.hero-intro .coin-rank-head{flex-wrap:wrap;gap:8px}.hero-intro .coin-rank-title{font-size:14px}.hero-intro h1{margin-top:12px}.hero-intro .intro{margin-bottom:0}
 .hero .label{margin-top:0}
 .hero .pet-chat-modal{grid-area:chat;min-width:0;align-self:stretch}
 .hero .pet-chat-panel{height:390px}

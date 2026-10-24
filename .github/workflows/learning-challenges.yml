@@ -21,3 +21,4 @@ jobs:
       - run: node --test tests/coin-reward.test.js tests/home-page.test.js tests/learning-dashboard.test.js
       - run: npx playwright install --with-deps chromium
       - run: node tests/learning-challenges-browser.cjs
+      - run: node tests/home-layout-browser.cjs
