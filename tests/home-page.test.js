@@ -33,11 +33,11 @@ function coinBoardHarness(fetchImpl=async()=>({ok:true,json:async()=>({coinsToda
   }
   const context=vm.createContext({...elements,COIN_LEADERBOARD_API:'https://home.test/api/leaderboard',fetch:(...args)=>{fetchCalls++;return fetchImpl(...args);},
     console:{error(){}},window:{addEventListener(type,listener){listeners[type]=listener;}},
-    document:{createElement(){return {className:'',innerHTML:'',textContent:'',children:[],
+    document:{getElementById(){return null;},createElement(){return {className:'',innerHTML:'',textContent:'',children:[],
       append(...children){this.children.push(...children);}};}},
     Intl,Number,Math,Array,Promise,AbortSignal});
   const start=html.indexOf('function renderCoinRanking(entries,emptyMessage=');
-  const end=html.indexOf('loginBtn.addEventListener("click"',start);
+  const end=html.indexOf("const coinRankDialog=",start);
   assert.notEqual(start,-1);assert.notEqual(end,-1);
   vm.runInContext('let coinBoardUser=null;\n'+html.slice(start,end),context);
   return {context,elements,listeners,get fetchCalls(){return fetchCalls;}};

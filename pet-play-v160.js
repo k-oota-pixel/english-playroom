@@ -1,3 +1,4 @@
+import {recordLearningActivity} from './coin-reward.js?v=1.10.1';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -215,6 +216,7 @@ function resultMood(){
 }
 
 async function finishGame(){
+  void recordLearningActivity('pet-instructions');
   const clear=score>=CLEAR_SCORE,mood=resultMood();
   dialog.innerHTML=`<div class="pet-play-shell">${headerHtml()}<div class="pet-play-result"><div class="pet-play-result-pet ${mood.cls}">${petSVG()}<span class="pet-play-emotion" aria-hidden="true">${mood.emotion}</span></div><div class="pet-play-result-title">${mood.title}</div><div class="pet-play-result-score">${score} / ${ROUND_TEMPLATES.length}</div><p class="pet-play-result-message">${mood.message}</p><div id="petPlayRewardResult"></div><button class="pet-play-again" type="button">PLAY AGAIN</button></div></div>`;
   wireClose();dialog.querySelector('.pet-play-again').addEventListener('click',startGame);

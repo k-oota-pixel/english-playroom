@@ -1,0 +1,48 @@
+name: Titles and ranking dialogs
+on:
+  push:
+    paths:
+      - learning-titles.js
+      - learning-titles.css
+      - coin-reward.js
+      - index.html
+      - pet-play-v160.js
+      - tests/learning-titles-browser.cjs
+      - .github/workflows/learning-titles.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  titles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: work/english-playroom
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/task-quest
+          path: work/task-quest
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/eiken-retry
+          path: work/eiken-retry
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/word-breaker
+          path: work/word-breaker
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+        working-directory: work/english-playroom
+      - run: npx playwright install --with-deps chromium
+        working-directory: work/english-playroom
+      - run: node --test work/task-quest/learning-titles.test.mjs work/task-quest/learning-activity.test.mjs work/task-quest/daily-coins.test.mjs work/task-quest/word-breaker-records.test.mjs
+      - run: node --test tests/home-page.test.js
+        working-directory: work/english-playroom
+      - run: node tests/learning-titles-browser.cjs
+        working-directory: work/english-playroom
+      - run: node work/word-breaker/tests/word-breaker-records-browser.cjs
+        env:
+          PLAYWRIGHT_MODULE: ${{ github.workspace }}/work/english-playroom/node_modules/playwright
