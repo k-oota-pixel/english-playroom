@@ -2,6 +2,10 @@ name: Learning challenges
 on:
   push:
     paths:
+      - 'index.html'
+      - 'pet.css'
+      - 'tests/home-page.test.js'
+      - 'tests/home-layout-browser.cjs'
       - 'learning-challenges*'
       - 'coin-reward.js'
       - 'tests/learning-challenges*'
