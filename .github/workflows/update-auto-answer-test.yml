@@ -1,0 +1,36 @@
+name: Update answer auto advance test
+on:
+  push:
+    paths:
+      - '.github/workflows/update-auto-answer-test.yml'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove stale manual next click after screenshot
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/adventure-selection-browser.cjs')
+          s=p.read_text(encoding='utf-8')
+          old="""  await page.screenshot({animations:'disabled',path:`../battle-${mode}-${width}.png`,fullPage:true});
+  await page.locator('#nextBtn').click();
+  await page.waitForSelector('#attackPanel:not([hidden])');
+"""
+          new="""  await page.screenshot({animations:'disabled',path:`../battle-${mode}-${width}.png`,fullPage:true});
+  await page.waitForSelector('#attackPanel:not([hidden])');
+"""
+          if old not in s:
+              raise SystemExit('expected screenshot transition block not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Commit test update
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tests/adventure-selection-browser.cjs
+          git commit -m "Test automatic advance after answered question"
+          git push
