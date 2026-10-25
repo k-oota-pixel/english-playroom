@@ -3,7 +3,7 @@ import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.12';
+import {renderPetSVG} from '../pet-art.js?v=1.10.13';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.9';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
@@ -135,11 +135,23 @@ function pickEikenQuestion(grade){
   const q=list[Math.floor(Math.random()*list.length)]||FALLBACK_EIKEN.find(x=>x.grade===grade)||FALLBACK_EIKEN[0];lastQuestionId=q.id;return q;
 }
 function eikenQuestion(card){const q=pickEikenQuestion(card.grade);return {id:q.id,html:cleanQuestion(q.question),answers:q.choices.map(c=>({number:Number(c.number),text:String(c.text),correct:Number(c.number)===Number(q.answer_number)})),correctIndex:q.choices.findIndex(c=>Number(c.number)===Number(q.answer_number))}}
+// Fit text inside the stable panel across fonts and viewport sizes.
+function fitQuestionText(){
+  if(els.quizPanel.hidden)return;
+  for(const node of [els.questionText,...els.answerGrid.children]){
+    node.style.fontSize='';
+    let size=parseFloat(getComputedStyle(node).fontSize);
+    while((node.scrollHeight>node.clientHeight+1||node.scrollWidth>node.clientWidth+1)&&size>12){
+      size=Math.max(12,size-.5);node.style.fontSize=`${size}px`;
+    }
+  }
+}
+window.addEventListener('resize',fitQuestionText);
 function openQuestion(card){
   if(busy)return;selectedAttack=card;const q=card.kind==='word'?towerQuestion(card):eikenQuestion(card);selectedAttack.question=q;
   const meta=ELEMENTS[card.element];els.attackBadge.textContent=`${meta.icon} ${meta.label}${elementMultiplier(card.element,enemyElement)>1?' · CRITICAL ×2':''}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=q.html;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();
   q.answers.forEach((answer,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${escapeHtml(answer.text)}`;b.addEventListener('click',()=>answerQuestion(index));els.answerGrid.appendChild(b)});
-  els.attackPanel.hidden=true;els.quizPanel.hidden=false;
+  els.attackPanel.hidden=true;els.quizPanel.hidden=false;fitQuestionText();
 }
 
 function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.remove('show');void els.battleFlash.offsetWidth;els.battleFlash.classList.add('show')}
