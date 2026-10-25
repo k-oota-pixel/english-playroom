@@ -5,103 +5,68 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#173d35">
 <title>エイゴダンジョンズ | もんすたでぃ</title>
-<link rel="stylesheet" href="./styles.css?v=1.10.21">
+<link rel="stylesheet" href="./styles.css?v=1.10.22">
 </head>
 <body>
 <main class="app-shell">
-<section id="adventureSelect" class="adventure-select"><a class="back" href="../">← もんすたでぃへ</a><p class="kicker">PET ADVENTURE</p><h1>エイゴダンジョンズ</h1><p class="select-intro">英語の力で、ペットと未知の領域へ。<br>今日はどちらの冒険に挑戦する？</p><div class="adventure-cards"><a class="adventure-card tower-card" href="?mode=tower"><img src="./tower.svg?v=1.10.21" alt="魔王の塔の風景" width="480" height="280"><div class="adventure-copy"><h2>魔王の塔</h2><strong>英単語バトル</strong><p>英単語を武器に、空へ続く塔の頂上を目指せ。</p><small>1階に敵1体 · 5階ごとにBOSS</small><span class="adventure-cta">魔王の塔に挑戦 →</span></div></a><a class="adventure-card dungeon-card" href="?mode=dungeon"><img src="./dungeon.svg?v=1.10.21" alt="魔物の巣窟の風景" width="480" height="280"><div class="adventure-copy"><h2>魔物の巣窟</h2><strong>英検語彙・文法バトル</strong><p>英検の問題を突破し、秘密が眠る地底深くへ。</p><small>1層に敵1体 · 5層ごとにBOSS</small><span class="adventure-cta">魔物の巣窟に挑戦 →</span></div></a></div><div class="ranking-actions" aria-label="冒険ランキング"><button type="button" class="secondary-btn" data-ranking="tower">🏆 魔王の塔ランキング</button><button type="button" class="secondary-btn" data-ranking="dungeon">🏆 魔物の巣窟ランキング</button></div><p class="footnote">最高到達記録はモードごとに保存されます。</p></section><div id="battleView" hidden><header class="topbar">
+<section id="adventureSelect" class="adventure-select"><a class="back" href="../">← もんすたでぃへ</a><p class="kicker">PET ADVENTURE</p><h1>エイゴダンジョンズ</h1><p class="select-intro">英語の力で、ペットと未知の領域へ。<br>今日はどちらの冒険に挑戦する？</p><div class="adventure-cards"><a class="adventure-card tower-card" href="?mode=tower"><img src="./tower.svg?v=1.10.21" alt="魔王の塔の風景" width="480" height="280"><div class="adventure-copy"><h2>魔王の塔</h2><strong>英単語バトル</strong><p>英単語を武器に、空へ続く塔の頂上を目指せ。</p><small>1階に敵1体 · 5階ごとにBOSS</small><span class="adventure-cta">魔王の塔に挑戦 →</span></div></a><a class="adventure-card dungeon-card" href="?mode=dungeon"><img src="./dungeon.svg?v=1.10.21" alt="魔物の巣窟の風景" width="480" height="280"><div class="adventure-copy"><h2>魔物の巣窟</h2><strong>英検語彙・文法バトル</strong><p>英検の問題を突破し、秘密が眠る地底深くへ。</p><small>1層に敵1体 · 5層ごとにBOSS</small><span class="adventure-cta">魔物の巣窟に挑戦 →</span></div></a></div><div class="ranking-actions" aria-label="冒険ランキング"><button type="button" class="secondary-btn" data-ranking="tower">🏆 魔王の塔ランキング</button><button type="button" class="secondary-btn" data-ranking="dungeon">🏆 魔物の巣窟ランキング</button></div><p class="footnote">最高到達記録はモードごとに保存されます。</p></section>
+<div id="battleView" hidden>
+  <header class="topbar">
     <a class="back" href="./" aria-label="冒険先を選ぶ画面へ戻る">←</a>
-    <div>
-      <div class="brand">MONSTUDY · エイゴダンジョンズ</div>
-      <h1 id="modeTitle">魔王の塔</h1>
-    </div>
+    <div><div class="brand">MONSTUDY · エイゴダンジョンズ</div><h1 id="modeTitle">魔王の塔</h1></div>
     <button class="sound-chip" id="helpBtn" type="button" aria-label="遊び方">?</button>
   </header>
 
   <section class="stage-card" id="stageCard">
-    <div class="stage-meta">
-      <span id="areaLabel">空へ続く塔</span>
-      <strong id="stageLabel">1F</strong>
-      <span id="enemyCount">ENEMY 1 / 1</span>
-    </div>
+    <div class="stage-meta"><span id="areaLabel">空へ続く塔</span><strong id="stageLabel">1F</strong><span id="enemyCount">ENEMY 1 / 1</span></div>
     <div class="best-line">BEST <strong id="bestLabel">1F</strong></div>
+  </section>
+
+  <section class="battle-tools" aria-label="ペットの能力と道具">
+    <span id="petStats">Lv.1 · HP 10 · 攻撃力 1 · 防御力 1 · MP 6</span>
+    <div><button id="magicBtn" type="button" disabled>✨ 魔法</button><button id="itemBtn" type="button" disabled>🎒 アイテム</button></div>
   </section>
 
   <section class="battlefield" id="battlefield" aria-label="バトル画面">
     <strong class="boss-banner" id="bossBadge" hidden>⚔ BOSS BATTLE</strong>
     <div class="fighter pet-side">
       <div class="name-line"><strong id="petName">MY PET</strong><span>YOU</span></div>
-      <div class="hp"><i id="petHpBar"></i></div>
-      <div class="hp-text" id="petHpText">10 / 10</div>
+      <div class="hp"><i id="petHpBar"></i></div><div class="hp-text" id="petHpText">10 / 10</div>
+      <div class="mp"><i id="petMpBar"></i></div><div class="mp-text" id="petMpText">6 / 6 MP</div>
       <div class="pet-visual" id="adventurePetVisual" aria-label="ペット">🐾</div>
     </div>
-
     <div class="versus"><span id="battleStatus" role="status">LIVE</span><button id="pauseBtn" type="button" disabled aria-pressed="false">一時停止</button></div>
-
     <div class="fighter enemy-side" id="enemySide">
       <div class="name-line"><strong id="enemyName">TOWER BEAST</strong><span id="enemyElement">🔥 FIRE</span></div>
-      <div class="hp enemy-hp"><i id="enemyHpBar"></i></div>
-      <div class="hp-text" id="enemyHpText">6 / 6</div>
+      <div class="hp enemy-hp"><i id="enemyHpBar"></i></div><div class="hp-text" id="enemyHpText">6 / 6</div>
       <div class="enemy-visual" id="enemyVisual" aria-label="敵">👾</div>
     </div>
-
     <div class="battle-flash" id="battleFlash" aria-live="polite"></div>
   </section>
 
   <section class="panel" id="attackPanel">
-    <div class="panel-head">
-      <div>
-        <span class="kicker">CHOOSE YOUR ATTACK</span>
-        <h2 id="attackHeading">英単語を選ぼう</h2>
-      </div>
-      <span class="hint" id="attackHint">CRITICAL</span>
-    </div>
+    <div class="panel-head"><div><span class="kicker">CHOOSE YOUR ATTACK</span><h2 id="attackHeading">英単語を選ぼう</h2></div><span class="hint" id="attackHint">CRITICAL</span></div>
     <div class="attack-grid" id="attackGrid"></div>
   </section>
 
   <section class="panel quiz-panel" id="quizPanel" hidden>
-    <div class="quiz-top">
-      <span class="attack-badge" id="attackBadge">💧 WATER</span>
-      <span id="attackPower">POWER 20</span>
-    </div>
-    <div class="question" id="questionText"></div>
-    <div class="answer-grid" id="answerGrid"></div>
-    <div class="answer-feedback" id="answerFeedback" aria-live="polite"></div>
+    <div class="quiz-top"><span class="attack-badge" id="attackBadge">💧 WATER</span><span id="attackPower">POWER 20</span></div>
+    <div class="question" id="questionText"></div><div class="answer-grid" id="answerGrid"></div><div class="answer-feedback" id="answerFeedback" aria-live="polite"></div>
     <button class="next-btn" id="nextBtn" type="button" hidden>次へ →</button>
   </section>
 
-  <section class="loading-card" id="loadingCard">
-    <div class="spinner" aria-hidden="true"></div>
-    <strong>冒険の準備中…</strong>
-    <span id="loadingText">ペットと教材データを読み込んでいます</span>
-  </section>
-
-  <section class="result-card" id="resultCard" hidden>
-    <div class="result-icon" id="resultIcon">🏁</div>
-    <span class="kicker" id="resultKicker">RUN COMPLETE</span>
-    <h2 id="resultTitle">GAME OVER</h2>
-    <p id="resultText"></p>
-    <div class="result-actions">
-      <button class="primary-btn" id="retryBtn" type="button">1Fから再挑戦</button>
-      <button class="secondary-btn" id="checkpointBtn" type="button">チェックポイントから</button>
-    </div>
-  </section>
-
+  <section class="loading-card" id="loadingCard"><div class="spinner" aria-hidden="true"></div><strong>冒険の準備中…</strong><span id="loadingText">ペットと教材データを読み込んでいます</span></section>
+  <section class="result-card" id="resultCard" hidden><div class="result-icon" id="resultIcon">🏁</div><span class="kicker" id="resultKicker">RUN COMPLETE</span><h2 id="resultTitle">GAME OVER</h2><p id="resultText"></p><div class="result-actions"><button class="primary-btn" id="retryBtn" type="button">1Fから再挑戦</button><button class="secondary-btn" id="checkpointBtn" type="button">チェックポイントから</button></div></section>
   <p class="footnote" id="dataNote"></p>
 </div></main>
 
-<dialog id="startDialog" class="start-dialog" aria-labelledby="startTitle"><h2 id="startTitle">開始する階を選ぼう</h2><p id="startBest"></p><div id="startFloors" class="start-floors"></div><p class="hint">到達済みの10階・10層区切りから、HP満タンで挑戦できます。</p><a class="start-back" href="./">← 冒険先を選び直す</a></dialog>
+<dialog id="startDialog" class="start-dialog" aria-labelledby="startTitle"><h2 id="startTitle">開始する階を選ぼう</h2><p id="startBest"></p><div id="startFloors" class="start-floors"></div><p class="hint">到達済みの10階・10層区切りから、HP・MP満タンで挑戦できます。</p><a class="start-back" href="./">← 冒険先を選び直す</a></dialog>
+<dialog id="helpDialog" class="help-dialog"><div class="help-inner"><button class="dialog-close" id="helpClose" type="button" aria-label="閉じる">×</button><span class="kicker">HOW TO PLAY</span><h2 id="helpTitle">魔王の塔</h2><div id="helpBody"></div></div></dialog>
 
-<dialog id="helpDialog" class="help-dialog">
-  <div class="help-inner">
-    <button class="dialog-close" id="helpClose" type="button" aria-label="閉じる">×</button>
-    <span class="kicker">HOW TO PLAY</span>
-    <h2 id="helpTitle">魔王の塔</h2>
-    <div id="helpBody"></div>
-  </div>
-</dialog>
+<dialog id="magicDialog" class="battle-action-dialog" aria-labelledby="magicTitle"><div class="battle-action-inner"><button class="dialog-close" id="magicClose" type="button" aria-label="閉じる">×</button><span class="kicker">MAGIC</span><h2 id="magicTitle">✨ 魔法</h2><p class="battle-action-resource" id="magicMpStatus"></p><div id="magicList" class="battle-action-list"></div><p id="magicMessage" class="battle-action-message" role="status"></p></div></dialog>
+<dialog id="itemDialog" class="battle-action-dialog" aria-labelledby="itemTitle"><div class="battle-action-inner"><button class="dialog-close" id="itemClose" type="button" aria-label="閉じる">×</button><span class="kicker">ITEM</span><h2 id="itemTitle">🎒 アイテム</h2><p class="battle-action-resource">SHOPの「ダンジョンズ」で購入したアイテムを使えます。</p><div id="itemList" class="battle-action-list"></div><p id="itemMessage" class="battle-action-message" role="status"></p></div></dialog>
 
 <dialog id="rankingDialog" class="ranking-dialog" aria-labelledby="rankingTitle"><div class="ranking-heading"><h2 id="rankingTitle">ランキング</h2><button type="button" id="rankingClose" class="secondary-btn">閉じる</button></div><p class="hint">最高到達記録 TOP10 · 同じ記録は同順位</p><p id="rankingStatus" role="status"></p><ol id="rankingList" class="ranking-list"></ol><button type="button" id="rankingReload" class="secondary-btn">再表示</button></dialog>
-<script type="module" src="./entry.js?v=1.10.21"></script>
+<script type="module" src="./entry.js?v=1.10.22"></script>
 </body>
 </html>
