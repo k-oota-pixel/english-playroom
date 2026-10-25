@@ -1,0 +1,44 @@
+name: Release 1.10.9 pet stats
+
+on:
+  push:
+    paths:
+      - '.github/workflows/release-1-10-9-pet-stats.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh home release entry
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+              '<link rel="stylesheet" href="./pet-strength.css?v=1.10.8">':'<link rel="stylesheet" href="./pet-strength.css?v=1.10.9">',
+              '<script type="module" src="./pet-strength.js?v=1.10.8"></script>':'<script type="module" src="./pet-strength.js?v=1.10.9"></script>',
+              'aria-label="version 1.10.8">ver1.10.8':'aria-label="version 1.10.9">ver1.10.9',
+              "version-badge-v176.js?v=1.10.8":"version-badge-v176.js?v=1.10.9",
+              "const version = '1.10.8';":"const version = '1.10.9';",
+          }
+          for old,new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'release anchor not found: {old}')
+              s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Run focused tests
+        run: node --test tests/pet-strength.test.js tests/pet-adventure.test.js tests/release-version.test.js
+      - name: Commit release entry and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/release-1-10-9-pet-stats.yml
+          git add index.html
+          git commit -m "Release pet stat respec and single-enemy adventure"
+          git push
