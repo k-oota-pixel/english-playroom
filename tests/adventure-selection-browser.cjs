@@ -76,13 +76,14 @@ async function realtimeChecks(page,mode){
  const browser=await chromium.launch({headless:true,args:['--disable-gpu','--renderer-process-limit=2'],executablePath:process.env.CHROME_PATH});
  console.log('browser ready');try{for(const [width,height] of [[1100,800],[390,740],[360,640],[320,568]]){
  console.log('width',width);const page=await browser.newPage({viewport:{width,height}}),errors=[];
+ let realStrength=false;
  await page.clock.install();await page.clock.pauseAt(Date.now());
  page.setDefaultTimeout(12000);page.on('pageerror',e=>(errors.push(e.message),console.log('PAGE ERROR',e.message)));
  await page.route('https://adventure.test/**',async route=>{
   const u=new URL(route.request().url());if(u.pathname==='/')return route.fulfill({contentType:'text/html',body:'<button id=petClean>clean</button>'});const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
   let body,type='text/javascript';
   if(file==='coin-reward.js')body="export const db={};export const auth={currentUser:{uid:'test',getIdToken:async()=>'fixture'}};export const authReady=Promise.resolve();export const walletRef=()=>({});";
-  else if(file==='pet-strength.js')body='export const loadStrengthTitles=async()=>6;';
+  else if(file==='pet-strength.js'&&!realStrength)body='export const loadStrengthTitles=async()=>6;';
   else if(file==='pet-art.js')body=fs.readFileSync('pet-art.js','utf8').replace(/^if\(typeof window.*$/gm,'');
   else{const target=path.resolve(file.endsWith('/')?file+'index.html':file);if(!target.startsWith(process.cwd())||!fs.existsSync(target))return route.fulfill({status:404,body:''});body=fs.readFileSync(target);type=target.endsWith('.html')?'text/html':target.endsWith('.css')?'text/css':target.endsWith('.svg')?'image/svg+xml':type;}
   await route.fulfill({contentType:type,body});
@@ -106,6 +107,12 @@ async function realtimeChecks(page,mode){
   await page.waitForFunction(()=>document.querySelector('#attackGrid').children.length>0).catch(async e=>{console.log(await page.locator('body').innerText());throw e;});
   assert.equal(await page.locator('#modeTitle').textContent(),mode==='tower'?'魔王の塔':'魔物の巣窟');
   assert.equal(await page.locator('#enemyCount').textContent(),'ENEMY 1 / 1');
+  assert.equal(await page.locator('#enemyAtb,#enemyAtbText,.enemy-clock').count(),0);
+  if(mode==='dungeon'){
+    assert.deepEqual((await page.locator('.attack-name').allTextContents()).sort(),['3級','4級','4級','4級']);
+    assert.equal(await page.locator('.attack-card.critical .attack-name').textContent(),'3級');
+  }
+
   if(width===1100){
     await realtimeChecks(page,mode);
     await page.goto(`https://adventure.test/pet-adventure/?mode=${mode}`);
@@ -169,6 +176,19 @@ async function realtimeChecks(page,mode){
  await page.locator('#petGameMenu a[href="./pet-adventure/"]').click();
  await page.waitForURL('**/pet-adventure/');await page.waitForSelector('.adventure-card');
  assert.equal(await page.locator('.adventure-card').count(),2);
+ if(width===1100){
+  realStrength=true;
+  await page.route('https://task-quest.onrender.com/api/learning/titles',r=>r.fulfill({json:{titles:[]}}));
+  await page.goto('https://adventure.test/');
+  await page.evaluate(()=>{const b=document.createElement('button');b.id='petStrengthOpen';b.textContent='ペット強化';document.body.append(b);});
+  await page.addScriptTag({type:'module',url:'https://adventure.test/pet-strength.js?fixture=real'});
+  await page.locator('#petStrengthOpen').click();
+  await page.waitForSelector('.strength-row');
+  assert.equal(await page.locator('.strength-born').count(),0);
+  assert.doesNotMatch(await page.locator('.strength-dialog').textContent(),/生まれつきの個体差/);
+  assert.match(await page.locator('.strength-row').first().textContent(),/HP　15/);
+  console.log('PASS strength bonuses remain effective without the birth-bonus label');
+ }
  assert.deepEqual(errors,[]);await page.close();
  }console.log('PASS desktop/mobile selector, art, PLAY gating, both battle modes and quiz choices');
  }finally{await browser.close();}

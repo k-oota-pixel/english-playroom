@@ -41,8 +41,19 @@ export function towerCardLevelIndexes(stage){
 
 export function dungeonGradesForStage(stage){
   const n=Math.max(1,Math.floor(Number(stage)||1));
-  if(n<=15)return ['4級','3級','準2級','2級'];
-  return ['3級','準2級','2級','準1級'];
+  const grades=['4級','3級','準2級','2級','準1級'];
+  if(n>=41)return Array(4).fill('準1級');
+  const band=Math.floor((n-1)/10),lower=grades[band],upper=grades[band+1];
+  return (n-1)%10<5?[lower,lower,lower,upper]:[lower,lower,upper,upper];
+}
+
+export function dungeonAttackLayout(stage,enemyElement,random=Math.random){
+  const grades=dungeonGradesForStage(stage),criticalElement=WEAK_TO[enemyElement];
+  const elements=Object.keys(ELEMENTS).filter(id=>id!==criticalElement);
+  for(let i=elements.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[elements[i],elements[j]]=[elements[j],elements[i]];}
+  // The last (highest-grade) card always targets the enemy's weakness.
+  elements.push(criticalElement);
+  return grades.map((grade,index)=>({grade,element:elements[index]}));
 }
 
 export function isBoss(stage,enemyIndex=0){

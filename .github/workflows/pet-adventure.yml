@@ -2,9 +2,9 @@ name: Eigo Dungeons regression
 on:
   push:
     branches: [main]
-    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs']
+    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs']
   pull_request:
-    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs']
+    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs']
 permissions:
   contents: read
 jobs:

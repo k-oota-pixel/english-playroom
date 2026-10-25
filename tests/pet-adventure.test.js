@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {elementMultiplier,towerLevelIndex,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,attackPowerForGrade,calculateDamage,checkpointForBest} from '../pet-adventure/core.js';
+import {elementMultiplier,towerLevelIndex,towerCardLevelIndexes,dungeonGradesForStage,dungeonAttackLayout,isBoss,enemyMaxHp,attackPowerForGrade,calculateDamage,checkpointForBest} from '../pet-adventure/core.js';
 
 test('element weakness is one-way and doubles damage',()=>{
   assert.equal(elementMultiplier('water','fire'),2);
@@ -18,9 +18,28 @@ test('tower difficulty rises every ten floors',()=>{
   assert.deepEqual(towerCardLevelIndexes(1),[0,0,0,1]);
 });
 
-test('dungeon replaces the easiest grade with pre-1 deeper down',()=>{
-  assert.deepEqual(dungeonGradesForStage(1),['4級','3級','準2級','2級']);
-  assert.deepEqual(dungeonGradesForStage(16),['3級','準2級','2級','準1級']);
+test('dungeon grade counts and critical grade match every progression boundary',()=>{
+ const bands=[
+  [1,5,['4級','4級','4級','3級'],'3級'],
+  [6,10,['4級','4級','3級','3級'],'3級'],
+  [11,15,['3級','3級','3級','準2級'],'準2級'],
+  [16,20,['3級','3級','準2級','準2級'],'準2級'],
+  [21,25,['準2級','準2級','準2級','2級'],'2級'],
+  [26,30,['準2級','準2級','2級','2級'],'2級'],
+  [31,35,['2級','2級','2級','準1級'],'準1級'],
+  [36,40,['2級','2級','準1級','準1級'],'準1級'],
+  [41,100,['準1級','準1級','準1級','準1級'],'準1級']
+ ];
+ for(const [start,end,grades,criticalGrade] of bands)for(const stage of [start,end]){
+  assert.deepEqual(dungeonGradesForStage(stage),grades);
+  for(const enemy of ['fire','water','leaf'])for(const roll of [0,.5,.999]){
+   const layout=dungeonAttackLayout(stage,enemy,()=>roll);
+   assert.deepEqual(layout.map(c=>c.grade),grades);
+   assert.equal(new Set(layout.map(c=>c.element)).size,4);
+   const critical=layout.filter(c=>elementMultiplier(c.element,enemy)>1);
+   assert.equal(critical.length,1);assert.equal(critical[0].grade,criticalGrade);
+  }
+ }
 });
 
 test('every fifth stage makes the single enemy a boss',()=>{

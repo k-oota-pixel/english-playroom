@@ -76,7 +76,6 @@ if(button){
  function render(count,data){
   const state=strengthState(count,data.petStrength,data.petBaseStats);body.replaceChildren();
   const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
-  const born=document.createElement('p');born.className='strength-born';born.textContent=`生まれつきの個体差　HP +${state.bonuses.hp}　攻撃 +${state.bonuses.attack}　防御 +${state.bonuses.defense}`;body.append(born);
   const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
   for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1]]){
    const row=document.createElement('div');row.className='strength-row';

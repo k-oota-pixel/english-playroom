@@ -1,11 +1,11 @@
-import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.17';
+import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.18';
 import {strengthState,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.9';
 import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.17';
-import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.9';
+import {renderPetSVG} from '../pet-art.js?v=1.10.18';
+import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.18';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -27,7 +27,7 @@ const FALLBACK_EIKEN=[
 const $=id=>document.getElementById(id);
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const storageKey='monstudy-pet-adventure-v1';
-const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),enemyAtb:$('enemyAtb'),enemyAtbText:$('enemyAtbText'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
+const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
 
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
 let stats=strengthState(0).stats;
@@ -37,7 +37,7 @@ const enemyClock=createAttackClock(enemyAttackInterval(1,mode));
 function isBattlePaused(){return manualPaused||document.hidden||els.helpDialog.open;}
 function refreshPause(){
   els.pauseBtn.disabled=!runActive;
-  if(!runActive){els.battleStatus.textContent='FINISH';els.enemyAtbText.textContent='冒険終了';return;}
+  if(!runActive){els.battleStatus.textContent='FINISH';return;}
   const paused=isBattlePaused();
   els.pauseBtn.textContent=manualPaused?'再開':'一時停止';
   els.pauseBtn.setAttribute('aria-pressed',String(manualPaused));
@@ -46,9 +46,6 @@ function refreshPause(){
 function battleTick(now){
   battleFrame=0;if(!runActive)return;
   const paused=isBattlePaused(),step=enemyClock.tick(now,paused);refreshPause();
-  els.enemyAtb.style.width=`${Math.min(100,step.progress*100)}%`;
-  els.enemyAtb.classList.toggle('ready',step.progress>=.75);
-  els.enemyAtbText.textContent=paused?'一時停止中':enemyHp<=0?'撃破！':`敵の攻撃まで ${Math.max(0,enemyAttackInterval(stage,mode)*(1-step.progress)/1000).toFixed(1)}秒`;
   if(!paused&&enemyHp>0&&step.attack)enemyStrike();
   if(runActive&&!paused&&pendingAdvanceMs!==null){
     pendingAdvanceMs-=step.delta;
@@ -91,8 +88,8 @@ function configureMode(){
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
   els.attackHint.textContent='相性の良い攻撃でCRITICAL';
   els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP全回復！</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP全回復！</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
-  els.helpBody.innerHTML+='<p>敵のゲージが満タンになると攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP全回復！</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li></ul>';
+  els.helpBody.innerHTML+='<p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -152,7 +149,7 @@ function towerCards(){
     return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)+stats.attack};
   }))
 }
-function dungeonCards(){return assignElements(shuffle(dungeonGradesForStage(stage)).map((grade,pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,power:attackPowerForGrade(grade,stage)+stats.attack})))}
+function dungeonCards(){return shuffle(dungeonAttackLayout(stage,enemyElement)).map(({grade,element},pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,element,power:attackPowerForGrade(grade,stage)+stats.attack}))}
 function prepareTurn(){if(!runActive||busy)return;selectedAttack=null;turnCards=mode==='tower'?towerCards():dungeonCards();els.quizPanel.hidden=true;els.attackPanel.hidden=false;renderAttackCards()}
 function renderAttackCards(){
   els.attackGrid.replaceChildren();
