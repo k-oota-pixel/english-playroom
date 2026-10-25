@@ -10,23 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Remove stale manual next click after screenshot
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('tests/adventure-selection-browser.cjs')
-          s=p.read_text(encoding='utf-8')
-          old="""  await page.screenshot({animations:'disabled',path:`../battle-${mode}-${width}.png`,fullPage:true});
-  await page.locator('#nextBtn').click();
-  await page.waitForSelector('#attackPanel:not([hidden])');
-"""
-          new="""  await page.screenshot({animations:'disabled',path:`../battle-${mode}-${width}.png`,fullPage:true});
-  await page.waitForSelector('#attackPanel:not([hidden])');
-"""
-          if old not in s:
-              raise SystemExit('expected screenshot transition block not found')
-          p.write_text(s.replace(old,new,1),encoding='utf-8')
-          PY
+      - name: Remove stale manual next click
+        run: sed -i '171d' tests/adventure-selection-browser.cjs
       - name: Commit test update
         run: |
           git config user.name github-actions[bot]
