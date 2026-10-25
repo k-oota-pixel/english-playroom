@@ -1,9 +1,56 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
+async function correctAnswer(page,mode){
+ const index=mode==='dungeon'?0:await page.evaluate(()=>{const word=document.querySelector('#questionText strong').textContent;return [...document.querySelectorAll('.answer-btn')].findIndex(b=>b.textContent.includes('意味'+word.slice(-1)));});
+ await page.locator('.answer-btn').nth(index).click();
+}
+async function minimumAttack(page){
+ const index=await page.locator('.attack-card').evaluateAll(nodes=>nodes.map((b,i)=>({i,p:Number(b.querySelector('.attack-sub').lastElementChild.textContent.match(/\d+/)[0]),critical:b.classList.contains('critical')})).filter(b=>!b.critical).sort((a,b)=>a.p-b.p)[0].i);
+ await page.locator('.attack-card').nth(index).click();
+}
+async function realtimeChecks(page,mode){
+ const interval=mode==='tower'?9000:15000;
+ const hp=async()=>Number((await page.locator('#petHpText').textContent()).split('/')[0]);
+ await page.clock.runFor(100);const initial=await hp();
+ await page.clock.runFor(interval+100);
+ assert.ok(await hp()<initial,'enemy attacks during attack selection');
+ assert.equal(await page.locator('#attackPanel').isVisible(),true);
+ await minimumAttack(page);const beforeQuestion=await hp(),question=await page.locator('#questionText').textContent();
+ await page.clock.runFor(interval+100);
+ assert.ok(await hp()<beforeQuestion,'enemy attacks while reading a question');
+ assert.equal(await page.locator('#questionText').textContent(),question);
+ const correct=mode==='dungeon'?0:await page.evaluate(()=>{const word=document.querySelector('#questionText strong').textContent;return [...document.querySelectorAll('.answer-btn')].findIndex(b=>b.textContent.includes('意味'+word.slice(-1)));});
+ const beforeWrong=await hp();await page.locator('.answer-btn').nth((correct+1)%4).click();
+ assert.equal(await hp(),beforeWrong,'a wrong answer does not trigger a separate enemy turn');
+ await page.clock.runFor(1200);assert.equal(await page.locator('#attackPanel').isVisible(),true);
+ const beforePause=await hp();await page.locator('#pauseBtn').click();
+ await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
+ await page.locator('#pauseBtn').click();await page.clock.runFor(100);assert.equal(await hp(),beforePause);
+ await page.locator('#helpBtn').click();await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
+ await page.locator('#helpClose').click();await page.clock.runFor(100);assert.equal(await hp(),beforePause);
+ await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+ await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
+ await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
+ await page.clock.runFor(100);assert.equal(await hp(),beforePause);
+ await minimumAttack(page);await page.clock.runFor(interval*12);
+ assert.equal(await hp(),0);assert.equal(await page.locator('#resultCard').isVisible(),true);
+ await page.clock.runFor(interval*2);assert.equal(await hp(),0);
+ await page.locator('#retryBtn').click();await page.clock.runFor(100);
+ assert.equal(await hp(),initial,'retry restores health and does not inherit queued attacks');
+ await minimumAttack(page);await correctAnswer(page,mode);await page.locator('#nextBtn').click();
+ await minimumAttack(page);await correctAnswer(page,mode);
+ assert.equal(await hp(),initial,'two quick correct attacks land before the enemy attacks');
+ assert.ok((await page.locator('#enemyHpText').textContent()).startsWith('0 /'));
+ await page.clock.runFor(700);
+ assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'2F':'B2');
+ assert.equal(await page.locator('#attackPanel').isVisible(),true,'defeated enemies advance automatically');
+ console.log('PASS realtime',mode);
+}
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--disable-gpu','--renderer-process-limit=2'],executablePath:process.env.CHROME_PATH});
  console.log('browser ready');try{for(const [width,height] of [[1100,800],[390,740],[360,640],[320,568]]){
  console.log('width',width);const page=await browser.newPage({viewport:{width,height}}),errors=[];
+ await page.clock.install();await page.clock.pauseAt(Date.now());
  page.setDefaultTimeout(12000);page.on('pageerror',e=>(errors.push(e.message),console.log('PAGE ERROR',e.message)));
  await page.route('https://adventure.test/**',async route=>{
   const u=new URL(route.request().url());if(u.pathname==='/')return route.fulfill({contentType:'text/html',body:'<button id=petClean>clean</button>'});const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
@@ -27,12 +74,17 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
  assert.equal(await page.locator('#battleView').isVisible(),false);
  assert.ok(await page.locator('.adventure-card img').evaluateAll(imgs=>imgs.every(i=>i.complete&&i.naturalWidth>0)));
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
- await page.screenshot({path:`../selector-${width}.png`,fullPage:true});
+ await page.screenshot({animations:'disabled',path:`../selector-${width}.png`,fullPage:true});
  for(const mode of ['tower','dungeon']){console.log('mode',mode);
   await page.locator(`a[href="?mode=${mode}"].adventure-card`).click();
   await page.waitForFunction(()=>document.querySelector('#attackGrid').children.length>0).catch(async e=>{console.log(await page.locator('body').innerText());throw e;});
   assert.equal(await page.locator('#modeTitle').textContent(),mode==='tower'?'魔王の塔':'魔物の巣窟');
   assert.equal(await page.locator('#enemyCount').textContent(),'ENEMY 1 / 1');
+  if(width===1100){
+    await realtimeChecks(page,mode);
+    await page.goto(`https://adventure.test/pet-adventure/?mode=${mode}`);
+    await page.waitForSelector('#attackGrid button');
+  }
   assert.equal(await page.locator('.mode-tabs').count(),0);
   assert.equal(await page.locator('#adventurePetVisual svg > rect').count(),0);
   assert.equal(await page.locator('#adventurePetVisual [data-pet-shop-slot="backgrounds"]').count(),0);
@@ -62,7 +114,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
   const next=await page.locator('#nextBtn').boundingBox();
   assert.ok(next.y+next.height<=height,JSON.stringify({width,height,next}));
   assert.equal(await page.evaluate(()=>scrollY),0);
-  await page.screenshot({path:`../battle-${mode}-${width}.png`,fullPage:true});
+  await page.screenshot({animations:'disabled',path:`../battle-${mode}-${width}.png`,fullPage:true});
   await page.locator('#nextBtn').click();
   await page.waitForSelector('#attackPanel:not([hidden])');
   assert.equal(await page.evaluate(()=>scrollY),0);

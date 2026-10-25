@@ -1,9 +1,10 @@
+import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.16';
 import {strengthState,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.9';
 import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.15';
+import {renderPetSVG} from '../pet-art.js?v=1.10.16';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.9';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
@@ -26,11 +27,48 @@ const FALLBACK_EIKEN=[
 const $=id=>document.getElementById(id);
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const storageKey='monstudy-pet-adventure-v1';
-const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody')};
+const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),enemyAtb:$('enemyAtb'),enemyAtbText:$('enemyAtbText'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
 
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
 let stats=strengthState(0).stats;
 let records=readRecords();
+let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
+const enemyClock=createAttackClock(enemyAttackInterval(1,mode));
+function isBattlePaused(){return manualPaused||document.hidden||els.helpDialog.open;}
+function refreshPause(){
+  els.pauseBtn.disabled=!runActive;
+  if(!runActive){els.battleStatus.textContent='FINISH';els.enemyAtbText.textContent='冒険終了';return;}
+  const paused=isBattlePaused();
+  els.pauseBtn.textContent=manualPaused?'再開':'一時停止';
+  els.pauseBtn.setAttribute('aria-pressed',String(manualPaused));
+  els.battleStatus.textContent=paused?'PAUSED':'LIVE';
+}
+function battleTick(now){
+  battleFrame=0;if(!runActive)return;
+  const paused=isBattlePaused(),step=enemyClock.tick(now,paused);refreshPause();
+  els.enemyAtb.style.width=`${Math.min(100,step.progress*100)}%`;
+  els.enemyAtb.classList.toggle('ready',step.progress>=.75);
+  els.enemyAtbText.textContent=paused?'一時停止中':enemyHp<=0?'撃破！':`敵の攻撃まで ${Math.max(0,enemyAttackInterval(stage,mode)*(1-step.progress)/1000).toFixed(1)}秒`;
+  if(!paused&&enemyHp>0&&step.attack)enemyStrike();
+  if(runActive&&!paused&&pendingAdvanceMs!==null){
+    pendingAdvanceMs-=step.delta;
+    if(pendingAdvanceMs<=0){pendingAdvanceMs=null;advance();}
+  }
+  if(runActive)battleFrame=requestAnimationFrame(battleTick);
+}
+function stopBattle(){cancelAnimationFrame(battleFrame);battleFrame=0;pendingAdvanceMs=null;}
+function enemyStrike(){
+  if(!runActive||playerHp<=0||enemyHp<=0)return;
+  const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);
+  playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');
+  flash(`ENEMY ATTACK!\n-${damage} HP`);syncHud();
+  if(playerHp<=0)finishRun();
+}
+function togglePause(){if(!runActive)return;manualPaused=!manualPaused;enemyClock.tick(performance.now(),true);refreshPause();}
+// Reset the frame timestamp on visibility changes rather than charging hidden time.
+document.addEventListener('visibilitychange',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;enemyClock.tick(performance.now(),true);});
+window.addEventListener('pageshow',()=>{if(runActive&&!battleFrame){enemyClock.tick(performance.now(),true);battleFrame=requestAnimationFrame(battleTick);}});
 
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey)||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
 function writeRecords(){try{localStorage.setItem(storageKey,JSON.stringify(records))}catch{}}
@@ -53,7 +91,8 @@ function configureMode(){
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
   els.attackHint.textContent='相性の良い攻撃でCRITICAL';
   els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解では敵が反撃。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
+  els.helpBody.innerHTML+='<p>敵のゲージが満タンになると攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -102,7 +141,7 @@ function syncHud(){
   const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=isBoss(stage,enemyIndex)?'BOSS':'ENEMY';els.enemyVisual.textContent=enemyEmoji();
 }
 
-function createEnemy(){enemyElement=randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';syncHud();prepareTurn()}
+function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyElement=randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';syncHud();prepareTurn()}
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
 function towerCards(){
   const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();
@@ -148,9 +187,9 @@ function fitQuestionText(){
 }
 window.addEventListener('resize',fitQuestionText);
 function openQuestion(card){
-  if(busy)return;selectedAttack=card;const q=card.kind==='word'?towerQuestion(card):eikenQuestion(card);selectedAttack.question=q;
+  if(busy||!runActive||isBattlePaused()||playerHp<=0||enemyHp<=0)return;selectedAttack=card;const q=card.kind==='word'?towerQuestion(card):eikenQuestion(card);selectedAttack.question=q;
   const meta=ELEMENTS[card.element];els.attackBadge.textContent=`${meta.icon} ${meta.label}${elementMultiplier(card.element,enemyElement)>1?' · CRITICAL':''}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=q.html;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();
-  q.answers.forEach((answer,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${escapeHtml(answer.text)}`;b.addEventListener('click',()=>answerQuestion(index));els.answerGrid.appendChild(b)});
+  q.answers.forEach((answer,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${escapeHtml(answer.text)}`;b.addEventListener('click',()=>{if(selectedAttack?.question===q)answerQuestion(index);});els.answerGrid.appendChild(b)});
   els.attackPanel.hidden=true;els.quizPanel.hidden=false;fitQuestionText();
 }
 
@@ -158,23 +197,26 @@ function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.
 function animate(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),650)}
 function revealAnswers(chosenIndex,correctIndex){[...els.answerGrid.children].forEach((b,i)=>{b.disabled=true;if(i===correctIndex)b.classList.add('correct');else if(i===chosenIndex)b.classList.add('wrong')})}
 function answerQuestion(index){
-  if(busy||!selectedAttack)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);
+  if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);
   if(correct){
     const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;
   }else{
-    const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`MISS!\n-${damage} HP`);els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent=`不正解。敵の反撃で${damage}ダメージ！`;
+    flash('MISS!');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 正解を確認して次の攻撃へ。';
   }
-  syncHud();els.nextBtn.hidden=false;els.nextBtn.textContent=playerHp<=0?'結果を見る →':enemyHp<=0?(mode==='tower'?'次の階へ →':'次の層へ →'):'次のターン →';busy=false;
+  selectedAttack=null;syncHud();els.nextBtn.hidden=false;
+  els.nextBtn.textContent=enemyHp<=0?(mode==='tower'?'次の階へ →':'次の層へ →'):'次の攻撃 →';
+  pendingAdvanceMs=enemyHp<=0?650:correct?450:1100;busy=false;
 }
 
-async function advance(){
-  if(busy)return;busy=true;
-  if(playerHp<=0){finishRun();busy=false;return}
+function advance(){
+  if(busy||!runActive||isBattlePaused()||playerHp<=0)return;
+  pendingAdvanceMs=null;
   if(enemyHp<=0){
-    els.enemyVisual.classList.add('defeat');await new Promise(r=>setTimeout(r,360));enemyIndex=0;stage++;await updateBest(stage);flash(mode==='tower'?`${stage}F!`:`B${stage}!`);
-    busy=false;createEnemy();return;
+    enemyIndex=0;stage++;
+    // Persist in parallel so a slow connection never blocks the next enemy.
+    void updateBest(stage);createEnemy();flash(mode==='tower'?`${stage}F!`:`B${stage}!`);return;
   }
-  els.quizPanel.hidden=true;busy=false;prepareTurn();
+  els.quizPanel.hidden=true;prepareTurn();
 }
 
 async function updateBest(value){
@@ -184,10 +226,10 @@ async function updateBest(value){
   try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}
   syncHud();
 }
-function startRun(startAt=1){stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();}
-function finishRun(){runActive=false;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。難しい攻撃ほど強いけれど、正解できなければ敵の反撃を受けます。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;}
+function startRun(startAt=1){stopBattle();manualPaused=false;busy=false;selectedAttack=null;stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+function finishRun(){runActive=false;stopBattle();refreshPause();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。素早く正解を重ね、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;}
 
-function showUnavailable(title,text){els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true}
+function showUnavailable(title,text){els.pauseBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true}
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;
@@ -198,5 +240,5 @@ async function init(){
   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');startRun(1);
 }
 
-els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',()=>startRun(checkpointForBest(currentBest())));els.helpBtn.addEventListener('click',()=>els.helpDialog.showModal());els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});
+els.pauseBtn.addEventListener('click',togglePause);els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',()=>startRun(checkpointForBest(currentBest())));els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',()=>{enemyClock.tick(performance.now(),true);refreshPause();});els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});
 init();
