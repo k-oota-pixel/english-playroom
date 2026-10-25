@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {elementMultiplier,towerLevelIndex,towerCardLevelIndexes,dungeonGradesForStage,dungeonAttackLayout,isBoss,enemyMaxHp,attackPowerForGrade,calculateDamage,checkpointForBest} from '../pet-adventure/core.js';
+import {elementMultiplier,towerLevelIndex,towerCardLevelIndexes,dungeonGradesForStage,dungeonAttackLayout,isBoss,enemyMaxHp,attackPowerForGrade,calculateDamage,checkpointForBest,unlockedStartFloors} from '../pet-adventure/core.js';
 
 test('element weakness is one-way and doubles damage',()=>{
   assert.equal(elementMultiplier('water','fire'),2);
@@ -59,4 +59,8 @@ test('checkpoints begin at the last ten-floor block',()=>{
   assert.equal(checkpointForBest(10),10);
   assert.equal(checkpointForBest(11),10);
   assert.equal(checkpointForBest(37),30);
+});
+
+test('all reached ten-floor starting points are available, never future floors',()=>{
+ for(const [best,expected] of [[1,[1]],[9,[1]],[10,[1,10]],[19,[1,10]],[20,[1,10,20]],[37,[1,10,20,30]],[50,[1,10,20,30,40,50]],[NaN,[1]],[Infinity,[1]]])assert.deepEqual(unlockedStartFloors(best),expected);
 });

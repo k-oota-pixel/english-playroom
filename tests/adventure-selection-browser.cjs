@@ -171,7 +171,7 @@ async function realtimeChecks(page,mode){
   await page.locator('#nextBtn').click();
   await page.waitForSelector('#attackPanel:not([hidden])');
   assert.equal(await page.evaluate(()=>scrollY),0);
-  await page.locator('a[href="./"]').click();
+  await page.locator('a.back[href="./"]').click();
  }
  // Exercise the actual replacement PLAY module and pet-state gating.
  console.log('play');await page.goto('https://adventure.test/');

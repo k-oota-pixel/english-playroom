@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#173d35">
 <title>エイゴダンジョンズ | もんすたでぃ</title>
-<link rel="stylesheet" href="./styles.css?v=1.10.20">
+<link rel="stylesheet" href="./styles.css?v=1.10.21">
 </head>
 <body>
 <main class="app-shell">
-<section id="adventureSelect" class="adventure-select"><a class="back" href="../">← もんすたでぃへ</a><p class="kicker">PET ADVENTURE</p><h1>エイゴダンジョンズ</h1><p class="select-intro">英語の力で、ペットと未知の領域へ。<br>今日はどちらの冒険に挑戦する？</p><div class="adventure-cards"><a class="adventure-card tower-card" href="?mode=tower"><img src="./tower.svg?v=1.10.20" alt="魔王の塔の風景" width="480" height="280"><div class="adventure-copy"><h2>魔王の塔</h2><strong>英単語バトル</strong><p>英単語を武器に、空へ続く塔の頂上を目指せ。</p><small>1階に敵1体 · 5階ごとにBOSS</small><span class="adventure-cta">魔王の塔に挑戦 →</span></div></a><a class="adventure-card dungeon-card" href="?mode=dungeon"><img src="./dungeon.svg?v=1.10.20" alt="魔物の巣窟の風景" width="480" height="280"><div class="adventure-copy"><h2>魔物の巣窟</h2><strong>英検語彙・文法バトル</strong><p>英検の問題を突破し、秘密が眠る地底深くへ。</p><small>1層に敵1体 · 5層ごとにBOSS</small><span class="adventure-cta">魔物の巣窟に挑戦 →</span></div></a></div><div class="ranking-actions" aria-label="冒険ランキング"><button type="button" class="secondary-btn" data-ranking="tower">🏆 魔王の塔ランキング</button><button type="button" class="secondary-btn" data-ranking="dungeon">🏆 魔物の巣窟ランキング</button></div><p class="footnote">最高到達記録はモードごとに保存されます。</p></section><div id="battleView" hidden><header class="topbar">
+<section id="adventureSelect" class="adventure-select"><a class="back" href="../">← もんすたでぃへ</a><p class="kicker">PET ADVENTURE</p><h1>エイゴダンジョンズ</h1><p class="select-intro">英語の力で、ペットと未知の領域へ。<br>今日はどちらの冒険に挑戦する？</p><div class="adventure-cards"><a class="adventure-card tower-card" href="?mode=tower"><img src="./tower.svg?v=1.10.21" alt="魔王の塔の風景" width="480" height="280"><div class="adventure-copy"><h2>魔王の塔</h2><strong>英単語バトル</strong><p>英単語を武器に、空へ続く塔の頂上を目指せ。</p><small>1階に敵1体 · 5階ごとにBOSS</small><span class="adventure-cta">魔王の塔に挑戦 →</span></div></a><a class="adventure-card dungeon-card" href="?mode=dungeon"><img src="./dungeon.svg?v=1.10.21" alt="魔物の巣窟の風景" width="480" height="280"><div class="adventure-copy"><h2>魔物の巣窟</h2><strong>英検語彙・文法バトル</strong><p>英検の問題を突破し、秘密が眠る地底深くへ。</p><small>1層に敵1体 · 5層ごとにBOSS</small><span class="adventure-cta">魔物の巣窟に挑戦 →</span></div></a></div><div class="ranking-actions" aria-label="冒険ランキング"><button type="button" class="secondary-btn" data-ranking="tower">🏆 魔王の塔ランキング</button><button type="button" class="secondary-btn" data-ranking="dungeon">🏆 魔物の巣窟ランキング</button></div><p class="footnote">最高到達記録はモードごとに保存されます。</p></section><div id="battleView" hidden><header class="topbar">
     <a class="back" href="./" aria-label="冒険先を選ぶ画面へ戻る">←</a>
     <div>
       <div class="brand">MONSTUDY · エイゴダンジョンズ</div>
@@ -90,6 +90,8 @@
   <p class="footnote" id="dataNote"></p>
 </div></main>
 
+<dialog id="startDialog" class="start-dialog" aria-labelledby="startTitle"><h2 id="startTitle">開始する階を選ぼう</h2><p id="startBest"></p><div id="startFloors" class="start-floors"></div><p class="hint">到達済みの10階・10層区切りから、HP満タンで挑戦できます。</p><a class="start-back" href="./">← 冒険先を選び直す</a></dialog>
+
 <dialog id="helpDialog" class="help-dialog">
   <div class="help-inner">
     <button class="dialog-close" id="helpClose" type="button" aria-label="閉じる">×</button>
@@ -100,6 +102,6 @@
 </dialog>
 
 <dialog id="rankingDialog" class="ranking-dialog" aria-labelledby="rankingTitle"><div class="ranking-heading"><h2 id="rankingTitle">ランキング</h2><button type="button" id="rankingClose" class="secondary-btn">閉じる</button></div><p class="hint">最高到達記録 TOP10 · 同じ記録は同順位</p><p id="rankingStatus" role="status"></p><ol id="rankingList" class="ranking-list"></ol><button type="button" id="rankingReload" class="secondary-btn">再表示</button></dialog>
-<script type="module" src="./entry.js?v=1.10.20"></script>
+<script type="module" src="./entry.js?v=1.10.21"></script>
 </body>
 </html>

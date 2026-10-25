@@ -1,11 +1,11 @@
-import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.20';
+import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.21';
 import {strengthState,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.9';
 import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.20';
-import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.20';
+import {renderPetSVG} from '../pet-art.js?v=1.10.21';
+import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=1.10.21';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -27,7 +27,7 @@ const FALLBACK_EIKEN=[
 const $=id=>document.getElementById(id);
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const storageKey='monstudy-pet-adventure-v1';
-const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),battlefield:$('battlefield'),bossBadge:$('bossBadge'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
+const els={startDialog:$('startDialog'),startTitle:$('startTitle'),startBest:$('startBest'),startFloors:$('startFloors'),modeTitle:$('modeTitle'),stageCard:$('stageCard'),battlefield:$('battlefield'),bossBadge:$('bossBadge'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
 
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
 let stats=strengthState(0).stats;
@@ -74,8 +74,8 @@ document.addEventListener('visibilitychange',()=>{enemyClock.tick(performance.no
 window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;enemyClock.tick(performance.now(),true);});
 window.addEventListener('pageshow',()=>{if(runActive&&!battleFrame){enemyClock.tick(performance.now(),true);battleFrame=requestAnimationFrame(battleTick);}});
 
-function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey)||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
-function writeRecords(){try{localStorage.setItem(storageKey,JSON.stringify(records))}catch{}}
+function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey+'-'+(user?.uid||'guest'))||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
+function writeRecords(){try{localStorage.setItem(storageKey+'-'+(user?.uid||'guest'),JSON.stringify(records))}catch{}}
 function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function randomEnemyElement(){const keys=['fire','water','leaf'];return keys[Math.floor(Math.random()*keys.length)]}
 function assignElements(cards){const deck=shuffle(Object.keys(ELEMENTS));return cards.map((card,index)=>({...card,element:deck[index%deck.length]}))}
@@ -232,19 +232,29 @@ async function updateBest(value){
   try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}
   syncHud();
 }
-function startRun(startAt=1){stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;manualPaused=false;busy=false;selectedAttack=null;stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
-function finishRun(){runActive=false;stopBattle();refreshPause();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。素早く正解を重ね、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;}
+function startRun(startAt=1){els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+function chooseStartFloor(){
+  runActive=false;stopBattle();refreshPause();els.attackPanel.hidden=true;els.quizPanel.hidden=true;
+  els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';
+  els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();
+  for(const floor of unlockedStartFloors(currentBest())){
+    const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);
+  }
+  els.startDialog.showModal();
+}
+function finishRun(){runActive=false;stopBattle();refreshPause();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。素早く正解を重ね、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
 
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true}
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;
   const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();
-  const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;
+  const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();
   if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
   try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;installPet();const statLine=document.createElement('p');statLine.id='petStats';statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
-  els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');startRun(1);
+  els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);
 }
 
-els.pauseBtn.addEventListener('click',togglePause);els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',()=>startRun(checkpointForBest(currentBest())));els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',()=>{enemyClock.tick(performance.now(),true);refreshPause();});els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});
+els.pauseBtn.addEventListener('click',togglePause);els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',()=>{enemyClock.tick(performance.now(),true);refreshPause();});els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});
+els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
