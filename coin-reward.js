@@ -53,6 +53,17 @@ function notifyDailyCoinLeaderboard(user){
 }
 
 
+// PET CATCH has its own login-state overlay. Keep its hidden login link truly hidden
+// even though the page's .login-link rule sets display:inline-block.
+function installPetCatchHiddenLinkFix(){
+  if(!location.pathname.includes('/pet-catch'))return;
+  const style=document.createElement('style');
+  style.id='petCatchHiddenLoginFix';
+  style.textContent='.login-link[hidden]{display:none!important}';
+  document.head.appendChild(style);
+}
+installPetCatchHiddenLinkFix();
+
 // TaskQuest keeps an in-tab draft for each quest so an AI quota/network error,
 // timeout, or the one-time Firebase sync reload cannot erase a student's answer.
 function installTaskQuestAnswerGuard(){
@@ -138,7 +149,7 @@ function recordTitleEvent(appId,payload={}){
 }
 
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
-function learningContentFromPage(){const path=location.pathname;return ['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','reading-training'].find(id=>path.split('/').includes(id));}
+function learningContentFromPage(){const path=location.pathname;return ['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training'].find(id=>path.split('/').includes(id));}
 async function recordLearningActivity(appId=learningContentFromPage()){
   await authReady;const user=currentUser;if(!user||typeof fetch!=='function')return;
   if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
