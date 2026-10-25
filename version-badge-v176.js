@@ -16,7 +16,7 @@ import './pet-cat-dog-v1425.js?v=1.5.7';
 // Sleep mode now owns original and cloned eye visibility together.
 import './pet-lion-v149.js?v=1.4.12';
 import './pet-play-v160.js?v=1.10.6';
-import './pet-play-menu-v164.js?v=1.8.3';
+import './pet-play-menu-v164.js?v=1.10.6';
 import './pet-catch-card.js?v=1.6.4';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.9.6').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
