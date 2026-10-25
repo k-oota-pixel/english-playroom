@@ -47,8 +47,8 @@ async function buy(item){
    const next={...current,coins:coins-item.price,petDungeonItems};
    tx.set(ref,{coins:next.coins,petDungeonItems,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});return next;
   });
-  if(active&&auth.currentUser?.uid===user.uid)render(data,`${item.icon} ${item.name}を1個購入しました！`);
- }catch(e){await loadAndRender(e?.message||'購入できませんでした。',true);}finally{busy=false;}
+  busy=false;if(active&&auth.currentUser?.uid===user.uid)render(data,`${item.icon} ${item.name}を1個購入しました！`);
+ }catch(e){busy=false;await loadAndRender(e?.message||'購入できませんでした。',true);}
 }
 
 function install(){
