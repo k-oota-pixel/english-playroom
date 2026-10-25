@@ -3,7 +3,7 @@ import {strengthState,strengthLevel,incomingDamage,randomBaseStats,hasIndividual
 import {loadStrengthTitles} from '../pet-strength.js?v=1.10.22';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {auth,authReady,walletRef} from '../coin-reward.js';
+import {auth,db,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js?v=1.10.21';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=1.10.21';
@@ -164,9 +164,9 @@ function renderMagic(message='',error=false){
 }
 function openMagic(){if(!canUseBattleAction())return;enemyClock.tick(performance.now(),true);renderMagic();els.magicDialog.showModal();refreshPause();}
 function castMagic(spell){
-  if(busy||!runActive||enemyHp<=0||playerHp<=0||petLevel<spell.level||playerMp<spell.mpCost)return;if(spell.kind==='heal'&&playerHp>=stats.hp){renderMagic('HPは満タンです。',true);return;}busy=true;playerMp-=spell.mpCost;const rolled=rollMagicAmount(spell.base);let text='';
-  if(spell.kind==='heal'){const before=playerHp;playerHp=Math.min(stats.hp,playerHp+rolled);const actual=playerHp-before;text=`${spell.name}！ HPを${actual}回復した！`;animate(els.petVisual,'attack');flash(`✨ ${spell.name}\nHP +${actual}`);busy=false;syncHud();els.magicDialog.close();actionDialogClosed();return;}
-  enemyHp=Math.max(0,enemyHp-rolled);text=`${spell.name}！ 敵に${rolled}ダメージ！`;animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(`✨ ${spell.name}\n-${rolled}`);const defeated=enemyHp===0,titleRequest=defeated?recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`):null;busy=false;syncHud();els.magicDialog.close();actionDialogClosed();if(defeated){const boss=finishEnemyDefeat(titleRequest);if(boss)flash(`${spell.name}!\nBOSS CLEAR!`);}else{els.answerFeedback.textContent=text;els.answerFeedback.className='answer-feedback ok';}
+  if(busy||!runActive||enemyHp<=0||playerHp<=0||petLevel<spell.level||playerMp<spell.mpCost)return;if(spell.kind==='heal'&&playerHp>=stats.hp){renderMagic('HPは満タンです。',true);return;}busy=true;playerMp-=spell.mpCost;const rolled=rollMagicAmount(spell.base);
+  if(spell.kind==='heal'){const before=playerHp;playerHp=Math.min(stats.hp,playerHp+rolled);const actual=playerHp-before;animate(els.petVisual,'attack');flash(`✨ ${spell.name}\nHP +${actual}`);busy=false;syncHud();els.magicDialog.close();return;}
+  enemyHp=Math.max(0,enemyHp-rolled);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(`✨ ${spell.name}\n-${rolled}`);const defeated=enemyHp===0,titleRequest=defeated?recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`):null;busy=false;syncHud();els.magicDialog.close();if(defeated){const boss=finishEnemyDefeat(titleRequest);if(boss)flash(`${spell.name}!\nBOSS CLEAR!`);}else{els.answerFeedback.textContent=`${spell.name}！ 敵に${rolled}ダメージ！`;els.answerFeedback.className='answer-feedback ok';}
 }
 
 async function refreshInventory(){const snap=await getDoc(walletRef(user));if(snap.exists())petData={...petData,...snap.data()};return normalizeDungeonInventory(petData.petDungeonItems);}
@@ -177,12 +177,10 @@ function renderItems(inventory,message='',error=false){
 async function openItems(){if(!canUseBattleAction())return;enemyClock.tick(performance.now(),true);els.itemList.innerHTML='<p>持ち物を読み込み中…</p>';els.itemMessage.textContent='';els.itemDialog.showModal();refreshPause();try{const inventory=await refreshInventory();if(els.itemDialog.open)renderItems(inventory);}catch(error){if(els.itemDialog.open)renderItems(normalizeDungeonInventory(petData.petDungeonItems),error?.message||'持ち物を読み込めませんでした。',true);}}
 async function useItem(item){
   if(busy||!runActive||enemyHp<=0||playerHp<=0)return;if(item.kind==='hp'&&playerHp>=stats.hp){renderItems(normalizeDungeonInventory(petData.petDungeonItems),'HPは満タンです。',true);return;}if(item.kind==='mp'&&playerMp>=stats.mp){renderItems(normalizeDungeonInventory(petData.petDungeonItems),'MPは満タンです。',true);return;}
-  busy=true;try{const inventory=await runTransaction(auth.currentUser?await import('https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js').then(m=>m.getFirestore()):null,async()=>{});void inventory;}catch{}
+  busy=true;
   try{
-    const nextInventory=await runTransaction((await import('https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js')).getFirestore(),async tx=>{
-      const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{},inventory=normalizeDungeonInventory(data.petDungeonItems);if((inventory[item.id]||0)<1)throw Error(`${item.name}を持っていません。`);inventory[item.id]-=1;tx.set(ref,{petDungeonItems:inventory,petUpdatedAt:serverTimestamp()},{merge:true});return inventory;
-    });
-    petData.petDungeonItems=nextInventory;let actual=0;if(item.kind==='hp'){const before=playerHp;playerHp=Math.min(stats.hp,playerHp+item.amount);actual=playerHp-before;flash(`${item.icon} ${item.name}\nHP +${actual}`);}else{const before=playerMp;playerMp=Math.min(stats.mp,playerMp+item.amount);actual=playerMp-before;flash(`${item.icon} ${item.name}\nMP +${actual}`);}busy=false;syncHud();els.itemDialog.close();actionDialogClosed();
+    const nextInventory=await runTransaction(db,async tx=>{const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{},inventory=normalizeDungeonInventory(data.petDungeonItems);if((inventory[item.id]||0)<1)throw Error(`${item.name}を持っていません。`);inventory[item.id]-=1;tx.set(ref,{petDungeonItems:inventory,petUpdatedAt:serverTimestamp()},{merge:true});return inventory;});
+    petData.petDungeonItems=nextInventory;let actual=0;if(item.kind==='hp'){const before=playerHp;playerHp=Math.min(stats.hp,playerHp+item.amount);actual=playerHp-before;flash(`${item.icon} ${item.name}\nHP +${actual}`);}else{const before=playerMp;playerMp=Math.min(stats.mp,playerMp+item.amount);actual=playerMp-before;flash(`${item.icon} ${item.name}\nMP +${actual}`);}busy=false;syncHud();els.itemDialog.close();
   }catch(error){busy=false;renderItems(normalizeDungeonInventory(petData.petDungeonItems),error?.message||'アイテムを使えませんでした。',true);}
 }
 
