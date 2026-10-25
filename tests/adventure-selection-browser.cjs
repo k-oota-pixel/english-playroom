@@ -81,6 +81,7 @@ async function realtimeChecks(page,mode){
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'6F':'B6');
  assert.equal(await page.locator('#enemyName').textContent(),'ENEMY');
  assert.equal(await page.locator('#bossBadge').isVisible(),false);
+ const coins=await page.evaluate(()=>window.adventureCoins);assert.equal(coins.filter(c=>c.appId===(mode==='tower'?'word-tower':'eiken-dungeon')).length,mode==='tower'?0:1);if(mode==='dungeon')assert.match(coins[0].label,/5層到達/);
  const events=await page.evaluate(()=>window.adventureTitleEvents);
  assert.ok(events.length>0);assert.ok(events.every(e=>e.appId===(mode==='tower'?'word-tower':'eiken-dungeon')&&e.expectedUid==='test'));
  assert.equal(new Set(events.map(e=>e.eventId)).size,events.length);
@@ -96,7 +97,7 @@ async function realtimeChecks(page,mode){
  console.log('browser ready');try{for(const [width,height] of [[1100,800],[390,740],[360,640],[320,568]]){
  console.log('width',width);const page=await browser.newPage({viewport:{width,height}}),errors=[];
  let realStrength=false;
- await page.addInitScript(()=>{window.adventureTitleEvents=[];window.EnglishPlayroomCoins={recordTitleEvent:(appId,event)=>{window.adventureTitleEvents.push({appId,...event});}};});
+ await page.addInitScript(()=>{window.adventureTitleEvents=[];window.adventureCoins=[];window.EnglishPlayroomCoins={awardOncePerDay:(appId,itemId,label)=>{window.adventureCoins.push({appId,itemId,label});},recordTitleEvent:(appId,event)=>{window.adventureTitleEvents.push({appId,...event});}};});
  await page.clock.install();await page.clock.pauseAt(Date.now());
  page.setDefaultTimeout(12000);page.on('pageerror',e=>(errors.push(e.message),console.log('PAGE ERROR',e.message)));
  await page.route('https://adventure.test/**',async route=>{
@@ -138,6 +139,7 @@ await page.goto('https://adventure.test/pet-adventure/');
   if(width===1100){
     await realtimeChecks(page,mode);
     await page.goto(`https://adventure.test/pet-adventure/?mode=${mode}`);
+    await page.locator('#startDialog[open]').waitFor();assert.deepEqual(await page.locator('[data-start-floor]').evaluateAll(nodes=>nodes.map(n=>Number(n.dataset.startFloor))),[1,5]);await page.locator('[data-start-floor]').nth(1).click();
     await page.waitForSelector('#attackGrid button');
   }
   assert.equal(await page.locator('.mode-tabs').count(),0);

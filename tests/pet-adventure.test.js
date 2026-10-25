@@ -54,13 +54,13 @@ test('harder EIKEN grades reward greater attack power',()=>{
   assert.equal(calculateDamage(20,2),40);
 });
 
-test('checkpoints begin at the last ten-floor block',()=>{
+test('checkpoints begin at the last five-floor block',()=>{
   assert.equal(checkpointForBest(1),1);
   assert.equal(checkpointForBest(10),10);
   assert.equal(checkpointForBest(11),10);
-  assert.equal(checkpointForBest(37),30);
+  assert.equal(checkpointForBest(37),35);
 });
 
-test('all reached ten-floor starting points are available, never future floors',()=>{
- for(const [best,expected] of [[1,[1]],[9,[1]],[10,[1,10]],[19,[1,10]],[20,[1,10,20]],[37,[1,10,20,30]],[50,[1,10,20,30,40,50]],[NaN,[1]],[Infinity,[1]]])assert.deepEqual(unlockedStartFloors(best),expected);
+test('all reached five-floor starting points are available, never future floors',()=>{
+ for(const [best,expected] of [[1,[1]],[4,[1]],[5,[1,5]],[9,[1,5]],[10,[1,5,10]],[14,[1,5,10]],[15,[1,5,10,15]],[20,[1,5,10,15,20]],[37,[1,5,10,15,20,25,30,35]],[NaN,[1]],[Infinity,[1]]])assert.deepEqual(unlockedStartFloors(best),expected);
 });

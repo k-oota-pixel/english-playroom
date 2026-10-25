@@ -87,10 +87,10 @@ export function calculateDamage(basePower,multiplier=1){
 
 export function checkpointForBest(best){
   const n=Math.max(1,Math.floor(Number(best)||1));
-  return n<10?1:Math.floor(n/10)*10;
+  return n<5?1:Math.floor(n/5)*5;
 }
 
 export function unlockedStartFloors(best){
   const value=Number(best),last=Number.isFinite(value)?Math.min(100000,Math.max(1,Math.floor(value))):1;
-  const floors=[1];for(let floor=10;floor<=last;floor+=10)floors.push(floor);return floors;
+  const floors=[1];for(let floor=5;floor<=last;floor+=5)floors.push(floor);return floors;
 }

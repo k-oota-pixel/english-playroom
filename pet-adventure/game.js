@@ -6,7 +6,7 @@ import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.
 import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.2';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js?v=2.1.2';
-import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=1.10.21';
+import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=2.1.8';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -54,7 +54,8 @@ async function continueAfterDefeat(titleRequest,runId,clearedStage){
   void updateBest(stage);createEnemy();if(!isBoss(stage,enemyIndex))flash(mode==='tower'?`${stage}F!`:`B${stage}!`);
 }
 function awardMilestoneCoin(){
-  if(stage<10||stage%10!==0||!adventureRunId)return;
+  const interval=mode==='tower'?10:5;
+  if(stage<interval||stage%interval!==0||!adventureRunId)return;
   const appId=mode==='tower'?'word-tower':'eiken-dungeon',label=mode==='tower'?`${stage}階到達ボーナス！`:`${stage}層到達ボーナス！`;
   const request=window.EnglishPlayroomCoins?.awardOncePerDay?.(appId,`${adventureRunId}-milestone-${stage}`,label);Promise.resolve(request).catch(error=>console.warn('Adventure coin reward deferred',error));
 }
@@ -99,7 +100,7 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';els.attackHint.textContent='相性の良い攻撃でCRITICAL';els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>10層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
   els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。敵撃破時に新しい称号を獲得した場合は、称号画面を閉じてから次の敵が現れます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
 }
 
