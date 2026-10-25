@@ -1,10 +1,10 @@
-import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.16';
+import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.17';
 import {strengthState,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.9';
 import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.16';
+import {renderPetSVG} from '../pet-art.js?v=1.10.17';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.9';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
@@ -91,7 +91,7 @@ function configureMode(){
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
   els.attackHint.textContent='相性の良い攻撃でCRITICAL';
   els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP全回復！</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP全回復！</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
   els.helpBody.innerHTML+='<p>敵のゲージが満タンになると攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。</p>';
 }
 
@@ -200,6 +200,7 @@ function answerQuestion(index){
   if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);
   if(correct){
     const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;
+    if(enemyHp===0&&isBoss(stage,enemyIndex)){playerHp=stats.hp;els.answerFeedback.textContent+=' ボス撃破！ HP全回復！';flash('BOSS CLEAR!\nHP FULL!');}
   }else{
     flash('MISS!');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 正解を確認して次の攻撃へ。';
   }

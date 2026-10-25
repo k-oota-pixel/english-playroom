@@ -44,7 +44,33 @@ async function realtimeChecks(page,mode){
  await page.clock.runFor(700);
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'2F':'B2');
  assert.equal(await page.locator('#attackPanel').isVisible(),true,'defeated enemies advance automatically');
- console.log('PASS realtime',mode);
+ // Normal enemies do not heal; the fifth-stage boss heals immediately on defeat.
+ const clearEnemy=async()=>{
+  for(let attacks=0;attacks<20;attacks++){
+   await minimumAttack(page);await correctAnswer(page,mode);
+   if((await page.locator('#enemyHpText').textContent()).startsWith('0 /'))return;
+   await page.locator('#nextBtn').click();
+  }
+  assert.fail('enemy should be defeated');
+ };
+ await page.clock.runFor(Math.round(interval/1.035)+150);
+ const wounded=await hp();assert.ok(wounded<initial);
+ await clearEnemy();assert.equal(await hp(),wounded,'ordinary enemies do not restore HP');
+ await page.locator('#nextBtn').click();
+ for(const floor of [3,4]){await clearEnemy();await page.locator('#nextBtn').click();}
+ assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'5F':'B5');
+ assert.equal(await page.locator('#enemyName').textContent(),'BOSS');
+ await page.clock.runFor(Math.round(interval/1.14)+150);
+ assert.ok(await hp()<initial);
+ await clearEnemy();
+ assert.equal(await hp(),initial,'boss defeat immediately restores the actual maximum HP');
+ assert.match(await page.locator('#answerFeedback').textContent(),/HP全回復/);
+ assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'5F':'B5');
+ await page.clock.runFor(700);
+ assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'6F':'B6');
+ assert.equal(await page.locator('#enemyName').textContent(),'ENEMY');
+ assert.equal(await hp(),initial);
+ console.log('PASS realtime and boss full heal',mode);
 }
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--disable-gpu','--renderer-process-limit=2'],executablePath:process.env.CHROME_PATH});
