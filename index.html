@@ -209,6 +209,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div id="petStatus" class="pet-status" role="status" aria-live="polite">ログイン状態を確認しています…</div>
       <button id="petCreate" class="pet-button" type="button" hidden>どんな子がいい？</button>
       <button id="petNameButton" class="pet-button" type="button" hidden>名前をつける</button>
+      <p id="petNameResetNotice" role="status" hidden>管理者によってリセットされました。再設定してください。</p>
       <button id="petRetry" class="pet-button secondary" type="button" hidden>ペットをリセットして孵化からやり直す</button>
       <div class="pet-bar" aria-hidden="true"><i id="petBar" style="width:0%"></i></div>
 <div id="petLearningActions" class="pet-learning-actions"><button id="petStrengthOpen" class="pet-shop-open" type="button" aria-haspopup="dialog" disabled>ペット強化</button><span id="learningTitles"><button type="button" class="pet-shop-open" data-titles-open aria-haspopup="dialog" disabled>称号</button><span data-titles-note hidden></span></span><span id="learningChallenges"><button type="button" class="pet-shop-open" data-challenge-refresh aria-haspopup="dialog" disabled>チャレンジ</button><p class="challenge-note" data-challenge-note hidden></p><div class="challenge-grid" data-challenge-grid hidden></div><p class="challenge-footer" hidden>毎日0時・毎週月曜0時に更新（日本時間）。通常の教材コインとは別のボーナスです。報酬は各期間1回。エイゴメーター・ワードウルフは対象外です。</p></span></div>
@@ -661,6 +662,7 @@ function renderPet(data={},message=''){
   petCreate.hidden=!petUser || (!data.petGrowthPending && (!ready || hatched));
   petRetry.hidden=!retryMode || !petUser || !ready;
   const nameReset=hatched&&!validPetName(data.petName)&&Number(data.petNameResetGeneration)===Number(data.petGeneration||1);
+  document.getElementById('petNameResetNotice').hidden=!nameReset;
   petNameButton.textContent=nameReset?'ペット名を再設定する':'名前をつける';
   petNameButton.hidden=!petUser || !hatched || validPetName(data.petName);
   if(hatched){
@@ -668,7 +670,7 @@ function renderPet(data={},message=''){
     renderPetVisual(petVisual,data);
     petVisual.setAttribute('aria-label',appearanceLabel(data.petAppearance));
     petTitle.textContent=validPetName(data.petName)?normalizePetName(data.petName):'わたしのペット';
-    petStatus.textContent=nameReset?'管理者によってリセットされました。再設定してください。':message||'あなたのペットと一緒に、今日も英語を楽しもう。';
+    petStatus.textContent=message||'あなたのペットと一緒に、今日も英語を楽しもう。';
   }else{
     hidePetChatBuiltIn();
     petVisual.textContent='🥚';
