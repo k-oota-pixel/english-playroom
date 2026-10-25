@@ -1,4 +1,5 @@
 name: Eigo Dungeons regression
+# Covers battle timing, MP, magic, items, checkpoints, rankings, and release wiring.
 on:
   workflow_dispatch:
   push:
