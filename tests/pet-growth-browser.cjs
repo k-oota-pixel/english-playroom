@@ -21,7 +21,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await context.route('http://127.0.0.1:8765/**',route=>{const pathname=new URL(route.request().url()).pathname;const file=path.join(root,pathname==='/'?'index.html':pathname);return route.fulfill({contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html',body:fs.readFileSync(file,'utf8')});});
  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const today=new Date();const key=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
- async function load(data){await page.addInitScript(data=>window.petStore=data,data);await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1600);}
+ async function load(data){await page.addInitScript(data=>window.petStore=data,data);await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1600);}
  await load({petLoginDays:3,petLifeDays:3,petLifecycleVersion:141,petGrowthVersion:1427,petLastLoginDate:key,petLastLifeLoginDate:key,coins:90});
  await page.locator('#petCreate').click();await page.waitForTimeout(1500);
  assert.equal(await page.evaluate(()=>window.petStore.petAppearance),null);assert.equal(await page.locator('dialog[open]').count(),0);assert.ok(await page.locator('#petVisual svg[data-pet-stage=mystery]').count());

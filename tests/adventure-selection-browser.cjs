@@ -117,7 +117,8 @@ async function realtimeChecks(page,mode){
   return r.fulfill({contentType:'text/html',body:'<script id="question-data" type="application/json">'+JSON.stringify(questions)+'</script>'});
  });
  await page.route('https://task-quest.onrender.com/**',r=>r.fulfill({json:{}}));
- console.log('selector');await page.goto('https://adventure.test/pet-adventure/');
+ console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('https://adventure.test/pet-adventure/');
  assert.equal(await page.locator('.adventure-card').count(),2);
  assert.equal(await page.locator('#battleView').isVisible(),false);
  assert.ok(await page.locator('.adventure-card img').evaluateAll(imgs=>imgs.every(i=>i.complete&&i.naturalWidth>0)));

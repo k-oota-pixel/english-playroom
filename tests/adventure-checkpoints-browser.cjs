@@ -24,7 +24,8 @@ const page=await browser.newPage({viewport:{width,height:740}}),errors=[];let re
  await page.route('https://task-quest.onrender.com/**',r=>r.fulfill({json:{}}));
 
 for(const mode of ['tower','dungeon']){
- await page.goto('https://adventure.test/pet-adventure/?mode='+mode);await page.waitForSelector('#startDialog[open]');
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('https://adventure.test/pet-adventure/?mode='+mode);await page.waitForSelector('#startDialog[open]');
  assert.deepEqual(await page.locator('[data-start-floor]').evaluateAll(bs=>bs.map(b=>Number(b.dataset.startFloor))),mode==='tower'?[1,10,20,30]:[1,10,20]);
  await page.screenshot({path:'../checkpoints-'+mode+'-'+width+'.png'});await page.clock.runFor(30000);assert.equal(await page.evaluate(()=>adventureTitleEvents.length),0);assert.equal(await page.locator('#startDialog').evaluate(d=>d.scrollWidth>d.clientWidth),false);
  await page.keyboard.press('Escape');assert.equal(await page.locator('#startDialog').isVisible(),true);

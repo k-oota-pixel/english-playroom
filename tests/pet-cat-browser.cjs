@@ -31,7 +31,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
   window.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[fixed]));}getHours(){return window.forceNight?0:12;}getMinutes(){return 0;}};
   window.petStore={petHatched:true,petAdult:true,petGrowthVersion:1427,petLifecycleVersion:141,petLoginDays:7,petLifeDays:7,petLastLoginDate:'2026-10-19',petLastLifeLoginDate:'2026-10-19',petBirthBonusGranted:true,petName:'ねこ',coins:90,learningMarker:{keep:true},petAppearance:{species:'cat',bodyColor:'orange',eyes:'round',eyeStyle:'round',feature:'classic',pattern:'none',baseBackground:'rose'},petShop:{ownedItems:['crown','forest-bg'],equipped:{head:'crown'}}};
  });
- await page.goto(process.env.CAT_LIVE_URL||'http://127.0.0.1:8765');
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto(process.env.CAT_LIVE_URL||'http://127.0.0.1:8765');
  await page.locator('#petVisual [data-pet-cat-art="editable"]').waitFor();
  await page.locator('.pet-admin-open').waitFor();
  await page.waitForTimeout(1000);

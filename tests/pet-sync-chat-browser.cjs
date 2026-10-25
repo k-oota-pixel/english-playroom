@@ -33,7 +33,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  const syncErrors=[];page.on('console',msg=>{if(msg.type()==='error'){syncErrors.push(msg.text());console.log('BROWSER ERROR:',msg.text());}});
  await context.route('https://task-quest.onrender.com/api/admin/users',route=>route.fulfill({contentType:'application/json',body:'[]'}));
  await context.route('https://task-quest.onrender.com/api/pet-chat',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({reply:'Hello! What did you enjoy today?',suggestions:['I enjoyed lunch.']})}));
- await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(2200);
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(2200);
  console.log('AUTH:',await page.locator('#authSub').innerText());
  console.log('CHAT HIDDEN:',await page.locator('#petChatModal').getAttribute('hidden'));
  assert.equal(await page.locator('#authSub').innerText(),'クラウド同期済み',JSON.stringify(syncErrors));

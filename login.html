@@ -61,13 +61,13 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
 </main>
 
 <script type="module">
-import {enableAppCheck} from './firebase-security.js';
+import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,
   setPersistence,browserLocalPersistence,signInWithEmailAndPassword,
   createUserWithEmailAndPassword,sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 
 const firebaseConfig={
   apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",

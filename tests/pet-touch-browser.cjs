@@ -30,7 +30,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
 
  const artRequests=[];page.on('request',r=>{if(r.url().includes('/pet-art.js'))artRequests.push(r.url());});
  await page.addInitScript(()=>{window.forceDay=true;});
- await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1800);
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1800);
  for(const sick of [false,true])for(const fraction of [.12,.5,.78]){
  const result=await page.evaluate(({sick,fraction})=>{
  const v=document.getElementById('petVisual');v.toggleAttribute('data-pet-sick',sick);const c=v.querySelector('.pet-character');const walk=c.getAnimations().find(a=>(a.animationName||'').startsWith('petWaddle'));walk.currentTime=walk.effect.getTiming().duration*fraction;

@@ -1,6 +1,6 @@
-import {apiHeaders} from '../firebase-security.js';
+import {apiHeaders} from '../firebase-security.js?v=2.1.2';
 import {GRADES,validatePassages,judge,nextRandom,validFeedback} from './model.js';
-const coinsReady=import('../coin-reward.js?v=1.10.4').catch(error=>console.warn('Coin rewards unavailable',error));
+const coinsReady=import('../coin-reward.js?v=2.1.2').catch(error=>console.warn('Coin rewards unavailable',error));
 function titleEvent(payload){void coinsReady.then(()=>window.EnglishPlayroomCoins?.recordTitleEvent?.('reading-training',payload));}
 async function rewardPassage(id){await coinsReady;return window.EnglishPlayroomCoins?.awardReading?.(id);}
 const app=document.getElementById('app');

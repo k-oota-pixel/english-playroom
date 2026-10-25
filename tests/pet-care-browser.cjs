@@ -23,7 +23,8 @@ if(staged){if(JSON.stringify(staged.petCare)!==JSON.stringify(window.petStore.pe
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{const d=new Date();const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');window.petStore={petHatched:true,petAdult:true,petGrowthVersion:1427,petLifecycleVersion:141,petLoginDays:7,petLifeDays:7,petLastLoginDate:key,petLastLifeLoginDate:key,petBirthBonusGranted:true,petName:'ふわ',coins:20,petAppearance:{species:'cat',bodyColor:'cream',eyes:'round',feature:'classic',pattern:'none',baseBackground:'ivory'},petShop:{ownedItems:['crown'],equipped:{head:'crown'}}};});
  await page.clock.install();
- await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1800);
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1800);
  await page.locator('#petFeed').click();assert.equal(await page.locator('[data-food]').count(),3);
  await page.locator('[data-food=snack]').click();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),19);
  for(const [food,coins] of [['meal',16],['special',11]]){await page.locator('#petFeed').click();await page.locator('[data-food='+food+']').click();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),coins);}

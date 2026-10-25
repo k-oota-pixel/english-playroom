@@ -22,7 +22,7 @@ const origin='https://k-oota-pixel.github.io',home=origin+'/english-playroom/';
   for(const url of urls){
    console.log('material',new URL(url).pathname,new URL(url).search);
    await page.evaluate(url=>window.MonstudyShell.navigate(url),url);
-   await page.waitForFunction(url=>{const f=document.querySelector('.ms-material');return f.contentWindow?.location.href===url&&f.contentWindow?.MonstudyMaterial&&f.contentDocument?.body&&f.contentDocument.readyState==='complete';},url);
+   await page.waitForFunction(url=>{const f=document.querySelector('.ms-material');const actual=new URL(f.contentWindow.location.href);actual.searchParams.delete('monstudy-release');return actual.href===url&&f.contentWindow?.MonstudyMaterial&&f.contentDocument?.body&&f.contentDocument.readyState==='complete';},url);
    await page.waitForTimeout(250);const state=await page.evaluate(()=>{const f=document.querySelector('.ms-material');return {text:f.contentDocument.body.innerText,active:f.contentWindow.MonstudyMaterial.isActive(),nested:f.contentDocument.querySelectorAll('#monstudyShell').length};});
    assert.ok(state.text.trim().length>15,url);assert.equal(state.nested,0,url);
    // Exit only in this isolated browser test; navigation guard itself is covered separately.

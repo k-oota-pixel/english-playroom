@@ -29,7 +29,7 @@ function install() {
     return u.origin===root.origin && (allowed.has(canonical(u.pathname)) || canonical(u.pathname)===homePath);
   }
   const shell = document.createElement('div'); shell.id='monstudyShell';
-  shell.innerHTML = `<header class="ms-header"><button class="ms-menu" type="button" aria-label="メニューを開く" aria-controls="msSidebar" aria-expanded="false">☰</button><div class="ms-brand"></div><span class="ms-current" aria-live="polite">ホーム</span><div class="ms-account"></div><button class="ms-focus" type="button" aria-pressed="false">集中モード</button></header><button class="ms-shade" type="button" aria-label="メニューを閉じる" hidden></button><aside class="ms-sidebar" id="msSidebar" aria-label="共通メニュー"><nav><a class="ms-home" href="${root.href}"><span aria-hidden="true">⌂</span> ホーム</a><p class="ms-nav-label">教材カテゴリー</p><div class="ms-groups"></div><p class="ms-nav-label">ペットと学習</p><div class="ms-features"></div></nav><span class="ms-sidebar-foot">もんすたでぃ · ver2.1.1</span></aside><section class="ms-workspace"><div class="ms-home-content"></div><iframe class="ms-material" title="教材" allow="microphone; autoplay; fullscreen" hidden></iframe><p class="ms-status" role="status" hidden></p></section>`;
+  shell.innerHTML = `<header class="ms-header"><button class="ms-menu" type="button" aria-label="メニューを開く" aria-controls="msSidebar" aria-expanded="false">☰</button><div class="ms-brand"></div><span class="ms-current" aria-live="polite">ホーム</span><div class="ms-account"></div><button class="ms-focus" type="button" aria-pressed="false">集中モード</button></header><button class="ms-shade" type="button" aria-label="メニューを閉じる" hidden></button><aside class="ms-sidebar" id="msSidebar" aria-label="共通メニュー"><nav><a class="ms-home" href="${root.href}"><span aria-hidden="true">⌂</span> ホーム</a><p class="ms-nav-label">教材カテゴリー</p><div class="ms-groups"></div><p class="ms-nav-label">ペットと学習</p><div class="ms-features"></div></nav><span class="ms-sidebar-foot">もんすたでぃ · ver2.1.2</span></aside><section class="ms-workspace"><div class="ms-home-content"></div><iframe class="ms-material" title="教材" allow="microphone; autoplay; fullscreen" hidden></iframe><p class="ms-status" role="status" hidden></p></section>`;
   document.body.prepend(shell);
   shell.querySelector('.ms-brand').append(topbar.querySelector('.logo'));
   shell.querySelector('.ms-account').append(topbar.querySelector('.auth-area'));
@@ -76,8 +76,9 @@ function install() {
   }
   new MutationObserver(()=>{updateFeatures();syncPause();}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['open','disabled','hidden']});
   document.addEventListener('close',()=>{syncPause();if(!hasModal())opener?.focus();},true);
-  function materialName(u){return groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname)?.name||'教材';}
-  function key(u){return u.pathname+u.search+u.hash;}
+  function cleanURL(value){const u=new URL(value);u.searchParams.delete('monstudy-release');return u;}
+  function materialName(value){const u=cleanURL(value);return groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname)?.name||'教材';}
+  function key(value){const u=cleanURL(value);return u.pathname+u.search+u.hash;}
   function isHome(u){return u.pathname===homePath||u.pathname===homePath+'index.html';}
   function show(u){
     current=isHome(u)?'':key(u);
@@ -85,7 +86,7 @@ function install() {
     title.textContent=current?materialName(u):'ホーム';document.title=title.textContent+'｜もんすたでぃ';
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-    if(current){frame.title=title.textContent;frame.src=u.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
+    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release','2.1.2');frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
     else {frame.removeAttribute('src');status.hidden=true;}
     mobileMenu(false);closeGroups();shell.querySelector('.ms-workspace').scrollTop=0;
   }

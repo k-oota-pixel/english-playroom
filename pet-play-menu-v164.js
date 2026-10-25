@@ -1,5 +1,5 @@
-import {onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
-import {auth} from './coin-reward.js';
+import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2';
+import {auth} from './coin-reward.js?v=2.1.2';
 import {hasPet} from './pet-model.js';
 let petData={};
 function install(){

@@ -31,7 +31,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  let adminAllowed=true;
  await page.addInitScript(()=>{window.forceDay=true;});
  await context.route('https://task-quest.onrender.com/**',route=>route.fulfill({status:route.request().url().includes('/api/admin/session')&&!adminAllowed?403:200,contentType:'application/json',body:'{}'}));
- await page.goto('http://127.0.0.1:8765');await page.locator('.pet-admin-open').waitFor();
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765');await page.locator('.pet-admin-open').waitFor();
  assert.equal(await page.locator('.pet-admin-open').count(),1);
  const version=fs.readFileSync(path.join(root,'version-badge-v176.js'),'utf8').match(/const APP_VERSION='([^']+)'/)[1];
  assert.equal(await page.locator('.app-version-badge').textContent(),'ver'+version);

@@ -1,4 +1,4 @@
-import {apiHeaders} from '../firebase-security.js';
+import {apiHeaders} from '../firebase-security.js?v=2.1.2';
 (()=>{
 'use strict';
 

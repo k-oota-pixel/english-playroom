@@ -36,7 +36,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
    const equipped=extra?{head:'chef-hat',face:'heart-glasses',neck:'green-scarf',effects:'bubble-effect',backgrounds:'beach-bg'}:{head:'crown',face:'sunglasses',neck:'red-bowtie',effects:'star-effect',backgrounds:'forest-bg'};
    window.petStore.petShop={ownedItems:[...Object.values(equipped),'crown'],equipped:{...equipped,accessories:'crown'}};
  },!!process.env.EQUIPPED_EXTRA);
- await page.goto(process.env.CAT_LIVE_URL||'http://127.0.0.1:8765');
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto(process.env.CAT_LIVE_URL||'http://127.0.0.1:8765');
 
 
  await page.locator('#petVisual svg[data-pet-stage]').waitFor();await page.waitForTimeout(1000);

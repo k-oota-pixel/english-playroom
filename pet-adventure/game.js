@@ -1,11 +1,11 @@
 import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.21';
 import {strengthState,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.22';
-import {loadStrengthTitles} from '../pet-strength.js?v=1.10.22';
+import {loadStrengthTitles} from '../pet-strength.js?v=2.1.2';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {auth,db,authReady,walletRef} from '../coin-reward.js';
+import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.2';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.21';
+import {renderPetSVG} from '../pet-art.js?v=2.1.2';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=1.10.21';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';

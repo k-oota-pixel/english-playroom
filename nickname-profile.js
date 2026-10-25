@@ -1,6 +1,6 @@
-import {enableAppCheck} from './firebase-security.js';
+import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 const firebaseConfig={
@@ -79,6 +79,6 @@ onAuthStateChanged(auth,user=>{
 
 export function getRegisteredNickname(){return currentNickname;}
 
-queueMicrotask(()=>import('./version-badge.js?v=1.5.27').catch(error=>console.error('Version badge failed to load',error)));
+queueMicrotask(()=>import('./version-badge.js?v=2.1.2').catch(error=>console.error('Version badge failed to load',error)));
 
 window.addEventListener('english-playroom-nickname-changed',event=>{if(event.detail?.uid===auth.currentUser?.uid&&validNickname(event.detail.nickname))publish(event.detail.nickname);});

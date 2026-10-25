@@ -27,7 +27,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  const d=new Date();const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
  window.petStore={petHatched:true,petAdult:true,petGrowthVersion:1427,petLifecycleVersion:141,petLoginDays:7,petLifeDays:7,petLastLoginDate:key,petLastLifeLoginDate:key,petBirthBonusGranted:true,petName:'ふわ',coins:30,petAppearance:{species:'dog',bodyColor:'blue',eyes:'round',feature:'classic',pattern:'none',baseBackground:'sky'},petShop:{ownedItems:['crown'],equipped:{head:'crown'}}};
  });
- await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1800);
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1800);
  async function sleepingEyes(){assert.equal(await page.locator('#petVisual').getAttribute('data-pet-sleeping'),'1');assert.equal(await page.locator('#petVisual .pet-sleep-face').count(),1);assert.notEqual(await page.locator('#petVisual .pet-sleep-face').evaluate(el=>getComputedStyle(el).display),'none');}
  await sleepingEyes();
  // Reproduce a wallet redraw while sleeping: the SVG is replaced, state is retained.

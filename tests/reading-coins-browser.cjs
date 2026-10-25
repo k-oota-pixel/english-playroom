@@ -32,7 +32,8 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  let summaryFails=true;
  await context.route('https://eiken-title.onrender.com/api/reading/summary',route=>route.fulfill({status:summaryFails?500:200,contentType:'application/json',body:JSON.stringify(summaryFails?{error:'test error'}:feedback)}));
  await context.route('https://task-quest.onrender.com/**',route=>route.fulfill({contentType:'application/json',body:'{}'}));
- await page.goto('http://127.0.0.1:8765/reading-training/index.html');
+ await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+await page.goto('http://127.0.0.1:8765/reading-training/index.html');
  const first=await page.locator('[data-passage]').first().getAttribute('data-passage');
  await page.locator('[data-passage]').first().click();
  assert.equal(await page.locator('#gradeExercise').isDisabled(),true);
