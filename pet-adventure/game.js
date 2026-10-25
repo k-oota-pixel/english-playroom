@@ -3,7 +3,7 @@ import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js';
+import {renderPetSVG} from '../pet-art.js?v=1.10.11';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.9';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
@@ -26,7 +26,7 @@ const FALLBACK_EIKEN=[
 const $=id=>document.getElementById(id);
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const storageKey='monstudy-pet-adventure-v1';
-const els={modeTitle:$('modeTitle'),towerTab:$('towerTab'),dungeonTab:$('dungeonTab'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('petVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody')};
+const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('petVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody')};
 
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
 let stats=strengthState(0).stats;
@@ -50,9 +50,8 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');
   els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.towerTab.classList.toggle('active',mode==='tower');els.dungeonTab.classList.toggle('active',mode==='dungeon');
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
-  els.attackHint.textContent='弱点属性なら ×2 DAMAGE';
+  els.attackHint.textContent='CRITICALでダメージ ×2';
   els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解では敵が反撃。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
 }
@@ -83,7 +82,7 @@ async function loadEikenQuestions(){
   }catch(error){console.warn('魔物の巣窟 question fallback',error);questions=FALLBACK_EIKEN;return false}
 }
 
-function petMarkup(data){const juvenile=data.petAdult===false||!data.petAppearance;try{return renderPetSVG(juvenile?null:data.petAppearance,data.petShop||{},juvenile?'baby':'adult')}catch{return '🐾'}}
+function petMarkup(data){const juvenile=data.petAdult===false||!data.petAppearance;try{return renderPetSVG(juvenile?null:data.petAppearance,data.petShop||{},juvenile?'baby':'adult',{background:false})}catch{return '🐾'}}
 function installPet(){const juvenile=petData.petAdult===false||!petData.petAppearance;els.petVisual.innerHTML=petMarkup(petData);els.petName.textContent=juvenile?'赤ちゃんペット':validPetName(petData.petName)?normalizePetName(petData.petName):'MY PET'}
 
 async function ensureAdventurePetStats(data){
@@ -119,7 +118,7 @@ function prepareTurn(){if(!runActive||busy)return;selectedAttack=null;turnCards=
 function renderAttackCards(){
   els.attackGrid.replaceChildren();
   for(const card of turnCards){
-    const weak=elementMultiplier(card.element,enemyElement)>1,meta=ELEMENTS[card.element],button=document.createElement('button');button.type='button';button.className=`attack-card${weak?' weak':''}`;
+    const critical=elementMultiplier(card.element,enemyElement)>1,meta=ELEMENTS[card.element],button=document.createElement('button');button.type='button';button.className=`attack-card${critical?' critical':''}`;
     const name=card.kind==='word'?card.item.word:card.grade,sub=card.kind==='word'?card.level.label:'EIKEN';
     button.innerHTML=`<span class="element">${meta.icon} ${meta.label}</span><span class="attack-name">${escapeHtml(name)}</span><span class="attack-sub"><span>${sub}</span><span>POWER ${card.power}</span></span>`;
     button.addEventListener('click',()=>openQuestion(card));els.attackGrid.appendChild(button);
@@ -138,9 +137,9 @@ function pickEikenQuestion(grade){
 function eikenQuestion(card){const q=pickEikenQuestion(card.grade);return {id:q.id,html:cleanQuestion(q.question),answers:q.choices.map(c=>({number:Number(c.number),text:String(c.text),correct:Number(c.number)===Number(q.answer_number)})),correctIndex:q.choices.findIndex(c=>Number(c.number)===Number(q.answer_number))}}
 function openQuestion(card){
   if(busy)return;selectedAttack=card;const q=card.kind==='word'?towerQuestion(card):eikenQuestion(card);selectedAttack.question=q;
-  const meta=ELEMENTS[card.element];els.attackBadge.textContent=`${meta.icon} ${meta.label}${elementMultiplier(card.element,enemyElement)>1?' · WEAK ×2':''}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=q.html;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();
+  const meta=ELEMENTS[card.element];els.attackBadge.textContent=`${meta.icon} ${meta.label}${elementMultiplier(card.element,enemyElement)>1?' · CRITICAL ×2':''}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=q.html;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();
   q.answers.forEach((answer,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${escapeHtml(answer.text)}`;b.addEventListener('click',()=>answerQuestion(index));els.answerGrid.appendChild(b)});
-  els.attackPanel.hidden=true;els.quizPanel.hidden=false;els.quizPanel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  els.attackPanel.hidden=true;els.quizPanel.hidden=false;
 }
 
 function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.remove('show');void els.battleFlash.offsetWidth;els.battleFlash.classList.add('show')}
@@ -149,7 +148,7 @@ function revealAnswers(chosenIndex,correctIndex){[...els.answerGrid.children].fo
 function answerQuestion(index){
   if(busy||!selectedAttack)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);
   if(correct){
-    const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`WEAKNESS!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'弱点を突いた！ ':' '}敵に${damage}ダメージ。`;
+    const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;
   }else{
     const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`MISS!\n-${damage} HP`);els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent=`不正解。敵の反撃で${damage}ダメージ！`;
   }
@@ -173,8 +172,8 @@ async function updateBest(value){
   try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}
   syncHud();
 }
-function startRun(startAt=1){stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();window.scrollTo({top:0,behavior:'smooth'})}
-function finishRun(){runActive=false;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。難しい攻撃ほど強いけれど、正解できなければ敵の反撃を受けます。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;els.resultCard.scrollIntoView({behavior:'smooth',block:'center'})}
+function startRun(startAt=1){stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();}
+function finishRun(){runActive=false;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。難しい攻撃ほど強いけれど、正解できなければ敵の反撃を受けます。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;}
 
 function showUnavailable(title,text){els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true}
 
@@ -183,7 +182,7 @@ async function init(){
   const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();
   const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;
   if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;installPet();const statLine=document.createElement('p');statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;installPet();const statLine=document.createElement('p');statLine.id='petStats';statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');startRun(1);
 }
 

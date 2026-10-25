@@ -136,13 +136,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 </style>
 <link rel="stylesheet" href="./learning-titles.css?v=1.10.8">
 <script type="module" src="./learning-titles.js?v=1.10.8"></script>
-<link rel="stylesheet" href="./pet-strength.css?v=1.10.10">
-<script type="module" src="./pet-strength.js?v=1.10.10"></script>
+<link rel="stylesheet" href="./pet-strength.css?v=1.10.11">
+<script type="module" src="./pet-strength.js?v=1.10.11"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.10.10">ver1.10.10</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 1.10.11">ver1.10.11</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -834,10 +834,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=1.10.8"></script>
-<script type="module" src='./version-badge-v176.js?v=1.10.10'></script>
+<script type="module" src='./version-badge-v176.js?v=1.10.11'></script>
 <script>
 (() => {
-  const version = '1.10.10';
+  const version = '1.10.11';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
