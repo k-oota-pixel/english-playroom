@@ -3,6 +3,7 @@ import './pet-enhancements.js?v=1.5.31';
 import './pet-shop-appearance-lock.js?v=1.5.32';
 import './pet-shop-expansion-v1533.js?v=1.9.6';
 import './pet-shop-preview-fix-v1534.js?v=touch1832';
+import './pet-dungeons-shop.js?v=1.10.22';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.9.6';
 import './pet-sleep-visibility.js';
@@ -19,7 +20,7 @@ import './pet-play-menu-v164.js?v=1.10.21';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.9.6').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.10.21';
+const APP_VERSION='1.10.22';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
@@ -47,10 +48,6 @@ function installVersionBadge(){
   logo.appendChild(badge);
 }
 
-function installHomeUi(){
-  updateHomeHeroCopy();
-  installVersionBadge();
-}
-
+function installHomeUi(){updateHomeHeroCopy();installVersionBadge();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installHomeUi,{once:true});
 else installHomeUi();
