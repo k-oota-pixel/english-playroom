@@ -1,11 +1,11 @@
-import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.18';
+import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.19';
 import {strengthState,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.9';
 import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=1.10.18';
-import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.18';
+import {renderPetSVG} from '../pet-art.js?v=1.10.19';
+import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.19';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -27,14 +27,21 @@ const FALLBACK_EIKEN=[
 const $=id=>document.getElementById(id);
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const storageKey='monstudy-pet-adventure-v1';
-const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
+const els={modeTitle:$('modeTitle'),stageCard:$('stageCard'),battlefield:$('battlefield'),bossBadge:$('bossBadge'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus')};
 
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
 let stats=strengthState(0).stats;
 let records=readRecords();
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
+let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
+function recordAdventureTitle(kind,payload={},eventSuffix=''){
+  if(!adventureRunId||!adventureRunUser)return;
+  const event={kind,sessionId:adventureRunId,floor:stage,itemId:`${adventureRunId}-${stage}`,eventId:`${adventureRunId}-${eventSuffix||kind}`,expectedUid:adventureRunUser,...payload};
+  const request=window.EnglishPlayroomCoins?.recordTitleEvent?.(mode==='tower'?'word-tower':'eiken-dungeon',event);
+  Promise.resolve(request).catch(error=>console.warn('Adventure title event deferred',error));
+}
 const enemyClock=createAttackClock(enemyAttackInterval(1,mode));
-function isBattlePaused(){return manualPaused||document.hidden||els.helpDialog.open;}
+function isBattlePaused(){return manualPaused||document.hidden||els.helpDialog.open||!!document.querySelector('.titles-dialog[open]');}
 function refreshPause(){
   els.pauseBtn.disabled=!runActive;
   if(!runActive){els.battleStatus.textContent='FINISH';return;}
@@ -57,7 +64,7 @@ function stopBattle(){cancelAnimationFrame(battleFrame);battleFrame=0;pendingAdv
 function enemyStrike(){
   if(!runActive||playerHp<=0||enemyHp<=0)return;
   const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);
-  playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');
+  enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');
   flash(`ENEMY ATTACK!\n-${damage} HP`);syncHud();
   if(playerHp<=0)finishRun();
 }
@@ -132,13 +139,13 @@ async function ensureAdventurePetStats(data){
 }
 
 function syncHud(){
-  els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent='ENEMY 1 / 1';els.bestLabel.textContent=formatStage(currentBest());
+  els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent=isBoss(stage,enemyIndex)?'BOSS 1 / 1':'ENEMY 1 / 1';els.bestLabel.textContent=formatStage(currentBest());
   els.petHpBar.style.width=`${Math.max(0,playerHp)/stats.hp*100}%`;els.petHpText.textContent=`${Math.max(0,playerHp)} / ${stats.hp}`;
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;
   const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=isBoss(stage,enemyIndex)?'BOSS':'ENEMY';els.enemyVisual.textContent=enemyEmoji();
 }
 
-function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyElement=randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';syncHud();prepareTurn()}
+function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;enemyElement=randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;syncHud();prepareTurn();if(boss)flash(`BOSS BATTLE!\n${formatStage(stage)}`)}
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
 function towerCards(){
   const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();
@@ -194,9 +201,10 @@ function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.
 function animate(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),650)}
 function revealAnswers(chosenIndex,correctIndex){[...els.answerGrid.children].forEach((b,i)=>{b.disabled=true;if(i===correctIndex)b.classList.add('correct');else if(i===chosenIndex)b.classList.add('wrong')})}
 function answerQuestion(index){
-  if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);
+  if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);recordAdventureTitle('answer',{itemId:String(q.id),correct,critical:correct&&elementMultiplier(selectedAttack.element,enemyElement)>1},`answer-${++answerSequence}`);
   if(correct){
     const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;
+    if(enemyHp===0)recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);
     if(enemyHp===0&&isBoss(stage,enemyIndex)){playerHp=stats.hp;els.answerFeedback.textContent+=' ボス撃破！ HP全回復！';flash('BOSS CLEAR!\nHP FULL!');}
   }else{
     flash('MISS!');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 正解を確認して次の攻撃へ。';
@@ -212,7 +220,7 @@ function advance(){
   if(enemyHp<=0){
     enemyIndex=0;stage++;
     // Persist in parallel so a slow connection never blocks the next enemy.
-    void updateBest(stage);createEnemy();flash(mode==='tower'?`${stage}F!`:`B${stage}!`);return;
+    void updateBest(stage);createEnemy();if(!isBoss(stage,enemyIndex))flash(mode==='tower'?`${stage}F!`:`B${stage}!`);return;
   }
   els.quizPanel.hidden=true;prepareTurn();
 }
@@ -224,7 +232,7 @@ async function updateBest(value){
   try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}
   syncHud();
 }
-function startRun(startAt=1){stopBattle();manualPaused=false;busy=false;selectedAttack=null;stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+function startRun(startAt=1){stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;manualPaused=false;busy=false;selectedAttack=null;stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function finishRun(){runActive=false;stopBattle();refreshPause();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。素早く正解を重ね、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;}
 
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true}

@@ -28,6 +28,10 @@ async function realtimeChecks(page,mode){
  await page.locator('#pauseBtn').click();await page.clock.runFor(100);assert.equal(await hp(),beforePause);
  await page.locator('#helpBtn').click();await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
  await page.locator('#helpClose').click();await page.clock.runFor(100);assert.equal(await hp(),beforePause);
+ await page.evaluate(()=>{const d=document.createElement('dialog');d.className='titles-dialog';document.body.append(d);d.showModal();});
+ await page.clock.fastForward(interval*2);assert.equal(await hp(),beforePause,'title award popups pause the battle');
+ await page.evaluate(()=>document.querySelector('.titles-dialog').remove());await page.clock.runFor(100);assert.equal(await hp(),beforePause);
+
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
  await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
  await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
@@ -60,6 +64,13 @@ async function realtimeChecks(page,mode){
  for(const floor of [3,4]){await clearEnemy();await page.locator('#nextBtn').click();}
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'5F':'B5');
  assert.equal(await page.locator('#enemyName').textContent(),'BOSS');
+ assert.equal(await page.locator('#bossBadge').isVisible(),true);
+ assert.ok(await page.locator('#battlefield').evaluate(el=>el.classList.contains('boss-battle')));
+ assert.match(await page.locator('#battleFlash').textContent(),/BOSS BATTLE/);
+ await minimumAttack(page);
+ assert.equal(await page.locator('#bossBadge').isVisible(),true,'boss badge remains visible during a question');
+ await correctAnswer(page,mode);await page.locator('#nextBtn').click();
+
  await page.clock.runFor(Math.round(interval/1.14)+150);
  assert.ok(await hp()<initial);
  await clearEnemy();
@@ -69,6 +80,14 @@ async function realtimeChecks(page,mode){
  await page.clock.runFor(700);
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'6F':'B6');
  assert.equal(await page.locator('#enemyName').textContent(),'ENEMY');
+ assert.equal(await page.locator('#bossBadge').isVisible(),false);
+ const events=await page.evaluate(()=>window.adventureTitleEvents);
+ assert.ok(events.length>0);assert.ok(events.every(e=>e.appId===(mode==='tower'?'word-tower':'eiken-dungeon')&&e.expectedUid==='test'));
+ assert.equal(new Set(events.map(e=>e.eventId)).size,events.length);
+ assert.ok(events.some(e=>e.kind==='answer'&&e.correct));
+ assert.ok(events.some(e=>e.kind==='answer'&&!e.correct));
+ assert.ok(events.some(e=>e.kind==='defeat'&&e.floor===5&&e.noDamage===false));
+
  assert.equal(await hp(),initial);
  console.log('PASS realtime and boss full heal',mode);
 }
@@ -77,6 +96,7 @@ async function realtimeChecks(page,mode){
  console.log('browser ready');try{for(const [width,height] of [[1100,800],[390,740],[360,640],[320,568]]){
  console.log('width',width);const page=await browser.newPage({viewport:{width,height}}),errors=[];
  let realStrength=false;
+ await page.addInitScript(()=>{window.adventureTitleEvents=[];window.EnglishPlayroomCoins={recordTitleEvent:(appId,event)=>{window.adventureTitleEvents.push({appId,...event});}};});
  await page.clock.install();await page.clock.pauseAt(Date.now());
  page.setDefaultTimeout(12000);page.on('pageerror',e=>(errors.push(e.message),console.log('PAGE ERROR',e.message)));
  await page.route('https://adventure.test/**',async route=>{

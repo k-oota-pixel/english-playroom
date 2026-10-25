@@ -17,7 +17,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  function render(){
   if(dialog){dialog.close();dialog.remove();}dialog=makeDialog('実績・称号コレクション');
   const status=el('p',state.selectedTitle?'表示中：ー'+state.selectedTitle+'ー':'称号を表示しない');status.setAttribute('role','status');dialog.append(status);
-  dialog.append(el('p','新しい共通称号は導入後の取り組みを集計します。リトライノートの級別称号は過去の回答も引き継ぎます。'));
+  dialog.append(el('p','新しい共通称号は導入後の取り組みを集計します。リトライノートの級別称号は過去の回答も引き継ぎます。塔・巣窟の到達称号も過去の最高記録を引き継ぎます。'));
   const clear=el('button','称号を表示しない');clear.disabled=busy||!state.selectedId;clear.addEventListener('click',()=>select(''));dialog.append(clear);
   const groups=new Map();for(const t of state.titles){if(!groups.has(t.appId))groups.set(t.appId,[]);groups.get(t.appId).push(t);}
   for(const list of groups.values()){
