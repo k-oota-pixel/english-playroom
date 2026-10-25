@@ -2,9 +2,9 @@ name: Eigo Dungeons regression
 on:
   push:
     branches: [main]
-    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js']
+    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'pet-strength-model.js', 'pet-dungeons-model.js', 'pet-dungeons-shop.js', 'version-badge-v176.js', 'index.html', 'tests/pet-strength.test.js', 'tests/release-version.test.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js']
   pull_request:
-    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js']
+    paths: ['pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'pet-strength-model.js', 'pet-dungeons-model.js', 'pet-dungeons-shop.js', 'version-badge-v176.js', 'index.html', 'tests/pet-strength.test.js', 'tests/release-version.test.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js']
 permissions:
   contents: read
 jobs:
