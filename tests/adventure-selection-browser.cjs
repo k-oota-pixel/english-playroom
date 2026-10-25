@@ -75,7 +75,7 @@ async function realtimeChecks(page,mode){
  assert.ok(await hp()<initial);
  await clearEnemy();
  assert.equal(await hp(),initial,'boss defeat immediately restores the actual maximum HP');
- assert.match(await page.locator('#answerFeedback').textContent(),/HP全回復/);
+ assert.match(await page.locator('#answerFeedback').textContent(),/HP・MP全回復/);
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'5F':'B5');
  await page.clock.runFor(700);
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'6F':'B6');
