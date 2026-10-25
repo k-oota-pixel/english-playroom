@@ -1,5 +1,5 @@
 name: Eigo Dungeons regression
-# Covers battle timing, MP, magic, items, checkpoints, rankings, release wiring, automatic transitions, and fake-clock browser checks.
+# Final 1.10.22 coverage: battle timing, MP, magic, items, checkpoints, rankings, release wiring, automatic transitions, and fake-clock browser checks.
 on:
   workflow_dispatch:
   push:
