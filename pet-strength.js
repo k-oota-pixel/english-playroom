@@ -1,26 +1,158 @@
 import {auth,db,walletRef} from './coin-reward.js';
 import {onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
-import {getDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js';
-import {titleCount,strengthState,allocatePoint} from './pet-strength-model.js?v=1.10.8';
+import {BASE_STATS,titleCount,strengthState,allocatePoint,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.9';
+
+const RESPEC_PRICE=30;
+const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0});
+
 export async function loadStrengthTitles(user){
- const token=await user.getIdToken();const r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
+ const token=await user.getIdToken();
+ const r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
  if(!r.ok)throw Error('称号を読み込めませんでした。もう一度お試しください。');
- const data=await r.json();if(!Array.isArray(data.titles))throw Error('称号を確認できませんでした。');return titleCount(data.titles);
+ const data=await r.json();
+ if(!Array.isArray(data.titles))throw Error('称号を確認できませんでした。');
+ return titleCount(data.titles);
 }
+
+function generationOf(data={}){const n=Number(data.petGeneration);return Number.isSafeInteger(n)&&n>0?n:1;}
+function allocationTotal(allocation={}){return ['hp','attack','defense'].reduce((sum,key)=>{const n=Number(allocation?.[key]);return sum+(Number.isSafeInteger(n)&&n>0?n:0);},0);}
+function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.generation);return Number.isSafeInteger(n)&&n>0?n:0;}
+
+function needsStatReconcile(data={}){
+ const generation=generationOf(data),storedGeneration=Number(data.petBaseStatsGeneration)||0;
+ if(hasPet(data)){
+  const afterDeparture=!storedGeneration&&lastDepartureGeneration(data)>0&&lastDepartureGeneration(data)<generation;
+  return !hasIndividualBaseStats(data.petBaseStats)||storedGeneration!==generation||afterDeparture;
+ }
+ if(!data.petLastDeparture)return false;
+ return allocationTotal(data.petStrength)>0||data.petBaseStats!=null||storedGeneration!==generation;
+}
+
+async function reconcilePetStats(user,source={}){
+ if(!user||!needsStatReconcile(source))return source;
+ const candidate=randomBaseStats();
+ return runTransaction(db,async tx=>{
+  const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
+  if(!needsStatReconcile(data))return data;
+  const generation=generationOf(data),storedGeneration=Number(data.petBaseStatsGeneration)||0;
+  if(!hasPet(data)){
+   if(!data.petLastDeparture)return data;
+   const patch={petStrength:{...EMPTY_STRENGTH},petBaseStats:null,petBaseStatsGeneration:generation,petUpdatedAt:serverTimestamp()};
+   tx.set(ref,patch,{merge:true});
+   return {...data,...patch};
+  }
+  const generationChanged=storedGeneration>0&&storedGeneration!==generation;
+  const migratedAfterDeparture=!storedGeneration&&lastDepartureGeneration(data)>0&&lastDepartureGeneration(data)<generation;
+  const patch={petBaseStats:hasIndividualBaseStats(data.petBaseStats)&&!generationChanged?data.petBaseStats:candidate,petBaseStatsGeneration:generation,petUpdatedAt:serverTimestamp()};
+  if(generationChanged||migratedAfterDeparture)patch.petStrength={...EMPTY_STRENGTH};
+  tx.set(ref,patch,{merge:true});
+  return {...data,...patch};
+ });
+}
+
+let reconcileQueue=Promise.resolve();
+function queueReconcile(user,data){
+ reconcileQueue=reconcileQueue.catch(()=>{}).then(async()=>{
+  if(!user||auth.currentUser?.uid!==user.uid)return;
+  try{await reconcilePetStats(user,data);}catch(error){console.warn('pet stat reconciliation failed',error);}
+ });
+}
+
+document.addEventListener('pet-state-updated',event=>{const user=auth.currentUser;if(user)queueReconcile(user,event.detail||{});});
+
 const button=document.getElementById('petStrengthOpen');
 if(button){
- const dialog=document.createElement('dialog');dialog.className='strength-dialog';dialog.setAttribute('aria-labelledby','strengthHeading');
+ const dialog=document.createElement('dialog');
+ dialog.className='strength-dialog';dialog.setAttribute('aria-labelledby','strengthHeading');
  dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力は＋1ずつ強化できます。</p><div data-body></div><p data-message role="status"></p>';
- document.body.append(dialog);const body=dialog.querySelector('[data-body]'),message=dialog.querySelector('[data-message]');let busy=false,generation=0;
- dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
- function render(count,data){const state=strengthState(count,data.petStrength);body.replaceChildren();
- const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
- const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
- for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1]]){const row=document.createElement('div');row.className='strength-row';const text=document.createElement('strong');text.textContent=`${label}　${state.stats[key]}`;const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!hasPet(data)||state.available<1;add.onclick=()=>save(key);row.append(text,add);body.append(row);}
- const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。ポイントの振り直しはできません。':'ペットが生まれると強化できます。';body.append(note);
+ document.body.append(dialog);
+ const body=dialog.querySelector('[data-body]'),message=dialog.querySelector('[data-message]');
+ let busy=false,generation=0;
+ dialog.querySelector('[data-close]').onclick=()=>dialog.close();
+ dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+
+ function render(count,data){
+  const state=strengthState(count,data.petStrength,data.petBaseStats);body.replaceChildren();
+  const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
+  const born=document.createElement('p');born.className='strength-born';born.textContent=`生まれつきの個体差　HP +${state.bonuses.hp}　攻撃 +${state.bonuses.attack}　防御 +${state.bonuses.defense}`;body.append(born);
+  const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
+  for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1]]){
+   const row=document.createElement('div');row.className='strength-row';
+   const text=document.createElement('strong');text.textContent=`${label}　${state.stats[key]}`;
+   const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!hasPet(data)||state.available<1;add.onclick=()=>save(key);
+   row.append(text,add);body.append(row);
+  }
+  const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです。':'ペットが生まれると強化できます。';body.append(note);
  }
- async function load(){const user=auth.currentUser;if(!user||busy)return;const id=++generation;busy=true;body.textContent='読み込み中…';message.textContent='';dialog.showModal();try{const [count,snap]=await Promise.all([loadStrengthTitles(user),getDoc(walletRef(user))]);if(id!==generation||auth.currentUser?.uid!==user.uid)return;busy=false;render(count,snap.data()||{});}catch(e){if(id===generation){body.textContent='';message.textContent=e.message;}}finally{if(id===generation)busy=false;}}
- async function save(key){const user=auth.currentUser;if(!user||busy)return;const id=generation;busy=true;body.querySelectorAll('button').forEach(b=>b.disabled=true);message.textContent='保存中…';try{const count=await loadStrengthTitles(user);const data=await runTransaction(db,async tx=>{if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};if(!hasPet(data))throw Error('ペットが生まれると強化できます。');const petStrength=allocatePoint(count,data.petStrength,key);tx.set(ref,{petStrength},{merge:true});return {...data,petStrength};});if(id!==generation||auth.currentUser?.uid!==user.uid)return;busy=false;render(count,data);message.textContent='強化を保存しました！';}catch(e){if(id===generation){message.textContent=e.message||'保存できませんでした。閉じてもう一度お試しください。';}}finally{if(id===generation)busy=false;}}
- button.onclick=load;onAuthStateChanged(auth,user=>{generation++;busy=false;button.disabled=!user;dialog.close();body.replaceChildren();});
+
+ async function load(){
+  const user=auth.currentUser;if(!user||busy)return;
+  const id=++generation;busy=true;body.textContent='読み込み中…';message.textContent='';dialog.showModal();
+  try{
+   const [count,snap]=await Promise.all([loadStrengthTitles(user),getDoc(walletRef(user))]);
+   if(id!==generation||auth.currentUser?.uid!==user.uid)return;
+   let data=snap.data()||{};data=await reconcilePetStats(user,data);
+   if(id!==generation||auth.currentUser?.uid!==user.uid)return;
+   busy=false;render(count,data);
+  }catch(e){if(id===generation){body.textContent='';message.textContent=e.message;}}
+  finally{if(id===generation)busy=false;}
+ }
+
+ async function save(key){
+  const user=auth.currentUser;if(!user||busy)return;
+  const id=generation;busy=true;body.querySelectorAll('button').forEach(b=>b.disabled=true);message.textContent='保存中…';
+  try{
+   const count=await loadStrengthTitles(user);
+   const data=await runTransaction(db,async tx=>{
+    if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');
+    const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
+    if(!hasPet(data))throw Error('ペットが生まれると強化できます。');
+    const petStrength=allocatePoint(count,data.petStrength,key);tx.set(ref,{petStrength},{merge:true});return {...data,petStrength};
+   });
+   if(id!==generation||auth.currentUser?.uid!==user.uid)return;
+   busy=false;render(count,data);message.textContent='強化を保存しました！';
+  }catch(e){if(id===generation){message.textContent=e.message||'保存できませんでした。閉じてもう一度お試しください。';}}
+  finally{if(id===generation)busy=false;}
+ }
+
+ button.onclick=load;
+ onAuthStateChanged(auth,user=>{
+  generation++;busy=false;button.disabled=!user;dialog.close();body.replaceChildren();
+  if(user)getDoc(walletRef(user)).then(snap=>queueReconcile(user,snap.data()||{})).catch(error=>console.warn('pet stat load failed',error));
+ });
+}
+
+let shopRespecBusy=false;
+function ensureRespecShopCard(){
+ const note=document.querySelector('#petShopDialog .pet-shop-note');
+ if(!note||document.querySelector('#petShopDialog [data-strength-respec-card]'))return;
+ const card=document.createElement('section');card.className='pet-strength-respec-card';card.dataset.strengthRespecCard='';
+ card.innerHTML='<div><strong>🔄 ステータス振り直し</strong><span>称号で獲得した強化ポイントをすべて未配分に戻します。生まれつきの個体差は変わりません。</span></div><button type="button">🪙 30コインで振り直す</button><small role="status"></small>';
+ note.insertAdjacentElement('afterend',card);
+ const buy=card.querySelector('button'),status=card.querySelector('small');
+ buy.addEventListener('click',async()=>{
+  const user=auth.currentUser;if(!user||shopRespecBusy)return;
+  if(!window.confirm('30コインを使って、強化ポイントをすべて振り直せる状態にしますか？'))return;
+  shopRespecBusy=true;buy.disabled=true;status.textContent='振り直し中…';status.className='';
+  try{
+   await runTransaction(db,async tx=>{
+    const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
+    if(!hasPet(data))throw Error('ペットが生まれてから使えます。');
+    if(allocationTotal(data.petStrength)<1)throw Error('振り分け済みの強化ポイントがありません。');
+    const coins=Math.max(0,Math.floor(Number(data.coins)||0));
+    if(coins<RESPEC_PRICE)throw Error('コインが足りません。');
+    tx.set(ref,{coins:coins-RESPEC_PRICE,petStrength:{...EMPTY_STRENGTH},coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
+   });
+   status.textContent='振り直し完了！「ペット強化」からポイントを配り直せます。';status.className='ok';
+  }catch(error){status.textContent=error?.message||'振り直しできませんでした。';status.className='error';}
+  finally{shopRespecBusy=false;buy.disabled=false;}
+ });
+}
+
+if(typeof MutationObserver!=='undefined'){
+ const observer=new MutationObserver(()=>ensureRespecShopCard());
+ observer.observe(document.documentElement,{childList:true,subtree:true});
+ ensureRespecShopCard();
 }
