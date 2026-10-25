@@ -1,0 +1,37 @@
+name: Align adventure browser regression
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-adventure-browser-test.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update defeated-enemy transition assertions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/adventure-selection-browser.cjs')
+          s=p.read_text(encoding='utf-8')
+          old=""" await clearEnemy();assert.equal(await hp(),wounded,'ordinary enemies do not restore HP');
+ await page.locator('#nextBtn').click();
+ for(const floor of [3,4]){await clearEnemy();await page.locator('#nextBtn').click();}
+"""
+          new=""" await clearEnemy();assert.equal(await hp(),wounded,'ordinary enemies do not restore HP');
+ await page.clock.runFor(700);
+ for(const floor of [3,4]){await clearEnemy();await page.clock.runFor(700);}
+"""
+          if old not in s:
+              raise SystemExit('expected legacy transition block not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Commit updated browser regression
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tests/adventure-selection-browser.cjs
+          git commit -m "Test automatic transition after enemy defeat"
+          git push
