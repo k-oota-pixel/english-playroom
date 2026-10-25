@@ -1,6 +1,7 @@
 import {topics} from './topics.js';
 import {deal,shuffle,placeCard,removeCard,isCorrect} from './model.js';
 const game=document.querySelector('#game'),translation=document.querySelector('#translation');
+globalThis.MonstudyMaterial?.setActivityGuard(()=>phase!=='setup' && phase!=='result');
 let japanese=false,phase='setup',count=4,topicQueue=[],topicIndex=-1,numbers=[],order=[],person=0,visible=false,review=null,selected=null,revealed=0,timer=null;
 const name=id=>`${id+1}人目`;
 function topicHtml(){const t=topics[topicIndex];return `<div class="topic"><h3>${t.question}${japanese?`<span class="ja">${t.ja}</span>`:''}</h3><div class="scale"><div><b>1</b> · ${t.low}${japanese?`<span class="ja">${t.lowJa}</span>`:''}</div><div><b>100</b> · ${t.high}${japanese?`<span class="ja">${t.highJa}</span>`:''}</div></div></div>`;}

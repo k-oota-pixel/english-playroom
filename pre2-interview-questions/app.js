@@ -6,6 +6,7 @@ const QUESTIONS=window.PRE2_INTERVIEW_QUESTIONS;
 const API='https://task-quest.onrender.com/api/pre2-interview-grade';
 const $=id=>document.getElementById(id);
 const screens=['typeScreen','orderScreen','numberScreen','deliveryScreen','practiceScreen','resultScreen'];
+globalThis.MonstudyMaterial?.setActivityGuard(()=>!$('practiceScreen').classList.contains('hidden'));
 const state={type:null,selectionMode:null,index:null,delivery:null,repeatCount:0,lastRandom:null,firstAnswer:'',followUp:false};
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}

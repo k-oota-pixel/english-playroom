@@ -1,5 +1,6 @@
 import {createRound} from './model.js';
 const game = document.querySelector('#game');
+globalThis.MonstudyMaterial?.setActivityGuard(()=>stage!=='setup' && stage!=='answer');
 let count = 4, round, player = 0, stage = 'setup';
 function show(html) {
   game.innerHTML = html;

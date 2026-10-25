@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<script src="../shell-bridge.js?v=2.1.1"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PET CATCH | もんすたでぃ</title>
@@ -57,6 +58,7 @@ const FALLBACK_WORDS=[['apple','りんご'],['book','本'],['water','水'],['sch
 let vocabByLevel=Object.fromEntries(LEVELS.map(level=>[level.id,FALLBACK_WORDS])),vocabLoaded=false;
 const $=id=>document.getElementById(id);const scoreEl=$('score'),comboEl=$('combo'),bestEl=$('best'),lifeEl=$('life'),game=$('game'),dropsEl=$('drops'),petEl=$('pet'),wordEl=$('word'),roundHint=$('roundHint'),promptEl=$('prompt'),promptLabel=$('promptLabel'),feedback=$('feedback'),speedNotice=$('speedNotice'),overlay=$('overlay'),overlayTitle=$('overlayTitle'),overlayText=$('overlayText'),overlayResult=$('overlayResult'),modePicker=$('modePicker'),startBtn=$('startBtn'),authInfo=$('authInfo'),leftBtn=$('leftBtn'),dropBtn=$('dropBtn'),rightBtn=$('rightBtn'),endBtn=$('endBtn'),dailyTopName=$('dailyTopName'),dailyTopScore=$('dailyTopScore');
 let titleRun='',titleUid='',titleMiss=false,titleAfterMiss=0;
+globalThis.MonstudyMaterial?.setActivityGuard(()=>playing);
 let user=null,petData={},petLane=1,score=0,combo=0,bestCombo=0,lives=3,playing=false,roundBusy=false,animationId=0,lastWordId='',rewardTried=false,sessionCorrect=0,cloudBest=0,softDrop=false,speedNoticeTimer=0,speedNoticePending=false,gameMode='en-ja';
 const laneLeft=i=>`${(i+.5)*100/3}%`;const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};const bandForScore=value=>LEVELS.find(level=>value+1<=level.until)||LEVELS[LEVELS.length-1];const speedForScore=value=>1+Math.max(0,value);const durationForScore=value=>Math.max(3000,8200-Math.max(0,value)*250);
 async function loadVocabulary(){try{const response=await fetch(VOCAB_URL,{cache:'force-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);const data=await response.json(),source=data?.levels||data?.courses||data,next={};for(const level of LEVELS){const raw=source?.[level.id],words=Array.isArray(raw)?raw:Array.isArray(raw?.words)?raw.words:[];const cleaned=words.map((entry,index)=>{const en=String(entry?.word??'').trim(),answers=Array.isArray(entry?.answers)?entry.answers:[],jp=answers.find(v=>typeof v==='string'&&v.trim())?.trim()||'';return {id:String(entry?.id||`${level.id}-${index}`),en,jp};}).filter(x=>x.en&&x.jp);if(cleaned.length<3)throw Error(`${level.id} vocabulary is too small`);next[level.id]=cleaned;}vocabByLevel=next;vocabLoaded=true;}catch(error){console.warn('ワードブレイカー vocabulary load failed; fallback used.',error);vocabLoaded=false;}}

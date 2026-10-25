@@ -8,7 +8,7 @@ const page=await browser.newPage({viewport:{width,height:740}}),errors=[];let re
  await page.route('https://adventure.test/**',async route=>{
   const u=new URL(route.request().url());if(u.pathname==='/')return route.fulfill({contentType:'text/html',body:'<button id=petClean>clean</button>'});const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
   let body,type='text/javascript';
-  if(file==='coin-reward.js')body="export const db={};export const auth={currentUser:{uid:'"+fixtureUid+"',getIdToken:async()=>'fixture'}};export const authReady=Promise.resolve();export const walletRef=()=>({});";
+  if(file==='shell-bridge.js')body='';else if(file==='coin-reward.js')body="export const db={};export const auth={currentUser:{uid:'"+fixtureUid+"',getIdToken:async()=>'fixture'}};export const authReady=Promise.resolve();export const walletRef=()=>({});";
   else if(file==='pet-strength.js'&&!realStrength)body='export const loadStrengthTitles=async()=>6;';
   else if(file==='pet-art.js')body=fs.readFileSync('pet-art.js','utf8').replace(/^if\(typeof window.*$/gm,'');
   else{const target=path.resolve(file.endsWith('/')?file+'index.html':file);if(!target.startsWith(process.cwd())||!fs.existsSync(target))return route.fulfill({status:404,body:''});body=fs.readFileSync(target);type=target.endsWith('.html')?'text/html':target.endsWith('.css')?'text/css':target.endsWith('.svg')?'image/svg+xml':type;}

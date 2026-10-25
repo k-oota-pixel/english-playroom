@@ -7,6 +7,7 @@ const app=document.getElementById('app');
 const API='https://eiken-title.onrender.com/api/reading/summary';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let passages=[],grade='4級',route='exercise',passage=null,graded=false,answers=[],language='ja',busy=false,controller=null,requestId=0;
+globalThis.MonstudyMaterial?.setActivityGuard(()=>Boolean(busy || (passage && !graded)));
 const memory=new Map(),feedbacks=new Map();
 function read(k){try{return localStorage.getItem('monstudy-reading-v1:'+k)??memory.get(k)??'';}catch{return memory.get(k)||'';}}
 function save(k,v){memory.set(k,v);try{localStorage.setItem('monstudy-reading-v1:'+k,v);}catch{}}

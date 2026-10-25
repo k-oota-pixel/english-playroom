@@ -33,6 +33,7 @@ const els={startDialog:$('startDialog'),startTitle:$('startTitle'),startBest:$('
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,playerMp=6,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
 let stats=strengthState(0).stats,petLevel=1;
 let records=readRecords();
+globalThis.MonstudyMaterial?.setActivityGuard(()=>runActive);
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
 let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
 
@@ -59,7 +60,7 @@ function awardMilestoneCoin(){
 }
 
 const enemyClock=createAttackClock(enemyAttackInterval(1,mode));
-function isBattlePaused(){return manualPaused||document.hidden||els.helpDialog.open||els.magicDialog.open||els.itemDialog.open||!!document.querySelector('.titles-dialog[open]');}
+function isBattlePaused(){return window.MonstudyMaterial?.paused||manualPaused||document.hidden||els.helpDialog.open||els.magicDialog.open||els.itemDialog.open||!!document.querySelector('.titles-dialog[open]');}
 function refreshPause(){
   els.pauseBtn.disabled=!runActive;if(!runActive){els.battleStatus.textContent='FINISH';return;}
   const paused=isBattlePaused();els.pauseBtn.textContent=manualPaused?'再開':'一時停止';els.pauseBtn.setAttribute('aria-pressed',String(manualPaused));els.battleStatus.textContent=paused?'PAUSED':'LIVE';
@@ -76,6 +77,7 @@ function enemyStrike(){
   enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');flash(`ENEMY ATTACK!\n-${damage} HP`);syncHud();if(playerHp<=0)finishRun();
 }
 function togglePause(){if(!runActive)return;manualPaused=!manualPaused;enemyClock.tick(performance.now(),true);refreshPause();}
+document.addEventListener('monstudy:pause',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
 document.addEventListener('visibilitychange',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
 window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;enemyClock.tick(performance.now(),true);});
 window.addEventListener('pageshow',()=>{if(runActive&&!battleFrame){enemyClock.tick(performance.now(),true);battleFrame=requestAnimationFrame(battleTick);}});
@@ -186,7 +188,11 @@ async function useItem(item){
 
 function advance(){if(busy||!runActive||isBattlePaused()||playerHp<=0)return;pendingAdvanceMs=null;if(enemyHp<=0)return;els.quizPanel.hidden=true;prepareTurn();}
 async function updateBest(value){const key=bestKey(),next=Math.max(currentBest(),value);records[key]=next;writeRecords();if(!user)return;const field=mode==='tower'?'wordTowerBest':'eikenDungeonBest';try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}syncHud();}
-function startRun(startAt=1){els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+async function startRun(startAt=1){
+ if(startRun.loading)return;startRun.loading=true;
+ try{const snap=await getDoc(walletRef(user));const fresh=snap.data()||{};const count=await loadStrengthTitles(user);stats=strengthState(count,fresh.petStrength,fresh.petBaseStats).stats;petLevel=strengthLevel(fresh.petStrengthLevelPoints,fresh.petStrength);petData={...petData,...fresh};installPet();syncStatLine();}
+ catch(error){console.error(error);alert("最新の強化情報を取得できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
+els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
 function finishRun(){runActive=false;stopBattle();refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。魔法とアイテムも使いながら、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.disabled=true;els.itemBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true;}

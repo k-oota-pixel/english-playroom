@@ -20,7 +20,7 @@ import './pet-play-menu-v164.js?v=1.10.21';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=1.9.6').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='1.10.22';
+const APP_VERSION='2.1.1';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');

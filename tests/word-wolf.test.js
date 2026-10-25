@@ -19,7 +19,7 @@ test('a full handoff round hides secrets, gates results and resets',()=>{
   let html='',clicks={};const events={};
   const game={set innerHTML(value){html=value;clicks={};},querySelector(){return {focus(){}};}};
   const document={hidden:false,querySelector(selector){return selector==='#game'?game:{value:'4'};},getElementById(id){return {addEventListener(_,fn){clicks[id]=fn;}};},addEventListener(event,fn){events[event]=fn;}};
-  const source=readFileSync(new URL('../word-wolf/app.js',import.meta.url),'utf8').replace(/^import .*\n/,'');
+  const source=readFileSync(new URL('../word-wolf/app.js',import.meta.url),'utf8').replace(/^import .*\r?\n/,'');
   vm.runInNewContext(source,{document,window:{addEventListener(){}},createRound});
   clicks.start();assert.match(html,/1人目の人に/);
   clicks.reveal();assert.match(html,/class="word"/);
