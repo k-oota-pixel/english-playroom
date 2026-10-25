@@ -40,6 +40,13 @@ function recordAdventureTitle(kind,payload={},eventSuffix=''){
   const request=window.EnglishPlayroomCoins?.recordTitleEvent?.(mode==='tower'?'word-tower':'eiken-dungeon',event);
   Promise.resolve(request).catch(error=>console.warn('Adventure title event deferred',error));
 }
+function awardMilestoneCoin(){
+  if(stage<10||stage%10!==0||!adventureRunId)return;
+  const appId=mode==='tower'?'word-tower':'eiken-dungeon';
+  const label=mode==='tower'?`${stage}階到達ボーナス！`:`${stage}層到達ボーナス！`;
+  const request=window.EnglishPlayroomCoins?.awardOncePerDay?.(appId,`${adventureRunId}-milestone-${stage}`,label);
+  Promise.resolve(request).catch(error=>console.warn('Adventure coin reward deferred',error));
+}
 const enemyClock=createAttackClock(enemyAttackInterval(1,mode));
 function isBattlePaused(){return manualPaused||document.hidden||els.helpDialog.open||!!document.querySelector('.titles-dialog[open]');}
 function refreshPause(){
@@ -95,7 +102,7 @@ function configureMode(){
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
   els.attackHint.textContent='相性の良い攻撃でCRITICAL';
   els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP全回復！</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li></ul>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>10層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
   els.helpBody.innerHTML+='<p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。</p>';
 }
 
@@ -218,7 +225,7 @@ function advance(){
   if(busy||!runActive||isBattlePaused()||playerHp<=0)return;
   pendingAdvanceMs=null;
   if(enemyHp<=0){
-    enemyIndex=0;stage++;
+    enemyIndex=0;stage++;awardMilestoneCoin();
     // Persist in parallel so a slow connection never blocks the next enemy.
     void updateBest(stage);createEnemy();if(!isBoss(stage,enemyIndex))flash(mode==='tower'?`${stage}F!`:`B${stage}!`);return;
   }
