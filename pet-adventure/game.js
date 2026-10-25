@@ -1,10 +1,10 @@
-import {strengthState,incomingDamage} from '../pet-strength-model.js?v=1.10.8';
-import {loadStrengthTitles} from '../pet-strength.js?v=1.10.8';
+import {strengthState,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.9';
+import {loadStrengthTitles} from '../pet-strength.js?v=1.10.9';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js';
-import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.8';
+import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.9';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -44,6 +44,8 @@ function enemyEmoji(){if(isBoss(stage,enemyIndex))return mode==='tower'?'🐉':'
 function areaName(){const i=Math.min(4,Math.floor((stage-1)/10));return mode==='tower'?['風の塔','雲の回廊','天空庭園','星見の塔','天界'][i]:['入口の洞窟','青晶洞','古代坑道','溶岩層','深淵遺跡'][i]}
 function cleanQuestion(text){return escapeHtml(String(text||'')).replace(/\(____\)/g,'<span class="blank">?</span>')}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function generationOf(data={}){const n=Number(data.petGeneration);return Number.isSafeInteger(n)&&n>0?n:1}
+function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.generation);return Number.isSafeInteger(n)&&n>0?n:0}
 
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');
@@ -52,7 +54,7 @@ function configureMode(){
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
   els.attackHint.textContent='弱点属性なら ×2 DAMAGE';
   els.helpTitle.textContent=mode==='tower'?'WORD TOWER':'EIKEN DUNGEON';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵3体。5階ごとの3体目はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解では敵が反撃。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵3体。5層ごとの3体目はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解では敵が反撃。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
 }
 
 async function loadVocabulary(){
@@ -84,8 +86,18 @@ async function loadEikenQuestions(){
 function petMarkup(data){const juvenile=data.petAdult===false||!data.petAppearance;try{return renderPetSVG(juvenile?null:data.petAppearance,data.petShop||{},juvenile?'baby':'adult')}catch{return '🐾'}}
 function installPet(){const juvenile=petData.petAdult===false||!petData.petAppearance;els.petVisual.innerHTML=petMarkup(petData);els.petName.textContent=juvenile?'赤ちゃんペット':validPetName(petData.petName)?normalizePetName(petData.petName):'MY PET'}
 
+async function ensureAdventurePetStats(data){
+  const generation=generationOf(data),storedGeneration=Number(data.petBaseStatsGeneration)||0;
+  const generationChanged=storedGeneration>0&&storedGeneration!==generation;
+  const migratedAfterDeparture=!storedGeneration&&lastDepartureGeneration(data)>0&&lastDepartureGeneration(data)<generation;
+  if(hasIndividualBaseStats(data.petBaseStats)&&storedGeneration===generation)return data;
+  const patch={petBaseStats:randomBaseStats(),petBaseStatsGeneration:generation,petUpdatedAt:serverTimestamp()};
+  if(generationChanged||migratedAfterDeparture)patch.petStrength={hp:0,attack:0,defense:0};
+  await setDoc(walletRef(user),patch,{merge:true});return {...data,...patch};
+}
+
 function syncHud(){
-  els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent=`ENEMY ${enemyIndex+1} / 3`;els.bestLabel.textContent=formatStage(currentBest());
+  els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent='ENEMY 1 / 1';els.bestLabel.textContent=formatStage(currentBest());
   els.petHpBar.style.width=`${Math.max(0,playerHp)/stats.hp*100}%`;els.petHpText.textContent=`${Math.max(0,playerHp)} / ${stats.hp}`;
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;
   const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=isBoss(stage,enemyIndex)?'BOSS':'ENEMY';els.enemyVisual.textContent=enemyEmoji();
@@ -141,15 +153,14 @@ function answerQuestion(index){
   }else{
     const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`MISS!\n-${damage} HP`);els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent=`不正解。敵の反撃で${damage}ダメージ！`;
   }
-  syncHud();els.nextBtn.hidden=false;els.nextBtn.textContent=playerHp<=0?'結果を見る →':enemyHp<=0?'次の敵へ →':'次のターン →';busy=false;
+  syncHud();els.nextBtn.hidden=false;els.nextBtn.textContent=playerHp<=0?'結果を見る →':enemyHp<=0?(mode==='tower'?'次の階へ →':'次の層へ →'):'次のターン →';busy=false;
 }
 
 async function advance(){
   if(busy)return;busy=true;
   if(playerHp<=0){finishRun();busy=false;return}
   if(enemyHp<=0){
-    els.enemyVisual.classList.add('defeat');await new Promise(r=>setTimeout(r,360));enemyIndex++;
-    if(enemyIndex>=3){enemyIndex=0;stage++;await updateBest(stage);flash(mode==='tower'?`${stage}F!`:`B${stage}!`)}
+    els.enemyVisual.classList.add('defeat');await new Promise(r=>setTimeout(r,360));enemyIndex=0;stage++;await updateBest(stage);flash(mode==='tower'?`${stage}F!`:`B${stage}!`);
     busy=false;createEnemy();return;
   }
   els.quizPanel.hidden=true;busy=false;prepareTurn();
@@ -172,7 +183,7 @@ async function init(){
   const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();
   const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;
   if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれるとWORD TOWERとEIKEN DUNGEONで一緒に戦えます。');return}const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength).stats;installPet();const statLine=document.createElement('p');statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれるとWORD TOWERとEIKEN DUNGEONで一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;installPet();const statLine=document.createElement('p');statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');startRun(1);
 }
 
