@@ -45,17 +45,17 @@ export function dungeonGradesForStage(stage){
   return ['3級','準2級','2級','準1級'];
 }
 
-export function isBoss(stage,enemyIndex){
-  return Math.max(1,Math.floor(Number(stage)||1))%5===0&&Number(enemyIndex)===2;
+export function isBoss(stage,enemyIndex=0){
+  return Math.max(1,Math.floor(Number(stage)||1))%5===0&&Number(enemyIndex)===0;
 }
 
-export function enemyMaxHp(stage,enemyIndex){
-  const s=Math.max(1,Math.floor(Number(stage)||1)),i=Math.max(0,Math.min(2,Math.floor(Number(enemyIndex)||0)));
-  const base=5+s+i*2;
-  return Math.round(base*(isBoss(s,i)?1.75:1));
+export function enemyMaxHp(stage,enemyIndex=0){
+  const s=Math.max(1,Math.floor(Number(stage)||1));
+  const base=5+s;
+  return Math.round(base*(isBoss(s,enemyIndex)?1.75:1));
 }
 
-export function enemyAttack(stage,enemyIndex){
+export function enemyAttack(stage,enemyIndex=0){
   const s=Math.max(1,Math.floor(Number(stage)||1));
   return 3+Math.floor((s-1)/5)+(isBoss(s,enemyIndex)?2:0);
 }
