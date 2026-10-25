@@ -168,7 +168,6 @@ async function realtimeChecks(page,mode){
   assert.ok(next.y+next.height<=height,JSON.stringify({width,height,next}));
   assert.equal(await page.evaluate(()=>scrollY),0);
   await page.screenshot({animations:'disabled',path:`../battle-${mode}-${width}.png`,fullPage:true});
-  await page.locator('#nextBtn').click();
   await page.waitForSelector('#attackPanel:not([hidden])');
   assert.equal(await page.evaluate(()=>scrollY),0);
   await page.locator('a.back[href="./"]').click();
