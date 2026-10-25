@@ -28,8 +28,9 @@ function install() {
     const u=new URL(value,root);
     return u.origin===root.origin && (allowed.has(canonical(u.pathname)) || canonical(u.pathname)===homePath);
   }
+  const sidebarIcon = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg>';
   const shell = document.createElement('div'); shell.id='monstudyShell';
-  shell.innerHTML = `<header class="ms-header"><button class="ms-menu" type="button" aria-label="メニューを開く" aria-controls="msSidebar" aria-expanded="false">☰</button><div class="ms-brand"></div><span class="ms-current" aria-live="polite">ホーム</span><div class="ms-account"></div><button class="ms-focus" type="button" aria-pressed="false">集中モード</button></header><button class="ms-shade" type="button" aria-label="メニューを閉じる" hidden></button><aside class="ms-sidebar" id="msSidebar" aria-label="共通メニュー"><nav><a class="ms-home" href="${root.href}"><span aria-hidden="true">⌂</span> ホーム</a><p class="ms-nav-label">教材カテゴリー</p><div class="ms-groups"></div><p class="ms-nav-label">ペットと学習</p><div class="ms-features"></div></nav><span class="ms-sidebar-foot">もんすたでぃ · ver2.1.2</span></aside><section class="ms-workspace"><div class="ms-home-content"></div><iframe class="ms-material" title="教材" allow="microphone; autoplay; fullscreen" hidden></iframe><p class="ms-status" role="status" hidden></p></section>`;
+  shell.innerHTML = `<header class="ms-header"><button class="ms-menu" type="button" aria-label="メニューを開く" aria-controls="msSidebar" aria-expanded="false" title="サイドバーを表示">${sidebarIcon}</button><a class="ms-brand" href="${root.href}" aria-label="もんすたでぃ ホーム"></a><span class="ms-current" aria-live="polite">ホーム</span><div class="ms-account"></div></header><button class="ms-shade" type="button" aria-label="メニューを閉じる" hidden></button><aside class="ms-sidebar" id="msSidebar" aria-label="共通メニュー"><nav><div class="ms-home-row"><a class="ms-home" href="${root.href}"><span aria-hidden="true">⌂</span> ホーム</a><button class="ms-sidebar-toggle" type="button" aria-label="サイドバーを隠す" title="サイドバーを隠す" aria-controls="msSidebar">${sidebarIcon}</button></div><p class="ms-nav-label">教材カテゴリー</p><div class="ms-groups"></div><p class="ms-nav-label">ペットと学習</p><div class="ms-features"></div></nav><span class="ms-sidebar-foot">もんすたでぃ · ver2.1.3</span></aside><section class="ms-workspace"><div class="ms-home-content"></div><iframe class="ms-material" title="教材" allow="microphone; autoplay; fullscreen" hidden></iframe><p class="ms-status" role="status" hidden></p></section>`;
   document.body.prepend(shell);
   shell.querySelector('.ms-brand').append(topbar.querySelector('.logo'));
   shell.querySelector('.ms-account').append(topbar.querySelector('.auth-area'));
@@ -86,7 +87,7 @@ function install() {
     title.textContent=current?materialName(u):'ホーム';document.title=title.textContent+'｜もんすたでぃ';
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release','2.1.2');frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
+    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release','2.1.3');frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
     else {frame.removeAttribute('src');status.hidden=true;}
     mobileMenu(false);closeGroups();shell.querySelector('.ms-workspace').scrollTop=0;
   }
@@ -110,11 +111,16 @@ function install() {
     const u=new URL(a.href);if(a.getAttribute('href').startsWith('#'))return;
     if(canOpen(u)){e.preventDefault();if(navigate(u))document.querySelectorAll('dialog[open]').forEach(d=>d.close());}
   });
-  menu.onclick=()=>mobileMenu(!shell.classList.contains('ms-menu-open'));shade.onclick=()=>mobileMenu(false);
-  const focus=shell.querySelector('.ms-focus');
-  function setFocus(value){shell.classList.toggle('ms-concentrated',value);focus.textContent=value?'メニューを戻す':'集中モード';focus.setAttribute('aria-pressed',String(value));}
-  focus.onclick=()=>{const value=!shell.classList.contains('ms-concentrated');setFocus(value);try{localStorage.setItem('monstudy-focus',String(value));}catch{}};
-  try{setFocus(localStorage.getItem('monstudy-focus')==='true');}catch{}
+  const mobile = matchMedia('(max-width:800px)');
+  function setSidebarHidden(value){
+    shell.classList.toggle('ms-concentrated',value);
+    try{localStorage.setItem('monstudy-focus',String(value));}catch{}
+  }
+  menu.onclick=()=>{if(mobile.matches)mobileMenu(!shell.classList.contains('ms-menu-open'));else{setSidebarHidden(false);shell.querySelector('.ms-sidebar-toggle').focus();}};
+  shade.onclick=()=>mobileMenu(false);
+  shell.querySelector('.ms-sidebar-toggle').onclick=()=>{if(mobile.matches)mobileMenu(false);else setSidebarHidden(true);menu.focus();};
+  try{setSidebarHidden(localStorage.getItem('monstudy-focus')==='true');}catch{}
+  mobile.addEventListener('change',()=>mobileMenu(false));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!hasModal()){closeGroups();mobileMenu(false);menu.focus();}});
   window.addEventListener('popstate',e=>{
     if(restoring){restoring=false;return;}
