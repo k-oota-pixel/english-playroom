@@ -32,7 +32,8 @@ let records=readRecords();
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey)||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
 function writeRecords(){try{localStorage.setItem(storageKey,JSON.stringify(records))}catch{}}
 function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function randomElement(){const keys=Object.keys(ELEMENTS);return keys[Math.floor(Math.random()*keys.length)]}
+function randomEnemyElement(){const keys=['fire','water','leaf'];return keys[Math.floor(Math.random()*keys.length)]}
+function assignElements(cards){const deck=shuffle(Object.keys(ELEMENTS));return cards.map((card,index)=>({...card,element:deck[index%deck.length]}))}
 function formatStage(n){return mode==='tower'?`${n}F`:`B${n}`}
 function bestKey(){return mode==='tower'?'towerBest':'dungeonBest'}
 function currentBest(){return Math.max(1,Number(records[bestKey()])||1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1)}
@@ -87,18 +88,18 @@ function syncHud(){
   const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=isBoss(stage,enemyIndex)?'BOSS':'ENEMY';els.enemyVisual.textContent=enemyEmoji();
 }
 
-function createEnemy(){enemyElement=randomElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';syncHud();prepareTurn()}
+function createEnemy(){enemyElement=randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';syncHud();prepareTurn()}
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
 function towerCards(){
   const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();
-  return indexes.map((idx,pos)=>{
+  return assignElements(indexes.map((idx,pos)=>{
     const level=LEVELS[idx],pool=vocab[level.id]||[];let item=null;
     for(const candidate of shuffle(pool)){if(!used.has(candidate.id)){item=candidate;break}}
     item=item||pool[0]||Object.values(vocab)[0][0];used.add(item.id);
-    return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,element:randomElement(),power:attackPowerForLevel(level.id,stage)};
-  })
+    return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)};
+  }))
 }
-function dungeonCards(){return shuffle(dungeonGradesForStage(stage)).map((grade,pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,element:randomElement(),power:attackPowerForGrade(grade,stage)}))}
+function dungeonCards(){return assignElements(shuffle(dungeonGradesForStage(stage)).map((grade,pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,power:attackPowerForGrade(grade,stage)})))}
 function prepareTurn(){if(!runActive||busy)return;selectedAttack=null;turnCards=mode==='tower'?towerCards():dungeonCards();els.quizPanel.hidden=true;els.attackPanel.hidden=false;renderAttackCards()}
 function renderAttackCards(){
   els.attackGrid.replaceChildren();
@@ -148,7 +149,7 @@ async function advance(){
     if(enemyIndex>=3){enemyIndex=0;stage++;await updateBest(stage);flash(mode==='tower'?`${stage}F!`:`B${stage}!`)}
     busy=false;createEnemy();return;
   }
-  els.quizPanel.hidden=true;prepareTurn();busy=false;
+  els.quizPanel.hidden=true;busy=false;prepareTurn();
 }
 
 async function updateBest(value){
