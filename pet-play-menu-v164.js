@@ -2,6 +2,24 @@ let menu=null,bypassOriginal=false;
 
 const GAMES=Object.freeze([
   {
+    id:'word-tower',
+    title:'WORD TOWER',
+    eyebrow:'VOCABULARY · BATTLE',
+    icon:'🗼',
+    desc:'英単語の意味を当ててペットが攻撃。弱点属性と難しい単語を使いこなし、どこまで塔を登れるか挑戦！',
+    meta:'3 ENEMIES / FLOOR · 5FごとにBOSS',
+    href:'./pet-adventure/?mode=tower'
+  },
+  {
+    id:'eiken-dungeon',
+    title:'EIKEN DUNGEON',
+    eyebrow:'EIKEN · VOCAB & GRAMMAR',
+    icon:'🕳️',
+    desc:'英検級と属性を選ぶと4択問題が出現。正解で攻撃、不正解なら敵の反撃。地底の最深部を目指そう！',
+    meta:'4級〜準1級 · 3 ENEMIES / DEPTH',
+    href:'./pet-adventure/?mode=dungeon'
+  },
+  {
     id:'pet-catch',
     title:'PET CATCH',
     eyebrow:'VOCABULARY · ACTION',
@@ -51,7 +69,7 @@ function launch(game){
 
 function openMenu(){
   installStyles();ensureMenu();
-  menu.innerHTML=`<div class="pet-game-menu-shell"><button class="pet-game-menu-close" type="button" aria-label="閉じる">×</button><div class="pet-game-menu-kicker">PET PLAY</div><div class="pet-game-menu-title">どのゲームで遊ぶ？</div><p class="pet-game-menu-sub">ペットといっしょに遊べるミニゲームを選ぼう。これからゲームを追加していきます。</p><div class="pet-game-menu-grid"></div><div class="pet-game-menu-foot">ゲームは今後ここに追加されます。</div></div>`;
+  menu.innerHTML=`<div class="pet-game-menu-shell"><button class="pet-game-menu-close" type="button" aria-label="閉じる">×</button><div class="pet-game-menu-kicker">PET PLAY</div><div class="pet-game-menu-title">どのゲームで遊ぶ？</div><p class="pet-game-menu-sub">ペットといっしょに遊べるゲームを選ぼう。英語力で冒険の記録を伸ばそう！</p><div class="pet-game-menu-grid"></div><div class="pet-game-menu-foot">最高到達記録はゲームごとに保存されます。</div></div>`;
   menu.querySelector('.pet-game-menu-close').addEventListener('click',()=>menu.close());
   const grid=menu.querySelector('.pet-game-menu-grid');
   for(const game of GAMES){
