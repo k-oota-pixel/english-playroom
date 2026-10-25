@@ -23,10 +23,11 @@ test('dungeon replaces the easiest grade with pre-1 deeper down',()=>{
   assert.deepEqual(dungeonGradesForStage(16),['3級','準2級','2級','準1級']);
 });
 
-test('every fifth stage has a stronger third-enemy boss',()=>{
-  assert.equal(isBoss(5,2),true);
+test('every fifth stage makes the single enemy a boss',()=>{
+  assert.equal(isBoss(5,0),true);
   assert.equal(isBoss(5,1),false);
-  assert.ok(enemyMaxHp(5,2)>enemyMaxHp(5,1));
+  assert.equal(isBoss(4,0),false);
+  assert.ok(enemyMaxHp(5,0)>enemyMaxHp(4,0));
 });
 
 test('harder EIKEN grades reward greater attack power',()=>{
