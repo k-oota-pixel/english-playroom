@@ -35,10 +35,25 @@ let records=readRecords();
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
 let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
-  if(!adventureRunId||!adventureRunUser)return;
+  if(!adventureRunId||!adventureRunUser)return Promise.resolve();
   const event={kind,sessionId:adventureRunId,floor:stage,itemId:`${adventureRunId}-${stage}`,eventId:`${adventureRunId}-${eventSuffix||kind}`,expectedUid:adventureRunUser,...payload};
   const request=window.EnglishPlayroomCoins?.recordTitleEvent?.(mode==='tower'?'word-tower':'eiken-dungeon',event);
-  Promise.resolve(request).catch(error=>console.warn('Adventure title event deferred',error));
+  return Promise.resolve(request).catch(error=>console.warn('Adventure title event deferred',error));
+}
+async function waitForTitleDialogsToClose(){
+  while(true){
+    const dialogs=[...document.querySelectorAll('.titles-dialog[open]')];
+    if(!dialogs.length)return;
+    await Promise.race(dialogs.map(dialog=>new Promise(resolve=>dialog.addEventListener('close',resolve,{once:true}))));
+  }
+}
+async function continueAfterDefeat(titleRequest,runId,clearedStage){
+  await Promise.all([Promise.resolve(titleRequest),new Promise(resolve=>setTimeout(resolve,650))]);
+  await waitForTitleDialogsToClose();
+  if(!runActive||adventureRunId!==runId||stage!==clearedStage||enemyHp>0||playerHp<=0)return;
+  enemyIndex=0;stage++;awardMilestoneCoin();
+  // Only start the next enemy's realtime clock after any earned-title dialog is closed.
+  void updateBest(stage);createEnemy();if(!isBoss(stage,enemyIndex))flash(mode==='tower'?`${stage}F!`:`B${stage}!`);
 }
 function awardMilestoneCoin(){
   if(stage<10||stage%10!==0||!adventureRunId)return;
@@ -103,7 +118,7 @@ function configureMode(){
   els.attackHint.textContent='相性の良い攻撃でCRITICAL';
   els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>10層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
-  els.helpBody.innerHTML+='<p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML+='<p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進み、先へ進むほど攻撃が速くなります。素早く正解して連続攻撃しよう。解答後は自動で次へ進みます。一時停止・遊び方・別タブ表示中は時間が止まります。敵撃破時に新しい称号を獲得した場合は、称号画面を閉じてから次の敵が現れます。</p>';
 }
 
 async function loadVocabulary(){
@@ -209,26 +224,28 @@ function animate(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classLi
 function revealAnswers(chosenIndex,correctIndex){[...els.answerGrid.children].forEach((b,i)=>{b.disabled=true;if(i===correctIndex)b.classList.add('correct');else if(i===chosenIndex)b.classList.add('wrong')})}
 function answerQuestion(index){
   if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);recordAdventureTitle('answer',{itemId:String(q.id),correct,critical:correct&&elementMultiplier(selectedAttack.element,enemyElement)>1},`answer-${++answerSequence}`);
+  let defeatTitleRequest=null;
   if(correct){
     const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;
-    if(enemyHp===0)recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);
+    if(enemyHp===0)defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);
     if(enemyHp===0&&isBoss(stage,enemyIndex)){playerHp=stats.hp;els.answerFeedback.textContent+=' ボス撃破！ HP全回復！';flash('BOSS CLEAR!\nHP FULL!');}
   }else{
     flash('MISS!');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 正解を確認して次の攻撃へ。';
   }
-  selectedAttack=null;syncHud();els.nextBtn.hidden=false;
-  els.nextBtn.textContent=enemyHp<=0?(mode==='tower'?'次の階へ →':'次の層へ →'):'次の攻撃 →';
-  pendingAdvanceMs=enemyHp<=0?650:correct?450:1100;busy=false;
+  selectedAttack=null;syncHud();
+  if(enemyHp<=0){
+    els.nextBtn.hidden=true;pendingAdvanceMs=null;
+    void continueAfterDefeat(defeatTitleRequest,adventureRunId,stage);
+  }else{
+    els.nextBtn.hidden=false;els.nextBtn.textContent='次の攻撃 →';pendingAdvanceMs=correct?450:1100;
+  }
+  busy=false;
 }
 
 function advance(){
   if(busy||!runActive||isBattlePaused()||playerHp<=0)return;
   pendingAdvanceMs=null;
-  if(enemyHp<=0){
-    enemyIndex=0;stage++;awardMilestoneCoin();
-    // Persist in parallel so a slow connection never blocks the next enemy.
-    void updateBest(stage);createEnemy();if(!isBoss(stage,enemyIndex))flash(mode==='tower'?`${stage}F!`:`B${stage}!`);return;
-  }
+  if(enemyHp<=0)return;
   els.quizPanel.hidden=true;prepareTurn();
 }
 
