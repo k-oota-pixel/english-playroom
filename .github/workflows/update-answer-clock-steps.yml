@@ -1,0 +1,21 @@
+name: Update answer clock steps
+on:
+  push:
+    paths:
+      - '.github/workflows/update-answer-clock-steps.yml'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Step fake clock across capped frames
+        run: sed -i 's/await page.clock.runFor(500);/for(let tick=0;tick<4;tick++)await page.clock.runFor(250);/' tests/adventure-selection-browser.cjs
+      - name: Commit test update
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tests/adventure-selection-browser.cjs
+          git commit -m "Step fake clock through automatic answer transition"
+          git push
