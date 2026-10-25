@@ -49,11 +49,11 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');
-  els.modeTitle.textContent=mode==='tower'?'WORD TOWER':'EIKEN DUNGEON';
+  els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.towerTab.classList.toggle('active',mode==='tower');els.dungeonTab.classList.toggle('active',mode==='dungeon');
   els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';
   els.attackHint.textContent='弱点属性なら ×2 DAMAGE';
-  els.helpTitle.textContent=mode==='tower'?'WORD TOWER':'EIKEN DUNGEON';
+  els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。</li><li>10階ごとに単語レベルが上がります。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解では敵が反撃。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。</li><li>B16以降は準1級が攻撃候補に登場。</li></ul>';
 }
 
@@ -68,7 +68,7 @@ async function loadVocabulary(){
     }
     vocab=next;return true;
   }catch(error){
-    console.warn('WORD TOWER vocabulary fallback',error);
+    console.warn('魔王の塔 vocabulary fallback',error);
     vocab=Object.fromEntries(LEVELS.map(level=>[level.id,FALLBACK_WORDS[level.id].map((x,i)=>({id:`fallback-${level.id}-${i}`,word:x[0],meaning:x[1]}))]));return false;
   }
 }
@@ -80,7 +80,7 @@ async function loadEikenQuestions(){
     if(!raw)throw Error('question-data not found');
     const parsed=JSON.parse(raw).filter(q=>q&&q.id&&q.grade&&q.question&&Array.isArray(q.choices)&&q.choices.length>=4&&Number(q.answer_number)>0);
     if(parsed.length<20)throw Error('question bank is too small');questions=parsed;return true;
-  }catch(error){console.warn('EIKEN DUNGEON question fallback',error);questions=FALLBACK_EIKEN;return false}
+  }catch(error){console.warn('魔物の巣窟 question fallback',error);questions=FALLBACK_EIKEN;return false}
 }
 
 function petMarkup(data){const juvenile=data.petAdult===false||!data.petAppearance;try{return renderPetSVG(juvenile?null:data.petAppearance,data.petShop||{},juvenile?'baby':'adult')}catch{return '🐾'}}
@@ -183,7 +183,7 @@ async function init(){
   const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();
   const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;
   if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれるとWORD TOWERとEIKEN DUNGEONで一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;installPet();const statLine=document.createElement('p');statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;installPet();const statLine=document.createElement('p');statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');startRun(1);
 }
 

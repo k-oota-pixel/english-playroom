@@ -1,0 +1,21 @@
+name: Eigo Dungeons regression
+on:
+  push:
+    branches: [main]
+    paths: ['pet-adventure/**', 'pet-play*.js', 'tests/adventure-selection-browser.cjs']
+  pull_request:
+    paths: ['pet-adventure/**', 'pet-play*.js', 'tests/adventure-selection-browser.cjs']
+permissions:
+  contents: read
+jobs:
+  adventure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: node --test tests/pet-adventure.test.js tests/pet-strength.test.js tests/release-version.test.js
+      - run: node tests/adventure-selection-browser.cjs
