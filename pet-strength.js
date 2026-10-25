@@ -92,7 +92,13 @@ if(button){
    const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!hasPet(data)||state.available<1;add.onclick=()=>save(key);
    row.append(text,add);body.append(row);
   }
-  const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」`:'すべての魔法を習得済み！';body.append(magic);
+  const magicEffect=spell=>spell.kind==='heal'?`HPを${spell.base-2}〜${spell.base+2}回復`:`敵に${spell.base-2}〜${spell.base+2}ダメージ`;
+  const learned=MAGIC_SPELLS.filter(spell=>spell.level<=level),list=document.createElement('section');list.className='strength-magic-list';
+  const heading=document.createElement('h3');heading.textContent='習得済みの魔法';list.append(heading);
+  for(const spell of learned){const item=document.createElement('p');item.innerHTML=`<strong>${spell.name}</strong><span>${magicEffect(spell)} ／ 消費MP ${spell.mpCost}</span>`;list.append(item);}
+  if(!learned.length){const empty=document.createElement('p');empty.textContent='まだ魔法を習得していません。';list.append(empty);}body.append(list);
+  const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」
+${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法を習得済み！';body.append(magic);
   const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです（レベルは下がりません）。':'ペットが生まれると強化できます。';body.append(note);
  }
 

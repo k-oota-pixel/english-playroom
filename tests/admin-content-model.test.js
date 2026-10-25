@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {ADMIN_CONTENTS,adminContentRows} from '../admin-content-model.js';
-test('all twelve learning activities have a visible card, including those without records',()=>{
- const rows=adminContentRows();assert.equal(rows.length,12);assert.equal(new Set(rows.map(r=>r.id)).size,12);assert.ok(rows.every(r=>!r.recorded&&r.lines.length===0));
+test('all fourteen learning activities have a visible card, including those without records',()=>{
+ const rows=adminContentRows();assert.equal(rows.length,14);assert.equal(new Set(rows.map(r=>r.id)).size,14);assert.ok(rows.every(r=>!r.recorded&&r.lines.length===0));
  for(const id of ['word-breaker','listening-training','pre2-interview-questions','talk-quest','pet-catch'])assert.ok(ADMIN_CONTENTS.some(c=>c[0]===id));
 });
 test('wallet-based results and separate exercise records populate their own cards',()=>{
@@ -15,4 +15,11 @@ test('per-content timestamps and historic reward records do not leak into other 
 });
 test('retry notebook nested records are summarized without exposing or discarding its saved answers',()=>{
  const apps={'eiken-retry':{state:{records:{q1:{attempts:3,correct:1,pending:false,updatedAt:10000},q2:{attempts:1,correct:0,pending:true,updatedAt:20000}}}}};const before=JSON.stringify(apps),row=adminContentRows(apps).find(r=>r.id==='eiken-retry');assert.deepEqual(row.lines,['取り組んだ問題：2','解答回数：4','正解数：1','復習が必要な問題：1']);assert.equal(row.lastLearningAt,20000);assert.equal(JSON.stringify(apps),before);
+});
+
+test('both dungeon records use their own best progress and activity dates',()=>{
+ const rows=adminContentRows({'english-playroom':{wordTowerBest:23,eikenDungeonBest:7}},{contents:{'word-tower':{lastLearningAt:123}}});
+ assert.deepEqual(rows.find(r=>r.id==='word-tower').lines,['最高到達階：23']);
+ assert.deepEqual(rows.find(r=>r.id==='eiken-dungeon').lines,['最高到達層：7']);
+ assert.equal(rows.find(r=>r.id==='word-tower').lastLearningAt,123);
 });

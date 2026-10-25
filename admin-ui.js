@@ -1,5 +1,5 @@
 import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.6';
-import {adminContentRows} from './admin-content-model.js?v=all-contents-1';
+import {adminContentRows} from './admin-content-model.js?v=2.1.5';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
@@ -69,7 +69,7 @@ async function expand(uid){
 }
 function appCards(apps={},activity={}){return adminContentRows(apps,activity).map(row=>{const lines=[...(row.lastLearningAt?['最終学習日時：'+fmtDate(row.lastLearningAt)]:[]),...row.lines];return `<div class="app" data-content-id="${esc(row.id)}"><strong>${esc(row.label)}</strong><div class="mini">${esc(lines.length?lines.join('\n'):'記録なし')}</div></div>`;}).join('');}
 function rawBlocks(apps={}){return Object.entries(apps).sort(([a],[b])=>a.localeCompare(b)).map(([id,d])=>`<pre><b>${esc(labels[id]||id)}</b>\n${esc(JSON.stringify(d,null,2))}</pre>`).join('')||'<div class="sub">学習記録はまだありません。</div>';}
-function userBody(u){return `<div class="user-body"><div class="meta"><span>最終学習日時: ${esc(fmtDate(u.lastLearningAt))}</span><span>登録: ${esc(fmtDate(u.createdAt))}</span><span>記録: ${adminContentRows(u.apps,u.activity).filter(row=>row.recorded).length} / ${adminContentRows().length}教材</span></div><div class="apps">${appCards(u.apps,u.activity)}</div><div class="grant"><strong>コイン付与</strong><input class="amount" type="number" min="1" max="1000000" step="1" value="10"><button class="quick" data-amount="10">+10</button><button class="quick" data-amount="100">+100</button><button class="quick" data-amount="1000">+1,000</button><button class="quick" data-amount="100000">+100,000</button><button class="btn primary grantBtn" type="button">付与する</button></div><details class="details"><summary>保存されている学習記録を詳しく見る</summary><div class="raw">${rawBlocks(u.apps)}</div></details></div>`;}
+function userBody(u){return `<div class="user-body"><div class="meta"><span>最終学習日時: ${esc(fmtDate(u.lastLearningAt))}</span><span>登録: ${esc(fmtDate(u.createdAt))}</span><span>記録: ${adminContentRows(u.apps,u.activity).filter(row=>row.recorded).length} / ${adminContentRows().length}教材</span></div><div class="apps">${appCards(u.apps,u.activity)}</div><div class="grant"><strong>コイン付与</strong><input class="amount" type="number" min="1" max="1000000" step="1" value="10"><button class="quick" data-amount="10">+10</button><button class="quick" data-amount="100">+100</button><button class="quick" data-amount="1000">+1,000</button><button class="quick" data-amount="100000">+100,000</button><button class="btn primary grantBtn" type="button">付与する</button><button class="btn resetPetNameBtn" type="button">ペット名をリセットする</button></div><details class="details"><summary>保存されている学習記録を詳しく見る</summary><div class="raw">${rawBlocks(u.apps)}</div></details></div>`;}
 function render(){
  const q=searchQuery(),searching=!!q,list=searching?(searchResults||[]):allUsers;
  if(searching){
@@ -85,6 +85,7 @@ function render(){
  document.querySelectorAll('.user-summary').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));
  document.querySelectorAll('.detail-retry').forEach(b=>b.onclick=()=>{const uid=b.closest('.user').dataset.uid;detailCache.delete(uid);expandedUid='';expand(uid);});
  document.querySelectorAll('.quick').forEach(b=>b.onclick=()=>b.closest('.user').querySelector('.amount').value=b.dataset.amount);
+ document.querySelectorAll('.resetPetNameBtn').forEach(b=>b.onclick=()=>resetPetName(b.closest('.user')));
  document.querySelectorAll('.grantBtn').forEach(b=>b.onclick=()=>grant(b.closest('.user')));
 }
 async function grant(card){const uid=card.dataset.uid,amount=Math.floor(Number(card.querySelector('.amount').value));if(!Number.isFinite(amount)||amount<1||amount>1000000){setStatus('付与コインは1〜1,000,000で入力してください。','error');return;}const visible=(searchResults||[]).find(x=>x.uid===uid),u=visible||allUsers.find(x=>x.uid===uid),label=u?.nickname||'このユーザー';if(!confirm(`${label} に ${amount.toLocaleString('ja-JP')}コイン付与しますか？`))return;const own=generation;try{card.querySelector('.grantBtn').disabled=true;const r=await api('/api/admin/coins',{method:'POST',body:JSON.stringify({uid,amount})});if(own!==generation)return;
@@ -93,6 +94,18 @@ async function grant(card){const uid=card.dataset.uid,amount=Math.floor(Number(c
  if(searchResults)for(const item of searchResults)if(item.uid===uid)item.coins=r.coins;
  const detail=detailCache.get(uid);if(detail?.apps?.['english-playroom'])detail.apps['english-playroom'].coins=r.coins;
  setStatus(label+' に '+amount.toLocaleString('ja-JP')+'コイン付与しました。','ok');render();}catch(e){if(own===generation)setStatus(e.message,'error');}finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .grantBtn`);if(btn)btn.disabled=false;}}
+async function resetPetName(card){
+ const uid=card.dataset.uid,u=(searchResults||[]).find(x=>x.uid===uid)||allUsers.find(x=>x.uid===uid),label=u?.nickname||'このユーザー';
+ if(!confirm(label+' のペット名をリセットしますか？ユーザーに再設定を案内します。'))return;
+ const own=generation;card.querySelector('.resetPetNameBtn').disabled=true;
+ try{
+  await api('/api/admin/pet-name-reset',{method:'POST',body:JSON.stringify({uid})});if(own!==generation)return;
+  for(const page of pageCache.values())for(const item of page.users)if(item.uid===uid)item.petName='';
+  for(const item of [...allUsers,...(searchResults||[])])if(item.uid===uid)item.petName='';
+  detailCache.delete(uid);expandedUid='';await expand(uid);setStatus(label+' のペット名をリセットしました。','ok');
+ }catch(e){if(own===generation)setStatus(e.message,'error');}
+ finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .resetPetNameBtn`);if(btn)btn.disabled=false;}
+}
 const usagePanel=createMaterialUsagePanel({host:$('updated'),request:()=>api('/api/admin/material-usage'),getIdentity:()=>auth.currentUser?.uid});
 $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.message,'error'));
 $('logout').onclick=()=>signOut(auth);
