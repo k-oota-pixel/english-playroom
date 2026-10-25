@@ -2,10 +2,11 @@ import {auth,db,walletRef} from './coin-reward.js';
 import {onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
 import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js';
-import {BASE_STATS,titleCount,strengthState,allocatePoint,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.9';
+import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.22';
+import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
 const RESPEC_PRICE=30;
-const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0});
+const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0,mp:0});
 
 export async function loadStrengthTitles(user){
  const token=await user.getIdToken();
@@ -17,7 +18,7 @@ export async function loadStrengthTitles(user){
 }
 
 function generationOf(data={}){const n=Number(data.petGeneration);return Number.isSafeInteger(n)&&n>0?n:1;}
-function allocationTotal(allocation={}){return ['hp','attack','defense'].reduce((sum,key)=>{const n=Number(allocation?.[key]);return sum+(Number.isSafeInteger(n)&&n>0?n:0);},0);}
+function levelPointsOf(data={}){const n=Number(data.petStrengthLevelPoints),stored=Number.isSafeInteger(n)&&n>0?n:0;return Math.max(stored,allocationTotal(data.petStrength));}
 function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.generation);return Number.isSafeInteger(n)&&n>0?n:0;}
 
 function needsStatReconcile(data={}){
@@ -27,7 +28,7 @@ function needsStatReconcile(data={}){
   return !hasIndividualBaseStats(data.petBaseStats)||storedGeneration!==generation||afterDeparture;
  }
  if(!data.petLastDeparture)return false;
- return allocationTotal(data.petStrength)>0||data.petBaseStats!=null||storedGeneration!==generation;
+ return allocationTotal(data.petStrength)>0||data.petBaseStats!=null||storedGeneration!==generation||levelPointsOf(data)>0;
 }
 
 async function reconcilePetStats(user,source={}){
@@ -39,14 +40,14 @@ async function reconcilePetStats(user,source={}){
   const generation=generationOf(data),storedGeneration=Number(data.petBaseStatsGeneration)||0;
   if(!hasPet(data)){
    if(!data.petLastDeparture)return data;
-   const patch={petStrength:{...EMPTY_STRENGTH},petBaseStats:null,petBaseStatsGeneration:generation,petUpdatedAt:serverTimestamp()};
+   const patch={petStrength:{...EMPTY_STRENGTH},petStrengthLevelPoints:0,petBaseStats:null,petBaseStatsGeneration:generation,petUpdatedAt:serverTimestamp()};
    tx.set(ref,patch,{merge:true});
    return {...data,...patch};
   }
   const generationChanged=storedGeneration>0&&storedGeneration!==generation;
   const migratedAfterDeparture=!storedGeneration&&lastDepartureGeneration(data)>0&&lastDepartureGeneration(data)<generation;
   const patch={petBaseStats:hasIndividualBaseStats(data.petBaseStats)&&!generationChanged?data.petBaseStats:candidate,petBaseStatsGeneration:generation,petUpdatedAt:serverTimestamp()};
-  if(generationChanged||migratedAfterDeparture)patch.petStrength={...EMPTY_STRENGTH};
+  if(generationChanged||migratedAfterDeparture){patch.petStrength={...EMPTY_STRENGTH};patch.petStrengthLevelPoints=0;}
   tx.set(ref,patch,{merge:true});
   return {...data,...patch};
  });
@@ -62,11 +63,18 @@ function queueReconcile(user,data){
 
 document.addEventListener('pet-state-updated',event=>{const user=auth.currentUser;if(user)queueReconcile(user,event.detail||{});});
 
+function showLevelUp(level){
+ const learned=magicAtLevel(level),dialog=document.createElement('dialog');dialog.className='strength-levelup-dialog';
+ const magic=learned?`<div class="levelup-magic"><span>✨ NEW MAGIC!</span><strong>${learned.name}</strong><small>${learned.description} · MP ${learned.mpCost}</small></div>`:'';
+ dialog.innerHTML=`<div class="levelup-card"><div class="levelup-stars">✦ ✨ ✦</div><span class="levelup-kicker">LEVEL UP!</span><strong class="levelup-level">Lv.${level}</strong>${magic}<button type="button">OK！</button></div>`;
+ document.body.append(dialog);const close=()=>dialog.close();dialog.querySelector('button').onclick=close;dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
+}
+
 const button=document.getElementById('petStrengthOpen');
 if(button){
  const dialog=document.createElement('dialog');
  dialog.className='strength-dialog';dialog.setAttribute('aria-labelledby','strengthHeading');
- dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力は＋1ずつ強化できます。</p><div data-body></div><p data-message role="status"></p>';
+ dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力・MPは＋1ずつ強化できます。初めて使う強化ポイント1つにつきレベルが1上がります。</p><div data-body></div><p data-message role="status"></p>';
  document.body.append(dialog);
  const body=dialog.querySelector('[data-body]'),message=dialog.querySelector('[data-message]');
  let busy=false,generation=0;
@@ -74,16 +82,18 @@ if(button){
  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
 
  function render(count,data){
-  const state=strengthState(count,data.petStrength,data.petBaseStats);body.replaceChildren();
+  const state=strengthState(count,data.petStrength,data.petBaseStats),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
+  const levelCard=document.createElement('div');levelCard.className='strength-level-card';levelCard.innerHTML=`<span>PET LEVEL</span><strong>Lv.${level}</strong>`;body.append(levelCard);
   const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
   const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
-  for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1]]){
+  for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1],['mp','MP',1]]){
    const row=document.createElement('div');row.className='strength-row';
    const text=document.createElement('strong');text.textContent=`${label}　${state.stats[key]}`;
    const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!hasPet(data)||state.available<1;add.onclick=()=>save(key);
    row.append(text,add);body.append(row);
   }
-  const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです。':'ペットが生まれると強化できます。';body.append(note);
+  const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」`:'すべての魔法を習得済み！';body.append(magic);
+  const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです（レベルは下がりません）。':'ペットが生まれると強化できます。';body.append(note);
  }
 
  async function load(){
@@ -104,14 +114,18 @@ if(button){
   const id=generation;busy=true;body.querySelectorAll('button').forEach(b=>b.disabled=true);message.textContent='保存中…';
   try{
    const count=await loadStrengthTitles(user);
-   const data=await runTransaction(db,async tx=>{
+   const result=await runTransaction(db,async tx=>{
     if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
     if(!hasPet(data))throw Error('ペットが生まれると強化できます。');
-    const petStrength=allocatePoint(count,data.petStrength,key);tx.set(ref,{petStrength},{merge:true});return {...data,petStrength};
+    const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key);
+    const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength)),afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
+    tx.set(ref,{petStrength,petStrengthLevelPoints,petUpdatedAt:serverTimestamp()},{merge:true});
+    return {data:{...data,petStrength,petStrengthLevelPoints},beforeLevel,afterLevel};
    });
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
-   busy=false;render(count,data);message.textContent='強化を保存しました！';
+   busy=false;render(count,result.data);message.textContent='強化を保存しました！';
+   if(result.afterLevel>result.beforeLevel)showLevelUp(result.afterLevel);
   }catch(e){if(id===generation){message.textContent=e.message||'保存できませんでした。閉じてもう一度お試しください。';}}
   finally{if(id===generation)busy=false;}
  }
@@ -128,12 +142,12 @@ function ensureRespecShopCard(){
  const note=document.querySelector('#petShopDialog .pet-shop-note');
  if(!note||document.querySelector('#petShopDialog [data-strength-respec-card]'))return;
  const card=document.createElement('section');card.className='pet-strength-respec-card';card.dataset.strengthRespecCard='';
- card.innerHTML='<div><strong>🔄 ステータス振り直し</strong><span>称号で獲得した強化ポイントをすべて未配分に戻します。生まれつきの個体差は変わりません。</span></div><button type="button">🪙 30コインで振り直す</button><small role="status"></small>';
+ card.innerHTML='<div><strong>🔄 ステータス振り直し</strong><span>称号で獲得した強化ポイントをすべて未配分に戻します。生まれつきの個体差とペットレベルは変わりません。</span></div><button type="button">🪙 30コインで振り直す</button><small role="status"></small>';
  note.insertAdjacentElement('afterend',card);
  const buy=card.querySelector('button'),status=card.querySelector('small');
  buy.addEventListener('click',async()=>{
   const user=auth.currentUser;if(!user||shopRespecBusy)return;
-  if(!window.confirm('30コインを使って、強化ポイントをすべて振り直せる状態にしますか？'))return;
+  if(!window.confirm('30コインを使って、強化ポイントをすべて振り直せる状態にしますか？\nペットレベルは下がりません。'))return;
   shopRespecBusy=true;buy.disabled=true;status.textContent='振り直し中…';status.className='';
   try{
    await runTransaction(db,async tx=>{
@@ -142,9 +156,10 @@ function ensureRespecShopCard(){
     if(allocationTotal(data.petStrength)<1)throw Error('振り分け済みの強化ポイントがありません。');
     const coins=Math.max(0,Math.floor(Number(data.coins)||0));
     if(coins<RESPEC_PRICE)throw Error('コインが足りません。');
-    tx.set(ref,{coins:coins-RESPEC_PRICE,petStrength:{...EMPTY_STRENGTH},coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
+    const petStrengthLevelPoints=levelPointsOf(data);
+    tx.set(ref,{coins:coins-RESPEC_PRICE,petStrength:{...EMPTY_STRENGTH},petStrengthLevelPoints,coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
    });
-   status.textContent='振り直し完了！「ペット強化」からポイントを配り直せます。';status.className='ok';
+   status.textContent='振り直し完了！「ペット強化」からポイントを配り直せます。レベルは維持されています。';status.className='ok';
   }catch(error){status.textContent=error?.message||'振り直しできませんでした。';status.className='error';}
   finally{shopRespecBusy=false;buy.disabled=false;}
  });
