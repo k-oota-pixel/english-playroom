@@ -11,7 +11,7 @@ async function load(){
    const row=document.createElement('li'),rank=document.createElement('strong'),identity=document.createElement('span'),name=document.createElement('b'),title=document.createElement('small'),floor=document.createElement('strong');
    rank.textContent=entry.rank+'位';name.textContent=entry.petName;title.textContent='ー'+(entry.title||'称号なし')+'ー';identity.append(name,title);floor.textContent=current==='tower'?entry.floor+'階':'地下'+entry.floor+'層';row.append(rank,identity,floor);list.append(row);
   }
-  status.textContent=data.leaders.length?'記録は約1分ごとに更新されます。':'まだ記録がありません。最初の冒険に挑戦しよう！';
+  status.textContent=data.leaders.length?'自己ベスト更新後にランキングへ反映されます。':'まだ記録がありません。最初の冒険に挑戦しよう！';
  }catch(error){if(requestId===sequence&&error.name!=='AbortError')status.textContent=error.message;}
  finally{if(requestId===sequence)reload.disabled=false;}
 }
