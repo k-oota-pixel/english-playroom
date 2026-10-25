@@ -6,19 +6,19 @@ export const ELEMENTS=Object.freeze({
 });
 
 export const LEVELS=Object.freeze([
-  {id:'junior1',label:'中1',power:10},
-  {id:'junior2',label:'中2',power:14},
-  {id:'junior3',label:'中3',power:18},
-  {id:'high1',label:'高1',power:23},
-  {id:'high2',label:'高2',power:29}
+  {id:'junior1',label:'中1',power:2},
+  {id:'junior2',label:'中2',power:3},
+  {id:'junior3',label:'中3',power:4},
+  {id:'high1',label:'高1',power:5},
+  {id:'high2',label:'高2',power:6}
 ]);
 
 export const GRADES=Object.freeze([
-  {id:'4級',power:10},
-  {id:'3級',power:14},
-  {id:'準2級',power:20},
-  {id:'2級',power:28},
-  {id:'準1級',power:38}
+  {id:'4級',power:2},
+  {id:'3級',power:3},
+  {id:'準2級',power:4},
+  {id:'2級',power:5},
+  {id:'準1級',power:7}
 ]);
 
 const WEAK_TO=Object.freeze({fire:'water',water:'leaf',leaf:'fire'});
@@ -51,13 +51,13 @@ export function isBoss(stage,enemyIndex){
 
 export function enemyMaxHp(stage,enemyIndex){
   const s=Math.max(1,Math.floor(Number(stage)||1)),i=Math.max(0,Math.min(2,Math.floor(Number(enemyIndex)||0)));
-  const base=46+s*5+i*10;
+  const base=5+s+i*2;
   return Math.round(base*(isBoss(s,i)?1.75:1));
 }
 
 export function enemyAttack(stage,enemyIndex){
   const s=Math.max(1,Math.floor(Number(stage)||1));
-  return 9+Math.floor((s-1)/5)*2+(isBoss(s,enemyIndex)?5:0);
+  return 3+Math.floor((s-1)/5)+(isBoss(s,enemyIndex)?2:0);
 }
 
 export function attackPowerForLevel(levelId,stage=1){

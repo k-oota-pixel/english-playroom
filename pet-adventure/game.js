@@ -1,8 +1,10 @@
+import {strengthState,incomingDamage} from '../pet-strength-model.js?v=1.10.8';
+import {loadStrengthTitles} from '../pet-strength.js?v=1.10.8';
 import {getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,authReady,walletRef} from '../coin-reward.js';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js';
-import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js';
+import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonGradesForStage,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,checkpointForBest} from './core.js?v=1.10.8';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -26,7 +28,8 @@ const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon
 const storageKey='monstudy-pet-adventure-v1';
 const els={modeTitle:$('modeTitle'),towerTab:$('towerTab'),dungeonTab:$('dungeonTab'),stageCard:$('stageCard'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petVisual:$('petVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody')};
 
-let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=100,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
+let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
+let stats=strengthState(0).stats;
 let records=readRecords();
 
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey)||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
@@ -83,7 +86,7 @@ function installPet(){const juvenile=petData.petAdult===false||!petData.petAppea
 
 function syncHud(){
   els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent=`ENEMY ${enemyIndex+1} / 3`;els.bestLabel.textContent=formatStage(currentBest());
-  els.petHpBar.style.width=`${Math.max(0,playerHp)}%`;els.petHpText.textContent=`${Math.max(0,playerHp)} / 100`;
+  els.petHpBar.style.width=`${Math.max(0,playerHp)/stats.hp*100}%`;els.petHpText.textContent=`${Math.max(0,playerHp)} / ${stats.hp}`;
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;
   const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=isBoss(stage,enemyIndex)?'BOSS':'ENEMY';els.enemyVisual.textContent=enemyEmoji();
 }
@@ -96,10 +99,10 @@ function towerCards(){
     const level=LEVELS[idx],pool=vocab[level.id]||[];let item=null;
     for(const candidate of shuffle(pool)){if(!used.has(candidate.id)){item=candidate;break}}
     item=item||pool[0]||Object.values(vocab)[0][0];used.add(item.id);
-    return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)};
+    return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)+stats.attack};
   }))
 }
-function dungeonCards(){return assignElements(shuffle(dungeonGradesForStage(stage)).map((grade,pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,power:attackPowerForGrade(grade,stage)})))}
+function dungeonCards(){return assignElements(shuffle(dungeonGradesForStage(stage)).map((grade,pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,power:attackPowerForGrade(grade,stage)+stats.attack})))}
 function prepareTurn(){if(!runActive||busy)return;selectedAttack=null;turnCards=mode==='tower'?towerCards():dungeonCards();els.quizPanel.hidden=true;els.attackPanel.hidden=false;renderAttackCards()}
 function renderAttackCards(){
   els.attackGrid.replaceChildren();
@@ -136,7 +139,7 @@ function answerQuestion(index){
   if(correct){
     const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`WEAKNESS!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'弱点を突いた！ ':' '}敵に${damage}ダメージ。`;
   }else{
-    const damage=enemyAttack(stage,enemyIndex);playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`MISS!\n-${damage} HP`);els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent=`不正解。敵の反撃で${damage}ダメージ！`;
+    const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`MISS!\n-${damage} HP`);els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent=`不正解。敵の反撃で${damage}ダメージ！`;
   }
   syncHud();els.nextBtn.hidden=false;els.nextBtn.textContent=playerHp<=0?'結果を見る →':enemyHp<=0?'次の敵へ →':'次のターン →';busy=false;
 }
@@ -159,7 +162,7 @@ async function updateBest(value){
   try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}
   syncHud();
 }
-function startRun(startAt=1){stage=Math.max(1,startAt);enemyIndex=0;playerHp=100;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();window.scrollTo({top:0,behavior:'smooth'})}
+function startRun(startAt=1){stage=Math.max(1,startAt);enemyIndex=0;playerHp=stats.hp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;createEnemy();window.scrollTo({top:0,behavior:'smooth'})}
 function finishRun(){runActive=false;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。難しい攻撃ほど強いけれど、正解できなければ敵の反撃を受けます。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';const cp=checkpointForBest(currentBest());els.checkpointBtn.hidden=cp<=1;els.checkpointBtn.textContent=`${formatStage(cp)}から再開`;els.resultCard.scrollIntoView({behavior:'smooth',block:'center'})}
 
 function showUnavailable(title,text){els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true}
@@ -169,7 +172,7 @@ async function init(){
   const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();
   const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;
   if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれるとWORD TOWERとEIKEN DUNGEONで一緒に戦えます。');return}installPet()}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれるとWORD TOWERとEIKEN DUNGEONで一緒に戦えます。');return}const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength).stats;installPet();const statLine=document.createElement('p');statLine.className='footnote';statLine.textContent=`HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense}`;els.stageCard.after(statLine)}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');startRun(1);
 }
 
