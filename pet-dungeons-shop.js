@@ -54,7 +54,7 @@ async function buy(item){
 function install(){
  const dialog=document.getElementById('petShopDialog'),tabs=tabsOf(),panel=panelOf();if(!dialog||!tabs||!panel)return;
  ensureStyle();
- if(!tabs.dataset.dungeonsListener){tabs.dataset.dungeonsListener='1';tabs.addEventListener('click',event=>{const target=event.target.closest('.pet-shop-tab');if(target&&!target.dataset.dungeonsTab)active=false;});dialog.addEventListener('close',()=>{active=false;});}
+ if(!tabs.dataset.dungeonsListener){tabs.dataset.dungeonsListener='1';tabs.addEventListener('click',event=>{const target=event.target.closest('.pet-shop-tab');if(target&&!target.dataset.dungeonsTab)active=false;},true);dialog.addEventListener('close',()=>{active=false;});}
  let button=tabs.querySelector('[data-dungeons-tab]');
  if(!button){button=document.createElement('button');button.type='button';button.className='pet-shop-tab';button.dataset.dungeonsTab='1';button.textContent='⚔️ ダンジョンズ';button.addEventListener('click',()=>{active=true;for(const b of tabs.querySelectorAll('.pet-shop-tab'))b.classList.remove('active');button.classList.add('active');panel.innerHTML='<div data-dungeon-shop-panel="1" class="pet-shop-panel-title">⚔️ ダンジョンズ　読み込み中…</div>';void loadAndRender();});tabs.append(button);}
  if(active){for(const b of tabs.querySelectorAll('.pet-shop-tab'))b.classList.toggle('active',b===button);if(!panel.querySelector('[data-dungeon-shop-panel]'))void loadAndRender();}

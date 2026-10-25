@@ -139,11 +139,11 @@ if(button){
 
 let shopRespecBusy=false;
 function ensureRespecShopCard(){
- const note=document.querySelector('#petShopDialog .pet-shop-note');
+ const note=document.querySelector('#petShopDialog [data-dungeon-shop-panel] .dungeon-shop-note');
  if(!note||document.querySelector('#petShopDialog [data-strength-respec-card]'))return;
  const card=document.createElement('section');card.className='pet-strength-respec-card';card.dataset.strengthRespecCard='';
  card.innerHTML='<div><strong>🔄 ステータス振り直し</strong><span>称号で獲得した強化ポイントをすべて未配分に戻します。生まれつきの個体差とペットレベルは変わりません。</span></div><button type="button">🪙 30コインで振り直す</button><small role="status"></small>';
- note.insertAdjacentElement('afterend',card);
+ note.insertAdjacentElement('beforebegin',card);
  const buy=card.querySelector('button'),status=card.querySelector('small');
  buy.addEventListener('click',async()=>{
   const user=auth.currentUser;if(!user||shopRespecBusy)return;
