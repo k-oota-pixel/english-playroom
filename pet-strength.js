@@ -92,7 +92,7 @@ if(button){
    const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!hasPet(data)||state.available<1;add.onclick=()=>save(key);
    row.append(text,add);body.append(row);
   }
-  const magicEffect=spell=>spell.kind==='heal'?`HPを${spell.base-2}〜${spell.base+2}回復`:`敵に${spell.base-2}〜${spell.base+2}ダメージ`;
+  const magicEffect=spell=>spell.description.replace('体力','HP');
   const learned=MAGIC_SPELLS.filter(spell=>spell.level<=level),list=document.createElement('section');list.className='strength-magic-list';
   const heading=document.createElement('h3');heading.textContent='習得済みの魔法';list.append(heading);
   for(const spell of learned){const item=document.createElement('p');item.innerHTML=`<strong>${spell.name}</strong><span>${magicEffect(spell)} ／ 消費MP ${spell.mpCost}</span>`;list.append(item);}
