@@ -60,8 +60,8 @@ async function realtimeChecks(page,mode){
  await page.clock.runFor(Math.round(interval/1.035)+150);
  const wounded=await hp();assert.ok(wounded<initial);
  await clearEnemy();assert.equal(await hp(),wounded,'ordinary enemies do not restore HP');
- await page.locator('#nextBtn').click();
- for(const floor of [3,4]){await clearEnemy();await page.locator('#nextBtn').click();}
+ await page.clock.runFor(700);
+ for(const floor of [3,4]){await clearEnemy();await page.clock.runFor(700);}
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'5F':'B5');
  assert.equal(await page.locator('#enemyName').textContent(),'BOSS');
  assert.equal(await page.locator('#bossBadge').isVisible(),true);
