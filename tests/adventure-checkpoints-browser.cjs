@@ -26,7 +26,7 @@ const page=await browser.newPage({viewport:{width,height:740}}),errors=[];let re
 for(const mode of ['tower','dungeon']){
  await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
 await page.goto('https://adventure.test/pet-adventure/?mode='+mode);await page.waitForSelector('#startDialog[open]');
- assert.deepEqual(await page.locator('[data-start-floor]').evaluateAll(bs=>bs.map(b=>Number(b.dataset.startFloor))),mode==='tower'?[1,10,20,30]:[1,10,20]);
+ assert.deepEqual(await page.locator('[data-start-floor]').evaluateAll(bs=>bs.map(b=>Number(b.dataset.startFloor))),mode==='tower'?[1,5,10,15,20,25,30,35]:[1,5,10,15,20]);
  await page.screenshot({path:'../checkpoints-'+mode+'-'+width+'.png'});await page.clock.runFor(30000);assert.equal(await page.evaluate(()=>adventureTitleEvents.length),0);assert.equal(await page.locator('#startDialog').evaluate(d=>d.scrollWidth>d.clientWidth),false);
  await page.keyboard.press('Escape');assert.equal(await page.locator('#startDialog').isVisible(),true);
  const floor=mode==='tower'?30:20;await page.locator('[data-start-floor="'+floor+'"]').click();assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'30F':'B20');assert.equal(await page.locator('#bossBadge').isVisible(),true);
@@ -35,7 +35,7 @@ await page.goto('https://adventure.test/pet-adventure/?mode='+mode);await page.w
  await page.goto('https://adventure.test/pet-adventure/?mode='+mode);await page.waitForSelector('#startDialog[open]');await page.locator('[data-start-floor="1"]').click();assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'1F':'B1');
 }
 towerBest=9;await page.goto('https://adventure.test/pet-adventure/?mode=tower');await page.waitForSelector('.attack-card');assert.equal(await page.locator('#startDialog').isVisible(),false);
-towerBest=10;await page.goto('https://adventure.test/pet-adventure/?mode=tower');await page.waitForSelector('#startDialog[open]');assert.deepEqual(await page.locator('[data-start-floor]').evaluateAll(bs=>bs.map(b=>Number(b.dataset.startFloor))),[1,10]);
+towerBest=10;await page.goto('https://adventure.test/pet-adventure/?mode=tower');await page.waitForSelector('#startDialog[open]');assert.deepEqual(await page.locator('[data-start-floor]').evaluateAll(bs=>bs.map(b=>Number(b.dataset.startFloor))),[1,5,10]);
 await page.evaluate(()=>{localStorage.setItem('monstudy-pet-adventure-v1-test',JSON.stringify({towerBest:30,dungeonBest:1}));localStorage.setItem('monstudy-pet-adventure-v1',JSON.stringify({towerBest:99}));});
 towerBest=1;await page.goto('https://adventure.test/pet-adventure/?mode=tower');await page.waitForSelector('#startDialog[open]');assert.equal(await page.locator('[data-start-floor="30"]').count(),1);
 fixtureUid='other';await page.goto('https://adventure.test/pet-adventure/?mode=tower');await page.waitForSelector('.attack-card');assert.equal(await page.locator('#startDialog').isVisible(),false);
