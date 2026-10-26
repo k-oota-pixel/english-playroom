@@ -1,4 +1,4 @@
-import {auth,db,walletRef} from './coin-reward.js?v=2.1.24';
+import {auth,db,walletRef} from './coin-reward.js?v=2.1.25';
 import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory} from './pet-dungeons-model.js?v=1.10.22';
 

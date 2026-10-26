@@ -7,8 +7,8 @@ import { FOODS, careState, feedReward, happyDay, happyLabel } from './pet-care-m
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js?v=2.1.24';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.24';
+import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js?v=2.1.25';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.25';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
