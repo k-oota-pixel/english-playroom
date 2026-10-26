@@ -2,19 +2,6 @@ const OUTLINE='#40564e';
 const BABY_MANE='#d89b5c';
 const ADULT_MANE='#b97845';
 
-function replacePandaLabels(root=document){
-  const nodes=[];
-  if(root.nodeType===Node.TEXT_NODE)nodes.push(root);
-  if(root instanceof Element||root===document){
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    let node;
-    while((node=walker.nextNode()))nodes.push(node);
-  }
-  for(const node of nodes){
-    if(node.nodeValue?.includes('パンダ'))node.nodeValue=node.nodeValue.replaceAll('パンダ','ライオン');
-  }
-}
-
 function manePath(stage){
   if(stage==='baby')return 'M120 48 C134 43 147 49 153 60 C168 54 181 62 181 76 C196 80 202 94 194 107 C203 119 196 136 180 140 C176 155 160 162 146 156 C136 169 106 169 95 156 C80 163 64 154 61 140 C45 137 37 122 47 109 C37 96 44 81 60 77 C58 63 73 54 88 61 C95 49 106 45 120 48 Z';
   return 'M120 31 C137 25 152 33 159 46 C178 38 193 48 194 65 C214 71 220 89 209 105 C220 121 212 143 193 148 C190 168 169 179 151 169 C139 185 102 185 89 169 C70 179 49 168 46 148 C27 143 20 122 31 105 C20 89 27 70 47 65 C48 48 63 38 82 46 C89 33 103 26 120 31 Z';
@@ -52,7 +39,6 @@ function patchLionSvg(svg){
 }
 
 function scan(root=document){
-  replacePandaLabels(root);
   if(root instanceof SVGElement)patchLionSvg(root);
   root.querySelectorAll?.('svg').forEach(patchLionSvg);
 }

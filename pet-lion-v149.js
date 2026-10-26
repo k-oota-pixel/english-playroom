@@ -4,19 +4,6 @@ const ADULT_MANE='#b87543';
 const CREAM='#fff0d2';
 const BODY_COLORS=new Set(['#f5d99b','#f3b5c4','#a4cce9','#a9d9bc','#c6b8e3','#efb478']);
 
-function replacePandaLabels(root=document){
-  const nodes=[];
-  if(root?.nodeType===Node.TEXT_NODE)nodes.push(root);
-  if(root instanceof Element||root===document){
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    let node;
-    while((node=walker.nextNode()))nodes.push(node);
-  }
-  for(const node of nodes){
-    if(node.nodeValue?.includes('パンダ'))node.nodeValue=node.nodeValue.replaceAll('パンダ','ライオン');
-  }
-}
-
 function babyMane(){
   return 'M120 47 C134 42 147 49 153 60 C169 54 181 62 181 77 C197 81 202 95 194 108 C204 120 197 137 180 141 C177 156 161 164 146 157 C136 171 105 171 94 157 C79 164 63 155 60 141 C43 138 36 122 46 109 C36 96 43 81 60 77 C58 63 73 54 88 61 C95 49 106 44 120 47Z';
 }
@@ -100,7 +87,6 @@ function redrawLion(svg){
 }
 
 function scan(root=document){
-  replacePandaLabels(root);
   if(root instanceof SVGElement)redrawLion(root);
   root.querySelectorAll?.('svg').forEach(redrawLion);
 }

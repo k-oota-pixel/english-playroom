@@ -2,7 +2,7 @@ import {equipmentTransform} from './pet-equipment-fit.js?v=1.8.21';
 import { renderEffect } from './pet-effects.js?v=1.5.1-effects';
 // Stable IDs are persisted; labels and SVG art may evolve independently.
 export const OPTIONS = Object.freeze({
-  species: [{id:'cat',label:'ねこ'},{id:'dog',label:'いぬ'},{id:'bird',label:'ことり'},{id:'hamster',label:'ハムスター'},{id:'panda',label:'パンダ'},{id:'penguin',label:'ペンギン'},{id:'rabbit',label:'うさぎ'},{id:'fox',label:'きつね'},{id:'dragon',label:'ドラゴン'},{id:'mystery',label:'ミステリー'}],
+  species: [{id:'cat',label:'ねこ'},{id:'dog',label:'いぬ'},{id:'bird',label:'ことり'},{id:'hamster',label:'ハムスター'},{id:'panda',label:'ライオン'},{id:'penguin',label:'ペンギン'},{id:'rabbit',label:'うさぎ'},{id:'fox',label:'きつね'},{id:'dragon',label:'ドラゴン'},{id:'mystery',label:'ミステリー'}],
   bodyColor: [{id:'cream',label:'クリーム',color:'#f5d99b'},{id:'pink',label:'ピンク',color:'#f3b5c4'},{id:'blue',label:'ブルー',color:'#a4cce9'},{id:'mint',label:'ミント',color:'#a9d9bc'},{id:'lavender',label:'ラベンダー',color:'#c6b8e3'},{id:'orange',label:'オレンジ',color:'#efb478'}],
   eyes: [{id:'round',label:'まんまる'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'cool',label:'クール'},{id:'oyoyo',label:'およよ'},{id:'mugyu',label:'むぎゅ'},{id:'kiri',label:'きりっ'},{id:'punsuka',label:'ぷんすか'}],
   feature: [{id:'classic',label:'ベーシック'},{id:'long',label:'長い耳・羽'},{id:'horns',label:'小さな角'}],
