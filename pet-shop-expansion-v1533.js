@@ -1,8 +1,8 @@
-import {equipmentTransform,normalizeEquipmentSlots} from './pet-equipment-fit.js?v=1.8.21';
+import {equipmentTransform,normalizeEquipmentSlots} from './pet-equipment-fit.js?v=2.1.20';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {hasPet} from './pet-model.js';
+import {hasPet} from './pet-model.js?v=2.1.20';
 
 const EXTRA_ITEMS=Object.freeze([
   {id:'chef-hat',name:'コック帽',price:12,slot:'head',icon:'👨‍🍳'},
