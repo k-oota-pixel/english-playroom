@@ -24,7 +24,7 @@ export { auth, db, authReady, walletRef, recordLearningActivity };
 let currentUser=auth.currentUser||null;
 let authResolved=false,resolveAuth;
 const authReady=new Promise(r=>resolveAuth=r);
-onAuthStateChanged(auth,user=>{currentUser=user||null;if(user)queueMicrotask(flushTitleEvents);if(!authResolved){authResolved=true;resolveAuth();}});
+onAuthStateChanged(auth,user=>{currentUser=user||null;if(user)queueMicrotask(()=>{void flushTitleEvents();void flushLearningActivities();void flushRetryAttempts();});if(!authResolved){authResolved=true;resolveAuth();}});
 
 function todayKey(){
   const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -123,7 +123,7 @@ else installTaskQuestAnswerGuard();
 
 
 const titleMemory=new Map();let titleQueue=Promise.resolve(),titleFlushTimer=0,titleFlushRunning=false;
-function readTitleOutbox(key){try{return JSON.parse(localStorage.getItem(key)||'null')||titleMemory.get(key)||[];}catch{return titleMemory.get(key)||[];}}
+function readTitleOutbox(key){if(titleMemory.has(key))return titleMemory.get(key);try{return JSON.parse(localStorage.getItem(key)||'null')||[];}catch{return [];}}
 function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
 async function stableBatchId(values){const bytes=new TextEncoder().encode(values.join('|')),digest=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(digest)].map(value=>value.toString(16).padStart(2,'0')).join('');}
 function scheduleTitleFlush(delay=5000){clearTimeout(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
@@ -135,7 +135,8 @@ function flushTitleEvents(){
   if(titleFlushRunning||currentUser?.uid!==user.uid)return {freshTitles:[]};
   titleFlushRunning=true;const key='monstudy-title-outbox:'+user.uid,freshTitles=[];
   try{
-   let rows=readTitleOutbox(key);
+   let rows=readTitleOutbox(key),expired=rows.filter(row=>row.at&&Date.now()-row.at>86400000).map(row=>row.event?.eventId).filter(Boolean);
+   if(expired.length)removeTitleRows(key,expired);rows=readTitleOutbox(key);
    const legacy=rows.filter(row=>row.event&&!row.batchVersion);
    for(const row of legacy){
     if(currentUser?.uid!==user.uid)break;
@@ -186,8 +187,9 @@ window.addEventListener('online',()=>{void flushTitleEvents();void flushLearning
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
 const LEARNING_ACTIVITY_IDS=new Set(['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training','pet-instructions','pet-chat']);
 function learningContentFromPage(){const path=location.pathname;return [...LEARNING_ACTIVITY_IDS].find(id=>path.split('/').includes(id));}
-function readLearningOutbox(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
-function writeLearningOutbox(key,rows){try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
+const learningMemory=new Map();
+function readLearningOutbox(key){if(learningMemory.has(key))return learningMemory.get(key);try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
+function writeLearningOutbox(key,rows){learningMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
 let learningTimer=0,learningQueue=Promise.resolve(),learningFlushRunning=false;
 function scheduleLearningFlush(delay=5000){clearTimeout(learningTimer);learningTimer=setTimeout(()=>void flushLearningActivities(),delay);}
 function removeLearningRows(key,ids){const remove=new Set(ids);writeLearningOutbox(key,readLearningOutbox(key).filter(row=>!remove.has(row.eventId)));}
@@ -221,8 +223,9 @@ async function recordLearningActivity(appId=learningContentFromPage()){
 }
 
 const RETRY_OUTBOX_PREFIX='monstudy-retry-coin-outbox:';
-function readRetryOutbox(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
-function writeRetryOutbox(key,rows){try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
+const retryMemory=new Map();
+function readRetryOutbox(key){if(retryMemory.has(key))return retryMemory.get(key);try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
+function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
 let retryTimer=0,retryQueue=Promise.resolve(),retryFlushRunning=false;
 function scheduleRetryFlush(delay=10000){clearTimeout(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
 function removeRetryRows(key,ids){const remove=new Set(ids);writeRetryOutbox(key,readRetryOutbox(key).filter(row=>!remove.has(row.eventId)));}
@@ -233,9 +236,10 @@ function flushRetryAttempts(){
   if(retryFlushRunning||currentUser?.uid!==user.uid)return;
   retryFlushRunning=true;const key=RETRY_OUTBOX_PREFIX+user.uid;
   try{
-   let rows=readRetryOutbox(key);
+   const today=todayKey();let rows=readRetryOutbox(key),fresh=rows.filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
+   if(fresh.length!==rows.length)writeRetryOutbox(key,fresh);rows=fresh;
    while(rows.length&&currentUser?.uid===user.uid){
-    const group=rows.slice(0,50),ids=group.map(row=>row.eventId),today=todayKey();let awardedCount=0,counted=0,progress=0,newCoins=0;
+    const group=rows.slice(0,50),ids=group.map(row=>row.eventId);let awardedCount=0,counted=0,progress=0,newCoins=0;
     try{
      await runTransaction(db,async tx=>{
       const ref=walletRef(user),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{},sameDay=data.coinRewardDate===today;
@@ -288,7 +292,7 @@ async function recordRetryAttempt(questionId){
  await authReady;const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
  void recordLearningActivity('eiken-retry');
  const normalized=cleanPart(questionId),key=RETRY_OUTBOX_PREFIX+user.uid,rows=readRetryOutbox(key);
- if(!rows.some(row=>row.questionId===normalized))rows.push({eventId:crypto.randomUUID(),questionId:normalized,at:Date.now()});
+ if(!rows.some(row=>row.questionId===normalized))rows.push({eventId:crypto.randomUUID(),questionId:normalized,day:todayKey(),at:Date.now()});
  writeRetryOutbox(key,rows.slice(-500));
  if(rows.length>=5)void flushRetryAttempts();else scheduleRetryFlush();
  return {awarded:false,counted:true,queued:true,reason:'queued'};
