@@ -31,6 +31,10 @@ export function allocationTotal(allocation={}){
  return STAT_KEYS.reduce((sum,key)=>{const n=Number(allocation?.[key]);return sum+(Number.isSafeInteger(n)&&n>0?n:0);},0);
 }
 
+export function strengthStatsFromAllocation(allocation={},baseStats=BASE_STATS){
+ return strengthState(allocationTotal(allocation)*3,allocation,baseStats).stats;
+}
+
 export function strengthLevel(levelPoints=0,allocation={}){
  const stored=Number(levelPoints),safeStored=Number.isSafeInteger(stored)&&stored>0?stored:0;
  return 1+Math.max(safeStored,allocationTotal(allocation));
