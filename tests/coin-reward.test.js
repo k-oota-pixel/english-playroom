@@ -12,7 +12,7 @@ async function rewards({trackActivity=false}={}){
  onAuthStateChanged:(_,fn)=>queueMicrotask(()=>fn(user)),interviewAttemptPatch:()=>({attempted:true}),
  runTransaction:async(_,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(wallet)}),set:(_,patch)=>Object.assign(wallet,patch)})});
  vm.runInContext(source+'\n toast=()=>{};window.signOutForTest=()=>{currentUser=null;};',context);
- return {api:context.window.EnglishPlayroomCoins,wallet:()=>wallet,signOut:context.window.signOutForTest,activityCalls:()=>activityCalls,advance:()=>clock+=2000};
+ return {api:context.window.EnglishPlayroomCoins,wallet:()=>wallet,signOut:context.window.signOutForTest,activityCalls:()=>activityCalls,advance:()=>clock+=2000,pendingRetries:()=>vm.runInContext("readRetryOutbox(RETRY_OUTBOX_PREFIX+'tester').length",context)};
 }
 test('daily rewards remain per stage, topic and question, without collisions between apps',async()=>{
  const {api,wallet}=await rewards();
@@ -33,9 +33,9 @@ test('listening sets and ateru rounds have no daily cap but cannot be paid twice
  assert.equal(wallet().coins,34);
 });
 test('retry grants one coin for five distinct answered questions and retains the remainder',async()=>{
- const {api,wallet}=await rewards();
+ const {api,wallet,pendingRetries}=await rewards();
  for(let i=0;i<12;i++){const id='q-'+i;const r=await api.recordRetryAttempt(id);assert.equal(r.awarded,(i+1)%5===0);assert.equal((await api.recordRetryAttempt(id)).counted,false);}
- assert.equal(wallet().coins,12);assert.equal(wallet().retryCoinProgress,2);
+ assert.equal(wallet().coins,12);assert.equal(wallet().retryCoinProgress,0);assert.equal(pendingRetries(),2,'the last two attempts stay queued until the next batch');
 });
 test('signed-out learners cannot earn coins',async()=>{
  const {api,wallet,signOut}=await rewards();await Promise.resolve();signOut();
