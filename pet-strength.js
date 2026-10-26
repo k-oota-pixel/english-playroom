@@ -8,13 +8,18 @@ import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 const RESPEC_PRICE=30;
 const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0,mp:0});
 
-export async function loadStrengthTitles(user){
- const token=await user.getIdToken();
- const r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
- if(!r.ok)throw Error('称号を読み込めませんでした。もう一度お試しください。');
- const data=await r.json();
- if(!Array.isArray(data.titles))throw Error('称号を確認できませんでした。');
- return titleCount(data.titles);
+const titleCountCache=new Map(),titleCountRequests=new Map();
+export async function loadStrengthTitles(user,{force=false}={}){
+ const uid=user?.uid;if(!uid)throw Error('ログインが必要です。');
+ const cached=titleCountCache.get(uid);if(!force&&cached&&cached.expiresAt>Date.now())return cached.count;
+ if(!force&&titleCountRequests.has(uid))return titleCountRequests.get(uid);
+ const request=(async()=>{
+  const token=await user.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
+  if(!r.ok)throw Error('称号を読み込めませんでした。もう一度お試しください。');
+  const data=await r.json();if(!Array.isArray(data.titles))throw Error('称号を確認できませんでした。');
+  const count=titleCount(data.titles);titleCountCache.set(uid,{count,expiresAt:Date.now()+30000});return count;
+ })();titleCountRequests.set(uid,request);
+ try{return await request;}finally{if(titleCountRequests.get(uid)===request)titleCountRequests.delete(uid);}
 }
 
 function generationOf(data={}){const n=Number(data.petGeneration);return Number.isSafeInteger(n)&&n>0?n:1;}
@@ -139,7 +144,7 @@ ${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法�
  button.onclick=load;
  onAuthStateChanged(auth,user=>{
   generation++;busy=false;button.disabled=!user;dialog.close();body.replaceChildren();
-  if(user)getDoc(walletRef(user)).then(snap=>queueReconcile(user,snap.data()||{})).catch(error=>console.warn('pet stat load failed',error));
+  // Pet stats are reconciled when the panel is opened or an adventure loads; avoid an auth-time wallet read on every page.
  });
 }
 
