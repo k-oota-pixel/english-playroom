@@ -1,9 +1,9 @@
 import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.21';
 import {strengthState,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.22';
-import {loadStrengthTitles} from '../pet-strength.js?v=2.1.2';
+import {loadStrengthTitles} from '../pet-strength.js?v=2.1.11';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.2';
+import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.11';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js?v=2.1.2';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=2.1.8';
@@ -31,7 +31,8 @@ const storageKey='monstudy-pet-adventure-v1';
 const els={startDialog:$('startDialog'),startTitle:$('startTitle'),startBest:$('startBest'),startFloors:$('startFloors'),modeTitle:$('modeTitle'),stageCard:$('stageCard'),battlefield:$('battlefield'),bossBadge:$('bossBadge'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petMpBar:$('petMpBar'),petMpText:$('petMpText'),petStats:$('petStats'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')};
 
 let user=null,petData={},vocab={},questions=[],stage=1,enemyIndex=0,playerHp=10,playerMp=6,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,busy=false,lastQuestionId='';
-let stats=strengthState(0).stats,petLevel=1;
+let stats=strengthState(0).stats,petLevel=1,ownedTitleCount=0,titleSyncPromise=Promise.resolve();
+let adventureTitleEvents=[];
 let records=readRecords();
 globalThis.MonstudyMaterial?.setActivityGuard(()=>runActive);
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
@@ -40,8 +41,7 @@ let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
   if(!adventureRunId||!adventureRunUser)return Promise.resolve();
   const event={kind,sessionId:adventureRunId,floor:stage,itemId:`${adventureRunId}-${stage}`,eventId:`${adventureRunId}-${eventSuffix||kind}`,expectedUid:adventureRunUser,...payload};
-  const request=window.EnglishPlayroomCoins?.recordTitleEvent?.(mode==='tower'?'word-tower':'eiken-dungeon',event);
-  return Promise.resolve(request).catch(error=>console.warn('Adventure title event deferred',error));
+  adventureTitleEvents.push(event);return Promise.resolve({queued:true});
 }
 async function waitForTitleDialogsToClose(){
   while(true){const dialogs=[...document.querySelectorAll('.titles-dialog[open]')];if(!dialogs.length)return;await Promise.race(dialogs.map(dialog=>new Promise(resolve=>dialog.addEventListener('close',resolve,{once:true}))));}
@@ -101,7 +101,7 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';els.attackHint.textContent='相性の良い攻撃でCRITICAL';els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
-  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。敵撃破時に新しい称号を獲得した場合は、称号画面を閉じてから次の敵が現れます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -191,16 +191,22 @@ function advance(){if(busy||!runActive||isBattlePaused()||playerHp<=0)return;pen
 async function updateBest(value){const key=bestKey(),next=Math.max(currentBest(),value);records[key]=next;writeRecords();if(!user)return;const field=mode==='tower'?'wordTowerBest':'eikenDungeonBest';try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}syncHud();}
 async function startRun(startAt=1){
  if(startRun.loading)return;startRun.loading=true;
- try{const snap=await getDoc(walletRef(user));const fresh=snap.data()||{};const count=await loadStrengthTitles(user);stats=strengthState(count,fresh.petStrength,fresh.petBaseStats).stats;petLevel=strengthLevel(fresh.petStrengthLevelPoints,fresh.petStrength);petData={...petData,...fresh};installPet();syncStatLine();}
- catch(error){console.error(error);alert("最新の強化情報を取得できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
-els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+ try{await titleSyncPromise;stats=strengthState(ownedTitleCount,petData.petStrength,petData.petBaseStats).stats;petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
+ catch(error){console.error(error);alert("称号の同期を確認できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
+els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
-function finishRun(){runActive=false;stopBattle();refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。魔法とアイテムも使いながら、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
+function finishRun(){
+ if(adventureTitleEvents.length){
+  const run=adventureTitleEvents.find(event=>event.kind==='run');if(run){run.floor=Math.max(run.floor,stage);run.score=Math.max(run.score||0,stage);}
+  const events=adventureTitleEvents.splice(0),appId=mode==='tower'?'word-tower':'eiken-dungeon';
+  titleSyncPromise=Promise.resolve(window.EnglishPlayroomCoins?.recordTitleEvents?.(appId,events)).then(result=>{ownedTitleCount+=Array.isArray(result?.freshTitles)?result.freshTitles.length:0;}).catch(error=>console.warn('Adventure title sync deferred',error));
+ }
+ runActive=false;stopBattle();refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。魔法とアイテムも使いながら、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.disabled=true;els.itemBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true;}
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);const count=await loadStrengthTitles(user);stats=strengthState(count,petData.petStrength,petData.petBaseStats).stats;petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);ownedTitleCount=await loadStrengthTitles(user);stats=strengthState(ownedTitleCount,petData.petStrength,petData.petBaseStats).stats;petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);
 }
 
