@@ -41,9 +41,7 @@ let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
   if(!adventureRunId||!adventureRunUser)return Promise.resolve();
   const event={kind,sessionId:adventureRunId,floor:stage,itemId:`${adventureRunId}-${stage}`,eventId:`${adventureRunId}-${eventSuffix||kind}`,expectedUid:adventureRunUser,...payload};
-  if(mode==='dungeon'){adventureTitleEvents.push(event);return Promise.resolve({queued:true});}
-  const request=window.EnglishPlayroomCoins?.recordTitleEvent?.('word-tower',event);
-  return Promise.resolve(request).catch(error=>console.warn('Adventure title event deferred',error));
+  adventureTitleEvents.push(event);return Promise.resolve({queued:true});
 }
 async function waitForTitleDialogsToClose(){
   while(true){const dialogs=[...document.querySelectorAll('.titles-dialog[open]')];if(!dialogs.length)return;await Promise.race(dialogs.map(dialog=>new Promise(resolve=>dialog.addEventListener('close',resolve,{once:true}))));}
@@ -103,7 +101,7 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';els.attackHint.textContent='相性の良い攻撃でCRITICAL';els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
-  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。敵撃破時に新しい称号を獲得した場合は、称号画面を閉じてから次の敵が現れます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -198,10 +196,10 @@ async function startRun(startAt=1){
 els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
 function finishRun(){
- if(mode==='dungeon'&&adventureTitleEvents.length){
+ if(adventureTitleEvents.length){
   const run=adventureTitleEvents.find(event=>event.kind==='run');if(run){run.floor=Math.max(run.floor,stage);run.score=Math.max(run.score||0,stage);}
-  const events=adventureTitleEvents.splice(0);
-  titleSyncPromise=Promise.resolve(window.EnglishPlayroomCoins?.recordTitleEvents?.('eiken-dungeon',events)).then(result=>{ownedTitleCount+=Array.isArray(result?.freshTitles)?result.freshTitles.length:0;}).catch(error=>console.warn('Dungeon title sync deferred',error));
+  const events=adventureTitleEvents.splice(0),appId=mode==='tower'?'word-tower':'eiken-dungeon';
+  titleSyncPromise=Promise.resolve(window.EnglishPlayroomCoins?.recordTitleEvents?.(appId,events)).then(result=>{ownedTitleCount+=Array.isArray(result?.freshTitles)?result.freshTitles.length:0;}).catch(error=>console.warn('Adventure title sync deferred',error));
  }
  runActive=false;stopBattle();refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=mode==='tower'?'🗼':'🕳️';els.resultKicker.textContent=mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE';els.resultTitle.textContent=`到達 ${formatStage(stage)}`;els.resultText.textContent=`最高記録 ${formatStage(currentBest())}。敵は時間経過で攻撃します。魔法とアイテムも使いながら、相手が攻撃する前に倒そう！`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.disabled=true;els.itemBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true;}
