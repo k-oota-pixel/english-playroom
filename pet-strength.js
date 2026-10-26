@@ -1,4 +1,4 @@
-import {auth,db,walletRef} from './coin-reward.js?v=2.1.2';
+import {auth,db,walletRef} from './coin-reward.js?v=2.1.11';
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2';
 import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js';
