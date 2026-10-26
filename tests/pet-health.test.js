@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {advanceHealth,illnessRisk,illnessDeathRisk,healthRoll,injectionPatch} from '../pet-health-model.js';
 import {wasteDay} from '../pet-waste-model.js';
 const today='2026-10-22',tomorrow='2026-10-23';
-const pet=()=>({petHatched:true,petAdult:true,petAppearance:{species:'cat'},petGeneration:1,coins:10,petWaste:{day:wasteDay(new Date(2026,9,22)),count:2}});
+const pet=()=>({petHatched:true,petAdult:true,petAppearance:{species:'cat'},petGeneration:1,coins:10,petWaste:{day:wasteDay(new Date()),count:2}});
 const safe=()=>.99;
 const next=(d,date,roll=safe)=>{const r=advanceHealth(d,date,'u',roll);return {...d,...r.patch};};
 test('risk takes the maximum and uses exact thresholds',()=>{assert.deepEqual([0,1,2,3,4].map(n=>illnessRisk(n,0)),[0,.1,.25,.3,.3]);assert.deepEqual([0,1,2,3,4,5].map(n=>illnessRisk(0,n)),[0,0,.15,.2,.3,.3]);assert.equal(illnessRisk(2,3),.25);});
