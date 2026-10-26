@@ -123,14 +123,15 @@ else installTaskQuestAnswerGuard();
 
 
 const titleMemory=new Map(),titleMemoryOnly=new Set();let titleQueue=Promise.resolve(),titleFlushTimer=0,titleFlushRunning=false;
+function newClientEventId(){return globalThis.crypto?.randomUUID?.()||`e${Date.now().toString(36)}${Math.random().toString(36).slice(2,12)}`;}
 function readTitleOutbox(key){if(titleMemoryOnly.has(key))return titleMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'null')||[];titleMemory.set(key,rows);return rows;}catch{return titleMemory.get(key)||[];}}
 function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));titleMemoryOnly.delete(key);}catch{titleMemoryOnly.add(key);}}
-async function stableBatchId(values){const bytes=new TextEncoder().encode(values.join('|')),digest=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(digest)].map(value=>value.toString(16).padStart(2,'0')).join('');}
-function scheduleTitleFlush(delay=5000){clearTimeout(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
+async function stableBatchId(values){return String(values.at(-1)||values[0]||newClientEventId());}
+function scheduleTitleFlush(delay=5000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
 function removeTitleRows(key,ids){const remove=new Set(ids);writeTitleOutbox(key,readTitleOutbox(key).filter(row=>!remove.has(row.event?.eventId)));}
 function flushTitleEvents(){
  const user=currentUser;if(!user)return Promise.resolve({freshTitles:[]});
- clearTimeout(titleFlushTimer);
+ globalThis.clearTimeout?.(titleFlushTimer);
  titleQueue=titleQueue.catch(()=>{}).then(async()=>{
   if(titleFlushRunning||currentUser?.uid!==user.uid)return {freshTitles:[]};
   titleFlushRunning=true;const key='monstudy-title-outbox:'+user.uid,freshTitles=[];
@@ -173,7 +174,7 @@ function enqueueTitleEvents(appId,payloads,flushNow=false){
  const user=currentUser;if(!user||(payloads||[]).some(payload=>payload.expectedUid!==undefined&&payload.expectedUid!==user.uid))return Promise.resolve({freshTitles:[]});
  const key='monstudy-title-outbox:'+user.uid,pending=readTitleOutbox(key),known=new Set(pending.map(row=>row.event?.eventId));
  for(const payload of payloads||[]){
-  const event={...payload,appId,eventId:payload.eventId||crypto.randomUUID()};
+  const event={...payload,appId,eventId:payload.eventId||newClientEventId()};
   if(!known.has(event.eventId)){pending.push({event,at:Date.now(),batchVersion:2});known.add(event.eventId);}
  }
  writeTitleOutbox(key,pending.slice(-500));
@@ -191,11 +192,11 @@ const learningMemory=new Map(),learningMemoryOnly=new Set();
 function readLearningOutbox(key){if(learningMemoryOnly.has(key))return learningMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');learningMemory.set(key,rows);return rows;}catch{return learningMemory.get(key)||[];}}
 function writeLearningOutbox(key,rows){learningMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));learningMemoryOnly.delete(key);}catch{learningMemoryOnly.add(key);}}
 let learningTimer=0,learningQueue=Promise.resolve(),learningFlushRunning=false;
-function scheduleLearningFlush(delay=5000){clearTimeout(learningTimer);learningTimer=setTimeout(()=>void flushLearningActivities(),delay);}
+function scheduleLearningFlush(delay=5000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(learningTimer);learningTimer=setTimeout(()=>void flushLearningActivities(),delay);}
 function removeLearningRows(key,ids){const remove=new Set(ids);writeLearningOutbox(key,readLearningOutbox(key).filter(row=>!remove.has(row.eventId)));}
 function flushLearningActivities(){
  const user=currentUser;if(!user)return Promise.resolve();
- clearTimeout(learningTimer);
+ globalThis.clearTimeout?.(learningTimer);
  learningQueue=learningQueue.catch(()=>{}).then(async()=>{
   if(learningFlushRunning||currentUser?.uid!==user.uid)return;
   learningFlushRunning=true;const key='monstudy-learning-outbox:'+user.uid;
@@ -219,7 +220,7 @@ async function recordLearningActivity(appId=learningContentFromPage()){
  if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
  lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
  const key='monstudy-learning-outbox:'+user.uid,rows=readLearningOutbox(key);
- rows.push({eventId:crypto.randomUUID(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));scheduleLearningFlush();
+ rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));scheduleLearningFlush();
 }
 
 const RETRY_OUTBOX_PREFIX='monstudy-retry-coin-outbox:';
@@ -227,11 +228,11 @@ const retryMemory=new Map(),retryMemoryOnly=new Set();
 function readRetryOutbox(key){if(retryMemoryOnly.has(key))return retryMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');retryMemory.set(key,rows);return rows;}catch{return retryMemory.get(key)||[];}}
 function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));retryMemoryOnly.delete(key);}catch{retryMemoryOnly.add(key);}}
 let retryTimer=0,retryQueue=Promise.resolve(),retryFlushRunning=false;
-function scheduleRetryFlush(delay=10000){clearTimeout(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
+function scheduleRetryFlush(delay=10000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
 function removeRetryRows(key,ids){const remove=new Set(ids);writeRetryOutbox(key,readRetryOutbox(key).filter(row=>!remove.has(row.eventId)));}
 function flushRetryAttempts(){
  const user=currentUser;if(!user)return Promise.resolve();
- clearTimeout(retryTimer);
+ globalThis.clearTimeout?.(retryTimer);
  retryQueue=retryQueue.catch(()=>{}).then(async()=>{
   if(retryFlushRunning||currentUser?.uid!==user.uid)return;
   retryFlushRunning=true;const key=RETRY_OUTBOX_PREFIX+user.uid;
