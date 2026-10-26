@@ -142,7 +142,7 @@ function flushTitleEvents(){
    for(const row of legacy){
     if(currentUser?.uid!==user.uid)break;
     try{
-     const token=await user.getIdToken(),response=await fetch('https://task-quest.onrender.com/api/learning/title-event',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(row.event)});
+     const token=await user.getIdToken();if(currentUser?.uid!==user.uid)break;const response=await fetch('https://task-quest.onrender.com/api/learning/title-event',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(row.event)});
      if(!response.ok){if(response.status===400){removeTitleRows(key,[row.event.eventId]);continue;}break;}
      const result=await response.json();removeTitleRows(key,[row.event.eventId]);freshTitles.push(...(result.freshTitles||[]));
     }catch{break;}
@@ -153,7 +153,7 @@ function flushTitleEvents(){
     const pending=rows.filter(row=>row.event.appId===appId);
     while(pending.length){
      const group=pending.splice(0,25);if(currentUser?.uid!==user.uid)return {freshTitles};
-     const ids=group.map(row=>row.event.eventId),batchId=await stableBatchId([appId,...ids]),token=await user.getIdToken();
+     const ids=group.map(row=>row.event.eventId),batchId=await stableBatchId([appId,...ids]),token=await user.getIdToken();if(currentUser?.uid!==user.uid)return {freshTitles};
      try{
       const response=await fetch('https://task-quest.onrender.com/api/learning/title-event',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({appId,batchId,events:group.map(row=>row.event)})});
       if(!response.ok){if(response.status===400){removeTitleRows(key,ids);continue;}break;}
@@ -161,7 +161,7 @@ function flushTitleEvents(){
      }catch{break;}
     }
    }
-   if(currentUser?.uid===user.uid)announceTitles(freshTitles);
+   if(currentUser?.uid===user.uid&&typeof announceTitles==='function')announceTitles(freshTitles);
    return {freshTitles};
   }finally{
    titleFlushRunning=false;
@@ -208,7 +208,7 @@ function flushLearningActivities(){
      const response=await fetch('https://task-quest.onrender.com/api/learning/activity',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({batchId,events:group.map(row=>({appId:row.appId,eventId:row.eventId}))}),keepalive:true});
      if(!response.ok)break;
      const result=await response.json();removeLearningRows(key,ids);rows=readLearningOutbox(key);
-     if(currentUser?.uid===user.uid)announceTitles(result.freshTitles);
+     if(currentUser?.uid===user.uid&&typeof announceTitles==='function')announceTitles(result.freshTitles);
     }catch{break;}
    }
   }finally{learningFlushRunning=false;if(currentUser?.uid===user.uid&&readLearningOutbox(key).length)scheduleLearningFlush(1000);}
@@ -228,7 +228,7 @@ const retryMemory=new Map(),retryMemoryOnly=new Set(),retryResultMemory=new Map(
 function readRetryOutbox(key){if(retryMemoryOnly.has(key))return retryMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');retryMemory.set(key,rows);return rows;}catch{return retryMemory.get(key)||[];}}
 function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));retryMemoryOnly.delete(key);}catch{retryMemoryOnly.add(key);}}
 let retryTimer=0,retryQueue=Promise.resolve(),retryFlushRunning=false;
-function scheduleRetryFlush(delay=10000){if(typeof setTimeout!=='function'){void flushRetryAttempts();return;}globalThis.clearTimeout?.(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
+function scheduleRetryFlush(delay=10000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
 function removeRetryRows(key,ids){const remove=new Set(ids);writeRetryOutbox(key,readRetryOutbox(key).filter(row=>!remove.has(row.eventId)));}
 function flushRetryAttempts(){
  const user=currentUser;if(!user)return Promise.resolve();
