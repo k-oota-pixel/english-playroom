@@ -87,7 +87,7 @@ function install() {
     title.textContent=current?materialName(u):'ホーム';document.title=title.textContent+'｜もんすたでぃ';
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release','2.1.10');frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
+    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release','2.1.11');frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
     else {frame.removeAttribute('src');status.hidden=true;}
     mobileMenu(false);closeGroups();shell.querySelector('.ms-workspace').scrollTop=0;
   }
