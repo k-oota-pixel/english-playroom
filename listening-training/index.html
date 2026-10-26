@@ -153,8 +153,8 @@ function registerCompletedQuestion(correct){
 function flushListeningSet(){
   if(state.analyticsHandled||!state.titleEvents.length)return;state.analyticsHandled=true;const api=window.EnglishPlayroomCoins,events=state.titleEvents.splice(0);if(api?.recordTitleEvents)api.recordTitleEvents('listening-training',events);else for(const event of events)api?.recordTitleEvent?.('listening-training',event);api?.recordLearningActivity?.();
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden)flushListeningSet();});
-window.addEventListener('pagehide',flushListeningSet);
+document.addEventListener?.('visibilitychange',()=>{if(document.hidden)flushListeningSet();});
+window.addEventListener?.('pagehide',flushListeningSet);
 async function awardSetCoin(){
   const api=window.EnglishPlayroomCoins;if(!api?.awardListening)return;
   const setId=state.setId;
