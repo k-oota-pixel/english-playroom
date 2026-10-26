@@ -8,6 +8,7 @@ const $=id=>document.getElementById(id);
 const screens=['typeScreen','orderScreen','numberScreen','deliveryScreen','practiceScreen','resultScreen'];
 globalThis.MonstudyMaterial?.setActivityGuard(()=>!$('practiceScreen').classList.contains('hidden'));
 const state={type:null,selectionMode:null,index:null,delivery:null,repeatCount:0,lastRandom:null,firstAnswer:'',followUp:false};
+const recordedTitleBestByQuestion=new Map();
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function questionList(){return QUESTIONS?.[state.type]||[];}
@@ -127,7 +128,9 @@ async function grade(){
     let data={};try{data=await response.json();}catch{}
     if(!response.ok)throw new Error(data.error||`採点できませんでした（${response.status}）。`);
     if(!Number.isInteger(data.score)||data.score<0||data.score>5||typeof data.feedback!=='string')throw new Error('採点結果を読み取れませんでした。もう一度お試しください。');
-    renderResult(data);window.EnglishPlayroomCoins?.recordTitleEvent?.('pre2-interview-questions',{kind:'answer',expectedUid:titleOwner,itemId:rewardQuestionId,score:data.score,total:5,questionType:'q'+state.type,followUp:state.followUp,reason:/\b(because|since|as)\b/i.test(answer)});
+    renderResult(data);
+    const reason=/\b(because|since|as)\b/i.test(answer),previous=recordedTitleBestByQuestion.get(rewardQuestionId)||{score:-1,followUp:false,reason:false};
+    if(data.score>previous.score||(state.followUp&&!previous.followUp)||(reason&&!previous.reason)){recordedTitleBestByQuestion.set(rewardQuestionId,{score:Math.max(previous.score,data.score),followUp:previous.followUp||state.followUp,reason:previous.reason||reason});window.EnglishPlayroomCoins?.recordTitleEvent?.('pre2-interview-questions',{kind:'answer',expectedUid:titleOwner,itemId:rewardQuestionId,score:data.score,total:5,questionType:'q'+state.type,followUp:state.followUp,reason});}
     window.EnglishPlayroomCoins?.awardPre2Questions?.(rewardQuestionId);
   }catch(e){
     showError(e?.name==='TimeoutError'?'AIの返事に時間がかかっています。もう一度お試しください。':e?.message||'AI採点に接続できませんでした。');
