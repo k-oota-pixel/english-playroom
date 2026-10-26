@@ -12,7 +12,7 @@ const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
 const auth=app?getAuth(app):null;
 const db=app?getFirestore(app):null;
-let currentUser=null,currentData={},unsubscribe=null,lastSvgSignature='';
+let currentUser=null,currentData={},unsubscribe=null,lastSvgSignature='',syncInitializedUid='';
 
 function localDateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function int(value,fallback=0){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.floor(n)):fallback;}
@@ -238,8 +238,14 @@ function installGuard(){
   },true);
 }
 
-async function synchronize(user){
+async function synchronize(user,source=currentData){
   const today=localDateKey();
+  const preview=advanceLifecycle(source||{},today,user.uid);
+  if(!Object.keys(preview.patch).length){
+    currentData=preview.data;applyUi(preview.data);
+    if(preview.event==='departed')showDeparture(preview.memory,user);
+    return;
+  }
   const result=await runTransaction(db,async transaction=>{
     const ref=dataRef(user),snap=await transaction.get(ref),source=snap.exists()?(snap.data()||{}):{};
     const advanced=advanceLifecycle(source,today,user.uid);
@@ -253,11 +259,10 @@ async function synchronize(user){
 function start(){
   if(!auth||!db)return;ensureStyles();ensureMemoryButton();installGuard();
   onAuthStateChanged(auth,user=>{
-    if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';
+    if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';syncInitializedUid='';
     if(!user){renderHealth({});delete document.documentElement.dataset.petStage;const b=ensureMemoryButton();if(b)b.hidden=true;return;}
     const ref=dataRef(user);
-    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);},error=>console.error('Pet lifecycle snapshot failed',error));
-    synchronize(user).catch(error=>console.error('Pet lifecycle sync failed',error));
+    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);if(!snap.metadata.fromCache&&syncInitializedUid!==user.uid){syncInitializedUid=user.uid;synchronize(user,currentData).catch(error=>console.error('Pet lifecycle sync failed',error));}},error=>console.error('Pet lifecycle snapshot failed',error));
   });
   // The legacy page renderer still updates some labels after auth; quietly re-apply lifecycle labels.
   let checkedDate=localDateKey();

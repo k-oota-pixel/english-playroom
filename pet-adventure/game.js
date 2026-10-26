@@ -36,6 +36,7 @@ let records=readRecords();
 globalThis.MonstudyMaterial?.setActivityGuard(()=>runActive);
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
 let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
+let persistedBest=1,bestSavePromise=Promise.resolve();
 
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
   if(!adventureRunId||!adventureRunUser)return Promise.resolve();
@@ -79,7 +80,7 @@ function enemyStrike(){
 function togglePause(){if(!runActive)return;manualPaused=!manualPaused;enemyClock.tick(performance.now(),true);refreshPause();}
 document.addEventListener('monstudy:pause',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
 document.addEventListener('visibilitychange',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
-window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;enemyClock.tick(performance.now(),true);});
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;enemyClock.tick(performance.now(),true);if(runActive)void persistBest();});
 window.addEventListener('pageshow',()=>{if(runActive&&!battleFrame){enemyClock.tick(performance.now(),true);battleFrame=requestAnimationFrame(battleTick);}});
 
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey+'-'+(user?.uid||'guest'))||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
@@ -187,7 +188,18 @@ async function useItem(item){
 }
 
 function advance(){if(busy||!runActive||isBattlePaused()||playerHp<=0)return;pendingAdvanceMs=null;if(enemyHp<=0)return;els.quizPanel.hidden=true;prepareTurn();}
-async function updateBest(value){const key=bestKey(),next=Math.max(currentBest(),value);records[key]=next;writeRecords();if(!user)return;const field=mode==='tower'?'wordTowerBest':'eikenDungeonBest';try{await setDoc(walletRef(user),{[field]:next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});petData[field]=next}catch(error){console.warn('best record save failed',error)}syncHud();}
+function updateBest(value){const key=bestKey(),next=Math.max(currentBest(),value);records[key]=next;writeRecords();syncHud();const checkpoint=mode==='tower'?10:5;if(next%checkpoint===0)void persistBest();}
+function persistBest(){
+ if(!user)return Promise.resolve();
+ const next=currentBest();if(next<=persistedBest)return bestSavePromise;
+ bestSavePromise=bestSavePromise.catch(()=>{}).then(async()=>{
+   const target=currentBest();if(target<=persistedBest)return;
+   const field=mode==='tower'?'wordTowerBest':'eikenDungeonBest';
+   await setDoc(walletRef(user),{[field]:target,petAdventureUpdatedAt:serverTimestamp()},{merge:true});
+   persistedBest=target;petData[field]=target;
+ }).catch(error=>console.warn('best record save failed',error));
+ return bestSavePromise;
+}
 async function startRun(startAt=1){
  if(startRun.loading)return;startRun.loading=true;
  try{await titleSyncPromise;stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats);petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
@@ -195,6 +207,8 @@ async function startRun(startAt=1){
 els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
 function finishRun(){
+  void persistBest();
+  window.dispatchEvent(new CustomEvent('pet-adventure:run-finished',{detail:{best:currentBest()}}));
  if(adventureTitleEvents.length){
   const run=adventureTitleEvents.find(event=>event.kind==='run');if(run){run.floor=Math.max(run.floor,stage);run.score=Math.max(run.score||0,stage);}
   const events=adventureTitleEvents.splice(0),appId=mode==='tower'?'word-tower':'eiken-dungeon';
@@ -205,8 +219,8 @@ function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.dis
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats);petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
-  els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats);petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+   els.loadingCard.hidden=true;els.dataNote.textContent=mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中');if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);window.dispatchEvent(new CustomEvent('pet-adventure:ready',{detail:{best:currentBest()}}));
 }
 
 els.pauseBtn.addEventListener('click',togglePause);els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
