@@ -178,7 +178,7 @@ function enqueueTitleEvents(appId,payloads,flushNow=false){
   if(!known.has(event.eventId)){pending.push({event,at:Date.now(),batchVersion:2});known.add(event.eventId);}
  }
  writeTitleOutbox(key,pending.slice(-500));
- if(flushNow)return flushTitleEvents();
+ if(flushNow||typeof setTimeout!=='function')return flushTitleEvents();
  scheduleTitleFlush();return Promise.resolve({queued:true,freshTitles:[]});
 }
 function recordTitleEvent(appId,payload={}){return enqueueTitleEvents(appId,[payload]);}
@@ -220,11 +220,11 @@ async function recordLearningActivity(appId=learningContentFromPage()){
  if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
  lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
  const key='monstudy-learning-outbox:'+user.uid,rows=readLearningOutbox(key);
- rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));scheduleLearningFlush();
+ rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));if(typeof setTimeout!=='function')return flushLearningActivities();scheduleLearningFlush();
 }
 
 const RETRY_OUTBOX_PREFIX='monstudy-retry-coin-outbox:';
-const retryMemory=new Map(),retryMemoryOnly=new Set();
+const retryMemory=new Map(),retryMemoryOnly=new Set(),retryResultMemory=new Map();
 function readRetryOutbox(key){if(retryMemoryOnly.has(key))return retryMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');retryMemory.set(key,rows);return rows;}catch{return retryMemory.get(key)||[];}}
 function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));retryMemoryOnly.delete(key);}catch{retryMemoryOnly.add(key);}}
 let retryTimer=0,retryQueue=Promise.resolve(),retryFlushRunning=false;
@@ -240,20 +240,24 @@ function flushRetryAttempts(){
    const today=todayKey();let rows=readRetryOutbox(key),fresh=rows.filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
    if(fresh.length!==rows.length)writeRetryOutbox(key,fresh);rows=fresh;
    while(rows.length&&currentUser?.uid===user.uid){
-    const group=rows.slice(0,50),ids=group.map(row=>row.eventId);let awardedCount=0,counted=0,progress=0,newCoins=0;
+    const group=rows.slice(0,50),ids=group.map(row=>row.eventId);let awardedCount=0,counted=0,progress=0,newCoins=0,outcomes={};
     try{
      await runTransaction(db,async tx=>{
-      const ref=walletRef(user),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{},sameDay=data.coinRewardDate===today;
+      outcomes={};const ref=walletRef(user),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{},sameDay=data.coinRewardDate===today;
       const claims=sameDay&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(value=>typeof value==='string'):[];
       newCoins=Math.max(0,Math.floor(Number(data.coins)||0));progress=Math.max(0,Math.min(4,Math.floor(Number(data.retryCoinProgress)||0)));
       for(const row of group){
-       const claim='eiken-retry:'+cleanPart(row.questionId);if(claims.includes(claim))continue;
-       claims.push(claim);counted++;progress++;if(progress>=5){progress-=5;newCoins++;awardedCount++;}
+       const claim='eiken-retry:'+cleanPart(row.questionId);
+       if(claims.includes(claim)){outcomes[row.eventId]={awarded:false,counted:false,reason:'already-counted'};continue;}
+       claims.push(claim);counted++;progress++;let awarded=false;
+       if(progress>=5){progress-=5;newCoins++;awardedCount++;awarded=true;}
+       outcomes[row.eventId]={awarded,counted:true,reason:awarded?'awarded':'queued'};
       }
       if(!counted)return;
       const earned=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
       tx.set(ref,{coins:newCoins,retryCoinProgress:progress,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:earned+awardedCount,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
      });
+     for(const row of group)retryResultMemory.set(user.uid+':'+today+':'+row.questionId,outcomes[row.eventId]||{awarded:false,counted:false,reason:'already-counted'});
      removeRetryRows(key,ids);rows=readRetryOutbox(key);
      if(awardedCount){toast(`🪙 +${awardedCount}　リトライ5問達成！`);notifyDailyCoinLeaderboard(user);}
     }catch(error){console.error('Retry coin batch failed',error);break;}
@@ -290,13 +294,14 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
 }
 
 async function recordRetryAttempt(questionId){
- await authReady;const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
+ await authReady;const user=currentUser;if(!user)return {awarded:false,counted:false,reason:'signed-out'};
  void recordLearningActivity('eiken-retry');
- const normalized=cleanPart(questionId),today=todayKey(),key=RETRY_OUTBOX_PREFIX+user.uid,rows=readRetryOutbox(key).filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
- if(!rows.some(row=>row.questionId===normalized))rows.push({eventId:newClientEventId(),questionId:normalized,day:today,at:Date.now()});
- writeRetryOutbox(key,rows.slice(-500));
- if(rows.length>=5)void flushRetryAttempts();else scheduleRetryFlush();
- return {awarded:false,counted:true,queued:true,reason:'queued'};
+ const normalized=cleanPart(questionId),today=todayKey(),resultKey=user.uid+':'+today+':'+normalized,cached=retryResultMemory.get(resultKey);if(cached)return {...cached};
+ const key=RETRY_OUTBOX_PREFIX+user.uid,rows=readRetryOutbox(key).filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
+ if(rows.some(row=>row.questionId===normalized))return {awarded:false,counted:false,queued:true,reason:'already-queued'};
+ rows.push({eventId:newClientEventId(),questionId:normalized,day:today,at:Date.now()});writeRetryOutbox(key,rows.slice(-500));
+ if(rows.length>=5){await flushRetryAttempts();return {...(retryResultMemory.get(resultKey)||{awarded:false,counted:true,queued:true,reason:'queued'})};}
+ scheduleRetryFlush();return {awarded:false,counted:true,queued:true,reason:'queued'};
 }
 
 window.EnglishPlayroomCoins=Object.freeze({
