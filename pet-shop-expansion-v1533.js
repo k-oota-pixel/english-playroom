@@ -1,8 +1,8 @@
-import {equipmentTransform,normalizeEquipmentSlots} from './pet-equipment-fit.js?v=2.1.21';
+import {equipmentTransform,normalizeEquipmentSlots} from './pet-equipment-fit.js?v=2.1.22';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {hasPet} from './pet-model.js?v=2.1.21';
+import {hasPet} from './pet-model.js?v=2.1.22';
 
 const EXTRA_ITEMS=Object.freeze([
   {id:'chef-hat',name:'コック帽',price:12,slot:'head',icon:'👨‍🍳'},
@@ -107,6 +107,10 @@ function applyExpansionLayers(root,data,preview=false){
   const signature=JSON.stringify([shopOf(data),preview?previewSelection:null]);
   if(appliedLayers.get(svg)===signature)return;
   appliedLayers.set(svg,signature);
+  // Normalize saved head layers too: a retained SVG can predate the current fit.
+  for(const node of svg.querySelectorAll('[data-pet-shop-slot="head"]')){
+    node.setAttribute('transform',equipmentTransform('head',svg.dataset.petSpecies,node.dataset.petShopItem));
+  }
   svg.querySelectorAll('[data-pet-extra-layer]').forEach(el=>el.remove());
   const shop=shopOf(data),equipped={...shop.equipped};if(preview&&previewSelection)equipped[previewSelection.slot]=previewSelection.id;
   const active=id=>typeof id==='string'&&((preview&&previewSelection?.id===id)||isOwned(shop,id));

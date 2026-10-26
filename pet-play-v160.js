@@ -1,1 +1,1 @@
-import './pet-play-menu-v164.js?v=2.1.21';
+import './pet-play-menu-v164.js?v=2.1.22';

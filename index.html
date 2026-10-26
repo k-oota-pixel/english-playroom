@@ -137,14 +137,14 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <link rel="stylesheet" href="./learning-titles.css?v=1.10.8">
 <script type="module" src="./learning-titles.js?v=2.1.11"></script>
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
-<script type="module" src="./pet-strength.js?v=2.1.21"></script>
+<script type="module" src="./pet-strength.js?v=2.1.22"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.10">
-<script type="module" src="./app-shell.js?v=2.1.21"></script>
+<script type="module" src="./app-shell.js?v=2.1.22"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.21">ver2.1.21</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.22">ver2.1.22</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -353,7 +353,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=2.1.21";
+import {recordLearningActivity} from "./coin-reward.js?v=2.1.22";
 import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.1.9';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -366,8 +366,8 @@ import {
 
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
-import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.21';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.1.21';
+import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.22';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.1.22';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 
 const firebaseConfig = {
@@ -840,10 +840,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=2.1.9"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.21'></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.22'></script>
 <script>
 (() => {
-  const version = '2.1.21';
+  const version = '2.1.22';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

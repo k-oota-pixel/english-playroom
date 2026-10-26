@@ -1,7 +1,7 @@
-import {auth,db,walletRef} from './coin-reward.js?v=2.1.21';
+import {auth,db,walletRef} from './coin-reward.js?v=2.1.22';
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2';
 import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
-import {hasPet} from './pet-model.js?v=2.1.21';
+import {hasPet} from './pet-model.js?v=2.1.22';
 import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.22';
 import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
