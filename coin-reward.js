@@ -24,7 +24,7 @@ export { auth, db, authReady, walletRef, recordLearningActivity };
 let currentUser=auth.currentUser||null;
 let authResolved=false,resolveAuth;
 const authReady=new Promise(r=>resolveAuth=r);
-onAuthStateChanged(auth,user=>{currentUser=user||null;if(user)queueMicrotask(()=>{void flushTitleEvents();void flushLearningActivities();void flushRetryAttempts();});if(!authResolved){authResolved=true;resolveAuth();}});
+onAuthStateChanged(auth,user=>{currentUser=user||null;if(user)queueMicrotask(()=>{void flushTitleEvents();void flushLearningActivities();if(readRetryOutbox(RETRY_OUTBOX_PREFIX+user.uid).length)void flushRetryAttempts();});if(!authResolved){authResolved=true;resolveAuth();}});
 
 function todayKey(){
   const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
