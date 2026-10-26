@@ -37,7 +37,7 @@ let adventureTitleEvents=[];
 let records=readRecords();
 globalThis.MonstudyMaterial?.setActivityGuard(()=>runActive);
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
-let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0;
+let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0,runBestAtStart=1;
 let persistedBest=1,bestSavePromise=Promise.resolve(true);
 
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
@@ -208,12 +208,12 @@ async function startRun(startAt=1){
  if(startRun.loading||finishingRun)return;startRun.loading=true;
  try{await titleSyncPromise;stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats);petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
  catch(error){console.error(error);alert("称号の同期を確認できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
-els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;stage=unlockedStartFloors(currentBest()).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.exitRunBtn.hidden=false;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;runBestAtStart=currentBest();stage=unlockedStartFloors(runBestAtStart).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.exitRunBtn.hidden=false;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
 async function finishRun(reason='defeat'){
  if(!runActive||finishingRun)return;
  finishingRun=true;runActive=false;stopBattle();refreshPause();syncActionAvailability();
- records[bestKey()]=currentBest();writeRecords();
+ records[bestKey()]=currentBest();if(currentBest()>runBestAtStart)writeRecords();
  if(adventureTitleEvents.length){
   const run=adventureTitleEvents.find(event=>event.kind==='run');if(run){run.floor=Math.max(run.floor,stage);run.score=Math.max(run.score||0,stage);}
   const events=adventureTitleEvents.splice(0),appId=mode==='tower'?'word-tower':'eiken-dungeon';
