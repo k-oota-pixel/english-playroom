@@ -262,7 +262,7 @@ function start(){
     if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';syncInitializedUid='';
     if(!user){renderHealth({});delete document.documentElement.dataset.petStage;const b=ensureMemoryButton();if(b)b.hidden=true;return;}
     const ref=dataRef(user);
-    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);if(!snap.metadata.fromCache&&syncInitializedUid!==user.uid){syncInitializedUid=user.uid;synchronize(user,currentData).catch(error=>console.error('Pet lifecycle sync failed',error));}},error=>console.error('Pet lifecycle snapshot failed',error));
+    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);if(snap.metadata?.fromCache===false&&syncInitializedUid!==user.uid){syncInitializedUid=user.uid;synchronize(user,currentData).catch(error=>console.error('Pet lifecycle sync failed',error));}},error=>console.error('Pet lifecycle snapshot failed',error));
   });
   // The legacy page renderer still updates some labels after auth; quietly re-apply lifecycle labels.
   let checkedDate=localDateKey();
