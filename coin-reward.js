@@ -127,7 +127,7 @@ function newClientEventId(){return globalThis.crypto?.randomUUID?.()||`e${Date.n
 function readTitleOutbox(key){if(titleMemoryOnly.has(key))return titleMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'null')||[];titleMemory.set(key,rows);return rows;}catch{return titleMemory.get(key)||[];}}
 function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));titleMemoryOnly.delete(key);}catch{titleMemoryOnly.add(key);}}
 async function stableBatchId(values){return String(values.at(-1)||values[0]||newClientEventId());}
-function scheduleTitleFlush(delay=5000){if(typeof setTimeout!=='function'){void flushTitleEvents();return;}globalThis.clearTimeout?.(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
+function scheduleTitleFlush(delay=5000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
 function removeTitleRows(key,ids){const remove=new Set(ids);writeTitleOutbox(key,readTitleOutbox(key).filter(row=>!remove.has(row.event?.eventId)));}
 function flushTitleEvents(){
  const user=currentUser;if(!user)return Promise.resolve({freshTitles:[]});
@@ -192,7 +192,7 @@ const learningMemory=new Map(),learningMemoryOnly=new Set();
 function readLearningOutbox(key){if(learningMemoryOnly.has(key))return learningMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');learningMemory.set(key,rows);return rows;}catch{return learningMemory.get(key)||[];}}
 function writeLearningOutbox(key,rows){learningMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));learningMemoryOnly.delete(key);}catch{learningMemoryOnly.add(key);}}
 let learningTimer=0,learningQueue=Promise.resolve(),learningFlushRunning=false;
-function scheduleLearningFlush(delay=5000){if(typeof setTimeout!=='function'){void flushLearningActivities();return;}globalThis.clearTimeout?.(learningTimer);learningTimer=setTimeout(()=>void flushLearningActivities(),delay);}
+function scheduleLearningFlush(delay=5000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(learningTimer);learningTimer=setTimeout(()=>void flushLearningActivities(),delay);}
 function removeLearningRows(key,ids){const remove=new Set(ids);writeLearningOutbox(key,readLearningOutbox(key).filter(row=>!remove.has(row.eventId)));}
 function flushLearningActivities(){
  const user=currentUser;if(!user)return Promise.resolve();
