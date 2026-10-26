@@ -1,9 +1,9 @@
-import {normalizeEquipmentSlots} from './pet-equipment-fit.js?v=2.1.23';
+import {normalizeEquipmentSlots} from './pet-equipment-fit.js?v=2.1.24';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 import {getFirestore,doc,onSnapshot} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {hasPet} from './pet-model.js?v=2.1.23';
-import {renderPetSVG} from './pet-art.js?v=2.1.23';
+import {hasPet} from './pet-model.js?v=2.1.24';
+import {renderPetSVG} from './pet-art.js?v=2.1.24';
 
 const EXTRA_SLOTS=Object.freeze({
   'chef-hat':'head','cowboy-hat':'head','party-hat':'head','detective-hat':'head','bunny-headband':'head','top-hat':'head',

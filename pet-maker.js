@@ -1,4 +1,4 @@
-import {normalizePetName,validPetName} from './pet-model.js?v=2.1.23';
+import {normalizePetName,validPetName} from './pet-model.js?v=2.1.24';
 
 const SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
 const PERSONALITY_POOLS={calm:['cat','panda'],playful:['dog','hamster'],curious:['bird','penguin','dragon']};

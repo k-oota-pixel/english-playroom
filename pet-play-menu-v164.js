@@ -1,6 +1,6 @@
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2';
-import {auth} from './coin-reward.js?v=2.1.23';
-import {hasPet} from './pet-model.js?v=2.1.23';
+import {auth} from './coin-reward.js?v=2.1.24';
+import {hasPet} from './pet-model.js?v=2.1.24';
 let petData={};
 function install(){
  let b=document.getElementById('petPlayOpen');

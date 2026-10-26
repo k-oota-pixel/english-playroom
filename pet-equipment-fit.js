@@ -1,6 +1,6 @@
 // Shared by standard equipment and expansion items, including shop previews.
 export function equipmentTransform(slot,species,itemId){
- const headDrop=3; // Slightly lower every head item in previews and equipped views.
+ const headDrop=6; // Slightly lower every head item in previews and equipped views.
  const lower=new Set(['red-ribbon','blue-ribbon','wizard-hat','flower-crown','knit-hat','beret','baseball-cap','halo']);
  const neckLift=['green-scarf','striped-bowtie','flower-necklace'].includes(itemId)?24:['gold-medal','star-pendant'].includes(itemId)?8:0;
  if(slot==='neck')return `translate(0 ${(species==='cat'||species==='dog'?8:0)-neckLift})`;
