@@ -291,8 +291,8 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
 async function recordRetryAttempt(questionId){
  await authReady;const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
  void recordLearningActivity('eiken-retry');
- const normalized=cleanPart(questionId),key=RETRY_OUTBOX_PREFIX+user.uid,rows=readRetryOutbox(key);
- if(!rows.some(row=>row.questionId===normalized))rows.push({eventId:crypto.randomUUID(),questionId:normalized,day:todayKey(),at:Date.now()});
+ const normalized=cleanPart(questionId),today=todayKey(),key=RETRY_OUTBOX_PREFIX+user.uid,rows=readRetryOutbox(key).filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
+ if(!rows.some(row=>row.questionId===normalized))rows.push({eventId:crypto.randomUUID(),questionId:normalized,day:today,at:Date.now()});
  writeRetryOutbox(key,rows.slice(-500));
  if(rows.length>=5)void flushRetryAttempts();else scheduleRetryFlush();
  return {awarded:false,counted:true,queued:true,reason:'queued'};
