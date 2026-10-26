@@ -79,9 +79,12 @@ async function realtimeChecks(page,mode){
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'5F':'B5');
  await page.clock.runFor(700);
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'6F':'B6');
+ const beforeFinishEvents=await page.evaluate(()=>window.adventureTitleEvents.length);
  assert.equal(await page.locator('#enemyName').textContent(),'ENEMY');
  assert.equal(await page.locator('#bossBadge').isVisible(),false);
  const coins=await page.evaluate(()=>window.adventureCoins);assert.equal(coins.filter(c=>c.appId===(mode==='tower'?'word-tower':'eiken-dungeon')).length,mode==='tower'?0:1);if(mode==='dungeon')assert.match(coins[0].label,/5層到達/);
+ assert.equal(await page.evaluate(()=>window.adventureTitleEvents.length),beforeFinishEvents,'active-run title events are held until the run ends');
+ await page.clock.runFor(interval*12);assert.equal(await hp(),0);assert.equal(await page.locator('#resultCard').isVisible(),true);
  const events=await page.evaluate(()=>window.adventureTitleEvents);
  assert.ok(events.length>0);assert.ok(events.every(e=>e.appId===(mode==='tower'?'word-tower':'eiken-dungeon')&&e.expectedUid==='test'));
  assert.equal(new Set(events.map(e=>e.eventId)).size,events.length);
@@ -89,8 +92,8 @@ async function realtimeChecks(page,mode){
  assert.ok(events.some(e=>e.kind==='answer'&&!e.correct));
  assert.ok(events.some(e=>e.kind==='defeat'&&e.floor===5&&e.noDamage===false));
 
- assert.equal(await hp(),initial);
- console.log('PASS realtime and boss full heal',mode);
+ assert.equal(await page.locator('#resultCard').isVisible(),true);
+ console.log('PASS realtime, boss full heal and completion-only title submission',mode);
 }
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--disable-gpu','--renderer-process-limit=2'],executablePath:process.env.CHROME_PATH});
