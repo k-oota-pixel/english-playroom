@@ -2,8 +2,7 @@ import {auth,authReady} from '../coin-reward.js?v=2.1.2';
 
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const endpoint='https://task-quest.onrender.com/api/adventure/rankings';
-const label=document.getElementById('bestLabel');
-let lastValue='',cachedToken='',lastFloor=0,lastPublishedFloor=0,initialized=false,ready=false;
+let cachedToken='',lastPublishedFloor=0;
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function floorFromLabel(value){const floor=Number(String(value||'').match(/\d+/)?.[0]||0);return Number.isSafeInteger(floor)&&floor>0?floor:0;}
 
@@ -24,14 +23,4 @@ async function publish(expectedFloor){
  }
  throw Error('自己ベストの保存完了を待っています。');
 }
-function schedule(){
- const value=label?.textContent?.trim()||'',floor=floorFromLabel(value);if(!floor||value===lastValue)return;lastValue=value;lastFloor=floor;
- if(!ready)return;
- const checkpoint=mode==='tower'?10:5;
- if(floor%checkpoint===0&&floor>lastPublishedFloor)void publish(floor).catch(error=>console.warn('Adventure ranking sync deferred',error));
-}
-
-if(label){new MutationObserver(schedule).observe(label,{childList:true,characterData:true,subtree:true});schedule();}
-window.addEventListener('pet-adventure:ready',event=>{ready=true;const floor=floorFromLabel(event.detail?.best||lastFloor);if(!floor)return;lastFloor=floor;lastValue=label?.textContent?.trim()||lastValue;if(!initialized){initialized=true;void publish(floor).catch(error=>console.warn('Adventure ranking sync deferred',error));}});
-window.addEventListener('pet-adventure:run-finished',event=>{const floor=floorFromLabel(event.detail?.best||lastFloor);if(floor>lastPublishedFloor){lastFloor=floor;void publish(floor).catch(error=>console.warn('Adventure ranking sync deferred',error));}});
-window.addEventListener('pagehide',()=>{if(cachedToken&&lastFloor>lastPublishedFloor)void send(cachedToken,lastFloor).catch(()=>{});});
+window.addEventListener('pet-adventure:run-finished',event=>{const floor=floorFromLabel(event.detail?.best);if(floor>lastPublishedFloor)void publish(floor).catch(error=>console.warn('Adventure ranking sync deferred',error));});

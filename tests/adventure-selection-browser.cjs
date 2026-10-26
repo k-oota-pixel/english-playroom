@@ -178,7 +178,7 @@ await page.goto('https://adventure.test/pet-adventure/');
   for(let tick=0;tick<4;tick++)await page.clock.runFor(250);
   await page.waitForSelector('#attackPanel:not([hidden])');
   assert.equal(await page.evaluate(()=>scrollY),0);
-  await page.locator('a.back[href="./"]').click();
+ page.once('dialog',dialog=>dialog.accept());await page.locator('a.back[href="./"]').click();
  }
  // Exercise the actual replacement PLAY module and pet-state gating.
  console.log('play');await page.goto('https://adventure.test/');
