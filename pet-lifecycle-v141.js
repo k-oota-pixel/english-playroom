@@ -1,10 +1,10 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {hasPet,normalizePetName,validPetName} from './pet-model.js?v=2.1.20';
+import {hasPet,normalizePetName,validPetName} from './pet-model.js?v=2.1.21';
 
 import {growthPatch,hatchPatch,hatchDay} from './pet-growth.js';
-import {renderPetVisual} from './pet-art.js?v=2.1.20';
+import {renderPetVisual} from './pet-art.js?v=2.1.21';
 import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.30';
 import {advanceHealth} from './pet-health-model.js?v=1.8.1';
 const LIFECYCLE_VERSION=141;
@@ -152,7 +152,7 @@ function ensureMemoriesDialog(){
 }
 
 async function svgFor(appearance,shop,stage='adult'){
-  const mod=await import('./pet-art.js?v=2.1.20');return mod.renderPetSVG(appearance,shop,stage);
+  const mod=await import('./pet-art.js?v=2.1.21');return mod.renderPetSVG(appearance,shop,stage);
 }
 async function openMemories(){
   const memories=memoriesOf(currentData);if(!memories.length)return;
