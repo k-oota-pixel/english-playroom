@@ -132,6 +132,7 @@ function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.s
 async function stableBatchId(values){return String(values.at(-1)||values[0]||newClientEventId());}
 function scheduleTitleFlush(delay=5000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
 function removeTitleRows(key,ids){const remove=new Set(ids);writeTitleOutbox(key,readTitleOutbox(key).filter(row=>!remove.has(row.event?.eventId)));}
+function titleRowsReady(rows){const valid=(rows||[]).filter(row=>row?.event);return valid.some(row=>!row.batchVersion||row.event.appId!=='eiken-retry')||valid.filter(row=>row.batchVersion===2&&row.event.appId==='eiken-retry').length>=5;}
 function flushTitleEvents(){
  const user=currentUser;if(!user)return Promise.resolve({freshTitles:[]});
  globalThis.clearTimeout?.(titleFlushTimer);
@@ -154,6 +155,7 @@ function flushTitleEvents(){
    const apps=[...new Set(rows.map(row=>row.event.appId))];
    for(const appId of apps){
     const pending=rows.filter(row=>row.event.appId===appId);
+    if(appId==='eiken-retry')pending.splice(Math.floor(pending.length/5)*5);
     while(pending.length){
      const group=pending.splice(0,25);if(currentUser?.uid!==user.uid)return {freshTitles};
      const ids=group.map(row=>row.event.eventId),batchId=await stableBatchId([appId,...ids]),token=await user.getIdToken();if(currentUser?.uid!==user.uid)return {freshTitles};
@@ -168,7 +170,7 @@ function flushTitleEvents(){
    return {freshTitles};
   }finally{
    titleFlushRunning=false;
-   if(currentUser?.uid===user.uid&&readTitleOutbox(key).length)scheduleTitleFlush(1000);
+   if(currentUser?.uid===user.uid&&titleRowsReady(readTitleOutbox(key)))scheduleTitleFlush(1000);
   }
  });
  return titleQueue;
@@ -181,8 +183,9 @@ function enqueueTitleEvents(appId,payloads,flushNow=false){
   if(!known.has(event.eventId)){pending.push({event,at:Date.now(),batchVersion:2});known.add(event.eventId);}
  }
  writeTitleOutbox(key,pending.slice(-500));
- if(flushNow||typeof setTimeout!=='function')return flushTitleEvents();
- scheduleTitleFlush();return Promise.resolve({queued:true,freshTitles:[]});
+ const retryPending=appId==='eiken-retry'?pending.filter(row=>row.event?.appId===appId).length:0;
+ if(flushNow||(appId==='eiken-retry'&&retryPending>=5)||typeof setTimeout!=='function'&&appId!=='eiken-retry')return flushTitleEvents();
+ if(appId!=='eiken-retry')scheduleTitleFlush();return Promise.resolve({queued:true,freshTitles:[]});
 }
 function recordTitleEvent(appId,payload={}){return enqueueTitleEvents(appId,[payload]);}
 function recordTitleEvents(appId,payloads=[]){return enqueueTitleEvents(appId,payloads,true);}
