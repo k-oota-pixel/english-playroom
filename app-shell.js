@@ -104,7 +104,33 @@ function install() {
     if(!allowedToLeave())return false;
     historyIndex++;history.pushState({monstudy:true,index:historyIndex},'',routeURL(u));show(u);return true;
   }
-  window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;syncPause();}};
+  function guardTaskQuest21(win){
+    try{
+      if(!win.location.pathname.startsWith('/task-quest/'))return;
+      const doc=win.document;
+      const apply=()=>{
+        doc.querySelectorAll('.taskbtn').forEach(button=>{
+          if(button.querySelector('.num')?.textContent.trim()==='21'){
+            const taskTitle=button.querySelector('.title');
+            if(taskTitle&&taskTitle.textContent!=='パンダの場所')taskTitle.textContent='パンダの場所';
+          }
+        });
+        if(/QUEST\s+21\s*\/\s*50/i.test(doc.querySelector('#questnum')?.textContent||'')){
+          const titleEl=doc.querySelector('#title');
+          const jaTask=doc.querySelector('#jaTask');
+          if(titleEl&&titleEl.textContent!=='パンダの場所')titleEl.textContent='パンダの場所';
+          if(jaTask&&jaTask.textContent!=='パンダがどこにいるか尋ねよう。')jaTask.textContent='パンダがどこにいるか尋ねよう。';
+        }
+      };
+      apply();
+      if(!win.__monstudyTaskQuest21Guard){
+        const observer=new win.MutationObserver(apply);
+        observer.observe(doc.body,{subtree:true,childList:true,characterData:true});
+        win.__monstudyTaskQuest21Guard=observer;
+      }
+    }catch{}
+  }
+  window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;guardTaskQuest21(win);syncPause();}};
   document.addEventListener('click',e=>{
     if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
     const a=e.target.closest('a[href]');if(!a||a.hasAttribute('download'))return;
