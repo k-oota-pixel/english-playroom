@@ -122,9 +122,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else installTaskQuestAnswerGuard();
 
 
-const titleMemory=new Map();let titleQueue=Promise.resolve(),titleFlushTimer=0,titleFlushRunning=false;
-function readTitleOutbox(key){if(titleMemory.has(key))return titleMemory.get(key);try{return JSON.parse(localStorage.getItem(key)||'null')||[];}catch{return [];}}
-function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
+const titleMemory=new Map(),titleMemoryOnly=new Set();let titleQueue=Promise.resolve(),titleFlushTimer=0,titleFlushRunning=false;
+function readTitleOutbox(key){if(titleMemoryOnly.has(key))return titleMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'null')||[];titleMemory.set(key,rows);return rows;}catch{return titleMemory.get(key)||[];}}
+function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));titleMemoryOnly.delete(key);}catch{titleMemoryOnly.add(key);}}
 async function stableBatchId(values){const bytes=new TextEncoder().encode(values.join('|')),digest=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(digest)].map(value=>value.toString(16).padStart(2,'0')).join('');}
 function scheduleTitleFlush(delay=5000){clearTimeout(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
 function removeTitleRows(key,ids){const remove=new Set(ids);writeTitleOutbox(key,readTitleOutbox(key).filter(row=>!remove.has(row.event?.eventId)));}
@@ -187,9 +187,9 @@ window.addEventListener('online',()=>{void flushTitleEvents();void flushLearning
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
 const LEARNING_ACTIVITY_IDS=new Set(['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training','pet-instructions','pet-chat']);
 function learningContentFromPage(){const path=location.pathname;return [...LEARNING_ACTIVITY_IDS].find(id=>path.split('/').includes(id));}
-const learningMemory=new Map();
-function readLearningOutbox(key){if(learningMemory.has(key))return learningMemory.get(key);try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
-function writeLearningOutbox(key,rows){learningMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
+const learningMemory=new Map(),learningMemoryOnly=new Set();
+function readLearningOutbox(key){if(learningMemoryOnly.has(key))return learningMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');learningMemory.set(key,rows);return rows;}catch{return learningMemory.get(key)||[];}}
+function writeLearningOutbox(key,rows){learningMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));learningMemoryOnly.delete(key);}catch{learningMemoryOnly.add(key);}}
 let learningTimer=0,learningQueue=Promise.resolve(),learningFlushRunning=false;
 function scheduleLearningFlush(delay=5000){clearTimeout(learningTimer);learningTimer=setTimeout(()=>void flushLearningActivities(),delay);}
 function removeLearningRows(key,ids){const remove=new Set(ids);writeLearningOutbox(key,readLearningOutbox(key).filter(row=>!remove.has(row.eventId)));}
@@ -223,9 +223,9 @@ async function recordLearningActivity(appId=learningContentFromPage()){
 }
 
 const RETRY_OUTBOX_PREFIX='monstudy-retry-coin-outbox:';
-const retryMemory=new Map();
-function readRetryOutbox(key){if(retryMemory.has(key))return retryMemory.get(key);try{return JSON.parse(localStorage.getItem(key)||'[]');}catch{return [];}}
-function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));}catch{}}
+const retryMemory=new Map(),retryMemoryOnly=new Set();
+function readRetryOutbox(key){if(retryMemoryOnly.has(key))return retryMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');retryMemory.set(key,rows);return rows;}catch{return retryMemory.get(key)||[];}}
+function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));retryMemoryOnly.delete(key);}catch{retryMemoryOnly.add(key);}}
 let retryTimer=0,retryQueue=Promise.resolve(),retryFlushRunning=false;
 function scheduleRetryFlush(delay=10000){clearTimeout(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
 function removeRetryRows(key,ids){const remove=new Set(ids);writeRetryOutbox(key,readRetryOutbox(key).filter(row=>!remove.has(row.eventId)));}
