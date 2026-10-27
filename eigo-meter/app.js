@@ -58,7 +58,7 @@ switch(b.dataset.action){case 'start':count=Number(document.querySelector('#coun
 function revealNext(){
  const x=window.scrollX,y=window.scrollY,left=game.querySelector?.('.lineup')?.scrollLeft??0;
  revealed++;
- if(revealed===count){clearInterval(timer);timer=null;phase='result';document.activeElement?.blur?.();}
+ if(revealed===count){clearInterval(timer);timer=null;phase='result';document.activeElement?.blur?.();void window.MonstudyMaterial?.recordActivity?.('eigo-meter');}
  render(revealed-1);
  const row=game.querySelector?.('.lineup');if(row)row.scrollLeft=left;
  window.scrollTo?.({left:x,top:y,behavior:'instant'});
