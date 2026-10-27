@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>英検３級 二次試験 Q2・Q3対策 | もんすたでぃ</title>
+<link rel="stylesheet" href="./style.css?v=1">
+<script src="../shell-bridge.js?v=2.1.29"></script>
+</head>
+<body>
+<main class="shell">
+  <a class="home-link" href="../">← もんすたでぃ</a>
+  <header class="hero">
+    <div class="eyebrow">EIKEN GRADE 3 · INTERVIEW PRACTICE</div>
+    <h1>英検３級 二次試験<br>Question 2・3</h1>
+    <p>絵を見て、これからすることと数を英語で答えよう。質問をタップすると音声が流れます。</p>
+  </header>
+
+  <section class="panel">
+    <div class="toolbar">
+      <div><div class="screen-label">PICTURE CARD</div><h2 id="cardNumber">No. 01 / 20</h2></div>
+      <button id="randomBtn" class="secondary" type="button">🎲 ランダム</button>
+    </div>
+    <nav id="cardNav" class="card-nav" aria-label="問題を選ぶ"></nav>
+    <figure class="picture-wrap">
+      <img id="picture" alt="英検３級二次試験の練習用イラスト">
+      <figcaption>絵の中の人物や物をよく見て答えましょう。</figcaption>
+    </figure>
+
+    <div class="question-grid">
+      <article class="question-card">
+        <div class="question-head"><span class="question-number">Q2</span><button class="audio-btn" data-audio="q2" type="button" aria-label="Question 2 の音声を再生">🔊 聞く</button></div>
+        <p id="question2" class="question-text"></p>
+        <label for="answer2">Your Answer</label>
+        <textarea id="answer2" rows="2" maxlength="300" placeholder="例：She is going to take pictures of birds."></textarea>
+        <div id="result2" class="answer-result" hidden></div>
+      </article>
+      <article class="question-card">
+        <div class="question-head"><span class="question-number">Q3</span><button class="audio-btn" data-audio="q3" type="button" aria-label="Question 3 の音声を再生">🔊 聞く</button></div>
+        <p id="question3" class="question-text"></p>
+        <label for="answer3">Your Answer</label>
+        <textarea id="answer3" rows="2" maxlength="300" placeholder="例：There are two flower pots."></textarea>
+        <div id="result3" class="answer-result" hidden></div>
+      </article>
+    </div>
+
+    <div class="grade-area">
+      <button id="gradeBtn" class="primary" type="button">Q2・Q3をAI採点する</button>
+      <p class="rubric-note">内容と英語表現をそれぞれ5点満点で練習用に評価します。点数は英検の公式採点結果ではありません。</p>
+      <div id="errorBox" class="error" role="alert" hidden></div>
+    </div>
+    <div class="next-row"><button id="nextBtn" class="secondary" type="button">次の問題へ →</button></div>
+  </section>
+  <footer>AIフィードバックを参考に、声に出してもう一度答えてみましょう。</footer>
+</main>
+<script src="./questions.js?v=1"></script>
+<script type="module" src="./app.js?v=1"></script>
+<script type="module" src="../coin-reward.js?v=2.1.29"></script>
+</body>
+</html>
