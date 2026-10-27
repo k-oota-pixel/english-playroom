@@ -329,5 +329,6 @@ window.EnglishPlayroomCoins=Object.freeze({
   awardPre2Questions:questionId=>awardOncePerDay('pre2-interview-questions',`question-${cleanPart(questionId)}`,'準2級質問対策に挑戦！'),
   awardTask:themeId=>awardOncePerDay('task-quest',`theme-${cleanPart(themeId)}`,'Task-Questに挑戦！'),
   awardPre2A:themeId=>awardOncePerDay('eiken-pre2-interview-a',`theme-${cleanPart(themeId)}`,'準2級面接Aで2つ以上正解！'),
-  awardGrade3Interview:questionId=>awardOncePerDay('eiken-grade3-interview','card-'+cleanPart(questionId),'３級Q2・Q3に挑戦！')
+  awardGrade3Interview:questionId=>awardOncePerDay('eiken-grade3-interview','card-'+cleanPart(questionId),'３級Q2・Q3に挑戦！'),
+  awardGrade3InterviewQ45:questionId=>awardOncePerDay('eiken-grade3-interview-q45','question-'+cleanPart(questionId),'３級Q4・Q5に挑戦！')
 });
