@@ -221,9 +221,9 @@ function flushLearningActivities(){
  });
  return learningQueue;
 }
-async function recordLearningActivity(appId=learningContentFromPage()){
+async function recordLearningActivity(appId=learningContentFromPage(),options={}){
  await authReady;const user=currentUser;if(!user||!LEARNING_ACTIVITY_IDS.has(appId)||typeof fetch!=='function')return;
- if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
+ if(options.force!==true&&lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
  lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
  const key='monstudy-learning-outbox:'+user.uid,rows=readLearningOutbox(key);
  rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));if(typeof setTimeout!=='function')return flushLearningActivities();scheduleLearningFlush();
