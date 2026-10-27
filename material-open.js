@@ -29,6 +29,6 @@ if(typeof window!=='undefined'&&typeof fetch==='function'){
  const material=window.MonstudyMaterial||(window.MonstudyMaterial={});
  material.recordActivity=appId=>{
   if(!['eigo-meter','word-wolf'].includes(appId))return Promise.resolve({ok:false});
-  return fetch('https://task-quest.onrender.com/api/material-activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({appId}),credentials:'omit',keepalive:true});
+  return fetch('https://task-quest.onrender.com/api/material-activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({appId}),credentials:'omit',keepalive:true}).catch(()=>({ok:false}));
  };
 }
