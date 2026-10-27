@@ -19,9 +19,10 @@ function speak(text){
 function render(){
  if(!questions.length)return;
  const q=item();
- $('cardNumber').textContent='No. '+String(q.id).padStart(2,'0')+' / '+String(questions.length).padStart(2,'0');
- $('picture').src='images/'+String(q.id).padStart(2,'0')+'.webp';
- $('picture').alt='英検３級二次試験の練習用イラスト No. '+q.id;
+ const id=index+1;
+ $('cardNumber').textContent='No. '+String(id).padStart(2,'0')+' / '+String(questions.length).padStart(2,'0');
+ $('picture').src='images/'+String(id).padStart(2,'0')+'.webp';
+ $('picture').alt='英検３級二次試験の練習用イラスト No. '+id;
  $('question2').textContent=q.q2;$('question3').textContent=q.q3;
  $('answer2').value='';$('answer3').value='';
  $('result2').hidden=true;$('result3').hidden=true;$('errorBox').hidden=true;$('errorBox').textContent='';
@@ -32,7 +33,7 @@ function render(){
 }
 function buildNav(){
  const nav=$('cardNav');nav.replaceChildren();
- questions.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.textContent=String(q.id);b.setAttribute('aria-label','問題 '+q.id);b.addEventListener('click',()=>{index=i;render();});nav.appendChild(b);});
+ questions.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.textContent=String(i+1);b.setAttribute('aria-label','問題 '+(i+1));b.addEventListener('click',()=>{index=i;render();});nav.appendChild(b);});
 }
 function showError(message){$('errorBox').textContent=message;$('errorBox').hidden=false;}
 function resultHtml(data){
@@ -49,13 +50,13 @@ async function grade(){
  if(!answer2||!answer3){showError('Q2とQ3の両方に英語で回答してください。');(!answer2?$('answer2'):$('answer3')).focus();return;}
  const button=$('gradeBtn');button.disabled=true;button.textContent='AIが採点しています…';
  try{
-  const response=await fetch(API,{method:'POST',headers:await apiHeaders(),body:JSON.stringify({question_id:item().id,scene:item().scene,questions:[{number:2,question:item().q2,expected_answers:item().a2,answer:answer2},{number:3,question:item().q3,expected_answers:item().a3,answer:answer3}]}),signal:AbortSignal.timeout(45000)});
+  const response=await fetch(API,{method:'POST',headers:await apiHeaders(),body:JSON.stringify({question_id:index+1,scene:item().scene,questions:[{number:2,question:item().q2,expected_answers:item().a2,answer:answer2},{number:3,question:item().q3,expected_answers:item().a3,answer:answer3}]}),signal:AbortSignal.timeout(45000)});
   const data=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(data.error||'AI採点に接続できませんでした。');
   if(!data.results||data.results.length!==2||data.results.some(x=>!Number.isInteger(x.score)||x.score<0||x.score>5))throw new Error('採点結果を読み取れませんでした。もう一度お試しください。');
   data.results.forEach(result=>{const target=result.number===2?$('result2'):$('result3');target.innerHTML=resultHtml(result);target.hidden=false;});
   isGraded=true;button.textContent='採点済み';
-  window.EnglishPlayroomCoins?.awardGrade3Interview?.(item().id);
+  window.EnglishPlayroomCoins?.awardGrade3Interview?.(index+1);
  }catch(error){showError(error?.name==='TimeoutError'?'AIの返事に時間がかかっています。もう一度お試しください。':error?.message||'AI採点に接続できませんでした。');button.disabled=false;button.textContent='Q2・Q3をAI採点する';}
 }
 function next(){
