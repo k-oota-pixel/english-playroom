@@ -1,4 +1,4 @@
-import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.6';
+import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.7';
 import {adminContentRows} from './admin-content-model.js?v=2.1.5';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
