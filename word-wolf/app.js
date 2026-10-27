@@ -37,7 +37,7 @@ function confirmAnswer(){
   on('answer',answer);on('cancel',discussion);
 }
 function answer(){
-  stage='answer';
+  stage='answer';void window.MonstudyMaterial?.recordActivity?.('word-wolf');
   show(`<h2 id="heading">少数派は ${round.wolf+1}人目でした！</h2><div class="answer">多数派の単語<strong>${round.majority[0]}（${round.majority[1]}）</strong></div><div class="answer">少数派の単語<strong>${round.minority[0]}（${round.minority[1]}）</strong></div><p>どんなヒントで気づきましたか？ みんなで振り返ってみよう。</p>${button('again','もう一度あそぶ')}`);
   on('again',setup);
 }
