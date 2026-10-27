@@ -138,13 +138,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <script type="module" src="./learning-titles.js?v=2.1.25"></script>
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.1.25"></script>
-<link rel="stylesheet" href="./app-shell.css?v=2.1.28">
-<script type="module" src="./app-shell.js?v=2.1.28"></script>
+<link rel="stylesheet" href="./app-shell.css?v=2.1.29">
+<script type="module" src="./app-shell.js?v=2.1.29"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.28">ver2.1.28</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.29">ver2.1.29</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -328,7 +328,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>英語を送ってAIの返事を受け取る</span><small>同じテーマは1日1回</small></div></div>
     </a>
 </div></section>
-<section class="material-group" id="materials-exam" aria-labelledby="heading-exam"><div class="material-group-head"><h2 id="heading-exam">英検対策</h2><span>2教材</span></div><div class="cards">
+<section class="material-group" id="materials-exam" aria-labelledby="heading-exam"><div class="material-group-head"><h2 id="heading-exam">英検対策</h2><span>3教材</span></div><div class="cards">
 <a class="card order interview-card" href="./pre2-interview-questions/">
       <div class="eyebrow">EIKEN PRE-2 INTERVIEW · QUESTIONS</div>
       <div class="title">準２級質問４/５対策<span class="eiken-badge">英検対応</span></div>
@@ -342,6 +342,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="desc">イラストを見て、人物や状況を英語で説明しよう。音声とAI採点で面接の練習ができます。</div>
       <div class="chips"><span class="chip">20問</span><span class="chip">音声・AI採点</span></div>
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>2つ以上正解</span><small>同じ問題は1日1回</small></div></div>
+    </a>
+<a class="card order interview-card" href="./eiken-grade3-interview/">
+      <div class="eyebrow">EIKEN GRADE 3 INTERVIEW · PICTURES</div>
+      <div class="title">３級面接Q2・Q3対策<span class="eiken-badge">英検対応</span></div>
+      <div class="desc">絵を見て、これからすることと数を英語で答えよう。質問音声とAIフィードバックで二次試験を練習できます。</div>
+      <div class="chips"><span class="chip">20問</span><span class="chip">音声・AI採点</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>Q2・Q3に回答してAI採点</span><small>同じ問題は1日1回</small></div></div>
     </a>
 </div></section>
 </div>
@@ -840,10 +847,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=2.1.25"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.28'></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.29'></script>
 <script>
 (() => {
-  const version = '2.1.28';
+  const version = '2.1.29';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

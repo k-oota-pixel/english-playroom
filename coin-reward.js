@@ -192,7 +192,7 @@ function recordTitleEvents(appId,payloads=[]){return enqueueTitleEvents(appId,pa
 window.addEventListener('online',()=>{void flushTitleEvents();void flushLearningActivities();void flushRetryAttempts();});
 
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
-const LEARNING_ACTIVITY_IDS=new Set(['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training','pet-instructions','pet-chat']);
+const LEARNING_ACTIVITY_IDS=new Set(['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','eiken-grade3-interview','talk-quest','pet-catch','reading-training','pet-instructions','pet-chat']);
 function learningContentFromPage(){const path=location.pathname;return [...LEARNING_ACTIVITY_IDS].find(id=>path.split('/').includes(id));}
 const learningMemory=new Map(),learningMemoryOnly=new Set();
 function readLearningOutbox(key){if(learningMemoryOnly.has(key))return learningMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');learningMemory.set(key,rows);return rows;}catch{return learningMemory.get(key)||[];}}
