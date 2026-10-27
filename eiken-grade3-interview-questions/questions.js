@@ -1,0 +1,22 @@
+window.GRADE3_INTERVIEW_Q45=[
+{q4:"What do you like to do in your free time?",q5:"Do you like taking pictures?",yesFollow:"Please tell me more.",noFollow:"Why not?"},
+{q4:"What sport do you like to play?",q5:"Do you like playing soccer?",yesFollow:"Please tell me more.",noFollow:"What sport do you like?"},
+{q4:"How do you usually go to school?",q5:"Do you often ride a bicycle?",yesFollow:"Please tell me more.",noFollow:"How do you usually go to school?"},
+{q4:"What do you like to do outside?",q5:"Do you like flying kites?",yesFollow:"Please tell me more.",noFollow:"What do you like to do outside?"},
+{q4:"What do you usually eat for lunch?",q5:"Do you help prepare meals at home?",yesFollow:"Please tell me more.",noFollow:"What do you like to eat?"},
+{q4:"What flavor of ice cream do you like?",q5:"Do you like eating ice cream?",yesFollow:"Please tell me more.",noFollow:"What dessert do you like?"},
+{q4:"What animals do you like?",q5:"Do you like spending time with animals?",yesFollow:"Please tell me more.",noFollow:"What animals do you like?"},
+{q4:"What flowers do you like?",q5:"Do you like planting flowers?",yesFollow:"Please tell me more.",noFollow:"What do you like to do in a garden?"},
+{q4:"What kind of music do you like?",q5:"Do you listen to music every day?",yesFollow:"Please tell me more.",noFollow:"When do you usually listen to music?"},
+{q4:"What do you like to read?",q5:"Do you ever read newspapers?",yesFollow:"Please tell me more.",noFollow:"What do you like to read?"},
+{q4:"What do you like to draw or paint?",q5:"Do you like drawing pictures?",yesFollow:"Please tell me more.",noFollow:"What do you like to draw?"},
+{q4:"Who do you like to give presents to?",q5:"Have you ever bought flowers for someone?",yesFollow:"Please tell me more.",noFollow:"Who would you like to give flowers to?"},
+{q4:"What do you like to write about?",q5:"Do you write letters or e-mails to your friends?",yesFollow:"Please tell me more.",noFollow:"How do you usually contact your friends?"},
+{q4:"What do you usually eat for dinner?",q5:"Do you help cook dinner at home?",yesFollow:"Please tell me more.",noFollow:"What do you like to eat for dinner?"},
+{q4:"What sports do you like to watch or play?",q5:"Can you swim?",yesFollow:"Please tell me more.",noFollow:"What sport can you play?"},
+{q4:"What musical instrument would you like to play?",q5:"Can you play a musical instrument?",yesFollow:"Please tell me more.",noFollow:"What instrument would you like to play?"},
+{q4:"What kind of cake do you like?",q5:"Do you like eating cake?",yesFollow:"Please tell me more.",noFollow:"What sweets do you like?"},
+{q4:"Where would you like to travel by train?",q5:"Have you ever traveled by train?",yesFollow:"Please tell me more.",noFollow:"Where would you like to go by train?"},
+{q4:"What would you like to do at a farm?",q5:"Would you like to ride a horse?",yesFollow:"Please tell me more.",noFollow:"What animal would you like to ride?"},
+{q4:"Where do you like to go on weekends?",q5:"Have you ever fed ducks?",yesFollow:"Please tell me more.",noFollow:"What animals would you like to see?"}
+];
