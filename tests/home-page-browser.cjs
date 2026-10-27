@@ -20,12 +20,12 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
        '準２級質問４/５対策英検対応','準２級面接A練習英検対応','３級面接Q2・Q3対策英検対応','３級面接Q4・Q5対策英検対応']);
     assert.equal(await page.locator('.cards > .card').count(),16);
     assert.equal(await page.locator('.app-version-badge').textContent(),'ver2.1.30');
-    assert.equal(await page.locator('.cards').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),4);
+    assert.equal(await page.locator('.cards').first().evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),4);
     assert.equal(await page.locator('.cards a[href="./listening-training/"]').count(),1);
     assert.equal(await page.locator('.eiken-badge').count(),10);
     assert.equal(await page.locator('.interview-card').count(),4);
     await page.setViewportSize({width:390,height:844});
-    assert.equal(await page.locator('.cards').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),2);
+    assert.equal(await page.locator('.cards').first().evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),2);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     console.log('Homepage browser: current card order, exam labels, listening link and responsive grid passed');
   }finally{await browser.close();}
