@@ -192,7 +192,7 @@ function recordTitleEvents(appId,payloads=[]){return enqueueTitleEvents(appId,pa
 window.addEventListener('online',()=>{void flushTitleEvents();void flushLearningActivities();void flushRetryAttempts();});
 
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
-const LEARNING_ACTIVITY_IDS=new Set(['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training','pet-instructions','pet-chat','adventure-tower','adventure-dungeon']);
+const LEARNING_ACTIVITY_IDS=new Set(['word-breaker','ateru','basic-quest','eiken-retry','task-quest','eiken-cloze','eiken-title','listening-training','pre2-interview-questions','eiken-pre2-interview-a','talk-quest','pet-catch','reading-training','pet-instructions','pet-chat']);
 function learningContentFromPage(){const path=location.pathname;return [...LEARNING_ACTIVITY_IDS].find(id=>path.split('/').includes(id));}
 const learningMemory=new Map(),learningMemoryOnly=new Set();
 function readLearningOutbox(key){if(learningMemoryOnly.has(key))return learningMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');learningMemory.set(key,rows);return rows;}catch{return learningMemory.get(key)||[];}}
@@ -221,9 +221,9 @@ function flushLearningActivities(){
  });
  return learningQueue;
 }
-async function recordLearningActivity(appId=learningContentFromPage(),options={}){
+async function recordLearningActivity(appId=learningContentFromPage()){
  await authReady;const user=currentUser;if(!user||!LEARNING_ACTIVITY_IDS.has(appId)||typeof fetch!=='function')return;
- if(options.force!==true&&lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
+ if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
  lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
  const key='monstudy-learning-outbox:'+user.uid,rows=readLearningOutbox(key);
  rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));if(typeof setTimeout!=='function')return flushLearningActivities();scheduleLearningFlush();
