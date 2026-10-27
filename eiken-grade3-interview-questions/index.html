@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script src="../shell-bridge.js?v=2.1.30"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>英検３級 二次試験 Q4・Q5対策 | もんすたでぃ</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main class="shell">
+  <a class="home-link" href="../">← もんすたでぃ</a>
+
+  <header class="hero">
+    <div class="eyebrow">EIKEN GRADE 3 INTERVIEW PRACTICE · QUESTIONS</div>
+    <h1>英検３級 二次試験質問対策</h1>
+    <p>Q4は自分について、Q5はYes / Noで答えよう。質問を読んで、または音声で聞いて練習できます。</p>
+  </header>
+
+  <div class="stepbar" aria-label="進行状況">
+    <span id="step1" class="step active">1 質問</span>
+    <span id="step2" class="step">2 出題</span>
+    <span id="step3" class="step">3 受け方</span>
+    <span id="step4" class="step">4 回答</span>
+  </div>
+
+  <section id="typeScreen" class="panel screen">
+    <div class="screen-label">STEP 1</div>
+    <h2>どちらを練習しますか？</h2>
+    <div class="choice-grid two">
+      <button class="big-choice" data-question-type="4" type="button">
+        <span class="choice-number">Question 4</span>
+        <strong>自分について答える</strong>
+        <small>日常・好み・経験などの質問に答える練習</small>
+      </button>
+      <button class="big-choice" data-question-type="5" type="button">
+        <span class="choice-number">Question 5</span>
+        <strong>Yes / Noで答える</strong>
+        <small>答えたあとに、もう少し詳しく説明する練習</small>
+      </button>
+    </div>
+  </section>
+
+  <section id="orderScreen" class="panel screen hidden">
+    <div class="screen-label">STEP 2</div>
+    <h2>問題の選び方</h2>
+    <p id="orderTypeLabel" class="sub"></p>
+    <div class="choice-grid two">
+      <button id="randomChoice" class="big-choice" type="button">
+        <span class="choice-icon">🎲</span>
+        <strong>ランダムに挑戦</strong>
+        <small>20問からランダムに出題します</small>
+      </button>
+      <button id="numberChoice" class="big-choice" type="button">
+        <span class="choice-icon">🔢</span>
+        <strong>問題番号から選ぶ</strong>
+        <small>1〜20から好きな問題を選びます</small>
+      </button>
+    </div>
+    <button class="back" data-back="type" type="button">← Question 4 / 5 選択へ</button>
+  </section>
+
+  <section id="numberScreen" class="panel screen hidden">
+    <div class="screen-label">STEP 2</div>
+    <h2>問題番号を選んでください</h2>
+    <p id="numberTypeLabel" class="sub"></p>
+    <div id="numberGrid" class="number-grid" aria-label="問題番号"></div>
+    <button class="back" data-back="order" type="button">← 出題方法へ</button>
+  </section>
+
+  <section id="deliveryScreen" class="panel screen hidden">
+    <div class="screen-label">STEP 3</div>
+    <h2>質問をどう受けますか？</h2>
+    <div class="choice-grid two">
+      <button id="audioChoice" class="big-choice accent" type="button">
+        <span class="choice-icon">🔊</span>
+        <strong>音声で聞く</strong>
+        <small>本番練習。質問文は画面に表示しません</small>
+      </button>
+      <button id="readChoice" class="big-choice" type="button">
+        <span class="choice-icon">👀</span>
+        <strong>英文を読む</strong>
+        <small>練習モード。質問を見ながら答えます</small>
+      </button>
+    </div>
+    <button class="back" data-back="delivery" type="button">← 問題の選び方へ</button>
+  </section>
+
+  <section id="practiceScreen" class="panel screen hidden">
+    <div class="practice-head">
+      <div>
+        <div id="practiceType" class="screen-label"></div>
+        <h2 id="practiceNumber"></h2>
+      </div>
+      <span id="deliveryBadge" class="badge"></span>
+    </div>
+
+    <div id="audioPrompt" class="audio-prompt hidden">
+      <div class="speaker" aria-hidden="true">🔊</div>
+      <div>
+        <strong>Listen to the question.</strong>
+        <p>質問文は表示されません。面接官の質問を聞いて答えましょう。</p>
+      </div>
+      <button id="repeatBtn" class="repeat-btn" type="button">Could you repeat the question, please?</button>
+      <div id="repeatNote" class="repeat-note"></div>
+    </div>
+
+    <div id="readPrompt" class="read-prompt hidden">
+      <div class="examiner-label">Interviewer</div>
+      <p id="questionText" class="question-text"></p>
+    </div>
+
+    <div class="answer-area">
+      <label for="answerInput">Your Answer</label>
+      <textarea id="answerInput" rows="5" maxlength="700" placeholder="英語で答えてください。Yes / No だけでなく、理由や具体的な説明まで書いてみよう。"></textarea>
+      <div id="followUp" class="follow-up hidden">
+        <div class="examiner-label">Interviewer</div>
+        <p id="followUpQuestion" class="follow-up-question">Why?</p>
+        <label for="followUpInput">Your Answer</label>
+        <textarea id="followUpInput" rows="3" maxlength="500" placeholder="理由を英語で答えてください。"></textarea>
+      </div>
+      <button id="gradeBtn" class="primary" type="button">AIで採点する</button>
+      <p class="rubric-note">※ 発音・態度は採点せず、英検３級の質問形式を参考に「内容・情報量・語彙・文法／語法」を5点満点でAI推定評価します。</p>
+      <div id="errorBox" class="error hidden" role="alert"></div>
+    </div>
+  </section>
+
+  <section id="resultScreen" class="panel screen hidden">
+    <div class="result-top">
+      <div>
+        <div id="resultType" class="screen-label"></div>
+        <h2>AIフィードバック</h2>
+      </div>
+      <div class="score-card" aria-label="5点満点の得点">
+        <strong id="scoreValue">-</strong><span>/ 5</span>
+      </div>
+    </div>
+
+    <div class="result-question">
+      <span id="resultQuestionNumber"></span>
+      <p id="resultQuestion"></p>
+      <div id="listeningRecord" class="listening-record"></div>
+    </div>
+
+    <div class="feedback-grid">
+      <article class="feedback-card">
+        <h3>評価</h3>
+        <p id="feedbackText"></p>
+      </article>
+      <article class="feedback-card good-card">
+        <h3>Good points</h3>
+        <p id="strengthsText"></p>
+      </article>
+    </div>
+
+    <article id="correctionCard" class="feedback-card correction-card">
+      <h3>文法・語法チェック</h3>
+      <div id="corrections"></div>
+    </article>
+
+    <article class="feedback-card model-card">
+      <h3>Better answer</h3>
+      <p id="betterAnswer"></p>
+    </article>
+
+    <div class="result-actions">
+      <button id="nextBtn" class="primary" type="button">次の問題へ →</button>
+      <button id="retryBtn" type="button">同じ問題でもう一度</button>
+      <button id="menuBtn" type="button">問題選択に戻る</button>
+    </div>
+  </section>
+
+  <footer>AIの点数は練習用の推定評価です。英検の公式採点結果ではありません。</footer>
+</main>
+<script src="./questions.js"></script>
+<script type="module" src="./app.js?v=2.1.30"></script>
+<script type="module" src="../coin-reward.js?v=2.1.30"></script>
+</body>
+</html>
