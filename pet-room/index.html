@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script src="../shell-bridge.js?v=2.1.1"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f2e8">
+<title>ペットのおへや｜もんすたでぃ</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#193d38;--muted:#6e7d76;--line:#d9e2d8;--paper:#f6f2e8;--panel:#fffdf8;--green:#2d6f5a;--gold:#d3a53d}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans JP","Segoe UI",sans-serif}
+button,select{font:inherit}button{touch-action:manipulation}
+.page{max-width:980px;margin:0 auto;padding:18px 16px 42px}
+.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
+.eyebrow{font-size:10px;font-weight:900;letter-spacing:.14em;color:#7a8e84}
+h1{font-size:clamp(24px,5vw,34px);margin:3px 0 4px;line-height:1.2}
+.intro p{margin:0;color:var(--muted);font-size:12px;line-height:1.65}
+.save-area{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.status{font-size:10px;color:var(--muted);min-height:16px;text-align:right}
+.primary,.soft,.danger,.tool-btn,.swatch,.stored{border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-weight:850;cursor:pointer}
+.primary{background:var(--green);color:#fff;border-color:var(--green);padding:10px 15px}
+.primary:disabled{opacity:.48;cursor:default}
+.soft{padding:9px 12px;background:#fffdf8}.danger{padding:9px 12px;color:#9a493f;background:#fff8f4;border-color:#efd8cf}
+.room-shell{background:#fff;border:1px solid var(--line);border-radius:20px;padding:12px;box-shadow:0 8px 24px #173d3508}
+.room{position:relative;width:100%;aspect-ratio:4/3;min-height:320px;overflow:hidden;border-radius:15px;border:1px solid #cfd9d0;user-select:none;-webkit-user-select:none;isolation:isolate;background:#eadfc9}
+.wall{position:absolute;inset:0 0 68% 0;background:#f4ead8}
+.wall::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:8px;background:#e0d0b2;box-shadow:0 2px 4px #5d49351c}
+.floor{position:absolute;inset:32% 0 0;background-color:#d5b98f;background-image:linear-gradient(90deg,#ffffff1c 1px,transparent 1px),linear-gradient(#ffffff10 1px,transparent 1px);background-size:58px 58px}
+.room.wall-blue .wall{background:#e2edf1}.room.wall-green .wall{background:#e2ebdf}.room.wall-rose .wall{background:#f3e1e3}
+.room.floor-light .floor{background-color:#e5d3b3}.room.floor-dark .floor{background-color:#b18a68}.room.floor-check .floor{background-color:#d4c6aa;background-image:linear-gradient(45deg,#fff4 25%,transparent 25% 75%,#fff4 75%),linear-gradient(45deg,#fff4 25%,transparent 25% 75%,#fff4 75%);background-position:0 0,20px 20px;background-size:40px 40px}
+.window{position:absolute;z-index:1;left:8%;top:6%;width:24%;height:18%;border:7px solid #efe5d5;border-radius:10px;background:linear-gradient(#bfe0ef 0 68%,#b7d69c 68%);box-shadow:0 2px 8px #263c3520}
+.window::before,.window::after{content:"";position:absolute;background:#fff9}.window::before{width:3px;top:0;bottom:0;left:50%}.window::after{height:3px;left:0;right:0;top:50%}
+.pet-in-room{position:absolute;z-index:650;left:51%;top:58%;width:16%;min-width:62px;max-width:140px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 8px 7px #243c3322)}
+.pet-in-room svg{width:100%;height:auto;display:block}.pet-placeholder{font-size:56px;text-align:center}
+.furniture-layer{position:absolute;inset:0;z-index:20}
+.furniture{position:absolute;padding:0;border:0;background:transparent;cursor:grab;touch-action:none;transform-origin:center;filter:drop-shadow(0 5px 4px #2e3b3422);outline:none}
+.furniture:active{cursor:grabbing}.furniture.selected{filter:drop-shadow(0 0 0 #000) drop-shadow(0 0 5px #e0ae35)}
+.furniture.selected::after{content:"";position:absolute;inset:-7px;border:3px solid #e0ae35;border-radius:10px;pointer-events:none}
+.furniture:focus-visible::after{content:"";position:absolute;inset:-7px;border:3px solid #275f50;border-radius:10px;pointer-events:none}
+.furniture svg{display:block;width:100%;height:100%;overflow:visible}
+.bottom-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:12px;margin-top:12px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px}
+.panel h2{font-size:14px;margin:0 0 10px}.panel-note{font-size:10px;color:var(--muted);margin:-5px 0 10px;line-height:1.5}
+.selected-name{font-weight:900;font-size:13px;margin-bottom:9px;min-height:20px}
+.tools{display:flex;gap:7px;flex-wrap:wrap}.tool-btn{min-width:44px;min-height:42px;padding:7px 10px;background:#fbfcf8}.tool-btn:disabled{opacity:.35;cursor:default}.tool-btn.store{color:#8d503f}
+.nudge{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,38px);gap:4px;margin-top:8px}
+.nudge .tool-btn{min-width:44px;min-height:38px;padding:4px}.nudge .up{grid-column:2}.nudge .left{grid-column:1;grid-row:2}.nudge .down{grid-column:2;grid-row:2}.nudge .right{grid-column:3;grid-row:2}
+.theme-groups{display:grid;gap:10px}.theme-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.theme-row strong{font-size:11px;min-width:40px}.swatch{width:42px;height:32px;padding:0;position:relative}.swatch[aria-pressed="true"]::after{content:"✓";position:absolute;right:3px;bottom:1px;font-size:12px;background:#fff;border-radius:50%;width:17px;height:17px;display:grid;place-items:center;box-shadow:0 1px 4px #0002}
+.swatch.wall-cream{background:#f4ead8}.swatch.wall-blue{background:#e2edf1}.swatch.wall-green{background:#e2ebdf}.swatch.wall-rose{background:#f3e1e3}.swatch.floor-light{background:#e5d3b3}.swatch.floor-dark{background:#b18a68}.swatch.floor-check{background:repeating-conic-gradient(#d4c6aa 0 25%,#eee4cf 0 50%) 0/16px 16px}
+.storage{margin-top:10px;border-top:1px solid #e6ebe5;padding-top:10px}.storage-list{display:flex;flex-wrap:wrap;gap:7px}.stored{padding:7px 9px;font-size:11px;background:#f8faf6}.empty-storage{font-size:10px;color:var(--muted)}
+.preview-note{margin-top:11px;font-size:10px;color:#7f8c85;text-align:center;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:18px;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#183e35;color:#fff;padding:9px 13px;border-radius:999px;font-size:11px;font-weight:800;transition:.18s;z-index:9999}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){
+ .page{padding:12px 10px 30px}.intro{align-items:flex-start;flex-direction:column;gap:8px}.save-area{justify-content:flex-start}.status{text-align:left}
+ .room-shell{padding:7px;border-radius:14px}.room{aspect-ratio:4/5;min-height:390px}.window{width:34%;height:15%}
+ .pet-in-room{width:24%;top:57%}.bottom-panels{grid-template-columns:1fr}.panel{padding:12px}.furniture.selected::after{inset:-5px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="intro">
+    <div>
+      <div class="eyebrow">PREVIEW ROOM</div>
+      <h1>ペットのおへや</h1>
+      <p>家具をドラッグして移動。選択した家具は90°ずつ回転できます。</p>
+    </div>
+    <div>
+      <div class="save-area">
+        <button class="soft" id="resetBtn" type="button">初期配置</button>
+        <button class="primary" id="saveBtn" type="button" disabled>保存</button>
+      </div>
+      <div class="status" id="saveStatus" role="status">ログイン状態を確認中…</div>
+    </div>
+  </section>
+
+  <section class="room-shell">
+    <div class="room wall-cream floor-light" id="room" aria-label="ペットの部屋">
+      <div class="wall"></div>
+      <div class="floor"></div>
+      <div class="window" aria-hidden="true"></div>
+      <div class="furniture-layer" id="furnitureLayer"></div>
+      <div class="pet-in-room" id="petInRoom" aria-label="あなたのペット"><div class="pet-placeholder">🐾</div></div>
+    </div>
+  </section>
+
+  <section class="bottom-panels">
+    <div class="panel">
+      <h2>家具を動かす</h2>
+      <p class="panel-note">家具をタップして選択。ドラッグできないときは矢印でも移動できます。</p>
+      <div class="selected-name" id="selectedName">家具を選んでください</div>
+      <div class="tools">
+        <button class="tool-btn" id="rotateBtn" type="button" disabled>↻ 回転</button>
+        <button class="tool-btn store" id="storeBtn" type="button" disabled>収納</button>
+      </div>
+      <div class="nudge" aria-label="家具を少しずつ移動">
+        <button class="tool-btn up" data-nudge="0,-2" type="button" disabled aria-label="上へ">↑</button>
+        <button class="tool-btn left" data-nudge="-2,0" type="button" disabled aria-label="左へ">←</button>
+        <button class="tool-btn down" data-nudge="0,2" type="button" disabled aria-label="下へ">↓</button>
+        <button class="tool-btn right" data-nudge="2,0" type="button" disabled aria-label="右へ">→</button>
+      </div>
+      <div class="storage">
+        <h2>収納</h2>
+        <div class="storage-list" id="storageList"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>おへやの雰囲気</h2>
+      <div class="theme-groups">
+        <div class="theme-row" id="wallChoices">
+          <strong>かべ</strong>
+          <button class="swatch wall-cream" data-wall="wall-cream" type="button" aria-label="クリームの壁"></button>
+          <button class="swatch wall-blue" data-wall="wall-blue" type="button" aria-label="ブルーの壁"></button>
+          <button class="swatch wall-green" data-wall="wall-green" type="button" aria-label="グリーンの壁"></button>
+          <button class="swatch wall-rose" data-wall="wall-rose" type="button" aria-label="ローズの壁"></button>
+        </div>
+        <div class="theme-row" id="floorChoices">
+          <strong>ゆか</strong>
+          <button class="swatch floor-light" data-floor="floor-light" type="button" aria-label="明るい木の床"></button>
+          <button class="swatch floor-dark" data-floor="floor-dark" type="button" aria-label="濃い木の床"></button>
+          <button class="swatch floor-check" data-floor="floor-check" type="button" aria-label="チェックの床"></button>
+        </div>
+      </div>
+      <p class="preview-note">開発中の確認用です。メインページにはまだ入口を出していません。</p>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1';
+import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import {enableAppCheck} from '../firebase-security.js?v=2.1.2';
+
+const config={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
+const app=getApps().length?getApp():initializeApp(config);enableAppCheck(app);
+const auth=getAuth(app),db=getFirestore(app);
+
+const CATALOG=Object.freeze({
+  rug:{label:'まるいラグ',w:34,h:21,art:'rug'},
+  table:{label:'木のテーブル',w:24,h:18,art:'table'},
+  chair:{label:'チェア',w:12,h:13,art:'chair'},
+  sofa:{label:'ソファ',w:29,h:15,art:'sofa'},
+  shelf:{label:'本だな',w:25,h:10,art:'shelf'},
+  plant:{label:'観葉植物',w:11,h:11,art:'plant'},
+  lamp:{label:'フロアライト',w:10,h:10,art:'lamp'},
+  bed:{label:'ベッド',w:27,h:18,art:'bed'}
+});
+const DEFAULT_FURNITURE=Object.freeze([
+  {id:'rug-1',kind:'rug',x:49,y:65,rotation:0,placed:true},
+  {id:'table-1',kind:'table',x:50,y:61,rotation:0,placed:true},
+  {id:'chair-1',kind:'chair',x:35,y:62,rotation:90,placed:true},
+  {id:'chair-2',kind:'chair',x:65,y:62,rotation:270,placed:true},
+  {id:'sofa-1',kind:'sofa',x:24,y:82,rotation:0,placed:true},
+  {id:'shelf-1',kind:'shelf',x:78,y:39,rotation:0,placed:true},
+  {id:'plant-1',kind:'plant',x:88,y:84,rotation:0,placed:true},
+  {id:'lamp-1',kind:'lamp',x:10,y:84,rotation:0,placed:true},
+  {id:'bed-1',kind:'bed',x:78,y:70,rotation:90,placed:true}
+]);
+const WALLS=new Set(['wall-cream','wall-blue','wall-green','wall-rose']);
+const FLOORS=new Set(['floor-light','floor-dark','floor-check']);
+const cloneDefaults=()=>DEFAULT_FURNITURE.map(item=>({...item}));
+const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
+const snapRotation=v=>((Math.round(Number(v||0)/90)*90)%360+360)%360;
+
+let user=null,dirty=false,selectedId='',drag=null;
+let state={wall:'wall-cream',floor:'floor-light',furniture:cloneDefaults()};
+const room=document.getElementById('room'),layer=document.getElementById('furnitureLayer'),saveBtn=document.getElementById('saveBtn'),saveStatus=document.getElementById('saveStatus'),selectedName=document.getElementById('selectedName'),rotateBtn=document.getElementById('rotateBtn'),storeBtn=document.getElementById('storeBtn'),storageList=document.getElementById('storageList'),toastEl=document.getElementById('toast');
+const nudgeButtons=[...document.querySelectorAll('[data-nudge]')];
+
+function art(kind){
+  const common='viewBox="0 0 100 100" aria-hidden="true" focusable="false"';
+  if(kind==='rug')return `<svg ${common}><ellipse cx="50" cy="50" rx="47" ry="39" fill="#d9a57b" stroke="#a87558" stroke-width="4"/><ellipse cx="50" cy="50" rx="34" ry="27" fill="none" stroke="#f6dfc9" stroke-width="5" stroke-dasharray="8 6"/></svg>`;
+  if(kind==='table')return `<svg ${common}><rect x="8" y="12" width="84" height="76" rx="15" fill="#c99258" stroke="#7e593b" stroke-width="5"/><rect x="18" y="23" width="64" height="54" rx="10" fill="#dba76c"/><circle cx="20" cy="24" r="5" fill="#765039"/><circle cx="80" cy="24" r="5" fill="#765039"/><circle cx="20" cy="76" r="5" fill="#765039"/><circle cx="80" cy="76" r="5" fill="#765039"/></svg>`;
+  if(kind==='chair')return `<svg ${common}><rect x="22" y="28" width="56" height="55" rx="12" fill="#d7a269" stroke="#76533d" stroke-width="5"/><rect x="18" y="8" width="64" height="22" rx="9" fill="#b97d4f" stroke="#76533d" stroke-width="5"/><path d="M29 82v10M71 82v10" stroke="#76533d" stroke-width="7" stroke-linecap="round"/></svg>`;
+  if(kind==='sofa')return `<svg ${common}><rect x="7" y="20" width="86" height="68" rx="20" fill="#8fb8ad" stroke="#4f776d" stroke-width="5"/><rect x="9" y="8" width="82" height="27" rx="13" fill="#6f9f92" stroke="#4f776d" stroke-width="5"/><path d="M50 37v43" stroke="#d9ece6" stroke-width="3"/><rect x="1" y="34" width="14" height="48" rx="7" fill="#77a79a"/><rect x="85" y="34" width="14" height="48" rx="7" fill="#77a79a"/></svg>`;
+  if(kind==='shelf')return `<svg ${common}><rect x="4" y="14" width="92" height="72" rx="8" fill="#9d754f" stroke="#654933" stroke-width="5"/><rect x="12" y="22" width="76" height="18" fill="#f0dfb8"/><rect x="12" y="45" width="76" height="18" fill="#f0dfb8"/><rect x="12" y="68" width="76" height="10" fill="#f0dfb8"/><g fill="#7187b8"><rect x="17" y="24" width="8" height="14"/><rect x="29" y="24" width="7" height="14"/><rect x="40" y="24" width="9" height="14"/></g><g fill="#b45e55"><rect x="20" y="47" width="8" height="14"/><rect x="32" y="47" width="10" height="14"/><rect x="46" y="47" width="7" height="14"/></g></svg>`;
+  if(kind==='plant')return `<svg ${common}><circle cx="50" cy="58" r="25" fill="#b16f43" stroke="#754a31" stroke-width="5"/><g fill="#6aa16f" stroke="#4f7e58" stroke-width="3"><ellipse cx="50" cy="27" rx="13" ry="24"/><ellipse cx="29" cy="39" rx="12" ry="23" transform="rotate(-42 29 39)"/><ellipse cx="71" cy="39" rx="12" ry="23" transform="rotate(42 71 39)"/><ellipse cx="35" cy="62" rx="11" ry="21" transform="rotate(-70 35 62)"/><ellipse cx="65" cy="62" rx="11" ry="21" transform="rotate(70 65 62)"/></g></svg>`;
+  if(kind==='lamp')return `<svg ${common}><circle cx="50" cy="50" r="32" fill="#f8d56d" stroke="#ad8637" stroke-width="5"/><circle cx="50" cy="50" r="16" fill="#fff3b4"/><path d="M50 8v13M50 79v13M8 50h13M79 50h13" stroke="#d4a944" stroke-width="5" stroke-linecap="round"/></svg>`;
+  if(kind==='bed')return `<svg ${common}><rect x="8" y="8" width="84" height="84" rx="14" fill="#dfc6a5" stroke="#8a684c" stroke-width="5"/><rect x="16" y="15" width="68" height="26" rx="10" fill="#f7efe4"/><rect x="15" y="42" width="70" height="43" rx="8" fill="#9eb9d6"/><path d="M15 57h70" stroke="#dbe7f2" stroke-width="4"/></svg>`;
+  return `<svg ${common}><rect x="15" y="15" width="70" height="70" rx="12" fill="#ddd"/></svg>`;
+}
+function roomRef(){return user?doc(db,'users',user.uid,'apps','pet-room'):null;}
+function normalizeFurniture(rows){
+  const byId=new Map(cloneDefaults().map(item=>[item.id,item]));
+  for(const row of Array.isArray(rows)?rows:[]){
+    if(!row||typeof row!=='object'||!byId.has(row.id))continue;
+    const base=byId.get(row.id),kind=base.kind;
+    byId.set(row.id,{id:base.id,kind,x:clamp(Number(row.x)||base.x,2,98),y:clamp(Number(row.y)||base.y,34,98),rotation:snapRotation(row.rotation),placed:row.placed!==false});
+  }
+  return [...byId.values()];
+}
+function normalizeRoom(data={}){
+  return {wall:WALLS.has(data.wall)?data.wall:'wall-cream',floor:FLOORS.has(data.floor)?data.floor:'floor-light',furniture:normalizeFurniture(data.furniture)};
+}
+function selected(){return state.furniture.find(item=>item.id===selectedId)||null;}
+function footprint(item){
+  const def=CATALOG[item.kind],turn=item.rotation%180!==0;
+  return {w:turn?def.h:def.w,h:turn?def.w:def.h};
+}
+function clampItem(item){
+  const f=footprint(item),halfW=f.w/2+1,halfH=f.h/2+1;
+  item.x=clamp(item.x,halfW,100-halfW);
+  item.y=clamp(item.y,32+halfH,100-halfH);
+}
+function paintItem(el,item){
+  const def=CATALOG[item.kind];
+  el.style.left=item.x+'%';el.style.top=item.y+'%';el.style.width=def.w+'%';el.style.height=def.h+'%';
+  el.style.transform=`translate(-50%,-50%) rotate(${item.rotation}deg)`;
+  el.style.zIndex=String(Math.round(item.y*10)+(item.id===selectedId?2000:0));
+  el.classList.toggle('selected',item.id===selectedId);
+  el.setAttribute('aria-pressed',String(item.id===selectedId));
+}
+function renderFurniture(){
+  layer.textContent='';
+  for(const item of state.furniture){
+    if(!item.placed)continue;
+    const def=CATALOG[item.kind],el=document.createElement('button');
+    el.type='button';el.className='furniture';el.dataset.id=item.id;el.setAttribute('aria-label',`${def.label}。ドラッグまたは矢印キーで移動`);
+    el.innerHTML=art(def.art);paintItem(el,item);
+    el.addEventListener('pointerdown',startDrag);
+    el.addEventListener('click',()=>selectItem(item.id));
+    el.addEventListener('keydown',event=>{
+      if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','r','R'].includes(event.key))return;
+      event.preventDefault();selectItem(item.id);
+      if(event.key.toLowerCase()==='r')rotateSelected(); else {
+        const map={ArrowUp:[0,-2],ArrowDown:[0,2],ArrowLeft:[-2,0],ArrowRight:[2,0]};
+        const [dx,dy]=map[event.key];nudge(dx,dy);
+      }
+    });
+    layer.append(el);
+  }
+  renderSelection();renderStorage();
+}
+function renderSelection(){
+  const item=selected(),enabled=!!item&&item.placed;
+  selectedName.textContent=enabled?`${CATALOG[item.kind].label}　向き ${item.rotation}°`:'家具を選んでください';
+  rotateBtn.disabled=!enabled;storeBtn.disabled=!enabled;nudgeButtons.forEach(b=>b.disabled=!enabled);
+  for(const el of layer.querySelectorAll('.furniture'))paintItem(el,state.furniture.find(item=>item.id===el.dataset.id));
+}
+function renderStorage(){
+  storageList.textContent='';
+  const hidden=state.furniture.filter(item=>!item.placed);
+  if(!hidden.length){const empty=document.createElement('span');empty.className='empty-storage';empty.textContent='収納中の家具はありません。';storageList.append(empty);return;}
+  for(const item of hidden){
+    const b=document.createElement('button');b.type='button';b.className='stored';b.textContent='＋ '+CATALOG[item.kind].label;
+    b.addEventListener('click',()=>restoreItem(item.id));storageList.append(b);
+  }
+}
+function renderTheme(){
+  room.className=`room ${state.wall} ${state.floor}`;
+  document.querySelectorAll('[data-wall]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wall===state.wall)));
+  document.querySelectorAll('[data-floor]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.floor===state.floor)));
+}
+function selectItem(id){selectedId=id;renderSelection();}
+function setDirty(value=true){
+  dirty=value;saveBtn.disabled=!dirty||!user;
+  if(user)saveStatus.textContent=dirty?'未保存の変更があります':'保存済み';
+  window.MonstudyMaterial?.setActivityGuard(()=>dirty);
+}
+function toast(text){toastEl.textContent=text;toastEl.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>toastEl.classList.remove('show'),1800);}
+function startDrag(event){
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  const el=event.currentTarget,item=state.furniture.find(row=>row.id===el.dataset.id);if(!item)return;
+  selectItem(item.id);event.preventDefault();el.setPointerCapture?.(event.pointerId);
+  drag={pointerId:event.pointerId,el,item,moved:false,startX:event.clientX,startY:event.clientY};
+  const move=e=>{
+    if(!drag||e.pointerId!==drag.pointerId)return;
+    if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>4)drag.moved=true;
+    const rect=room.getBoundingClientRect();
+    drag.item.x=(e.clientX-rect.left)/rect.width*100;drag.item.y=(e.clientY-rect.top)/rect.height*100;clampItem(drag.item);paintItem(drag.el,drag.item);
+  };
+  const end=e=>{
+    if(!drag||e.pointerId!==drag.pointerId)return;
+    drag.el.removeEventListener('pointermove',move);drag.el.removeEventListener('pointerup',end);drag.el.removeEventListener('pointercancel',end);
+    if(drag.moved){setDirty(true);renderSelection();}drag=null;
+  };
+  el.addEventListener('pointermove',move);el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
+}
+function rotateSelected(){
+  const item=selected();if(!item||!item.placed)return;
+  item.rotation=(item.rotation+90)%360;clampItem(item);const el=layer.querySelector(`[data-id="${item.id}"]`);if(el)paintItem(el,item);setDirty(true);renderSelection();
+}
+function nudge(dx,dy){
+  const item=selected();if(!item||!item.placed)return;
+  item.x+=dx;item.y+=dy;clampItem(item);const el=layer.querySelector(`[data-id="${item.id}"]`);if(el)paintItem(el,item);setDirty(true);renderSelection();
+}
+function storeSelected(){
+  const item=selected();if(!item||!item.placed)return;
+  item.placed=false;selectedId='';setDirty(true);renderFurniture();toast('家具を収納しました');
+}
+function restoreItem(id){
+  const item=state.furniture.find(row=>row.id===id);if(!item)return;
+  item.placed=true;item.x=50;item.y=74;clampItem(item);selectedId=id;setDirty(true);renderFurniture();toast('部屋に戻しました');
+}
+function syncPet(){
+  let svg=null;
+  try{svg=parent!==window?parent.document.querySelector('#petVisual svg,.pet-visual svg'):null;}catch{}
+  const target=document.getElementById('petInRoom');
+  if(svg){target.innerHTML=svg.outerHTML;const local=target.querySelector('svg');if(local){local.removeAttribute('data-pet-visual-signature');local.querySelectorAll('[style*="animation"]').forEach(n=>n.style.animation='none');}}
+}
+async function loadRoom(){
+  if(!user)return;
+  saveStatus.textContent='部屋を読み込み中…';saveBtn.disabled=true;
+  try{
+    const snap=await getDoc(roomRef());
+    state=snap.exists()?normalizeRoom(snap.data()):normalizeRoom();
+    selectedId='';dirty=false;renderTheme();renderFurniture();saveStatus.textContent=snap.exists()?'保存済み':'初期のおへやです。好きに動かして保存できます。';
+  }catch(error){
+    console.error('Pet room load failed',error);state=normalizeRoom();renderTheme();renderFurniture();saveStatus.textContent='部屋データを読み込めませんでした。初期配置を表示しています。';
+  }finally{saveBtn.disabled=!dirty||!user;}
+}
+async function saveRoom(){
+  if(!user||!dirty)return;
+  saveBtn.disabled=true;saveStatus.textContent='保存中…';
+  try{
+    await setDoc(roomRef(),{schemaVersion:1,wall:state.wall,floor:state.floor,furniture:state.furniture.map(({id,kind,x,y,rotation,placed})=>({id,kind,x:Math.round(x*10)/10,y:Math.round(y*10)/10,rotation,placed})),updatedAt:serverTimestamp()},{merge:true});
+    setDirty(false);toast('おへやを保存しました');
+  }catch(error){console.error('Pet room save failed',error);saveStatus.textContent='保存できませんでした。もう一度お試しください。';saveBtn.disabled=false;}
+}
+function resetRoom(){
+  if(dirty&&!confirm('今の未保存の配置を初期状態に戻しますか？'))return;
+  state=normalizeRoom();selectedId='';renderTheme();renderFurniture();setDirty(true);toast('初期配置に戻しました');
+}
+
+rotateBtn.addEventListener('click',rotateSelected);storeBtn.addEventListener('click',storeSelected);saveBtn.addEventListener('click',saveRoom);document.getElementById('resetBtn').addEventListener('click',resetRoom);
+nudgeButtons.forEach(b=>b.addEventListener('click',()=>{const [dx,dy]=b.dataset.nudge.split(',').map(Number);nudge(dx,dy);}));
+document.querySelectorAll('[data-wall]').forEach(b=>b.addEventListener('click',()=>{state.wall=b.dataset.wall;renderTheme();setDirty(true);}));
+document.querySelectorAll('[data-floor]').forEach(b=>b.addEventListener('click',()=>{state.floor=b.dataset.floor;renderTheme();setDirty(true);}));
+window.addEventListener('resize',()=>renderFurniture());
+try{if(parent!==window)parent.addEventListener('english-playroom-wallet',syncPet);}catch{}
+setTimeout(syncPet,0);setTimeout(syncPet,500);setTimeout(syncPet,1500);
+renderTheme();renderFurniture();
+onAuthStateChanged(auth,next=>{
+  user=next||null;
+  if(!user){saveStatus.textContent='ログインすると配置を保存できます。';saveBtn.disabled=true;return;}
+  void loadRoom();
+});
+</script>
+</body>
+</html>
