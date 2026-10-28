@@ -1,4 +1,4 @@
-import {getIdTokenResult,signInWithEmailAndPassword,signOut} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.4';
+import {getIdTokenResult,signInWithEmailAndPassword,signOut} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1';
 
 export function installPasswordResetModal(auth){
   const style=document.createElement('style');
