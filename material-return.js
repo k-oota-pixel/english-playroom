@@ -53,7 +53,7 @@ function install(){
     try{
       const u=new URL(frame.contentWindow.location.href),base=new URL('pet-room/',HOME);
       if(u.pathname===base.pathname||u.pathname===base.pathname+'index.html'){
-        const target=new URL('pet-room/v4.html',HOME);target.searchParams.set('preview','4');
+        const target=new URL('pet-room/v4.html',HOME);target.searchParams.set('preview','room-only-2');
         frame.contentWindow.location.replace(target.href);return true;
       }
     }catch{}
