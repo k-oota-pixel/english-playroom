@@ -35,18 +35,12 @@ function install(){
   new MutationObserver(sync).observe(shell,{attributes:true,attributeFilter:['class']});
   sync();
 
-  let childObserver=null,lastToast='';
-  function stopChildObserver(){childObserver?.disconnect();childObserver=null;lastToast='';}
-  function syncCoinDelta(){
-    let doc;try{doc=frame.contentDocument;}catch{return;}
+  let childObserver=null;
+  function stopChildObserver(){childObserver?.disconnect();childObserver=null;}
+  function applyCoinDelta(doc){
     const toast=doc?.getElementById('englishPlayroomCoinToast');
-    if(!toast)return;
-    const showing=toast.classList.contains('show');
-    if(!showing){lastToast='';return;}
-    const text=(toast.textContent||'').trim();
-    if(!text||text===lastToast)return;
-    lastToast=text;
-    const match=text.match(/🪙\s*\+(\d+)/);
+    if(!toast?.classList.contains('show'))return;
+    const match=(toast.textContent||'').match(/🪙\s*\+(\d+)/);
     if(!match)return;
     const delta=Math.max(0,Number(match[1])||0),total=document.getElementById('coinsToday');
     if(!delta||!total)return;
@@ -59,9 +53,16 @@ function install(){
     stopChildObserver();
     let doc;try{doc=frame.contentDocument;}catch{return;}
     if(!doc?.documentElement)return;
-    childObserver=new MutationObserver(syncCoinDelta);
+    childObserver=new MutationObserver(mutations=>{
+      const toast=doc.getElementById('englishPlayroomCoinToast');
+      if(!toast)return;
+      const contentChanged=mutations.some(m=>
+        (m.type==='childList'&&m.target===toast)||
+        (m.type==='characterData'&&toast.contains(m.target))
+      );
+      if(contentChanged)applyCoinDelta(doc);
+    });
     childObserver.observe(doc.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
-    syncCoinDelta();
   }
   frame.addEventListener('load',watchChild);
   window.addEventListener('pagehide',stopChildObserver,{once:true});
