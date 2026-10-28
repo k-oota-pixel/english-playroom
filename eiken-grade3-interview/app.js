@@ -24,6 +24,8 @@ function render(){
  $('picture').src='images/'+String(id).padStart(2,'0')+'.webp';
  $('picture').alt='英検３級二次試験の練習用イラスト No. '+id;
  $('question2').textContent=q.q2;$('question3').textContent=q.q3;
+ $('question2').hidden=true;$('question3').hidden=true;
+ document.querySelectorAll('[data-question-mode]').forEach(button=>button.setAttribute('aria-pressed','false'));
  $('answer2').value='';$('answer3').value='';
  $('result2').hidden=true;$('result3').hidden=true;$('errorBox').hidden=true;$('errorBox').textContent='';
  $('gradeBtn').disabled=false;$('gradeBtn').textContent='Q2・Q3をAI採点する';
@@ -64,7 +66,19 @@ function next(){
  const old=index;do{index=Math.floor(Math.random()*questions.length);}while(index===old&&questions.length>1);
  lastIndex=old;render();window.scrollTo({top:0,behavior:'smooth'});
 }
-document.querySelectorAll('[data-audio]').forEach(button=>button.addEventListener('click',()=>speak(button.dataset.audio==='q2'?item().q2:item().q3)));
+document.querySelectorAll('[data-question-mode]').forEach(button=>button.addEventListener('click',()=>{
+ const question=button.dataset.question,mode=button.dataset.questionMode;
+ const text=$(question==='q2'?'question2':'question3');
+ const card=button.closest('.question-card');
+ card.querySelectorAll('[data-question-mode]').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));
+ if(mode==='read'){
+  if('speechSynthesis'in window)window.speechSynthesis.cancel();
+  text.hidden=false;
+ }else{
+  text.hidden=true;
+  speak(question==='q2'?item().q2:item().q3);
+ }
+}));
 $('gradeBtn').addEventListener('click',grade);$('nextBtn').addEventListener('click',next);
 $('randomBtn').addEventListener('click',()=>{next();});
 buildNav();render();
