@@ -4,20 +4,24 @@
 <script src="../shell-bridge.js?v=4.0.0"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#fff4f2">
+<meta name="theme-color" content="#fbf7f2">
 <title>ペットのおへや｜もんすたでぃ</title>
-<link rel="stylesheet" href="v5.css?v=5.0.0">
+<link rel="stylesheet" href="room-only.css?v=1.0.0">
 </head>
 <body>
 <main class="page">
-<section class="intro"><div><div class="eyebrow">WEBP TILE ROOM PREVIEW</div><h1>ペットのおへや</h1><p>部屋も家具もWebP画像ベースに一新しました。10×10タイル配置と、ペットのうろうろ移動はそのまま使えます。</p></div><div><div class="save-area"><button class="soft" id="clearBtn" type="button">家具を全部しまう</button><button class="primary" id="saveBtn" type="button" disabled>保存</button></div><div class="status" id="status" role="status">ログイン状態を確認中…</div></div></section>
-<section class="room-shell"><div class="room" id="room" aria-label="WebP画像のタイル式ペット部屋">
-<img class="backdrop" id="roomBackdrop" alt="" aria-hidden="true">
-<svg class="tile-layer" id="tileLayer" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-label="家具配置タイル"></svg>
-<div class="furniture-layer" id="furnitureLayer"></div><div class="pet-in-room" id="petInRoom" aria-label="あなたのペット"><div class="pet-placeholder">🐾</div></div><div class="mode-banner" id="modeBanner" hidden></div>
-</div></section>
-<section class="bottom"><div class="panel"><h2>家具</h2><p class="note">家具を選ぶ → タイルをタップ。置いた家具をタップすると移動・回転・収納できます。</p><div class="selected-name" id="selectedName">家具を選んでください</div><div class="tools"><button class="tool place" id="moveBtn" type="button" disabled>移動</button><button class="tool" id="rotateBtn" type="button" disabled>↻ 回転</button><button class="tool store" id="storeBtn" type="button" disabled>収納</button><button class="tool" id="cancelBtn" type="button" hidden>配置をやめる</button></div><div class="catalog" id="catalog"></div><div class="storage"><h2>収納</h2><div class="storage-list" id="storageList"></div></div></div>
-<div class="panel"><h2>おへやの雰囲気</h2><div class="theme-groups"><div class="theme-row"><strong>かべ</strong><button class="swatch wall-pink" data-wall="wall-pink" type="button" aria-label="ピンク"></button><button class="swatch wall-mint" data-wall="wall-mint" type="button" aria-label="ミント"></button><button class="swatch wall-blue" data-wall="wall-blue" type="button" aria-label="ブルー"></button><button class="swatch wall-lilac" data-wall="wall-lilac" type="button" aria-label="ライラック"></button></div><div class="theme-row"><strong>ゆか</strong><button class="swatch floor-cream" data-floor="floor-cream" type="button" aria-label="クリーム"></button><button class="swatch floor-pink" data-floor="floor-pink" type="button" aria-label="ピンク"></button><button class="swatch floor-mint" data-floor="floor-mint" type="button" aria-label="ミント"></button></div></div><p class="preview-note">SVG家具は廃止しました。部屋・家具ともCanvasからWebP化して表示しています。メインページにはまだ入口を出していません。</p></div></section>
-</main><div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script type="module" src="v5-core.js?v=5.0.0"></script>
-</body></html>
+  <section class="room-shell" aria-label="ペットのおへや確認用">
+    <div class="room" id="room">
+      <img class="room-art" src="assets/room-empty.webp?v=1" alt="木の床と二面の壁がある、家具を置けるアイソメトリックのおへや">
+      <svg class="grid-layer" id="gridLayer" viewBox="0 0 1536 1024" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="pet-in-room" id="petInRoom" aria-label="あなたのペット"><div class="pet-placeholder">🐾</div></div>
+    </div>
+    <div class="preview-tools">
+      <button class="grid-toggle" id="gridToggle" type="button" aria-pressed="false">10×10グリッドを確認</button>
+      <span class="preview-note">家具はまだ未実装です。まず床面と配置座標だけ確認できます。</span>
+    </div>
+  </section>
+</main>
+<script type="module" src="room-only.js?v=1.0.0"></script>
+</body>
+</html>
