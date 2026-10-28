@@ -3,7 +3,14 @@ export const GROWTH_VERSION=1428;
 export const GROWTH_CHANCES=[0,0,.40,.80,1];
 export function hatchDay(data,today){const start=data.petHatchDate;return start?Math.max(1,Math.floor((Date.parse(today+'T00:00:00Z')-Date.parse(start+'T00:00:00Z'))/86400000)+1):1;}
 export function growthRoll(uid,generation,day){let h=2166136261;for(const c of uid+'|'+generation+'|growth|'+day){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0)/4294967296;}
+function publishWalletSnapshot(uid,data){
+ if(typeof window==='undefined'||typeof CustomEvent!=='function'||!uid||!data)return;
+ const detail={uid:String(uid),data};
+ window.EnglishPlayroomWallet=detail;
+ window.dispatchEvent(new CustomEvent('english-playroom-wallet',{detail}));
+}
 export function growthPatch(data,today,uid){
+ publishWalletSnapshot(uid,data);
  const day=hatchDay(data,today);
  if(data.petGrowthVersion!==GROWTH_VERSION){
   const migrated={petGrowthVersion:GROWTH_VERSION};
