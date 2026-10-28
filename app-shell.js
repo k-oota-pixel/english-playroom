@@ -1,5 +1,5 @@
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.28';
+const MATERIAL_RELEASE='2.1.29';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh']
@@ -21,8 +21,10 @@ function install() {
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)}
   ]});
+  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
-  const allowed = new Set(groups.flatMap(g=>g.items.map(i=>canonical(i.url.pathname))));
+  const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
+  const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
   allowed.add(new URL('pet-catch/',root).pathname);
   const homePath = root.pathname;
   const immersiveMaterialPath = new URL('../eiken-retry/',root).pathname;
@@ -80,7 +82,7 @@ function install() {
   new MutationObserver(()=>{updateFeatures();syncPause();}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['open','disabled','hidden']});
   document.addEventListener('close',()=>{syncPause();if(!hasModal())opener?.focus();},true);
   function cleanURL(value){const u=new URL(value);u.searchParams.delete('monstudy-release');return u;}
-  function materialName(value){const u=cleanURL(value);return groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname)?.name||'教材';}
+  function materialName(value){const u=cleanURL(value);return allMaterials.find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||allMaterials.find(i=>i.url.pathname===u.pathname)?.name||'教材';}
   function key(value){const u=cleanURL(value);return u.pathname+u.search+u.hash;}
   function isHome(u){return u.pathname===homePath||u.pathname===homePath+'index.html';}
   function hideRetryMaterialHeader(){
