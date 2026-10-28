@@ -1,11 +1,10 @@
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3';
 import {auth} from './coin-reward.js?v=2.1.25';
-import {hasPet} from './pet-model.js?v=2.1.25';
 let petData={};
 function install(){
  let b=document.getElementById('petPlayOpen');
  if(!b){const a=document.getElementById('petClean')||document.getElementById('petFeed')||document.getElementById('petShopOpen');if(!a)return;b=document.createElement('button');b.id='petPlayOpen';b.className='pet-shop-open';b.type='button';b.textContent='PLAY';b.onclick=openMenu;a.after(b);}
- b.disabled=!auth.currentUser||!hasPet(petData);
+ b.disabled=!auth.currentUser;
 }
 document.addEventListener('pet-state-updated',e=>{petData=e.detail||{};install();});
 new MutationObserver(install).observe(document.body,{childList:true,subtree:true});
@@ -14,7 +13,7 @@ onAuthStateChanged(auth,install);
 
 let menu;
 function openMenu(){
- if(!auth.currentUser||!hasPet(petData))return;
+ if(!auth.currentUser)return;
  if(!menu){
   menu=document.createElement('dialog');menu.id='petGameMenu';
   menu.innerHTML=`<style>
