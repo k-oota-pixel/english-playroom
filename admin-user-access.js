@@ -1,4 +1,4 @@
-import {getAuth,onAuthStateChanged as watchAuth,getIdTokenResult} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3';
+import {getAuth,onAuthStateChanged as watchAuth} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3';
 
 const API='https://task-quest.onrender.com';
 const users=document.getElementById('users');
