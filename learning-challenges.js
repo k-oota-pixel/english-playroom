@@ -27,7 +27,7 @@ export function createChallengeBoard({root,getUser,load,claim}){
  refreshButton.addEventListener('click',refresh);
  return {reset,refresh,destroy(){requestId++;clearTimeout(rollover);dialog.close();dialog.remove();}};
 }
-async function boot(){const root=document.getElementById('learningChallenges');if(!root)return;const [{getApps,getApp},{getAuth,onAuthStateChanged}]=await Promise.all([import('https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js'),import('https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2')]);if(!getApps().length){setTimeout(boot,80);return;}let user=null;
+async function boot(){const root=document.getElementById('learningChallenges');if(!root)return;const [{getApps,getApp},{getAuth,onAuthStateChanged}]=await Promise.all([import('https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js'),import('https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3')]);if(!getApps().length){setTimeout(boot,80);return;}let user=null;
  async function request(user,body){const token=await user.getIdToken(),response=await fetch('https://task-quest.onrender.com/api/learning/challenges',{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,cache:'no-store'});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'チャレンジを取得できませんでした。');return data;}
  const board=createChallengeBoard({root,getUser:()=>user,load:u=>request(u),claim:(u,kind,period)=>request(u,{kind,period})});onAuthStateChanged(getAuth(getApp()),next=>{user=next;board.reset();});window.addEventListener('pagehide',event=>{if(!event.persisted)board.destroy();});
 }
