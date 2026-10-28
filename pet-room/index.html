@@ -4,79 +4,554 @@
 <script src="../shell-bridge.js?v=2.1.1"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f6f2e8">
+<meta name="theme-color" content="#fff4f2">
 <title>ペットのおへや｜もんすたでぃ</title>
 <style>
-*{box-sizing:border-box}:root{--ink:#193d38;--muted:#6e7d76;--line:#d9e2d8;--paper:#f6f2e8;--panel:#fffdf8;--green:#2d6f5a;--gold:#d7aa45}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans JP","Segoe UI",sans-serif}button{font:inherit;touch-action:manipulation}.page{max-width:1040px;margin:auto;padding:16px 14px 40px}.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:10px}.eyebrow{font-size:9px;font-weight:900;letter-spacing:.16em;color:#7a8e84}h1{font-size:clamp(24px,5vw,34px);margin:3px 0 4px;line-height:1.2}.intro p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}.save-area{display:flex;align-items:center;gap:7px;justify-content:flex-end;flex-wrap:wrap}.status{font-size:9.5px;color:var(--muted);min-height:15px;text-align:right}.primary,.soft,.tool,.swatch,.stored{border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font-weight:850;cursor:pointer}.primary{background:var(--green);border-color:var(--green);color:#fff;padding:9px 14px}.soft{padding:9px 11px;background:#fffdf8}.primary:disabled,.tool:disabled{opacity:.4;cursor:default}.room-shell{background:#fff;border:1px solid var(--line);border-radius:19px;padding:10px;box-shadow:0 8px 24px #173d3508}.room{--wall-l:#f2e5d2;--wall-r:#eadcc8;--floor:#dfc397;--floor-line:#b88d60;position:relative;width:100%;aspect-ratio:1000/820;min-height:310px;overflow:hidden;border-radius:15px;background:#f9f6ee;isolation:isolate;user-select:none;-webkit-user-select:none}.room.wall-blue{--wall-l:#e4eef2;--wall-r:#d8e6eb}.room.wall-green{--wall-l:#e6eee0;--wall-r:#dce8d6}.room.wall-rose{--wall-l:#f3e4e5;--wall-r:#ead8da}.room.floor-dark{--floor:#b88e69;--floor-line:#8b6548}.room.floor-check{--floor:#d8c9ad;--floor-line:#a89a80}.backdrop{position:absolute;inset:0;width:100%;height:100%;z-index:1}.furniture-layer{position:absolute;inset:0;z-index:20;pointer-events:none}.furniture{position:absolute;border:0;padding:0;background:transparent;transform:translate(-50%,-82%);transform-origin:50% 82%;cursor:grab;touch-action:none;pointer-events:auto;outline:none;filter:drop-shadow(0 5px 4px #243c3328)}.furniture:active{cursor:grabbing}.furniture svg{display:block;width:100%;height:auto;overflow:visible}.furniture.selected{filter:drop-shadow(0 0 5px #e0ae35)}.furniture.selected::after,.furniture:focus-visible::after{content:"";position:absolute;inset:-5px;border:3px solid var(--gold);border-radius:12px;pointer-events:none}.furniture:focus-visible::after{border-color:#286b57}.pet-in-room{position:absolute;z-index:500;left:50%;top:63%;width:13%;min-width:55px;max-width:125px;transform:translate(-50%,-78%);pointer-events:none;filter:drop-shadow(0 7px 5px #243c3325)}.pet-in-room svg{display:block;width:100%;height:auto}.pet-placeholder{font-size:48px;text-align:center}.bottom{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:11px;margin-top:11px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px}.panel h2{font-size:13px;margin:0 0 8px}.note{font-size:9.5px;color:var(--muted);margin:-3px 0 9px;line-height:1.55}.selected-name{font-size:12px;font-weight:900;min-height:19px;margin-bottom:8px}.tools{display:flex;gap:6px;flex-wrap:wrap}.tool{min-height:40px;min-width:44px;padding:7px 10px;background:#fbfcf8}.tool.store{color:#8c503f}.iso-nudge{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,38px);gap:4px;margin-top:8px}.iso-nudge .tool{min-height:38px;padding:4px}.iso-nudge .nw{grid-column:1}.iso-nudge .ne{grid-column:3}.iso-nudge .sw{grid-column:1;grid-row:2}.iso-nudge .se{grid-column:3;grid-row:2}.storage{margin-top:10px;padding-top:9px;border-top:1px solid #e6ebe5}.storage-list{display:flex;gap:6px;flex-wrap:wrap}.stored{padding:7px 9px;font-size:10px;background:#f8faf6}.empty-storage{font-size:9.5px;color:var(--muted)}.theme-groups{display:grid;gap:10px}.theme-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.theme-row strong{font-size:10px;min-width:38px}.swatch{width:40px;height:30px;padding:0;position:relative}.swatch[aria-pressed="true"]::after{content:"✓";position:absolute;right:2px;bottom:1px;width:16px;height:16px;display:grid;place-items:center;border-radius:50%;background:#fff;font-size:11px;box-shadow:0 1px 4px #0002}.wall-cream{background:linear-gradient(135deg,#f2e5d2 50%,#eadcc8 50%)}.wall-blue{background:linear-gradient(135deg,#e4eef2 50%,#d8e6eb 50%)}.wall-green{background:linear-gradient(135deg,#e6eee0 50%,#dce8d6 50%)}.wall-rose{background:linear-gradient(135deg,#f3e4e5 50%,#ead8da 50%)}.floor-light{background:#dfc397}.floor-dark{background:#b88e69}.floor-check{background:repeating-conic-gradient(#d8c9ad 0 25%,#eee4d2 0 50%) 0/14px 14px}.preview-note{margin:11px 0 0;font-size:9.5px;color:#7e8b84;line-height:1.55;text-align:center}.toast{position:fixed;left:50%;bottom:18px;z-index:9999;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#183e35;color:#fff;padding:9px 13px;border-radius:999px;font-size:10.5px;font-weight:800;transition:.18s}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:700px){.page{padding:11px 9px 28px}.intro{align-items:flex-start;flex-direction:column;gap:7px}.save-area{justify-content:flex-start}.status{text-align:left}.room-shell{padding:6px;border-radius:14px}.room{min-height:300px;border-radius:11px}.pet-in-room{width:15%}.bottom{grid-template-columns:1fr}.panel{padding:11px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+*{box-sizing:border-box}
+:root{
+  --ink:#4f4947;--muted:#8a807b;--line:#eadfd9;--paper:#fff5f2;--panel:#fffdfb;
+  --green:#6f9a83;--gold:#e8bd68;--rose:#e9a8a9;--shadow:#8d6f6630
+}
+body{margin:0;background:linear-gradient(#fff7f4,#fff2ee);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans JP","Segoe UI",sans-serif}
+button{font:inherit;touch-action:manipulation}
+.page{max-width:1050px;margin:auto;padding:15px 14px 42px}
+.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:10px}
+.eyebrow{font-size:9px;font-weight:900;letter-spacing:.16em;color:#b58c86}
+h1{font-size:clamp(24px,5vw,34px);margin:3px 0 4px;line-height:1.2;color:#5a4e4b}
+.intro p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+.save-area{display:flex;align-items:center;gap:7px;justify-content:flex-end;flex-wrap:wrap}
+.status{font-size:9.5px;color:var(--muted);min-height:15px;text-align:right}
+.primary,.soft,.tool,.swatch,.stored{
+  border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-weight:850;cursor:pointer;
+  box-shadow:0 3px 8px #7a5b5210
+}
+.primary{background:#729b86;border-color:#729b86;color:#fff;padding:9px 14px}
+.soft{padding:9px 11px;background:#fffdfb}
+.primary:disabled,.tool:disabled{opacity:.4;cursor:default}
+.room-shell{background:#fffdfb;border:1px solid #f0ded7;border-radius:22px;padding:10px;box-shadow:0 12px 30px #8e6e6114}
+.room{
+  --wall-l:#f6dcd6;--wall-r:#efd0cb;--wall-accent:#f3b9b6;
+  --floor:#efcfa7;--floor-light:#f7dfbd;--floor-line:#c99f73;
+  position:relative;width:100%;aspect-ratio:1000/760;min-height:310px;overflow:hidden;border-radius:18px;
+  background:#faeeeb;isolation:isolate;user-select:none;-webkit-user-select:none
+}
+.room.wall-blue{--wall-l:#dfecef;--wall-r:#d4e4e7;--wall-accent:#afced2}
+.room.wall-green{--wall-l:#dfead9;--wall-r:#d4e3cf;--wall-accent:#b4cda9}
+.room.wall-rose{--wall-l:#f2d9e1;--wall-r:#ead0d9;--wall-accent:#dda9b8}
+.room.floor-dark{--floor:#d8b286;--floor-light:#e6c398;--floor-line:#ae8059}
+.room.floor-check{--floor:#f0d4d9;--floor-light:#f7e2e6;--floor-line:#d4a8b2}
+.backdrop{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.furniture-layer{position:absolute;inset:0;z-index:20;pointer-events:none}
+.furniture{
+  position:absolute;border:0;padding:0;background:transparent;transform:translate(-50%,-83%);transform-origin:50% 83%;
+  cursor:grab;touch-action:none;pointer-events:auto;outline:none;
+  filter:drop-shadow(0 7px 6px #8b6b5a24)
+}
+.furniture:active{cursor:grabbing}
+.furniture svg{display:block;width:100%;height:auto;overflow:visible}
+.furniture.selected{filter:drop-shadow(0 0 6px #e8bd68)}
+.furniture.selected::after,.furniture:focus-visible::after{
+  content:"";position:absolute;inset:-5px;border:3px solid var(--gold);border-radius:14px;pointer-events:none
+}
+.furniture:focus-visible::after{border-color:#6d9a83}
+.pet-in-room{
+  position:absolute;left:50%;top:60%;width:12.5%;min-width:54px;max-width:126px;
+  transform:translate(-50%,-80%);transform-origin:50% 82%;
+  pointer-events:none;filter:drop-shadow(0 8px 6px #876a5b28);will-change:left,top,transform
+}
+.pet-in-room svg{display:block;width:100%;height:auto;transform:scaleX(var(--pet-face,1));transform-origin:50% 55%}
+.pet-placeholder{font-size:48px;text-align:center}
+.pet-shadow{
+  position:absolute;left:50%;bottom:3%;width:58%;height:12%;border-radius:50%;background:#8d6e6422;
+  transform:translateX(-50%);filter:blur(1px);z-index:-1
+}
+.bottom{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:11px;margin-top:11px}
+.panel{background:#fffdfb;border:1px solid var(--line);border-radius:17px;padding:12px;box-shadow:0 7px 18px #7b625610}
+.panel h2{font-size:13px;margin:0 0 8px;color:#5c504d}
+.note{font-size:9.5px;color:var(--muted);margin:-3px 0 9px;line-height:1.55}
+.selected-name{font-size:12px;font-weight:900;min-height:19px;margin-bottom:8px}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.tool{min-height:40px;min-width:44px;padding:7px 10px;background:#fffaf7}
+.tool.store{color:#9a6258}
+.iso-nudge{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,38px);gap:4px;margin-top:8px}
+.iso-nudge .tool{min-height:38px;padding:4px}
+.iso-nudge .nw{grid-column:1}.iso-nudge .ne{grid-column:3}.iso-nudge .sw{grid-column:1;grid-row:2}.iso-nudge .se{grid-column:3;grid-row:2}
+.storage{margin-top:10px;padding-top:9px;border-top:1px solid #eee3de}
+.storage-list{display:flex;gap:6px;flex-wrap:wrap}.stored{padding:7px 9px;font-size:10px;background:#fff9f5}
+.empty-storage{font-size:9.5px;color:var(--muted)}
+.theme-groups{display:grid;gap:10px}.theme-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.theme-row strong{font-size:10px;min-width:38px}
+.swatch{width:42px;height:31px;padding:0;position:relative}
+.swatch[aria-pressed="true"]::after{content:"✓";position:absolute;right:2px;bottom:1px;width:16px;height:16px;display:grid;place-items:center;border-radius:50%;background:#fff;font-size:11px;box-shadow:0 1px 4px #0002}
+.wall-cream{background:linear-gradient(135deg,#f6dcd6 50%,#efd0cb 50%)}.wall-blue{background:linear-gradient(135deg,#dfecef 50%,#d4e4e7 50%)}
+.wall-green{background:linear-gradient(135deg,#dfead9 50%,#d4e3cf 50%)}.wall-rose{background:linear-gradient(135deg,#f2d9e1 50%,#ead0d9 50%)}
+.floor-light{background:#efcfa7}.floor-dark{background:#d8b286}.floor-check{background:repeating-conic-gradient(#f0d4d9 0 25%,#f8e6e8 0 50%) 0/14px 14px}
+.preview-note{margin:11px 0 0;font-size:9.5px;color:#968781;line-height:1.55;text-align:center}
+.toast{position:fixed;left:50%;bottom:18px;z-index:9999;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#6f8277;color:#fff;padding:9px 13px;border-radius:999px;font-size:10.5px;font-weight:800;transition:.18s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){
+  .page{padding:11px 9px 28px}.intro{align-items:flex-start;flex-direction:column;gap:7px}.save-area{justify-content:flex-start}.status{text-align:left}
+  .room-shell{padding:6px;border-radius:15px}.room{min-height:300px;border-radius:12px}.pet-in-room{width:14%}.bottom{grid-template-columns:1fr}.panel{padding:11px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.pet-in-room{will-change:auto}}
 </style>
 </head>
 <body>
 <main class="page">
-<section class="intro"><div><div class="eyebrow">ISOMETRIC ROOM PREVIEW</div><h1>ペットのおへや</h1><p>斜め見下ろしの部屋に再構成しました。家具は床の方向に沿って移動し、4方向に向きを変えられます。</p></div><div><div class="save-area"><button class="soft" id="resetBtn" type="button">初期配置</button><button class="primary" id="saveBtn" type="button" disabled>保存</button></div><div class="status" id="status" role="status">ログイン状態を確認中…</div></div></section>
-<section class="room-shell"><div class="room wall-cream floor-light" id="room" aria-label="斜め上から見たペットの部屋">
-<svg class="backdrop" viewBox="0 0 1000 820" preserveAspectRatio="none" aria-hidden="true">
-<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9dff1"/><stop offset="1" stop-color="#dff1ee"/></linearGradient></defs>
-<rect width="1000" height="820" fill="#f9f6ee"/>
-<polygon points="100,195 500,45 500,300 100,500" fill="var(--wall-l)" stroke="#cdbfa9" stroke-width="5"/>
-<polygon points="500,45 900,195 900,500 500,300" fill="var(--wall-r)" stroke="#c4b59f" stroke-width="5"/>
-<polygon points="500,300 900,500 500,720 100,500" fill="var(--floor)" stroke="#b99369" stroke-width="6"/>
-<g opacity=".34" stroke="var(--floor-line)" stroke-width="2">
-<path d="M500 300 L820 460 M500 300 L740 500 M500 300 L660 540 M500 300 L580 580 M500 300 L500 720 M500 300 L420 580 M500 300 L340 540 M500 300 L260 500 M500 300 L180 460"/>
-<path d="M420 340 L580 340 M340 380 L660 380 M260 420 L740 420 M180 460 L820 460 M140 500 L860 500 M220 544 L780 544 M300 588 L700 588 M380 632 L620 632"/>
-</g>
-<path d="M100 500 L500 300 L900 500" fill="none" stroke="#d7c5a7" stroke-width="16"/>
-<g><polygon points="180,245 340,185 340,315 180,385" fill="#f2ead9" stroke="#b7a98f" stroke-width="8"/><polygon points="196,250 324,202 324,300 196,356" fill="url(#sky)"/><path d="M260 226 L260 329" stroke="#fff" stroke-width="7"/></g>
-<g><polygon points="660,185 820,245 820,385 660,315" fill="#eee4d3" stroke="#b7a98f" stroke-width="8"/><polygon points="676,202 804,250 804,356 676,300" fill="url(#sky)"/><path d="M740 226 L740 329" stroke="#fff" stroke-width="7"/></g>
-<g opacity=".65"><ellipse cx="500" cy="736" rx="300" ry="28" fill="#8a72552b"/></g>
+<section class="intro">
+  <div>
+    <div class="eyebrow">MINIATURE ROOM PREVIEW</div>
+    <h1>ペットのおへや</h1>
+    <p>かわいいミニチュア風のアイソメ部屋。家具を動かす間も、ペットは部屋の中をのんびり歩きます。</p>
+  </div>
+  <div>
+    <div class="save-area">
+      <button class="soft" id="resetBtn" type="button">初期配置</button>
+      <button class="primary" id="saveBtn" type="button" disabled>保存</button>
+    </div>
+    <div class="status" id="status" role="status">ログイン状態を確認中…</div>
+  </div>
+</section>
+
+<section class="room-shell">
+<div class="room wall-cream floor-light" id="room" aria-label="斜め上から見たペットの部屋">
+<svg class="backdrop" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="miniSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9eef4"/><stop offset="1" stop-color="#f3faf7"/></linearGradient>
+    <linearGradient id="wallShineL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="wallShineR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <filter id="softShadow"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#9b776c" flood-opacity=".15"/></filter>
+  </defs>
+  <rect width="1000" height="760" fill="#fff2ee"/>
+  <ellipse cx="500" cy="714" rx="365" ry="31" fill="#8d6f6620"/>
+  <!-- exact 2:1 isometric floor: 800 x 400 -->
+  <polygon points="500,290 900,490 500,690 100,490" fill="var(--floor)" stroke="#caa07e" stroke-width="5" filter="url(#softShadow)"/>
+  <!-- walls -->
+  <polygon points="100,490 500,290 500,92 100,292" fill="var(--wall-l)" stroke="#ddc2b8" stroke-width="5"/>
+  <polygon points="500,92 900,292 900,490 500,290" fill="var(--wall-r)" stroke="#d6bbb2" stroke-width="5"/>
+  <polygon points="100,490 500,290 500,92 100,292" fill="url(#wallShineL)"/>
+  <polygon points="500,92 900,292 900,490 500,290" fill="url(#wallShineR)"/>
+  <!-- soft accent stripe -->
+  <polygon points="100,350 500,150 500,194 100,394" fill="var(--wall-accent)" opacity=".52"/>
+  <polygon points="500,150 900,350 900,394 500,194" fill="var(--wall-accent)" opacity=".46"/>
+  <!-- floor grid aligned to true iso -->
+  <g opacity=".28" stroke="var(--floor-line)" stroke-width="2">
+    <path d="M500 290 L820 450 M500 290 L740 490 M500 290 L660 530 M500 290 L580 570 M500 290 L500 690 M500 290 L420 570 M500 290 L340 530 M500 290 L260 490 M500 290 L180 450"/>
+    <path d="M420 330 L580 330 M340 370 L660 370 M260 410 L740 410 M180 450 L820 450 M100 490 L900 490 M180 530 L820 530 M260 570 L740 570 M340 610 L660 610 M420 650 L580 650"/>
+  </g>
+  <!-- skirting boards -->
+  <path d="M100 490 L500 290 L900 490" fill="none" stroke="#f7e8d5" stroke-width="18"/>
+  <path d="M100 490 L500 290 L900 490" fill="none" stroke="#d3b393" stroke-width="3" opacity=".55"/>
+  <!-- windows -->
+  <g>
+    <polygon points="160,291 312,215 312,335 160,411" fill="#f8eee4" stroke="#d9bfae" stroke-width="8"/>
+    <polygon points="177,293 295,234 295,321 177,380" fill="url(#miniSky)"/>
+    <path d="M236 263 L236 351" stroke="#fff" stroke-width="7" opacity=".9"/>
+    <circle cx="276" cy="258" r="12" fill="#fff7c6" opacity=".85"/>
+  </g>
+  <g>
+    <polygon points="688,215 840,291 840,411 688,335" fill="#f7eee5" stroke="#d6bba9" stroke-width="8"/>
+    <polygon points="705,234 823,293 823,380 705,321" fill="url(#miniSky)"/>
+    <path d="M764 263 L764 351" stroke="#fff" stroke-width="7" opacity=".9"/>
+  </g>
+  <!-- wall decor -->
+  <g filter="url(#softShadow)">
+    <polygon points="350,180 415,148 415,199 350,231" fill="#fff9f4" stroke="#d9bcb0" stroke-width="6"/>
+    <polygon points="363,182 402,162 402,193 363,213" fill="#f0b9bd"/>
+    <path d="M369 195 Q382 173 397 187" fill="none" stroke="#769984" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g opacity=".9">
+    <ellipse cx="645" cy="205" rx="28" ry="19" fill="#fff8f2" stroke="#d5b9ae" stroke-width="6" transform="rotate(26 645 205)"/>
+    <path d="M634 202 q11-17 23 0 q-12 15-23 0Z" fill="#edc86f"/>
+  </g>
 </svg>
-<div class="furniture-layer" id="furnitureLayer"></div><div class="pet-in-room" id="petInRoom" aria-label="あなたのペット"><div class="pet-placeholder">🐾</div></div>
-</div></section>
-<section class="bottom"><div class="panel"><h2>家具を動かす</h2><p class="note">家具をドラッグ。矢印は床の4方向へ少しずつ移動します。</p><div class="selected-name" id="selectedName">家具を選んでください</div><div class="tools"><button class="tool" id="rotateBtn" type="button" disabled>↻ 向きを変える</button><button class="tool store" id="storeBtn" type="button" disabled>収納</button></div><div class="iso-nudge"><button class="tool nw" data-nudge="-2,0" type="button" disabled aria-label="左奥へ">↖</button><button class="tool ne" data-nudge="0,-2" type="button" disabled aria-label="右奥へ">↗</button><button class="tool sw" data-nudge="0,2" type="button" disabled aria-label="左手前へ">↙</button><button class="tool se" data-nudge="2,0" type="button" disabled aria-label="右手前へ">↘</button></div><div class="storage"><h2>収納</h2><div class="storage-list" id="storageList"></div></div></div>
-<div class="panel"><h2>おへやの雰囲気</h2><div class="theme-groups"><div class="theme-row" id="wallChoices"><strong>かべ</strong><button class="swatch wall-cream" data-wall="wall-cream" type="button" aria-label="クリーム"></button><button class="swatch wall-blue" data-wall="wall-blue" type="button" aria-label="ブルー"></button><button class="swatch wall-green" data-wall="wall-green" type="button" aria-label="グリーン"></button><button class="swatch wall-rose" data-wall="wall-rose" type="button" aria-label="ローズ"></button></div><div class="theme-row" id="floorChoices"><strong>ゆか</strong><button class="swatch floor-light" data-floor="floor-light" type="button" aria-label="明るい木"></button><button class="swatch floor-dark" data-floor="floor-dark" type="button" aria-label="濃い木"></button><button class="swatch floor-check" data-floor="floor-check" type="button" aria-label="チェック"></button></div></div><p class="preview-note">開発中の確認用です。メインページにはまだ入口を出していません。</p></div></section>
-</main><div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="furniture-layer" id="furnitureLayer"></div>
+<div class="pet-in-room" id="petInRoom" aria-label="あなたのペット" style="--pet-face:1">
+  <div class="pet-shadow"></div>
+  <div class="pet-placeholder">🐾</div>
+</div>
+</div>
+</section>
+
+<section class="bottom">
+  <div class="panel">
+    <h2>家具を動かす</h2>
+    <p class="note">家具をドラッグ。矢印は床の4方向へ少しずつ移動します。</p>
+    <div class="selected-name" id="selectedName">家具を選んでください</div>
+    <div class="tools">
+      <button class="tool" id="rotateBtn" type="button" disabled>↻ 向きを変える</button>
+      <button class="tool store" id="storeBtn" type="button" disabled>収納</button>
+    </div>
+    <div class="iso-nudge">
+      <button class="tool nw" data-nudge="-2,0" type="button" disabled aria-label="左奥へ">↖</button>
+      <button class="tool ne" data-nudge="0,-2" type="button" disabled aria-label="右奥へ">↗</button>
+      <button class="tool sw" data-nudge="0,2" type="button" disabled aria-label="左手前へ">↙</button>
+      <button class="tool se" data-nudge="2,0" type="button" disabled aria-label="右手前へ">↘</button>
+    </div>
+    <div class="storage"><h2>収納</h2><div class="storage-list" id="storageList"></div></div>
+  </div>
+  <div class="panel">
+    <h2>おへやの雰囲気</h2>
+    <div class="theme-groups">
+      <div class="theme-row" id="wallChoices">
+        <strong>かべ</strong>
+        <button class="swatch wall-cream" data-wall="wall-cream" type="button" aria-label="ピーチ"></button>
+        <button class="swatch wall-blue" data-wall="wall-blue" type="button" aria-label="ミルキーブルー"></button>
+        <button class="swatch wall-green" data-wall="wall-green" type="button" aria-label="ミント"></button>
+        <button class="swatch wall-rose" data-wall="wall-rose" type="button" aria-label="ローズ"></button>
+      </div>
+      <div class="theme-row" id="floorChoices">
+        <strong>ゆか</strong>
+        <button class="swatch floor-light" data-floor="floor-light" type="button" aria-label="メープル"></button>
+        <button class="swatch floor-dark" data-floor="floor-dark" type="button" aria-label="ハニー"></button>
+        <button class="swatch floor-check" data-floor="floor-check" type="button" aria-label="ピンクタイル"></button>
+      </div>
+    </div>
+    <p class="preview-note">開発中の確認用です。メインページにはまだ入口を出していません。</p>
+  </div>
+</section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script type="module">
 import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1';
 import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.2';
+
 const config={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
-const app=getApps().length?getApp():initializeApp(config);enableAppCheck(app);const auth=getAuth(app),db=getFirestore(app);
-const CATALOG=Object.freeze({rug:{label:'まるいラグ',w:25},table:{label:'木のテーブル',w:15},chair:{label:'チェア',w:9},sofa:{label:'ソファ',w:20},shelf:{label:'本だな',w:16},plant:{label:'観葉植物',w:9},lamp:{label:'フロアライト',w:8},bed:{label:'ベッド',w:18}});
-const DEFAULTS=[{id:'rug-1',type:'rug',u:48,v:48,dir:0},{id:'table-1',type:'table',u:33,v:38,dir:0},{id:'chair-1',type:'chair',u:23,v:42,dir:1},{id:'chair-2',type:'chair',u:39,v:25,dir:3},{id:'sofa-1',type:'sofa',u:69,v:33,dir:2},{id:'shelf-1',type:'shelf',u:18,v:18,dir:0},{id:'plant-1',type:'plant',u:76,v:18,dir:0},{id:'lamp-1',type:'lamp',u:82,v:39,dir:0},{id:'bed-1',type:'bed',u:31,v:70,dir:1}];
-const room=document.getElementById('room'),layer=document.getElementById('furnitureLayer'),pet=document.getElementById('petInRoom'),selectedName=document.getElementById('selectedName'),rotateBtn=document.getElementById('rotateBtn'),storeBtn=document.getElementById('storeBtn'),saveBtn=document.getElementById('saveBtn'),statusEl=document.getElementById('status'),storageList=document.getElementById('storageList');
-let user=null,state={schemaVersion:2,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)},selectedId='',dirty=false,drag=null,toastTimer=0;
+const app=getApps().length?getApp():initializeApp(config);enableAppCheck(app);
+const auth=getAuth(app),db=getFirestore(app);
+
+const CATALOG=Object.freeze({
+  rug:{label:'ふわふわラグ',w:26,kind:'low'},
+  table:{label:'まるテーブル',w:15},
+  chair:{label:'クッションチェア',w:10},
+  sofa:{label:'ミルキーソファ',w:21},
+  shelf:{label:'ミニシェルフ',w:17},
+  plant:{label:'観葉植物',w:9},
+  lamp:{label:'ルームライト',w:8},
+  bed:{label:'ふかふかベッド',w:19}
+});
+const DEFAULTS=[
+  {id:'rug-1',type:'rug',u:49,v:48,dir:0},
+  {id:'table-1',type:'table',u:36,v:42,dir:0},
+  {id:'chair-1',type:'chair',u:25,v:45,dir:1},
+  {id:'chair-2',type:'chair',u:44,v:28,dir:3},
+  {id:'sofa-1',type:'sofa',u:70,v:36,dir:2},
+  {id:'shelf-1',type:'shelf',u:18,v:20,dir:0},
+  {id:'plant-1',type:'plant',u:76,v:19,dir:0},
+  {id:'lamp-1',type:'lamp',u:83,v:41,dir:0},
+  {id:'bed-1',type:'bed',u:31,v:72,dir:1}
+];
+
+const room=document.getElementById('room'),layer=document.getElementById('furnitureLayer'),pet=document.getElementById('petInRoom'),
+selectedName=document.getElementById('selectedName'),rotateBtn=document.getElementById('rotateBtn'),storeBtn=document.getElementById('storeBtn'),
+saveBtn=document.getElementById('saveBtn'),statusEl=document.getElementById('status'),storageList=document.getElementById('storageList');
+
+let user=null,state={schemaVersion:3,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)},
+selectedId='',dirty=false,drag=null,toastTimer=0;
+
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 function roomRef(u){return doc(db,'users',u.uid,'apps','pet-room');}
-function markDirty(){dirty=true;saveBtn.disabled=!user;statusEl.textContent=user?'変更があります。保存してください。':'ログインすると保存できます。';window.MonstudyMaterial?.setActivityGuard(()=>dirty);}
-function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1600);}
-function project(item){return {x:50+(item.u-item.v)*.40,y:36+(item.u+item.v)*.26,scale:.78+(item.u+item.v)*.0018,z:100+Math.round((item.u+item.v)*10)};}
-function art(type,dir){const swap=dir%2===1,flip=dir>=2?' transform="translate(120 0) scale(-1 1)"':'';const brown='#9a714c',dark='#6f5038',light='#c9a27a',cream='#f2e1c7';let s='';if(type==='rug')s='<ellipse cx="60" cy="84" rx="46" ry="22" fill="#c98773"/><ellipse cx="60" cy="84" rx="34" ry="15" fill="#efd2a9"/><path d="M28 84h64" stroke="#c98773" stroke-width="4" opacity=".7"/>';
-if(type==='table')s=swap?`<polygon points="60,45 104,66 60,88 16,66" fill="${light}" stroke="${dark}" stroke-width="4"/><path d="M24 68v28M96 68v28M54 87v25M66 87v25" stroke="${dark}" stroke-width="6"/>`:`<polygon points="60,42 98,61 60,80 22,61" fill="${light}" stroke="${dark}" stroke-width="4"/><path d="M29 64v31M91 64v31M54 79v28M66 79v28" stroke="${dark}" stroke-width="6"/>`;
-if(type==='chair')s=swap?`<polygon points="60,61 83,72 60,84 37,72" fill="${light}" stroke="${dark}" stroke-width="4"/><path d="M39 72v30M81 72v30M81 72V39L60 28V61" fill="none" stroke="${dark}" stroke-width="6"/><path d="M78 45L61 36" stroke="${brown}" stroke-width="9"/>`:`<polygon points="60,61 83,72 60,84 37,72" fill="${light}" stroke="${dark}" stroke-width="4"/><path d="M39 72v30M81 72v30M39 72V39L60 28V61" fill="none" stroke="${dark}" stroke-width="6"/><path d="M42 45L59 36" stroke="${brown}" stroke-width="9"/>`;
-if(type==='sofa')s=swap?`<polygon points="60,48 105,69 60,92 15,69" fill="#c7966d" stroke="${dark}" stroke-width="4"/><polygon points="60,28 105,49 105,69 60,48" fill="#b47f5b" stroke="${dark}" stroke-width="4"/><polygon points="60,28 15,49 15,69 60,48" fill="#d3aa82" stroke="${dark}" stroke-width="4"/><path d="M23 71v27M97 71v27" stroke="${dark}" stroke-width="7"/>`:`<polygon points="60,46 99,65 60,85 21,65" fill="#c7966d" stroke="${dark}" stroke-width="4"/><polygon points="60,26 99,45 99,65 60,46" fill="#b47f5b" stroke="${dark}" stroke-width="4"/><polygon points="60,26 21,45 21,65 60,46" fill="#d3aa82" stroke="${dark}" stroke-width="4"/><path d="M28 68v28M92 68v28" stroke="${dark}" stroke-width="7"/>`;
-if(type==='shelf')s=`<polygon points="60,18 95,35 60,53 25,35" fill="${light}" stroke="${dark}" stroke-width="4"/><polygon points="25,35 60,53 60,110 25,92" fill="#bd9168" stroke="${dark}" stroke-width="4"/><polygon points="95,35 60,53 60,110 95,92" fill="#9c704e" stroke="${dark}" stroke-width="4"/><path d="M29 55L59 70L92 54M29 73L59 88L92 72" fill="none" stroke="#f0d7b9" stroke-width="4"/>`;
-if(type==='plant')s='<ellipse cx="60" cy="87" rx="20" ry="10" fill="#9f7654"/><path d="M43 87l5 24h24l5-24" fill="#bf8c61" stroke="#765239" stroke-width="3"/><g fill="#6fa06e" stroke="#456f51" stroke-width="2"><ellipse cx="50" cy="57" rx="12" ry="28" transform="rotate(-28 50 57)"/><ellipse cx="70" cy="55" rx="12" ry="29" transform="rotate(28 70 55)"/><ellipse cx="60" cy="47" rx="11" ry="31"/></g>';
-if(type==='lamp')s='<ellipse cx="60" cy="104" rx="18" ry="8" fill="#80654d"/><path d="M60 41v64" stroke="#725943" stroke-width="7"/><path d="M36 52L48 25h24l12 27Z" fill="#efd9a8" stroke="#8a704e" stroke-width="4"/><circle cx="60" cy="39" r="7" fill="#ffd96b"/>';
-if(type==='bed')s=swap?`<polygon points="60,40 108,64 60,104 12,80" fill="${cream}" stroke="${dark}" stroke-width="4"/><polygon points="60,51 95,68 60,94 25,77" fill="#e8b9b5"/><polygon points="60,40 108,64 108,76 60,52" fill="#b88663"/><path d="M16 80v20M104 65v20" stroke="${dark}" stroke-width="7"/>`:`<polygon points="60,38 100,58 60,108 20,88" fill="${cream}" stroke="${dark}" stroke-width="4"/><polygon points="60,49 90,64 60,97 30,82" fill="#e8b9b5"/><polygon points="60,38 100,58 100,70 60,50" fill="#b88663"/><path d="M24 88v20M96 59v20" stroke="${dark}" stroke-width="7"/>`;
-return `<svg viewBox="0 0 120 120" aria-hidden="true"><g${flip}>${s}</g></svg>`;}
-function renderFurniture(){layer.textContent='';for(const item of state.furniture){const meta=CATALOG[item.type];if(!meta)continue;const p=project(item),b=document.createElement('button');b.type='button';b.className='furniture'+(item.id===selectedId?' selected':'');b.dataset.id=item.id;b.setAttribute('aria-label',meta.label+'を選択');b.style.left=p.x+'%';b.style.top=p.y+'%';b.style.width=(meta.w*p.scale)+'%';b.style.zIndex=item.type==='rug'?20:String(p.z);b.innerHTML=art(item.type,item.dir||0);installDrag(b,item);layer.appendChild(b);}renderStorage();syncControls();}
-function installDrag(el,item){el.addEventListener('pointerdown',e=>{if(e.button!==0)return;select(item.id);const r=room.getBoundingClientRect();drag={id:item.id,x:e.clientX,y:e.clientY,u:item.u,v:item.v,w:r.width,h:r.height};el.setPointerCapture(e.pointerId);e.preventDefault();});el.addEventListener('pointermove',e=>{if(!drag||drag.id!==item.id)return;const A=(e.clientX-drag.x)/(drag.w*.0040),B=(e.clientY-drag.y)/(drag.h*.0026);item.u=clamp(drag.u+(A+B)/2,5,95);item.v=clamp(drag.v+(B-A)/2,5,95);const p=project(item);el.style.left=p.x+'%';el.style.top=p.y+'%';el.style.zIndex=item.type==='rug'?20:String(p.z);markDirty();});el.addEventListener('pointerup',()=>drag=null);el.addEventListener('pointercancel',()=>drag=null);el.addEventListener('click',()=>select(item.id));}
+function markDirty(){
+  dirty=true;saveBtn.disabled=!user;
+  statusEl.textContent=user?'変更があります。保存してください。':'ログインすると保存できます。';
+  window.MonstudyMaterial?.setActivityGuard(()=>dirty);
+}
+function toast(text){
+  const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1600);
+}
+function project(item){
+  const sum=item.u+item.v;
+  return {
+    x:50+(item.u-item.v)*.40,
+    y:(290+2*sum)/760*100,
+    scale:.78+sum*.0019,
+    z:100+Math.round(sum*10)
+  };
+}
+
+function art(type,dir){
+  const swap=dir%2===1,flip=dir>=2?' transform="translate(120 0) scale(-1 1)"':'';
+  const outline='#8f6f66',wood='#d9a774',woodDark='#b77b54',cream='#fff1df',pink='#e9a8ab',pink2='#f4c3c6',mint='#a9cfb7',gold='#e3ba66';
+  let s='';
+  if(type==='rug')s=`
+    <ellipse cx="60" cy="84" rx="48" ry="23" fill="#eebec0"/>
+    <ellipse cx="60" cy="84" rx="39" ry="18" fill="#f9dfcf"/>
+    <ellipse cx="60" cy="84" rx="25" ry="11" fill="#f4c3c6" opacity=".72"/>
+  `;
+  if(type==='table')s=swap?`
+    <ellipse cx="60" cy="64" rx="43" ry="22" fill="${wood}" stroke="${outline}" stroke-width="3"/>
+    <ellipse cx="60" cy="58" rx="43" ry="22" fill="#efc392" stroke="${outline}" stroke-width="3"/>
+    <path d="M31 66v30M89 66v30M52 75v29M68 75v29" stroke="${woodDark}" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="59" cy="54" rx="12" ry="6" fill="${cream}"/><circle cx="59" cy="51" r="5" fill="${mint}"/>
+  `:`
+    <ellipse cx="60" cy="61" rx="39" ry="20" fill="${wood}" stroke="${outline}" stroke-width="3"/>
+    <ellipse cx="60" cy="55" rx="39" ry="20" fill="#efc392" stroke="${outline}" stroke-width="3"/>
+    <path d="M34 64v30M86 64v30M53 71v30M67 71v30" stroke="${woodDark}" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="58" cy="51" rx="11" ry="6" fill="${cream}"/><circle cx="58" cy="48" r="5" fill="${mint}"/>
+  `;
+  if(type==='chair')s=swap?`
+    <polygon points="60,60 84,72 60,85 36,72" fill="${pink2}" stroke="${outline}" stroke-width="3"/>
+    <path d="M39 72v29M81 72v29M81 72V40L61 30V61" fill="none" stroke="${outline}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M77 47L62 39" stroke="${pink}" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="60" cy="70" rx="15" ry="7" fill="#ffe7d8" opacity=".9"/>
+  `:`
+    <polygon points="60,60 84,72 60,85 36,72" fill="${pink2}" stroke="${outline}" stroke-width="3"/>
+    <path d="M39 72v29M81 72v29M39 72V40L59 30V61" fill="none" stroke="${outline}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M43 47L58 39" stroke="${pink}" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="60" cy="70" rx="15" ry="7" fill="#ffe7d8" opacity=".9"/>
+  `;
+  if(type==='sofa')s=swap?`
+    <polygon points="60,52 107,74 60,98 13,74" fill="#f3c2c0" stroke="${outline}" stroke-width="3"/>
+    <polygon points="60,30 107,52 107,74 60,52" fill="#dfa0a4" stroke="${outline}" stroke-width="3"/>
+    <polygon points="60,30 13,52 13,74 60,52" fill="#f4c9c7" stroke="${outline}" stroke-width="3"/>
+    <path d="M22 76v22M98 76v22" stroke="${outline}" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="43" cy="54" rx="16" ry="11" fill="#ffe6e1"/><ellipse cx="76" cy="54" rx="16" ry="11" fill="#f7d3dd"/>
+  `:`
+    <polygon points="60,50 102,70 60,92 18,70" fill="#f3c2c0" stroke="${outline}" stroke-width="3"/>
+    <polygon points="60,28 102,48 102,70 60,50" fill="#dfa0a4" stroke="${outline}" stroke-width="3"/>
+    <polygon points="60,28 18,48 18,70 60,50" fill="#f4c9c7" stroke="${outline}" stroke-width="3"/>
+    <path d="M27 72v25M93 72v25" stroke="${outline}" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="44" cy="52" rx="15" ry="10" fill="#ffe6e1"/><ellipse cx="75" cy="52" rx="15" ry="10" fill="#f7d3dd"/>
+  `;
+  if(type==='shelf')s=`
+    <polygon points="60,18 97,36 60,55 23,36" fill="#efbc83" stroke="${outline}" stroke-width="3"/>
+    <polygon points="23,36 60,55 60,111 23,92" fill="#e1ab75" stroke="${outline}" stroke-width="3"/>
+    <polygon points="97,36 60,55 60,111 97,92" fill="#c98e63" stroke="${outline}" stroke-width="3"/>
+    <path d="M28 56L59 71L92 55M28 75L59 90L92 74" fill="none" stroke="#fff0da" stroke-width="4"/>
+    <path d="M34 60l10 5v13l-10-5zM76 61l10-5v13l-10 5z" fill="${mint}"/>
+    <path d="M47 81l10 5v13l-10-5zM68 83l11-5v13l-11 5z" fill="${pink}"/>
+  `;
+  if(type==='plant')s=`
+    <ellipse cx="60" cy="88" rx="21" ry="10" fill="#c9896b"/>
+    <path d="M43 87l6 25h22l6-25" fill="#e0a17f" stroke="${outline}" stroke-width="3"/>
+    <g fill="${mint}" stroke="#71917b" stroke-width="2">
+      <ellipse cx="49" cy="57" rx="12" ry="29" transform="rotate(-29 49 57)"/>
+      <ellipse cx="71" cy="55" rx="12" ry="30" transform="rotate(29 71 55)"/>
+      <ellipse cx="60" cy="47" rx="11" ry="32"/>
+    </g>
+  `;
+  if(type==='lamp')s=`
+    <ellipse cx="60" cy="105" rx="19" ry="8" fill="#b38a72"/>
+    <path d="M60 42v64" stroke="#9c765e" stroke-width="6" stroke-linecap="round"/>
+    <path d="M34 54L47 26h26l13 28Z" fill="#ffe3a5" stroke="${outline}" stroke-width="3"/>
+    <circle cx="60" cy="39" r="8" fill="${gold}"/>
+  `;
+  if(type==='bed')s=swap?`
+    <polygon points="60,42 110,67 60,107 10,82" fill="${cream}" stroke="${outline}" stroke-width="3"/>
+    <polygon points="60,52 96,70 60,98 24,80" fill="#f3b9ba"/>
+    <polygon points="60,42 110,67 110,79 60,54" fill="#d99f7d"/>
+    <path d="M15 82v21M105 68v21" stroke="${outline}" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="72" cy="61" rx="14" ry="8" fill="#fff7ef"/><ellipse cx="49" cy="57" rx="12" ry="7" fill="#f6d3dc"/>
+  `:`
+    <polygon points="60,39 102,60 60,111 18,90" fill="${cream}" stroke="${outline}" stroke-width="3"/>
+    <polygon points="60,50 92,66 60,100 28,84" fill="#f3b9ba"/>
+    <polygon points="60,39 102,60 102,72 60,51" fill="#d99f7d"/>
+    <path d="M23 90v20M97 61v20" stroke="${outline}" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="73" cy="58" rx="13" ry="7" fill="#fff7ef"/><ellipse cx="53" cy="54" rx="11" ry="6" fill="#f6d3dc"/>
+  `;
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><g${flip}>${s}</g></svg>`;
+}
+
+function renderFurniture(){
+  layer.textContent='';
+  for(const item of state.furniture){
+    const meta=CATALOG[item.type];if(!meta)continue;
+    const p=project(item),b=document.createElement('button');
+    b.type='button';b.className='furniture'+(item.id===selectedId?' selected':'');b.dataset.id=item.id;
+    b.setAttribute('aria-label',meta.label+'を選択');
+    b.style.left=p.x+'%';b.style.top=p.y+'%';b.style.width=(meta.w*p.scale)+'%';
+    b.style.zIndex=meta.kind==='low'?20:String(p.z);
+    b.innerHTML=art(item.type,item.dir||0);
+    installDrag(b,item);layer.appendChild(b);
+  }
+  renderStorage();syncControls();
+}
+function installDrag(el,item){
+  el.addEventListener('pointerdown',e=>{
+    if(e.button!==0)return;
+    select(item.id);
+    const r=room.getBoundingClientRect();
+    drag={id:item.id,x:e.clientX,y:e.clientY,u:item.u,v:item.v,w:r.width,h:r.height};
+    el.setPointerCapture(e.pointerId);e.preventDefault();
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!drag||drag.id!==item.id)return;
+    const dx=(e.clientX-drag.x)/drag.w*100,dy=(e.clientY-drag.y)/drag.h*100;
+    const A=dx/.40,B=dy/(200/760);
+    item.u=clamp(drag.u+(A+B)/2,7,93);
+    item.v=clamp(drag.v+(B-A)/2,7,93);
+    const p=project(item);
+    el.style.left=p.x+'%';el.style.top=p.y+'%';el.style.zIndex=CATALOG[item.type].kind==='low'?20:String(p.z);
+    markDirty();
+  });
+  el.addEventListener('pointerup',()=>drag=null);
+  el.addEventListener('pointercancel',()=>drag=null);
+  el.addEventListener('click',()=>select(item.id));
+}
 function select(id){selectedId=id;renderFurniture();}
 function selected(){return state.furniture.find(x=>x.id===selectedId)||null;}
-function syncControls(){const item=selected(),on=!!item;rotateBtn.disabled=!on;storeBtn.disabled=!on;document.querySelectorAll('[data-nudge]').forEach(b=>b.disabled=!on);selectedName.textContent=on?CATALOG[item.type]?.label||'家具':'家具を選んでください';}
-function renderStorage(){const placed=new Set(state.furniture.map(x=>x.id)),stored=DEFAULTS.filter(x=>!placed.has(x.id));storageList.textContent='';if(!stored.length){const p=document.createElement('span');p.className='empty-storage';p.textContent='収納中の家具はありません';storageList.append(p);return;}for(const item of stored){const b=document.createElement('button');b.type='button';b.className='stored';b.textContent='＋ '+CATALOG[item.type].label;b.onclick=()=>{state.furniture.push({...item,u:50,v:50});selectedId=item.id;markDirty();renderFurniture();};storageList.append(b);}}
-function applyTheme(){room.className='room '+state.wall+' '+state.floor;document.querySelectorAll('[data-wall]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wall===state.wall)));document.querySelectorAll('[data-floor]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.floor===state.floor)));}
-function hydratePet(){try{const doc=parent.document,source=doc.querySelector('#petVisual svg,.pet-visual svg,[data-pet-visual] svg');if(!source)return;const svg=source.cloneNode(true),shadow=svg.querySelector('.pet-shadow');if(shadow){let n=svg.firstChild;while(n&&n!==shadow){const next=n.nextSibling;n.remove();n=next;}}pet.textContent='';pet.append(svg);}catch{}}
-rotateBtn.onclick=()=>{const item=selected();if(!item)return;item.dir=((item.dir||0)+1)%4;markDirty();renderFurniture();};storeBtn.onclick=()=>{if(!selectedId)return;state.furniture=state.furniture.filter(x=>x.id!==selectedId);selectedId='';markDirty();renderFurniture();};
-document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=()=>{const item=selected();if(!item)return;const [du,dv]=b.dataset.nudge.split(',').map(Number);item.u=clamp(item.u+du,5,95);item.v=clamp(item.v+dv,5,95);markDirty();renderFurniture();});
-document.querySelectorAll('[data-wall]').forEach(b=>b.onclick=()=>{state.wall=b.dataset.wall;applyTheme();markDirty();});document.querySelectorAll('[data-floor]').forEach(b=>b.onclick=()=>{state.floor=b.dataset.floor;applyTheme();markDirty();});
-document.getElementById('resetBtn').onclick=()=>{state={schemaVersion:2,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};selectedId='';applyTheme();renderFurniture();markDirty();toast('初期配置に戻しました');};
-function normalize(data){if(data?.schemaVersion!==2)return {schemaVersion:2,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};const wall=['wall-cream','wall-blue','wall-green','wall-rose'].includes(data.wall)?data.wall:'wall-cream',floor=['floor-light','floor-dark','floor-check'].includes(data.floor)?data.floor:'floor-light',seen=new Set(),f=[];for(const raw of Array.isArray(data.furniture)?data.furniture:[]){if(!raw||seen.has(raw.id)||!CATALOG[raw.type])continue;seen.add(raw.id);f.push({id:String(raw.id).slice(0,40),type:raw.type,u:clamp(Number(raw.u)||50,5,95),v:clamp(Number(raw.v)||50,5,95),dir:Math.abs(Math.floor(Number(raw.dir)||0))%4});}return {schemaVersion:2,wall,floor,furniture:f};}
-async function load(u){statusEl.textContent='おへやを読み込み中…';try{const snap=await getDoc(roomRef(u));state=snap.exists()?normalize(snap.data()):{schemaVersion:2,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};dirty=false;saveBtn.disabled=false;statusEl.textContent=snap.exists()?'保存したおへやを読み込みました。':'まだ保存されていません。初期のおへやです。';applyTheme();renderFurniture();setTimeout(hydratePet,80);}catch(e){console.error(e);statusEl.textContent='おへやを読み込めませんでした。';saveBtn.disabled=true;}}
-saveBtn.onclick=async()=>{if(!user)return;saveBtn.disabled=true;statusEl.textContent='保存中…';try{await setDoc(roomRef(user),{schemaVersion:2,wall:state.wall,floor:state.floor,furniture:state.furniture.map(({id,type,u,v,dir})=>({id,type,u:Number(u.toFixed(2)),v:Number(v.toFixed(2)),dir})),updatedAt:serverTimestamp()});dirty=false;window.MonstudyMaterial?.setActivityGuard(()=>false);statusEl.textContent='保存しました。';toast('おへやを保存しました');}catch(e){console.error(e);statusEl.textContent='保存できませんでした。もう一度お試しください。';}finally{saveBtn.disabled=!user;}};
-onAuthStateChanged(auth,u=>{user=u;if(!u){statusEl.textContent='ログインするとおへやを保存できます。';saveBtn.disabled=true;state={schemaVersion:2,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};applyTheme();renderFurniture();setTimeout(hydratePet,80);return;}void load(u);});
-applyTheme();renderFurniture();setTimeout(hydratePet,120);
+function syncControls(){
+  const item=selected(),on=!!item;rotateBtn.disabled=!on;storeBtn.disabled=!on;
+  document.querySelectorAll('[data-nudge]').forEach(b=>b.disabled=!on);
+  selectedName.textContent=on?CATALOG[item.type]?.label||'家具':'家具を選んでください';
+}
+function renderStorage(){
+  const placed=new Set(state.furniture.map(x=>x.id)),stored=DEFAULTS.filter(x=>!placed.has(x.id));
+  storageList.textContent='';
+  if(!stored.length){const p=document.createElement('span');p.className='empty-storage';p.textContent='収納中の家具はありません';storageList.append(p);return;}
+  for(const item of stored){
+    const b=document.createElement('button');b.type='button';b.className='stored';b.textContent='＋ '+CATALOG[item.type].label;
+    b.onclick=()=>{state.furniture.push({...item,u:50,v:50});selectedId=item.id;markDirty();renderFurniture();};
+    storageList.append(b);
+  }
+}
+function applyTheme(){
+  room.className='room '+state.wall+' '+state.floor;
+  document.querySelectorAll('[data-wall]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wall===state.wall)));
+  document.querySelectorAll('[data-floor]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.floor===state.floor)));
+}
+function hydratePet(){
+  try{
+    const source=parent.document.querySelector('#petVisual svg,.pet-visual svg,[data-pet-visual] svg');
+    if(!source)return;
+    const svg=source.cloneNode(true),shadow=svg.querySelector('.pet-shadow');
+    if(shadow){let n=svg.firstChild;while(n&&n!==shadow){const next=n.nextSibling;n.remove();n=next;}}
+    pet.querySelectorAll('svg,.pet-placeholder').forEach(n=>n.remove());
+    pet.append(svg);
+  }catch{}
+}
+
+rotateBtn.onclick=()=>{const item=selected();if(!item)return;item.dir=((item.dir||0)+1)%4;markDirty();renderFurniture();};
+storeBtn.onclick=()=>{if(!selectedId)return;state.furniture=state.furniture.filter(x=>x.id!==selectedId);selectedId='';markDirty();renderFurniture();};
+document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=()=>{
+  const item=selected();if(!item)return;const [du,dv]=b.dataset.nudge.split(',').map(Number);
+  item.u=clamp(item.u+du,7,93);item.v=clamp(item.v+dv,7,93);markDirty();renderFurniture();
+});
+document.querySelectorAll('[data-wall]').forEach(b=>b.onclick=()=>{state.wall=b.dataset.wall;applyTheme();markDirty();});
+document.querySelectorAll('[data-floor]').forEach(b=>b.onclick=()=>{state.floor=b.dataset.floor;applyTheme();markDirty();});
+document.getElementById('resetBtn').onclick=()=>{
+  state={schemaVersion:3,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};
+  selectedId='';applyTheme();renderFurniture();markDirty();toast('初期配置に戻しました');
+};
+
+function normalize(data){
+  if(!data||![2,3].includes(Number(data.schemaVersion)))return {schemaVersion:3,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};
+  const wall=['wall-cream','wall-blue','wall-green','wall-rose'].includes(data.wall)?data.wall:'wall-cream';
+  const floor=['floor-light','floor-dark','floor-check'].includes(data.floor)?data.floor:'floor-light';
+  const seen=new Set(),f=[];
+  for(const raw of Array.isArray(data.furniture)?data.furniture:[]){
+    if(!raw||seen.has(raw.id)||!CATALOG[raw.type])continue;
+    seen.add(raw.id);
+    f.push({id:String(raw.id).slice(0,40),type:raw.type,u:clamp(Number(raw.u)||50,7,93),v:clamp(Number(raw.v)||50,7,93),dir:Math.abs(Math.floor(Number(raw.dir)||0))%4});
+  }
+  return {schemaVersion:3,wall,floor,furniture:f};
+}
+async function load(u){
+  statusEl.textContent='おへやを読み込み中…';
+  try{
+    const snap=await getDoc(roomRef(u));
+    state=snap.exists()?normalize(snap.data()):{schemaVersion:3,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};
+    dirty=false;saveBtn.disabled=false;
+    statusEl.textContent=snap.exists()?'保存したおへやを読み込みました。':'まだ保存されていません。初期のおへやです。';
+    applyTheme();renderFurniture();setTimeout(hydratePet,100);
+  }catch(e){
+    console.error(e);statusEl.textContent='おへやを読み込めませんでした。';saveBtn.disabled=true;
+  }
+}
+saveBtn.onclick=async()=>{
+  if(!user)return;saveBtn.disabled=true;statusEl.textContent='保存中…';
+  try{
+    await setDoc(roomRef(user),{
+      schemaVersion:3,wall:state.wall,floor:state.floor,
+      furniture:state.furniture.map(({id,type,u,v,dir})=>({id,type,u:Number(u.toFixed(2)),v:Number(v.toFixed(2)),dir})),
+      updatedAt:serverTimestamp()
+    });
+    dirty=false;window.MonstudyMaterial?.setActivityGuard(()=>false);
+    statusEl.textContent='保存しました。';toast('おへやを保存しました');
+  }catch(e){
+    console.error(e);statusEl.textContent='保存できませんでした。もう一度お試しください。';
+  }finally{saveBtn.disabled=!user;}
+};
+
+/* pet wandering */
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
+const petMotion={u:53,v:50,fromU:53,fromV:50,toU:53,toV:50,start:0,duration:0,pauseUntil:0,lastX:50,running:true};
+
+function obstacleRadius(item){
+  const w=CATALOG[item.type]?.w||10;
+  if(item.type==='rug')return 0;
+  if(item.type==='bed'||item.type==='sofa'||item.type==='shelf')return 11;
+  if(item.type==='table')return 9;
+  return Math.max(6,w*.55);
+}
+function pointSegmentDistance(px,py,ax,ay,bx,by){
+  const dx=bx-ax,dy=by-ay,len=dx*dx+dy*dy;
+  if(!len)return Math.hypot(px-ax,py-ay);
+  const t=clamp(((px-ax)*dx+(py-ay)*dy)/len,0,1);
+  return Math.hypot(px-(ax+t*dx),py-(ay+t*dy));
+}
+function pathClear(aU,aV,bU,bV){
+  for(const item of state.furniture){
+    const r=obstacleRadius(item);if(!r)continue;
+    if(pointSegmentDistance(item.u,item.v,aU,aV,bU,bV)<r)return false;
+  }
+  return true;
+}
+function pickPetTarget(){
+  for(let i=0;i<30;i++){
+    const u=18+Math.random()*64,v=18+Math.random()*64;
+    if(Math.hypot(u-petMotion.u,v-petMotion.v)<15)continue;
+    if(pathClear(petMotion.u,petMotion.v,u,v))return {u,v};
+  }
+  return {u:clamp(petMotion.u+(Math.random()-.5)*18,18,82),v:clamp(petMotion.v+(Math.random()-.5)*18,18,82)};
+}
+function setPetVisual(u,v,walking=false,now=0){
+  const p=project({u,v}),face=p.x>=petMotion.lastX?1:-1;
+  petMotion.lastX=p.x;
+  pet.style.left=p.x+'%';pet.style.top=p.y+'%';pet.style.zIndex=String(p.z+30);pet.style.setProperty('--pet-face',face);
+  const bob=walking?Math.sin(now/110)*2.1:0;
+  pet.style.transform=`translate(-50%,-80%) translateY(${bob}px) scale(${(.90+p.scale*.10).toFixed(3)})`;
+}
+function startPetLeg(now){
+  const t=pickPetTarget();
+  petMotion.fromU=petMotion.u;petMotion.fromV=petMotion.v;petMotion.toU=t.u;petMotion.toV=t.v;petMotion.start=now;
+  const dist=Math.hypot(t.u-petMotion.u,t.v-petMotion.v);
+  petMotion.duration=2200+dist*55;
+}
+function petLoop(now){
+  if(!petMotion.running)return;
+  if(reduceMotion.matches){setPetVisual(52,52,false,now);requestAnimationFrame(petLoop);return;}
+  if(document.hidden){requestAnimationFrame(petLoop);return;}
+  if(petMotion.pauseUntil){
+    setPetVisual(petMotion.u,petMotion.v,false,now);
+    if(now>=petMotion.pauseUntil){petMotion.pauseUntil=0;startPetLeg(now);}
+    requestAnimationFrame(petLoop);return;
+  }
+  if(!petMotion.duration){startPetLeg(now);}
+  const t=clamp((now-petMotion.start)/petMotion.duration,0,1);
+  const eased=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  petMotion.u=petMotion.fromU+(petMotion.toU-petMotion.fromU)*eased;
+  petMotion.v=petMotion.fromV+(petMotion.toV-petMotion.fromV)*eased;
+  setPetVisual(petMotion.u,petMotion.v,true,now);
+  if(t>=1){petMotion.u=petMotion.toU;petMotion.v=petMotion.toV;petMotion.duration=0;petMotion.pauseUntil=now+900+Math.random()*2600;}
+  requestAnimationFrame(petLoop);
+}
+requestAnimationFrame(petLoop);
+
+onAuthStateChanged(auth,u=>{
+  user=u;
+  if(!u){
+    statusEl.textContent='ログインするとおへやを保存できます。';saveBtn.disabled=true;
+    state={schemaVersion:3,wall:'wall-cream',floor:'floor-light',furniture:structuredClone(DEFAULTS)};
+    applyTheme();renderFurniture();setTimeout(hydratePet,100);return;
+  }
+  void load(u);
+});
+applyTheme();renderFurniture();setTimeout(hydratePet,140);
 </script>
-</body></html>
+</body>
+</html>
