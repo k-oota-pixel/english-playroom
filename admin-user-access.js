@@ -1,4 +1,4 @@
-import {getAuth,onAuthStateChanged as watchAuth,getIdTokenResult} from './auth-session.js?v=2.1.2';
+import {getAuth,onAuthStateChanged as watchAuth,getIdTokenResult} from './auth-session.js?v=2.1.3';
 
 const API='https://task-quest.onrender.com';
 const users=document.getElementById('users');
