@@ -92,7 +92,7 @@ function install() {
       if(backLink)backLink.style.display='none';
       const homeButton=[...doc.querySelectorAll('button')].find(button=>/ホームへ/.test(button.textContent||''));
       for(let element=homeButton;element&&element!==doc.body;element=element.parentElement){
-        const text=(element.innerText||'').replace(/\\s/g,'');
+        const text=element.innerText||'';
         if(text.includes('語彙文法問題リトライノート')&&text.includes('学習')&&text.includes('復習')&&text.includes('記録')&&text.includes('ログアウト')){
           element.style.display='none';
           break;
