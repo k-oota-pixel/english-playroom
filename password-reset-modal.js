@@ -15,7 +15,7 @@ export function installPasswordResetModal(auth){
     .required-password-submit:disabled{opacity:.55;cursor:wait}
     .required-password-status{min-height:1.5em;margin:12px 0;color:#9b453b;font-size:12px}
     .required-password-status.ok{color:#2f6f50}
-    .required-password-login{display:block;margin-top:12px;text-align:center;text-decoration:none;background:#f0f5f0;color:#246a57}
+     .required-password-login{display:block;margin-top:12px;text-align:center;text-decoration:none;background:#f0f5f0;color:#246a57}.required-password-login[hidden]{display:none}
   `;
   document.head.append(style);
   const dialog=document.createElement('dialog');
