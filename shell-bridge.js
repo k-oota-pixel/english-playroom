@@ -8,7 +8,10 @@
   try { hosted = parent !== window && parent.MonstudyShell?.owns(window); } catch {}
   if (!hosted) {
     const target = new URL(home);
-    target.searchParams.set('material', here.pathname + here.search + here.hash);
+    const material = /\/pet-room\/v4\.html$/.test(here.pathname)
+      ? new URL('./', here).pathname + here.search + here.hash
+      : here.pathname + here.search + here.hash;
+    target.searchParams.set('material', material);
     location.replace(target.href);
     return;
   }
@@ -20,7 +23,6 @@
     return;
   }
 
-  // Pause only this material's clock. Wall-clock dates and Firebase tokens stay real.
   const native = {
     timeout: window.setTimeout.bind(window), clear: window.clearTimeout.bind(window),
     raf: window.requestAnimationFrame.bind(window), caf: window.cancelAnimationFrame.bind(window),
