@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>英検３級 二次試験 Q2・Q3対策 | もんすたでぃ</title>
-<link rel="stylesheet" href="./style.css?v=1">
-<script src="../shell-bridge.js?v=2.1.29"></script>
+<link rel="stylesheet" href="./style.css?v=2">
+<script src="../shell-bridge.js?v=2.1.33"></script>
 </head>
 <body>
 <main class="shell">
@@ -13,7 +13,7 @@
   <header class="hero">
     <div class="eyebrow">EIKEN GRADE 3 · INTERVIEW PRACTICE</div>
     <h1>英検３級 二次試験<br>Question 2・3</h1>
-    <p>絵を見て、これからすることと数を英語で答えよう。質問をタップすると音声が流れます。</p>
+    <p>「問題を読む」で英文を表示、「問題を聞く」で音声だけで練習できます。</p>
   </header>
 
   <section class="panel">
@@ -29,15 +29,17 @@
 
     <div class="question-grid">
       <article class="question-card">
-        <div class="question-head"><span class="question-number">Q2</span><button class="audio-btn" data-audio="q2" type="button" aria-label="Question 2 の音声を再生">🔊 聞く</button></div>
-        <p id="question2" class="question-text"></p>
+        <div class="question-head"><span class="question-number">Q2</span></div>
+        <div class="question-mode-controls" role="group" aria-label="Q2の練習方法"><button class="mode-btn" data-question-mode="read" data-question="q2" type="button" aria-pressed="false">問題を読む</button><button class="mode-btn" data-question-mode="listen" data-question="q2" type="button" aria-pressed="false">🔊 問題を聞く</button></div>
+        <p id="question2" class="question-text" hidden></p>
         <label for="answer2">Your Answer</label>
         <textarea id="answer2" rows="2" maxlength="300" placeholder="英語で回答を入力してください。"></textarea>
         <div id="result2" class="answer-result" hidden></div>
       </article>
       <article class="question-card">
-        <div class="question-head"><span class="question-number">Q3</span><button class="audio-btn" data-audio="q3" type="button" aria-label="Question 3 の音声を再生">🔊 聞く</button></div>
-        <p id="question3" class="question-text"></p>
+        <div class="question-head"><span class="question-number">Q3</span></div>
+        <div class="question-mode-controls" role="group" aria-label="Q3の練習方法"><button class="mode-btn" data-question-mode="read" data-question="q3" type="button" aria-pressed="false">問題を読む</button><button class="mode-btn" data-question-mode="listen" data-question="q3" type="button" aria-pressed="false">🔊 問題を聞く</button></div>
+        <p id="question3" class="question-text" hidden></p>
         <label for="answer3">Your Answer</label>
         <textarea id="answer3" rows="2" maxlength="300" placeholder="英語で回答を入力してください。"></textarea>
         <div id="result3" class="answer-result" hidden></div>
@@ -54,7 +56,7 @@
   <footer>AIフィードバックを参考に、声に出してもう一度答えてみましょう。</footer>
 </main>
 <script src="./questions.js?v=1"></script>
-<script type="module" src="./app.js?v=2"></script>
-<script type="module" src="../coin-reward.js?v=2.1.29"></script>
+<script type="module" src="./app.js?v=3"></script>
+<script type="module" src="../coin-reward.js?v=2.1.33"></script>
 </body>
 </html>
