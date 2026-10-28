@@ -1,6 +1,6 @@
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.2";
+import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3";
 import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 const firebaseConfig={
