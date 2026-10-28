@@ -12,6 +12,13 @@
     location.replace(target.href);
     return;
   }
+  if (/\/pet-room\/(?:index\.html)?$/.test(here.pathname)) {
+    const target = new URL('v4.html', here);
+    target.search = here.search;
+    target.hash = here.hash;
+    location.replace(target.href);
+    return;
+  }
 
   // Pause only this material's clock. Wall-clock dates and Firebase tokens stay real.
   const native = {
