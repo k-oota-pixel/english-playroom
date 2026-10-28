@@ -1,27 +1,28 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<script src="../shell-bridge.js?v=4.0.0"></script>
+<script src="../shell-bridge.js?v=6.0.0"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fbf7f2">
 <title>ペットのおへや｜もんすたでぃ</title>
-<link rel="stylesheet" href="room-only.css?v=1.1.0">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-system,"Noto Sans JP","Segoe UI",sans-serif}.page{max-width:1100px;margin:0 auto;padding:10px 10px 32px}.room-shell{width:100%}.room{position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border-radius:18px;background:#f5eee7;border:1px solid #eadfd8;isolation:isolate}.room-art{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}.grid-layer{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:0;pointer-events:none;transition:opacity .16s}.room.show-grid .grid-layer{opacity:1}.grid-cell{fill:#8fd2a7;fill-opacity:.08;stroke:#39775f;stroke-opacity:.78;stroke-width:2}.grid-cell:nth-child(odd){fill-opacity:.04}.tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}.toggle{appearance:none;border:1px solid #d8e2da;background:#fff;color:#416b59;border-radius:999px;padding:10px 14px;font-weight:850;font-size:11px;cursor:pointer}.toggle[aria-pressed="true"]{background:#eaf5ee;border-color:#9fc4ae}.note{font-size:10px;color:#8b817c;line-height:1.5}.error{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;font-size:12px;color:#8f6e65;background:#f7eee8}.error[hidden]{display:none}@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.toggle{min-height:42px}}
+</style>
 </head>
 <body>
 <main class="page">
-  <section class="room-shell" aria-label="ペットのおへや確認用">
-    <div class="room" id="room">
-      <img id="roomArt" class="room-art" src="https://raw.githubusercontent.com/k-oota-pixel/english-playroom/d745cf531bc1a0c5642f1597b37e08585dff7fe1/pet-room/assets/room-empty.webp" alt="木の床と二面の壁がある、家具を置けるアイソメトリックのおへや">
-      <svg class="grid-layer" id="gridLayer" viewBox="0 0 1536 1024" preserveAspectRatio="none" aria-hidden="true"></svg>
-      <div class="load-error" id="loadError" hidden>部屋画像を読み込めませんでした。再読み込みしてください。</div>
-    </div>
-    <div class="preview-tools">
-      <button class="grid-toggle" id="gridToggle" type="button" aria-pressed="false">10×10グリッドを確認</button>
-      <span class="preview-note">家具とペットは一度外しています。まず部屋画像と床面の配置座標だけ確認できます。</span>
-    </div>
-  </section>
+<section class="room-shell" aria-label="ペットのおへや確認用">
+<div class="room" id="room">
+<img id="roomArt" class="room-art" src="assets/room-empty-v2.webp?rev=20261029-01" alt="家具を置けるアイソメトリックのおへや">
+<svg class="grid-layer" id="gridLayer" viewBox="0 0 1536 1024" preserveAspectRatio="none" aria-hidden="true"></svg>
+<div class="error" id="loadError" hidden>部屋画像を読み込めませんでした。</div>
+</div>
+<div class="tools"><button class="toggle" id="gridToggle" type="button" aria-pressed="false">10×10グリッドを確認</button><span class="note">家具とペットはまだ出していません。まず部屋画像と床座標だけ確認します。</span></div>
+</section>
 </main>
-<script type="module" src="room-only.js?v=1.1.0"></script>
+<script>
+(()=>{const GRID=10;const FLOOR={top:{x:768,y:300},right:{x:1452,y:612},bottom:{x:768,y:1008},left:{x:84,y:612}};const room=document.getElementById('room'),img=document.getElementById('roomArt'),grid=document.getElementById('gridLayer'),toggle=document.getElementById('gridToggle'),error=document.getElementById('loadError');function point(u,v){const a=FLOOR.top,b=FLOOR.right,c=FLOOR.bottom,d=FLOOR.left,iu=1-u,iv=1-v;return{x:a.x*iu*iv+b.x*u*iv+c.x*u*v+d.x*iu*v,y:a.y*iu*iv+b.y*u*iv+c.y*u*v+d.y*iu*v}}function corners(x,y){const u0=x/GRID,v0=y/GRID,u1=(x+1)/GRID,v1=(y+1)/GRID;return[point(u0,v0),point(u1,v0),point(u1,v1),point(u0,v1)]}for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');p.classList.add('grid-cell');p.setAttribute('points',corners(x,y).map(v=>`${v.x.toFixed(1)},${v.y.toFixed(1)}`).join(' '));grid.appendChild(p)}toggle.addEventListener('click',()=>{const on=!room.classList.contains('show-grid');room.classList.toggle('show-grid',on);toggle.setAttribute('aria-pressed',String(on));toggle.textContent=on?'グリッドを隠す':'10×10グリッドを確認'});img.addEventListener('load',()=>error.hidden=true);img.addEventListener('error',()=>error.hidden=false);if(img.complete&&!img.naturalWidth)error.hidden=false})();
+</script>
 </body>
 </html>
