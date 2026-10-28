@@ -90,14 +90,18 @@ function install() {
       if(!doc?.body)return;
       const backLink=[...doc.querySelectorAll('a')].find(a=>/もんすたでぃ/.test(a.textContent||'')&&(/トップへ戻る|←/.test(a.textContent||'')||/もんすたでぃトップへ戻る/.test(a.getAttribute('aria-label')||'')));
       if(backLink)backLink.style.display='none';
-      const homeButton=[...doc.querySelectorAll('button')].find(button=>/ホームへ/.test(button.textContent||''));
-      for(let element=homeButton;element&&element!==doc.body;element=element.parentElement){
-        const text=element.innerText||'';
-        if(text.includes('語彙文法問題リトライノート')&&text.includes('学習')&&text.includes('復習')&&text.includes('記録')&&text.includes('ログアウト')){
-          element.style.display='none';
-          break;
-        }
-      }
+      const homeButton=doc.querySelector('button[aria-label*="ホームへ"]')||[...doc.querySelectorAll('button')].find(button=>/ホームへ/.test(button.textContent||''));
+      const mainMenu=[...doc.querySelectorAll('nav,[role="navigation"]')].find(element=>['学習','復習','記録'].every(label=>(element.innerText||'').includes(label)));
+      const login=doc.getElementById('firebaseLogin'),logout=doc.getElementById('firebaseLogout');
+      let auth=null;
+      if(login&&logout)for(let element=login.parentElement;element&&element!==doc.body;element=element.parentElement){if(element.contains(logout)){auth=element;break;}}
+      const parts=[homeButton,mainMenu,auth].filter(Boolean);
+      let header=parts[0]?.parentElement||null;
+      while(header&&header!==doc.body&&!parts.every(part=>header.contains(part)))header=header.parentElement;
+      if(header&&header!==doc.body){header.style.display='none';return;}
+      for(const part of parts)part.style.display='none';
+      if(login)login.style.display='none';
+      if(logout)logout.style.display='none';
     }catch{}
   }
   function show(u){
