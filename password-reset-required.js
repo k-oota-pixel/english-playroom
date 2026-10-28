@@ -1,4 +1,4 @@
-import {getAuth,onAuthStateChanged,getIdTokenResult,signOut} from './auth-session.js?v=2.1.2';
+import {getAuth,onAuthStateChanged,getIdTokenResult,signOut} from './auth-session.js?v=2.1.3';
 
 const auth=getAuth(),form=document.getElementById('form'),status=document.getElementById('status'),submit=document.getElementById('submit');
 let eligible=false;
