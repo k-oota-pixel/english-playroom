@@ -83,8 +83,8 @@ function install() {
   function materialName(value){const u=cleanURL(value);return groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname)?.name||'教材';}
   function key(value){const u=cleanURL(value);return u.pathname+u.search+u.hash;}
   function isHome(u){return u.pathname===homePath||u.pathname===homePath+'index.html';}
-  function applyImmersiveMaterialChrome(){
-    if(!shell.classList.contains('ms-immersive-material'))return;
+  function hideRetryMaterialHeader(){
+    if(!shell.classList.contains('ms-retry-header-hidden'))return;
     try{
       const doc=frame.contentDocument;
       if(!doc?.body)return;
@@ -103,7 +103,7 @@ function install() {
   function show(u){
     current=isHome(u)?'':key(u);
     shell.classList.toggle('ms-showing-material',!!current);
-    shell.classList.toggle('ms-immersive-material',!!current&&u.pathname===immersiveMaterialPath);
+    shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
     title.textContent=current?materialName(u):'ホーム';document.title=title.textContent+'｜もんすたでぃ';
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
@@ -152,7 +152,7 @@ function install() {
   window.addEventListener('beforeunload',e=>{if(child()?.isActive()){e.preventDefault();e.returnValue='';}});
   frame.addEventListener('load',()=>{
     if(!current)return;
-    applyImmersiveMaterialChrome();
+    hideRetryMaterialHeader();
     status.hidden=true;
     try {const u=new URL(frame.contentWindow.location.href);if(canOpen(u)&&key(u)!==current){current=key(u);history.replaceState({monstudy:true,index:historyIndex},'',routeURL(u));title.textContent=materialName(u);frame.title=title.textContent;}}catch{}
     syncPause();
