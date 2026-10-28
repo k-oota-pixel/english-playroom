@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script src="../shell-bridge.js?v=2.1.1"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff4f2">
+<title>ペットのおへや｜もんすたでぃ</title>
+<link rel="stylesheet" href="v4.css?v=4.0.0">
+</head>
+<body>
+<main class="page">
+<section class="intro"><div><div class="eyebrow">TILE ROOM PREVIEW</div><h1>ペットのおへや</h1><p>10×10のタイルに「カチッ」と家具を置く方式へ切り替えました。普段はマス目を隠し、配置時だけ表示します。</p></div><div><div class="save-area"><button class="soft" id="clearBtn" type="button">家具を全部しまう</button><button class="primary" id="saveBtn" type="button" disabled>保存</button></div><div class="status" id="status" role="status">ログイン状態を確認中…</div></div></section>
+<section class="room-shell"><div class="room wall-pink floor-cream" id="room" aria-label="タイル式のペットの部屋">
+<svg class="backdrop" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="miniSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8edf4"/><stop offset="1" stop-color="#f4faf7"/></linearGradient><filter id="softShadow"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#98786e" flood-opacity=".15"/></filter></defs>
+<rect width="1000" height="760" fill="#fff2ee"/><ellipse cx="500" cy="714" rx="365" ry="31" fill="#8d6f6620"/>
+<polygon points="500,290 900,490 500,690 100,490" fill="var(--floor)" stroke="#caa07e" stroke-width="5" filter="url(#softShadow)"/>
+<polygon points="100,490 500,290 500,92 100,292" fill="var(--wall-l)" stroke="#dec3ba" stroke-width="5"/><polygon points="500,92 900,292 900,490 500,290" fill="var(--wall-r)" stroke="#d6bbb2" stroke-width="5"/>
+<polygon points="100,350 500,150 500,194 100,394" fill="var(--wall-accent)" opacity=".58"/><polygon points="500,150 900,350 900,394 500,194" fill="var(--wall-accent)" opacity=".50"/>
+<g opacity=".18" stroke="var(--floor-line)" stroke-width="2"><path d="M500 290 L900 490 M460 310 L860 510 M420 330 L820 530 M380 350 L780 550 M340 370 L740 570 M300 390 L700 590 M260 410 L660 610 M220 430 L620 630 M180 450 L580 650 M140 470 L540 670 M100 490 L500 690"/><path d="M500 290 L100 490 M540 310 L140 510 M580 330 L180 530 M620 350 L220 550 M660 370 L260 570 M700 390 L300 590 M740 410 L340 610 M780 430 L380 630 M820 450 L420 650 M860 470 L460 670 M900 490 L500 690"/></g>
+<path d="M100 490 L500 290 L900 490" fill="none" stroke="#f8e7d7" stroke-width="18"/><path d="M100 490 L500 290 L900 490" fill="none" stroke="#d4b492" stroke-width="3" opacity=".55"/>
+<g><polygon points="165,290 315,215 315,332 165,407" fill="#f8eee4" stroke="#d9bfae" stroke-width="8"/><polygon points="182,292 298,234 298,318 182,376" fill="url(#miniSky)"/><path d="M240 263 L240 347" stroke="#fff" stroke-width="7" opacity=".9"/></g>
+<g><polygon points="685,215 835,290 835,407 685,332" fill="#f7eee5" stroke="#d6bba9" stroke-width="8"/><polygon points="702,234 818,292 818,376 702,318" fill="url(#miniSky)"/><path d="M760 263 L760 347" stroke="#fff" stroke-width="7" opacity=".9"/></g>
+<g filter="url(#softShadow)"><polygon points="350,181 414,149 414,200 350,232" fill="#fff9f4" stroke="#d9bcb0" stroke-width="6"/><polygon points="363,183 401,164 401,193 363,212" fill="#efb3ba"/><path d="M369 196 Q381 174 396 188" fill="none" stroke="#789a84" stroke-width="6" stroke-linecap="round"/></g>
+</svg>
+<svg class="tile-layer" id="tileLayer" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-label="家具配置タイル"></svg>
+<div class="furniture-layer" id="furnitureLayer"></div><div class="pet-in-room" id="petInRoom" aria-label="あなたのペット"><div class="pet-placeholder">🐾</div></div><div class="mode-banner" id="modeBanner" hidden></div>
+</div></section>
+<section class="bottom"><div class="panel"><h2>家具</h2><p class="note">家具を選ぶ → タイルをタップ。置いた家具をタップすると移動・回転・収納できます。</p><div class="selected-name" id="selectedName">家具を選んでください</div><div class="tools"><button class="tool place" id="moveBtn" type="button" disabled>移動</button><button class="tool" id="rotateBtn" type="button" disabled>↻ 回転</button><button class="tool store" id="storeBtn" type="button" disabled>収納</button><button class="tool" id="cancelBtn" type="button" hidden>配置をやめる</button></div><div class="catalog" id="catalog"></div><div class="storage"><h2>収納</h2><div class="storage-list" id="storageList"></div></div></div>
+<div class="panel"><h2>おへやの雰囲気</h2><div class="theme-groups"><div class="theme-row"><strong>かべ</strong><button class="swatch wall-pink" data-wall="wall-pink" type="button" aria-label="ピンク"></button><button class="swatch wall-mint" data-wall="wall-mint" type="button" aria-label="ミント"></button><button class="swatch wall-blue" data-wall="wall-blue" type="button" aria-label="ブルー"></button><button class="swatch wall-lilac" data-wall="wall-lilac" type="button" aria-label="ライラック"></button></div><div class="theme-row"><strong>ゆか</strong><button class="swatch floor-cream" data-floor="floor-cream" type="button" aria-label="クリーム"></button><button class="swatch floor-pink" data-floor="floor-pink" type="button" aria-label="ピンク"></button><button class="swatch floor-mint" data-floor="floor-mint" type="button" aria-label="ミント"></button></div></div><p class="preview-note">家具カタログも以前のものを廃棄し、ゼロから作り直しました。メインページにはまだ入口を出していません。</p></div></section>
+</main><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="v4-core.js?v=4.0.0"></script>
+</body></html>
