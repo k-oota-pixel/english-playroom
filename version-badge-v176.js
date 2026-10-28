@@ -21,7 +21,7 @@ import './material-return.js?v=4.0.0';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.1.9').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.1.35';
+const APP_VERSION='2.1.36';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
