@@ -49,8 +49,19 @@ function install(){
     const caption=document.getElementById('coinsTodayCaption');
     if(caption)caption.textContent='今日、教材に取り組んで獲得したコイン';
   }
+  function redirectLegacyPetRoom(){
+    try{
+      const u=new URL(frame.contentWindow.location.href),base=new URL('pet-room/',HOME);
+      if(u.pathname===base.pathname||u.pathname===base.pathname+'index.html'){
+        const target=new URL('pet-room/v4.html',HOME);target.searchParams.set('preview','4');
+        frame.contentWindow.location.replace(target.href);return true;
+      }
+    }catch{}
+    return false;
+  }
   function watchChild(){
     stopChildObserver();
+    if(redirectLegacyPetRoom())return;
     let doc;try{doc=frame.contentDocument;}catch{return;}
     if(!doc?.documentElement)return;
     childObserver=new MutationObserver(mutations=>{
