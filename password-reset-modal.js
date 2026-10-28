@@ -44,7 +44,7 @@ export function installPasswordResetModal(auth){
   async function check(user){
     if(!user){requiredUid='';if(dialog.open)dialog.close();return false;}
     try{
-      const token=await getIdTokenResult(user);
+      const token=await getIdTokenResult(user,true);
       const required=token.claims.passwordResetRequired===true;
       if(required){requiredUid=user.uid;if(!dialog.open)dialog.showModal();return true;}
       requiredUid='';if(dialog.open)dialog.close();return false;
@@ -81,7 +81,19 @@ export function installPasswordResetModal(auth){
         signal:AbortSignal.timeout(20000)
       });
       let data={};try{data=await response.json();}catch{}
-      if(!response.ok)throw Error(data.error||'パスワードを保存できませんでした。');
+      if(!response.ok){
+        if(response.status===403&&String(data.error||'').includes('再設定が必要なアカウントではありません')){
+          try{
+            const credential=await signInWithEmailAndPassword(auth,user.email,password);
+            const refreshed=await getIdTokenResult(credential.user,true);
+            if(refreshed.claims.passwordResetRequired!==true){requiredUid='';form.reset();dialog.close();return;}
+          }catch{}
+          form.hidden=true;login.hidden=false;
+          show('再設定状態を確認できませんでした。ログイン画面から、設定済みのパスワードでログインし直してください。',true);
+          return;
+        }
+        throw Error(data.error||'パスワードを保存できませんでした。');
+      }
       saved=true;
       const credential=await signInWithEmailAndPassword(auth,user.email,password);
       const refreshed=await getIdTokenResult(credential.user,true);
