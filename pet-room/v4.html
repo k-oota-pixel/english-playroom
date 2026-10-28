@@ -6,22 +6,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fbf7f2">
 <title>ペットのおへや｜もんすたでぃ</title>
-<link rel="stylesheet" href="room-only.css?v=1.0.0">
+<link rel="stylesheet" href="room-only.css?v=1.1.0">
 </head>
 <body>
 <main class="page">
   <section class="room-shell" aria-label="ペットのおへや確認用">
     <div class="room" id="room">
-      <img class="room-art" src="assets/room-empty.webp?v=1" alt="木の床と二面の壁がある、家具を置けるアイソメトリックのおへや">
+      <img id="roomArt" class="room-art" src="https://raw.githubusercontent.com/k-oota-pixel/english-playroom/d745cf531bc1a0c5642f1597b37e08585dff7fe1/pet-room/assets/room-empty.webp" alt="木の床と二面の壁がある、家具を置けるアイソメトリックのおへや">
       <svg class="grid-layer" id="gridLayer" viewBox="0 0 1536 1024" preserveAspectRatio="none" aria-hidden="true"></svg>
-      <div class="pet-in-room" id="petInRoom" aria-label="あなたのペット"><div class="pet-placeholder">🐾</div></div>
+      <div class="load-error" id="loadError" hidden>部屋画像を読み込めませんでした。再読み込みしてください。</div>
     </div>
     <div class="preview-tools">
       <button class="grid-toggle" id="gridToggle" type="button" aria-pressed="false">10×10グリッドを確認</button>
-      <span class="preview-note">家具はまだ未実装です。まず床面と配置座標だけ確認できます。</span>
+      <span class="preview-note">家具とペットは一度外しています。まず部屋画像と床面の配置座標だけ確認できます。</span>
     </div>
   </section>
 </main>
-<script type="module" src="room-only.js?v=1.0.0"></script>
+<script type="module" src="room-only.js?v=1.1.0"></script>
 </body>
 </html>
