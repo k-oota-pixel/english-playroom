@@ -823,7 +823,7 @@ onAuthStateChanged(auth,async user=>{
   logoutBtn.hidden=false;
   coinBoardUser=user;learningDashboard.reset();
   resetCoinBoard("「表示」を押すと本日のTOP3を読み込みます。",true);
-  await passwordResetModal.check(user);
+  if(await passwordResetModal.check(user))return;
   await retryPetSync(user,generation);
 
 });
