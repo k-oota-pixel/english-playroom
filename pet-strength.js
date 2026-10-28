@@ -9,15 +9,17 @@ const RESPEC_PRICE=30;
 const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0,mp:0});
 
 const titleCountCache=new Map(),titleCountRequests=new Map();
-export async function loadStrengthTitles(user,{force=false}={}){
+function storedTitleCount(data={}){const n=Number(data.unlockedTitleCount);return Number.isSafeInteger(n)&&n>=0?n:null;}
+export async function loadStrengthTitles(user,{force=false,walletData=null}={}){
  const uid=user?.uid;if(!uid)throw Error('ログインが必要です。');
+ const stored=storedTitleCount(walletData);if(!force&&stored!==null){titleCountCache.set(uid,{count:stored,expiresAt:Date.now()+30000});return stored;}
  const cached=titleCountCache.get(uid);if(!force&&cached&&cached.expiresAt>Date.now())return cached.count;
  if(!force&&titleCountRequests.has(uid))return titleCountRequests.get(uid);
  const request=(async()=>{
   const token=await user.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
   if(!r.ok)throw Error('称号を読み込めませんでした。もう一度お試しください。');
   const data=await r.json();if(!Array.isArray(data.titles))throw Error('称号を確認できませんでした。');
-  const count=titleCount(data.titles);titleCountCache.set(uid,{count,expiresAt:Date.now()+30000});return count;
+  const summarized=Number(data.unlockedTitleCount),count=Number.isSafeInteger(summarized)&&summarized>=0?summarized:titleCount(data.titles);titleCountCache.set(uid,{count,expiresAt:Date.now()+30000});return count;
  })();titleCountRequests.set(uid,request);
  try{return await request;}finally{if(titleCountRequests.get(uid)===request)titleCountRequests.delete(uid);}
 }
@@ -82,7 +84,7 @@ if(button){
  dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力・MPは＋1ずつ強化できます。初めて使う強化ポイント1つにつきレベルが1上がります。</p><div data-body></div><p data-message role="status"></p>';
  document.body.append(dialog);
  const body=dialog.querySelector('[data-body]'),message=dialog.querySelector('[data-message]');
- let busy=false,generation=0;
+ let busy=false,generation=0,loadedCount=null;
  dialog.querySelector('[data-close]').onclick=()=>dialog.close();
  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
 
@@ -102,8 +104,7 @@ if(button){
   const heading=document.createElement('h3');heading.textContent='習得済みの魔法';list.append(heading);
   for(const spell of learned){const item=document.createElement('p');item.innerHTML=`<strong>${spell.name}</strong><span>${magicEffect(spell)} ／ 消費MP ${spell.mpCost}</span>`;list.append(item);}
   if(!learned.length){const empty=document.createElement('p');empty.textContent='まだ魔法を習得していません。';list.append(empty);}body.append(list);
-  const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」
-${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法を習得済み！';body.append(magic);
+  const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」\n${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法を習得済み！';body.append(magic);
   const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです（レベルは下がりません）。':'ペットが生まれると強化できます。';body.append(note);
  }
 
@@ -111,11 +112,13 @@ ${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法�
   const user=auth.currentUser;if(!user||busy)return;
   const id=++generation;busy=true;body.textContent='読み込み中…';message.textContent='';dialog.showModal();
   try{
-   const [count,snap]=await Promise.all([loadStrengthTitles(user),getDoc(walletRef(user))]);
+   const snap=await getDoc(walletRef(user));
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
    let data=snap.data()||{};data=await reconcilePetStats(user,data);
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
-   busy=false;render(count,data);
+   const count=await loadStrengthTitles(user,{walletData:data});
+   if(id!==generation||auth.currentUser?.uid!==user.uid)return;
+   loadedCount=count;busy=false;render(count,data);
   }catch(e){if(id===generation){body.textContent='';message.textContent=e.message;}}
   finally{if(id===generation)busy=false;}
  }
@@ -124,18 +127,18 @@ ${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法�
   const user=auth.currentUser;if(!user||busy)return;
   const id=generation;busy=true;body.querySelectorAll('button').forEach(b=>b.disabled=true);message.textContent='保存中…';
   try{
-   const count=await loadStrengthTitles(user);
    const result=await runTransaction(db,async tx=>{
     if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
     if(!hasPet(data))throw Error('ペットが生まれると強化できます。');
+    const count=storedTitleCount(data)??loadedCount;if(count===null)throw Error('称号数を確認できませんでした。閉じてもう一度お試しください。');
     const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key);
     const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength)),afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
     tx.set(ref,{petStrength,petStrengthLevelPoints,petUpdatedAt:serverTimestamp()},{merge:true});
-    return {data:{...data,petStrength,petStrengthLevelPoints},beforeLevel,afterLevel};
+    return {data:{...data,petStrength,petStrengthLevelPoints},count,beforeLevel,afterLevel};
    });
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
-   busy=false;render(count,result.data);message.textContent='強化を保存しました！';
+   loadedCount=result.count;busy=false;render(result.count,result.data);message.textContent='強化を保存しました！';
    if(result.afterLevel>result.beforeLevel)showLevelUp(result.afterLevel);
   }catch(e){if(id===generation){message.textContent=e.message||'保存できませんでした。閉じてもう一度お試しください。';}}
   finally{if(id===generation)busy=false;}
@@ -143,7 +146,7 @@ ${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法�
 
  button.onclick=load;
  onAuthStateChanged(auth,user=>{
-  generation++;busy=false;button.disabled=!user;dialog.close();body.replaceChildren();
+  generation++;busy=false;loadedCount=null;button.disabled=!user;dialog.close();body.replaceChildren();
   // Pet stats are reconciled when the panel is opened or an adventure loads; avoid an auth-time wallet read on every page.
  });
 }
