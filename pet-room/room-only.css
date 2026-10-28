@@ -5,16 +5,17 @@ button{font:inherit;touch-action:manipulation}
 .page{max-width:1100px;margin:0 auto;padding:10px 10px 32px}
 .room-shell{width:100%}
 .room{position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border-radius:18px;background:#f5eee7;border:1px solid #eadfd8;isolation:isolate;user-select:none;-webkit-user-select:none}
-.room-art{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}
+.room-art{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1;opacity:0;transition:opacity .16s}
+.room.image-ready .room-art{opacity:1}
 .grid-layer{position:absolute;inset:0;width:100%;height:100%;z-index:20;pointer-events:none;opacity:0;transition:opacity .16s}
 .room.show-grid .grid-layer{opacity:1}
-.grid-cell{fill:#95d4ad;fill-opacity:.10;stroke:#3f8065;stroke-opacity:.72;stroke-width:2}
-.grid-cell:nth-child(odd){fill-opacity:.06}
-.pet-in-room{position:absolute;z-index:60;left:50%;top:63%;width:9.5%;min-width:46px;max-width:108px;transform:translate(-50%,-80%);pointer-events:none;filter:drop-shadow(0 5px 4px #5e4c4420);will-change:left,top,transform}
-.pet-in-room svg{display:block;width:100%;height:auto;transform:scaleX(var(--pet-face,1));transform-origin:center bottom}.pet-placeholder{font-size:44px;text-align:center}
+.grid-cell{fill:#95d4ad;fill-opacity:.12;stroke:#2f7659;stroke-opacity:.78;stroke-width:2}
+.grid-cell:nth-child(odd){fill-opacity:.07}
+.load-error{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:24px;text-align:center;color:#8b817c;font-size:12px;background:#f5eee7}
+.load-error[hidden]{display:none}
 .preview-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}
 .grid-toggle{appearance:none;border:1px solid #d8e2da;background:#fff;color:#416b59;border-radius:999px;padding:9px 13px;font-weight:850;font-size:11px;cursor:pointer}
 .grid-toggle[aria-pressed="true"]{background:#eaf5ee;border-color:#9fc4ae}
 .preview-note{font-size:10px;color:var(--muted);line-height:1.5}
-@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.pet-in-room{width:11.5%}.preview-tools{padding-top:8px}.grid-toggle{min-height:42px;padding:9px 12px}}
+@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.preview-tools{padding-top:8px}.grid-toggle{min-height:42px;padding:9px 12px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
