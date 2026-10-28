@@ -13,3 +13,4 @@
 .ms-brand{color:inherit;text-decoration:none;border-radius:6px}.ms-home-row{display:flex;align-items:center}.ms-home-row .ms-home{flex:1;min-width:0;width:auto}.ms-home-row .ms-sidebar-toggle{display:flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:36px;padding:0;margin-right:10px;border-radius:6px}.ms-header button.ms-menu{align-items:center;justify-content:center}.ms-concentrated .ms-header button.ms-menu{display:flex}@media(max-width:800px){.ms-header button.ms-menu{display:flex}}
 
 .ms-page-nav{display:flex;align-items:center;gap:12px;min-width:0}.ms-page-nav .ms-current{min-width:0}.ms-page-nav .ms-menu{flex-shrink:0}@media(max-width:800px){.ms-page-nav{flex:1;gap:7px}.ms-page-nav .ms-current{font-size:12px}.ms-brand{flex-shrink:0}}
+

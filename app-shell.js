@@ -25,6 +25,7 @@ function install() {
   const allowed = new Set(groups.flatMap(g=>g.items.map(i=>canonical(i.url.pathname))));
   allowed.add(new URL('pet-catch/',root).pathname);
   const homePath = root.pathname;
+  const immersiveMaterialPath = new URL('../eiken-retry/',root).pathname;
   function canOpen(value) {
     const u=new URL(value,root);
     return u.origin===root.origin && (allowed.has(canonical(u.pathname)) || canonical(u.pathname)===homePath);
@@ -82,9 +83,27 @@ function install() {
   function materialName(value){const u=cleanURL(value);return groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||groups.flatMap(g=>g.items).find(i=>i.url.pathname===u.pathname)?.name||'教材';}
   function key(value){const u=cleanURL(value);return u.pathname+u.search+u.hash;}
   function isHome(u){return u.pathname===homePath||u.pathname===homePath+'index.html';}
+  function hideRetryMaterialHeader(){
+    if(!shell.classList.contains('ms-retry-header-hidden'))return;
+    try{
+      const doc=frame.contentDocument;
+      if(!doc?.body)return;
+      const backLink=[...doc.querySelectorAll('a')].find(a=>/もんすたでぃ/.test(a.textContent||'')&&(/トップへ戻る|←/.test(a.textContent||'')||/もんすたでぃトップへ戻る/.test(a.getAttribute('aria-label')||'')));
+      if(backLink)backLink.style.display='none';
+      const homeButton=[...doc.querySelectorAll('button')].find(button=>/ホームへ/.test(button.textContent||''));
+      for(let element=homeButton;element&&element!==doc.body;element=element.parentElement){
+        const text=element.innerText||'';
+        if(text.includes('語彙文法問題リトライノート')&&text.includes('学習')&&text.includes('復習')&&text.includes('記録')&&text.includes('ログアウト')){
+          element.style.display='none';
+          break;
+        }
+      }
+    }catch{}
+  }
   function show(u){
     current=isHome(u)?'':key(u);
     shell.classList.toggle('ms-showing-material',!!current);
+    shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
     title.textContent=current?materialName(u):'ホーム';document.title=title.textContent+'｜もんすたでぃ';
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
@@ -133,6 +152,7 @@ function install() {
   window.addEventListener('beforeunload',e=>{if(child()?.isActive()){e.preventDefault();e.returnValue='';}});
   frame.addEventListener('load',()=>{
     if(!current)return;
+    hideRetryMaterialHeader();
     status.hidden=true;
     try {const u=new URL(frame.contentWindow.location.href);if(canOpen(u)&&key(u)!==current){current=key(u);history.replaceState({monstudy:true,index:historyIndex},'',routeURL(u));title.textContent=materialName(u);frame.title=title.textContent;}}catch{}
     syncPause();
