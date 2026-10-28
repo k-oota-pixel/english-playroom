@@ -27,7 +27,10 @@ export function onAuthStateChanged(auth,observerOrNext,error,completed){
   const deliver=user=>{if(typeof next==='function')next(user);};
   const notify=user=>{
     if(!user){deliver(null);return;}
-    if(location.pathname.endsWith('/password-reset-required.html')){deliver(user);return;}
+    const root='/english-playroom/';
+    const path=location.pathname;
+    const allowResetPrompt=[root,root+'index.html',root+'login.html',root+'password-reset-required.html'].includes(path);
+    if(allowResetPrompt){deliver(user);return;}
     firebaseGetIdTokenResult(user).then(result=>{
       if(result.claims?.passwordResetRequired===true){
         location.replace(new URL('/english-playroom/password-reset-required.html',location.origin).href);
