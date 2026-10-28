@@ -16,11 +16,11 @@ import './pet-cat-dog-v1425.js?v=1.5.7';
 // Cat and dog artwork are rendered directly by pet-art.js; no late redraw.
 // Sleep mode now owns original and cloned eye visibility together.
 import './pet-lion-v149.js?v=2.1.25';
-import './pet-play-menu-v164.js?v=2.1.25';
+import './pet-play-menu-v164.js?v=2.1.35';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.1.9').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.1.34';
+const APP_VERSION='2.1.35';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
