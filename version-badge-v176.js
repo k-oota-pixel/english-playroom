@@ -20,12 +20,12 @@ import './pet-play-menu-v164.js?v=2.1.25';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.1.9').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.1.33';
+const APP_VERSION='2.1.34';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
   if(!heading)return;
-  heading.textContent='今日はどの教材を使う？';
+  heading.textContent='今日はどの教材を使う？？';
 }
 
 function installVersionBadge(){
