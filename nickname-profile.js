@@ -15,6 +15,8 @@ const firebaseConfig={
 const API='https://task-quest.onrender.com';
 const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
+const HOME_PATHS=new Set(['/english-playroom/','/english-playroom/index.html']);
+const usesSharedHomeWallet=HOME_PATHS.has(location.pathname);
 let generation=0,currentNickname='';
 
 function normalizeNickname(value){return String(value??'').normalize('NFKC').trim().replace(/\s+/g,' ');}
@@ -46,9 +48,10 @@ async function registerNickname(user,nickname){
   if(!res.ok)throw Error(body.error||`登録に失敗しました (${res.status})`);
   return normalizeNickname(body.nickname||nickname);
 }
-async function requireNickname(user,myGeneration){
+async function requireNickname(user,myGeneration,sharedData=null){
   let data={};
-  try{const snap=await getDoc(profileRef(user));data=snap.exists()?(snap.data()||{}):{};}catch(error){console.error('Nickname profile read failed',error);}
+  if(sharedData&&typeof sharedData==='object')data=sharedData;
+  else try{const snap=await getDoc(profileRef(user));data=snap.exists()?(snap.data()||{}):{};}catch(error){console.error('Nickname profile read failed',error);}
   if(myGeneration!==generation||auth.currentUser?.uid!==user.uid)return;
   const existing=normalizeNickname(data.nickname);
   if(validNickname(existing)){publish(existing);hideUi();return;}
@@ -74,7 +77,18 @@ onAuthStateChanged(auth,user=>{
   const myGeneration=++generation;
   currentNickname='';delete document.documentElement.dataset.englishPlayroomNickname;
   if(!user){hideUi();return;}
+  if(usesSharedHomeWallet){
+    const cached=window.EnglishPlayroomWallet;
+    if(cached?.uid===user.uid)requireNickname(user,myGeneration,cached.data).catch(error=>console.error('Nickname profile failed',error));
+    return;
+  }
   requireNickname(user,myGeneration).catch(error=>console.error('Nickname profile failed',error));
+});
+
+if(usesSharedHomeWallet)window.addEventListener('english-playroom-wallet',event=>{
+  const user=auth.currentUser,detail=event.detail;
+  if(!user||detail?.uid!==user.uid)return;
+  requireNickname(user,generation,detail.data).catch(error=>console.error('Nickname profile failed',error));
 });
 
 export function getRegisteredNickname(){return currentNickname;}
