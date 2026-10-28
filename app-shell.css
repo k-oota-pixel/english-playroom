@@ -14,4 +14,3 @@
 
 .ms-page-nav{display:flex;align-items:center;gap:12px;min-width:0}.ms-page-nav .ms-current{min-width:0}.ms-page-nav .ms-menu{flex-shrink:0}@media(max-width:800px){.ms-page-nav{flex:1;gap:7px}.ms-page-nav .ms-current{font-size:12px}.ms-brand{flex-shrink:0}}
 
-#monstudyShell.ms-immersive-material .ms-header{display:none}#monstudyShell.ms-immersive-material .ms-workspace{inset:0}
