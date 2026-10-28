@@ -379,6 +379,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
+import {installPasswordResetModal} from './password-reset-modal.js?v=1';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.1.25';
@@ -396,6 +397,7 @@ const firebaseConfig = {
 
 const app=initializeApp(firebaseConfig);enableAppCheck(app);
 const auth=getAuth(app);
+const passwordResetModal=installPasswordResetModal(auth);
 const db=getFirestore(app);
 const provider=new GoogleAuthProvider();
 provider.setCustomParameters({prompt:"select_account"});
@@ -821,6 +823,7 @@ onAuthStateChanged(auth,async user=>{
   logoutBtn.hidden=false;
   coinBoardUser=user;learningDashboard.reset();
   resetCoinBoard("「表示」を押すと本日のTOP3を読み込みます。",true);
+  await passwordResetModal.check(user);
   await retryPetSync(user,generation);
 
 });
