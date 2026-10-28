@@ -8,7 +8,7 @@ let index=Math.floor(Math.random()*questions.length),lastIndex=-1,isGraded=false
 globalThis.MonstudyMaterial?.setActivityGuard(()=>!isGraded);
 function item(){return questions[index];}
 function speak(text){
- if(!('speechSynthesis'in window)||typeof SpeechSynthesisUtterance==='undefined'){showError('このブラウザでは音声再生を利用できません。英文を読んで練習してください。');return;}
+ if(!('speechSynthesis'in window)||typeof SpeechSynthesisUtterance==='undefined'){showError('このブラウザでは音声再生を利用できません。「問題を読む」を押して練習してください。');return;}
  window.speechSynthesis.cancel();
  const utterance=new SpeechSynthesisUtterance(text);
  const voices=window.speechSynthesis.getVoices();
