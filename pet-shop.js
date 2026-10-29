@@ -8,7 +8,7 @@ import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/fireb
 import { getAuth, onAuthStateChanged } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js?v=2.1.25';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.25';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.38';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
@@ -162,7 +162,7 @@ function installCareUI(wallet) {
   const shop=wallet.querySelector('#petShopOpen');
   shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>おなかの満腹度</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHungerMessage" class="pet-hunger-message" aria-live="polite"></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="おなかの満腹度" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><div class="pet-happy-scale"><span>😟 HUNGRY</span><span>FULL 😋</span></div><small>エサをあげると満腹度が上がります。毎日0時におなかがすいた状態に戻ります。</small></div>');
   const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
-  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2 id="petFeedTitle">“I’m hungry…”</h2><p id="petFeedPrompt">おなかすいた…ごはんをあげてね！</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-food-choice" data-food="${f.id}"><span class="pet-food-picture">${foodArt(f.id)}</span><span class="pet-food-copy"><strong>${f.name}</strong><small>満腹度 +${f.price}</small></span><span class="pet-food-price">🪙 ${f.price}<small>コイン</small></span></button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
+  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2 id="petFeedTitle">“I’m hungry…”</h2><p id="petFeedPrompt" class="pet-feed-message">おなかすいた…ごはんをあげてね！</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-food-choice" data-food="${f.id}"><span class="pet-food-picture">${foodArt(f.id)}</span><span class="pet-food-copy"><strong>${f.name}</strong><small>満腹度 +${f.price}</small></span><span class="pet-food-price">🪙 ${f.price}<small>コイン</small></span></button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
   document.body.append(dialog);
   dialog.querySelector('.pet-shop-close').onclick=()=>dialog.close();
   dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();const id=event.target.closest('[data-food]')?.dataset.food;if(id)performCare(id);});
