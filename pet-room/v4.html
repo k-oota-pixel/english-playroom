@@ -18,7 +18,7 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 .grid-cell{fill:#78b995;fill-opacity:.055;stroke:#2f7358;stroke-opacity:.62;stroke-width:1.35}
 .grid-cell:nth-child(odd){fill-opacity:.085}
 .pet-actor{position:absolute;z-index:10;width:clamp(58px,11%,112px);aspect-ratio:1;left:50%;top:58%;pointer-events:none;will-change:left,top,transform;transform:translate(-50%,-87.5%) scale(var(--pet-depth,.88));transform-origin:50% 87.5%;transition:left .72s cubic-bezier(.32,.74,.35,1),top .72s cubic-bezier(.32,.74,.35,1),transform .72s cubic-bezier(.32,.74,.35,1);filter:drop-shadow(0 5px 5px #6f4b2a20)}
-.pet-actor[hidden]{display:none}.pet-facing,.pet-bob,.pet-visual{width:100%;height:100%;transform-origin:50% 88%}.pet-facing{transition:transform .16s ease}.pet-actor.face-left .pet-facing{transform:scaleX(-1)}.pet-visual{display:block}.pet-visual>svg,.pet-visual>img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible}.pet-actor.walking .pet-bob{animation:roomPetStep .28s ease-in-out infinite alternate}.pet-actor.walking .pet-visual{animation:roomPetLean .56s ease-in-out infinite}
+.pet-actor[hidden]{display:none}.pet-facing,.pet-bob,.pet-visual{width:100%;height:100%;transform-origin:50% 88%}.pet-facing{transition:transform .16s ease}.pet-actor.face-left .pet-facing{transform:scaleX(-1)}.pet-visual{display:block;background:transparent}.pet-visual>svg,.pet-visual>img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible;background:transparent}.pet-actor.walking .pet-bob{animation:roomPetStep .28s ease-in-out infinite alternate}.pet-actor.walking .pet-visual{animation:roomPetLean .56s ease-in-out infinite}
 @keyframes roomPetStep{from{transform:translateY(0)}to{transform:translateY(-4%)}}
 @keyframes roomPetLean{0%,100%{rotate:-1deg}50%{rotate:1deg}}
 .tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}
@@ -160,8 +160,10 @@ function cachedWallet(user){
   try{if(window.parent&&window.parent!==window)candidates.push(window.parent.EnglishPlayroomWallet);}catch{}
   return candidates.find(v=>v?.uid===user.uid&&v?.data)?.data||null;
 }
-function demoPet(){
-  visual.innerHTML='<img src="../cat_adult_exact2.png" alt="">';
+async function demoPet(){
+  const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room-bgless');
+  const appearance={species:'cat',bodyColor:'cream',eyes:'round',eyeStyle:'round',feature:'classic',pattern:'none',baseBackground:'ivory'};
+  visual.innerHTML=renderPetSVG(appearance,{},'baby',{background:false});
   actor.hidden=false;place(cell.x,cell.y,false);roam();
   note.textContent='デモのペットが6×6の空きマスを歩いています。ログインすると自分のペットを表示します。';
 }
@@ -170,7 +172,7 @@ async function bootPet(){
     const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);
     const auth=getAuth(app);await auth.authStateReady();
     const user=auth.currentUser;
-    if(!user){demoPet();return;}
+    if(!user){await demoPet();return;}
     let data=cachedWallet(user);
     if(!data){
       const snap=await getDoc(doc(getFirestore(app),'users',user.uid,'apps','english-playroom'));
@@ -178,12 +180,12 @@ async function bootPet(){
     }
     if(!data?.petHatched){actor.hidden=true;note.textContent='まだペットがいません。孵化すると、この6×6の部屋を歩き回るようになります。';return;}
     window.EnglishPlayroomWallet={uid:user.uid,data};
-    const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room');
+    const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room-bgless');
     const stage=data.petAdult===false?'mystery':'baby';
     visual.innerHTML=renderPetSVG(data.petAdult===false?null:data.petAppearance,data.petShop||{},stage,{background:false});
     actor.hidden=false;place(cell.x,cell.y,false);roam();
     note.textContent='ペットが6×6の空きマスを歩き回ります。家具を置いたら、その占有マスを避けて移動します。';
-  }catch(error){console.error('Room pet failed to load',error);demoPet();}
+  }catch(error){console.error('Room pet failed to load',error);await demoPet();}
 }
 
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&actor.hidden===false&&roamToken===0)roam();});
