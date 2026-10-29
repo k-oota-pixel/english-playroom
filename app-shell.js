@@ -21,7 +21,7 @@ function install() {
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)}
   ]});
-  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/',root)}];
+  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
   const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
