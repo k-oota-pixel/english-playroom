@@ -199,7 +199,7 @@ function renderCare() {
     label.dataset.hungerState=mood.key;
     document.getElementById('petHappyValue').textContent=`${state.happy}/10 · ${mood.label}`;
     const speech=document.getElementById('petHungerMessage');speech.textContent=mood.english;
-    const gauge=document.getElementById('petHappyGauge');gauge.setAttribute('aria-valuenow',String(state.happy));gauge.setAttribute('aria-valuetext',`${state.happy}/10 ${mood.english} ${mood.japanese}`);
+    const gauge=document.getElementById('petHappyGauge');gauge.setAttribute('aria-valuenow',String(state.happy));gauge.setAttribute('aria-valuetext',`${state.happy}/10 ${mood.english}`);
     document.getElementById('petHappyFill').style.width=`${state.happy*10}%`;
   }
   const visual=document.getElementById('petVisual');if(visual){visual.dataset.petCareEnabled=currentUser&&hasPet(currentData)?'1':'0';visual.setAttribute('role',enabled?'button':'img');visual.tabIndex=enabled?0:-1;}
