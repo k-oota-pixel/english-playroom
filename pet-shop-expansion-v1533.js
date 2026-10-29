@@ -140,7 +140,7 @@ function applyExpansionLayers(root,data,preview=false){
   }
 }
 function renderAllLayers(){applyExpansionLayers(document.getElementById('petVisual'),currentData,false);applyExpansionLayers(document.getElementById('petShopPreview'),currentData,true);}
-function activeSlot(){const active=document.querySelector('#petShopDialog .pet-shop-tab.active');const text=active?.textContent||'';if(text.includes('あたま'))return 'head';if(text.includes('かお'))return 'face';if(text.includes('くび'))return 'neck';if(text.includes('エフェクト'))return 'effects';if(text.includes('背景'))return 'backgrounds';return null;}
+function activeSlot(){const active=document.querySelector('#petShopDialog .pet-shop-tab.active');const text=active?.textContent||'';if(text.includes('画面背景'))return null;if(text.includes('あたま'))return 'head';if(text.includes('かお'))return 'face';if(text.includes('くび'))return 'neck';if(text.includes('エフェクト'))return 'effects';if(text.includes('背景'))return 'backgrounds';return null;}
 function queueAugment(){if(augmentQueued)return;augmentQueued=true;queueMicrotask(()=>{augmentQueued=false;augmentShop();renderAllLayers();});}
 function makeCard(item,shop){
   const equipped=equippedFor(shop,item.slot)===item.id,owned=isOwned(shop,item.id),coins=coinsOf(currentData);const card=document.createElement('div');card.className='pet-shop-item';card.dataset.extraItem='1';card.dataset.itemId=item.id;
