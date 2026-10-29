@@ -80,6 +80,12 @@ async function boot(){const root=document.getElementById('learningChallenges');i
    tx.set(ref,{coins:coins+reward,loginStreakClaimedDate:expectedDate,coinRewardDate:expectedDate,coinRewardClaims:claims.slice(-200),coinEarnedDate:expectedDate,coinsEarnedToday:coinsEarnedToday+reward,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
    result={awarded:reward};
   });
+  if(result.awarded){
+   try{
+    const token=await u.getIdToken();
+    await fetch('https://task-quest.onrender.com/api/coins/leaderboard',{method:'POST',headers:{Authorization:'Bearer '+token},cache:'no-store',keepalive:true});
+   }catch(error){console.warn('Login bonus leaderboard update deferred',error);}
+  }
   return result;
  }
  const getStreak=()=>window.EnglishPlayroomLoginStreak?.uid===user?.uid?window.EnglishPlayroomLoginStreak:null;
