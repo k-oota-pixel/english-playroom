@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<script src="../shell-bridge.js?v=6.0.8"></script>
+<script src="../shell-bridge.js?v=6.0.9"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fbf7f2">
@@ -13,16 +13,20 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 .room{position:relative;width:100%;aspect-ratio:1000/748;overflow:hidden;border-radius:16px;background:#f4eee8;border:1px solid #e8ddd5}
 .room-base{position:absolute;inset:0;width:100%;height:100%;display:block}
 .floor-grid,.grid-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.floor-grid{z-index:1}.grid-layer{z-index:2;opacity:0;transition:opacity .16s}.room.show-grid .grid-layer{opacity:1}
+.floor-grid{z-index:1}.grid-layer{z-index:20;opacity:0;transition:opacity .16s}.room.show-grid .grid-layer{opacity:1}
 .floor-line{stroke:#b67f50;stroke-opacity:.22;stroke-width:1.5;fill:none}
 .grid-cell{fill:#78b995;fill-opacity:.055;stroke:#2f7358;stroke-opacity:.62;stroke-width:1.35}
 .grid-cell:nth-child(odd){fill-opacity:.085}
+.pet-actor{position:absolute;z-index:10;width:clamp(58px,11%,112px);aspect-ratio:1;left:50%;top:58%;pointer-events:none;will-change:left,top,transform;transform:translate(-50%,-87.5%) scale(var(--pet-depth,.88));transform-origin:50% 87.5%;transition:left .72s cubic-bezier(.32,.74,.35,1),top .72s cubic-bezier(.32,.74,.35,1),transform .72s cubic-bezier(.32,.74,.35,1);filter:drop-shadow(0 5px 5px #6f4b2a20)}
+.pet-actor[hidden]{display:none}.pet-facing,.pet-bob,.pet-visual{width:100%;height:100%;transform-origin:50% 88%}.pet-facing{transition:transform .16s ease}.pet-actor.face-left .pet-facing{transform:scaleX(-1)}.pet-visual{display:block}.pet-visual>svg,.pet-visual>img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible}.pet-actor.walking .pet-bob{animation:roomPetStep .28s ease-in-out infinite alternate}.pet-actor.walking .pet-visual{animation:roomPetLean .56s ease-in-out infinite}
+@keyframes roomPetStep{from{transform:translateY(0)}to{transform:translateY(-4%)}}
+@keyframes roomPetLean{0%,100%{rotate:-1deg}50%{rotate:1deg}}
 .tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}
 .toggle{appearance:none;border:1px solid #d8e2da;background:#fff;color:#416b59;border-radius:999px;padding:10px 14px;font-weight:850;font-size:11px;cursor:pointer;min-height:42px}
 .toggle[aria-pressed="true"]{background:#eaf5ee;border-color:#9fc4ae}
 .note{font-size:10px;color:#8b817c;line-height:1.55}
-@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.floor-line{stroke-width:1.7}.grid-cell{stroke-width:1.45}.tools{padding-top:8px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.floor-line{stroke-width:1.7}.grid-cell{stroke-width:1.45}.pet-actor{width:clamp(56px,15%,78px)}.tools{padding-top:8px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.pet-actor.walking .pet-bob,.pet-actor.walking .pet-visual{animation:none!important}}
 </style>
 </head>
 <body>
@@ -54,11 +58,12 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 <path d="M100 500 L500 700 L900 500" fill="none" stroke="#e9bd8e" stroke-width="3" opacity=".75"/>
 </svg>
 <svg class="floor-grid" id="floorGrid" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+<div class="pet-actor" id="petActor" hidden aria-hidden="true"><div class="pet-facing"><div class="pet-bob"><div class="pet-visual" id="petVisual"></div></div></div></div>
 <svg class="grid-layer" id="gridLayer" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
 </div>
 <div class="tools">
   <button class="toggle" id="gridToggle" type="button" aria-pressed="false">6×6グリッドを確認</button>
-  <span class="note">床の見える升目と、家具配置に使う判定グリッドを6×6で統一しています。</span>
+  <span class="note" id="roomNote">ペットは6×6の空きマスをゆっくり歩き回ります。家具を置いたら占有マスを避ける設計です。</span>
 </div>
 </section>
 </main>
@@ -76,7 +81,113 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
   for(let i=1;i<GRID;i++){const t=i/GRID;addLine(point(t,0),point(t,1));addLine(point(0,t),point(1,t));}
   for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');p.classList.add('grid-cell');p.dataset.x=String(x);p.dataset.y=String(y);p.setAttribute('points',corners(x,y).map(v=>`${v.x.toFixed(1)},${v.y.toFixed(1)}`).join(' '));grid.appendChild(p);}
   toggle.addEventListener('click',()=>{const on=!room.classList.contains('show-grid');room.classList.toggle('show-grid',on);toggle.setAttribute('aria-pressed',String(on));toggle.textContent=on?'グリッドを隠す':'6×6グリッドを確認';});
+  window.MonStudyRoomGrid=Object.freeze({GRID,FLOOR,point});
 })();
+</script>
+<script type="module">
+import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
+import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import {getAuth} from '../auth-session.js?v=2.2.1';
+import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
+
+const firebaseConfig={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
+const actor=document.getElementById('petActor');
+const visual=document.getElementById('petVisual');
+const note=document.getElementById('roomNote');
+const {GRID,FLOOR,point}=window.MonStudyRoomGrid;
+const occupied=new Set();
+let cell={x:2,y:3},roamToken=0;
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const key=(x,y)=>`${x},${y}`;
+const center=(x,y)=>point((x+.5)/GRID,(y+.5)/GRID);
+
+function place(x,y,walking=false){
+  const p=center(x,y),old=center(cell.x,cell.y);
+  const depth=Math.max(0,Math.min(1,(p.y-FLOOR.top.y)/(FLOOR.bottom.y-FLOOR.top.y)));
+  const scale=.70+depth*.34;
+  if(p.x<old.x-1)actor.classList.add('face-left');
+  else if(p.x>old.x+1)actor.classList.remove('face-left');
+  actor.classList.toggle('walking',walking&&!reduceMotion);
+  actor.style.left=`${(p.x/1000)*100}%`;
+  actor.style.top=`${(p.y/748)*100}%`;
+  actor.style.setProperty('--pet-depth',scale.toFixed(3));
+  actor.style.zIndex=String(5+Math.round(p.y));
+  cell={x,y};
+}
+
+function neighbors(c){
+  return [[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(n=>n.x>=0&&n.y>=0&&n.x<GRID&&n.y<GRID&&!occupied.has(key(n.x,n.y)));
+}
+function pathTo(start,target){
+  const q=[start],from=new Map([[key(start.x,start.y),null]]);
+  while(q.length){
+    const cur=q.shift();
+    if(cur.x===target.x&&cur.y===target.y)break;
+    for(const n of neighbors(cur)){const k=key(n.x,n.y);if(from.has(k))continue;from.set(k,cur);q.push(n);}
+  }
+  if(!from.has(key(target.x,target.y)))return [];
+  const path=[];let cur=target;
+  while(cur&&!(cur.x===start.x&&cur.y===start.y)){path.push(cur);cur=from.get(key(cur.x,cur.y));}
+  return path.reverse();
+}
+function randomTarget(){
+  const candidates=[];
+  for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++)if(!occupied.has(key(x,y))&&(x!==cell.x||y!==cell.y))candidates.push({x,y});
+  const far=candidates.filter(c=>Math.abs(c.x-cell.x)+Math.abs(c.y-cell.y)>=2);
+  const pool=far.length?far:candidates;
+  return pool[Math.floor(Math.random()*pool.length)]||cell;
+}
+async function roam(){
+  const token=++roamToken;
+  if(reduceMotion){place(cell.x,cell.y,false);return;}
+  while(token===roamToken){
+    if(document.hidden){actor.classList.remove('walking');await sleep(700);continue;}
+    const target=randomTarget();
+    const path=pathTo(cell,target);
+    for(const step of path){
+      if(token!==roamToken)break;
+      place(step.x,step.y,true);
+      await sleep(760);
+    }
+    actor.classList.remove('walking');
+    await sleep(1100+Math.random()*1900);
+  }
+}
+function cachedWallet(user){
+  const candidates=[];
+  try{candidates.push(window.EnglishPlayroomWallet);}catch{}
+  try{if(window.parent&&window.parent!==window)candidates.push(window.parent.EnglishPlayroomWallet);}catch{}
+  return candidates.find(v=>v?.uid===user.uid&&v?.data)?.data||null;
+}
+function demoPet(){
+  visual.innerHTML='<img src="../cat_adult_exact2.png" alt="">';
+  actor.hidden=false;place(cell.x,cell.y,false);roam();
+  note.textContent='デモのペットが6×6の空きマスを歩いています。ログインすると自分のペットを表示します。';
+}
+async function bootPet(){
+  try{
+    const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);
+    const auth=getAuth(app);await auth.authStateReady();
+    const user=auth.currentUser;
+    if(!user){demoPet();return;}
+    let data=cachedWallet(user);
+    if(!data){
+      const snap=await getDoc(doc(getFirestore(app),'users',user.uid,'apps','english-playroom'));
+      data=snap.exists()?(snap.data()||{}):{};
+    }
+    if(!data?.petHatched){actor.hidden=true;note.textContent='まだペットがいません。孵化すると、この6×6の部屋を歩き回るようになります。';return;}
+    window.EnglishPlayroomWallet={uid:user.uid,data};
+    const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room');
+    const stage=data.petAdult===false?'mystery':'baby';
+    visual.innerHTML=renderPetSVG(data.petAdult===false?null:data.petAppearance,data.petShop||{},stage,{background:false});
+    actor.hidden=false;place(cell.x,cell.y,false);roam();
+    note.textContent='ペットが6×6の空きマスを歩き回ります。家具を置いたら、その占有マスを避けて移動します。';
+  }catch(error){console.error('Room pet failed to load',error);demoPet();}
+}
+
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&actor.hidden===false&&roamToken===0)roam();});
+bootPet();
 </script>
 </body>
 </html>
