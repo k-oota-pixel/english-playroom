@@ -70,7 +70,7 @@
       pausedAt = native.now(); paused = true;
       for (const task of tasks.values()) { task.remaining = Math.max(0, task.remaining - (pausedAt-task.started)); native.clear(task.native); }
       for (const frame of frames.values()) native.caf(frame.handle);
-      for (const media of playing) if (!media.paused) { resumeMedia.add(this); media.pause(); }
+      for (const media of playing) if (!media.paused) { resumeMedia.add(media); media.pause(); }
       if (window.speechSynthesis?.speaking && !speechSynthesis.paused) { window.MonstudyMaterial.resumeSpeech=true; speechSynthesis.pause(); }
     } else {
       excluded += native.now()-pausedAt; paused = false;
@@ -98,17 +98,25 @@
     const legacyPanel = document.getElementById('placementPanel');
     const legacyConfirm = document.getElementById('confirmFurniture');
     const legacyCancel = document.getElementById('cancelFurniture');
-    if (!room || !sofa || !sofaButton || !legacyPanel || !legacyConfirm || !legacyCancel) return;
+    const grid = window.MonStudyRoomGrid?.grid;
+    const occupied = window.MonStudyRoomOccupied;
+    if (!room || !sofa || !sofaButton || !legacyPanel || !legacyConfirm || !legacyCancel || !grid || !occupied) return;
+
+    const ROTATION_KEY = 'monstudy-pet-room-sofa-rotation-v1';
+    const STORE_KEY = 'monstudy-pet-room-sofa-v1';
+    let rotated = localStorage.getItem(ROTATION_KEY) === '1';
+    let editBackup = null;
 
     const style = document.createElement('style');
     style.id = 'pet-room-furniture-overlay-style';
     style.textContent = `
       #placementPanel{display:none!important}
-      #sofaActor{width:clamp(88px,20%,170px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-88%)!important;transform-origin:50% 88%!important;transition:left .18s ease,top .18s ease,transform .18s ease,filter .18s ease!important;filter:drop-shadow(0 5px 5px rgba(91,61,41,.18))!important}
-      #sofaActor img{filter:saturate(.84) contrast(.88) brightness(1.075)!important}
-      #room.placing #sofaActor{transform:translate(-50%,-105%) scale(1.025)!important;filter:drop-shadow(0 13px 11px rgba(91,61,41,.25))!important}
-      #room.placing #sofaActor::after{content:'';position:absolute;left:14%;right:14%;bottom:4%;height:12%;border-radius:50%;background:rgba(108,76,50,.13);filter:blur(5px);transform:translateY(115%);pointer-events:none}
-      #roomFurnitureHud{position:absolute;z-index:1400;width:132px;padding:8px;border:1px solid rgba(117,105,96,.16);border-radius:18px;background:rgba(255,252,248,.95);box-shadow:0 10px 28px rgba(78,58,43,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transform:translateY(-50%);transition:left .16s ease,top .16s ease;touch-action:manipulation}
+      #sofaActor{width:clamp(88px,20%,170px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-64%)!important;transform-origin:50% 88%!important;transition:left .18s ease,top .18s ease,transform .18s ease,filter .18s ease!important;filter:drop-shadow(0 4px 4px rgba(91,61,41,.15))!important}
+      #sofaActor img{filter:saturate(.84) contrast(.88) brightness(1.075)!important;transition:transform .18s ease!important}
+      #sofaActor[data-rotated="true"] img{transform:scaleX(-1)!important}
+      #room.placing #sofaActor{transform:translate(-50%,-80%) scale(1.025)!important;filter:drop-shadow(0 11px 9px rgba(91,61,41,.23))!important}
+      #room.placing #sofaActor::after{content:'';position:absolute;left:14%;right:14%;bottom:0;height:10%;border-radius:50%;background:rgba(108,76,50,.12);filter:blur(5px);transform:translateY(85%);pointer-events:none}
+      #roomFurnitureHud{position:absolute;z-index:1400;width:140px;padding:8px;border:1px solid rgba(117,105,96,.16);border-radius:18px;background:rgba(255,252,248,.95);box-shadow:0 10px 28px rgba(78,58,43,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transform:translateY(-50%);transition:left .16s ease,top .16s ease;touch-action:manipulation}
       #roomFurnitureHud[hidden]{display:none!important}
       #roomFurnitureHud .iso-pad{display:grid;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px;gap:1px;justify-content:center;align-items:center}
       #roomFurnitureHud .iso-key{appearance:none;border:1px solid #d9ded9;background:#fff;color:#356b57;border-radius:12px;font-size:22px;font-weight:900;line-height:1;box-shadow:0 2px 6px rgba(62,82,72,.08);touch-action:manipulation}
@@ -116,10 +124,12 @@
       #roomFurnitureHud .iso-key:disabled{opacity:.27}
       #roomFurnitureHud .ul{grid-column:1;grid-row:1}.ur{grid-column:3;grid-row:1}.dl{grid-column:1;grid-row:3}.dr{grid-column:3;grid-row:3}
       #roomFurnitureHud .hud-center{grid-column:2;grid-row:2;display:grid;place-items:center;width:30px;height:30px;margin:auto;border-radius:50%;background:#f6eee8;font-size:15px}
-      #roomFurnitureHud .hud-actions{display:flex;gap:6px;margin-top:5px}
-      #roomFurnitureHud .hud-action{appearance:none;flex:1;min-height:32px;border-radius:10px;border:1px solid #d8dfda;background:#fff;font-size:12px;font-weight:850;color:#5d5753;touch-action:manipulation}
+      #roomFurnitureHud .hud-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:6px}
+      #roomFurnitureHud .hud-action{appearance:none;min-height:32px;border-radius:10px;border:1px solid #d8dfda;background:#fff;font-size:11px;font-weight:850;color:#5d5753;touch-action:manipulation;padding:0 4px}
+      #roomFurnitureHud .rotate{color:#765786;background:#fbf7ff;border-color:#e4d8eb}
       #roomFurnitureHud .ok{background:#39745b;border-color:#39745b;color:#fff}
-      @media(max-width:700px){#sofaActor{width:clamp(86px,24%,126px)!important}#roomFurnitureHud{width:122px;padding:7px}#roomFurnitureHud .iso-pad{grid-template-columns:35px 35px 35px;grid-template-rows:35px 35px 35px}#roomFurnitureHud .iso-key{font-size:20px}}
+      #roomFurnitureHud .ok:disabled{opacity:.42}
+      @media(max-width:700px){#sofaActor{width:clamp(86px,24%,126px)!important}#roomFurnitureHud{width:132px;padding:7px}#roomFurnitureHud .iso-pad{grid-template-columns:35px 35px 35px;grid-template-rows:35px 35px 35px}#roomFurnitureHud .iso-key{font-size:20px}#roomFurnitureHud .hud-action{font-size:10px}}
     `;
     document.head.append(style);
 
@@ -134,7 +144,11 @@
         <button class="iso-key dl" type="button" data-iso="dl" aria-label="左手前へ1マス">↙</button>
         <button class="iso-key dr" type="button" data-iso="dr" aria-label="右手前へ1マス">↘</button>
       </div>
-      <div class="hud-actions"><button class="hud-action" type="button" data-hud="cancel">× 戻す</button><button class="hud-action ok" type="button" data-hud="ok">✓ 決定</button></div>`;
+      <div class="hud-actions">
+        <button class="hud-action" type="button" data-hud="cancel">× 戻す</button>
+        <button class="hud-action rotate" type="button" data-hud="rotate">↻ 回転</button>
+        <button class="hud-action ok" type="button" data-hud="ok">✓ 決定</button>
+      </div>`;
     room.append(hud);
 
     const legacyMoves = {
@@ -144,14 +158,55 @@
       dr: legacyPanel.querySelector('[data-move="right"]')
     };
     const isEditing = () => room.classList.contains('placing') || !legacyPanel.hidden || window.MonStudyFurnitureEditing === true;
-
+    const currentSofa = () => window.MonStudyRoomFurniture?.sofa || null;
+    const key = (x,y) => `${x},${y}`;
+    const footprint = (state, isRotated=rotated) => {
+      if (!state) return [];
+      return isRotated
+        ? [{x:state.x,y:state.y},{x:state.x,y:state.y+1}]
+        : [{x:state.x,y:state.y},{x:state.x+1,y:state.y}];
+    };
+    function readSaved() {
+      try {
+        const v = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+        return v && Number.isInteger(v.x) && Number.isInteger(v.y) ? v : null;
+      } catch { return null; }
+    }
+    function clearBothFootprints(state) {
+      if (!state) return;
+      for (const c of [...footprint(state,false),...footprint(state,true)]) occupied.delete(key(c.x,c.y));
+    }
+    function addCurrentFootprint() {
+      const s = currentSofa() || readSaved();
+      if (!s?.placed) return;
+      clearBothFootprints(s);
+      for (const c of footprint(s,rotated)) if (c.x>=0&&c.y>=0&&c.x<6&&c.y<6) occupied.add(key(c.x,c.y));
+    }
+    function validRotatedPlacement() {
+      const s = currentSofa();
+      if (!s) return false;
+      return footprint(s,rotated).every(c => c.x>=0&&c.y>=0&&c.x<6&&c.y<6&&!occupied.has(key(c.x,c.y)));
+    }
+    function syncRotationPreview() {
+      sofa.dataset.rotated = String(rotated);
+      if (!isEditing()) return;
+      grid.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('preview-valid','preview-invalid'));
+      const s = currentSofa();
+      const ok = validRotatedPlacement();
+      for (const c of footprint(s,rotated)) {
+        const el = grid.querySelector(`[data-x="${c.x}"][data-y="${c.y}"]`);
+        if (el) el.classList.add(ok?'preview-valid':'preview-invalid');
+      }
+      const okButton = hud.querySelector('[data-hud="ok"]');
+      if (okButton) okButton.disabled = !ok;
+    }
     function positionHud() {
       if (hud.hidden) return;
       const rr = room.getBoundingClientRect();
       const sr = sofa.getBoundingClientRect();
-      const hw = hud.offsetWidth || 122, hh = hud.offsetHeight || 150;
+      const hw = hud.offsetWidth || 132, hh = hud.offsetHeight || 152;
       let x = sr.right - rr.left + 9;
-      let y = sr.top - rr.top + sr.height * .52;
+      let y = sr.top - rr.top + sr.height * .56;
       if (x + hw > rr.width - 8) x = sr.left - rr.left - hw - 9;
       x = Math.max(8, Math.min(rr.width - hw - 8, x));
       y = Math.max(hh * .5 + 8, Math.min(rr.height - hh * .5 - 8, y));
@@ -159,24 +214,47 @@
       hud.style.top = `${y}px`;
     }
     function syncDisabled() {
+      const s = currentSofa();
       for (const [dir, oldButton] of Object.entries(legacyMoves)) {
         const button = hud.querySelector(`[data-iso="${dir}"]`);
         if (button) button.disabled = !oldButton || oldButton.disabled;
       }
+      if (s && rotated) {
+        const dl = hud.querySelector('[data-iso="dl"]');
+        if (dl && s.y>=4) dl.disabled = true;
+      }
+      syncRotationPreview();
     }
     function syncHud() {
       const editing = isEditing();
       hud.hidden = !editing;
       sofa.setAttribute('aria-selected', String(editing));
-      if (editing) {
-        requestAnimationFrame(() => { syncDisabled(); positionHud(); });
-      }
+      sofa.dataset.rotated = String(rotated);
+      if (editing) requestAnimationFrame(() => { syncDisabled(); positionHud(); });
+    }
+    function beginBackup() {
+      if (editBackup) return;
+      const saved = readSaved() || currentSofa();
+      if (saved) editBackup = {...saved, rotated};
+      clearBothFootprints(saved);
+    }
+    function reconcileAfterFinish() {
+      const s = currentSofa() || readSaved();
+      clearBothFootprints(editBackup);
+      clearBothFootprints(s);
+      addCurrentFootprint();
+      localStorage.setItem(ROTATION_KEY, rotated ? '1' : '0');
+      editBackup = null;
+      sofa.dataset.rotated = String(rotated);
     }
 
     sofa.addEventListener('click', event => {
       if (sofa.hidden) return;
       event.preventDefault(); event.stopPropagation();
-      if (!isEditing()) sofaButton.click();
+      if (!isEditing()) {
+        beginBackup();
+        sofaButton.click();
+      }
       native.timeout(syncHud, 0);
     });
     hud.addEventListener('click', event => {
@@ -188,11 +266,28 @@
         return;
       }
       const action = event.target.closest('[data-hud]')?.dataset.hud;
-      if (action === 'ok') legacyConfirm.click();
-      if (action === 'cancel') legacyCancel.click();
-      native.timeout(syncHud, 0);
+      if (action === 'rotate') {
+        rotated = !rotated;
+        sofa.dataset.rotated = String(rotated);
+        native.timeout(() => { syncDisabled(); positionHud(); }, 0);
+        return;
+      }
+      if (action === 'ok') {
+        if (!validRotatedPlacement()) return;
+        legacyConfirm.click();
+        native.timeout(() => { reconcileAfterFinish(); syncHud(); }, 0);
+        return;
+      }
+      if (action === 'cancel') {
+        if (editBackup) rotated = !!editBackup.rotated;
+        legacyCancel.click();
+        native.timeout(() => { reconcileAfterFinish(); syncHud(); }, 0);
+      }
     });
-    sofaButton.addEventListener('click', () => native.timeout(syncHud, 0));
+    sofaButton.addEventListener('click', () => {
+      if (!isEditing()) beginBackup();
+      native.timeout(() => { if (isEditing()) clearBothFootprints(editBackup); syncHud(); }, 0);
+    });
     legacyConfirm.addEventListener('click', () => native.timeout(syncHud, 0));
     legacyCancel.addEventListener('click', () => native.timeout(syncHud, 0));
     new MutationObserver(syncHud).observe(room, {attributes:true, attributeFilter:['class']});
@@ -200,7 +295,7 @@
     new MutationObserver(() => { if (!hud.hidden) native.timeout(positionHud, 0); }).observe(sofa, {attributes:true, attributeFilter:['style','hidden']});
     window.addEventListener('resize', positionHud, {passive:true});
     if (sofaImg) sofaImg.setAttribute('draggable','false');
-    syncHud();
+    native.timeout(() => { addCurrentFootprint(); syncHud(); }, 0);
   }
 
   document.addEventListener('click', event => {
