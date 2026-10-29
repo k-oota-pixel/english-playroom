@@ -35,7 +35,7 @@ export function createChallengeBoard({root,getUser,load,claim,getStreak,claimStr
   const canClaim=!!streak?.date&&day>=2&&!streak.claimed;
   const claimButton=node('button',streak?.claimed?'受け取り済み':canClaim?`🪙 ${LOGIN_STREAK_REWARDS[day]}コインを受け取る`:day===1?'明日からコインボーナス':'ログイン状態を確認中','challenge-claim streak-claim');
   claimButton.type='button';claimButton.disabled=busy||!canClaim;claimButton.addEventListener('click',()=>receiveStreak());bonus.append(claimButton);
-  bonus.append(node('p',day===1?'連続7日で1日目に戻ります。ログイン日数のペット成長はこれまでどおりです。':'2〜7日目の報酬はボタンを押すと受け取れます。','challenge-date'));
+  bonus.append(node('p',day===1?'7日目の翌日は1日目に戻ります。ログイン日数のペット成長はこれまでどおりです。':'2〜7日目の報酬はボタンを押すと受け取れます。','challenge-date'));
   grid.append(bonus);
   clearTimeout(rollover);const delay=new Date(state.nextDaily).getTime()-state.serverNow;rollover=setTimeout(()=>reset(),Math.max(1000,Math.min(delay+150,2147483647)));
  }
