@@ -144,7 +144,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.45">ver2.1.45</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.46">ver2.1.46</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -391,7 +391,7 @@ import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.1.25';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
-import './pet-shop.js?v=2.1.45';
+import './pet-shop.js?v=2.1.46';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -463,6 +463,24 @@ function localDateKey(){
 }
 function petRef(user){
   return doc(db,"users",user.uid,"apps","english-playroom");
+}
+function previousDateKey(dateKey){
+  const date=new Date(dateKey+"T12:00:00");
+  date.setDate(date.getDate()-1);
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+}
+function loginStreakPatch(data,today){
+  const last=typeof data.loginStreakLastDate==="string"?data.loginStreakLastDate:"";
+  const current=Math.max(0,Math.min(7,Math.floor(Number(data.loginStreakDay)||0)));
+  if(last===today)return {};
+  const next=last===previousDateKey(today)&&current>0?(current===7?1:current+1):1;
+  return {loginStreakLastDate:today,loginStreakDay:next};
+}
+function publishLoginStreak(data,uid){
+  const date=typeof data.loginStreakLastDate==="string"?data.loginStreakLastDate:"";
+  const detail={uid,date,day:Math.max(0,Math.min(7,Math.floor(Number(data.loginStreakDay)||0))),claimed:!!date&&data.loginStreakClaimedDate===date};
+  window.EnglishPlayroomLoginStreak=detail;
+  window.dispatchEvent(new CustomEvent("english-playroom-login-streak",{detail}));
 }
 function loginErrorMessage(err){
   switch(err?.code){
@@ -710,7 +728,7 @@ async function syncPet(user,generation){
   let data;
   try{data=await runTransaction(db,async transaction=>{
     const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?(snap.data()||{}):{};
-    const progress={...loginProgress(data,today),...growthPatch(data,today,user.uid)};
+    const progress={...loginProgress(data,today),...loginStreakPatch(data,today),...growthPatch(data,today,user.uid)};
     if(Object.keys(progress).some(key=>progress[key]!==data[key])){
       transaction.set(ref,{...progress,petUpdatedAt:serverTimestamp()},{merge:true});
     }
@@ -726,7 +744,7 @@ async function syncPet(user,generation){
     throw error;
   }
   if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
-  petUser=user;petData=data;petDataUid=user.uid;renderPet(data);
+  petUser=user;petData=data;petDataUid=user.uid;publishLoginStreak(data,user.uid);renderPet(data);
 }
 
 
@@ -864,11 +882,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=2.1.25"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.45'></script>
+<script type="module" src="./learning-challenges.js?v=2.1.46"></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.46'></script>
 <script>
 (() => {
-  const version = '2.1.45';
+  const version = '2.1.46';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
