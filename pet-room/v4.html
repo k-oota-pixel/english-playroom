@@ -82,14 +82,14 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 <svg class="grid-layer" id="gridLayer" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
 </div>
 <div class="tools">
-  <button class="toggle" id="gridToggle" type="button" aria-pressed="false">10×10グリッドを確認</button>
+  <button class="toggle" id="gridToggle" type="button" aria-pressed="false">7×7グリッドを確認</button>
   <span class="note">壁付けアイテムはすべて外しました。窓・扉・時計・棚・額などは今後「壁家具」として自由配置できる前提です。</span>
 </div>
 </section>
 </main>
 <script>
 (()=>{
-  const GRID=10;
+  const GRID=7;
   const FLOOR={top:{x:500,y:300},right:{x:900,y:500},bottom:{x:500,y:700},left:{x:100,y:500}};
   const room=document.getElementById('room');
   const grid=document.getElementById('gridLayer');
@@ -117,7 +117,7 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
     const on=!room.classList.contains('show-grid');
     room.classList.toggle('show-grid',on);
     toggle.setAttribute('aria-pressed',String(on));
-    toggle.textContent=on?'グリッドを隠す':'10×10グリッドを確認';
+    toggle.textContent=on?'グリッドを隠す':'7×7グリッドを確認';
   });
 })();
 </script>
