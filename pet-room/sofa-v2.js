@@ -11,7 +11,7 @@ let backupRotation=rotation,frontAsset='',backAsset='';
 const style=document.createElement('style');
 style.textContent=`
 #placementPanel{display:none!important}
-#sofaActor{width:clamp(88px,20%,170px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-64%)!important;transform-origin:50% 88%!important;transition:left .18s ease,top .18s ease,transform .18s ease,filter .18s ease!important;filter:drop-shadow(0 4px 4px #5b3d2926)!important}
+#sofaActor{width:clamp(88px,20%,170px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-80%)!important;transform-origin:50% 88%!important;transition:left .18s ease,top .18s ease,transform .18s ease,filter .18s ease!important;filter:drop-shadow(0 4px 4px #5b3d2926)!important}
 #sofaActor img{display:block;width:100%!important;height:auto!important;filter:none!important;transition:transform .18s ease!important;transform-origin:50% 50%!important}
 #room.placing #sofaActor{transform:translate(-50%,-80%) scale(1.025)!important;filter:drop-shadow(0 11px 9px #5b3d293b)!important}
 #roomFurnitureHud{position:absolute;z-index:1400;width:140px;padding:8px;border:1px solid #75696029;border-radius:18px;background:#fffcf8f5;box-shadow:0 10px 28px #4e3a2b2e;backdrop-filter:blur(8px);transform:translateY(-50%);touch-action:manipulation}
