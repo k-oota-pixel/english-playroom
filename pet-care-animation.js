@@ -73,7 +73,7 @@ function playFeeding(visual,kind,food){
   later(()=>{remaining=2-bite;drawFood();},bite*700+580);
  }
  let feedback;
- later(()=>{finished=true;open=false;drawFood();attach();visual.dataset.careReacting=kind;emitCareEffects(visual,kind);feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');feedback.textContent=`満腹度 +${food.price}${kind==='max'?' · おなかいっぱい！':''}`;host.append(feedback);},2200);
+ later(()=>{finished=true;open=false;drawFood();attach();visual.dataset.careReacting=kind;emitCareEffects(visual,kind);feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');feedback.textContent=`満腹度 +${food.price}`;host.append(feedback);},2200);
  const run={stop(){timers.forEach(clearTimeout);observer.disconnect();visual.querySelectorAll('[data-feeding-open]').forEach(el=>el.removeAttribute('data-feeding-open'));plate.remove();feedback?.remove();visual.querySelectorAll('.pet-eating-mouth').forEach(m=>m.remove());const ending=walkPhases(visual);visual.querySelectorAll('.pet-care-motion-layer').forEach(l=>l.replaceWith(...l.childNodes));delete visual.dataset.careReacting;restoreWalk(ending);if(active===run)active=null;}};
  active=run;later(()=>run.stop(),4600);
 }
@@ -89,7 +89,7 @@ export function playCareReaction(visual,kind,food){
   const host=visual.closest('.pet-visual-wrap')||visual;
   const feedback=document.createElement('span');feedback.className='pet-care-feedback'+(kind==='max'?' pet-care-max':'');feedback.setAttribute('role','status');
   if(food){const icon=document.createElement('b');icon.textContent=food.icon;
-    feedback.append(icon,document.createTextNode(`満腹度 +${food.price}${kind==='max'?' · おなかいっぱい！':''}`));host.append(feedback);}
+    feedback.append(icon,document.createTextNode(`満腹度 +${food.price}`));host.append(feedback);}
   const started=performance.now(),duration=kind==='max'?2800:kind==='celebrate'?2200:1800;
   visual.dataset.careReacting=kind;
   function attach(){
