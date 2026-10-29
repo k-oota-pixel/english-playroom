@@ -39,8 +39,19 @@
 .pet-happy[hidden]{display:none}
 .pet-happy-heading{display:flex;justify-content:space-between;gap:8px;font-weight:800;margin-bottom:5px}
 .pet-happy-track{height:13px;overflow:hidden;border-radius:999px;background:#f2e7dd;border:1px solid #e6caba}
-.pet-happy-track>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#f4adbc,#f4ce64);transition:width .35s ease}
-.pet-happy small{display:block;margin-top:4px;font-size:10px;color:#887d70}
+.pet-happy-track>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#f4adbc,#9ccf91);transition:width .35s ease}
+.pet-happy[data-hunger-state="hungry"] .pet-happy-track>span,.pet-happy[data-hunger-state="still-hungry"] .pet-happy-track>span{background:linear-gradient(90deg,#e98176,#f1ad65)}
+.pet-happy[data-hunger-state="filling"] .pet-happy-track>span{background:linear-gradient(90deg,#f1c36e,#a7ce82)}
+.pet-happy[data-hunger-state="full"] .pet-happy-track>span{background:linear-gradient(90deg,#a7ce82,#68b48d)}
+.pet-hunger-message{margin:0 0 6px;padding:7px 10px;border:1px solid #f0d28a;border-radius:12px;background:#fff8df;color:#825d13;font-size:12px;font-weight:900;line-height:1.35;text-align:center;white-space:pre-line}
+.pet-happy[data-hunger-state="hungry"] .pet-hunger-message,.pet-happy[data-hunger-state="still-hungry"] .pet-hunger-message{background:#fff0e9;border-color:#efc0a9;color:#a54d39}
+.pet-happy[data-hunger-state="filling"] .pet-hunger-message{background:#fff8df;border-color:#eed89e;color:#8a671c}
+.pet-happy[data-hunger-state="full"] .pet-hunger-message{background:#eaf6eb;border-color:#c7e2c9;color:#2e704d}
+.pet-happy-scale{display:flex;justify-content:space-between;margin-top:4px;color:#796b58;font-size:9px;font-weight:850;letter-spacing:.03em}
+.pet-happy small{display:block;margin-top:5px;font-size:10px;color:#887d70;line-height:1.45}
+.pet-shop-open.pet-feed-needed{border-color:#e9bd4c;background:#fff4c7;color:#694d0c;box-shadow:0 0 0 2px #f4df9d66}
+.pet-feed-message{font-size:13px;line-height:1.6;color:#6a5740}
+@media(prefers-reduced-motion:reduce){.pet-happy-track>span{transition:none}}
 .pet-care-feedback.pet-care-max{background:linear-gradient(120deg,#fff1ab,#ffe3f0);border:2px solid #e8b639;box-shadow:0 0 20px #f4ce6480;font-size:14px}
 @media(prefers-reduced-motion:reduce){.pet-happy-track>span{transition:none}}
 
