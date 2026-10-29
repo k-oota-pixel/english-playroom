@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<script src="../shell-bridge.js?v=6.0.9"></script>
+<script src="../shell-bridge.js?v=6.0.10"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fbf7f2">
@@ -13,20 +13,18 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 .room{position:relative;width:100%;aspect-ratio:1000/748;overflow:hidden;border-radius:16px;background:#f4eee8;border:1px solid #e8ddd5}
 .room-base{position:absolute;inset:0;width:100%;height:100%;display:block}
 .floor-grid,.grid-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.floor-grid{z-index:1}.grid-layer{z-index:20;opacity:0;transition:opacity .16s}.room.show-grid .grid-layer{opacity:1}
+.floor-grid{z-index:1}.grid-layer{z-index:1000;opacity:0;transition:opacity .16s}.room.show-grid .grid-layer{opacity:1}
 .floor-line{stroke:#b67f50;stroke-opacity:.22;stroke-width:1.5;fill:none}
-.grid-cell{fill:#78b995;fill-opacity:.055;stroke:#2f7358;stroke-opacity:.62;stroke-width:1.35}
-.grid-cell:nth-child(odd){fill-opacity:.085}
-.pet-actor{position:absolute;z-index:10;width:clamp(58px,11%,112px);aspect-ratio:1;left:50%;top:58%;pointer-events:none;will-change:left,top,transform;transform:translate(-50%,-87.5%) scale(var(--pet-depth,.88));transform-origin:50% 87.5%;transition:left .72s cubic-bezier(.32,.74,.35,1),top .72s cubic-bezier(.32,.74,.35,1),transform .72s cubic-bezier(.32,.74,.35,1);filter:drop-shadow(0 5px 5px #6f4b2a20)}
-.pet-actor[hidden]{display:none}.pet-facing,.pet-bob,.pet-visual{width:100%;height:100%;transform-origin:50% 88%}.pet-facing{transition:transform .16s ease}.pet-actor.face-left .pet-facing{transform:scaleX(-1)}.pet-visual{display:block;background:transparent}.pet-visual>svg,.pet-visual>img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible;background:transparent}.pet-actor.walking .pet-bob{animation:roomPetStep .28s ease-in-out infinite alternate}.pet-actor.walking .pet-visual{animation:roomPetLean .56s ease-in-out infinite}
-@keyframes roomPetStep{from{transform:translateY(0)}to{transform:translateY(-4%)}}
-@keyframes roomPetLean{0%,100%{rotate:-1deg}50%{rotate:1deg}}
-.tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}
-.toggle{appearance:none;border:1px solid #d8e2da;background:#fff;color:#416b59;border-radius:999px;padding:10px 14px;font-weight:850;font-size:11px;cursor:pointer;min-height:42px}
-.toggle[aria-pressed="true"]{background:#eaf5ee;border-color:#9fc4ae}
-.note{font-size:10px;color:#8b817c;line-height:1.55}
+.grid-cell{fill:#78b995;fill-opacity:.055;stroke:#2f7358;stroke-opacity:.62;stroke-width:1.35}.grid-cell:nth-child(odd){fill-opacity:.085}
+.pet-actor{position:absolute;width:clamp(58px,11%,112px);aspect-ratio:1;left:50%;top:58%;pointer-events:none;will-change:left,top,transform;transform:translate(-50%,-88%) scale(var(--pet-depth,.88));transform-origin:50% 88%;transition:left var(--move-ms,1800ms) linear,top var(--move-ms,1800ms) linear,transform var(--move-ms,1800ms) linear;filter:drop-shadow(0 5px 5px #6f4b2a20)}
+.pet-actor[hidden]{display:none}.pet-facing,.pet-bob,.room-pet-visual{width:100%;height:100%;transform-origin:50% 88%}.pet-facing{transition:transform .18s ease}.pet-actor.face-left .pet-facing{transform:scaleX(-1)}
+.room-pet-visual{display:block;background:transparent}.room-pet-visual>svg,.room-pet-visual>img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible;background:transparent}
+.pet-actor.moving .room-pet-visual{animation:roomPetSway 1.15s ease-in-out infinite}.pet-actor.hop .pet-bob{animation:roomPetHop .66s cubic-bezier(.22,.78,.3,1) 1}
+@keyframes roomPetSway{0%,100%{rotate:-.7deg}50%{rotate:.7deg}}
+@keyframes roomPetHop{0%,100%{transform:translateY(0) scale(1)}20%{transform:translateY(2%) scale(1.03,.97)}55%{transform:translateY(-18%) scale(.99,1.03)}78%{transform:translateY(0) scale(1.03,.97)}}
+.tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}.toggle{appearance:none;border:1px solid #d8e2da;background:#fff;color:#416b59;border-radius:999px;padding:10px 14px;font-weight:850;font-size:11px;cursor:pointer;min-height:42px}.toggle[aria-pressed="true"]{background:#eaf5ee;border-color:#9fc4ae}.note{font-size:10px;color:#8b817c;line-height:1.55}
 @media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.floor-line{stroke-width:1.7}.grid-cell{stroke-width:1.45}.pet-actor{width:clamp(56px,15%,78px)}.tools{padding-top:8px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}.pet-actor.walking .pet-bob,.pet-actor.walking .pet-visual{animation:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.pet-actor.moving .room-pet-visual,.pet-actor.hop .pet-bob{animation:none!important}}
 </style>
 </head>
 <body>
@@ -35,53 +33,41 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 <div class="room" id="room">
 <svg class="room-base" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" role="img" aria-label="壁付けアイテムのないアイソメトリックの空き部屋">
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf6f0"/><stop offset="1" stop-color="#f3ebe3"/></linearGradient>
-  <linearGradient id="wallL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf3"/><stop offset="1" stop-color="#f0e2d5"/></linearGradient>
-  <linearGradient id="wallR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf3ea"/><stop offset="1" stop-color="#eadbcc"/></linearGradient>
-  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1d2a8"/><stop offset=".52" stop-color="#e9c28f"/><stop offset="1" stop-color="#dfb47e"/></linearGradient>
-  <linearGradient id="fasciaL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98f5d"/><stop offset="1" stop-color="#a96e43"/></linearGradient>
-  <linearGradient id="fasciaR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c28654"/><stop offset="1" stop-color="#9b613d"/></linearGradient>
-  <pattern id="wood" width="82" height="42" patternUnits="userSpaceOnUse"><path d="M0 1H82" stroke="#b98252" stroke-opacity=".10" stroke-width="1"/><path d="M12 15 C28 9 47 19 70 12" fill="none" stroke="#b98252" stroke-opacity=".07" stroke-width="1.2"/><path d="M4 31 C24 36 47 27 77 33" fill="none" stroke="#b98252" stroke-opacity=".06" stroke-width="1"/></pattern>
-  <filter id="wallShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#8b6d58" flood-opacity=".12"/></filter>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf6f0"/><stop offset="1" stop-color="#f3ebe3"/></linearGradient>
+<linearGradient id="wallL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf3"/><stop offset="1" stop-color="#f0e2d5"/></linearGradient>
+<linearGradient id="wallR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf3ea"/><stop offset="1" stop-color="#eadbcc"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1d2a8"/><stop offset=".52" stop-color="#e9c28f"/><stop offset="1" stop-color="#dfb47e"/></linearGradient>
+<linearGradient id="fasciaL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98f5d"/><stop offset="1" stop-color="#a96e43"/></linearGradient>
+<linearGradient id="fasciaR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c28654"/><stop offset="1" stop-color="#9b613d"/></linearGradient>
+<pattern id="wood" width="82" height="42" patternUnits="userSpaceOnUse"><path d="M0 1H82" stroke="#b98252" stroke-opacity=".10" stroke-width="1"/><path d="M12 15 C28 9 47 19 70 12" fill="none" stroke="#b98252" stroke-opacity=".07" stroke-width="1.2"/><path d="M4 31 C24 36 47 27 77 33" fill="none" stroke="#b98252" stroke-opacity=".06" stroke-width="1"/></pattern>
+<filter id="wallShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#8b6d58" flood-opacity=".12"/></filter>
 </defs>
 <rect width="1000" height="748" fill="url(#bg)"/>
 <polygon points="100,500 500,300 500,95 100,295" fill="url(#wallL)" stroke="#d9c4b2" stroke-width="4" filter="url(#wallShadow)"/>
 <polygon points="500,95 900,295 900,500 500,300" fill="url(#wallR)" stroke="#d4bdab" stroke-width="4" filter="url(#wallShadow)"/>
-<path d="M100 295 L500 95 L900 295" fill="none" stroke="#c89469" stroke-width="12" stroke-linejoin="round"/>
-<path d="M100 302 L500 102 L900 302" fill="none" stroke="#e5ba90" stroke-width="3" stroke-linejoin="round" opacity=".78"/>
-<polygon points="500,300 900,500 500,700 100,500" fill="url(#floor)" stroke="#c9905f" stroke-width="4"/>
-<polygon points="500,300 900,500 500,700 100,500" fill="url(#wood)" opacity=".7"/>
-<path d="M100 500 L500 300 L900 500" fill="none" stroke="#f1d4b5" stroke-width="15" stroke-linejoin="round"/>
-<path d="M100 500 L500 300 L900 500" fill="none" stroke="#bd895d" stroke-width="2.5" opacity=".58"/>
-<polygon points="100,500 500,700 500,718 100,518" fill="url(#fasciaL)"/>
-<polygon points="500,700 900,500 900,518 500,718" fill="url(#fasciaR)"/>
-<path d="M100 500 L500 700 L900 500" fill="none" stroke="#e9bd8e" stroke-width="3" opacity=".75"/>
+<path d="M100 295 L500 95 L900 295" fill="none" stroke="#c89469" stroke-width="12" stroke-linejoin="round"/><path d="M100 302 L500 102 L900 302" fill="none" stroke="#e5ba90" stroke-width="3" stroke-linejoin="round" opacity=".78"/>
+<polygon points="500,300 900,500 500,700 100,500" fill="url(#floor)" stroke="#c9905f" stroke-width="4"/><polygon points="500,300 900,500 500,700 100,500" fill="url(#wood)" opacity=".7"/>
+<path d="M100 500 L500 300 L900 500" fill="none" stroke="#f1d4b5" stroke-width="15" stroke-linejoin="round"/><path d="M100 500 L500 300 L900 500" fill="none" stroke="#bd895d" stroke-width="2.5" opacity=".58"/>
+<polygon points="100,500 500,700 500,718 100,518" fill="url(#fasciaL)"/><polygon points="500,700 900,500 900,518 500,718" fill="url(#fasciaR)"/><path d="M100 500 L500 700 L900 500" fill="none" stroke="#e9bd8e" stroke-width="3" opacity=".75"/>
 </svg>
 <svg class="floor-grid" id="floorGrid" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
-<div class="pet-actor" id="petActor" hidden aria-hidden="true"><div class="pet-facing"><div class="pet-bob"><div class="pet-visual" id="petVisual"></div></div></div></div>
+<div class="pet-actor" id="petActor" hidden aria-hidden="true"><div class="pet-facing"><div class="pet-bob"><div class="room-pet-visual" id="roomPetVisual"></div></div></div></div>
 <svg class="grid-layer" id="gridLayer" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
 </div>
-<div class="tools">
-  <button class="toggle" id="gridToggle" type="button" aria-pressed="false">6×6グリッドを確認</button>
-  <span class="note" id="roomNote">ペットは6×6の空きマスをゆっくり歩き回ります。家具を置いたら占有マスを避ける設計です。</span>
-</div>
+<div class="tools"><button class="toggle" id="gridToggle" type="button" aria-pressed="false">6×6グリッドを確認</button><span class="note" id="roomNote">ペットは部屋の中をゆっくりうろうろします。たまにだけ、ぴょんと跳ねます。</span></div>
 </section>
 </main>
 <script>
 (()=>{
-  const GRID=6;
-  const FLOOR={top:{x:500,y:300},right:{x:900,y:500},bottom:{x:500,y:700},left:{x:100,y:500}};
-  const room=document.getElementById('room');
-  const floorGrid=document.getElementById('floorGrid');
-  const grid=document.getElementById('gridLayer');
-  const toggle=document.getElementById('gridToggle');
-  function point(u,v){const a=FLOOR.top,b=FLOOR.right,c=FLOOR.bottom,d=FLOOR.left,iu=1-u,iv=1-v;return{x:a.x*iu*iv+b.x*u*iv+c.x*u*v+d.x*iu*v,y:a.y*iu*iv+b.y*u*iv+c.y*u*v+d.y*iu*v};}
-  function corners(x,y){const u0=x/GRID,v0=y/GRID,u1=(x+1)/GRID,v1=(y+1)/GRID;return[point(u0,v0),point(u1,v0),point(u1,v1),point(u0,v1)];}
-  function addLine(p1,p2){const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.classList.add('floor-line');line.setAttribute('x1',p1.x);line.setAttribute('y1',p1.y);line.setAttribute('x2',p2.x);line.setAttribute('y2',p2.y);floorGrid.appendChild(line);}
-  for(let i=1;i<GRID;i++){const t=i/GRID;addLine(point(t,0),point(t,1));addLine(point(0,t),point(1,t));}
-  for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');p.classList.add('grid-cell');p.dataset.x=String(x);p.dataset.y=String(y);p.setAttribute('points',corners(x,y).map(v=>`${v.x.toFixed(1)},${v.y.toFixed(1)}`).join(' '));grid.appendChild(p);}
-  toggle.addEventListener('click',()=>{const on=!room.classList.contains('show-grid');room.classList.toggle('show-grid',on);toggle.setAttribute('aria-pressed',String(on));toggle.textContent=on?'グリッドを隠す':'6×6グリッドを確認';});
-  window.MonStudyRoomGrid=Object.freeze({GRID,FLOOR,point});
+const GRID=6,FLOOR={top:{x:500,y:300},right:{x:900,y:500},bottom:{x:500,y:700},left:{x:100,y:500}};
+const room=document.getElementById('room'),floorGrid=document.getElementById('floorGrid'),grid=document.getElementById('gridLayer'),toggle=document.getElementById('gridToggle');
+function point(u,v){const a=FLOOR.top,b=FLOOR.right,c=FLOOR.bottom,d=FLOOR.left,iu=1-u,iv=1-v;return{x:a.x*iu*iv+b.x*u*iv+c.x*u*v+d.x*iu*v,y:a.y*iu*iv+b.y*u*iv+c.y*u*v+d.y*iu*v};}
+function corners(x,y){const u0=x/GRID,v0=y/GRID,u1=(x+1)/GRID,v1=(y+1)/GRID;return[point(u0,v0),point(u1,v0),point(u1,v1),point(u0,v1)];}
+function addLine(p1,p2){const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.classList.add('floor-line');line.setAttribute('x1',p1.x);line.setAttribute('y1',p1.y);line.setAttribute('x2',p2.x);line.setAttribute('y2',p2.y);floorGrid.appendChild(line);}
+for(let i=1;i<GRID;i++){const t=i/GRID;addLine(point(t,0),point(t,1));addLine(point(0,t),point(1,t));}
+for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');p.classList.add('grid-cell');p.dataset.x=String(x);p.dataset.y=String(y);p.setAttribute('points',corners(x,y).map(v=>`${v.x.toFixed(1)},${v.y.toFixed(1)}`).join(' '));grid.appendChild(p);}
+toggle.addEventListener('click',()=>{const on=!room.classList.contains('show-grid');room.classList.toggle('show-grid',on);toggle.setAttribute('aria-pressed',String(on));toggle.textContent=on?'グリッドを隠す':'6×6グリッドを確認';});
+window.MonStudyRoomGrid=Object.freeze({GRID,FLOOR,point});
 })();
 </script>
 <script type="module">
@@ -91,104 +77,55 @@ import {getAuth} from '../auth-session.js?v=2.2.1';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 
 const firebaseConfig={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
-const actor=document.getElementById('petActor');
-const visual=document.getElementById('petVisual');
-const note=document.getElementById('roomNote');
+const actor=document.getElementById('petActor'),visual=document.getElementById('roomPetVisual'),note=document.getElementById('roomNote');
 const {GRID,FLOOR,point}=window.MonStudyRoomGrid;
 const occupied=new Set();
-let cell={x:2,y:3},roamToken=0;
+let cell={x:2,y:3},screenPos=point((2.5)/GRID,(3.5)/GRID),roamToken=0,hopToken=0;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const key=(x,y)=>`${x},${y}`;
-const center=(x,y)=>point((x+.5)/GRID,(y+.5)/GRID);
 
-function place(x,y,walking=false){
-  const p=center(x,y),old=center(cell.x,cell.y);
-  const depth=Math.max(0,Math.min(1,(p.y-FLOOR.top.y)/(FLOOR.bottom.y-FLOOR.top.y)));
-  const scale=.70+depth*.34;
-  if(p.x<old.x-1)actor.classList.add('face-left');
-  else if(p.x>old.x+1)actor.classList.remove('face-left');
-  actor.classList.toggle('walking',walking&&!reduceMotion);
-  actor.style.left=`${(p.x/1000)*100}%`;
-  actor.style.top=`${(p.y/748)*100}%`;
-  actor.style.setProperty('--pet-depth',scale.toFixed(3));
-  actor.style.zIndex=String(5+Math.round(p.y));
-  cell={x,y};
+function sanitizePetSvg(){
+  const svg=visual.querySelector(':scope > svg');if(!svg)return;
+  const shadow=svg.querySelector(':scope > .pet-shadow');if(!shadow)return;
+  while(svg.firstElementChild&&svg.firstElementChild!==shadow)svg.firstElementChild.remove();
+  svg.style.background='transparent';
 }
+new MutationObserver(()=>queueMicrotask(sanitizePetSvg)).observe(visual,{childList:true,subtree:true});
 
-function neighbors(c){
-  return [[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(n=>n.x>=0&&n.y>=0&&n.x<GRID&&n.y<GRID&&!occupied.has(key(n.x,n.y)));
-}
-function pathTo(start,target){
-  const q=[start],from=new Map([[key(start.x,start.y),null]]);
-  while(q.length){
-    const cur=q.shift();
-    if(cur.x===target.x&&cur.y===target.y)break;
-    for(const n of neighbors(cur)){const k=key(n.x,n.y);if(from.has(k))continue;from.set(k,cur);q.push(n);}
-  }
-  if(!from.has(key(target.x,target.y)))return [];
-  const path=[];let cur=target;
-  while(cur&&!(cur.x===start.x&&cur.y===start.y)){path.push(cur);cur=from.get(key(cur.x,cur.y));}
-  return path.reverse();
-}
-function randomTarget(){
-  const candidates=[];
-  for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++)if(!occupied.has(key(x,y))&&(x!==cell.x||y!==cell.y))candidates.push({x,y});
-  const far=candidates.filter(c=>Math.abs(c.x-cell.x)+Math.abs(c.y-cell.y)>=2);
-  const pool=far.length?far:candidates;
-  return pool[Math.floor(Math.random()*pool.length)]||cell;
+function neighbors(c){return [[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(n=>n.x>=0&&n.y>=0&&n.x<GRID&&n.y<GRID&&!occupied.has(key(n.x,n.y)));}
+function pathTo(start,target){const q=[start],from=new Map([[key(start.x,start.y),null]]);while(q.length){const cur=q.shift();if(cur.x===target.x&&cur.y===target.y)break;for(const n of neighbors(cur)){const k=key(n.x,n.y);if(from.has(k))continue;from.set(k,cur);q.push(n);}}if(!from.has(key(target.x,target.y)))return[];const path=[];let cur=target;while(cur&&!(cur.x===start.x&&cur.y===start.y)){path.push(cur);cur=from.get(key(cur.x,cur.y));}return path.reverse();}
+function randomTarget(){const candidates=[];for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const d=Math.abs(x-cell.x)+Math.abs(y-cell.y);if(!occupied.has(key(x,y))&&d>=1&&d<=3)candidates.push({x,y});}return candidates[Math.floor(Math.random()*candidates.length)]||cell;}
+function randomPointInCell(c){const inset=.24,span=.52;return point((c.x+inset+Math.random()*span)/GRID,(c.y+inset+Math.random()*span)/GRID);}
+function depthScale(p){const d=Math.max(0,Math.min(1,(p.y-FLOOR.top.y)/(FLOOR.bottom.y-FLOOR.top.y)));return .70+d*.34;}
+function setActorPoint(p,ms=0,moving=false){
+  if(p.x<screenPos.x-1)actor.classList.add('face-left');else if(p.x>screenPos.x+1)actor.classList.remove('face-left');
+  actor.classList.toggle('moving',moving&&!reduceMotion);actor.style.setProperty('--move-ms',`${ms}ms`);actor.style.left=`${p.x/10}%`;actor.style.top=`${p.y/7.48}%`;actor.style.setProperty('--pet-depth',depthScale(p).toFixed(3));actor.style.zIndex=String(100+Math.round(p.y));screenPos=p;
 }
 async function roam(){
-  const token=++roamToken;
-  if(reduceMotion){place(cell.x,cell.y,false);return;}
+  const token=++roamToken;if(reduceMotion){setActorPoint(screenPos,0,false);return;}
   while(token===roamToken){
-    if(document.hidden){actor.classList.remove('walking');await sleep(700);continue;}
-    const target=randomTarget();
-    const path=pathTo(cell,target);
-    for(const step of path){
-      if(token!==roamToken)break;
-      place(step.x,step.y,true);
-      await sleep(760);
-    }
-    actor.classList.remove('walking');
-    await sleep(1100+Math.random()*1900);
+    if(document.hidden){actor.classList.remove('moving');await sleep(700);continue;}
+    const target=randomTarget(),path=pathTo(cell,target);
+    for(const step of path){if(token!==roamToken)break;const p=randomPointInCell(step),ms=1450+Math.round(Math.random()*850);setActorPoint(p,ms,true);cell=step;await sleep(ms+80);}
+    actor.classList.remove('moving');await sleep(900+Math.random()*1700);
   }
 }
-function cachedWallet(user){
-  const candidates=[];
-  try{candidates.push(window.EnglishPlayroomWallet);}catch{}
-  try{if(window.parent&&window.parent!==window)candidates.push(window.parent.EnglishPlayroomWallet);}catch{}
-  return candidates.find(v=>v?.uid===user.uid&&v?.data)?.data||null;
+async function occasionalHop(){
+  const token=++hopToken;if(reduceMotion)return;
+  while(token===hopToken){await sleep(10000+Math.random()*15000);if(document.hidden||actor.hidden||actor.classList.contains('moving'))continue;actor.classList.remove('hop');void actor.offsetWidth;actor.classList.add('hop');await sleep(720);actor.classList.remove('hop');}
 }
-async function demoPet(){
-  const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room-bgless');
-  const appearance={species:'cat',bodyColor:'cream',eyes:'round',eyeStyle:'round',feature:'classic',pattern:'none',baseBackground:'ivory'};
-  visual.innerHTML=renderPetSVG(appearance,{},'baby',{background:false});
-  actor.hidden=false;place(cell.x,cell.y,false);roam();
-  note.textContent='デモのペットが6×6の空きマスを歩いています。ログインすると自分のペットを表示します。';
-}
+function cachedWallet(user){const list=[];try{list.push(window.EnglishPlayroomWallet);}catch{}try{if(window.parent&&window.parent!==window)list.push(window.parent.EnglishPlayroomWallet);}catch{}return list.find(v=>v?.uid===user.uid&&v?.data)?.data||null;}
+async function renderRoomPet(appearance,shop,stage){const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room-isolated');visual.innerHTML=renderPetSVG(appearance,shop||{},stage,{background:false});sanitizePetSvg();}
+async function demoPet(){await renderRoomPet({species:'cat',bodyColor:'cream',eyes:'round',eyeStyle:'round',feature:'classic',pattern:'none',baseBackground:'ivory'}, {}, 'baby');actor.hidden=false;setActorPoint(screenPos,0,false);roam();occasionalHop();note.textContent='デモのペットが部屋の中をゆっくりうろうろしています。たまにだけ、ぴょんと跳ねます。';}
 async function bootPet(){
   try{
-    const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);
-    const auth=getAuth(app);await auth.authStateReady();
-    const user=auth.currentUser;
-    if(!user){await demoPet();return;}
-    let data=cachedWallet(user);
-    if(!data){
-      const snap=await getDoc(doc(getFirestore(app),'users',user.uid,'apps','english-playroom'));
-      data=snap.exists()?(snap.data()||{}):{};
-    }
-    if(!data?.petHatched){actor.hidden=true;note.textContent='まだペットがいません。孵化すると、この6×6の部屋を歩き回るようになります。';return;}
-    window.EnglishPlayroomWallet={uid:user.uid,data};
-    const {renderPetSVG}=await import('../pet-art.js?v=2.1.25-room-bgless');
-    const stage=data.petAdult===false?'mystery':'baby';
-    visual.innerHTML=renderPetSVG(data.petAdult===false?null:data.petAppearance,data.petShop||{},stage,{background:false});
-    actor.hidden=false;place(cell.x,cell.y,false);roam();
-    note.textContent='ペットが6×6の空きマスを歩き回ります。家具を置いたら、その占有マスを避けて移動します。';
+    const app=getApps().length?getApp():initializeApp(firebaseConfig);enableAppCheck(app);const auth=getAuth(app);await auth.authStateReady();const user=auth.currentUser;if(!user){await demoPet();return;}
+    let data=cachedWallet(user);if(!data){const snap=await getDoc(doc(getFirestore(app),'users',user.uid,'apps','english-playroom'));data=snap.exists()?(snap.data()||{}):{};}
+    if(!data?.petHatched){actor.hidden=true;note.textContent='まだペットがいません。孵化すると、この部屋をうろうろするようになります。';return;}
+    window.EnglishPlayroomWallet={uid:user.uid,data};const stage=data.petAdult===false?'mystery':'baby';await renderRoomPet(data.petAdult===false?null:data.petAppearance,data.petShop||{},stage);actor.hidden=false;setActorPoint(screenPos,0,false);roam();occasionalHop();note.textContent='ペットが部屋の中をゆっくりうろうろします。家具を置いたら、その占有マスを避けて動きます。';
   }catch(error){console.error('Room pet failed to load',error);await demoPet();}
 }
-
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&actor.hidden===false&&roamToken===0)roam();});
 bootPet();
 </script>
 </body>
