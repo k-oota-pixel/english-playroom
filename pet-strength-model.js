@@ -2,6 +2,25 @@ export const BASE_STATS=Object.freeze({hp:10,attack:1,defense:1,mp:6});
 export const MAX_INDIVIDUAL_BONUS=5;
 const STAT_KEYS=Object.freeze(['hp','attack','defense','mp']);
 const LEGACY_BASE_KEYS=Object.freeze(['hp','attack','defense']);
+const ZERO_STATS=Object.freeze({hp:0,attack:0,defense:0,mp:0});
+const ADULT_BONUS=Object.freeze({hp:2,attack:1,defense:1,mp:2});
+const AGE_MILESTONES=Object.freeze([
+ {day:5,hp:2,attack:1,defense:1,mp:2},
+ {day:10,hp:3,attack:2,defense:2,mp:3},
+ {day:15,hp:2,attack:1,defense:1,mp:2},
+ {day:20,hp:3,attack:2,defense:2,mp:3},
+ {day:25,hp:2,attack:1,defense:1,mp:2},
+ {day:30,hp:3,attack:2,defense:2,mp:3},
+ {day:35,hp:2,attack:1,defense:1,mp:2}
+]);
+
+export function ageGrowthBonuses(ageDays=0,adult=false){
+ if(!adult)return ZERO_STATS;
+ const raw=Number(ageDays),days=Number.isFinite(raw)?Math.max(0,Math.floor(raw)):0;
+ const bonus={...ADULT_BONUS};
+ for(const milestone of AGE_MILESTONES){if(days<milestone.day)break;for(const key of STAT_KEYS)bonus[key]+=milestone[key];}
+ return bonus;
+}
 
 export function titleCount(titles=[]){return new Set(titles.filter(t=>t.unlocked&&typeof t.id==='string').map(t=>t.id)).size;}
 
@@ -31,8 +50,8 @@ export function allocationTotal(allocation={}){
  return STAT_KEYS.reduce((sum,key)=>{const n=Number(allocation?.[key]);return sum+(Number.isSafeInteger(n)&&n>0?n:0);},0);
 }
 
-export function strengthStatsFromAllocation(allocation={},baseStats=BASE_STATS){
- return strengthState(allocationTotal(allocation)*3,allocation,baseStats).stats;
+export function strengthStatsFromAllocation(allocation={},baseStats=BASE_STATS,growth={}){
+ return strengthState(allocationTotal(allocation)*3,allocation,baseStats,growth).stats;
 }
 
 export function strengthLevel(levelPoints=0,allocation={}){
@@ -40,15 +59,15 @@ export function strengthLevel(levelPoints=0,allocation={}){
  return 1+Math.max(safeStored,allocationTotal(allocation));
 }
 
-export function strengthState(count,allocation={},baseStats=BASE_STATS){
+export function strengthState(count,allocation={},baseStats=BASE_STATS,growth={}){
  const earned=Math.floor(Math.max(0,Number(count)||0)/3);
  const points={hp:0,attack:0,defense:0,mp:0};let left=earned;
  for(const key of Object.keys(points)){const n=Number(allocation?.[key]);points[key]=Math.min(left,Number.isSafeInteger(n)&&n>0?n:0);left-=points[key];}
- const base=normalizeBaseStats(baseStats);
+ const base=normalizeBaseStats(baseStats),ageBonus=ageGrowthBonuses(growth.ageDays,growth.adult===true);
  return {
   earned,available:left,points,base,
   bonuses:{hp:base.hp-BASE_STATS.hp,attack:base.attack-BASE_STATS.attack,defense:base.defense-BASE_STATS.defense,mp:base.mp-BASE_STATS.mp},
-  stats:{hp:base.hp+points.hp*2,attack:base.attack+points.attack,defense:base.defense+points.defense,mp:base.mp+points.mp}
+  stats:{hp:base.hp+points.hp*2+ageBonus.hp,attack:base.attack+points.attack+ageBonus.attack,defense:base.defense+points.defense+ageBonus.defense,mp:base.mp+points.mp+ageBonus.mp}
  };
 }
 
