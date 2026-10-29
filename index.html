@@ -144,7 +144,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.46">ver2.1.46</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.47">ver2.1.47</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -382,7 +382,7 @@ import {
   onAuthStateChanged, setPersistence, browserLocalPersistence
 } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1";
 import {
-  getFirestore, doc, getDoc, serverTimestamp, runTransaction
+  getFirestore, doc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 import {createLearningDashboard} from './learning-dashboard.js?v=1';
@@ -723,27 +723,37 @@ function renderPet(data={},message=''){
   }
 }
 
-async function syncPet(user,generation){
-  const today=localDateKey();
-  let data;
-  try{data=await runTransaction(db,async transaction=>{
-    const ref=petRef(user),snap=await transaction.get(ref),data=snap.exists()?(snap.data()||{}):{};
-    const progress={...loginProgress(data,today),...loginStreakPatch(data,today),...growthPatch(data,today,user.uid)};
-    if(Object.keys(progress).some(key=>progress[key]!==data[key])){
-      transaction.set(ref,{...progress,petUpdatedAt:serverTimestamp()},{merge:true});
-    }
-    return {...data,...progress};
-  });}catch(error){
-    // A failed progress write must not hide an already readable conversation.
-    try{
-      const snap=await getDoc(petRef(user));
-      if(generation===petAuthGeneration&&auth.currentUser?.uid===user.uid){
-        petData=snap.exists()?(snap.data()||{}):{};petDataUid=user.uid;renderPet(petData);
-      }
-    }catch(readError){console.error('Pet data read failed',readError);}
-    throw error;
+function waitForLifecycleSync(user,generation,{force=false}={}){
+  const cached=window.MonstudyLifecycleSync;
+  if(!force&&cached?.uid===user.uid){
+    if(cached.error)return Promise.reject(new Error(cached.error));
+    return Promise.resolve(cached);
   }
+  return new Promise((resolve,reject)=>{
+    let done=false;
+    const finish=(error,result)=>{
+      if(done)return;done=true;clearTimeout(timer);window.removeEventListener('pet-lifecycle-sync-complete',onComplete);
+      error?reject(error):resolve(result);
+    };
+    const onComplete=event=>{
+      const detail=event.detail||{};
+      if(detail.uid!==user.uid)return;
+      if(generation!==petAuthGeneration||auth.currentUser?.uid!==user.uid){finish(new Error('認証状態が変わりました。'));return;}
+      detail.error?finish(new Error(detail.error)):finish(null,detail);
+    };
+    const timer=setTimeout(()=>finish(new Error('ペットの同期に時間がかかっています。再度お試しください。')),45000);
+    window.addEventListener('pet-lifecycle-sync-complete',onComplete);
+    if(force){
+      window.MonstudyLifecycleSync=null;
+      window.dispatchEvent(new CustomEvent('pet-lifecycle-sync-request',{detail:{uid:user.uid}}));
+    }
+  });
+}
+
+async function syncPet(user,generation,{force=false}={}){
+  const result=await waitForLifecycleSync(user,generation,{force});
   if(generation!==petAuthGeneration || auth.currentUser?.uid!==user.uid)return;
+  const data=result.data||{};
   petUser=user;petData=data;petDataUid=user.uid;publishLoginStreak(data,user.uid);renderPet(data);
 }
 
@@ -859,7 +869,7 @@ async function retryPetSync(user=auth.currentUser,generation=petAuthGeneration){
   petSyncRetry.disabled=true;
   try{
     setAuthUI('busy',shortName(user),'ペット同期中');
-    await syncPet(user,generation);
+    await syncPet(user,generation,{force:!petSyncError.hidden});
     if(generation!==petAuthGeneration)return;
     setAuthUI('ok',shortName(user),'クラウド同期済み');
     authSub.removeAttribute('title');petSyncRetry.hidden=true;petSyncError.hidden=true;
@@ -883,10 +893,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=2.1.46"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.46'></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.47'></script>
 <script>
 (() => {
-  const version = '2.1.46';
+  const version = '2.1.47';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
