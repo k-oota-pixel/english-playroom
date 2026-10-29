@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<script src="../shell-bridge.js?v=6.0.7"></script>
+<script src="../shell-bridge.js?v=6.0.8"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fbf7f2">
@@ -12,15 +12,16 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
 .page{max-width:1080px;margin:0 auto;padding:8px 8px 30px}
 .room{position:relative;width:100%;aspect-ratio:1000/748;overflow:hidden;border-radius:16px;background:#f4eee8;border:1px solid #e8ddd5}
 .room-base{position:absolute;inset:0;width:100%;height:100%;display:block}
-.grid-layer{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:0;pointer-events:none;transition:opacity .16s}
-.room.show-grid .grid-layer{opacity:1}
-.grid-cell{fill:#78b995;fill-opacity:.035;stroke:#2f7358;stroke-opacity:.55;stroke-width:1.15}
-.grid-cell:nth-child(odd){fill-opacity:.07}
+.floor-grid,.grid-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.floor-grid{z-index:1}.grid-layer{z-index:2;opacity:0;transition:opacity .16s}.room.show-grid .grid-layer{opacity:1}
+.floor-line{stroke:#b67f50;stroke-opacity:.22;stroke-width:1.5;fill:none}
+.grid-cell{fill:#78b995;fill-opacity:.055;stroke:#2f7358;stroke-opacity:.62;stroke-width:1.35}
+.grid-cell:nth-child(odd){fill-opacity:.085}
 .tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 2px 0}
 .toggle{appearance:none;border:1px solid #d8e2da;background:#fff;color:#416b59;border-radius:999px;padding:10px 14px;font-weight:850;font-size:11px;cursor:pointer;min-height:42px}
 .toggle[aria-pressed="true"]{background:#eaf5ee;border-color:#9fc4ae}
 .note{font-size:10px;color:#8b817c;line-height:1.55}
-@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.grid-cell{stroke-width:1.35}.tools{padding-top:8px}}
+@media(max-width:700px){.page{padding:6px 6px 24px}.room{border-radius:13px}.floor-line{stroke-width:1.7}.grid-cell{stroke-width:1.45}.tools{padding-top:8px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -36,89 +37,45 @@ body{margin:0;background:#fbf7f2;color:#514946;font-family:system-ui,-apple-syst
   <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1d2a8"/><stop offset=".52" stop-color="#e9c28f"/><stop offset="1" stop-color="#dfb47e"/></linearGradient>
   <linearGradient id="fasciaL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98f5d"/><stop offset="1" stop-color="#a96e43"/></linearGradient>
   <linearGradient id="fasciaR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c28654"/><stop offset="1" stop-color="#9b613d"/></linearGradient>
-  <pattern id="wood" width="82" height="42" patternUnits="userSpaceOnUse" patternTransform="skewY(0)">
-    <path d="M0 1H82" stroke="#b98252" stroke-opacity=".12" stroke-width="1"/>
-    <path d="M12 15 C28 9 47 19 70 12" fill="none" stroke="#b98252" stroke-opacity=".08" stroke-width="1.2"/>
-    <path d="M4 31 C24 36 47 27 77 33" fill="none" stroke="#b98252" stroke-opacity=".07" stroke-width="1"/>
-  </pattern>
+  <pattern id="wood" width="82" height="42" patternUnits="userSpaceOnUse"><path d="M0 1H82" stroke="#b98252" stroke-opacity=".10" stroke-width="1"/><path d="M12 15 C28 9 47 19 70 12" fill="none" stroke="#b98252" stroke-opacity=".07" stroke-width="1.2"/><path d="M4 31 C24 36 47 27 77 33" fill="none" stroke="#b98252" stroke-opacity=".06" stroke-width="1"/></pattern>
   <filter id="wallShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#8b6d58" flood-opacity=".12"/></filter>
 </defs>
-<rect width="1000" height="780" fill="url(#bg)"/>
-
-<!-- structural walls only: no windows, doors, clocks, shelves, frames or plants -->
+<rect width="1000" height="748" fill="url(#bg)"/>
 <polygon points="100,500 500,300 500,95 100,295" fill="url(#wallL)" stroke="#d9c4b2" stroke-width="4" filter="url(#wallShadow)"/>
 <polygon points="500,95 900,295 900,500 500,300" fill="url(#wallR)" stroke="#d4bdab" stroke-width="4" filter="url(#wallShadow)"/>
-
-<!-- subtle structural top trim -->
 <path d="M100 295 L500 95 L900 295" fill="none" stroke="#c89469" stroke-width="12" stroke-linejoin="round"/>
 <path d="M100 302 L500 102 L900 302" fill="none" stroke="#e5ba90" stroke-width="3" stroke-linejoin="round" opacity=".78"/>
-
-<!-- complete 2:1 isometric floor, fully visible -->
 <polygon points="500,300 900,500 500,700 100,500" fill="url(#floor)" stroke="#c9905f" stroke-width="4"/>
 <polygon points="500,300 900,500 500,700 100,500" fill="url(#wood)" opacity=".7"/>
-
-<!-- subtle floor plank guides; decorative only, not placement grid -->
-<g stroke="#b88154" stroke-opacity=".16" stroke-width="1.4">
-  <path d="M180 460 L500 620 L820 460" fill="none"/>
-  <path d="M260 420 L500 540 L740 420" fill="none"/>
-  <path d="M340 380 L500 460 L660 380" fill="none"/>
-  <path d="M420 340 L500 380 L580 340" fill="none"/>
-  <path d="M180 540 L500 380 L820 540" fill="none"/>
-  <path d="M260 580 L500 460 L740 580" fill="none"/>
-  <path d="M340 620 L500 540 L660 620" fill="none"/>
-  <path d="M420 660 L500 620 L580 660" fill="none"/>
-</g>
-
-<!-- structural skirting boards -->
 <path d="M100 500 L500 300 L900 500" fill="none" stroke="#f1d4b5" stroke-width="15" stroke-linejoin="round"/>
 <path d="M100 500 L500 300 L900 500" fill="none" stroke="#bd895d" stroke-width="2.5" opacity=".58"/>
-
-<!-- front floor thickness so the room sits naturally rather than floating -->
 <polygon points="100,500 500,700 500,718 100,518" fill="url(#fasciaL)"/>
 <polygon points="500,700 900,500 900,518 500,718" fill="url(#fasciaR)"/>
 <path d="M100 500 L500 700 L900 500" fill="none" stroke="#e9bd8e" stroke-width="3" opacity=".75"/>
 </svg>
-
+<svg class="floor-grid" id="floorGrid" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
 <svg class="grid-layer" id="gridLayer" viewBox="0 0 1000 748" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
 </div>
 <div class="tools">
-  <button class="toggle" id="gridToggle" type="button" aria-pressed="false">7×7グリッドを確認</button>
-  <span class="note">壁付けアイテムはすべて外しました。窓・扉・時計・棚・額などは今後「壁家具」として自由配置できる前提です。</span>
+  <button class="toggle" id="gridToggle" type="button" aria-pressed="false">6×6グリッドを確認</button>
+  <span class="note">床の見える升目と、家具配置に使う判定グリッドを6×6で統一しています。</span>
 </div>
 </section>
 </main>
 <script>
 (()=>{
-  const GRID=7;
+  const GRID=6;
   const FLOOR={top:{x:500,y:300},right:{x:900,y:500},bottom:{x:500,y:700},left:{x:100,y:500}};
   const room=document.getElementById('room');
+  const floorGrid=document.getElementById('floorGrid');
   const grid=document.getElementById('gridLayer');
   const toggle=document.getElementById('gridToggle');
-
-  function point(u,v){
-    const a=FLOOR.top,b=FLOOR.right,c=FLOOR.bottom,d=FLOOR.left;
-    const iu=1-u,iv=1-v;
-    return {x:a.x*iu*iv+b.x*u*iv+c.x*u*v+d.x*iu*v,y:a.y*iu*iv+b.y*u*iv+c.y*u*v+d.y*iu*v};
-  }
-  function corners(x,y){
-    const u0=x/GRID,v0=y/GRID,u1=(x+1)/GRID,v1=(y+1)/GRID;
-    return [point(u0,v0),point(u1,v0),point(u1,v1),point(u0,v1)];
-  }
-  for(let y=0;y<GRID;y++){
-    for(let x=0;x<GRID;x++){
-      const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      p.classList.add('grid-cell');
-      p.dataset.x=String(x);p.dataset.y=String(y);
-      p.setAttribute('points',corners(x,y).map(v=>`${v.x.toFixed(1)},${v.y.toFixed(1)}`).join(' '));
-      grid.appendChild(p);
-    }
-  }
-  toggle.addEventListener('click',()=>{
-    const on=!room.classList.contains('show-grid');
-    room.classList.toggle('show-grid',on);
-    toggle.setAttribute('aria-pressed',String(on));
-    toggle.textContent=on?'グリッドを隠す':'7×7グリッドを確認';
-  });
+  function point(u,v){const a=FLOOR.top,b=FLOOR.right,c=FLOOR.bottom,d=FLOOR.left,iu=1-u,iv=1-v;return{x:a.x*iu*iv+b.x*u*iv+c.x*u*v+d.x*iu*v,y:a.y*iu*iv+b.y*u*iv+c.y*u*v+d.y*iu*v};}
+  function corners(x,y){const u0=x/GRID,v0=y/GRID,u1=(x+1)/GRID,v1=(y+1)/GRID;return[point(u0,v0),point(u1,v0),point(u1,v1),point(u0,v1)];}
+  function addLine(p1,p2){const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.classList.add('floor-line');line.setAttribute('x1',p1.x);line.setAttribute('y1',p1.y);line.setAttribute('x2',p2.x);line.setAttribute('y2',p2.y);floorGrid.appendChild(line);}
+  for(let i=1;i<GRID;i++){const t=i/GRID;addLine(point(t,0),point(t,1));addLine(point(0,t),point(1,t));}
+  for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');p.classList.add('grid-cell');p.dataset.x=String(x);p.dataset.y=String(y);p.setAttribute('points',corners(x,y).map(v=>`${v.x.toFixed(1)},${v.y.toFixed(1)}`).join(' '));grid.appendChild(p);}
+  toggle.addEventListener('click',()=>{const on=!room.classList.contains('show-grid');room.classList.toggle('show-grid',on);toggle.setAttribute('aria-pressed',String(on));toggle.textContent=on?'グリッドを隠す':'6×6グリッドを確認';});
 })();
 </script>
 </body>
