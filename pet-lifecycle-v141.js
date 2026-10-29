@@ -37,10 +37,19 @@ function cumulativeLoginPatch(data,today){
   return count?{petLoginDays:days+1,petLastLoginDate:today}:{};
 }
 
+function previousDateKey(dateKey){const d=new Date(dateKey+'T12:00:00');d.setDate(d.getDate()-1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function loginStreakPatch(data,today){
+  const last=typeof data.loginStreakLastDate==='string'?data.loginStreakLastDate:'';
+  const current=Math.max(0,Math.min(7,int(data.loginStreakDay,0)));
+  if(last===today)return {};
+  const next=last===previousDateKey(today)&&current>0?(current===7?1:current+1):1;
+  return {loginStreakLastDate:today,loginStreakDay:next};
+}
 function advanceLifecycle(source,today,uid){
   const loginPatch=cumulativeLoginPatch(source,today);
-  const data={...source,...loginPatch};
-  const patch={...loginPatch,...growthPatch(data,today,uid)};
+  const streakPatch=loginStreakPatch(source,today);
+  const data={...source,...loginPatch,...streakPatch};
+  const patch={...loginPatch,...streakPatch,...growthPatch(data,today,uid)};
   if(hasPet(data)&&data.petAdult===false&&validPetName(data.petName))patch.petName=null;
   const health=advanceHealth(data,today,uid);Object.assign(patch,health.patch);Object.assign(data,health.patch);
   const oldVersion=int(data.petLifecycleVersion,0);
@@ -244,7 +253,7 @@ async function synchronize(user,source=currentData){
   if(!Object.keys(preview.patch).length){
     currentData=preview.data;applyUi(preview.data);
     if(preview.event==='departed')showDeparture(preview.memory,user);
-    return;
+    return preview.data;
   }
   const result=await runTransaction(db,async transaction=>{
     const ref=dataRef(user),snap=await transaction.get(ref),source=snap.exists()?(snap.data()||{}):{};
@@ -254,15 +263,30 @@ async function synchronize(user,source=currentData){
   });
   currentData=result.data;applyUi(result.data);
   if(result.event==='departed')showDeparture(result.memory,user);
+  return result.data;
 }
+function publishLifecycleSync(user,data,error=null){
+  const detail={uid:user.uid,data:data||{},error:error?String(error.message||error):null,at:Date.now()};
+  window.MonstudyLifecycleSync=detail;
+  window.dispatchEvent(new CustomEvent('pet-lifecycle-sync-complete',{detail}));
+}
+async function runLifecycleSync(user){
+  try{const data=await synchronize(user,currentData);publishLifecycleSync(user,data);}
+  catch(error){publishLifecycleSync(user,currentData,error);console.error('Pet lifecycle sync failed',error);}
+}
+window.addEventListener('pet-lifecycle-sync-request',event=>{
+  const uid=event.detail?.uid;if(!currentUser||currentUser.uid!==uid)return;
+  window.MonstudyLifecycleSync=null;
+  runLifecycleSync(currentUser);
+});
 
 function start(){
   if(!auth||!db)return;ensureStyles();ensureMemoryButton();installGuard();
   onAuthStateChanged(auth,user=>{
-    if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';syncInitializedUid='';
+    if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';syncInitializedUid='';window.MonstudyLifecycleSync=null;
     if(!user){renderHealth({});delete document.documentElement.dataset.petStage;const b=ensureMemoryButton();if(b)b.hidden=true;return;}
     const ref=dataRef(user);
-    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);if(snap.metadata?.fromCache===false&&syncInitializedUid!==user.uid){syncInitializedUid=user.uid;synchronize(user,currentData).catch(error=>console.error('Pet lifecycle sync failed',error));}},error=>console.error('Pet lifecycle snapshot failed',error));
+    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);if(snap.metadata?.fromCache===false&&syncInitializedUid!==user.uid){syncInitializedUid=user.uid;runLifecycleSync(user);}},error=>{console.error('Pet lifecycle snapshot failed',error);if(syncInitializedUid!==user.uid)publishLifecycleSync(user,currentData,error);});
   });
   // The legacy page renderer still updates some labels after auth; quietly re-apply lifecycle labels.
   let checkedDate=localDateKey();
