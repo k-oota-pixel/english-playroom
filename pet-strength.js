@@ -2,7 +2,7 @@ import {auth,db,walletRef} from './coin-reward.js?v=2.1.25';
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1';
 import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js?v=2.1.25';
-import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.22';
+import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.24';
 import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
 const RESPEC_PRICE=30;
@@ -89,7 +89,7 @@ if(button){
  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
 
  function render(count,data){
-  const state=strengthState(count,data.petStrength,data.petBaseStats),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
+  const state=strengthState(count,data.petStrength,data.petBaseStats,{ageDays:data.petLifeDays,adult:data.petAdult!==false}),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
   const levelCard=document.createElement('div');levelCard.className='strength-level-card';levelCard.innerHTML=`<span>PET LEVEL</span><strong>Lv.${level}</strong>`;body.append(levelCard);
   const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
   const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
