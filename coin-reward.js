@@ -316,6 +316,7 @@ async function recordRetryAttempt(questionId){
 window.EnglishPlayroomCoins=Object.freeze({
   getUserId:()=>currentUser?.uid||'',
   recordTitleEvent,
+  recordTitleEvents,
   recordLearningActivity,
   awardOncePerDay,
   recordRetryAttempt,
