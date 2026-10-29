@@ -128,19 +128,21 @@ async function handleItem(item){const user=currentUser;if(!user)return;const pre
 async function changeAppearance(key,id,price,label){const user=currentUser;if(!user)return;const choices=OPTIONS[key];if(!choices?.some(x=>x.id===id))return;const current=normalizeAppearance(currentData.petAppearance);if(current[key]===id)return;const ok=await requestCoinConfirm({title:'見た目変更の確認',message:`${price}コインを消費して「${label}」に変更します。\nいつでもまた変更できます。`,confirmLabel:'変更する'});if(!ok)return;await withBusy(async()=>{try{await runTransaction(db,async tx=>{const ref=refFor(user),snap=await tx.get(ref),data=snap.exists()?snap.data():{};if(!hasPet(data))throw Error('ペットが誕生してから使えます。');const appearance=normalizeAppearance(data.petAppearance);if(appearance[key]===id)throw Error('今と同じ設定です。');const coins=coinsOf(data);if(coins<price)throw Error('コインが足りません。');tx.set(ref,{coins:coins-price,petAppearance:{...appearance,[key]:id},coinUpdatedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});});selectedAppearance=null;setToast(`${label}に変更しました！`,'ok');}catch(e){setToast(e?.message||'見た目を変更できませんでした。','error');}});}
 const renameDrafts={pet:null,user:null};
 function renderNameProducts(){
+  const baby=currentData.petAdult===false;
   panel.innerHTML='<div class="pet-shop-panel-title">✏️ 名前変更</div><div class="pet-shop-note">名前を変更するたびに30コインを使います。</div>';
   const grid=document.createElement('div');grid.className='pet-shop-grid';panel.append(grid);
   for(const [kind,label,icon,limit,field] of [['pet','ペットの名前変更','🐾',12,'petName'],['user','ユーザーの名前変更','👤',20,'nickname']]){
     const card=document.createElement('section');card.className='pet-shop-item pet-name-product';card.dataset.nameKind=kind;
     card.innerHTML=`<div class="pet-shop-icon">${icon}</div><div class="pet-shop-name">${label}</div><div class="pet-shop-price">🪙 30</div><label for="shopName-${kind}">新しい名前（1〜${limit}文字）</label><input id="shopName-${kind}" autocomplete="off" maxlength="${limit*2}" placeholder="新しい名前"><button class="pet-shop-action" type="button">30コインで変更</button><p class="pet-name-help"></p>`;
-    const input=card.querySelector('input');input.value=renameDrafts[kind]??currentData[field]??'';input.disabled=busy;
+    const input=card.querySelector('input');input.value=renameDrafts[kind]??currentData[field]??'';const babyPet=kind==='pet'&&baby;input.disabled=busy||babyPet;
     input.addEventListener('input',()=>{renameDrafts[kind]=input.value;});
-    card.querySelector('.pet-name-help').textContent=kind==='user'?'ほかのユーザーと同じ名前は使えません。':'ペットに表示される名前を変更します。';
-    const button=card.querySelector('button');button.disabled=busy||coinsOf(currentData)<30;button.addEventListener('click',()=>changeShopName(kind,input.value));grid.append(card);
+    card.querySelector('.pet-name-help').textContent=babyPet?'赤ちゃんの間は変更できません。成体になってから変更できます。':kind==='user'?'ほかのユーザーと同じ名前は使えません。':'ペットに表示される名前を変更します。';
+    const button=card.querySelector('button');button.disabled=busy||babyPet||coinsOf(currentData)<30;button.title=babyPet?'成体になると変更できます。':'';button.addEventListener('click',()=>{if(!babyPet)changeShopName(kind,input.value);});grid.append(card);
   }
 }
 async function changeShopName(kind,value){
   const user=currentUser;if(!user||busy)return;
+  if(kind==='pet'&&currentData.petAdult===false){setToast('赤ちゃんの間は名前を変更できません。成体になってからお試しください。','error');return;}
   const name=kind==='user'?value.normalize('NFKC').trim().replace(/\s+/g,' '):value.trim(),limit=kind==='pet'?12:20,field=kind==='pet'?'petName':'nickname';
   if(!name||[...name].length>limit||/[\u0000-\u001f\u007f]/.test(value)){setToast(`名前は1〜${limit}文字で入力してください。`,'error');return;}
   if(name===currentData[field]){setToast('今と同じ名前です。','error');return;}
