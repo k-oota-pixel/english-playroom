@@ -85,7 +85,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const style = document.createElement('style'); style.textContent = '.monstudy-paused *{animation-play-state:paused!important}'; document.head.append(style);
     if (/\/pet-room\/v4\.html$/.test(here.pathname)) {
-      const s = document.createElement('script'); s.src = new URL('pet-room/sofa-v2.js?v=4', home).href; s.defer = true; document.head.append(s);
+      const s = document.createElement('script'); s.src = new URL('pet-room/sofa-v2.js?v=5', home).href; s.defer = true; document.head.append(s);
     }
     parent.MonstudyShell.materialReady(window);
   }, {once:true});
