@@ -2,13 +2,13 @@ import {injectionPatch} from './pet-health-model.js?v=1.8.1';
 import { foodArt } from './pet-food-art.js?v=1.8.0';
 import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
-import { playCareReaction } from './pet-care-animation.js?v=1.9.3';
+import { playCareReaction } from './pet-care-animation.js?v=1.9.4';
 import { FOODS, careState, feedReward, happyDay } from './pet-care-model.js?v=1.7.8';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js?v=2.1.25';
-import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.38';
+import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.39';
 
 let wasteSaving=false,cleaningWaste=false;
 const ITEMS = Object.freeze([
@@ -160,9 +160,9 @@ function boot(){injectUI();if(!getApps().length){setTimeout(boot,0);return;}cons
 
 function installCareUI(wallet) {
   const shop=wallet.querySelector('#petShopOpen');
-  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>おなかの満腹度</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHungerMessage" class="pet-hunger-message" aria-live="polite"></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="おなかの満腹度" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><div class="pet-happy-scale"><span>😟 HUNGRY</span><span>FULL 😋</span></div><small>エサをあげると満腹度が上がります。毎日0時におなかがすいた状態に戻ります。</small></div>');
+  shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>おなかの満腹度</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHungerMessage" class="pet-hunger-message" aria-live="polite"></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="おなかの満腹度" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><div class="pet-happy-scale"><span>😟 HUNGRY</span><span>FULL 😋</span></div></div>');
   const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
-  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2 id="petFeedTitle">“I’m hungry…”</h2><p id="petFeedPrompt" class="pet-feed-message">おなかすいた…ごはんをあげてね！</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-food-choice" data-food="${f.id}"><span class="pet-food-picture">${foodArt(f.id)}</span><span class="pet-food-copy"><strong>${f.name}</strong><small>満腹度 +${f.price}</small></span><span class="pet-food-price">🪙 ${f.price}<small>コイン</small></span></button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
+  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2 id="petFeedTitle">I’m hungry…</h2><p id="petFeedPrompt" class="pet-feed-message">Please feed me!</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-food-choice" data-food="${f.id}"><span class="pet-food-picture">${foodArt(f.id)}</span><span class="pet-food-copy"><strong>${f.name}</strong><small>満腹度 +${f.price}</small></span><span class="pet-food-price">🪙 ${f.price}<small>コイン</small></span></button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
   document.body.append(dialog);
   dialog.querySelector('.pet-shop-close').onclick=()=>dialog.close();
   dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();const id=event.target.closest('[data-food]')?.dataset.food;if(id)performCare(id);});
@@ -186,26 +186,26 @@ function renderCare() {
   const enabled=!!currentUser&&hasPet(currentData)&&!busy;
   const state=careState(currentData);
   const mood=state.happy<=2
-    ?{key:'hungry',english:'I’m hungry…',japanese:'おなかすいた…',label:'おなかぺこぺこ'}
+    ?{key:'hungry',english:'I’m hungry…',label:'おなかぺこぺこ'}
     :state.happy<=5
-      ?{key:'still-hungry',english:'I’m still hungry…',japanese:'まだおなかすいた…',label:'まだ空腹'}
+      ?{key:'still-hungry',english:'I’m still hungry…',label:'まだ空腹'}
       :state.happy<=8
-        ?{key:'filling',english:'I’m feeling better!',japanese:'おなかが満たされてきた！',label:'少し満たされた'}
-        :{key:'full',english:'I’m full!',japanese:'おなかいっぱい！',label:'満腹'};
+        ?{key:'filling',english:'I’m feeling better!',label:'少し満たされた'}
+        :{key:'full',english:'I’m full!',label:'満腹'};
   const label=document.getElementById('petHappy');
   for(const id of ['petFeed']){const button=document.getElementById(id);if(button){button.disabled=!enabled||state.happy>=10;button.classList.toggle('pet-feed-needed',enabled&&state.happy<=5);}}
   if(label){
     label.hidden=!(currentUser&&hasPet(currentData));
     label.dataset.hungerState=mood.key;
     document.getElementById('petHappyValue').textContent=`${state.happy}/10 · ${mood.label}`;
-    const speech=document.getElementById('petHungerMessage');speech.textContent=`“${mood.english}”\n${mood.japanese}`;
+    const speech=document.getElementById('petHungerMessage');speech.textContent=mood.english;
     const gauge=document.getElementById('petHappyGauge');gauge.setAttribute('aria-valuenow',String(state.happy));gauge.setAttribute('aria-valuetext',`${state.happy}/10 ${mood.english} ${mood.japanese}`);
     document.getElementById('petHappyFill').style.width=`${state.happy*10}%`;
   }
   const visual=document.getElementById('petVisual');if(visual){visual.dataset.petCareEnabled=currentUser&&hasPet(currentData)?'1':'0';visual.setAttribute('role',enabled?'button':'img');visual.tabIndex=enabled?0:-1;}
   const balance=document.getElementById('petFeedBalance');if(balance)balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;
-  const title=document.getElementById('petFeedTitle');if(title)title.textContent=state.happy>=10?'“I’m full!”':'“I’m hungry…”';
-  const prompt=document.getElementById('petFeedPrompt');if(prompt)prompt.textContent=state.happy>=10?'おなかいっぱい！今日はもう十分だよ。':state.happy<=5?'おなかすいた…ごはんをあげてね！':'もう少しでおなかいっぱい！';
+  const title=document.getElementById('petFeedTitle');if(title)title.textContent=state.happy>=10?'I’m full!':'I’m hungry…';
+  const prompt=document.getElementById('petFeedPrompt');if(prompt)prompt.textContent=state.happy>=10?'You’re full for today.':state.happy<=5?'Please feed me!':'I’m getting full!';
   document.querySelectorAll('[data-food]').forEach(button=>{button.disabled=!enabled||state.happy>=10||coinsOf(currentData)<FOODS.find(f=>f.id===button.dataset.food).price;});
   if(!currentUser)document.getElementById('petFeedDialog')?.close();
 }
@@ -226,7 +226,7 @@ async function performCare(foodId) {
       });
       if(currentUser?.uid!==user.uid)return;
       currentData=result.data;
-      const message=(result.reachedMax?'おなかいっぱい！':'おなかが満たされたよ！')+' 満腹度 +'+FOODS.find(f=>f.id===foodId).price;
+      const message='満腹度 +'+FOODS.find(f=>f.id===foodId).price;
       setToast(message,'ok');document.getElementById('petFeedStatus').textContent=message;
       if(foodId)document.getElementById('petFeedDialog').close();
       // Render before animating: wallet refresh replaces the SVG.
