@@ -124,6 +124,41 @@ function speciesDetails(a,color,stage){
   const cheeks=a.species==='hamster'?'':`<g fill="#e69c9c" opacity=".48" stroke="none"><ellipse cx="80" cy="${cheekY}" rx="${baby?11:10}" ry="${baby?7:6}"/><ellipse cx="160" cy="${cheekY}" rx="${baby?11:10}" ry="${baby?7:6}"/></g>`;return {rear,markings,face,wings,cheeks};
 }
 
+const PET_FRAME_DESIGNS=Object.freeze({
+  'frame-sakura':{color:'#eb91ad',inner:'#fff3f7',radius:31,kind:'sakura'},
+  'frame-forest':{color:'#6eaa79',inner:'#e8f5de',radius:24,kind:'forest'},
+  'frame-ocean':{color:'#39a5bb',inner:'#e4fbff',radius:38,kind:'ocean'},
+  'frame-galaxy':{color:'#7863c4',inner:'#f4dcff',radius:28,kind:'galaxy',motion:true},
+  'frame-candy':{color:'#ef91bc',inner:'#fff0f7',radius:48,kind:'candy'},
+  'frame-royal':{color:'#d3a33e',inner:'#fff0b6',radius:18,kind:'royal'},
+  'frame-pixel':{color:'#4e9a8e',inner:'#d9fff0',radius:5,kind:'pixel'},
+  'frame-autumn':{color:'#bd7446',inner:'#ffe3bf',radius:27,kind:'autumn'},
+  'frame-snow':{color:'#89b6d4',inner:'#f0fbff',radius:43,kind:'snow'},
+  'frame-neon':{color:'#c14ee4',inner:'#7cfaff',radius:24,kind:'neon',motion:true}
+});
+function petFrameLayer(shop){
+  const design=PET_FRAME_DESIGNS[shop?.equipped?.['pet-frame']];
+  if(!design)return '';
+  const outer='<rect x="6" y="6" width="228" height="228" rx="'+design.radius+'" fill="none" stroke="'+design.color+'" stroke-width="11"/>';
+  const inner='<rect x="13" y="13" width="214" height="214" rx="'+Math.max(2,design.radius-8)+'" fill="none" stroke="'+design.inner+'" stroke-width="2.5"/>';
+  let decor='';
+  if(design.kind==='sakura')decor=flower(24,22,'#fff3f7',.55)+flower(216,22,'#fff3f7',.55)+flower(24,218,'#fff3f7',.55)+flower(216,218,'#fff3f7',.55);
+  if(design.kind==='forest')decor='<g fill="#d8efc5" stroke="#477f5a" stroke-width="2"><path d="M17 55 Q4 36 16 22 Q34 27 26 48 Q39 33 45 39 Q42 57 23 60Z"/><path d="M223 55 Q236 36 224 22 Q206 27 214 48 Q201 33 195 39 Q198 57 217 60Z"/><path d="M17 185 Q4 204 16 218 Q34 213 26 192 Q39 207 45 201 Q42 183 23 180Z"/><path d="M223 185 Q236 204 224 218 Q206 213 214 192 Q201 207 195 201 Q198 183 217 180Z"/></g>';
+  if(design.kind==='ocean')decor='<g fill="none" stroke="#d9faff" stroke-width="4" stroke-linecap="round"><path d="M70 10 Q80 20 90 10 T110 10 T130 10 T150 10 T170 10"/><path d="M70 230 Q80 220 90 230 T110 230 T130 230 T150 230 T170 230"/><path d="M10 75 Q20 85 10 95 T10 115 T10 135 T10 155"/><path d="M230 75 Q220 85 230 95 T230 115 T230 135 T230 155"/></g>';
+  if(design.kind==='galaxy')decor='<g class="pet-frame-motion" fill="#ffe783">'+star(25,25,.62)+star(215,25,.48)+star(25,215,.48)+star(215,215,.62)+'</g><g fill="#fff" opacity=".9"><circle cx="57" cy="12" r="2.5"/><circle cx="183" cy="228" r="2"/><circle cx="228" cy="82" r="2.5"/><circle cx="12" cy="162" r="2"/></g>';
+  if(design.kind==='candy'){
+    const dots=[];for(let x=48;x<=192;x+=36){dots.push('<circle cx="'+x+'" cy="8" r="4" fill="#fff6c7"/><circle cx="'+x+'" cy="232" r="4" fill="#c9f3ff"/>');}
+    decor='<g>'+dots.join('')+'<circle cx="8" cy="82" r="4" fill="#fff6c7"/><circle cx="232" cy="158" r="4" fill="#c9f3ff"/></g>';
+  }
+  if(design.kind==='royal')decor='<path d="M91 14 L98 28 L108 18 L120 32 L132 18 L142 28 L149 14 L145 39 H95Z" fill="#ffe7a0" stroke="#a87c28" stroke-width="2"/><circle cx="120" cy="23" r="3" fill="#d56c8b"/>';
+  if(design.kind==='pixel')decor='<g fill="#d9fff0"><rect x="14" y="38" width="10" height="10"/><rect x="30" y="14" width="10" height="10"/><rect x="216" y="38" width="10" height="10"/><rect x="200" y="14" width="10" height="10"/><rect x="14" y="192" width="10" height="10"/><rect x="30" y="216" width="10" height="10"/><rect x="216" y="192" width="10" height="10"/><rect x="200" y="216" width="10" height="10"/></g>';
+  if(design.kind==='autumn')decor='<g fill="#f6c17b" stroke="#874c32" stroke-width="1.5"><path d="M23 21 Q44 24 38 43 Q27 44 23 21Z"/><path d="M217 21 Q196 24 202 43 Q213 44 217 21Z"/><path d="M23 219 Q44 216 38 197 Q27 196 23 219Z"/><path d="M217 219 Q196 216 202 197 Q213 196 217 219Z"/></g>';
+  if(design.kind==='snow')decor='<g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">'+[24,216].map(x=>[24,216].map(y=>'<path d="M'+(x-6)+' '+y+' H'+(x+6)+' M'+x+' '+(y-6)+' V'+(y+6)+' M'+(x-4)+' '+(y-4)+' L'+(x+4)+' '+(y+4)+' M'+(x+4)+' '+(y-4)+' L'+(x-4)+' '+(y+4)+'"/>').join('')).join('')+'</g>';
+  if(design.kind==='neon')decor='<rect class="pet-frame-motion" x="18" y="18" width="204" height="204" rx="18" fill="none" stroke="#7cfaff" stroke-width="2" opacity=".9"/><g fill="#fff">'+star(24,24,.48)+star(216,24,.48)+star(24,216,.48)+star(216,216,.48)+'</g>';
+  const motion=design.motion?'pet-frame-motion':'';
+  return '<g aria-hidden="true" pointer-events="none" class="'+motion+'">'+outer+inner+decor+'</g>';
+}
+
 export function renderPetSVG(value,shop={},stage='',{background=true}={}){
   if(!value)return renderMysterySVG(shop,background);
   const a=resolvedAppearance(value),layers=equippedLayers(shop,a.species),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a),details=speciesDetails(a,color,resolved),anatomy=anatomyFor(a,color,resolved),eyes=eyesFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
@@ -137,13 +172,13 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
     : `<g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${anatomy}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}${details.wings}<g data-pet-eyes="1" data-pet-eye-style="${a.eyeStyle}" fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>`;
   const theme=layers.backgrounds?'':backgroundTheme(a.baseBackground);
   const scenery=background?`<rect width="240" height="240" rx="32" fill="${bg}"/>${theme}${layers.backgrounds}`:'';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-species="${a.species}" data-pet-stage="${resolved}" aria-hidden="true" focusable="false">${scenery}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-jump-layer"><g class="pet-character">${character}${layers.accessories}</g></g>${layers.effects||''}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-species="${a.species}" data-pet-stage="${resolved}" aria-hidden="true" focusable="false">${scenery}<ellipse class="pet-shadow" cx="120" cy="210" rx="${resolved==='baby'?58:68}" ry="${resolved==='baby'?8:9}" fill="${outline}" opacity=".09"/><g class="pet-jump-layer"><g class="pet-character">${character}${layers.accessories}</g></g>${layers.effects||''}${petFrameLayer(shop)}</svg>`;
 }
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
-if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.1.40').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
-function renderMysterySVG(shop,background=true){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物">'+(background?'<rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds:'')+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+'</svg>';}
+if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.1.48').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
+function renderMysterySVG(shop,background=true){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物">'+(background?'<rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds:'')+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+petFrameLayer(shop)+'</svg>';}
 
 // Keep the render key on the SVG so cloned markup and module copies share it.
 // Wallet/lifecycle updates must retain the current SVG and its animation phase.
