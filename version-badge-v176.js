@@ -8,7 +8,7 @@ import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.9.6';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
-import './pet-lifecycle-v141.js?v=2.1.41';
+import './pet-lifecycle-v141.js?v=2.1.47';
 import './pet-egg-ui-v141.js?v=1.8.4';
 import './pet-six-species-v141.js?v=2.1.9';
 import './pet-eye-emphasis-v144.js?v=1.9.6';
