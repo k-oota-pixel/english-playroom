@@ -134,7 +134,13 @@ const PET_FRAME_DESIGNS=Object.freeze({
   'frame-pixel':{color:'#4e9a8e',inner:'#d9fff0',radius:5,kind:'pixel'},
   'frame-autumn':{color:'#bd7446',inner:'#ffe3bf',radius:27,kind:'autumn'},
   'frame-snow':{color:'#89b6d4',inner:'#f0fbff',radius:43,kind:'snow'},
-  'frame-neon':{color:'#c14ee4',inner:'#7cfaff',radius:24,kind:'neon',motion:true}
+  'frame-neon':{color:'#c14ee4',inner:'#7cfaff',radius:24,kind:'neon',motion:true},
+  'frame-thunder':{color:'#1c68d4',inner:'#a6f4ff',radius:19,kind:'thunder',motion:true},
+  'frame-dragon-gold':{color:'#9f6819',inner:'#ffd579',radius:18,kind:'dragonGold'},
+  'frame-inferno':{color:'#d93420',inner:'#ffc04f',radius:23,kind:'inferno',motion:true},
+  'frame-rgb':{color:'#8b39d7',inner:'#58f3ff',radius:21,kind:'rgb',motion:true},
+  'frame-mecha':{color:'#596c7b',inner:'#e1e8ee',radius:12,kind:'mecha'},
+  'frame-darkhole':{color:'#402276',inner:'#cba4ff',radius:28,kind:'darkhole',motion:true}
 });
 function petFrameLayer(shop){
   const design=PET_FRAME_DESIGNS[shop?.equipped?.['pet-frame']];
@@ -155,6 +161,12 @@ function petFrameLayer(shop){
   if(design.kind==='autumn')decor='<g fill="#f6c17b" stroke="#874c32" stroke-width="1.5"><path d="M23 21 Q44 24 38 43 Q27 44 23 21Z"/><path d="M217 21 Q196 24 202 43 Q213 44 217 21Z"/><path d="M23 219 Q44 216 38 197 Q27 196 23 219Z"/><path d="M217 219 Q196 216 202 197 Q213 196 217 219Z"/></g>';
   if(design.kind==='snow')decor='<g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">'+[24,216].map(x=>[24,216].map(y=>'<path d="M'+(x-6)+' '+y+' H'+(x+6)+' M'+x+' '+(y-6)+' V'+(y+6)+' M'+(x-4)+' '+(y-4)+' L'+(x+4)+' '+(y+4)+' M'+(x+4)+' '+(y-4)+' L'+(x-4)+' '+(y+4)+'"/>').join('')).join('')+'</g>';
   if(design.kind==='neon')decor='<rect class="pet-frame-motion" x="18" y="18" width="204" height="204" rx="18" fill="none" stroke="#7cfaff" stroke-width="2" opacity=".9"/><g fill="#fff">'+star(24,24,.48)+star(216,24,.48)+star(24,216,.48)+star(216,216,.48)+'</g>';
+  if(design.kind==='thunder')decor='<g fill="none" stroke="#c7faff" stroke-width="3" stroke-linejoin="round" filter="drop-shadow(0 0 4px #56dcff)"><path d="M29 18 L18 39 H28 L21 58 L43 33 H32 L39 18Z"/><path d="M211 18 L222 39 H212 L219 58 L197 33 H208 L201 18Z"/><path d="M29 222 L18 201 H28 L21 182 L43 207 H32 L39 222Z"/><path d="M211 222 L222 201 H212 L219 182 L197 207 H208 L201 222Z"/></g><g fill="#fff">'+star(57,15,.38)+star(183,225,.38)+'</g>';
+  if(design.kind==='dragonGold')decor='<g fill="#d6a348" stroke="#684116" stroke-width="2.5" stroke-linejoin="round"><path d="M30 49 Q13 37 20 17 Q39 28 43 47 L36 43Z"/><path d="M210 49 Q227 37 220 17 Q201 28 197 47 L204 43Z"/><path d="M52 17 L63 27 L74 17 L85 27 L96 17" fill="none" stroke="#ffe29a" stroke-width="4"/><path d="M144 17 L155 27 L166 17 L177 27 L188 17" fill="none" stroke="#ffe29a" stroke-width="4"/></g><g fill="#fff0b6"><circle cx="18" cy="80" r="3"/><circle cx="222" cy="160" r="3"/><circle cx="18" cy="160" r="3"/><circle cx="222" cy="80" r="3"/></g>';
+  if(design.kind==='inferno')decor='<g class="pet-frame-motion" stroke="#8f231d" stroke-width="2"><path d="M22 55 Q7 42 17 22 Q23 31 24 38 Q29 24 39 20 Q47 40 35 55Z" fill="#ffb629"/><path d="M218 55 Q233 42 223 22 Q217 31 216 38 Q211 24 201 20 Q193 40 205 55Z" fill="#ffb629"/><path d="M22 185 Q7 198 17 218 Q23 209 24 202 Q29 216 39 220 Q47 200 35 185Z" fill="#ffb629"/><path d="M218 185 Q233 198 223 218 Q217 209 216 202 Q211 216 201 220 Q193 200 205 185Z" fill="#ffb629"/></g><g fill="#fff0a1">'+star(25,24,.34)+star(215,216,.34)+'</g>';
+  if(design.kind==='rgb')decor='<rect class="pet-frame-rgb" x="17" y="17" width="206" height="206" rx="15" fill="none" stroke="#58f3ff" stroke-width="3" stroke-dasharray="18 8"/><rect class="pet-frame-rgb" x="10" y="10" width="220" height="220" rx="20" fill="none" stroke="#ff64cf" stroke-width="1.5" stroke-dasharray="4 10"/>';
+  if(design.kind==='mecha')decor='<g fill="#9eabb6" stroke="#34424c" stroke-width="3" stroke-linejoin="round"><path d="M17 17 H49 L57 25 V43 H25 L17 35Z"/><path d="M223 17 H191 L183 25 V43 H215 L223 35Z"/><path d="M17 223 H49 L57 215 V197 H25 L17 205Z"/><path d="M223 223 H191 L183 215 V197 H215 L223 205Z"/></g><g fill="#ffb54a" stroke="#6e4d25" stroke-width="1.5"><circle cx="28" cy="28" r="4"/><circle cx="212" cy="28" r="4"/><circle cx="28" cy="212" r="4"/><circle cx="212" cy="212" r="4"/></g><path d="M79 9 H90 M96 9 H107 M133 231 H144 M150 231 H161" stroke="#f2c15c" stroke-width="4" stroke-linecap="square"/>';
+  if(design.kind==='darkhole')decor='<ellipse cx="120" cy="120" rx="102" ry="102" fill="none" stroke="#9865df" stroke-width="2" stroke-dasharray="5 8" opacity=".85"/><g class="pet-frame-orbit" fill="#e7d5ff">'+star(120,16,.5)+'<circle cx="120" cy="16" r="3" fill="#fff"/></g><g fill="#fff">'+star(33,39,.34)+star(207,201,.34)+'</g>';
   const motion=design.motion?'pet-frame-motion':'';
   return '<g aria-hidden="true" pointer-events="none" class="'+motion+'">'+outer+inner+decor+'</g>';
 }
@@ -177,7 +189,7 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
-if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.1.48').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
+if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.1.49').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
 function renderMysterySVG(shop,background=true){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物">'+(background?'<rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds:'')+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+petFrameLayer(shop)+'</svg>';}
 
 // Keep the render key on the SVG so cloned markup and module copies share it.
