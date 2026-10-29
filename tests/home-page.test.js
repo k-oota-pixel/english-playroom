@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
-const expectedTitles=['エイゴメーター','ワードウルフ','ワードブレイカー','アテル','並べ替え問題（基礎）','英文法パターンドリル','リトライノート',
+const expectedTitles=['エイゴメーター','ワードウルフ','ワードブレイカー','アテル','並べ替え問題（基礎）','並べ替え問題（文法別）','リトライノート',
   '長文空所補充','長文概要把握','長文演習','リスニング演習＆ディクテーション','タスク別英会話','テーマ別日常英会話','準２級質問４/５対策','準２級面接A練習','３級面接Q2・Q3対策','３級面接Q4・Q5対策'];
 
 test('homepage cards follow the requested desktop order and exam labels',()=>{
