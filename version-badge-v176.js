@@ -8,7 +8,7 @@ import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.9.6';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
-import './pet-lifecycle-v141.js?v=2.1.25';
+import './pet-lifecycle-v141.js?v=2.1.41';
 import './pet-egg-ui-v141.js?v=1.8.4';
 import './pet-six-species-v141.js?v=2.1.9';
 import './pet-eye-emphasis-v144.js?v=1.9.6';
@@ -21,7 +21,7 @@ import './material-return.js?v=4.0.0';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.1.9').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.1.40';
+const APP_VERSION='2.1.41';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
