@@ -128,7 +128,7 @@
     document.head.append(style);
     if (/\/pet-room\/v4\.html$/.test(here.pathname)) {
       const s = document.createElement('script');
-      s.src = new URL('pet-room/sofa-v2.js?v=2', home).href;
+      s.src = new URL('pet-room/sofa-v2.js?v=3', home).href;
       s.defer = true;
       document.head.append(s);
     }
