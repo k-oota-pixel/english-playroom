@@ -35,9 +35,19 @@ test('daily merge replaces the same edition but keeps older archive stories',()=
   assert.equal(alreadyGeneratedToday(merged,'2026-11-01'),false);
 });
 
-test('Grade 4 may be concise but still rejects genuinely tiny text',()=>{
-  const concise=structuredClone(payload);concise.articles[0].levels['4級']={title:'Concise',text:text(33),wordCount:33};
+test('length guards allow concise but substantial graded news',()=>{
+  const concise=structuredClone(payload);
+  concise.articles[0].levels={
+    '4級':{title:'Easy',text:text(33),wordCount:33},
+    '3級':{title:'Junior',text:text(44),wordCount:44},
+    '準2級':{title:'Pre2',text:text(70),wordCount:70},
+    '2級':{title:'Grade2',text:text(100),wordCount:100},
+    '準1級':{title:'Pre1',text:text(135),wordCount:135}
+  };
   assert.equal(validateDailyPayload(concise),concise);
+});
+
+test('length guards still reject genuinely tiny text',()=>{
   const tooShort=structuredClone(payload);tooShort.articles[0].levels['4級']={title:'Too short',text:'Tiny story.',wordCount:2};
   assert.throws(()=>validateDailyPayload(tooShort));
 });
