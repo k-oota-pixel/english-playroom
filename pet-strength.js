@@ -1,6 +1,6 @@
 import {auth,db,walletRef} from './coin-reward.js?v=2.1.25';
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1';
-import {getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import {getDocFromServer as getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js?v=2.1.25';
 import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.24';
 import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
@@ -9,11 +9,14 @@ const RESPEC_PRICE=30;
 const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0,mp:0});
 
 const titleCountCache=new Map(),titleCountRequests=new Map();
-function storedTitleCount(data={}){const n=Number(data.unlockedTitleCount);return Number.isSafeInteger(n)&&n>=0?n:null;}
+function storedTitleCount(data={}){
+ if(!data||data.titleCountSummaryVersion!==1||Number(data.titleCountSyncedRevision)!==Number(data.titleCountRevision||0))return null;
+ const n=Number(data.unlockedTitleCount);return Number.isSafeInteger(n)&&n>=0?n:null;
+}
 export async function loadStrengthTitles(user,{force=false,walletData=null}={}){
  const uid=user?.uid;if(!uid)throw Error('ログインが必要です。');
  const stored=storedTitleCount(walletData);if(!force&&stored!==null){titleCountCache.set(uid,{count:stored,expiresAt:Date.now()+30000});return stored;}
- const cached=titleCountCache.get(uid);if(!force&&cached&&cached.expiresAt>Date.now())return cached.count;
+ const cached=titleCountCache.get(uid);if(!force&&!walletData&&cached&&cached.expiresAt>Date.now())return cached.count;
  if(!force&&titleCountRequests.has(uid))return titleCountRequests.get(uid);
  const request=(async()=>{
   const token=await user.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
@@ -131,7 +134,7 @@ if(button){
     if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
     if(!hasPet(data))throw Error('ペットが生まれると強化できます。');
-    const count=storedTitleCount(data)??loadedCount;if(count===null)throw Error('称号数を確認できませんでした。閉じてもう一度お試しください。');
+    const count=storedTitleCount(data);if(count===null)throw Error('称号が更新されました。閉じてもう一度開くと最新のポイントを確認できます。');
     const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key);
     const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength)),afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
     tx.set(ref,{petStrength,petStrengthLevelPoints,petUpdatedAt:serverTimestamp()},{merge:true});
