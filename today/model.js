@@ -1,4 +1,5 @@
-export const LEVELS=['4級','3級','準2級','2級','準1級'];
+export const LEVELS=['5級','4級','3級','準2級','2級','準1級'];
+const LEGACY_LEVELS=['4級','3級','準2級','2級','準1級'];
 
 export const CATEGORIES=[
   {id:'world',label:'世界・社会',icon:'🌏'},
@@ -105,7 +106,9 @@ export function rankArticles(articles,profile,behavior={},limit=6,now=Date.now()
 export function validateArticle(article){
   if(!article||typeof article.id!=='string'||typeof article.title!=='string'||typeof article.date!=='string')return false;
   if(!CATEGORIES.some(c=>c.id===article.category))return false;
-  if(!article.levels||LEVELS.some(level=>typeof article.levels[level]?.text!=='string'||!article.levels[level].text.trim()))return false;
+  if(!article.levels)return false;
+  const requiredLevels=article.levels['5級']?LEVELS:LEGACY_LEVELS;
+  if(requiredLevels.some(level=>typeof article.levels[level]?.text!=='string'||!article.levels[level].text.trim()))return false;
   if(!Array.isArray(article.sources)||!article.sources.length)return false;
   return true;
 }
