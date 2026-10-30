@@ -17,6 +17,14 @@ const MAX_ARCHIVE_ARTICLES=540; // About 90 days at six stories per day.
 function cleanDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||''))?String(value):'';}
 function safeHttps(value){try{const url=new URL(String(value||''));return url.protocol==='https:';}catch{return false;}}
 function sizeOf(value){return Buffer.byteLength(JSON.stringify(value),'utf8');}
+export function japanDateKey(date=new Date()){
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
+  const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+export function alreadyGeneratedToday(existing,dateKey=japanDateKey()){
+  return existing?.automation?.lastSuccessfulEdition===dateKey;
+}
 
 export function validateDailyPayload(payload){
   if(!payload||typeof payload!=='object')throw new Error('TODAY生成結果がありません。');
@@ -51,7 +59,7 @@ export function mergeDailyNews(existing,payload,maxArticles=MAX_ARCHIVE_ARTICLES
   return {
     generatedAt:String(payload.generatedAt||new Date().toISOString()),
     editionDate,
-    automation:{version:1,dailyCount:6,maxArchiveArticles:maxArticles},
+    automation:{version:1,dailyCount:6,maxArchiveArticles:maxArticles,lastSuccessfulEdition:editionDate},
     articles
   };
 }
@@ -87,10 +95,15 @@ async function generateDailyNews(token){
 }
 
 export async function run({newsPath=fileURLToPath(new URL('./news.json',import.meta.url))}={}){
+  let existing={articles:[]};try{existing=JSON.parse(await readFile(newsPath,'utf8'));}catch(error){if(error?.code!=='ENOENT')throw error;}
+  const today=japanDateKey();
+  if(process.env.TODAY_FORCE!=='1'&&alreadyGeneratedToday(existing,today)){
+    console.log(`TODAY ${today}: already generated successfully; skipping this retry window.`);
+    return existing;
+  }
   await warmBackend();
   const token=await getGithubOidcToken();
   const payload=await generateDailyNews(token);
-  let existing={articles:[]};try{existing=JSON.parse(await readFile(newsPath,'utf8'));}catch(error){if(error?.code!=='ENOENT')throw error;}
   const merged=mergeDailyNews(existing,payload);
   await writeFile(newsPath,JSON.stringify(merged,null,2)+'\n','utf8');
   console.log(`TODAY ${payload.editionDate}: ${payload.articles.length} new stories; archive ${merged.articles.length} stories.`);
