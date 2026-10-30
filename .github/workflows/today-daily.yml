@@ -1,0 +1,55 @@
+name: TODAY daily news
+
+on:
+  schedule:
+    - cron: '10 21 * * *' # 06:10 JST every day
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Regenerate even if the backend already generated today'
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/today-daily.yml'
+      - 'today/update-daily-news.mjs'
+      - 'tests/today-daily-update.test.js'
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: today-daily-news
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate updater
+        run: node --test tests/today-daily-update.test.js
+      - name: Generate today's six stories
+        env:
+          TODAY_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force == true && '1' || '0' }}
+        run: node today/update-daily-news.mjs
+      - name: Commit TODAY archive
+        run: |
+          if git diff --quiet -- today/news.json; then
+            echo "TODAY is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add today/news.json
+          git commit -m "Update TODAY daily news"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
