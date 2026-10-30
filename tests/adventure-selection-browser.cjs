@@ -21,7 +21,7 @@ async function realtimeChecks(page,mode){
  assert.equal(await page.locator('#questionText').textContent(),question);
  const correct=mode==='dungeon'?0:await page.evaluate(()=>{const word=document.querySelector('#questionText strong').textContent;return [...document.querySelectorAll('.answer-btn')].findIndex(b=>b.textContent.includes('意味'+word.slice(-1)));});
  const beforeWrong=await hp();await page.locator('.answer-btn').nth((correct+1)%4).click();
- assert.equal(await hp(),beforeWrong,'a wrong answer does not trigger a separate enemy turn');
+ assert.equal(await hp(),beforeWrong-1,'a wrong answer deals exactly one HP of self damage');
  await page.clock.runFor(1200);assert.equal(await page.locator('#attackPanel').isVisible(),true);
  const beforePause=await hp();await page.locator('#pauseBtn').click();
  await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
