@@ -6,11 +6,11 @@ const BACKEND_URL='https://task-quest.onrender.com';
 const OIDC_AUDIENCE='monstudy-today-daily';
 const LEVELS=['4級','3級','準2級','2級','準1級'];
 const LEVEL_LIMITS={
-  '4級':[30,130],
-  '3級':[55,190],
-  '準2級':[85,250],
-  '2級':[125,350],
-  '準1級':[170,500]
+  '4級':[25,130],
+  '3級':[35,190],
+  '準2級':[60,250],
+  '2級':[90,350],
+  '準1級':[120,500]
 };
 const MAX_ARCHIVE_ARTICLES=540; // About 90 days at six stories per day.
 
