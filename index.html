@@ -6,7 +6,7 @@
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css?v=1.10.8">
-<link rel="stylesheet" href="./learning-challenges.css?v=2.1.56">
+<link rel="stylesheet" href="./learning-challenges.css?v=2.1.57">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.8">
 <style>
 *{box-sizing:border-box}
@@ -144,7 +144,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.56">ver2.1.56</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.57">ver2.1.57</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -267,6 +267,15 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="chips"><span class="chip">60ステージ</span><span class="chip">各4問</span><span class="chip">語順・英文</span></div>
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>初回の回答で4問中3問以上正解</span><small>同じステージは1日1回</small></div></div>
       <div class="open-note">GitHub Pagesで開きます</div>
+    </a>
+<a class="card order" href="https://k-oota-pixel.github.io/basic-quest/?mode=basic-grammar" target="_blank" rel="noopener noreferrer">
+      <div class="icon">↔</div>
+      <div class="eyebrow">EIGOJUN · BASIC GRAMMAR</div>
+      <div class="title">並べ替え問題（基本文法）</div>
+      <div class="desc">エイゴジュンの英文で、基本の語順を練習しよう。be動詞から接続詞まで、12単元・204問。</div>
+      <div class="chips"><span class="chip">単元別</span><span class="chip">途中保存</span><span class="chip">間違いを再挑戦</span></div>
+      <div class="play"><span>単元を選んで練習</span><span>→</span></div>
+      <div class="open-note">基本文法の並べ替え問題</div>
     </a>
 <a class="card order" href="https://k-oota-pixel.github.io/basic-quest/?mode=grammar" target="_blank" rel="noopener noreferrer">
       <div class="eyebrow">GRAMMAR · WORD ORDER</div>
@@ -890,11 +899,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=2.1.56"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.56'></script>
+<script type="module" src="./learning-challenges.js?v=2.1.57"></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.57'></script>
 <script>
 (() => {
-  const version = '2.1.56';
+  const version = '2.1.57';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
