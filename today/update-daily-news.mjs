@@ -5,12 +5,14 @@ import {validateArticle,countWords} from './model.js';
 const BACKEND_URL='https://task-quest.onrender.com';
 const OIDC_AUDIENCE='monstudy-today-daily';
 const LEVELS=['4級','3級','準2級','2級','準1級'];
+// These are hard rejection guards, not generation targets. The generator prompt
+// keeps the longer target ranges; this only catches malformed or collapsed text.
 const LEVEL_LIMITS={
-  '4級':[25,130],
-  '3級':[35,190],
-  '準2級':[60,250],
-  '2級':[90,350],
-  '準1級':[120,500]
+  '4級':[20,130],
+  '3級':[30,190],
+  '準2級':[40,250],
+  '2級':[50,350],
+  '準1級':[60,500]
 };
 const MAX_ARCHIVE_ARTICLES=540; // About 90 days at six stories per day.
 
@@ -37,10 +39,13 @@ export function validateDailyPayload(payload){
     if(ids.has(article.id))throw new Error('TODAYの記事IDが重複しています。');ids.add(article.id);categories.add(article.category);
     if(sizeOf(article)>40_000)throw new Error(`TODAYの記事が大きすぎます: ${article.id}`);
     if(article.sources.length>4||article.sources.some(source=>!source?.name||!safeHttps(source?.url)))throw new Error(`TODAYの出典が不正です: ${article.id}`);
+    let previousWords=0;
     for(const level of LEVELS){
       const words=Number(article.levels[level]?.wordCount)||countWords(article.levels[level]?.text||'');
       const [min,max]=LEVEL_LIMITS[level];
       if(words<min||words>max)throw new Error(`TODAY ${article.id} ${level} の語数が想定範囲外です: ${words}`);
+      if(previousWords&&words<previousWords)throw new Error(`TODAY ${article.id} は上位レベルほど本文が短くなっています: ${level} ${words}語`);
+      previousWords=words;
     }
   }
   if(categories.size<5)throw new Error('TODAYの6記事は5分野以上に分散させてください。');
