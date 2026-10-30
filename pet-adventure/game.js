@@ -4,7 +4,7 @@ import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} fr
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.11';
 import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
-import {renderPetSVG} from '../pet-art.js?v=2.1.2';
+import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=2.1.8';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
@@ -104,8 +104,8 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';els.attackHint.textContent='相性の良い攻撃でCRITICAL';els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
-  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
-  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>不正解は攻撃失敗し、自分に1ダメージ。</li><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗し、自分に1ダメージ。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
+  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。卵の状態でも冒険できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -114,8 +114,8 @@ async function loadVocabulary(){
 async function loadEikenQuestions(){
   try{const response=await fetch(RETRY_URL,{cache:'force-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);const html=await response.text(),doc=new DOMParser().parseFromString(html,'text/html'),raw=doc.getElementById('question-data')?.textContent;if(!raw)throw Error('question-data not found');const parsed=JSON.parse(raw).filter(q=>q&&q.id&&q.grade&&q.question&&Array.isArray(q.choices)&&q.choices.length>=4&&Number(q.answer_number)>0);if(parsed.length<20)throw Error('question bank is too small');questions=parsed;return true;}catch(error){console.warn('魔物の巣窟 question fallback',error);questions=FALLBACK_EIKEN;return false;}
 }
-function petMarkup(data){const juvenile=data.petAdult===false||!data.petAppearance;try{return renderPetSVG(juvenile?null:data.petAppearance,data.petShop||{},juvenile?'baby':'adult',{background:false})}catch{return '🐾'}}
-function installPet(){const juvenile=petData.petAdult===false||!petData.petAppearance;els.petVisual.innerHTML=petMarkup(petData);els.petName.textContent=juvenile?'赤ちゃんペット':validPetName(petData.petName)?normalizePetName(petData.petName):'MY PET'}
+function petMarkup(data){if(!data.petHatched)return '<span class="adventure-egg" role="img" aria-label="ふしぎなたまご">🥚</span>';const juvenile=data.petAdult===false||!data.petAppearance;try{return renderPetSVG(juvenile?null:data.petAppearance,{...data.petShop,equipped:{...data.petShop?.equipped,'pet-frame':''}},juvenile?'baby':'adult',{background:false})}catch{return '🐾'}}
+function installPet(){const juvenile=petData.petAdult===false||!petData.petAppearance;els.petVisual.innerHTML=petMarkup(petData);els.petName.textContent=!petData.petHatched?'ふしぎなたまご':juvenile?'赤ちゃんペット':validPetName(petData.petName)?normalizePetName(petData.petName):'MY PET'}
 async function ensureAdventurePetStats(data){
   const generation=generationOf(data),storedGeneration=Number(data.petBaseStatsGeneration)||0,generationChanged=storedGeneration>0&&storedGeneration!==generation,migratedAfterDeparture=!storedGeneration&&lastDepartureGeneration(data)>0&&lastDepartureGeneration(data)<generation;
   if(hasIndividualBaseStats(data.petBaseStats)&&storedGeneration===generation)return data;
@@ -156,8 +156,9 @@ function finishEnemyDefeat(titleRequest){
 function answerQuestion(index){
   if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);recordAdventureTitle('answer',{itemId:String(q.id),correct,critical:correct&&elementMultiplier(selectedAttack.element,enemyElement)>1},`answer-${++answerSequence}`);
   let defeatTitleRequest=null;
-  if(correct){const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;if(enemyHp===0)defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);}else{flash('MISS!');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 正解を確認して次の攻撃へ。';}
+  if(correct){const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;if(enemyHp===0)defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);}else{playerHp=Math.max(0,playerHp-1);enemyDamageTaken+=1;animate(els.petVisual,'hurt');flash('MISS!\n-1 HP');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 自分に1ダメージ。正解を確認して次の攻撃へ。';}
   selectedAttack=null;syncHud();
+  if(playerHp<=0){els.nextBtn.hidden=true;busy=false;void finishRun();return;}
   if(enemyHp<=0){els.nextBtn.hidden=true;const boss=finishEnemyDefeat(defeatTitleRequest);if(boss)els.answerFeedback.textContent+=' ボス撃破！ HP・MP全回復！';}
   else{els.nextBtn.hidden=false;els.nextBtn.textContent='次の攻撃 →';pendingAdvanceMs=correct?450:1100;}
   busy=false;
@@ -206,7 +207,7 @@ function persistBest(){
 }
 async function startRun(startAt=1){
  if(startRun.loading||finishingRun)return;startRun.loading=true;
- try{await titleSyncPromise;stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
+ try{await titleSyncPromise;stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
  catch(error){console.error(error);alert("称号の同期を確認できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
 els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;runBestAtStart=currentBest();stage=unlockedStartFloors(runBestAtStart).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.exitRunBtn.hidden=false;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
 function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
@@ -226,7 +227,7 @@ function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.dis
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(petData.petHatched&&!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
    els.loadingCard.hidden=true;els.dataNote.textContent=(mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中'))+' · 途中終了・保存を押すと今回の記録を保存します。画面移動では保存されません。';if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);window.dispatchEvent(new CustomEvent('pet-adventure:ready',{detail:{best:currentBest()}}));
 }
 

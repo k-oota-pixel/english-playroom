@@ -144,7 +144,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.49">ver2.1.49</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.50">ver2.1.50</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -893,10 +893,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=2.1.46"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.49'></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.50'></script>
 <script>
 (() => {
-  const version = '2.1.49';
+  const version = '2.1.50';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
