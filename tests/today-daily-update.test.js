@@ -35,9 +35,14 @@ test('daily merge replaces the same edition but keeps older archive stories',()=
   assert.equal(alreadyGeneratedToday(merged,'2026-11-01'),false);
 });
 
-test('daily payload rejects non-HTTPS sources and extreme level length',()=>{
-  const badSource=structuredClone(payload);badSource.articles[0].sources=[{name:'bad',url:'http://example.com/news'}];
-  assert.throws(()=>validateDailyPayload(badSource));
+test('Grade 4 may be concise but still rejects genuinely tiny text',()=>{
+  const concise=structuredClone(payload);concise.articles[0].levels['4級']={title:'Concise',text:text(33),wordCount:33};
+  assert.equal(validateDailyPayload(concise),concise);
   const tooShort=structuredClone(payload);tooShort.articles[0].levels['4級']={title:'Too short',text:'Tiny story.',wordCount:2};
   assert.throws(()=>validateDailyPayload(tooShort));
+});
+
+test('daily payload rejects non-HTTPS sources',()=>{
+  const badSource=structuredClone(payload);badSource.articles[0].sources=[{name:'bad',url:'http://example.com/news'}];
+  assert.throws(()=>validateDailyPayload(badSource));
 });

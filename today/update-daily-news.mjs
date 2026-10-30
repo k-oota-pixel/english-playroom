@@ -6,7 +6,7 @@ const BACKEND_URL='https://task-quest.onrender.com';
 const OIDC_AUDIENCE='monstudy-today-daily';
 const LEVELS=['4級','3級','準2級','2級','準1級'];
 const LEVEL_LIMITS={
-  '4級':[35,130],
+  '4級':[30,130],
   '3級':[55,190],
   '準2級':[85,250],
   '2級':[125,350],
