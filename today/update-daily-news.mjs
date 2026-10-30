@@ -4,10 +4,11 @@ import {validateArticle,countWords} from './model.js';
 
 const BACKEND_URL='https://task-quest.onrender.com';
 const OIDC_AUDIENCE='monstudy-today-daily';
-const LEVELS=['4級','3級','準2級','2級','準1級'];
+const LEVELS=['5級','4級','3級','準2級','2級','準1級'];
 // These are hard rejection guards, not generation targets. The generator prompt
 // keeps the longer target ranges; this only catches malformed or collapsed text.
 const LEVEL_LIMITS={
+  '5級':[15,100],
   '4級':[20,130],
   '3級':[30,190],
   '準2級':[40,250],
