@@ -8,8 +8,8 @@ const article=(id,category,careerTags=[])=>({
   levels:Object.fromEntries(LEVELS.map(level=>[level,{text:levelText}]))
 });
 
-test('countWords counts English words and contractions',()=>{
-  assert.equal(countWords("It's a learner-friendly story."),5);
+test('countWords counts contractions and hyphenated words as one word each',()=>{
+  assert.equal(countWords("It's a learner-friendly story."),4);
 });
 
 test('profile is limited to five valid interests',()=>{
