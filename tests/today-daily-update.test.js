@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mergeDailyNews,validateDailyPayload} from '../today/update-daily-news.mjs';
+import {alreadyGeneratedToday,mergeDailyNews,validateDailyPayload} from '../today/update-daily-news.mjs';
 
 const text=(n)=>Array.from({length:n},(_,i)=>`word${i+1}`).join(' ');
 const article=(id,category,date='2026-10-31')=>({
@@ -30,6 +30,9 @@ test('daily merge replaces the same edition but keeps older archive stories',()=
   assert.equal(merged.articles.filter(item=>item.date==='2026-10-31').length,6);
   assert.ok(merged.articles.some(item=>item.id==='older'));
   assert.ok(!merged.articles.some(item=>item.id==='old-same-day'));
+  assert.equal(merged.automation.lastSuccessfulEdition,'2026-10-31');
+  assert.equal(alreadyGeneratedToday(merged,'2026-10-31'),true);
+  assert.equal(alreadyGeneratedToday(merged,'2026-11-01'),false);
 });
 
 test('daily payload rejects non-HTTPS sources and extreme level length',()=>{
