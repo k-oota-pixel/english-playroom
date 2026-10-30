@@ -2,7 +2,7 @@ name: TODAY daily news
 
 on:
   schedule:
-    - cron: '10 21 * * *' # 06:10 JST every day
+    - cron: '10 21,7 * * *' # 06:10 JST, plus 16:10 JST after Gemini daily quota reset
   workflow_dispatch:
     inputs:
       force:
