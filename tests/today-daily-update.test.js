@@ -35,21 +35,23 @@ test('daily merge replaces the same edition but keeps older archive stories',()=
   assert.equal(alreadyGeneratedToday(merged,'2026-11-01'),false);
 });
 
-test('length guards allow concise but substantial graded news',()=>{
+test('length guards allow concise graded news when difficulty levels grow progressively',()=>{
   const concise=structuredClone(payload);
   concise.articles[0].levels={
     '4級':{title:'Easy',text:text(33),wordCount:33},
     '3級':{title:'Junior',text:text(44),wordCount:44},
-    '準2級':{title:'Pre2',text:text(70),wordCount:70},
-    '2級':{title:'Grade2',text:text(100),wordCount:100},
-    '準1級':{title:'Pre1',text:text(135),wordCount:135}
+    '準2級':{title:'Pre2',text:text(55),wordCount:55},
+    '2級':{title:'Grade2',text:text(66),wordCount:66},
+    '準1級':{title:'Pre1',text:text(77),wordCount:77}
   };
   assert.equal(validateDailyPayload(concise),concise);
 });
 
-test('length guards still reject genuinely tiny text',()=>{
+test('length guards reject collapsed or backwards level progression',()=>{
   const tooShort=structuredClone(payload);tooShort.articles[0].levels['4級']={title:'Too short',text:'Tiny story.',wordCount:2};
   assert.throws(()=>validateDailyPayload(tooShort));
+  const backwards=structuredClone(payload);backwards.articles[0].levels['準2級']={title:'Shorter',text:text(70),wordCount:70};backwards.articles[0].levels['3級']={title:'Longer',text:text(80),wordCount:80};
+  assert.throws(()=>validateDailyPayload(backwards));
 });
 
 test('daily payload rejects non-HTTPS sources',()=>{
