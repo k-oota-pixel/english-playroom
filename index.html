@@ -6,7 +6,7 @@
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css?v=1.10.8">
-<link rel="stylesheet" href="./learning-challenges.css?v=2.1.54">
+<link rel="stylesheet" href="./learning-challenges.css?v=2.1.55">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.8">
 <style>
 *{box-sizing:border-box}
@@ -94,7 +94,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .coin-rank-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:850}
 .coin-rank-coins{font-size:11px;font-weight:850;color:#7c6125;font-variant-numeric:tabular-nums;white-space:nowrap}
 .coin-rank-note{min-height:15px;margin-top:7px;font-size:9.5px;color:#829087}
-@media(max-width:620px){.coin-board{grid-template-columns:1fr;gap:10px}.coin-board>.login-streak-bonus{grid-column:1}.coin-today{min-height:126px;padding:15px 17px}.coin-total strong{font-size:38px}}
+@media(max-width:620px){.coin-board{grid-template-columns:1fr;gap:10px}.coin-today{min-height:126px;padding:15px 17px}.coin-total strong{font-size:38px}}
 
 
 .learning-dashboard{margin-top:14px;padding:15px 16px;background:#fff;border:1px solid #dce5da;border-radius:16px}
@@ -144,7 +144,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.54">ver2.1.54</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.55">ver2.1.55</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -155,6 +155,8 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <button id="logoutBtn" class="logout-btn" type="button" hidden>ログアウト</button>
     </div>
   </div>
+  <div class="hero">
+    <div class="hero-intro">
   <section class="coin-board" aria-label="本日のコイン">
     <div class="coin-today">
       <div class="coin-eyebrow">TODAY'S COINS</div>
@@ -171,12 +173,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       </ol>
       <div id="coinRankNote" class="coin-rank-note" role="status">ログインすると、ペット名でランキングを表示します。</div>
     </div>
+  </section>
       <section id="loginStreakBonus" class="login-streak-bonus" aria-label="連続ログインボーナス">
         <div class="login-streak-heading"><strong>連続ログインボーナス</strong><span data-streak-status>ログインすると記録が始まります</span></div>
         <div class="streak-days" data-streak-days aria-label="7日間の報酬"></div>
         <div class="login-streak-actions"><button class="streak-claim" type="button" data-streak-claim disabled>ログインすると受け取れます</button><span class="streak-message" data-streak-message role="status" aria-live="polite"></span></div>
       </section>
-  </section>
+    </div>
 
 <section id="petChatModal" class="pet-chat-modal" hidden aria-labelledby="petChatTitle">
   <div class="pet-chat-panel">
@@ -214,10 +217,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <div id="petLearningActions" class="pet-learning-actions"><button id="petStrengthOpen" class="pet-shop-open" type="button" aria-haspopup="dialog" disabled>ペット強化</button><span id="learningTitles"><button type="button" class="pet-shop-open" data-titles-open aria-haspopup="dialog" disabled>称号</button><span data-titles-note hidden></span></span><span id="learningChallenges"><button type="button" class="pet-shop-open" data-challenge-refresh aria-haspopup="dialog" disabled>チャレンジ</button><p class="challenge-note" data-challenge-note hidden></p><div class="challenge-grid" data-challenge-grid hidden></div><p class="challenge-footer" hidden>毎日0時・毎週月曜0時に更新（日本時間）。通常の教材コインとは別のボーナスです。報酬は各期間1回。エイゴメーター・ワードウルフは対象外です。</p></span></div>
     </div>
   </section>
-
-
-
-
+  </div>
 
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
 <nav class="material-nav" aria-label="教材のジャンル"><a href="#materials-group-games">グループゲーム</a><a href="#materials-vocabulary-grammar">語彙文法学習</a><a href="#materials-reading">長文演習</a><a href="#materials-listening">リスニング</a><a href="#materials-conversation">英会話</a><a href="#materials-exam">英検対策</a></nav>
@@ -890,11 +890,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=2.1.54"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.54'></script>
+<script type="module" src="./learning-challenges.js?v=2.1.55"></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.55'></script>
 <script>
 (() => {
-  const version = '2.1.54';
+  const version = '2.1.55';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
