@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6f5ef">
+<title>TODAY | もんすたでぃ</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./style.css?v=1.0.0">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../" aria-label="もんすたでぃホームへ">もんすたでぃ <span>TODAY</span></a>
+  <div class="top-actions">
+    <button class="ghost" id="profileButton" type="button">興味・進路を更新</button>
+    <a class="home-link" href="../">ホーム</a>
+  </div>
+</header>
+<main id="app" class="shell" aria-live="polite"></main>
+<dialog id="profileDialog" class="profile-dialog">
+  <form method="dialog" id="profileForm">
+    <div class="dialog-head">
+      <div><span class="eyebrow">YOUR INTERESTS</span><h2>あなたに合うニュースを選ぶ</h2></div>
+      <button class="close" value="cancel" aria-label="閉じる">×</button>
+    </div>
+    <p class="lead">興味や進路は変わってOK。TODAYは、回答と実際に読んだ記事の両方を使っておすすめを少しずつ調整します。</p>
+    <fieldset><legend>気になる分野 <small>5つまで</small></legend><div id="interestChoices" class="choice-grid"></div></fieldset>
+    <fieldset><legend>今、気になる進路 <small>複数選択可</small></legend><div id="careerChoices" class="choice-grid compact"></div></fieldset>
+    <fieldset><legend>普段読むレベル</legend><div id="levelChoices" class="level-choices"></div></fieldset>
+    <fieldset><legend>読み方</legend><div class="choice-grid compact"><label><input type="radio" name="challenge" value="easy">少しやさしく</label><label><input type="radio" name="challenge" value="balanced" checked>ちょうどよく</label><label><input type="radio" name="challenge" value="challenge">少し挑戦</label></div></fieldset>
+    <p id="profileError" class="form-error" role="alert"></p>
+    <div class="dialog-actions"><button class="secondary" value="cancel">あとで</button><button class="primary" id="saveProfile" value="default">保存する</button></div>
+  </form>
+</dialog>
+<script type="module" src="./app.js?v=1.0.0"></script>
+</body>
+</html>
