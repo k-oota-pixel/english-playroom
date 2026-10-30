@@ -9,11 +9,74 @@ const bedButton=document.createElement('button');bedButton.id='bedButton';bedBut
 const style=document.createElement('style');style.textContent=`#sofaActor,#bedActor{position:absolute;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-80%)!important;transform-origin:50% 88%!important;transition:left .18s ease,top .18s ease,transform .18s ease,filter .18s ease!important;filter:drop-shadow(0 4px 4px #5b3d2926)!important}#sofaActor{width:clamp(88px,20%,170px)!important}#bedActor{width:clamp(88px,20%,170px)!important}#sofaActor img{display:block;width:100%!important;height:auto!important;filter:none!important;transition:transform .18s ease!important;transform-origin:50% 50%!important}#bedActor .bed-sprite{display:block;position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;pointer-events:none}#bedActor .bed-sprite{transform:scale(1,1);transform-origin:50% 88%}#bedActor img{position:absolute!important;left:0;top:50%;display:block;width:400%!important;max-width:none!important;height:auto!important;filter:none!important;transform:translateY(-50%)!important;transition:left .18s ease!important}#room.placing #sofaActor.is-editing,#room.placing #bedActor.is-editing{transform:translate(-50%,-80%) scale(1.025)!important;filter:drop-shadow(0 11px 9px #5b3d293b)!important}#roomFurnitureHud{position:absolute;z-index:1400;width:140px;padding:8px;border:1px solid #75696029;border-radius:18px;background:#fffcf8f5;box-shadow:0 10px 28px #4e3a2b2e;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transform:translateY(-50%);touch-action:manipulation}#roomFurnitureHud[hidden]{display:none!important}.fr-pad{display:grid;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px;gap:1px;justify-content:center;align-items:center}.fr-key{appearance:none;border:1px solid #d9ded9;background:#fff;color:#356b57;border-radius:12px;font-size:22px;font-weight:900;line-height:1;box-shadow:0 2px 6px #3e524814}.fr-key:active:not(:disabled){transform:scale(.92);background:#edf7f0}.fr-key:disabled{opacity:.27}.fr-ul{grid-column:1;grid-row:1}.fr-ur{grid-column:3;grid-row:1}.fr-dl{grid-column:1;grid-row:3}.fr-dr{grid-column:3;grid-row:3}.fr-center{grid-column:2;grid-row:2;display:grid;place-items:center;width:30px;height:30px;margin:auto;border-radius:50%;background:#f6eee8}.fr-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:6px}.fr-action{appearance:none;min-height:32px;border-radius:10px;border:1px solid #d8dfda;background:#fff;font-size:11px;font-weight:850;color:#5d5753;padding:0 4px}.fr-rotate{color:#765786;background:#fbf7ff;border-color:#e4d8eb}.fr-ok{background:#39745b;border-color:#39745b;color:#fff}.fr-ok:disabled{opacity:.42}@media(max-width:700px){#sofaActor{width:clamp(86px,24%,126px)!important}#bedActor{width:clamp(86px,24%,126px)!important}#roomFurnitureHud{width:132px;padding:7px}.fr-pad{grid-template-columns:35px 35px 35px;grid-template-rows:35px 35px 35px}.fr-key{font-size:20px}.fr-action{font-size:10px}}`;document.head.append(style);
 const svgFront=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 230"><defs><linearGradient id="m" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8ef"/><stop offset="1" stop-color="#f3dfca"/></linearGradient><linearGradient id="h" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7c1c6"/><stop offset="1" stop-color="#dc858f"/></linearGradient><linearGradient id="q" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#facdd2"/><stop offset="1" stop-color="#efa5ae"/></linearGradient></defs><ellipse cx="151" cy="181" rx="111" ry="21" fill="#76543b" opacity=".12"/><path d="M45 108L190 181L255 149L110 76Z" fill="#b67b4e"/><path d="M51 104L190 174L247 146L109 78Z" fill="url(#m)" stroke="#d7ae8b" stroke-width="3"/><path d="M45 108L110 76L110 39L45 71Z" fill="url(#h)" stroke="#c97782" stroke-width="3"/><path d="M52 96L106 69L106 48L52 75Z" fill="#ffd7da" opacity=".65"/><path d="M116 83L170 110L195 98L141 71Z" fill="#fffdf8" stroke="#decbbb" stroke-width="2"/><path d="M54 105L141 149L194 122L107 79Z" fill="url(#q)"/><path d="M141 149L190 173L246 145L194 120Z" fill="#f7e7d4" opacity=".8"/><path d="M58 109L188 174" stroke="#fff" stroke-width="2" opacity=".35"/><circle cx="55" cy="170" r="6" fill="#96603b"/><circle cx="190" cy="201" r="6" fill="#96603b"/><circle cx="250" cy="166" r="5" fill="#96603b"/></svg>`;
 const svgBack=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 230"><defs><linearGradient id="m2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8ef"/><stop offset="1" stop-color="#f3dfca"/></linearGradient><linearGradient id="h2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7c1c6"/><stop offset="1" stop-color="#dc858f"/></linearGradient><linearGradient id="q2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#facdd2"/><stop offset="1" stop-color="#efa5ae"/></linearGradient></defs><ellipse cx="151" cy="181" rx="111" ry="21" fill="#76543b" opacity=".12"/><path d="M45 108L190 181L255 149L110 76Z" fill="#b67b4e"/><path d="M51 104L190 174L247 146L109 78Z" fill="url(#m2)" stroke="#d7ae8b" stroke-width="3"/><path d="M190 181L255 149L255 112L190 144Z" fill="url(#h2)" stroke="#c97782" stroke-width="3"/><path d="M195 169L249 142L249 121L195 148Z" fill="#ffd7da" opacity=".65"/><path d="M152 135L207 163L233 150L178 123Z" fill="#fffdf8" stroke="#decbbb" stroke-width="2"/><path d="M108 79L194 122L246 145L190 173L141 149L54 105Z" fill="url(#q2)" opacity=".72"/><circle cx="55" cy="170" r="6" fill="#96603b"/><circle cx="190" cy="201" r="6" fill="#96603b"/><circle cx="250" cy="166" r="5" fill="#96603b"/></svg>`;
-// Sprite-sheet order: front-right, front-left, back-left, back-right.
-const bedSheetUrl='assets/bed-4dir/bed-sheet.b64?v=11';
+// The bed is drawn in the same isometric basis as the room grid: one floor cell
+// is (±66.67, 33.33). Each long side is exactly parallel to those grid lines.
+function bedSpriteSheet(){
+ const dirs=[[66.667,33.333,-66.667,33.333],[-66.667,33.333,-66.667,-33.333],[-66.667,-33.333,66.667,-33.333],[66.667,-33.333,66.667,33.333]];
+ const esc=n=>Number(n.toFixed(2));
+ const tile=(r)=>{
+  const [lx,ly,wx,wy]=dirs[r],cx=170,cy=312;
+  const P=(s,t,z=0)=>[esc(cx+lx*s+wx*t),esc(cy+ly*s+wy*t-z)];
+  const pts=a=>a.map(p=>p.join(',')).join(' ');
+  const poly=(a,fill,stroke='#0000',sw=1,extra='')=>'<polygon points="'+pts(a)+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linejoin="round" '+extra+'/>';
+  const face=(a,b,z0,z1,fill,stroke='#0000',sw=1)=>poly([P(...a,z0),P(...b,z0),P(...b,z1),P(...a,z1)],fill,stroke,sw);
+  const box=(s0,s1,t0,t1,z,fill,stroke='#0000',sw=1)=>poly([P(s0,t0,z),P(s1,t0,z),P(s1,t1,z),P(s0,t1,z)],fill,stroke,sw);
+  let out='<g transform="translate('+(r*340)+',0)">';
+  out+=poly([P(-1,-.5,-1),P(1,-.5,-1),P(1,.5,-1),P(-1,.5,-1)],'#76543b','none',0,'opacity=".12"');
+  // Deep wooden plinth, with visible lower faces for the same grounded thickness as the sofa.
+  for(const [a,b] of [[[-1,-.5],[1,-.5]],[[1,-.5],[1,.5]],[[1,.5],[-1,.5]],[[-1,.5],[-1,-.5]]]){
+   const mid=(P(...a)[1]+P(...b)[1])/2;
+   if(mid>cy)out+=face(a,b,0,20,'url(#woodSide'+r+')','#8e5938',1.2);
+  }
+  out+=box(-1,1,-.5,.5,20,'url(#woodTop'+r+')','#a96d43',2);
+  // Mattress keeps a substantial, visible cushion edge above the wood frame.
+  for(const [a,b] of [[[-1,-.5],[1,-.5]],[[1,-.5],[1,.5]],[[1,.5],[-1,.5]],[[-1,.5],[-1,-.5]]]){
+   const mid=(P(...a)[1]+P(...b)[1])/2;
+   if(mid>cy)out+=face(a,b,20,48,'url(#mattressSide'+r+')','#d6b491',1.4);
+  }
+  out+=box(-.96,.96,-.46,.46,48,'url(#mattressTop'+r+')','#e4c9ad',1.4);
+  // Long rails run on both grid-aligned sides; their upper and lower edges share the exact grid vectors.
+  for(const t of [-.5,.5]){
+   out+=face([-1,t],[1,t],24,59,t===.5?'url(#railNear'+r+')':'url(#railFar'+r+')','#98613d',1.4);
+   out+=poly([P(-1,t,59),P(1,t,59),P(1,t===.5?.38:-.38,59),P(-1,t===.5?.38:-.38,59)],'#d49a65','#98613d',1.2);
+  }
+  // Headboard and footboard are aligned to the short grid direction.
+  out+=face([-1,-.5],[-1,.5],48,101,'url(#headboard'+r+')','#945d3a',2);
+  out+=face([1,-.5],[1,.5],48,76,'url(#footboard'+r+')','#945d3a',2);
+  out+=poly([P(-1,-.5,101),P(-1,.5,101),P(-1,.42,101),P(-1,-.42,101)],'#e0a86f','#945d3a',1.5);
+  out+=poly([P(1,-.5,76),P(1,.5,76),P(1,.42,76),P(1,-.42,76)],'#e0a86f','#945d3a',1.5);
+  // Cream mattress, pink gingham throw and pillow share the floor-plane projection.
+  out+=box(-.93,.93,-.43,.43,49,'url(#sheetCream'+r+')','#dec5a9',1);
+  out+=box(-.88,-.42,-.34,.34,52,'url(#pillow'+r+')','#cf8990',1.4);
+  out+=box(.12,.91,-.43,.43,52,'url(#quilt'+r+')','#df8c98',1.5);
+  // Gingham follows the same parallelogram instead of a skewed raster perspective.
+  for(let i=1;i<5;i++){
+   const s=.12+(i/5)*.79;
+   out+='<path d="M'+P(s,-.43,52).join(' ')+' L'+P(s,.43,52).join(' ')+'" stroke="#fff0ed" stroke-width="1.2" opacity=".68"/>';
+  }
+  for(let i=1;i<4;i++){
+   const t=-.43+i*.215;
+   out+='<path d="M'+P(.12,t,52).join(' ')+' L'+P(.91,t,52).join(' ')+'" stroke="#fff0ed" stroke-width="1.2" opacity=".68"/>';
+  }
+  // Soft folds at the edge of the blanket add a little depth without changing its footprint.
+  out+=face([.78,-.43],[.91,-.43],36,52,'#d9828e','#cb7784',1);
+  out+=face([.91,-.43],[.91,.43],36,52,'#e6949f','#cb7784',1);
+  // Rounded wood posts at all four corners, tall at the pillow end and lower at the foot.
+  for(const s of [-1,1])for(const t of [-.5,.5]){
+   const [x,y]=P(s,t,0),h=s<0?103:78;
+   out+='<rect x="'+esc(x-6.5)+'" y="'+esc(y-h)+'" width="13" height="'+h+'" rx="6.5" fill="url(#post'+r+')" stroke="#945d3a" stroke-width="1.5"/>';
+   out+='<path d="M'+esc(x-2.4)+' '+esc(y-h+7)+' V'+esc(y-5)+'" stroke="#f6c58b" stroke-width="2" opacity=".58" stroke-linecap="round"/>';
+  }
+  out+='</g>';return out;
+ };
+ let defs='';
+ for(let r=0;r<4;r++)defs+='<linearGradient id="woodSide'+r+'" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c28a58"/><stop offset="1" stop-color="#94603e"/></linearGradient><linearGradient id="woodTop'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e1ad76"/><stop offset="1" stop-color="#bf8250"/></linearGradient><linearGradient id="mattressSide'+r+'" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f6e5d3"/><stop offset="1" stop-color="#dbbea0"/></linearGradient><linearGradient id="mattressTop'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf2"/><stop offset="1" stop-color="#f0dfcd"/></linearGradient><linearGradient id="railNear'+r+'" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c78a55"/><stop offset="1" stop-color="#a96d43"/></linearGradient><linearGradient id="railFar'+r+'" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d39b64"/><stop offset="1" stop-color="#b97b4d"/></linearGradient><linearGradient id="headboard'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d49a62"/><stop offset="1" stop-color="#ad7146"/></linearGradient><linearGradient id="footboard'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c38854"/><stop offset="1" stop-color="#a26940"/></linearGradient><linearGradient id="sheetCream'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf3"/><stop offset="1" stop-color="#f0ddca"/></linearGradient><linearGradient id="pillow'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5b8c0"/><stop offset="1" stop-color="#db929a"/></linearGradient><linearGradient id="quilt'+r+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6b9c0"/><stop offset="1" stop-color="#de8793"/></linearGradient><linearGradient id="post'+r+'" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#a8673d"/><stop offset=".38" stop-color="#d69a60"/><stop offset="1" stop-color="#a66a40"/></linearGradient>';
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="453" viewBox="0 0 1360 453"><defs>'+defs+'</defs>'+dirs.map((_,r)=>tile(r)).join('')+'</svg>';
+}
+const bedSheetUrl=URL.createObjectURL(new Blob([bedSpriteSheet()],{type:'image/svg+xml'}));
 function loadState(k,f){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v&&Number.isInteger(v.x)&&Number.isInteger(v.y))return{x:v.x,y:v.y,placed:!!v.placed}}catch{}return{...f}}function loadRot(k){const n=Number(localStorage.getItem(k));return Number.isInteger(n)&&n>=0&&n<4?n:0}
 const items={sofa:{id:'sofa',label:'ソファ',icon:'🛋️',actor:sofaActor,img:sofaImg,button:sofaButton,state:loadState('monstudy-pet-room-sofa-v1',{x:2,y:2,placed:false}),rotation:loadRot('monstudy-pet-room-sofa-rotation-v3'),store:'monstudy-pet-room-sofa-v1',rotKey:'monstudy-pet-room-sofa-rotation-v3',front:'',back:'',flipEven:true,dx:[-4,0,-4,0],dy:[4,4,4,4]},bed:{id:'bed',label:'ベッド',icon:'🛏️',actor:bedActor,img:bedImg,button:bedButton,state:loadState('monstudy-pet-room-bed-v1',{x:3,y:1,placed:false}),rotation:loadRot('monstudy-pet-room-bed-rotation-v1'),store:'monstudy-pet-room-bed-v1',rotKey:'monstudy-pet-room-bed-rotation-v1',front:'',back:'',ready:false,flipEven:false,dx:[-4,0,-4,0],dy:[4,4,4,4]}};
-bedImg.addEventListener('load',()=>{items.bed.ready=true;sync()},{once:true});bedImg.addEventListener('error',()=>{bedButton.disabled=true;bedButton.textContent='ベッド画像を読み込めません';if(note)note.textContent='ベッド画像を読み込めませんでした。ページを再読み込みしてください。'},{once:true});fetch(bedSheetUrl,{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('bed sheet');return r.text()}).then(data=>{const dataUrl=`data:image/webp;base64,${data.trim()}`;items.bed.front=dataUrl;items.bed.back=dataUrl;bedImg.src=dataUrl}).catch(error=>{console.error('Bed image failed to load',error);bedButton.disabled=true;bedButton.textContent='ベッド画像を読み込めません';if(note)note.textContent='ベッド画像を読み込めませんでした。ページを再読み込みしてください。'});
+bedImg.addEventListener('load',()=>{items.bed.ready=true;sync()},{once:true});bedImg.addEventListener('error',()=>{bedButton.disabled=true;bedButton.textContent='ベッド画像を読み込めません';if(note)note.textContent='ベッド画像を読み込めませんでした。ページを再読み込みしてください。'},{once:true});{const dataUrl=bedSheetUrl;items.bed.front=dataUrl;items.bed.back=dataUrl;bedImg.src=dataUrl;};
 const key=(x,y)=>`${x},${y}`,horizontal=r=>r%2===0,footprint=item=>horizontal(item.rotation)?[{x:item.state.x,y:item.state.y},{x:item.state.x+1,y:item.state.y}]:[{x:item.state.x,y:item.state.y},{x:item.state.x,y:item.state.y+1}],inBounds=c=>c.x>=0&&c.y>=0&&c.x<GRID&&c.y<GRID;
 function removeOcc(item){for(const c of footprint(item))occupied.delete(key(c.x,c.y))}function addOcc(item){if(!item.state.placed)return;for(const c of footprint(item))if(inBounds(c))occupied.add(key(c.x,c.y))}function rebuildOcc(){occupied.clear();for(const item of Object.values(items)){if(item.id==='bed')fit(item);addOcc(item)}}function saveItem(item){localStorage.setItem(item.store,JSON.stringify(item.state));localStorage.setItem(item.rotKey,String(item.rotation))}function fit(item){if(horizontal(item.rotation)){item.state.x=Math.max(0,Math.min(GRID-2,item.state.x));item.state.y=Math.max(0,Math.min(GRID-1,item.state.y))}else{item.state.x=Math.max(0,Math.min(GRID-1,item.state.x));item.state.y=Math.max(0,Math.min(GRID-2,item.state.y))}}
 function applyAsset(item){const src=item.rotation>=2?item.back:item.front;if(src&&item.img.getAttribute('src')!==src)item.img.src=src;if(item.id==='bed'){item.img.style.left=`${-item.rotation*100}%`;item.img.style.transform='translateY(-50%)';return}const flip=item.flipEven?horizontal(item.rotation):!horizontal(item.rotation);item.img.style.left='';item.img.style.transform=flip?'scaleX(-1)':'none'}
