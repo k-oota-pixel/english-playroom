@@ -86,3 +86,26 @@
 .enemy-visual img{display:block;width:178px;height:166px;max-width:100%;object-fit:contain}.dungeon-mode #enemyMpText{color:#d5cdf5}.dungeon-mode #enemyName{color:#fff3d4}
 #battleView .fighter.miniboss-side{grid-template-rows:16px 8px 12px 10px minmax(0,1fr)}#battleView .enemy-visual img{height:100%;width:auto;max-height:130px;max-width:100%;min-height:0}#battleView .miniboss-side .enemy-visual{position:relative}#battleView .miniboss-side .enemy-visual img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);object-fit:contain}
 
+
+/* Every boss encounter shares an ominous arena in both adventure modes. */
+#battleView .battlefield.boss-battle{
+ isolation:isolate;
+ background:radial-gradient(ellipse at 50% 105%,#b629593d,transparent 57%),radial-gradient(ellipse at 75% 12%,#743b8059,transparent 46%),linear-gradient(180deg,#171325 0%,#30203e 53%,#201b2c 54%,#14121f 100%);
+ border-color:#a65a79;
+ box-shadow:inset 0 0 34px #100915a6,0 0 0 2px #b4789b40;
+}
+#battleView .battlefield.boss-battle::before{
+ inset:auto -3% 0;height:52%;border-radius:0;
+ background:linear-gradient(160deg,transparent 65%,#9f41664d 66%,transparent 68%),linear-gradient(23deg,transparent 63%,#c45f7252 64%,transparent 65%),linear-gradient(180deg,#322536,#181421);
+ clip-path:polygon(0 26%,7% 20%,13% 34%,22% 13%,29% 30%,38% 23%,47% 36%,55% 18%,62% 28%,71% 10%,80% 29%,90% 17%,100% 28%,100% 100%,0 100%);
+ z-index:-1;
+}
+#battleView .battlefield.boss-battle::after{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:radial-gradient(ellipse at 16% 83%,#d34f9855 0,transparent 13%),radial-gradient(ellipse at 84% 85%,#bd4bdb55 0,transparent 14%),radial-gradient(circle at 10% 37%,#e6a5d9 0 1px,transparent 2px),radial-gradient(circle at 42% 22%,#c578a9 0 1px,transparent 2px),radial-gradient(circle at 69% 35%,#e6a5d9 0 1px,transparent 2px),radial-gradient(circle at 91% 19%,#c578a9 0 1px,transparent 2px);
+}
+#battleView .boss-battle .name-line strong{color:#f8e6d5}
+#battleView .boss-battle .name-line span,#battleView .boss-battle .hp-text,#battleView .boss-battle .mp-text{color:#dccbdd}
+#battleView .boss-battle #enemyName{color:#ffd080}
+#battleView .boss-battle #battleStatus{color:#efd3ab}
+#battleView .boss-battle .enemy-visual{filter:drop-shadow(0 5px 8px #ba4b8d50)}
