@@ -6,9 +6,10 @@ export function createFinalBattleUi(els){
   els.battlefield.classList.toggle('final-encounter',!!encounter);
   if(!encounter){other.hidden=true;return;}
   const target=encounter.target,partner=encounter.enemies.find(e=>e!==target);other.hidden=!partner;
-  els.areaLabel.textContent='最終決戦';els.enemyCount.textContent=`最終 ${encounter.waveIndex+1} / ${encounter.total} · ${encounter.enemies.filter(e=>e.hp>0).length}体`;els.enemyName.textContent='▶ '+target.name;
-  els.bossBadge.textContent=`♛ 最終決戦 · ${encounter.waveIndex+1} / ${encounter.total}`;
+  els.areaLabel.textContent='最終決戦';els.enemyCount.textContent=`最終決戦 · ${encounter.enemies.filter(e=>e.hp>0).length}体`;els.enemyName.textContent='▶ '+target.name;
+  els.bossBadge.textContent='♛ 最終決戦';
   if(partner){other.classList.toggle('final-enemy-defeated',partner.hp<=0);other.dataset.enemy=partner.id;other.querySelector('strong').textContent=partner.name;other.querySelector('.hp i').style.width=`${partner.hp/partner.maxHp*100}%`;other.querySelector('.hp-text').textContent=`${partner.hp} / ${partner.maxHp}`;other.querySelector('.mp-text').textContent=`MP ${partner.mp} / ${partner.maxMp}`;const img=other.querySelector('img');if(img.dataset.enemy!==partner.id){img.src=`./bosses/${partner.image}?v=2.3.22`;img.dataset.enemy=partner.id;img.alt=partner.name;}}
  },visualFor(enemy,encounter){return enemy===encounter.target?els.enemyVisual:other.querySelector('.enemy-visual');}};
 }
+
 

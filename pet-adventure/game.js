@@ -4,9 +4,10 @@ import {majorBossForStage,royalGuardHp,adminAdventureBest} from './royal-guard.j
 import {createGuardPresentation} from './guard-presentation.js?v=2.3.21';
 import {createFinalEncounter,finalEnemyActions,FINAL_FLOOR} from './final-encounter.js?v=2.3.22';
 import {createFinalPresentation} from './final-presentation.js?v=2.3.22';
-import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.22';
+import {adminStatsAdjustment} from '../pet-admin-stats-adjustment.js?v=2.3.23';
+import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.23';
 import {accountSession} from '../auth-session.js?v=2.3.8';
-import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.24';
+import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.11';
@@ -61,7 +62,7 @@ function startFloorOptions(){const floors=unlockedStartFloors(Math.min(FINAL_FLO
 function clearField(){return mode==='tower'?'wordTowerCleared':'eikenDungeonCleared';}
 function pauseBattleClocks(){enemyClock.tick(performance.now(),true);finalEncounter?.tick(performance.now(),true);}
 async function presentFinal(options){cinematicActive=true;pauseBattleClocks();syncActionAvailability();refreshPause();try{await finalPresentation.show(options);}finally{cinematicActive=false;pauseBattleClocks();syncActionAvailability();refreshPause();}}
-async function presentFinalWave(){const encounter=finalEncounter;await presentFinal({id:encounter.wave.id,title:encounter.wave.title,quote:encounter.wave.quote,kicker:`FINAL BATTLE · ${encounter.waveIndex+1} / ${encounter.total}`,actors:encounter.enemies,buttonText:encounter.waveIndex===0?'最終決戦を始める':'戦いを続ける'});if(runActive&&finalEncounter===encounter)prepareTurn();}
+async function presentFinalWave(){const encounter=finalEncounter;await presentFinal({id:encounter.wave.id,title:encounter.wave.title,quote:encounter.wave.quote,kicker:'FINAL BATTLE',actors:encounter.enemies,buttonText:encounter.waveIndex===0?'最終決戦を始める':'戦いを続ける'});if(runActive&&finalEncounter===encounter)prepareTurn();}
 function startFinalEncounter(){finalEncounter=createFinalEncounter(mode);enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;enemyLastAction=null;pullFinalTarget();els.enemyVisual.className='enemy-visual';els.battlefield.classList.add('boss-battle','royal-guard-battle');els.stageCard.classList.add('boss-stage');els.bossBadge.hidden=false;void updateBest(FINAL_FLOOR);syncHud();prepareTurn();void presentFinalWave();}
 function finalEnemyStrike(actor){
  if(!runActive||playerHp<=0)return;const visual=finalUi.visualFor(actor,finalEncounter);
@@ -84,7 +85,7 @@ function finishFinalEnemy(){
 async function finishFinalVictory(encounter){
  await presentFinal({id:'demon-defeated',title:'魔王をやっつけた！',quote:'長い連戦を突破し、ついに魔王を打ち破った！',kicker:'DEMON LORD DEFEATED',actors:encounter.enemies,victory:true,buttonText:'勝利の先へ'});
  if(!runActive||finalEncounter!==encounter)return;
- await presentFinal({id:'game-clear',title:'GAME CLEAR!',quote:`${mode==='tower'?'魔王の塔':'魔物の巣窟'}、100階完全制覇！\n勇気と知識で、世界に平和を取り戻した。`,kicker:'ALL SEVEN BATTLES CLEARED',victory:true,buttonText:'冒険の記録を見る'});
+ await presentFinal({id:'game-clear',title:'GAME CLEAR!',quote:`${mode==='tower'?'魔王の塔':'魔物の巣窟'}、100階完全制覇！\n勇気と知識で、世界に平和を取り戻した。`,kicker:'ALL BATTLES CLEARED',victory:true,buttonText:'冒険の記録を見る'});
  if(runActive&&finalEncounter===encounter)await finishRun('clear');
 }
 
@@ -301,11 +302,12 @@ function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.dis
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const session=await accountSession(user);adminAdventure=session.admin===true&&!session.resetRequired;const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(petData.petHatched&&!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}if(adminAdventure){const progress=await runTransaction(db,async tx=>{const ref=walletRef(user),snapshot=await tx.get(ref),data=snapshot.data()||{},next={wordTowerBest:adminAdventureBest(data.wordTowerBest,true),eikenDungeonBest:adminAdventureBest(data.eikenDungeonBest,true)};if(next.wordTowerBest!==data.wordTowerBest||next.eikenDungeonBest!==data.eikenDungeonBest)tx.set(ref,{...next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});return next;});petData={...petData,...progress};}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const session=await accountSession(user);adminAdventure=session.admin===true&&!session.resetRequired;const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(petData.petHatched&&!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}if(adminAdventure){const progress=await runTransaction(db,async tx=>{const ref=walletRef(user),snapshot=await tx.get(ref),data=snapshot.data()||{},next={wordTowerBest:adminAdventureBest(data.wordTowerBest,true),eikenDungeonBest:adminAdventureBest(data.eikenDungeonBest,true)};if(next.wordTowerBest!==data.wordTowerBest||next.eikenDungeonBest!==data.eikenDungeonBest)tx.set(ref,{...next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});return next;});petData={...petData,...progress};}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);if(adminStatsAdjustment(petData,adminAdventure)){petData=await runTransaction(db,async tx=>{const ref=walletRef(user),snapshot=await tx.get(ref),data=snapshot.data()||{},patch=adminStatsAdjustment(data,adminAdventure);if(patch)tx.set(ref,{...patch,petUpdatedAt:serverTimestamp()},{merge:true});return {...data,...patch};});}stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
    els.loadingCard.hidden=true;els.dataNote.textContent=(mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中'))+' · 途中終了・保存を押すと今回の記録を保存します。画面移動では保存されません。';if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);window.dispatchEvent(new CustomEvent('pet-adventure:ready',{detail:{best:currentBest()}}));
 }
 
 els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{pauseBattleClocks();els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
+
 
 

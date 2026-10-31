@@ -2,7 +2,7 @@ import {auth,db,walletRef} from './coin-reward.js?v=2.1.25';
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1';
 import {getDocFromServer as getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js?v=2.1.25';
-import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats} from './pet-strength-model.js?v=1.10.24';
+import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats,grantedStrengthPoints} from './pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
 const RESPEC_PRICE=30;
@@ -92,7 +92,7 @@ if(button){
  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
 
  function render(count,data){
-  const state=strengthState(count,data.petStrength,data.petBaseStats,{ageDays:data.petLifeDays,adult:data.petAdult!==false}),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
+  const state=strengthState(count,data.petStrength,data.petBaseStats,{ageDays:data.petLifeDays,adult:data.petAdult!==false,grantedPoints:grantedStrengthPoints(data)}),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
   const levelCard=document.createElement('div');levelCard.className='strength-level-card';levelCard.innerHTML=`<span>PET LEVEL</span><strong>Lv.${level}</strong>`;body.append(levelCard);
   const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
   const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
@@ -135,7 +135,7 @@ if(button){
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
     if(!hasPet(data))throw Error('ペットが生まれると強化できます。');
     const count=storedTitleCount(data);if(count===null)throw Error('称号が更新されました。閉じてもう一度開くと最新のポイントを確認できます。');
-    const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key);
+    const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key,grantedStrengthPoints(data));
     const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength)),afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
     tx.set(ref,{petStrength,petStrengthLevelPoints,petUpdatedAt:serverTimestamp()},{merge:true});
     return {data:{...data,petStrength,petStrengthLevelPoints},count,beforeLevel,afterLevel};
@@ -187,3 +187,4 @@ if(typeof MutationObserver!=='undefined'){
  observer.observe(document.documentElement,{childList:true,subtree:true});
  ensureRespecShopCard();
 }
+

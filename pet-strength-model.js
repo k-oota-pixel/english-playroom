@@ -49,6 +49,10 @@ export function randomBaseStats(random=Math.random){
 export function allocationTotal(allocation={}){
  return STAT_KEYS.reduce((sum,key)=>{const n=Number(allocation?.[key]);return sum+(Number.isSafeInteger(n)&&n>0?n:0);},0);
 }
+export function grantedStrengthPoints(data={}){
+ const points=Number(data.petAdminGrantedPoints),generation=Math.max(1,Number(data.petGeneration)||1);
+ return data.petAdminGrantedGeneration===generation&&Number.isSafeInteger(points)&&points>0&&points<=1000?points:0;
+}
 
 export function strengthStatsFromAllocation(allocation={},baseStats=BASE_STATS,growth={}){
  return strengthState(allocationTotal(allocation)*3,allocation,baseStats,growth).stats;
@@ -60,7 +64,7 @@ export function strengthLevel(levelPoints=0,allocation={}){
 }
 
 export function strengthState(count,allocation={},baseStats=BASE_STATS,growth={}){
- const earned=Math.floor(Math.max(0,Number(count)||0)/3);
+ const granted=Number(growth.grantedPoints),earned=Math.floor(Math.max(0,Number(count)||0)/3)+(Number.isSafeInteger(granted)&&granted>0&&granted<=1000?granted:0);
  const points={hp:0,attack:0,defense:0,mp:0};let left=earned;
  for(const key of Object.keys(points)){const n=Number(allocation?.[key]);points[key]=Math.min(left,Number.isSafeInteger(n)&&n>0?n:0);left-=points[key];}
  const base=normalizeBaseStats(baseStats),ageBonus=ageGrowthBonuses(growth.ageDays,growth.adult===true);
@@ -71,11 +75,12 @@ export function strengthState(count,allocation={},baseStats=BASE_STATS,growth={}
  };
 }
 
-export function allocatePoint(count,allocation,key){
+export function allocatePoint(count,allocation,key,grantedPoints=0){
  if(!Object.hasOwn(BASE_STATS,key))throw Error('能力を選んでください。');
- const state=strengthState(count,allocation);
+ const state=strengthState(count,allocation,BASE_STATS,{grantedPoints});
  if(state.available<1)throw Error('強化ポイントがありません。');
  return {...state.points,[key]:state.points[key]+1};
 }
 
 export function incomingDamage(power,defense){return Math.max(1,power-defense);}
+

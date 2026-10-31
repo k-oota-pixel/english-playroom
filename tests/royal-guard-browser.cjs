@@ -2,13 +2,13 @@ const fs=require('fs'),path=require('path'),assert=require('node:assert/strict')
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const root=path.resolve(__dirname,'..'),out=path.resolve(root,'../..','boss-preview/royal-guard');fs.mkdirSync(out,{recursive:true});
 const origin='https://guard.test';
-async function fixture(browser,{mode='tower',admin=true,width=1100}={}){
+async function fixture(browser,{mode='tower',admin=true,width=1100,applyStats=false}={}){
  const page=await browser.newPage({viewport:{width,height:780},reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.log('PAGE ERROR',e.message)});
- await page.addInitScript(({admin})=>{window.testAdmin=admin;window.events=[];window.writes=[];window.publishRequests=0;window.wallet={petHatched:true,petAdult:true,petName:'えまゆん',petGeneration:1,petBaseStatsGeneration:1,petBaseStats:{hp:10,attack:1,defense:1,mp:6},petStrength:{hp:100,attack:50,defense:50,mp:200},petStrengthLevelPoints:400,petAppearance:{species:'dog',bodyColor:'cream',eyes:'sleepy',feature:'classic',pattern:'none',baseBackground:'sky'},wordTowerBest:32,eikenDungeonBest:32};window.EnglishPlayroomCoins={recordTitleEvents:(appId,events)=>window.events.push(...events.map(e=>({appId,...e}))),awardOncePerDay:()=>{}};Math.random=()=>.1;},{admin});
+ await page.addInitScript(({admin,applyStats})=>{window.testAdmin=admin;window.events=[];window.writes=[];window.publishRequests=0;window.wallet={petHatched:true,petAdult:true,petName:'えまゆん',petGeneration:1,petBaseStatsGeneration:1,petBaseStats:{hp:10,attack:1,defense:1,mp:6},petStrength:{hp:100,attack:50,defense:50,mp:200},petStrengthLevelPoints:400,petAppearance:{species:'dog',bodyColor:'cream',eyes:'sleepy',feature:'classic',pattern:'none',baseBackground:'sky'},wordTowerBest:32,eikenDungeonBest:32,petAdminStatsAdjustment:applyStats?undefined:'2026-11-01-hp100-atk30-def30-mp100'};window.EnglishPlayroomCoins={recordTitleEvents:(appId,events)=>window.events.push(...events.map(e=>({appId,...e}))),awardOncePerDay:()=>{}};Math.random=()=>.1;},{admin,applyStats});
  await page.clock.install();await page.clock.pauseAt(Date.now());
  await page.route(origin+'/**',async route=>{
  const u=new URL(route.request().url()),p=u.pathname.slice(1);
- if(p==='auth-session.js')return route.fulfill({contentType:'text/javascript',body:'export const accountSession=async()=>({admin:window.testAdmin,resetRequired:false});'});
+ if(p==='auth-session.js')return route.fulfill({contentType:'text/javascript',body:'export const accountSession=async()=>({admin:window.testAdmin,resetRequired:false});export const onAuthStateChanged=(auth,fn)=>{fn(auth.currentUser);return()=>{}};'});
  if(p==='coin-reward.js')return route.fulfill({contentType:'text/javascript',body:"export const db={};export const auth={currentUser:{uid:'fixture',getIdToken:async()=>'token'}};export const authReady=Promise.resolve();export const walletRef=()=>({});"});
  if(p==='shell-bridge.js')return route.fulfill({contentType:'text/javascript',body:''});
  if(p==='pet-art.js')return route.fulfill({contentType:'text/javascript',body:"export const renderPetSVG=()=>'<svg viewBox=\"0 0 100 100\"><text x=\"5\" y=\"80\" font-size=\"76\">🐶</text></svg>';"});
@@ -16,7 +16,7 @@ async function fixture(browser,{mode='tower',admin=true,width=1100}={}){
  let body=fs.readFileSync(target);if(target.endsWith('.html'))body=body.toString('utf8').replace(/<style id="monstudy-access-lock">[\s\S]*?<\/style>/,'');
  return route.fulfill({contentType:target.endsWith('.html')?'text/html; charset=utf-8':target.endsWith('.css')?'text/css':target.endsWith('.svg')?'image/svg+xml':'text/javascript',body});
  });
- await page.route('https://www.gstatic.com/**',r=>r.fulfill({contentType:'text/javascript',body:"export const getDoc=async()=>({exists:()=>true,data:()=>structuredClone(window.wallet)});export const setDoc=async(ref,patch)=>{window.writes.push(patch);Object.assign(window.wallet,patch)};export const runTransaction=async(db,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(window.wallet)}),set:(ref,patch)=>{window.writes.push(patch);Object.assign(window.wallet,patch)}});export const serverTimestamp=()=>0;"}));
+ await page.route('https://www.gstatic.com/**',r=>r.fulfill({contentType:'text/javascript',body:"export const getDoc=async()=>({exists:()=>true,data:()=>structuredClone(window.wallet)});export const setDoc=async(ref,patch)=>{window.writes.push(patch);Object.assign(window.wallet,patch)};export const runTransaction=async(db,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(window.wallet)}),set:(ref,patch)=>{window.writes.push(patch);Object.assign(window.wallet,patch)}});export const serverTimestamp=()=>0;export const getDocFromServer=getDoc;"}));
  await page.route('https://k-oota-pixel.github.io/english-playroom/access-gate.js**',r=>r.fulfill({contentType:'text/javascript',body:''}));
  await page.route('https://k-oota-pixel.github.io/word-breaker/**',r=>r.fulfill({json:Object.fromEntries(['junior1','junior2','junior3','high1','high2'].map(id=>[id,Array.from({length:8},(_,i)=>({id:id+i,word:'word'+i,answers:['意味'+i]}))]))}));
  await page.route('https://k-oota-pixel.github.io/eiken-retry/**',r=>r.fulfill({contentType:'text/html',body:'<script id="question-data" type="application/json">'+JSON.stringify(['4級','3級','準2級','2級','準1級'].flatMap(grade=>Array.from({length:5},(_,i)=>({id:grade+i,grade,question:'I (____) English.',choices:[{number:1,text:'study'},{number:2,text:'studies'},{number:3,text:'studied'},{number:4,text:'studying'}],answer_number:1}))))+'</script>'}));
@@ -60,5 +60,6 @@ for(const [mode,width] of [['tower',1100],['dungeon',390]]){
 }
 const {page,errors}=await fixture(b,{admin:false});assert.equal(await page.locator('[data-start-floor="90"]').count(),0);assert.equal(await page.evaluate(()=>wallet.wordTowerBest),32);assert.deepEqual(errors,[]);await page.close();console.log('PASS normal players retain actual best and cannot start at 90F');
 }finally{await b.close()}})().catch(e=>{console.error(e);process.exit(1)});
+
 
 
