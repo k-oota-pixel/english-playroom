@@ -11,7 +11,7 @@ function install() {
   if (!home || !topbar) return;
 
   const versionBadge=home.querySelector('.app-version-badge');
-  if(versionBadge){versionBadge.textContent='ver2.1.59';versionBadge.setAttribute('aria-label','version 2.1.59');}
+  if(versionBadge){versionBadge.textContent='ver2.1.60';versionBadge.setAttribute('aria-label','version 2.1.60');}
   const conversationSection=home.querySelector('#materials-conversation');
   const conversationCards=conversationSection?.querySelector('.cards');
   if(conversationCards&&!conversationCards.querySelector('[data-case-talk-card]')){
@@ -50,7 +50,7 @@ function install() {
   }
   const sidebarIcon = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg>';
   const shell = document.createElement('div'); shell.id='monstudyShell';
-  shell.innerHTML = `<header class="ms-header"><a class="ms-brand" href="${root.href}" aria-label="もんすたでぃ ホーム"></a><div class="ms-page-nav"><span class="ms-current" aria-live="polite">ホーム</span><button class="ms-menu" type="button" aria-label="メニューを開く" aria-controls="msSidebar" aria-expanded="false" title="サイドバーを表示">${sidebarIcon}</button></div><div class="ms-account"></div></header><button class="ms-shade" type="button" aria-label="メニューを閉じる" hidden></button><aside class="ms-sidebar" id="msSidebar" aria-label="共通メニュー"><nav><div class="ms-home-row"><a class="ms-home" href="${root.href}"><span aria-hidden="true">⌂</span> ホーム</a><button class="ms-sidebar-toggle" type="button" aria-label="サイドバーを隠す" title="サイドバーを隠す" aria-controls="msSidebar">${sidebarIcon}</button></div><p class="ms-nav-label">教材カテゴリー</p><div class="ms-groups"></div><p class="ms-nav-label">ペットと学習</p><div class="ms-features"></div></nav></aside><section class="ms-workspace"><div class="ms-home-content"></div><iframe class="ms-material" title="教材" allow="microphone; autoplay; fullscreen" hidden></iframe><p class="ms-status" role="status" hidden></p></section>`;
+  shell.innerHTML = `<header class="ms-header"><a class="ms-brand" href="${root.href}" aria-label="もんすたでぃ ホーム"></a><div class="ms-page-nav"><a class="ms-current" href="${root.href}" aria-live="polite" aria-label="もんすたでぃ ホーム">ホーム</a><button class="ms-menu" type="button" aria-label="メニューを開く" aria-controls="msSidebar" aria-expanded="false" title="サイドバーを表示">${sidebarIcon}</button></div><div class="ms-account"></div></header><button class="ms-shade" type="button" aria-label="メニューを閉じる" hidden></button><aside class="ms-sidebar" id="msSidebar" aria-label="共通メニュー"><nav><div class="ms-home-row"><a class="ms-home" href="${root.href}"><span aria-hidden="true">⌂</span> ホーム</a><button class="ms-sidebar-toggle" type="button" aria-label="サイドバーを隠す" title="サイドバーを隠す" aria-controls="msSidebar">${sidebarIcon}</button></div><p class="ms-nav-label">教材カテゴリー</p><div class="ms-groups"></div><p class="ms-nav-label">ペットと学習</p><div class="ms-features"></div></nav></aside><section class="ms-workspace"><div class="ms-home-content"></div><iframe class="ms-material" title="教材" allow="microphone; autoplay; fullscreen" hidden></iframe><p class="ms-status" role="status" hidden></p></section>`;
   document.body.prepend(shell);
   shell.querySelector('.ms-brand').append(topbar.querySelector('.logo'));
   shell.querySelector('.ms-account').append(topbar.querySelector('.auth-area'));
@@ -99,8 +99,22 @@ function install() {
   document.addEventListener('close',()=>{syncPause();if(!hasModal())opener?.focus();},true);
   function cleanURL(value){const u=new URL(value);u.searchParams.delete('monstudy-release');return u;}
   function materialName(value){const u=cleanURL(value);return allMaterials.find(i=>i.url.pathname===u.pathname&&i.url.search===u.search)?.name||allMaterials.find(i=>i.url.pathname===u.pathname)?.name||'教材';}
+  function materialHome(value){
+    const u=cleanURL(value);
+    const matches=allMaterials.filter(i=>i.url.pathname===u.pathname&&[...i.url.searchParams].every(([name,val])=>u.searchParams.get(name)===val));
+    matches.sort((a,b)=>[...b.url.searchParams].length-[...a.url.searchParams].length);
+    return matches[0]?.url||allMaterials.find(i=>i.url.pathname===u.pathname)?.url||u;
+  }
   function key(value){const u=cleanURL(value);return u.pathname+u.search+u.hash;}
   function isHome(u){return u.pathname===homePath||u.pathname===homePath+'index.html';}
+  function syncTitle(u){
+    const homeView=isHome(u);
+    title.textContent=homeView?'ホーム':materialName(u);
+    const target=homeView?root:materialHome(u);
+    title.href=target.href;
+    title.setAttribute('aria-label',homeView?'もんすたでぃ ホーム':title.textContent+' のトップへ戻る');
+    document.title=title.textContent+'｜もんすたでぃ';
+  }
   function hideRetryMaterialHeader(){
     if(!shell.classList.contains('ms-retry-header-hidden'))return;
     try{
@@ -126,7 +140,7 @@ function install() {
     current=isHome(u)?'':key(u);
     shell.classList.toggle('ms-showing-material',!!current);
     shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
-    title.textContent=current?materialName(u):'ホーム';document.title=title.textContent+'｜もんすたでぃ';
+    syncTitle(u);
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
     if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release',`${MATERIAL_RELEASE}-${Date.now()}`);frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
@@ -146,6 +160,15 @@ function install() {
     if(!allowedToLeave())return false;
     historyIndex++;history.pushState({monstudy:true,index:historyIndex},'',routeURL(u));show(u);return true;
   }
+  title.addEventListener('click',e=>{
+    if(!current)return;
+    e.preventDefault();e.stopPropagation();
+    const u=new URL(title.href,root);
+    if(!canOpen(u)||!allowedToLeave())return;
+    if(key(u)!==current){historyIndex++;history.pushState({monstudy:true,index:historyIndex},'',routeURL(u));}
+    show(u);
+    document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+  });
   window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;syncPause();}};
   document.addEventListener('click',e=>{
     if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
@@ -176,7 +199,13 @@ function install() {
     if(!current)return;
     hideRetryMaterialHeader();
     status.hidden=true;
-    try {const u=new URL(frame.contentWindow.location.href);if(canOpen(u)&&key(u)!==current){current=key(u);history.replaceState({monstudy:true,index:historyIndex},'',routeURL(u));title.textContent=materialName(u);frame.title=title.textContent;}}catch{}
+    try {
+      const u=new URL(frame.contentWindow.location.href);
+      if(canOpen(u)){
+        if(key(u)!==current){current=key(u);history.replaceState({monstudy:true,index:historyIndex},'',routeURL(u));}
+        syncTitle(u);frame.title=title.textContent;
+      }
+    }catch{}
     syncPause();
   });
   const initial=new URL(location.href).searchParams.get('material');let u=root;
