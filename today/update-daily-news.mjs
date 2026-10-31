@@ -40,6 +40,10 @@ export function validateDailyPayload(payload){
     if(ids.has(article.id))throw new Error('TODAYの記事IDが重複しています。');ids.add(article.id);categories.add(article.category);
     if(sizeOf(article)>40_000)throw new Error(`TODAYの記事が大きすぎます: ${article.id}`);
     if(article.sources.length>4||article.sources.some(source=>!source?.name||!safeHttps(source?.url)))throw new Error(`TODAYの出典が不正です: ${article.id}`);
+    const published=Date.parse(article.sourcePublishedAt||'');
+    const editionStart=Date.parse(editionDate+'T00:00:00+09:00');
+    if(!Number.isFinite(published)||published<editionStart-72*3_600_000||published>editionStart+24*3_600_000)throw new Error(`TODAYの出典日付が未確認または古すぎます: ${article.id}`);
+    if(article.sources.some(source=>/\.(?:js|css|json|xml|pdf|png|jpe?g|gif|svg|webp|zip|mp[34])$/i.test(new URL(source.url).pathname)))throw new Error(`TODAYの出典が記事ではありません: ${article.id}`);
     let previousWords=0;
     for(const level of LEVELS){
       const words=Number(article.levels[level]?.wordCount)||countWords(article.levels[level]?.text||'');

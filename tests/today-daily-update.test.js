@@ -4,7 +4,7 @@ import {alreadyGeneratedToday,mergeDailyNews,validateDailyPayload} from '../toda
 
 const text=(n)=>Array.from({length:n},(_,i)=>`word${i+1}`).join(' ');
 const article=(id,category,date='2026-10-31')=>({
-  id,date,category,categories:[],careerTags:['undecided'],tags:['news'],title:`Story ${id}`,summaryJa:'ニュースの要約です。',
+  id,date,sourcePublishedAt:date+'T00:00:00+09:00',category,categories:[],careerTags:['undecided'],tags:['news'],title:`Story ${id}`,summaryJa:'ニュースの要約です。',
   levels:{
     '5級':{title:'Starter',text:text(45),wordCount:45},
     '4級':{title:'Easy',text:text(60),wordCount:60},
@@ -65,4 +65,11 @@ test('new TODAY payloads require an Eiken Grade 5 version',()=>{
   const missing=structuredClone(payload);
   delete missing.articles[0].levels['5級'];
   assert.throws(()=>validateDailyPayload(missing));
+});
+
+test('daily publication rejects stale or undated articles and script sources',()=>{
+ for(const sourcePublishedAt of ['', '2020-05-19T00:00:00Z','2026-11-05T00:00:00Z']){
+  const bad=structuredClone(payload);bad.articles[0].sourcePublishedAt=sourcePublishedAt;assert.throws(()=>validateDailyPayload(bad));
+ }
+ const script=structuredClone(payload);script.articles[0].sources=[{name:'not news',url:'https://example.com/news.js'}];assert.throws(()=>validateDailyPayload(script));
 });
