@@ -83,7 +83,7 @@ function buildDialog(){
       const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({message,page:location.pathname+location.search}),signal:AbortSignal.timeout(20000)});
       const result=await response.json().catch(()=>({}));
       if(!response.ok)throw Error(result.error||'メッセージを送信できませんでした。');
-      textarea.value='';count.textContent=`0 / ${MAX_LENGTH}`;status.textContent='送信しました。ありがとうございます。';status.className='developer-contact-status ok';
+      textarea.value='';count.textContent=`0 / ${MAX_LENGTH}`;status.textContent='メッセージを受け付けました。ありがとうございます。';status.className='developer-contact-status ok';
       setTimeout(close,1100);
     }catch(error){status.textContent=error?.message||'メッセージを送信できませんでした。';status.className='developer-contact-status error';}
     finally{sendButton.disabled=false;sendButton.textContent='送信';}
