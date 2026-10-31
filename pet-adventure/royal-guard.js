@@ -8,7 +8,7 @@ export function royalGuardHp(base,phase){return Math.round(base*(phase===2?1.2:1
 export function majorBossForStage(stage,mode,phase=1){
  if(Number(stage)===50&&['tower','dungeon'].includes(mode)){
   const form=phase===2?2:1;
-  return {id:`dark-mage-${form}`,name:'闇の魔術師',element:form===2?'fire':'water',level:50,maxMp:form===2?1000:500,royal:true,mage:true,phase:form,image:`dark-mage-${form}.svg`,attackInterval:form===2?1500:1000};
+  return {id:`dark-mage-${form}`,name:'闇の魔術師',element:form===2?'fire':'water',level:50,maxMp:form===2?1000:500,royal:true,mage:true,phase:form,image:`dark-mage-${form}.svg`,attackInterval:form===2?1500:2000};
  }
  return royalGuardForStage(stage,mode,phase);
 }

@@ -19,8 +19,8 @@ export function chooseMinibossAction({boss,hp,maxHp,mp,playerHp,lastAction},rand
    if(mp>=5&&hp<maxHp&&random()<.9)return MAGIC_SPELLS.find(s=>s.id==='mimuros');
    return null;
   }
-  if(mp<10)return {id:'wait',kind:'wait',mpCost:0};
-  return MAGIC_SPELLS.find(s=>s.id===(hp/maxHp<=.75&&maxHp-hp>=25?'mimurose':'mirogoron'));
+  if(mp<5)return {id:'wait',kind:'wait',mpCost:0};
+  return MAGIC_SPELLS.find(s=>s.id===(mp>=10&&hp/maxHp<=.75&&maxHp-hp>=25?'mimurose':'mirogoro'));
  }
  if(lastAction==='spell')return null;
  const heal=MAGIC_SPELLS.find(s=>s.id===(boss.royal&&mp>=10&&maxHp-hp>=25?'mimurose':'mimuros'));
