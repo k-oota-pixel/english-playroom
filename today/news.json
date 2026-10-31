@@ -1,131 +1,604 @@
 {
-  "generatedAt": "2026-10-31T03:00:00+09:00",
+  "generatedAt": "2026-10-31T00:39:48.163Z",
+  "editionDate": "2026-10-31",
+  "automation": {
+    "version": 1,
+    "dailyCount": 6,
+    "maxArchiveArticles": 540,
+    "lastSuccessfulEdition": "2026-10-31"
+  },
   "articles": [
     {
-      "id": "2026-10-31-healthy-housing",
+      "id": "2026-10-31-alaska-senate-candidate-denies-plot",
       "date": "2026-10-31",
       "category": "world",
-      "categories": ["health","environment","life"],
-      "careerTags": ["public","medicine","engineering"],
-      "tags": ["cities","housing","health","WHO","urban"],
-      "title": "WHO Says Healthy Cities Begin with Healthy Homes",
-      "summaryJa": "WHOが世界都市デーに、安全で健康的な住宅をすべての人に確保する重要性を訴えました。",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "alaska",
+        "election",
+        "senate",
+        "democrats",
+        "republicans"
+      ],
+      "title": "Alaska Senate Candidate Denies Ballot Plot",
+      "summaryJa": "アラスカ州の上院議員選挙をめぐり、民主党の候補者メアリー・ペルトラ氏が、同姓同名の候補者を擁立して有権者を混乱させようとしたという疑惑を否定しました。",
+      "sourcePublishedAt": "2026-10-31T00:29:58.000Z",
       "levels": {
-        "4級": {"title":"Healthy Homes, Healthy Cities","text":"The World Health Organization says homes are important for our health. Many people do not have safe homes. Some homes are too hot, too cold, or too crowded. These problems can make people sick. WHO says cities should make homes safer and easier to use. Good homes can help children, older people, and people with disabilities. Healthy cities need healthy homes."},
-        "3級": {"title":"Healthy Homes Can Make Better Cities","text":"The World Health Organization, or WHO, says that housing is an important health issue. Many people around the world do not have safe and good homes. Crowded rooms, very hot or cold homes, and dangerous buildings can hurt people's health. WHO says city leaders should think about health when they plan housing. Safe homes can help children grow well and help older people live more independently. They can also protect people during extreme weather. On World Cities Day, WHO asked governments and communities to work together so that everyone can live in a home that supports health and dignity."},
-        "準2級": {"title":"WHO Calls for Safe and Healthy Housing for Everyone","text":"The World Health Organization says the place where people live can strongly affect their health. On World Cities Day 2026, WHO called for safer and healthier housing around the world. According to a UN-Habitat report cited by WHO, billions of people still lack secure, safe and adequate housing. Poor housing can expose people to overcrowding, extreme heat or cold, injury risks and other problems. These risks often affect disadvantaged people most strongly. WHO says housing policy should therefore be treated as health policy. Better homes can support children's development, help older people remain independent and make communities more resilient during severe weather. The organization is asking health, housing, planning and finance officials to work together. Its message is simple: a home should protect a person's health rather than threaten it."},
-        "2級": {"title":"Housing Policy Is Also Health Policy, WHO Says","text":"The World Health Organization used World Cities Day 2026 to highlight a connection that is sometimes overlooked: housing is a major health issue. WHO cited UN-Habitat's World Cities Report 2026, which estimates that up to 3.4 billion people lack secure, safe and adequate housing. More than one billion people live in informal settlements and slums. Poor housing can expose residents to overcrowding, unsafe temperatures, injury hazards and barriers for people with disabilities. Such risks can contribute to illness and deepen existing inequalities. WHO argues that decisions about housing and urban development should therefore include public-health experts, not only planners and finance officials. Healthy housing can protect children, support older people who want to remain independent and help families cope with extreme heat and severe weather. It can also improve energy efficiency and reduce emissions. As cities continue to grow, WHO says cooperation among government departments and local communities will be essential. The goal is not simply to build more homes, but to create homes and neighborhoods that support health, safety and dignity throughout people's lives."},
-        "準1級": {"title":"WHO Frames the Global Housing Crisis as a Public-Health Challenge","text":"On World Cities Day 2026, the World Health Organization urged governments to recognize adequate housing as a central public-health issue rather than treating it solely as a matter of construction or urban planning. WHO cited UN-Habitat's World Cities Report 2026, which estimates that as many as 3.4 billion people lack secure, safe and adequate housing, including more than one billion people living in informal settlements and slums. The organization argues that housing conditions influence health throughout a person's life. Overcrowding can facilitate the spread of disease, unsafe indoor temperatures can threaten vulnerable residents, and poorly designed buildings can create injury risks or exclude people with disabilities. These burdens often fall most heavily on communities that are already disadvantaged, reinforcing health inequalities. WHO therefore wants health authorities to take part in decisions traditionally led by housing, planning and finance departments. It also stresses that healthier homes can deliver wider benefits: they can improve childhood development, enable older adults to remain independent, strengthen resilience to extreme weather, increase energy efficiency and reduce emissions. Existing WHO networks are already helping cities respond to challenges such as extreme heat and energy insecurity, but the organization says such efforts must become normal practice rather than isolated examples. As urban populations expand, the choices cities make about housing will shape health and equality for generations. WHO's message is that a healthy city begins at home, and that housing policy should be designed with health, accessibility, dignity and long-term resilience in mind."}
+        "5級": {
+          "title": "Mary Peltola talks about the election",
+          "text": "Mary Peltola is a candidate in Alaska. There are two men named Dan Sullivan in the race. People talk about a new plot. Peltola says she knows nothing. She does not want to trick voters. She wants a fair race. The election is very important.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Alaska Senate Candidate Denies Ballot Plot",
+          "text": "There is a big election in Alaska. Two men named Dan Sullivan are running for the Senate. People say Democrats tried to confuse voters. Democratic candidate Mary Peltola spoke to the voters. She said she knew nothing about the plan. She wants to clear the air. She is not trying to trick anyone. The investigation is still ongoing now.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Alaska Senate Candidate Denies Plot to Confuse Voters",
+          "text": "An election in Alaska is getting a lot of attention. Two men named Dan Sullivan are running for a Senate seat. Republicans say Democrats tried to confuse voters with a second candidate. Democratic candidate Mary Peltola denied knowing anything about this plan. She told voters that she only knew about herself and the incumbent. She stated that she never wanted to trick anyone. Meanwhile, the government is looking into the situation. Officials are investigating the case very carefully while the election approaches quickly. Additional reports suggest that federal authorities are reviewing ballots and examining communications related to the campaign.",
+          "wordCount": 99
+        },
+        "準2級": {
+          "title": "Alaska Senate Candidate Denies Involvement in Ballot Confusion Scheme",
+          "text": "Democratic Senate candidate Mary Peltola has strongly denied knowing about an alleged scheme in the Alaska Senate race. The controversy began when two men named Dan Sullivan appeared on the ballot, leading the incumbent Republican and his allies to accuse Democrats of trying to confuse voters. Reports suggested that people connected to Peltola's campaign worked to recruit a retired teacher named Dan J Sullivan as a spoiler candidate. However, Peltola stated clearly that she knew nothing about other candidates except for herself and the incumbent. She insisted that she was not interested in tricking voters. Despite her denials, the Trump administration and the Department of Justice are continuing investigations into the matter. Federal authorities have requested that election officials preserve and segregate ballots that rank the second Dan Sullivan while civil and criminal inquiries move forward.",
+          "wordCount": 136
+        },
+        "2級": {
+          "title": "Alaska Senate Candidate Denies Allegations Regarding Ballot Confusion Plot",
+          "text": "Democratic Senate candidate Mary Peltola has firmly denied any knowledge of an alleged plot that resulted in two men named Dan Sullivan running in the Alaska Senate race. The controversy arose after reports claimed that individuals connected to Peltola's campaign and senior Democratic aides attempted to recruit a retired teacher, also named Dan J Sullivan, to run as a spoiler candidate. The incumbent Republican senator and his allies quickly accused Democrats of attempting to confuse voters in one of the country's tightest midterm races. While speaking to voters, Peltola attempted to clear the air, stating that she knew nothing about the alleged scheme and had no interest in tricking voters. Nevertheless, the Department of Justice and the Trump administration have intensified their scrutiny, launching ongoing civil and criminal investigations into the matter. Federal prosecutors have even asked a judge to direct election officials to segregate all ballots ranking the second Dan Sullivan, though no criminal charges have been filed yet by authorities.",
+          "wordCount": 162
+        },
+        "準1級": {
+          "title": "Alaska Senate Contender Rejects Allegations of Orchestrating Ballot Scheme",
+          "text": "Democratic Senate candidate Mary Peltola has vehemently denied any awareness of an alleged political scheme that led to two men named Dan Sullivan appearing on the ballot in Alaska's highly competitive Senate race. The controversy escalated following media reports alleging that individuals tied to Peltola's campaign and senior Democratic committee aides collaborated to recruit a retired teacher, Dan J Sullivan, to serve as a spoiler candidate. Incumbent Republican Senator Dan S Sullivan and his political allies immediately seized on the reports, accusing Democrats of deliberately attempting to confuse the electorate in a contest critical to control of Congress. During a public appearance, Peltola sought to clear the air, firmly stating that her knowledge of the ballot was strictly limited to herself and the incumbent, and emphasizing her disinterest in any tactics designed to deceive voters. Despite these resolute denials, the political fallout has intensified significantly across the state. The Department of Justice has initiated both civil and criminal investigations into the recruitment effort, issuing subpoenas targeting Democratic officials. Furthermore, federal lawyers representing the Trump administration requested that a judge order election officials to preserve and segregate all ballots featuring the second Dan Sullivan, though no formal charges have been brought against any campaign figures as the intense scrutiny continues.",
+          "wordCount": 209
+        }
       },
-      "sources": [{"name":"World Health Organization — World Cities Day 2026","url":"https://www.who.int/news-room/commentaries/detail/on-world-cities-day-2026--who-calls-for-safe--healthy-housing-for-all"}]
+      "sources": [
+        {
+          "name": "BBC World",
+          "url": "https://www.bbc.co.uk/news/articles/cmwyq2gg1yzzo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
     },
     {
-      "id": "2026-10-30-hubble-service",
-      "date": "2026-10-30",
-      "category": "science",
-      "categories": ["technology"],
-      "careerTags": ["science","engineering","it"],
-      "tags": ["NASA","Hubble","space","telescope","engineering"],
-      "title": "NASA Looks at New Ways to Keep Hubble Working",
-      "summaryJa": "NASAがハッブル宇宙望遠鏡の寿命を延ばすため、民間企業による軌道上サービスの可能性を調べています。",
+      "id": "2026-10-31-mit-affiliates-named-2026-schmidt-sciences-ai2050-fell",
+      "date": "2026-10-31",
+      "category": "technology",
+      "categories": [
+        "science"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "AI",
+        "MIT",
+        "fellowship",
+        "Schmidt Sciences"
+      ],
+      "title": "MIT Affiliates Named 2026 AI2050 Fellows",
+      "summaryJa": "MITの教員5名と卒業生2名が、人工知能の発展を目指すシュミット・サイエンスの「2026 AI2050フェロー」に選ばれました。",
+      "sourcePublishedAt": "2026-10-30T20:15:00.000Z",
       "levels": {
-        "4級": {"title":"NASA Wants to Help Hubble","text":"NASA wants ideas to help the Hubble Space Telescope. Hubble went into space in 1990. It has studied space for more than 35 years. Its orbit is slowly getting lower. Hubble cannot move to a higher orbit by itself. NASA wants companies to share ideas. A future mission may move Hubble higher, repair it, or help it return safely at the end of its life."},
-        "3級": {"title":"Can Hubble Stay in Space Longer?","text":"NASA is looking for new ways to help the Hubble Space Telescope. Hubble has worked in space since 1990 and has made many important discoveries. However, its orbit is slowly becoming lower because of the thin atmosphere around Earth. The telescope does not have its own system to move to a higher orbit. NASA has asked private companies for ideas. A future mission might raise Hubble's orbit, improve some of its systems, or help control its return to Earth when its work is finished. NASA says Hubble still has useful science to do and wants to study practical ways to keep it working longer."},
-        "準2級": {"title":"NASA Studies Commercial Missions to Extend Hubble's Life","text":"NASA is asking private space companies to share ideas for servicing the Hubble Space Telescope in orbit. Hubble was launched in 1990 and has changed scientists' understanding of the universe, but its orbit is slowly getting lower because of atmospheric drag. The telescope has no propulsion system that can raise its orbit on its own. NASA says a future commercial mission could possibly boost Hubble to a higher altitude, service or improve the telescope, or support a safe end-of-mission plan. Current analysis suggests Hubble could re-enter Earth's atmosphere in the 2030s if nothing changes. NASA is not announcing a mission yet. Instead, it has issued a Request for Information to learn what private companies may be able to do and how much different options could cost. The agency says extending Hubble's life could create more opportunities for scientific discoveries."},
-        "2級": {"title":"NASA Explores Commercial Options for Hubble's Future","text":"NASA has begun exploring whether commercial space companies could help extend the scientific life of the Hubble Space Telescope. On October 29, the agency issued a Request for Information asking industry to describe possible in-space servicing capabilities. Hubble has operated for more than three decades and continues to make important observations, but its altitude is gradually decreasing because of atmospheric drag in low Earth orbit. Since Hubble has no propulsion system for maintaining its own orbit, NASA estimates that the telescope could re-enter the atmosphere around 2033 or 2034 if no action is taken. Possible future options include boosting Hubble into a higher orbit, servicing the telescope to improve its capabilities, or carrying out a controlled re-entry or other safe disposal plan at the end of the mission. NASA stresses that it has not selected a mission and is currently gathering information about technical possibilities and costs. Commercial space technology has advanced rapidly in areas such as satellite capture and servicing, so the agency wants to understand whether those capabilities could be used for Hubble. If a practical solution is found, keeping the telescope operating longer could provide additional scientific observations while NASA develops future flagship space missions."},
-        "準1級": {"title":"Commercial Space Capabilities Could Shape the Next Chapter of Hubble","text":"NASA is examining whether the rapidly developing commercial space industry could help prolong the life of the Hubble Space Telescope, one of the most influential scientific instruments ever placed in orbit. The agency issued a Request for Information on October 29 seeking proposals and technical information about potential in-space servicing. Hubble, launched in 1990, continues to produce valuable observations, but like other spacecraft in low Earth orbit, it is gradually losing altitude because of atmospheric drag. It lacks a propulsion system capable of maintaining or raising its orbit. NASA's current analysis suggests that, without intervention, Hubble is likely to re-enter Earth's atmosphere around 2033 or 2034. The agency is therefore interested in several possibilities: a commercial mission could boost the telescope to a higher altitude, service or enhance its systems, or eventually support a controlled re-entry or safe orbital disposal. NASA has not committed to any of these options, and the information request is intended to clarify what industry can realistically offer and at what cost. The timing reflects a broader change in spaceflight. Private companies have developed increasingly sophisticated capabilities for rendezvous, satellite capture and in-space operations that were far less mature when Hubble's final Space Shuttle servicing mission took place. NASA officials argue that if an innovative and cost-effective method can extend the life of a functioning scientific asset, it deserves careful study. Any future mission would still need to balance technical risk, expense and scientific value, but the process could determine whether Hubble remains productive well into the next decade."}
+        "5級": {
+          "title": "MIT AI Fellows",
+          "text": "Five people from MIT have a great prize. They study artificial intelligence. This is a very good thing for science. Schmidt Sciences gives this honor to them. They want AI to help people in the future. We can learn from them and make new tools. AI is important.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "MIT Researchers Get AI Honor",
+          "text": "Five MIT teachers and two alumni have won a special honor. Schmidt Sciences named them as 2026 AI2050 Fellows. This program wants to solve hard problems in artificial intelligence. The fellows will study how AI can help society in the future. Everyone wants to make sure that artificial intelligence is safe and good for everyone in the world today. We can learn a lot from these great people.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Seven MIT Affiliates Named AI2050 Fellows",
+          "text": "Five MIT faculty members and two alumni received a great honor recently. Schmidt Sciences named them to the 2026 cohort of AI2050 Fellows. This philanthropic initiative aims to solve difficult problems in artificial intelligence. Each fellow will work on making sure that AI turns out to be hugely beneficial to society by the year 2050. Their research will explore important questions and opportunities to ensure this positive outcome for everyone around the world.",
+          "wordCount": 70
+        },
+        "準2級": {
+          "title": "MIT Faculty and Alumni Named 2026 AI2050 Fellows by Schmidt Sciences",
+          "text": "Five faculty members and two additional alumni from MIT were recently named to the 2026 cohort of AI2050 Fellows. This honor is announced every year by Schmidt Sciences, which is a philanthropic initiative created by Eric and Wendy Schmidt to accelerate scientific innovation. Conceived and co-chaired by Eric Schmidt and James Manyika, AI2050 aims to help solve hard problems in artificial intelligence. Within their research, each fellow will think about the central question of AI2050. They want to know what problems were solved to make AI hugely beneficial to society by the year 2050 for everyone.",
+          "wordCount": 91
+        },
+        "2級": {
+          "title": "Seven MIT Affiliates Honored as 2026 AI2050 Fellows for Beneficial Artificial Intelligence Research",
+          "text": "Five MIT faculty members and two additional alumni were recently named to the 2026 cohort of AI2050 Fellows. This prestigious honor is announced annually by Schmidt Sciences, a philanthropic initiative founded by Eric and Wendy Schmidt to accelerate scientific innovation. Co-chaired by Eric Schmidt and James Manyika, AI2050 is designed to help solve hard problems in artificial intelligence. As part of their research, each fellow must contend with a central motivating question regarding the future. They consider what happens when artificial intelligence turns out to be hugely beneficial to society by the year 2050, identifying the most important problems solved and opportunities realized to ensure this outcome. Among the honored researchers, Sendhil Mullainathan serves as an AI2050 Senior Fellow at MIT, focusing his project on translating patterns detectable by AI into testable theories for the future.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "MIT Faculty and Alumni Recognized Among 2026 AI2050 Fellows for Advancing Beneficial Artificial Intelligence",
+          "text": "Five distinguished MIT faculty members and two additional alumni were recently named to the 2026 cohort of AI2050 Fellows, a prestigious recognition announced annually by Schmidt Sciences. Created and co-chaired by Eric and Wendy Schmidt along with James Manyika, this philanthropic initiative is dedicated to accelerating scientific innovation and solving exceptionally difficult problems within the field of artificial intelligence. Each selected fellow engages deeply with the core motivating question of the program: imagining a future in the year 2050 where artificial intelligence has proven to be profoundly beneficial to society, and determining the critical problems solved and possibilities realized to achieve that outcome. Among the recognized scholars is Sendhil Mullainathan, an AI2050 Senior Fellow and professor at MIT who holds dual appointments in the Department of Economics and the Department of Electrical Engineering and Computer Science, alongside his role as a principal investigator at the MIT Laboratory for Information and Decision Systems. His innovative research centers on the intersection of algorithms and human behavior, including efforts to translate patterns detectable by machine learning models into robust, testable scientific theories. Furthermore, this initiative supports early career fellows who continue to push the boundaries of modern computing and mathematical sciences across the institute.",
+          "wordCount": 197
+        }
       },
-      "sources": [{"name":"NASA Science — Potential Commercial Servicing for Hubble","url":"https://science.nasa.gov/missions/hubble/nasa-explores-potential-commercial-servicing-for-hubble-telescope/"}]
+      "sources": [
+        {
+          "name": "MIT News",
+          "url": "https://news.mit.edu/2026/mit-affiliates-named-schmidt-sciences-ai2050-fellows-1030"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-moloney-macdonald-england-usa-wxv-2026",
+      "date": "2026-10-31",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "rugby",
+        "england",
+        "usa",
+        "wxv"
+      ],
+      "title": "Moloney-MacDonald Scores Four Tries as England Thump USA",
+      "summaryJa": "ラグビーのWXVグローバル・シリーズで、イングランドがアメリカを55対12で破りました。モロニー＝マクドナルド選手が4トライを挙げる活躍を見せ、カナダ戦での敗北から見事に立て直しました。",
+      "sourcePublishedAt": "2026-10-30T23:56:59.000Z",
+      "levels": {
+        "5級": {
+          "title": "England Wins a Rugby Game",
+          "text": "England played a rugby game. They played against the USA team. England scored many points. They got fifty-five points. The USA team got twelve points. A player named Moloney-MacDonald scored four tries. England won the match. They are very happy today.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "England Beats USA in Rugby",
+          "text": "England played a great rugby match against the USA team. England wanted to win because they lost to Canada before. Moloney-MacDonald played very well and scored four tries for her team. England scored fifty-five points in total. The USA team scored only twelve points. England won the game easily and showed a strong comeback in the WXV Global Series.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "England Thumps USA After Losses",
+          "text": "England returned to the winning path with a strong performance in the WXV Global Series. They previously suffered defeats against Canada, but the team bounced back quickly. England played against the USA team and secured a comfortable victory with a score of 55 to 12. A standout player, Moloney-MacDonald, scored four tries during the match. This big win proved that England is still a very strong team in international rugby union. Even though they did not hit their absolute top gear, the team played very well to win this important game.",
+          "wordCount": 89
+        },
+        "準2級": {
+          "title": "Moloney-MacDonald Leads England to Victory Over USA",
+          "text": "England bounced back impressively from recent defeats against Canada by securing a dominant fifty-five to twelve victory over the USA team in the WXV Global Series. The standout moment of the match came from Moloney-MacDonald, who delivered an outstanding performance by scoring four tries for her squad. Although match reports noted that England did not always reach their absolute top gear during the game, their powerful offense proved far too much for the opposition. This convincing win helped England recover momentum and remind rugby fans of their strength in international competition.",
+          "wordCount": 91
+        },
+        "2級": {
+          "title": "England Defeats USA 55-12 in WXV Global Series",
+          "text": "England responded strongly to recent disappointments by defeating the USA team fifty-five to twelve in the WXV Global Series. Prior to this important rugby fixture, the English squad had suffered defeats against Canada, making this bounce-back performance crucial for their tournament campaign. A talented player named Moloney-MacDonald starred in the match by scoring four tries, driving the England team forward with remarkable skill and speed on the field. While match reports suggested that the England team did not consistently reach their absolute top gear throughout the contest, their overwhelming scoreline demonstrated their clear superiority over the USA team. This decisive victory highlights the depth and resilience of the English rugby squad as they navigate high-level international competition and work to improve their overall performance throughout the series. The England team successfully showed their strength on the international rugby stage.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Moloney-MacDonald Stars as England Rebounds With Convincing Win Over USA",
+          "text": "England successfully halted a brief period of frustration by delivering a comprehensive fifty-five to twelve victory against the USA team in the WXV Global Series tournament. The England rugby squad had previously faced consecutive defeats against Canada, increasing the pressure to perform and reassert their dominance on the international stage. A talented player named Moloney-MacDonald proved to be the catalyst for this much-needed recovery, producing a stellar individual display by crossing the try line four times during the match. Despite tactical analysis indicating that the England team occasionally struggled to hit their absolute top gear during the encounter, their sheer athleticism and clinical finishing ensured a very comfortable margin of victory over the opposition. This impressive bounce-back performance not only restores vital momentum for the England squad but also reinforces their status as formidable contenders in international rugby union as the tournament progresses further. The England team demonstrated their unwavering determination on the field against the USA team, showing great resilience after the difficult defeats against Canada earlier. Moloney-MacDonald helped lead the England team forward throughout the contest, securing the fifty-five to twelve win in the WXV Global Series competition. The England team successfully showed their strength on the international rugby stage once again, proving that the England team can overcome recent setbacks through hard work and exceptional individual brilliance from players like Moloney-MacDonald.",
+          "wordCount": 224
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/rugby-union/videos/c65yn0w2w152o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-nasa-releases-max-power-key-events",
+      "date": "2026-10-31",
+      "category": "science",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NASA",
+        "MAX POWER",
+        "Kennedy Space Center"
+      ],
+      "title": "NASA Announces MAX POWER Events",
+      "summaryJa": "NASAはフロリダ州のケネディ宇宙センターで11月6日から8日まで開催される新しい航空宇宙博覧会「MAX POWER」の主要なイベントスケジュールを発表しました。",
+      "sourcePublishedAt": "2026-10-30T19:31:02.000Z",
+      "levels": {
+        "5級": {
+          "title": "NASA Has MAX POWER",
+          "text": "NASA has a new air show. It is called MAX POWER. It is in Florida. The big event is in November. NASA can show new planes. Many people can see the future of space. Families can go and have fun on the weekend.",
+          "wordCount": 43
+        },
+        "4級": {
+          "title": "NASA Announces MAX POWER Events",
+          "text": "NASA announced key events for a new aerospace expo called MAX POWER. The big event will happen in Florida near the Kennedy Space Center. It starts on Friday, November 6, and ends on Sunday, November 8. NASA and its partners will show new aircraft, space vehicles, and future technologies. Visitors can see the quiet supersonic X-59 plane and learn about space exploration during the weekend.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "NASA Announces Schedule for MAX POWER Expo",
+          "text": "NASA recently announced key events for its newest aerospace expo and air show called MAX POWER. The show takes place from Friday, November 6, to Sunday, November 8, near the Kennedy Space Center in Florida. During the event, NASA and other partners will showcase new aircraft, autonomous vehicles, and spacecraft. Families can visit the public expo on November 7 and 8 to see exciting exhibits, meet astronauts, and learn about the future of space exploration.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "NASA Reveals Key Events for MAX POWER Aerospace Expo",
+          "text": "NASA has announced the schedule of key events for MAX POWER, its newest aerospace expo and air show. The event will run from Friday, November 6, to Sunday, November 8, at and near the Kennedy Space Center in Florida. At the expo, NASA and external collaborators will showcase advanced aircraft, autonomous vehicles, and Moon rovers. Visitors can see the quiet supersonic X-59 plane and learn about future air and space technologies. Public gates will open at 9 a.m. on November 7 and 8, offering families a chance to meet astronauts, engineers, and scientists. Additionally, NASA will host a special news conference at 5 p.m. on November 7 to share updates about the lunar South Pole Moon Base.",
+          "wordCount": 112
+        },
+        "2級": {
+          "title": "NASA Details Schedule and Activities for MAX POWER Expo",
+          "text": "NASA has officially released the schedule of key events for MAX POWER, America's newest aerospace expo and air show, which will take place from November 6 through November 8. Hosted on and near the agency's Kennedy Space Center in Florida, the event brings together NASA and various external collaborators to showcase cutting-edge aircraft, autonomous vehicles, and space technologies. Among the highlights is the display of NASA's quiet supersonic X-59 plane, alongside partner exhibits featuring Moon rovers and spacecraft. Family-friendly public events open their gates at 9 a.m. EST on November 7 and 8, allowing attendees to interact with leadership, astronauts, engineers, and scientists. Furthermore, NASA plans to host a major news conference at 5 p.m. on November 7 to deliver its latest update on the Moon Base, humanity's first long-term lunar exploration outpost located near the lunar South Pole.",
+          "wordCount": 134
+        },
+        "準1級": {
+          "title": "NASA Unveils Comprehensive Schedule and Highlights for MAX POWER Aerospace Showcase",
+          "text": "NASA has officially announced a detailed roster of key events for MAX POWER, the nation's premier aerospace expo and air show. Scheduled from Friday, November 6, through Sunday, November 8, the multi-day event takes place at and around the agency's Kennedy Space Center in Florida. Through diverse park experiences, NASA and a wide array of external collaborators will exhibit next-generation aircraft, autonomous vehicles, and advanced technologies shaping the future of aviation and space exploration. Notable displays include NASA's quiet supersonic X-59 plane, alongside partner-contributed Moon rovers and spacecraft, marking the culmination of the agency's recent Inspiration Tour. The weekend features public-friendly programming beginning at 9 a.m. EST on November 7 and November 8, giving attendees unique opportunities to engage with agency leadership, scientists, engineers, and veteran astronauts such as the Artemis III crew. In addition to dynamic aerial demonstrations like the F-5 flyover featuring NASA Administrator Jared Isaacman during the Air Dot Show, the agency will broadcast a crucial news conference at 5 p.m. on November 7 to provide a comprehensive update on the lunar South Pole Moon Base, which serves as humanity's pioneering long-term outpost for deep space exploration. Media and participants can also look forward to special briefings, including a nuclear media gaggle with Cynthia Simmons and opening remarks by Deputy Administrator Matt Anderson.",
+          "wordCount": 211
+        }
+      },
+      "sources": [
+        {
+          "name": "NASA News",
+          "url": "https://www.nasa.gov/news-release/nasa-releases-max-power-key-events-for-media-participants/"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-nova-biomedical-statstrip-glucose-meter-correction",
+      "date": "2026-10-31",
+      "category": "health",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "fda",
+        "glucose-meter",
+        "patient-safety",
+        "nova-biomedical"
+      ],
+      "title": "Nova Biomedical Updates Glucose Meter Instructions",
+      "summaryJa": "Nova Biomedical社は、StatStrip血糖測定器システム（Gen 2.0）について、患者IDの誤割り当てを防ぐため、ソフトウェア更新までの間、使用手順の更新と追加の確認を呼びかけています。",
+      "sourcePublishedAt": "2026-10-30T04:00:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "New Rules for Glucose Meters",
+          "text": "Nova Biomedical has a new update. It is for a hospital glucose meter. The meter is the StatStrip Gen 2.0. Sometimes, results can go to the wrong patient. Users must follow new instructions. Please check patient IDs carefully. Wait for a software update to fix this problem completely. Be safe.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Important Update for Hospital Meters",
+          "text": "Nova Biomedical has issued important new instructions. This affects the StatStrip Glucose Hospital Meter System Gen 2.0. The device can sometimes assign glucose results to the wrong patient. While waiting for a software update, users must follow new recommendations. If you have another meter, you should stop using this one. Always check the patient ID very carefully before and after every test.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Nova Biomedical Updates Instructions for Hospital Glucose Meters",
+          "text": "Nova Biomedical has released updated instructions for the StatStrip Glucose Hospital Meter System Gen 2.0. This correction happens because glucose results might be assigned to the incorrect patient. The FDA considers this a serious issue that requires attention. While waiting for a software update, hospitals should follow new safety steps. If an alternative device is available, users should stop using the affected meter until it is updated. Always confirm the patient name and ID on the screen before accepting any test results to prevent dangerous mistakes in hospitals.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Nova Biomedical Updates StatStrip Glucose Meter Instructions",
+          "text": "Nova Biomedical has announced an important correction for its StatStrip Glucose Hospital Meter System Gen 2.0. The company issued updated instructions because glucose test results can potentially be assigned to the incorrect patient. The FDA has classified this as a very serious situation that requires immediate attention. While customers wait for an official software update, they must follow specific safety recommendations. If an alternative device is available, users should stop using the affected meter until it is updated. Facilities must also configure their systems to automatically log operators out after each test. Additionally, medical staff must carefully verify the patient ID and name on the device screen before and after every test. These strict steps help prevent serious patient injury or data mix-ups in medical facilities.",
+          "wordCount": 125
+        },
+        "2級": {
+          "title": "Nova Biomedical Issues Important Correction for StatStrip Glucose Hospital Meters",
+          "text": "Nova Biomedical has updated its use instructions for the StatStrip Glucose Hospital Meter System Gen 2.0. This corrective action is necessary because test results might be incorrectly assigned to the wrong patient. The FDA has identified this recall as the most serious type, noting that it could cause serious injury or death if continued without proper correction. While customers await a permanent software update, they must follow temporary safety recommendations. If an alternative meter is available, users should stop using the affected StatStrip device immediately until the software update is applied. Facilities using integrated Electronic Medical Records should confirm that patient validation settings are properly configured within NovaNet. Furthermore, meters should be set to automatically log operators out after each test is completed. Users must verify patient IDs on the screen before sample collection and again when results populate, ensuring complete accuracy.",
+          "wordCount": 141
+        },
+        "準1級": {
+          "title": "Nova Biomedical Implements Critical Safety Correction for StatStrip Hospital Glucose Meters",
+          "text": "Nova Biomedical has issued updated instructions for use concerning the StatStrip Glucose Hospital Meter System Gen 2.0 due to the potential for glucose test results to be assigned to the incorrect patient. The FDA has categorized this corrective action as the most serious type of recall because continued use without proper mitigation could potentially lead to severe injury or death. While customers await a permanent software update, they are strongly advised to utilize alternative meters if available, stopping use of the affected StatStrip devices until they are updated. For those continuing to use the affected systems, Nova Biomedical has outlined strict configuration requirements. Facilities must ensure that patient validation settings are properly enabled within the NovaNet system and configure devices to automatically log operators out after every test. Furthermore, medical personnel must diligently verify that the patient ID, name, and date of birth displayed on the device screen correspond accurately to the individual being tested both before sample collection and after the final results populate. These rigorous verification protocols are essential for maintaining patient safety and preventing dangerous medical errors in hospital environments.",
+          "wordCount": 182
+        }
+      },
+      "sources": [
+        {
+          "name": "FDA MedWatch",
+          "url": "https://www.fda.gov/medical-devices/medical-device-recalls-and-early-alerts/hospital-glucose-meter-correction-nova-biomedical-updates-use-instructions-statstrip-glucose"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-philip-lane-ai-adoption-europe",
+      "date": "2026-10-31",
+      "category": "business",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ECB",
+        "artificial-intelligence",
+        "europe",
+        "economy"
+      ],
+      "title": "Philip R. Lane: AI Adoption in Europe",
+      "summaryJa": "欧州中央銀行（ECB）のフィリップ・R・レーン理事は、サンフランシスコ連邦準備銀行のシンポジウムで、欧州経済における人工知能（AI）の導入と生産性への影響について講演を行いました。",
+      "sourcePublishedAt": "2026-10-30T16:10:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "AI in Europe",
+          "text": "Europe has new technology. AI is very important now. Philip R. Lane talks about AI in Europe. He works at the ECB. AI helps the economy grow. Many companies use computers and software. Europe invests in digital tools. This helps people work better and faster every day.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "ECB Talk on AI",
+          "text": "Philip R. Lane spoke about artificial intelligence in the economy. He is a member of the European Central Bank. He said that adopting AI is very important for Europe. Although the US and China make new AI models, Europe can use AI to grow. Digital investment in the euro area has grown a lot since 2014.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "AI Adoption and the European Economy",
+          "text": "Philip R. Lane, a member of the European Central Bank, discussed artificial intelligence during a recent speech in San Francisco. He explained that while the US and China build frontier AI models, Europe focuses on AI adoption. This adoption will help European productivity grow. Digital investment in the euro area has increased significantly since 2014. Furthermore, European firms and investors are part of the global AI supply chain and fund infrastructure through equity, debt, and the banking system. ECB surveys provide important insights into these structural economic shifts.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "How AI is Reshaping the Euro Area Economy",
+          "text": "Philip R. Lane, a member of the European Central Bank's Executive Board, recently spoke about artificial intelligence and its impact on the economy. While frontier AI development mostly happens in the United States and China, adopting AI is a key factor for European productivity growth. Digital investment in the euro area has expanded by 73 percent in real terms since 2014, rising from 2.3 percent to 3.3 percent of GDP. Additionally, European firms participate in the global AI supply chain, and European investors help fund global AI infrastructure through equity, debt markets, and banks. Surveys conducted by the ECB help policymakers understand these changes.",
+          "wordCount": 100
+        },
+        "2級": {
+          "title": "ECB Executive Board Member Discusses AI Adoption in Europe",
+          "text": "At an economic research symposium in San Francisco, European Central Bank Executive Board member Philip R. Lane discussed how artificial intelligence is reshaping the euro area economy. He noted that while frontier AI models are primarily developed in the United States and China, the adoption of AI will drive European productivity growth in the coming years. Expenditure on AI adoption also currently provides a significant economic stimulus. Digital investment in the euro area has expanded by 73 percent in real terms since 2014, increasing from 2.3 percent to 3.3 percent of GDP. Although digital investment has grown much faster in the US, the euro area has seen a clear acceleration since 2024. Most of this regional digital investment is in intangible assets rather than data centers. Furthermore, European firms contribute to the global AI supply chain, and European investors help fund global AI infrastructure through equity and debt markets as well as the banking system.",
+          "wordCount": 150
+        },
+        "準1級": {
+          "title": "Philip R. Lane Examines Artificial Intelligence Integration and Productivity Growth in the Euro Area",
+          "text": "During a keynote address at the Federal Reserve Bank of San Francisco Economic Research Symposium, European Central Bank Executive Board member Philip R. Lane outlined the multifaceted ways artificial intelligence is transforming the euro area economy. Although foundational frontier AI development is predominantly concentrated in the United States and China, Lane emphasized that the widespread adoption of AI will serve as a critical determinant of future European productivity growth. Expenditures on AI adoption currently provide significant economic stimulus to the region. Moreover, European enterprises actively participate in the global AI supply chain, and regional investors contribute substantial funding to worldwide AI infrastructure buildouts via debt and equity markets as well as the banking sector. Aggregate trends highlight that digital investment in the euro area has expanded by 73 percent in real terms since 2014, climbing from 2.3 percent to 3.3 percent of GDP. While the United States has experienced a much faster pace of digital investment, the euro area has registered a distinct acceleration since 2024. Notably, regional digital investment has primarily flowed into intangible assets, with data center investments representing a comparatively modest share. Through ongoing ECB surveys and economic data, policymakers continue to monitor these structural shifts and their broader implications for the financial system.",
+          "wordCount": 202
+        }
+      },
+      "sources": [
+        {
+          "name": "European Central Bank",
+          "url": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261030~08d9d540f0.en.html"
+        }
+      ]
     },
     {
       "id": "2026-10-30-agent-compute",
       "date": "2026-10-30",
       "category": "technology",
-      "categories": ["business"],
-      "careerTags": ["it","engineering","business"],
-      "tags": ["AI","agents","Google Cloud","computing","security"],
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "it",
+        "engineering",
+        "business"
+      ],
+      "tags": [
+        "AI",
+        "agents",
+        "Google Cloud",
+        "computing",
+        "security"
+      ],
       "title": "Google Builds New Computers for AI Agents",
       "summaryJa": "Google Cloudが、AIエージェントを安全かつ効率的に動かすための新しい計算基盤を発表しました。",
       "levels": {
-        "4級": {"title":"New Computers for AI Agents","text":"Google Cloud is making a new computer service for AI agents. AI agents can do tasks, use tools, and sometimes write code. They need safe places to work. The new service is called Agent Compute Engine. It gives an AI agent a small computer in the cloud. Google says the system can start and stop quickly. It is also designed to keep one agent's work separate from another agent's work."},
-        "3級": {"title":"Google Cloud Makes a Service for AI Agents","text":"Google Cloud has introduced a new service called Agent Compute Engine. It is designed for AI agents that do more than answer questions. These agents may use tools, run programs, or work on long tasks. Google says traditional cloud computers are not always ideal for this kind of work. The new service gives each agent a small, isolated computer called a microVM. It can start quickly and pause when the agent is waiting. This can save computer resources. Google is also adding tools to control what agents can access and to watch what they do. The company plans to make the service available in preview in the coming months."},
-        "準2級": {"title":"Google Cloud Designs New Infrastructure for AI Agents","text":"Google Cloud has announced Agent Compute Engine, a new computing service designed specifically for AI agents. Unlike a simple chatbot, an AI agent may write and run code, use external tools, control a browser or continue working across many steps. Google says these activities create different computing needs from ordinary cloud applications. Agent Compute Engine gives each agent its own isolated microVM, or small virtual computer. The system is designed to start quickly, pause while an agent is waiting, and resume later without wasting as many computing resources. Google is also expanding governance tools that can manage an agent's identity, access and activity. Security is important because agents may run unfamiliar code or connect to private company data. The service is expected to enter preview in the coming months. Google says technology developed to support Gemini's large-scale agent workloads helped shape the new system."},
-        "2級": {"title":"Google Cloud Introduces Purpose-Built Infrastructure for AI Agents","text":"Google Cloud is developing a new type of computing infrastructure for the growing number of AI agents that can take actions as well as generate answers. The company has announced Agent Compute Engine, a service that provides each agent with a hardware-isolated microVM. AI agents can have unusual workloads: they may write and execute code, operate browsers, call tools, wait for outside information and then resume work. According to Google, conventional cloud systems were not designed for this rapid cycle of activity and waiting. Agent Compute Engine aims to make those workloads more efficient by allowing microVMs to start quickly, pause when idle and resume from saved states. Google also says each environment will have its own identity and security controls, which is important when agents handle company data or run untrusted code. Alongside the compute service, Google is expanding governance features such as Agent Gateway and Agent Registry to help organizations control which agents and tools are allowed to operate. The company says the technology grew out of infrastructure used for Gemini's own agent workloads. Agent Compute Engine is targeted for preview in the coming months, showing how cloud providers are adapting their systems as AI moves from answering questions toward carrying out multi-step tasks."},
-        "準1級": {"title":"Agentic AI Is Forcing Cloud Infrastructure to Evolve","text":"Google Cloud has unveiled Agent Compute Engine, a purpose-built computing service intended to address the unusual infrastructure demands created by autonomous AI agents. Whereas traditional applications tend to perform relatively predictable workloads, an agent may repeatedly write and execute code, invoke tools, control a browser, wait for a human response and then resume its work. Google argues that this high-churn pattern requires a different approach to computing. Agent Compute Engine gives individual agents hardware-isolated microVM environments that can activate rapidly, pause during idle periods and resume from checkpoints. The company says this architecture can improve resource efficiency while maintaining isolation between workloads. Security and governance are equally central to the design because agents may execute untrusted code or access sensitive enterprise systems. Google is therefore expanding related controls for agent identity, network access, policy enforcement and observability. The infrastructure was developed partly to handle the scale of Google's own Gemini agent workloads, and a preview for outside customers is planned in the coming months. The announcement illustrates a broader shift in the technology industry: as AI systems move from generating information to taking actions, the supporting cloud layer must manage not only model inference but also persistent workspaces, credentials, tools and potentially risky code. This creates opportunities for more capable automated workflows, while also making questions of isolation, auditing and access control increasingly important. The next phase of AI competition may therefore depend as much on secure infrastructure as on the intelligence of the models themselves."}
+        "4級": {
+          "title": "New Computers for AI Agents",
+          "text": "Google Cloud is making a new computer service for AI agents. AI agents can do tasks, use tools, and sometimes write code. They need safe places to work. The new service is called Agent Compute Engine. It gives an AI agent a small computer in the cloud. Google says the system can start and stop quickly. It is also designed to keep one agent's work separate from another agent's work."
+        },
+        "3級": {
+          "title": "Google Cloud Makes a Service for AI Agents",
+          "text": "Google Cloud has introduced a new service called Agent Compute Engine. It is designed for AI agents that do more than answer questions. These agents may use tools, run programs, or work on long tasks. Google says traditional cloud computers are not always ideal for this kind of work. The new service gives each agent a small, isolated computer called a microVM. It can start quickly and pause when the agent is waiting. This can save computer resources. Google is also adding tools to control what agents can access and to watch what they do. The company plans to make the service available in preview in the coming months."
+        },
+        "準2級": {
+          "title": "Google Cloud Designs New Infrastructure for AI Agents",
+          "text": "Google Cloud has announced Agent Compute Engine, a new computing service designed specifically for AI agents. Unlike a simple chatbot, an AI agent may write and run code, use external tools, control a browser or continue working across many steps. Google says these activities create different computing needs from ordinary cloud applications. Agent Compute Engine gives each agent its own isolated microVM, or small virtual computer. The system is designed to start quickly, pause while an agent is waiting, and resume later without wasting as many computing resources. Google is also expanding governance tools that can manage an agent's identity, access and activity. Security is important because agents may run unfamiliar code or connect to private company data. The service is expected to enter preview in the coming months. Google says technology developed to support Gemini's large-scale agent workloads helped shape the new system."
+        },
+        "2級": {
+          "title": "Google Cloud Introduces Purpose-Built Infrastructure for AI Agents",
+          "text": "Google Cloud is developing a new type of computing infrastructure for the growing number of AI agents that can take actions as well as generate answers. The company has announced Agent Compute Engine, a service that provides each agent with a hardware-isolated microVM. AI agents can have unusual workloads: they may write and execute code, operate browsers, call tools, wait for outside information and then resume work. According to Google, conventional cloud systems were not designed for this rapid cycle of activity and waiting. Agent Compute Engine aims to make those workloads more efficient by allowing microVMs to start quickly, pause when idle and resume from saved states. Google also says each environment will have its own identity and security controls, which is important when agents handle company data or run untrusted code. Alongside the compute service, Google is expanding governance features such as Agent Gateway and Agent Registry to help organizations control which agents and tools are allowed to operate. The company says the technology grew out of infrastructure used for Gemini's own agent workloads. Agent Compute Engine is targeted for preview in the coming months, showing how cloud providers are adapting their systems as AI moves from answering questions toward carrying out multi-step tasks."
+        },
+        "準1級": {
+          "title": "Agentic AI Is Forcing Cloud Infrastructure to Evolve",
+          "text": "Google Cloud has unveiled Agent Compute Engine, a purpose-built computing service intended to address the unusual infrastructure demands created by autonomous AI agents. Whereas traditional applications tend to perform relatively predictable workloads, an agent may repeatedly write and execute code, invoke tools, control a browser, wait for a human response and then resume its work. Google argues that this high-churn pattern requires a different approach to computing. Agent Compute Engine gives individual agents hardware-isolated microVM environments that can activate rapidly, pause during idle periods and resume from checkpoints. The company says this architecture can improve resource efficiency while maintaining isolation between workloads. Security and governance are equally central to the design because agents may execute untrusted code or access sensitive enterprise systems. Google is therefore expanding related controls for agent identity, network access, policy enforcement and observability. The infrastructure was developed partly to handle the scale of Google's own Gemini agent workloads, and a preview for outside customers is planned in the coming months. The announcement illustrates a broader shift in the technology industry: as AI systems move from generating information to taking actions, the supporting cloud layer must manage not only model inference but also persistent workspaces, credentials, tools and potentially risky code. This creates opportunities for more capable automated workflows, while also making questions of isolation, auditing and access control increasingly important. The next phase of AI competition may therefore depend as much on secure infrastructure as on the intelligence of the models themselves."
+        }
       },
-      "sources": [{"name":"Google Cloud — Agent Compute Engine","url":"https://cloud.google.com/blog/topics/ai-infrastructure/introducing-agent-compute-engine-and-expanded-agent-governance/"}]
+      "sources": [
+        {
+          "name": "Google Cloud — Agent Compute Engine",
+          "url": "https://cloud.google.com/blog/topics/ai-infrastructure/introducing-agent-compute-engine-and-expanded-agent-governance/"
+        }
+      ]
     },
     {
       "id": "2026-10-30-barbados-hiv",
       "date": "2026-10-30",
       "category": "health",
-      "categories": ["world"],
-      "careerTags": ["medicine","public","global"],
-      "tags": ["Barbados","HIV","WHO","pregnancy","public health"],
+      "categories": [
+        "world"
+      ],
+      "careerTags": [
+        "medicine",
+        "public",
+        "global"
+      ],
+      "tags": [
+        "Barbados",
+        "HIV",
+        "WHO",
+        "pregnancy",
+        "public health"
+      ],
       "title": "Barbados Reaches Major HIV Public-Health Milestone",
       "summaryJa": "WHOが、バルバドスにおけるHIVの母子感染が公衆衛生上の問題として排除されたと認定しました。",
       "levels": {
-        "4級": {"title":"Good Health News from Barbados","text":"Barbados has reached an important health goal. The World Health Organization says the country has stopped HIV from passing from mothers to babies as a public health problem. From 2022 to 2024, no babies in Barbados got HIV from their mothers. Most pregnant women received care and HIV tests. Treatment was also free for pregnant women with HIV. WHO says good health services helped make this possible."},
-        "3級": {"title":"Barbados Stops Mother-to-Child HIV Transmission","text":"The World Health Organization has recognized Barbados for eliminating mother-to-child transmission of HIV as a public health problem. This means the country has met important international health targets. From 2022 to 2024, Barbados reported no new HIV infections in babies caused by transmission from their mothers. WHO says 98 percent of pregnant women received care before birth, 98 percent were tested for HIV, and 98 percent of pregnant women with HIV received treatment. HIV testing and treatment are free for pregnant women in the country. Barbados will need to continue these services to keep its elimination status in the future."},
-        "準2級": {"title":"WHO Recognizes Barbados for Eliminating Mother-to-Child HIV Transmission","text":"The World Health Organization has certified Barbados for eliminating mother-to-child transmission of HIV as a public health problem. The achievement followed an independent assessment of the country's health services and results. According to WHO, no new HIV infections caused by mother-to-child transmission were reported among babies born in Barbados from 2022 through 2024. During the same period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Public clinics and hospitals provide HIV testing and treatment free of charge to pregnant women, regardless of nationality. Babies who may have been exposed to HIV also receive early testing and follow-up care. WHO says Barbados now joins a growing group of countries and territories that have reached important goals against the transmission of HIV, syphilis or hepatitis B from mothers to children. Continued investment and monitoring will be needed to protect the progress."},
-        "2級": {"title":"Barbados Wins WHO Recognition for Preventing HIV Transmission to Babies","text":"Barbados has been recognized by the World Health Organization for eliminating mother-to-child transmission of HIV as a public health problem, marking a significant achievement for the Caribbean country. WHO certification follows an independent review showing that Barbados met international targets for preventing transmission during pregnancy, birth and early childhood. From 2022 to 2024, the country reported no new infant HIV infections caused by mother-to-child transmission. Coverage of key health services was also consistently high: 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Barbados offers HIV testing and treatment free of charge to all pregnant women, regardless of nationality, and babies exposed to HIV receive early testing and continued follow-up. WHO officials said the result demonstrates what can be achieved when health services are widely accessible and respect patients' rights and privacy. Barbados joins other countries and territories recognized for progress toward eliminating the transmission of HIV, syphilis or hepatitis B from mothers to children. However, certification does not mean the work is finished. The country must continue investing in health services, data systems, testing and follow-up care to maintain its status and prevent future infections."},
-        "準1級": {"title":"Barbados Shows How Universal Maternal Care Can Prevent HIV Transmission","text":"The World Health Organization has validated Barbados for eliminating mother-to-child transmission of HIV as a public-health problem, a milestone that reflects both strong clinical coverage and long-term investment in maternal care. An independent assessment found that no new HIV infections resulting from mother-to-child transmission were reported among infants born in Barbados between 2022 and 2024. During that three-year period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Those figures are significant because effective testing and treatment can greatly reduce the risk that HIV will be transmitted during pregnancy, delivery or breastfeeding. Barbados provides universal health care through public clinics and hospitals, while HIV testing and treatment are free for pregnant women regardless of nationality. Infants who may have been exposed to the virus receive early testing and follow-up care. WHO and the Pan American Health Organization highlighted these policies as evidence that eliminating transmission is possible when women can obtain high-quality services without major financial or social barriers. The country now belongs to a group of nations and territories recognized for eliminating, or making substantial progress toward eliminating, mother-to-child transmission of HIV, syphilis or hepatitis B. Nevertheless, validation is not a permanent finish line. Barbados will need to maintain investment, update clinical guidelines, strengthen health information systems and ensure continued follow-up for mothers and children. The achievement therefore offers both a reason for celebration and a reminder that lasting public-health success depends on sustained access to care."}
+        "4級": {
+          "title": "Good Health News from Barbados",
+          "text": "Barbados has reached an important health goal. The World Health Organization says the country has stopped HIV from passing from mothers to babies as a public health problem. From 2022 to 2024, no babies in Barbados got HIV from their mothers. Most pregnant women received care and HIV tests. Treatment was also free for pregnant women with HIV. WHO says good health services helped make this possible."
+        },
+        "3級": {
+          "title": "Barbados Stops Mother-to-Child HIV Transmission",
+          "text": "The World Health Organization has recognized Barbados for eliminating mother-to-child transmission of HIV as a public health problem. This means the country has met important international health targets. From 2022 to 2024, Barbados reported no new HIV infections in babies caused by transmission from their mothers. WHO says 98 percent of pregnant women received care before birth, 98 percent were tested for HIV, and 98 percent of pregnant women with HIV received treatment. HIV testing and treatment are free for pregnant women in the country. Barbados will need to continue these services to keep its elimination status in the future."
+        },
+        "準2級": {
+          "title": "WHO Recognizes Barbados for Eliminating Mother-to-Child HIV Transmission",
+          "text": "The World Health Organization has certified Barbados for eliminating mother-to-child transmission of HIV as a public health problem. The achievement followed an independent assessment of the country's health services and results. According to WHO, no new HIV infections caused by mother-to-child transmission were reported among babies born in Barbados from 2022 through 2024. During the same period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Public clinics and hospitals provide HIV testing and treatment free of charge to pregnant women, regardless of nationality. Babies who may have been exposed to HIV also receive early testing and follow-up care. WHO says Barbados now joins a growing group of countries and territories that have reached important goals against the transmission of HIV, syphilis or hepatitis B from mothers to children. Continued investment and monitoring will be needed to protect the progress."
+        },
+        "2級": {
+          "title": "Barbados Wins WHO Recognition for Preventing HIV Transmission to Babies",
+          "text": "Barbados has been recognized by the World Health Organization for eliminating mother-to-child transmission of HIV as a public health problem, marking a significant achievement for the Caribbean country. WHO certification follows an independent review showing that Barbados met international targets for preventing transmission during pregnancy, birth and early childhood. From 2022 to 2024, the country reported no new infant HIV infections caused by mother-to-child transmission. Coverage of key health services was also consistently high: 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Barbados offers HIV testing and treatment free of charge to all pregnant women, regardless of nationality, and babies exposed to HIV receive early testing and continued follow-up. WHO officials said the result demonstrates what can be achieved when health services are widely accessible and respect patients' rights and privacy. Barbados joins other countries and territories recognized for progress toward eliminating the transmission of HIV, syphilis or hepatitis B from mothers to children. However, certification does not mean the work is finished. The country must continue investing in health services, data systems, testing and follow-up care to maintain its status and prevent future infections."
+        },
+        "準1級": {
+          "title": "Barbados Shows How Universal Maternal Care Can Prevent HIV Transmission",
+          "text": "The World Health Organization has validated Barbados for eliminating mother-to-child transmission of HIV as a public-health problem, a milestone that reflects both strong clinical coverage and long-term investment in maternal care. An independent assessment found that no new HIV infections resulting from mother-to-child transmission were reported among infants born in Barbados between 2022 and 2024. During that three-year period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Those figures are significant because effective testing and treatment can greatly reduce the risk that HIV will be transmitted during pregnancy, delivery or breastfeeding. Barbados provides universal health care through public clinics and hospitals, while HIV testing and treatment are free for pregnant women regardless of nationality. Infants who may have been exposed to the virus receive early testing and follow-up care. WHO and the Pan American Health Organization highlighted these policies as evidence that eliminating transmission is possible when women can obtain high-quality services without major financial or social barriers. The country now belongs to a group of nations and territories recognized for eliminating, or making substantial progress toward eliminating, mother-to-child transmission of HIV, syphilis or hepatitis B. Nevertheless, validation is not a permanent finish line. Barbados will need to maintain investment, update clinical guidelines, strengthen health information systems and ensure continued follow-up for mothers and children. The achievement therefore offers both a reason for celebration and a reminder that lasting public-health success depends on sustained access to care."
+        }
       },
-      "sources": [{"name":"World Health Organization — Barbados eliminates mother-to-child transmission of HIV","url":"https://www.who.int/singapore/news/detail-global/30-10-2026-barbados-eliminates-mother-to-child-transmission-of-hiv"}]
+      "sources": [
+        {
+          "name": "World Health Organization — Barbados eliminates mother-to-child transmission of HIV",
+          "url": "https://www.who.int/singapore/news/detail-global/30-10-2026-barbados-eliminates-mother-to-child-transmission-of-hiv"
+        }
+      ]
     },
     {
       "id": "2026-10-30-dakar-yog",
       "date": "2026-10-30",
       "category": "sports",
-      "categories": ["world","education"],
-      "careerTags": ["sports","global","education"],
-      "tags": ["Dakar","Youth Olympics","Senegal","Africa","sports"],
+      "categories": [
+        "world",
+        "education"
+      ],
+      "careerTags": [
+        "sports",
+        "global",
+        "education"
+      ],
+      "tags": [
+        "Dakar",
+        "Youth Olympics",
+        "Senegal",
+        "Africa",
+        "sports"
+      ],
       "title": "Dakar 2026 Brings the Youth Olympics to Africa for the First Time",
       "summaryJa": "セネガルのダカールでユースオリンピックが開幕。アフリカ大陸で初めて開催されるオリンピック競技大会です。",
       "levels": {
-        "4級": {"title":"Youth Olympics Come to Africa","text":"The Youth Olympic Games are starting in Dakar, Senegal. This is a special event because it is the first Olympic sports event in Africa. About 2,700 young athletes can take part. They are 14 to 17 years old. The Games have many sports and events. The opening ceremony is on October 31. The competitions continue until November 13. Young people from many countries will meet and compete in Senegal."},
-        "3級": {"title":"Dakar Hosts a Historic Youth Olympic Games","text":"The 2026 Youth Olympic Games are beginning in Dakar, Senegal. They are historic because this is the first Olympic sporting event to be held in Africa. About 2,700 young athletes from around the world have places at the Games. Most are between 14 and 17 years old. The program includes 25 competition sports and 153 medal events. Events are being held in Dakar, Diamniadio and Saly. The Games also have education and cultural activities for young people. The opening ceremony takes place on October 31, and competitions continue into November. Organizers hope the event will create opportunities for young athletes and leave useful sports facilities for local communities."},
-        "準2級": {"title":"Dakar 2026 Makes Olympic History in Senegal","text":"The Dakar 2026 Youth Olympic Games are making history as the first Olympic sporting event ever held on African soil. The Games in Senegal officially open on October 31, with competition running from October 30 to November 13. Around 2,700 athlete places have been allocated, and young competitors aged mainly 14 to 17 are arriving from around the world. The program includes 25 competition sports and 153 medal events, with venues in Dakar, Diamniadio and Saly. The event is also designed to have an impact beyond competition. Education programs connected to Dakar 2026 have already reached large numbers of schoolchildren in Senegal, while sports facilities have been renovated for future community use. Organizers say the Games will combine sport, culture and youth engagement. Dakar 2026 also features full gender balance across athlete quota places, sports, disciplines and events. For Senegal and the wider continent, the event represents a major moment in Olympic history and a chance to showcase African sport and culture to an international audience."},
-        "2級": {"title":"Dakar 2026 Opens a New Chapter for the Olympic Movement in Africa","text":"The Youth Olympic Games in Dakar, Senegal, mark a historic first: never before has an Olympic sporting event been staged on African soil. Dakar 2026 opens on October 31, with competition beginning a day earlier and continuing through November 13. Approximately 2,700 athlete quota places have been allocated, bringing together young competitors from across the world. The program features 25 competition sports and 153 medal events at venues in Dakar, Diamniadio and Saly. Organizers have emphasized that the Games are intended to produce benefits beyond the medal table. More than one million schoolchildren in Senegal have been reached through an Olympic values education program, and hundreds of thousands of young people have taken part in related activities. Local sports facilities have also been renovated with the aim of supporting participation after the Games end. Dakar 2026 is the first Youth Olympic Games to provide full gender equality across athlete quota places, sports, disciplines and events. A Refugee Olympic Team is also participating in the Youth Games for the first time. The combination of competition, education and community investment reflects an effort to make the event a long-term opportunity for Senegal and African sport. For young athletes, meanwhile, it offers a rare international stage at the beginning of their sporting careers."},
-        "準1級": {"title":"Dakar 2026 Seeks a Legacy Beyond Africa's First Olympic Sporting Event","text":"Dakar 2026 represents a symbolic milestone for the Olympic movement: the Youth Olympic Games in Senegal are the first Olympic sporting event ever hosted on African soil. Competition runs from October 30 to November 13, with the opening ceremony taking place on October 31. Roughly 2,700 athlete quota places have been allocated, and the program contains 25 competition sports and 153 medal events across venues in Dakar, Diamniadio and Saly. Yet organizers are presenting the Games as more than a two-week sporting festival. A major emphasis has been placed on youth development, education and infrastructure that can continue to serve communities after international athletes leave. Olympic values programs have reached more than one million schoolchildren across Senegal, while other initiatives have provided hundreds of thousands of young people with opportunities to participate in Games-related activities. Sports facilities have been renovated, and young professionals have received training connected with event management. Dakar 2026 also includes several notable institutional firsts. It is the first Youth Olympic Games with full gender equality across athlete quota places, sports, disciplines and events, and a Refugee Olympic Team is participating in the Youth Games for the first time. These measures reflect the event's broader themes of access and inclusion. Hosting a major international competition inevitably brings logistical and financial challenges, so the long-term value of the Games will ultimately depend on whether facilities, skills and opportunities remain useful after 2026. For now, however, Dakar is providing a global stage for young athletes while marking a significant moment in the history of sport on the African continent."}
+        "4級": {
+          "title": "Youth Olympics Come to Africa",
+          "text": "The Youth Olympic Games are starting in Dakar, Senegal. This is a special event because it is the first Olympic sports event in Africa. About 2,700 young athletes can take part. They are 14 to 17 years old. The Games have many sports and events. The opening ceremony is on October 31. The competitions continue until November 13. Young people from many countries will meet and compete in Senegal."
+        },
+        "3級": {
+          "title": "Dakar Hosts a Historic Youth Olympic Games",
+          "text": "The 2026 Youth Olympic Games are beginning in Dakar, Senegal. They are historic because this is the first Olympic sporting event to be held in Africa. About 2,700 young athletes from around the world have places at the Games. Most are between 14 and 17 years old. The program includes 25 competition sports and 153 medal events. Events are being held in Dakar, Diamniadio and Saly. The Games also have education and cultural activities for young people. The opening ceremony takes place on October 31, and competitions continue into November. Organizers hope the event will create opportunities for young athletes and leave useful sports facilities for local communities."
+        },
+        "準2級": {
+          "title": "Dakar 2026 Makes Olympic History in Senegal",
+          "text": "The Dakar 2026 Youth Olympic Games are making history as the first Olympic sporting event ever held on African soil. The Games in Senegal officially open on October 31, with competition running from October 30 to November 13. Around 2,700 athlete places have been allocated, and young competitors aged mainly 14 to 17 are arriving from around the world. The program includes 25 competition sports and 153 medal events, with venues in Dakar, Diamniadio and Saly. The event is also designed to have an impact beyond competition. Education programs connected to Dakar 2026 have already reached large numbers of schoolchildren in Senegal, while sports facilities have been renovated for future community use. Organizers say the Games will combine sport, culture and youth engagement. Dakar 2026 also features full gender balance across athlete quota places, sports, disciplines and events. For Senegal and the wider continent, the event represents a major moment in Olympic history and a chance to showcase African sport and culture to an international audience."
+        },
+        "2級": {
+          "title": "Dakar 2026 Opens a New Chapter for the Olympic Movement in Africa",
+          "text": "The Youth Olympic Games in Dakar, Senegal, mark a historic first: never before has an Olympic sporting event been staged on African soil. Dakar 2026 opens on October 31, with competition beginning a day earlier and continuing through November 13. Approximately 2,700 athlete quota places have been allocated, bringing together young competitors from across the world. The program features 25 competition sports and 153 medal events at venues in Dakar, Diamniadio and Saly. Organizers have emphasized that the Games are intended to produce benefits beyond the medal table. More than one million schoolchildren in Senegal have been reached through an Olympic values education program, and hundreds of thousands of young people have taken part in related activities. Local sports facilities have also been renovated with the aim of supporting participation after the Games end. Dakar 2026 is the first Youth Olympic Games to provide full gender equality across athlete quota places, sports, disciplines and events. A Refugee Olympic Team is also participating in the Youth Games for the first time. The combination of competition, education and community investment reflects an effort to make the event a long-term opportunity for Senegal and African sport. For young athletes, meanwhile, it offers a rare international stage at the beginning of their sporting careers."
+        },
+        "準1級": {
+          "title": "Dakar 2026 Seeks a Legacy Beyond Africa's First Olympic Sporting Event",
+          "text": "Dakar 2026 represents a symbolic milestone for the Olympic movement: the Youth Olympic Games in Senegal are the first Olympic sporting event ever hosted on African soil. Competition runs from October 30 to November 13, with the opening ceremony taking place on October 31. Roughly 2,700 athlete quota places have been allocated, and the program contains 25 competition sports and 153 medal events across venues in Dakar, Diamniadio and Saly. Yet organizers are presenting the Games as more than a two-week sporting festival. A major emphasis has been placed on youth development, education and infrastructure that can continue to serve communities after international athletes leave. Olympic values programs have reached more than one million schoolchildren across Senegal, while other initiatives have provided hundreds of thousands of young people with opportunities to participate in Games-related activities. Sports facilities have been renovated, and young professionals have received training connected with event management. Dakar 2026 also includes several notable institutional firsts. It is the first Youth Olympic Games with full gender equality across athlete quota places, sports, disciplines and events, and a Refugee Olympic Team is participating in the Youth Games for the first time. These measures reflect the event's broader themes of access and inclusion. Hosting a major international competition inevitably brings logistical and financial challenges, so the long-term value of the Games will ultimately depend on whether facilities, skills and opportunities remain useful after 2026. For now, however, Dakar is providing a global stage for young athletes while marking a significant moment in the history of sport on the African continent."
+        }
       },
-      "sources": [{"name":"International Olympic Committee — Dakar 2026 by numbers","url":"https://www.olympics.com/ioc/news/dakar-2026-by-numbers-key-facts-and-figures-behind-historic-youth-olympic-games"}]
+      "sources": [
+        {
+          "name": "International Olympic Committee — Dakar 2026 by numbers",
+          "url": "https://www.olympics.com/ioc/news/dakar-2026-by-numbers-key-facts-and-figures-behind-historic-youth-olympic-games"
+        }
+      ]
     },
     {
-      "id": "2026-10-31-scotland-stories",
-      "date": "2026-10-31",
-      "category": "culture",
-      "categories": ["life","education"],
-      "careerTags": ["arts","education","global"],
-      "tags": ["Scotland","storytelling","festival","culture","nature"],
-      "title": "Scotland's Storytelling Festival Celebrates Birds and Beasts",
-      "summaryJa": "スコットランド国際ストーリーテリング・フェスティバルが最終日を迎え、自然や動物を題材にした物語が各地で語られています。",
+      "id": "2026-10-30-hubble-service",
+      "date": "2026-10-30",
+      "category": "science",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "science",
+        "engineering",
+        "it"
+      ],
+      "tags": [
+        "NASA",
+        "Hubble",
+        "space",
+        "telescope",
+        "engineering"
+      ],
+      "title": "NASA Looks at New Ways to Keep Hubble Working",
+      "summaryJa": "NASAがハッブル宇宙望遠鏡の寿命を延ばすため、民間企業による軌道上サービスの可能性を調べています。",
       "levels": {
-        "4級": {"title":"A Festival of Stories in Scotland","text":"People are sharing stories in Scotland. The Scottish International Storytelling Festival runs from October 21 to October 31. It has more than 200 events. Storytellers come from Scotland and other countries. This year's theme is Bird and Beast. Many stories are about people, animals, birds, and nature. There are also songs, music, workshops, and family events. The festival wants people to enjoy old stories and create new ones."},
-        "3級": {"title":"Scotland Celebrates the Art of Storytelling","text":"The Scottish International Storytelling Festival is finishing its 2026 program on October 31. The 11-day festival has more than 200 events in Edinburgh and other parts of Scotland. This year's theme is Bird and Beast, so many stories explore the relationship between people, animals and the natural world. Scottish storytellers are joined by guests from countries including Canada, Ireland, Italy and Türkiye. The program includes live stories, music, songs, workshops and events for families. Some activities also invite visitors to share stories of their own. Organizers say storytelling connects people with cultural traditions while also giving new voices and ideas a place to grow."},
-        "準2級": {"title":"International Festival Keeps Scotland's Storytelling Tradition Alive","text":"The 37th Scottish International Storytelling Festival is reaching the end of an 11-day program filled with more than 200 events in Edinburgh and across Scotland. Running from October 21 to 31, the festival brings together Scottish performers and guest storytellers from several countries. The 2026 theme, Bird and Beast, explores connections between humans, animals and the natural world. Events combine oral storytelling with music, song, dance and workshops. The program includes traditional tales as well as new performances, and some sessions allow members of the audience to bring and share their own stories. Family activities have also introduced younger visitors to the art of telling stories aloud. Organizers describe storytelling as a living tradition: it can protect cultural heritage while also making room for contemporary ideas and international exchange. The festival shows that stories do not have to remain only in books. When people tell them face to face, the voice, the audience and the moment can change how a story is experienced."},
-        "2級": {"title":"Scotland's Storytelling Festival Connects Oral Tradition with New Voices","text":"The Scottish International Storytelling Festival is concluding its 37th edition after presenting more than 200 events in Edinburgh and communities across Scotland. The festival, which runs from October 21 to 31, is one of the world's largest annual celebrations of live storytelling. Its 2026 theme, Bird and Beast, focuses on the relationship between human beings, animals and the natural environment. Scottish storytellers have shared stages with guests from Canada, England, Ireland, Italy and Türkiye, creating a program that combines local traditions with international perspectives. Performances range from folk tales and myths to newly created work, often accompanied by music, song, dance or traditional crafts. The festival also includes workshops, family activities and informal circles in which audience members can share stories themselves. Organizers argue that oral storytelling is not simply a way to preserve the past. Because a live storyteller can respond to a particular audience, traditional material can be reinterpreted and connected with contemporary experiences. This year's nature-centered theme also gives performers a way to explore how people understand and respect the animals and landscapes around them. By bringing established artists, international visitors and young storytellers together, the festival aims to protect cultural heritage while ensuring that the tradition continues to change and develop."},
-        "準1級": {"title":"A Living Tradition: Scotland's Festival Reimagines Storytelling for Contemporary Audiences","text":"The 37th Scottish International Storytelling Festival is drawing to a close after an 11-day program of more than 200 events in Edinburgh and across Scotland. Described by its organizers as the world's largest annual celebration of storytelling, the festival places oral performance at the center of cultural exchange. The 2026 theme, Bird and Beast, examines the relationship between people, animals and the natural world, allowing traditional tales to address contemporary questions about place, identity and the environment. Storytellers from Scotland have been joined by guests from Canada, England, Ireland, Italy and Türkiye. The program combines spoken narratives with music, song, dance and other art forms, and includes both inherited folk material and newly developed performances. Workshops and informal story circles also encourage audience members to become participants rather than passive listeners. This emphasis reflects an important feature of oral tradition: unlike a printed text, a live story can shift according to the speaker, audience and setting. Organizers see that flexibility as a strength rather than a threat to tradition. Their aim is to safeguard cultural knowledge while creating space for new voices, interpretations and international connections. Family programs and projects involving younger storytellers are particularly important to that goal because a tradition survives only when another generation makes it its own. In an age dominated by short digital content, the festival offers a contrasting experience in which people gather in the same place and give sustained attention to a human voice. Its popularity suggests that an ancient form of communication can still feel immediate when communities use it to explore issues that matter now."}
+        "4級": {
+          "title": "NASA Wants to Help Hubble",
+          "text": "NASA wants ideas to help the Hubble Space Telescope. Hubble went into space in 1990. It has studied space for more than 35 years. Its orbit is slowly getting lower. Hubble cannot move to a higher orbit by itself. NASA wants companies to share ideas. A future mission may move Hubble higher, repair it, or help it return safely at the end of its life."
+        },
+        "3級": {
+          "title": "Can Hubble Stay in Space Longer?",
+          "text": "NASA is looking for new ways to help the Hubble Space Telescope. Hubble has worked in space since 1990 and has made many important discoveries. However, its orbit is slowly becoming lower because of the thin atmosphere around Earth. The telescope does not have its own system to move to a higher orbit. NASA has asked private companies for ideas. A future mission might raise Hubble's orbit, improve some of its systems, or help control its return to Earth when its work is finished. NASA says Hubble still has useful science to do and wants to study practical ways to keep it working longer."
+        },
+        "準2級": {
+          "title": "NASA Studies Commercial Missions to Extend Hubble's Life",
+          "text": "NASA is asking private space companies to share ideas for servicing the Hubble Space Telescope in orbit. Hubble was launched in 1990 and has changed scientists' understanding of the universe, but its orbit is slowly getting lower because of atmospheric drag. The telescope has no propulsion system that can raise its orbit on its own. NASA says a future commercial mission could possibly boost Hubble to a higher altitude, service or improve the telescope, or support a safe end-of-mission plan. Current analysis suggests Hubble could re-enter Earth's atmosphere in the 2030s if nothing changes. NASA is not announcing a mission yet. Instead, it has issued a Request for Information to learn what private companies may be able to do and how much different options could cost. The agency says extending Hubble's life could create more opportunities for scientific discoveries."
+        },
+        "2級": {
+          "title": "NASA Explores Commercial Options for Hubble's Future",
+          "text": "NASA has begun exploring whether commercial space companies could help extend the scientific life of the Hubble Space Telescope. On October 29, the agency issued a Request for Information asking industry to describe possible in-space servicing capabilities. Hubble has operated for more than three decades and continues to make important observations, but its altitude is gradually decreasing because of atmospheric drag in low Earth orbit. Since Hubble has no propulsion system for maintaining its own orbit, NASA estimates that the telescope could re-enter the atmosphere around 2033 or 2034 if no action is taken. Possible future options include boosting Hubble into a higher orbit, servicing the telescope to improve its capabilities, or carrying out a controlled re-entry or other safe disposal plan at the end of the mission. NASA stresses that it has not selected a mission and is currently gathering information about technical possibilities and costs. Commercial space technology has advanced rapidly in areas such as satellite capture and servicing, so the agency wants to understand whether those capabilities could be used for Hubble. If a practical solution is found, keeping the telescope operating longer could provide additional scientific observations while NASA develops future flagship space missions."
+        },
+        "準1級": {
+          "title": "Commercial Space Capabilities Could Shape the Next Chapter of Hubble",
+          "text": "NASA is examining whether the rapidly developing commercial space industry could help prolong the life of the Hubble Space Telescope, one of the most influential scientific instruments ever placed in orbit. The agency issued a Request for Information on October 29 seeking proposals and technical information about potential in-space servicing. Hubble, launched in 1990, continues to produce valuable observations, but like other spacecraft in low Earth orbit, it is gradually losing altitude because of atmospheric drag. It lacks a propulsion system capable of maintaining or raising its orbit. NASA's current analysis suggests that, without intervention, Hubble is likely to re-enter Earth's atmosphere around 2033 or 2034. The agency is therefore interested in several possibilities: a commercial mission could boost the telescope to a higher altitude, service or enhance its systems, or eventually support a controlled re-entry or safe orbital disposal. NASA has not committed to any of these options, and the information request is intended to clarify what industry can realistically offer and at what cost. The timing reflects a broader change in spaceflight. Private companies have developed increasingly sophisticated capabilities for rendezvous, satellite capture and in-space operations that were far less mature when Hubble's final Space Shuttle servicing mission took place. NASA officials argue that if an innovative and cost-effective method can extend the life of a functioning scientific asset, it deserves careful study. Any future mission would still need to balance technical risk, expense and scientific value, but the process could determine whether Hubble remains productive well into the next decade."
+        }
       },
-      "sources": [{"name":"TRACS — Scottish International Storytelling Festival 2026","url":"https://tracscotland.org/news-post/?newsid=27208"}]
+      "sources": [
+        {
+          "name": "NASA Science — Potential Commercial Servicing for Hubble",
+          "url": "https://science.nasa.gov/missions/hubble/nasa-explores-potential-commercial-servicing-for-hubble-telescope/"
+        }
+      ]
     },
     {
       "id": "2026-10-30-oyster-algae",
       "date": "2026-10-30",
       "category": "environment",
-      "categories": ["science","health"],
-      "careerTags": ["science","medicine","public"],
-      "tags": ["NASA","oysters","algae","Chesapeake Bay","environment"],
+      "categories": [
+        "science",
+        "health"
+      ],
+      "careerTags": [
+        "science",
+        "medicine",
+        "public"
+      ],
+      "tags": [
+        "NASA",
+        "oysters",
+        "algae",
+        "Chesapeake Bay",
+        "environment"
+      ],
       "title": "Satellite Data Helps Virginia Study Oyster Loss After Algae Bloom",
       "summaryJa": "NASAの支援を受けた研究者が、米バージニア州沿岸で発生した有害な藻類ブルームによるカキ養殖への影響を調べています。",
       "levels": {
-        "4級": {"title":"Scientists Study Oyster Loss","text":"Some oyster farms in Virginia in the United States lost many oysters. A harmful algae bloom happened in the water. Scientists are now studying the problem. NASA supports some of this work. Researchers can use information from satellites and other tools to understand the water and the algae. Oysters are important for food and for the environment. The study may help people protect oyster farms in the future."},
-        "3級": {"title":"NASA Data Helps Scientists Study Oysters","text":"Scientists in Virginia are studying damage to oyster farms after a harmful algae bloom. The bloom happened near the eastern side of Chesapeake Bay. Algae are a natural part of water, but some kinds can grow very quickly and create problems for sea life. NASA-supported researchers are helping local officials understand what happened. They can combine observations from the water with information collected from above, including satellite data. Oysters are valuable to local businesses and also help the environment by filtering water. By studying the bloom and the areas where oysters were lost, researchers hope to understand the event better and help communities prepare for similar problems in the future."},
-        "準2級": {"title":"NASA-Supported Research Examines Oyster Loss After Harmful Algae Bloom","text":"NASA-supported researchers are helping officials in Virginia understand how a recent harmful algae bloom affected oyster farms along the eastern side of Chesapeake Bay. Algae are common in natural waters, but under certain conditions they can grow rapidly and form blooms that damage ecosystems and local industries. Scientists are combining measurements collected in the affected area with information from remote-sensing tools. Satellite observations can help researchers see changes over a much larger area than they could study from boats alone. Oysters are especially important because they support aquaculture businesses and can improve water quality by filtering particles from the water. A major loss can therefore have both economic and environmental effects. By mapping where the bloom occurred and comparing it with oyster damage, researchers hope to identify the conditions that caused the problem. The work could also help farmers and public agencies respond more quickly if similar blooms appear in the future."},
-        "2級": {"title":"Earth Observation Helps Investigators Measure the Impact of a Harmful Algae Bloom","text":"Researchers supported by NASA are assisting Virginia officials as they assess oyster losses connected with a harmful algae bloom along the Eastern Shore of Chesapeake Bay. Algae are essential parts of aquatic ecosystems, but some species can multiply rapidly when conditions are favorable. These harmful blooms may reduce oxygen, produce toxins or otherwise create conditions that threaten marine organisms. Understanding the scale of an event can be difficult because water conditions can change over a wide area and over a short period of time. Remote sensing offers one way to fill that information gap. Scientists can combine satellite observations with measurements taken directly in the water to identify patterns that might not be visible from a single location. The investigation is important for both environmental and economic reasons. Oyster farms support local jobs and food production, while oysters themselves help filter water and form habitat for other species. Researchers hope that a clearer picture of where and when the bloom developed will explain why some oyster-growing areas were hit especially hard. Better monitoring could also provide earlier warnings to farmers and agencies in the future. The project is an example of how space-based Earth observation can contribute to decisions made by communities working with very local environmental problems."},
-        "準1級": {"title":"NASA-Supported Remote Sensing Connects Space Data with a Local Aquaculture Crisis","text":"NASA-supported scientists are helping Virginia officials investigate substantial oyster losses that followed a harmful algal bloom along the Eastern Shore of Chesapeake Bay. The project demonstrates how Earth-observation technology can be applied to a problem that is both environmentally complex and economically local. Algae are normal components of marine and freshwater ecosystems, but certain species can grow explosively when temperature, nutrients and other conditions align. Depending on the species and circumstances, a bloom may produce toxins, reduce available oxygen or alter water conditions in ways that harm marine organisms. For oyster farmers, the consequences can be severe, yet identifying the exact causes and geographic extent of damage is challenging when observations are limited to individual boats, farms or monitoring stations. Satellite and other remote-sensing data can provide a broader view. Researchers can compare patterns seen from above with direct measurements of water quality and reports from affected oyster-growing areas. That combination may reveal how the bloom developed, where it was most intense and why losses differed from place to place. The stakes extend beyond aquaculture revenue. Oysters are ecosystem engineers: by filtering water and creating reef habitat, they contribute to the health of coastal environments. A better understanding of harmful blooms could therefore support both businesses and conservation. Researchers also hope improved monitoring will strengthen early-warning systems, giving farmers and public agencies more time to respond when dangerous conditions begin to develop. The work illustrates a growing role for satellite science: translating large-scale environmental observations into practical information for decisions made at the community level."}
+        "4級": {
+          "title": "Scientists Study Oyster Loss",
+          "text": "Some oyster farms in Virginia in the United States lost many oysters. A harmful algae bloom happened in the water. Scientists are now studying the problem. NASA supports some of this work. Researchers can use information from satellites and other tools to understand the water and the algae. Oysters are important for food and for the environment. The study may help people protect oyster farms in the future."
+        },
+        "3級": {
+          "title": "NASA Data Helps Scientists Study Oysters",
+          "text": "Scientists in Virginia are studying damage to oyster farms after a harmful algae bloom. The bloom happened near the eastern side of Chesapeake Bay. Algae are a natural part of water, but some kinds can grow very quickly and create problems for sea life. NASA-supported researchers are helping local officials understand what happened. They can combine observations from the water with information collected from above, including satellite data. Oysters are valuable to local businesses and also help the environment by filtering water. By studying the bloom and the areas where oysters were lost, researchers hope to understand the event better and help communities prepare for similar problems in the future."
+        },
+        "準2級": {
+          "title": "NASA-Supported Research Examines Oyster Loss After Harmful Algae Bloom",
+          "text": "NASA-supported researchers are helping officials in Virginia understand how a recent harmful algae bloom affected oyster farms along the eastern side of Chesapeake Bay. Algae are common in natural waters, but under certain conditions they can grow rapidly and form blooms that damage ecosystems and local industries. Scientists are combining measurements collected in the affected area with information from remote-sensing tools. Satellite observations can help researchers see changes over a much larger area than they could study from boats alone. Oysters are especially important because they support aquaculture businesses and can improve water quality by filtering particles from the water. A major loss can therefore have both economic and environmental effects. By mapping where the bloom occurred and comparing it with oyster damage, researchers hope to identify the conditions that caused the problem. The work could also help farmers and public agencies respond more quickly if similar blooms appear in the future."
+        },
+        "2級": {
+          "title": "Earth Observation Helps Investigators Measure the Impact of a Harmful Algae Bloom",
+          "text": "Researchers supported by NASA are assisting Virginia officials as they assess oyster losses connected with a harmful algae bloom along the Eastern Shore of Chesapeake Bay. Algae are essential parts of aquatic ecosystems, but some species can multiply rapidly when conditions are favorable. These harmful blooms may reduce oxygen, produce toxins or otherwise create conditions that threaten marine organisms. Understanding the scale of an event can be difficult because water conditions can change over a wide area and over a short period of time. Remote sensing offers one way to fill that information gap. Scientists can combine satellite observations with measurements taken directly in the water to identify patterns that might not be visible from a single location. The investigation is important for both environmental and economic reasons. Oyster farms support local jobs and food production, while oysters themselves help filter water and form habitat for other species. Researchers hope that a clearer picture of where and when the bloom developed will explain why some oyster-growing areas were hit especially hard. Better monitoring could also provide earlier warnings to farmers and agencies in the future. The project is an example of how space-based Earth observation can contribute to decisions made by communities working with very local environmental problems."
+        },
+        "準1級": {
+          "title": "NASA-Supported Remote Sensing Connects Space Data with a Local Aquaculture Crisis",
+          "text": "NASA-supported scientists are helping Virginia officials investigate substantial oyster losses that followed a harmful algal bloom along the Eastern Shore of Chesapeake Bay. The project demonstrates how Earth-observation technology can be applied to a problem that is both environmentally complex and economically local. Algae are normal components of marine and freshwater ecosystems, but certain species can grow explosively when temperature, nutrients and other conditions align. Depending on the species and circumstances, a bloom may produce toxins, reduce available oxygen or alter water conditions in ways that harm marine organisms. For oyster farmers, the consequences can be severe, yet identifying the exact causes and geographic extent of damage is challenging when observations are limited to individual boats, farms or monitoring stations. Satellite and other remote-sensing data can provide a broader view. Researchers can compare patterns seen from above with direct measurements of water quality and reports from affected oyster-growing areas. That combination may reveal how the bloom developed, where it was most intense and why losses differed from place to place. The stakes extend beyond aquaculture revenue. Oysters are ecosystem engineers: by filtering water and creating reef habitat, they contribute to the health of coastal environments. A better understanding of harmful blooms could therefore support both businesses and conservation. Researchers also hope improved monitoring will strengthen early-warning systems, giving farmers and public agencies more time to respond when dangerous conditions begin to develop. The work illustrates a growing role for satellite science: translating large-scale environmental observations into practical information for decisions made at the community level."
+        }
       },
-      "sources": [{"name":"NASA Earth Science — Oyster loss after recent algae bloom","url":"https://science.nasa.gov/earth/recent-news/"}]
+      "sources": [
+        {
+          "name": "NASA Earth Science — Oyster loss after recent algae bloom",
+          "url": "https://science.nasa.gov/earth/recent-news/"
+        }
+      ]
     }
   ]
 }
