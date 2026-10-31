@@ -1,4 +1,4 @@
-import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.21';
+import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.24';
 import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.13';
 import {royalGuardForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.13';
 import {createGuardPresentation} from './guard-presentation.js?v=2.3.13';
@@ -91,7 +91,7 @@ function enemyStrike(){
   const spell=chooseMinibossAction({boss:miniboss,hp:enemyHp,maxHp:enemyMax,mp:enemyMp,playerHp,lastAction:enemyLastAction});
   enemyLastAction=spell?'spell':'attack';
   if(spell){
-    enemyMp-=spell.mpCost;const amount=rollMagicAmount(spell.base);animate(els.enemyVisual,'attack');
+    enemyMp-=spell.mpCost;const rolled=rollMagicAmount(spell.base),amount=spell.kind==='heal'?rolled:incomingDamage(rolled,stats.defense);animate(els.enemyVisual,'attack');
     if(spell.kind==='heal'){const healed=Math.min(amount,enemyMax-enemyHp);enemyHp+=healed;flash(`✨ 敵の${spell.name}\n+${healed} HP`);}
     else{enemyDamageTaken+=amount;playerHp=Math.max(0,playerHp-amount);animate(els.petVisual,'hurt');flash(`✨ 敵の${spell.name}\n-${amount} HP`);}
     syncHud();if(playerHp<=0)finishRun();return;
@@ -109,7 +109,7 @@ window.addEventListener('pageshow',()=>{allowNavigation=false;if(runActive&&!bat
 
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey+'-'+(user?.uid||'guest'))||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
 function writeRecords(){try{localStorage.setItem(storageKey+'-'+(user?.uid||'guest'),JSON.stringify(records))}catch{}}
-function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 function randomEnemyElement(){const keys=['fire','water','leaf'];return keys[Math.floor(Math.random()*keys.length)]}
 function assignElements(cards){const deck=shuffle(Object.keys(ELEMENTS));return cards.map((card,index)=>({...card,element:deck[index%deck.length]}))}
 function formatStage(n){return mode==='tower'?`${n}F`:`B${n}`}
@@ -125,7 +125,7 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';els.attackHint.textContent='相性の良い攻撃でCRITICAL';els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>不正解は攻撃失敗し、自分に1ダメージ。</li><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗し、自分に1ダメージ。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
-  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。卵の状態でも冒険できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は一定間隔で攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。卵の状態でも冒険できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は20秒ごとに攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -266,5 +266,3 @@ async function init(){
 
 els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
-
-
