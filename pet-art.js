@@ -3,7 +3,7 @@ import {renderCatArt} from './pet-cat-art.js?v=1.8.30';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
 import {renderDogArt} from './pet-dog-art.js?v=1.8.30';
 import {renderDragonArt} from './pet-dragon-art.js?v=1.8.30';
-if(typeof window!=='undefined')import('./nickname-profile.js?v=2.1.25');
+if(typeof window!=='undefined')import('./nickname-profile.js?v=2.2.2');
 import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=2.1.25';
 
 const outline='#40564e';

@@ -387,7 +387,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=2.1.42";
+import {recordLearningActivity} from "./coin-reward.js?v=2.2.2";
 import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.1.9';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -402,7 +402,7 @@ import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {installPasswordResetModal} from './password-reset-modal.js?v=2';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.1.49';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.2.2';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 import './pet-shop.js?v=2.1.52';
 
@@ -906,7 +906,7 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=2.2.2"></script>
-<script type="module" src='./version-badge-v176.js?v=2.2.2'></script>
+<script type="module" src='./version-badge-v176.js?v=2.2.2-login-fix'></script>
 <script>
 (() => {
   const version = '2.2.2';

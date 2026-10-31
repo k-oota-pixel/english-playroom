@@ -93,6 +93,6 @@ if(usesSharedHomeWallet)window.addEventListener('english-playroom-wallet',event=
 
 export function getRegisteredNickname(){return currentNickname;}
 
-queueMicrotask(()=>import('./version-badge.js?v=2.1.25').catch(error=>console.error('Version badge failed to load',error)));
+queueMicrotask(()=>import('./version-badge-v176.js?v=2.2.2-login-fix').catch(error=>console.error('Version badge failed to load',error)));
 
 window.addEventListener('english-playroom-nickname-changed',event=>{if(event.detail?.uid===auth.currentUser?.uid&&validNickname(event.detail.nickname))publish(event.detail.nickname);});
