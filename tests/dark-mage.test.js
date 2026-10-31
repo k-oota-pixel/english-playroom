@@ -8,7 +8,7 @@ const state=(phase=1)=>({boss:majorBossForStage(50,'tower',phase),hp:45,maxHp:96
 test('both modes place magma at 30F, an ordinary boss at 45F, mage at 50F, and keep 90F guard',()=>{
  for(const mode of ['tower','dungeon']){
   assert.equal(minibossForStage(30,mode).id,'magmander');assert.equal(minibossForStage(45,mode),null);assert.equal(majorBossForStage(45,mode),null);assert.equal(isBoss(45),true);
-  for(const [phase,mp] of [[1,500],[2,1000]]){const b=majorBossForStage(50,mode,phase);assert.equal(b.name,'闇の魔術師');assert.equal(b.maxMp,mp);assert.equal(b.mage,true);assert.equal(b.attackInterval,phase===1?2000:1500);assert.match(fs.readFileSync(new URL(`../pet-adventure/bosses/${b.image}`,import.meta.url),'utf8'),/<svg/);}
+  for(const [phase,mp] of [[1,500],[2,1000]]){const b=majorBossForStage(50,mode,phase);assert.equal(b.name,'闇の魔術師');assert.equal(b.maxMp,mp);assert.equal(b.mage,true);assert.equal(b.attackInterval,mode==='dungeon'?(phase===1?18000:16000):(phase===1?2000:1500));assert.match(fs.readFileSync(new URL(`../pet-adventure/bosses/${b.image}`,import.meta.url),'utf8'),/<svg/);}
   assert.equal(majorBossForStage(90,mode).name,'魔王親衛隊');assert.equal(majorBossForStage(90,mode).maxMp,50);
  }
 });
@@ -22,4 +22,5 @@ test('second form uses only Mimurose and Mirogoro, respects their costs, and wai
  for(let i=0;i<100;i++){const a=chooseMinibossAction(s);assert.ok(['mimurose','mirogoro'].includes(a.id));s.mp-=a.mpCost;assert.ok(s.mp>=0);}assert.equal(s.mp,0);assert.equal(chooseMinibossAction(s).kind,'wait');
  assert.equal(chooseMinibossAction({...s,mp:5}).id,'mirogoro');assert.equal(chooseMinibossAction({...s,mp:4}).kind,'wait');
 });
+
 

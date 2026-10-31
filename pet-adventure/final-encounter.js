@@ -1,6 +1,6 @@
 import {createAttackClock,enemyAttackInterval} from './realtime.js?v=1.10.24';
 import {enemyMaxHp,enemyAttack} from './core.js?v=2.1.8';
-import {majorBossForStage} from './royal-guard.js?v=2.3.22';
+import {majorBossForStage,bossActionInterval} from './royal-guard.js?v=2.3.25';
 import {chooseMinibossAction} from './miniboss.js?v=2.3.17';
 import {MAGIC_SPELLS,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 
@@ -21,7 +21,7 @@ function createActor(kind,phase,mode,guardMp){
  const boss=kind==='king'?{}:majorBossForStage(floor,mode,Math.min(2,phase));
  const maxHp=Math.round(enemyMaxHp(floor)*(phase===1?1:phase===2?1.2:1.5));
  const maxMp=kind==='king'?(phase===3?10000:phase===2?100:0):phase===3?1000:boss.maxMp;
- const interval=kind==='king'?({1:3500,2:3000,3:1500})[phase]:phase===3?(kind==='mage'?2500:4000):boss.attackInterval||enemyAttackInterval(floor,mode);
+ const interval=bossActionInterval(kind,phase,mode,kind==='king'?({1:3500,2:3000,3:1500})[phase]:phase===3?(kind==='mage'?2500:4000):boss.attackInterval||enemyAttackInterval(floor,mode));
  const image=kind==='king'?`final-king-${phase}.svg`:kind==='mage'?`dark-mage-${phase}.svg`:phase===3?'royal-guard-lion-3.svg':boss.image;
  const name=kind==='king'?'魔王':kind==='mage'?'闇の魔術師':'魔王親衛隊';
  return {id:`${kind}-${phase}`,kind,phase,name,level:floor,element:kind==='king'?(phase===1?'leaf':phase===2?'water':'fire'):boss.element||'fire',image,royal:true,boss,maxHp,hp:maxHp,maxMp,mp:kind==='guard'&&phase===2?Math.min(maxMp,guardMp):maxMp,interval,physical:kind==='mage'&&phase===1?3:enemyAttack(floor),clock:createAttackClock(interval),lastAction:null};
@@ -70,5 +70,6 @@ export function finalEnemyActions(enemy,playerHp,random=Math.random,allies=[]){
  for(const s of spells){if(enemy.mp<s.mpCost)continue;enemy.mp-=s.mpCost;const rolled=rollMagicAmount(s.base,random);if(s.kind==='heal'){const actual=Math.min(rolled,healingTarget.maxHp-healingTarget.hp);healingTarget.hp+=actual;actions.push({kind:'heal',spell:s,amount:actual,target:healingTarget});}else actions.push({kind:'magic',spell:s,amount:rolled});}
  return actions;
 }
+
 
 

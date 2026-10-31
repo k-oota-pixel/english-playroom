@@ -13,8 +13,14 @@ test('seven waves preserve the requested order, art, targeting and shared encoun
 });
 test('updated king and third-form intervals match requirements; summons retain existing modes',()=>{
  assert.equal(wave(0).target.interval,3500);assert.equal(wave(4).target.interval,3000);assert.equal(wave(6).target.interval,1500);assert.equal(wave(6).target.mp,10000);
- assert.deepEqual(wave(5).enemies.map(e=>e.interval),[2500,4000]);assert.deepEqual(wave(5).enemies.map(e=>e.mp),[1000,1000]);assert.deepEqual(wave(3,'dungeon').enemies.map(e=>e.interval),[1500,20000]);
+ assert.deepEqual(wave(5).enemies.map(e=>e.interval),[2500,4000]);assert.deepEqual(wave(5).enemies.map(e=>e.mp),[1000,1000]);assert.deepEqual(wave(3,'dungeon').enemies.map(e=>e.interval),[16000,20000]);
  assert.equal(wave(1).target.mp,500);assert.equal(wave(3).target.mp,1000);
+});
+test('dungeon timing is slower in every final wave while tower timing stays unchanged',()=>{
+ const dungeon=[[18000],[18000],[20000],[16000,20000],[16000],[14000,20000],[14000]];
+ const tower=[[3500],[2000],[3000],[1500,3000],[3000],[2500,4000],[1500]];
+ for(let i=0;i<7;i++){assert.deepEqual(wave(i,'dungeon').enemies.map(e=>e.interval),dungeon[i]);assert.deepEqual(wave(i,'tower').enemies.map(e=>e.interval),tower[i]);}
+ const e=wave(5,'dungeon'),counts={};for(let now=0;now<=40000;now+=250)for(const actor of e.tick(now))counts[actor.kind]=(counts[actor.kind]||0)+1;assert.deepEqual(counts,{mage:2,guard:2});
 });
 test('both enemies run independent clocks and dead enemies stop; surviving clock is not reset',()=>{
  const e=wave(5);const hits={};for(let now=0;now<=10000;now+=250)for(const a of e.tick(now))hits[a.kind]=(hits[a.kind]||0)+1;
@@ -43,5 +49,6 @@ test('third-form guard heals injured living mage first, spends own MP, caps reco
  mage.hp=0;actions=finalEnemyActions(guard,100,()=>.1,e.enemies);assert.ok(actions.every(a=>a.target!==mage));assert.equal(mage.hp,0);
  guard.mp=0;assert.deepEqual(finalEnemyActions(guard,100,()=>.1,e.enemies),[]);
 });
+
 
 
