@@ -68,7 +68,7 @@ const EFFECT_LAYERS=Object.freeze({
   'bubble-effect':'<g class="pet-extra-effect" fill="none" stroke="#b8ecf6" stroke-width="3" opacity=".9"><circle cx="34" cy="76" r="12"/><circle cx="196" cy="92" r="17"/><circle cx="49" cy="156" r="9"/><circle cx="189" cy="169" r="11"/><circle cx="211" cy="48" r="7"/></g>',
   'snowflake-effect':'<g class="pet-extra-effect" fill="#fff" stroke="#b7dcea" stroke-width="2"><text x="28" y="72" font-size="27">❄</text><text x="188" y="80" font-size="24">❄</text><text x="35" y="176" font-size="22">❄</text><text x="184" y="175" font-size="28">❄</text></g>',
   'leaf-effect':'<g class="pet-extra-effect" fill="#78ad6f"><ellipse cx="35" cy="81" rx="8" ry="14" transform="rotate(-35 35 81)"/><ellipse cx="198" cy="74" rx="8" ry="14" transform="rotate(35 198 74)"/><ellipse cx="49" cy="168" rx="7" ry="12" transform="rotate(20 49 168)"/><ellipse cx="187" cy="169" rx="7" ry="12" transform="rotate(-20 187 169)"/></g>',
-  'lightning-effect':'<g class="pet-extra-effect" fill="#ffd85e" stroke="#d6a51c" stroke-width="2"><path d="M35 55 L57 55 L46 78 L63 78 L35 113 L43 86 L27 86Z"/><path d="M191 115 L210 115 L201 134 L216 134 L190 165 L197 142 L183 142Z"/></g>',
+  'lightning-effect':'<g class="pet-extra-effect pet-thunder-effect" aria-hidden="true" pointer-events="none"><g><path class="pet-thunder-bolt" d="M57 20 L35 66 L52 64 L27 112 L44 110 L31 163 L66 98 L47 101 L72 51 L53 55Z"/><path class="pet-thunder-branch" d="M43 85 L20 73 L26 97 L13 109 M43 122 L65 137 L57 151"/><path class="pet-thunder-spark" d="M31 171 V181 M21 168 L12 174 M41 168 L51 175"/></g><g><path class="pet-thunder-bolt" d="M187 38 L166 82 L184 79 L168 119 L187 114 L177 184 L211 108 L191 113 L211 64 L189 70 L204 35Z"/><path class="pet-thunder-branch" d="M198 92 L221 79 L215 101 L229 112 M185 146 L163 156 L168 170"/><path class="pet-thunder-spark" d="M177 193 V203 M166 189 L156 196 M188 189 L199 197"/></g></g>',
   'flower-effect':'<g class="pet-extra-effect"><g fill="#f2a0b7"><circle cx="37" cy="66" r="8"/><circle cx="201" cy="80" r="8"/><circle cx="43" cy="172" r="7"/><circle cx="190" cy="169" r="7"/></g><g fill="#f7d45d"><circle cx="37" cy="66" r="3"/><circle cx="201" cy="80" r="3"/><circle cx="43" cy="172" r="3"/><circle cx="190" cy="169" r="3"/></g></g>',
   'candy-effect':'<g class="pet-extra-effect" stroke="#fff" stroke-width="2"><g transform="translate(36 70) rotate(-20)"><rect x="-10" y="-6" width="20" height="12" rx="5" fill="#f18aa5"/><path d="M-10 0 l-9-7 v14Z M10 0 l9-7 v14Z" fill="#8ec6e8"/></g><g transform="translate(198 90) rotate(25)"><rect x="-10" y="-6" width="20" height="12" rx="5" fill="#f5c85f"/><path d="M-10 0 l-9-7 v14Z M10 0 l9-7 v14Z" fill="#b99bdd"/></g><g transform="translate(46 170) rotate(20)"><rect x="-9" y="-5" width="18" height="10" rx="5" fill="#8fd2b1"/><path d="M-9 0 l-8-6 v12Z M9 0 l8-6 v12Z" fill="#f2a0b7"/></g></g>'
 });
@@ -89,7 +89,13 @@ const STYLE=`
 .pet-shop-item[data-item-id="flower-glasses"] .pet-flower-glasses-icon{display:block;width:60px;height:30px;overflow:visible}
 .pet-extra-particle{transform-box:fill-box;transform-origin:center;animation:petExtraFall var(--duration) linear var(--delay) infinite both}
 @keyframes petExtraFall{0%{opacity:0;transform:translate(0,-65px) rotate(-8deg)}12%{opacity:.9}75%{opacity:.9}100%{opacity:0;transform:translate(var(--drift),100px) rotate(20deg)}}
-@media(prefers-reduced-motion:reduce){.pet-extra-particle{animation:none;opacity:.9}}
+.pet-thunder-strike{animation:petThunderStrike 3.6s steps(1,end) var(--delay) infinite both;transform:none}
+.pet-thunder-bolt{fill:#fff5ae;stroke:#edb529;stroke-width:1.8;stroke-linejoin:miter;filter:drop-shadow(0 0 3px #fffbd0) drop-shadow(0 0 7px #ffc526)}
+.pet-thunder-branch{fill:none;stroke:#ffe674;stroke-width:2.5;stroke-linejoin:miter;filter:drop-shadow(0 0 3px #ffcc36)}
+.pet-thunder-spark{fill:none;stroke:#ffd34b;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:petThunderSpark 3.6s ease-out var(--delay) infinite both}
+@keyframes petThunderStrike{0%,4%{opacity:0}5%{opacity:1}8%{opacity:.15}10%{opacity:1}15%{opacity:.6}22%,100%{opacity:0}}
+@keyframes petThunderSpark{0%,9%{opacity:0;transform:scale(.35)}11%{opacity:1;transform:scale(.7)}22%,100%{opacity:0;transform:scale(1.65)}}
+@media(prefers-reduced-motion:reduce){.pet-extra-particle,.pet-thunder-strike,.pet-thunder-spark{animation:none;opacity:.9}.pet-thunder-spark{transform:none}}
 `;
 
 let auth=null,db=null,currentUser=null,currentData={},unsubscribe=null,previewSelection=null,augmentQueued=false;
@@ -132,8 +138,9 @@ function applyExpansionLayers(root,data,preview=false){
       for(const source of node.children){const shape=source.children[i].cloneNode(true);shape.setAttribute('fill',source.getAttribute('fill'));group.append(shape);}return group;
     }):[...node.children];
     particles.forEach((shape,i)=>{
-      const motion=document.createElementNS(SVG_NS,'g');motion.classList.add('pet-extra-particle');
+      const motion=document.createElementNS(SVG_NS,'g');motion.classList.add(effectId==='lightning-effect'?'pet-thunder-strike':'pet-extra-particle');
       motion.style.cssText=`--duration:${3.5+i*.37}s;--delay:${-i*.91}s;--drift:${i%2?10:-10}px`;
+      if(effectId==='lightning-effect')motion.style.setProperty('--delay',(-i*1.8)+'s');
       motion.append(shape);if(i===0)node.replaceChildren();node.append(motion);
     });
     node.setAttribute('data-pet-extra-layer','effects');node.setAttribute('data-pet-extra-item',effectId);svg.append(node);
