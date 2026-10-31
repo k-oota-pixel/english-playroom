@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-31T00:39:48.163Z",
+  "generatedAt": "2026-10-31T03:11:13.767Z",
   "editionDate": "2026-10-31",
   "automation": {
     "version": 1,
@@ -9,291 +9,183 @@
   },
   "articles": [
     {
-      "id": "2026-10-31-alaska-senate-candidate-denies-plot",
+      "id": "2026-10-31-bird-flu-negative-miyagi-2026",
       "date": "2026-10-31",
-      "category": "world",
+      "scope": "japan",
+      "category": "environment",
       "categories": [],
       "careerTags": [
         "undecided"
       ],
       "tags": [
-        "alaska",
-        "election",
-        "senate",
-        "democrats",
-        "republicans"
+        "bird_flu",
+        "Miyagi",
+        "Ministry_of_Environment",
+        "wildlife"
       ],
-      "title": "Alaska Senate Candidate Denies Ballot Plot",
-      "summaryJa": "アラスカ州の上院議員選挙をめぐり、民主党の候補者メアリー・ペルトラ氏が、同姓同名の候補者を擁立して有権者を混乱させようとしたという疑惑を否定しました。",
-      "sourcePublishedAt": "2026-10-31T00:29:58.000Z",
+      "title": "Bird Flu Test is Negative in Miyagi",
+      "summaryJa": "環境省は宮城県栗原市で回収されたマガンの死亡野鳥について、遺伝子検査の結果、高病原性鳥インフルエンザウイルスは検出されなかったと発表しました。",
+      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
       "levels": {
         "5級": {
-          "title": "Mary Peltola talks about the election",
-          "text": "Mary Peltola is a candidate in Alaska. There are two men named Dan Sullivan in the race. People talk about a new plot. Peltola says she knows nothing. She does not want to trick voters. She wants a fair race. The election is very important.",
-          "wordCount": 45
-        },
-        "4級": {
-          "title": "Alaska Senate Candidate Denies Ballot Plot",
-          "text": "There is a big election in Alaska. Two men named Dan Sullivan are running for the Senate. People say Democrats tried to confuse voters. Democratic candidate Mary Peltola spoke to the voters. She said she knew nothing about the plan. She wants to clear the air. She is not trying to trick anyone. The investigation is still ongoing now.",
-          "wordCount": 59
-        },
-        "3級": {
-          "title": "Alaska Senate Candidate Denies Plot to Confuse Voters",
-          "text": "An election in Alaska is getting a lot of attention. Two men named Dan Sullivan are running for a Senate seat. Republicans say Democrats tried to confuse voters with a second candidate. Democratic candidate Mary Peltola denied knowing anything about this plan. She told voters that she only knew about herself and the incumbent. She stated that she never wanted to trick anyone. Meanwhile, the government is looking into the situation. Officials are investigating the case very carefully while the election approaches quickly. Additional reports suggest that federal authorities are reviewing ballots and examining communications related to the campaign.",
-          "wordCount": 99
-        },
-        "準2級": {
-          "title": "Alaska Senate Candidate Denies Involvement in Ballot Confusion Scheme",
-          "text": "Democratic Senate candidate Mary Peltola has strongly denied knowing about an alleged scheme in the Alaska Senate race. The controversy began when two men named Dan Sullivan appeared on the ballot, leading the incumbent Republican and his allies to accuse Democrats of trying to confuse voters. Reports suggested that people connected to Peltola's campaign worked to recruit a retired teacher named Dan J Sullivan as a spoiler candidate. However, Peltola stated clearly that she knew nothing about other candidates except for herself and the incumbent. She insisted that she was not interested in tricking voters. Despite her denials, the Trump administration and the Department of Justice are continuing investigations into the matter. Federal authorities have requested that election officials preserve and segregate ballots that rank the second Dan Sullivan while civil and criminal inquiries move forward.",
-          "wordCount": 136
-        },
-        "2級": {
-          "title": "Alaska Senate Candidate Denies Allegations Regarding Ballot Confusion Plot",
-          "text": "Democratic Senate candidate Mary Peltola has firmly denied any knowledge of an alleged plot that resulted in two men named Dan Sullivan running in the Alaska Senate race. The controversy arose after reports claimed that individuals connected to Peltola's campaign and senior Democratic aides attempted to recruit a retired teacher, also named Dan J Sullivan, to run as a spoiler candidate. The incumbent Republican senator and his allies quickly accused Democrats of attempting to confuse voters in one of the country's tightest midterm races. While speaking to voters, Peltola attempted to clear the air, stating that she knew nothing about the alleged scheme and had no interest in tricking voters. Nevertheless, the Department of Justice and the Trump administration have intensified their scrutiny, launching ongoing civil and criminal investigations into the matter. Federal prosecutors have even asked a judge to direct election officials to segregate all ballots ranking the second Dan Sullivan, though no criminal charges have been filed yet by authorities.",
-          "wordCount": 162
-        },
-        "準1級": {
-          "title": "Alaska Senate Contender Rejects Allegations of Orchestrating Ballot Scheme",
-          "text": "Democratic Senate candidate Mary Peltola has vehemently denied any awareness of an alleged political scheme that led to two men named Dan Sullivan appearing on the ballot in Alaska's highly competitive Senate race. The controversy escalated following media reports alleging that individuals tied to Peltola's campaign and senior Democratic committee aides collaborated to recruit a retired teacher, Dan J Sullivan, to serve as a spoiler candidate. Incumbent Republican Senator Dan S Sullivan and his political allies immediately seized on the reports, accusing Democrats of deliberately attempting to confuse the electorate in a contest critical to control of Congress. During a public appearance, Peltola sought to clear the air, firmly stating that her knowledge of the ballot was strictly limited to herself and the incumbent, and emphasizing her disinterest in any tactics designed to deceive voters. Despite these resolute denials, the political fallout has intensified significantly across the state. The Department of Justice has initiated both civil and criminal investigations into the recruitment effort, issuing subpoenas targeting Democratic officials. Furthermore, federal lawyers representing the Trump administration requested that a judge order election officials to preserve and segregate all ballots featuring the second Dan Sullivan, though no formal charges have been brought against any campaign figures as the intense scrutiny continues.",
-          "wordCount": 209
-        }
-      },
-      "sources": [
-        {
-          "name": "BBC World",
-          "url": "https://www.bbc.co.uk/news/articles/cmwyq2gg1yzzo?at_medium=RSS&at_campaign=rss"
-        }
-      ]
-    },
-    {
-      "id": "2026-10-31-mit-affiliates-named-2026-schmidt-sciences-ai2050-fell",
-      "date": "2026-10-31",
-      "category": "technology",
-      "categories": [
-        "science"
-      ],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "AI",
-        "MIT",
-        "fellowship",
-        "Schmidt Sciences"
-      ],
-      "title": "MIT Affiliates Named 2026 AI2050 Fellows",
-      "summaryJa": "MITの教員5名と卒業生2名が、人工知能の発展を目指すシュミット・サイエンスの「2026 AI2050フェロー」に選ばれました。",
-      "sourcePublishedAt": "2026-10-30T20:15:00.000Z",
-      "levels": {
-        "5級": {
-          "title": "MIT AI Fellows",
-          "text": "Five people from MIT have a great prize. They study artificial intelligence. This is a very good thing for science. Schmidt Sciences gives this honor to them. They want AI to help people in the future. We can learn from them and make new tools. AI is important.",
-          "wordCount": 48
-        },
-        "4級": {
-          "title": "MIT Researchers Get AI Honor",
-          "text": "Five MIT teachers and two alumni have won a special honor. Schmidt Sciences named them as 2026 AI2050 Fellows. This program wants to solve hard problems in artificial intelligence. The fellows will study how AI can help society in the future. Everyone wants to make sure that artificial intelligence is safe and good for everyone in the world today. We can learn a lot from these great people.",
-          "wordCount": 66
-        },
-        "3級": {
-          "title": "Seven MIT Affiliates Named AI2050 Fellows",
-          "text": "Five MIT faculty members and two alumni received a great honor recently. Schmidt Sciences named them to the 2026 cohort of AI2050 Fellows. This philanthropic initiative aims to solve difficult problems in artificial intelligence. Each fellow will work on making sure that AI turns out to be hugely beneficial to society by the year 2050. Their research will explore important questions and opportunities to ensure this positive outcome for everyone around the world.",
-          "wordCount": 70
-        },
-        "準2級": {
-          "title": "MIT Faculty and Alumni Named 2026 AI2050 Fellows by Schmidt Sciences",
-          "text": "Five faculty members and two additional alumni from MIT were recently named to the 2026 cohort of AI2050 Fellows. This honor is announced every year by Schmidt Sciences, which is a philanthropic initiative created by Eric and Wendy Schmidt to accelerate scientific innovation. Conceived and co-chaired by Eric Schmidt and James Manyika, AI2050 aims to help solve hard problems in artificial intelligence. Within their research, each fellow will think about the central question of AI2050. They want to know what problems were solved to make AI hugely beneficial to society by the year 2050 for everyone.",
-          "wordCount": 91
-        },
-        "2級": {
-          "title": "Seven MIT Affiliates Honored as 2026 AI2050 Fellows for Beneficial Artificial Intelligence Research",
-          "text": "Five MIT faculty members and two additional alumni were recently named to the 2026 cohort of AI2050 Fellows. This prestigious honor is announced annually by Schmidt Sciences, a philanthropic initiative founded by Eric and Wendy Schmidt to accelerate scientific innovation. Co-chaired by Eric Schmidt and James Manyika, AI2050 is designed to help solve hard problems in artificial intelligence. As part of their research, each fellow must contend with a central motivating question regarding the future. They consider what happens when artificial intelligence turns out to be hugely beneficial to society by the year 2050, identifying the most important problems solved and opportunities realized to ensure this outcome. Among the honored researchers, Sendhil Mullainathan serves as an AI2050 Senior Fellow at MIT, focusing his project on translating patterns detectable by AI into testable theories for the future.",
-          "wordCount": 131
-        },
-        "準1級": {
-          "title": "MIT Faculty and Alumni Recognized Among 2026 AI2050 Fellows for Advancing Beneficial Artificial Intelligence",
-          "text": "Five distinguished MIT faculty members and two additional alumni were recently named to the 2026 cohort of AI2050 Fellows, a prestigious recognition announced annually by Schmidt Sciences. Created and co-chaired by Eric and Wendy Schmidt along with James Manyika, this philanthropic initiative is dedicated to accelerating scientific innovation and solving exceptionally difficult problems within the field of artificial intelligence. Each selected fellow engages deeply with the core motivating question of the program: imagining a future in the year 2050 where artificial intelligence has proven to be profoundly beneficial to society, and determining the critical problems solved and possibilities realized to achieve that outcome. Among the recognized scholars is Sendhil Mullainathan, an AI2050 Senior Fellow and professor at MIT who holds dual appointments in the Department of Economics and the Department of Electrical Engineering and Computer Science, alongside his role as a principal investigator at the MIT Laboratory for Information and Decision Systems. His innovative research centers on the intersection of algorithms and human behavior, including efforts to translate patterns detectable by machine learning models into robust, testable scientific theories. Furthermore, this initiative supports early career fellows who continue to push the boundaries of modern computing and mathematical sciences across the institute.",
-          "wordCount": 197
-        }
-      },
-      "sources": [
-        {
-          "name": "MIT News",
-          "url": "https://news.mit.edu/2026/mit-affiliates-named-schmidt-sciences-ai2050-fellows-1030"
-        }
-      ]
-    },
-    {
-      "id": "2026-10-31-moloney-macdonald-england-usa-wxv-2026",
-      "date": "2026-10-31",
-      "category": "sports",
-      "categories": [],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "rugby",
-        "england",
-        "usa",
-        "wxv"
-      ],
-      "title": "Moloney-MacDonald Scores Four Tries as England Thump USA",
-      "summaryJa": "ラグビーのWXVグローバル・シリーズで、イングランドがアメリカを55対12で破りました。モロニー＝マクドナルド選手が4トライを挙げる活躍を見せ、カナダ戦での敗北から見事に立て直しました。",
-      "sourcePublishedAt": "2026-10-30T23:56:59.000Z",
-      "levels": {
-        "5級": {
-          "title": "England Wins a Rugby Game",
-          "text": "England played a rugby game. They played against the USA team. England scored many points. They got fifty-five points. The USA team got twelve points. A player named Moloney-MacDonald scored four tries. England won the match. They are very happy today.",
+          "title": "Dead Bird Test is Safe",
+          "text": "A dead bird was found in Miyagi. People did a test. It was positive for a flu virus at first. But a new test said no. There is no dangerous bird flu here. The area is safe now. People can relax.",
           "wordCount": 41
         },
         "4級": {
-          "title": "England Beats USA in Rugby",
-          "text": "England played a great rugby match against the USA team. England wanted to win because they lost to Canada before. Moloney-MacDonald played very well and scored four tries for her team. England scored fifty-five points in total. The USA team scored only twelve points. England won the game easily and showed a strong comeback in the WXV Global Series.",
-          "wordCount": 59
+          "title": "No Dangerous Bird Flu in Miyagi",
+          "text": "A dead wild goose was found in Kurihara city, Miyagi prefecture on October 27. A quick test showed a type of bird flu. However, a detailed genetic test found no high pathogenic bird flu virus. The government removed the watching area today. Officials ask people to stay calm and not worry.",
+          "wordCount": 50
         },
         "3級": {
-          "title": "England Thumps USA After Losses",
-          "text": "England returned to the winning path with a strong performance in the WXV Global Series. They previously suffered defeats against Canada, but the team bounced back quickly. England played against the USA team and secured a comfortable victory with a score of 55 to 12. A standout player, Moloney-MacDonald, scored four tries during the match. This big win proved that England is still a very strong team in international rugby union. Even though they did not hit their absolute top gear, the team played very well to win this important game.",
-          "wordCount": 89
+          "title": "Bird Flu Test Results Come Back Negative in Miyagi",
+          "text": "On October 27, a dead wild goose was found in Kurihara City, Miyagi Prefecture. A quick test showed a positive reaction for an avian influenza virus. Because of this, the local area became a special watching zone. However, a detailed genetic test on October 30 proved there was no high pathogenic bird flu virus. Therefore, the Ministry of Environment lifted the special zone. Officials remind citizens that normal hand washing keeps everyone safe today.",
+          "wordCount": 72
         },
         "準2級": {
-          "title": "Moloney-MacDonald Leads England to Victory Over USA",
-          "text": "England bounced back impressively from recent defeats against Canada by securing a dominant fifty-five to twelve victory over the USA team in the WXV Global Series. The standout moment of the match came from Moloney-MacDonald, who delivered an outstanding performance by scoring four tries for her squad. Although match reports noted that England did not always reach their absolute top gear during the game, their powerful offense proved far too much for the opposition. This convincing win helped England recover momentum and remind rugby fans of their strength in international competition.",
-          "wordCount": 91
+          "title": "Ministry Lifts Special Bird Monitoring Zone After Negative Test",
+          "text": "The Ministry of Environment announced that a dead wild goose found in Kurihara City, Miyagi Prefecture, tested negative for high pathogenic avian influenza. The bird was collected on October 27, and an initial rapid test showed a positive reaction for a type of bird flu virus. Consequently, authorities established a special monitoring zone around the location. On October 30, a specialized laboratory conducted a genetic test, which confirmed the absence of the dangerous virus. As a result, the monitoring zone was immediately lifted today. The ministry reminds the public that normal daily hygiene, such as washing hands after touching bird droppings, is enough to prevent infection, and asks everyone to remain calm.",
+          "wordCount": 110
         },
         "2級": {
-          "title": "England Defeats USA 55-12 in WXV Global Series",
-          "text": "England responded strongly to recent disappointments by defeating the USA team fifty-five to twelve in the WXV Global Series. Prior to this important rugby fixture, the English squad had suffered defeats against Canada, making this bounce-back performance crucial for their tournament campaign. A talented player named Moloney-MacDonald starred in the match by scoring four tries, driving the England team forward with remarkable skill and speed on the field. While match reports suggested that the England team did not consistently reach their absolute top gear throughout the contest, their overwhelming scoreline demonstrated their clear superiority over the USA team. This decisive victory highlights the depth and resilience of the English rugby squad as they navigate high-level international competition and work to improve their overall performance throughout the series. The England team successfully showed their strength on the international rugby stage.",
+          "title": "Miyagi Bird Flu Monitoring Zone Lifted Following Negative Genetic Test",
+          "text": "The Japanese Ministry of Environment has officially lifted a special wild bird monitoring zone in Kurihara City, Miyagi Prefecture, after a dead wild goose tested negative for high pathogenic avian influenza. On October 27, local authorities recovered a deceased wild goose and performed a preliminary test that returned a positive reaction for an A-type bird flu virus. In response, officials established a surveillance zone around the recovery site to monitor local wildlife closely. However, subsequent genetic testing conducted by a specialized laboratory at the National Institute for Environmental Studies on October 30 confirmed that no high pathogenic avian influenza virus was present. With the threat ruled out, the monitoring zone was dissolved on the same day. The ministry emphasized that avian influenza rarely infects humans except through intense, direct contact with sick animals. Citizens are urged to maintain calm and practice basic hygiene like handwashing and gargling.",
+          "wordCount": 145
+        },
+        "準1級": {
+          "title": "Ministry of Environment Dissolves Miyagi Surveillance Zone After Avian Influenza Test Rules Out Pathogenic Strain",
+          "text": "In response to a suspected wildlife health incident, the Japanese Ministry of Environment has officially lifted a specialized wild bird monitoring zone in Kurihara City, Miyagi Prefecture. The sequence of events began on October 27 when officials recovered a deceased wild goose within the municipality. An initial rapid diagnostic test indicated a positive reaction for an A-type avian influenza virus, prompting local authorities to swiftly designate a radius surrounding the recovery site as a special surveillance zone to track potential outbreaks among local bird populations. Nevertheless, subsequent and more rigorous genetic testing performed by a specialized laboratory housed within the National Institute for Environmental Studies yielded definitive results on October 30, confirming the complete absence of any high pathogenic avian influenza virus. Consequently, the government dissolved the monitoring zone the very same day while vowing to continue nationwide wildlife monitoring operations. Emphasizing public safety, the ministry noted that avian influenza transmission to humans is extremely rare under normal daily circumstances, typically requiring intense physical contact with infected animals. Officials have strongly urged the public to remain calm and adhere to standard hygiene practices, such as washing hands and gargling after interacting with nature, while requesting that citizens report any clusters of dead wild birds to local municipal offices.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "Ministry of Environment Japan",
+          "url": "https://www.env.go.jp/press/111118_00083.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-digital-agency-releases-new-mynumber-card-info-vol-157",
+      "date": "2026-10-31",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "mynumber-card",
+        "digital-agency",
+        "japan-tech",
+        "digital-transformation"
+      ],
+      "title": "Digital Agency Releases New My Number Card Info Vol. 157 and 158",
+      "summaryJa": "デジタル庁は民間事業者向けに、マイナンバーカードの活用事例や最新情報をお知らせする「マイナンバーカード・インフォ」のVol.157およびVol.158を掲載しました。また、デジタル認証アプリを「マイナアプリ」に統合したことも発表されています。",
+      "sourcePublishedAt": "2026-10-30T06:00:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "New My Number Card Info",
+          "text": "Japan has new news. The Digital Agency has new info for businesses. It is about the My Number Card. Vol. 157 and Vol. 158 are now online. Businesses can read them. They can learn how to use the card. The card helps people every day in Japan.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Digital Agency Releases New Info",
+          "text": "The Digital Agency in Japan released new updates for private businesses and local governments. They published My Number Card Info Vol. 157 and Vol. 158. These volumes share helpful examples of how companies use the My Number Card. Businesses can learn useful ways to check identities and improve their services for customers every day.",
+          "wordCount": 52
+        },
+        "3級": {
+          "title": "Digital Agency Shares New My Number Card Info",
+          "text": "The Digital Agency of Japan has published the latest editions of My Number Card Info, Vol. 157 and Vol. 158. These reports provide private businesses and local governments with helpful examples of how to use the My Number Card. Companies can learn about online identity verification and government policies. Furthermore, the agency recently integrated the digital authentication app into the new Maina App to make services much easier to use.",
+          "wordCount": 68
+        },
+        "準2級": {
+          "title": "Japan Digital Agency Releases New My Number Card Information Volumes",
+          "text": "The Digital Agency of Japan has published Vol. 157 and Vol. 158 of its My Number Card Info series to help private businesses and local governments. These guides share practical examples of how organizations utilize the My Number Card for identity verification and various administrative services. In addition, the agency recently integrated its digital authentication app into the new Maina App to improve digital services. Consequently, the former digital authentication service has been renamed the Digital Authentication Service, ensuring that administrative bodies and private companies can continue utilizing these secure tools safely for their daily operations across multiple sectors.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "Digital Agency Publishes My Number Card Info Volumes 157 and 158",
+          "text": "The Digital Agency of Japan has officially released Volumes 157 and 158 of the My Number Card Info series. These new reports provide private businesses and local governments with the latest updates and helpful utilization examples. Specifically, the publications highlight how various sectors successfully implement the My Number Card for online identity verification and administrative procedures. Meanwhile, the Digital Agency announced that the digital authentication app has been successfully integrated into the newly launched Maina App to improve digital services for users. Because of this integration, the original service has now been officially renamed the Digital Authentication Service. This renaming ensures that administrative organs and private companies can continue to leverage these secure verification tools effectively for their daily operations across multiple sectors. Furthermore, the Digital Agency continues to distribute this useful information regularly to share government policies and card promotion details directly with organizations that need reliable updates for their daily work. These reports help private businesses understand how to use the My Number Card correctly.",
+          "wordCount": 165
+        },
+        "準1級": {
+          "title": "Digital Agency Publishes Latest My Number Card Information Volumes 157 and 158",
+          "text": "The Digital Agency of Japan has officially published Volumes 157 and 158 of the My Number Card Info series, providing private businesses and local governments with valuable updates and practical utilization examples regarding the My Number Card. These new reports highlight various industry applications. Specifically, Vol. 158 discusses age confirmation using the face-to-face My Number Card application at school festivals, while Vol. 157 features online identity verification using the My Number Card in iPhone applications for loan services provided by NTT Docomo Financial Group, Incorporated. Alongside these published reports, the Digital Agency announced a major structural update regarding its software ecosystem. The features of the former digital authentication app have been integrated into the newly launched Maina App, which began providing services on August 25, 2026. Consequently, the previous digital authentication application service has been officially renamed the Digital Authentication Service. This ensures that administrative bodies, local governments, and private enterprises can seamlessly continue leveraging secure verification tools to enhance their digital services and streamline customer verification procedures across multiple sectors. The Digital Agency of Japan continues to distribute My Number Card Info regularly to share useful information about government policies, card promotion, and practical examples directly with administrative bodies and private business operators who need reliable updates for their daily operations.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "Digital Agency Japan",
+          "url": "https://www.digital.go.jp/policies/mynumber/private-business/info"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-mext-cs-youth-leader-event-university-students",
+      "date": "2026-10-31",
+      "scope": "japan",
+      "category": "education",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "MEXT",
+        "Community School",
+        "University Students",
+        "CS Youth Leader"
+      ],
+      "title": "MEXT Announces New Event for University Students by CS Youth Leaders",
+      "summaryJa": "文部科学省は、大学生を対象とした「CSユースリーダーによる大学生対象イベント」の初開催を発表しました。テーマは「地域と学校をつなぐ」であり、若者の地域社会や学校への参画を促進します。",
+      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "New Event by MEXT",
+          "text": "Japan has a new event. It is for university students. The Ministry of Education makes this event. Young leaders help schools and towns. The event is on December 19, 2026. Students can talk together. It is free to join. Many students can learn new things and help local communities.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Event for University Students",
+          "text": "The Ministry of Education in Japan announced a new event for university students. CS Youth Leaders will hold this event on December 19, 2026, at Yamaguchi University. The main theme is connecting local areas and schools. Students can listen to reports and talk in groups together. This helps young people join community activities easily and learn new things.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Connecting Local Areas and Schools",
+          "text": "Japan's Ministry of Education has announced a new event for university students. Led by CS Youth Leaders, the event focuses on connecting local communities and schools. It will take place on December 19, 2026, at Yamaguchi University. The program includes activity reports from youth leaders, presentations by university students, and group discussions. Organizers hope this will encourage young people to participate in community activities. Admission is completely free, and up to eighty students can join this special gathering.",
+          "wordCount": 76
+        },
+        "準2級": {
+          "title": "MEXT and CS Youth Leaders Host Student Event",
+          "text": "The Japanese Ministry of Education is promoting youth participation in community schools and local school collaborative activities. To support this goal, they announced a special event for university students organized by CS Youth Leaders. The event theme is connecting local areas and schools through small steps. It is scheduled for December 19, 2026, at Yamaguchi University. The schedule features Ministry explanations, activity reports from youth leaders, student presentations, and group talks. CS Youth Leaders are young people appointed by the Ministry to share the value of community schools through events, speeches, and social media. This free gathering aims to give students an opportunity to get involved in local society.",
+          "wordCount": 107
+        },
+        "2級": {
+          "title": "Ministry of Education Promotes Student Community Engagement through New CS Youth Leader Event",
+          "text": "The Ministry of Education, Culture, Sports, Science and Technology in Japan is actively encouraging young generations to participate in community schools and collaborative school activities. As part of this important initiative, the Ministry has announced a newly organized event specifically for university students, hosted by CS Youth Leaders. Scheduled for December 19, 2026, at Yamaguchi University, the event carries the theme of connecting local regions and schools starting from personal interests. CS Youth Leaders are young individuals officially appointed by the Ministry this year to communicate the significance and appeal of community involvement through events, lectures, and social media. The upcoming gathering will feature institutional explanations by the Ministry, activity reports, student presentations, and interactive group discussions among participants. With a capacity of eighty attendees and free admission, the organizers aim to inspire proactive youth participation in regional development and education.",
           "wordCount": 139
         },
         "準1級": {
-          "title": "Moloney-MacDonald Stars as England Rebounds With Convincing Win Over USA",
-          "text": "England successfully halted a brief period of frustration by delivering a comprehensive fifty-five to twelve victory against the USA team in the WXV Global Series tournament. The England rugby squad had previously faced consecutive defeats against Canada, increasing the pressure to perform and reassert their dominance on the international stage. A talented player named Moloney-MacDonald proved to be the catalyst for this much-needed recovery, producing a stellar individual display by crossing the try line four times during the match. Despite tactical analysis indicating that the England team occasionally struggled to hit their absolute top gear during the encounter, their sheer athleticism and clinical finishing ensured a very comfortable margin of victory over the opposition. This impressive bounce-back performance not only restores vital momentum for the England squad but also reinforces their status as formidable contenders in international rugby union as the tournament progresses further. The England team demonstrated their unwavering determination on the field against the USA team, showing great resilience after the difficult defeats against Canada earlier. Moloney-MacDonald helped lead the England team forward throughout the contest, securing the fifty-five to twelve win in the WXV Global Series competition. The England team successfully showed their strength on the international rugby stage once again, proving that the England team can overcome recent setbacks through hard work and exceptional individual brilliance from players like Moloney-MacDonald.",
-          "wordCount": 224
+          "title": "Japan's Ministry of Education Announces CS Youth Leader Initiative Event for University Students to Drive Regional and School Connection",
+          "text": "In a continuous effort to promote the integration of community schools and regional school collaborative activities, Japan's Ministry of Education, Culture, Sports, Science and Technology has announced a newly planned event specifically tailored for university students. Guided by newly appointed CS Youth Leaders—who are young individuals officially appointed by the Ministry this year to communicate the value and charm of community school initiatives through lectures, event planning, and social media outreach—the upcoming program centers heavily on bridging local communities and educational institutions. Scheduled for December 19, 2026, at Yamaguchi University, the event invites up to eighty undergraduate participants completely free of charge. The comprehensive agenda includes policy explanations from the Ministry, inspiring activity reports delivered directly by CS Youth Leaders, student presentations, and interactive group discussions designed to spark active community involvement. By fostering welcoming spaces where young adults can explore personal connections with local society starting from their own personal interests, the Ministry aims to encourage young generations to participate in community schools and collaborative school activities. The event offers a wonderful opportunity for university students to engage directly with regional development and education. Interested individuals must submit applications through the designated form before December 16, 2026. Through such thoughtful initiatives, Japan's Ministry of Education, Culture, Sports, Science and Technology hopes to cultivate a sustainable framework for youth-driven regional revitalization and educational development across the country.",
+          "wordCount": 225
         }
       },
       "sources": [
         {
-          "name": "BBC Sport",
-          "url": "https://www.bbc.co.uk/sport/rugby-union/videos/c65yn0w2w152o?at_medium=RSS&at_campaign=rss"
+          "name": "MEXT Japan",
+          "url": "https://www.mext.go.jp/b_menu/houdou/mext_01698.html"
         }
       ]
     },
     {
-      "id": "2026-10-31-nasa-releases-max-power-key-events",
+      "id": "2026-10-31-mhlw-security-warning-2026",
       "date": "2026-10-31",
-      "category": "science",
-      "categories": [],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "NASA",
-        "MAX POWER",
-        "Kennedy Space Center"
-      ],
-      "title": "NASA Announces MAX POWER Events",
-      "summaryJa": "NASAはフロリダ州のケネディ宇宙センターで11月6日から8日まで開催される新しい航空宇宙博覧会「MAX POWER」の主要なイベントスケジュールを発表しました。",
-      "sourcePublishedAt": "2026-10-30T19:31:02.000Z",
-      "levels": {
-        "5級": {
-          "title": "NASA Has MAX POWER",
-          "text": "NASA has a new air show. It is called MAX POWER. It is in Florida. The big event is in November. NASA can show new planes. Many people can see the future of space. Families can go and have fun on the weekend.",
-          "wordCount": 43
-        },
-        "4級": {
-          "title": "NASA Announces MAX POWER Events",
-          "text": "NASA announced key events for a new aerospace expo called MAX POWER. The big event will happen in Florida near the Kennedy Space Center. It starts on Friday, November 6, and ends on Sunday, November 8. NASA and its partners will show new aircraft, space vehicles, and future technologies. Visitors can see the quiet supersonic X-59 plane and learn about space exploration during the weekend.",
-          "wordCount": 63
-        },
-        "3級": {
-          "title": "NASA Announces Schedule for MAX POWER Expo",
-          "text": "NASA recently announced key events for its newest aerospace expo and air show called MAX POWER. The show takes place from Friday, November 6, to Sunday, November 8, near the Kennedy Space Center in Florida. During the event, NASA and other partners will showcase new aircraft, autonomous vehicles, and spacecraft. Families can visit the public expo on November 7 and 8 to see exciting exhibits, meet astronauts, and learn about the future of space exploration.",
-          "wordCount": 71
-        },
-        "準2級": {
-          "title": "NASA Reveals Key Events for MAX POWER Aerospace Expo",
-          "text": "NASA has announced the schedule of key events for MAX POWER, its newest aerospace expo and air show. The event will run from Friday, November 6, to Sunday, November 8, at and near the Kennedy Space Center in Florida. At the expo, NASA and external collaborators will showcase advanced aircraft, autonomous vehicles, and Moon rovers. Visitors can see the quiet supersonic X-59 plane and learn about future air and space technologies. Public gates will open at 9 a.m. on November 7 and 8, offering families a chance to meet astronauts, engineers, and scientists. Additionally, NASA will host a special news conference at 5 p.m. on November 7 to share updates about the lunar South Pole Moon Base.",
-          "wordCount": 112
-        },
-        "2級": {
-          "title": "NASA Details Schedule and Activities for MAX POWER Expo",
-          "text": "NASA has officially released the schedule of key events for MAX POWER, America's newest aerospace expo and air show, which will take place from November 6 through November 8. Hosted on and near the agency's Kennedy Space Center in Florida, the event brings together NASA and various external collaborators to showcase cutting-edge aircraft, autonomous vehicles, and space technologies. Among the highlights is the display of NASA's quiet supersonic X-59 plane, alongside partner exhibits featuring Moon rovers and spacecraft. Family-friendly public events open their gates at 9 a.m. EST on November 7 and 8, allowing attendees to interact with leadership, astronauts, engineers, and scientists. Furthermore, NASA plans to host a major news conference at 5 p.m. on November 7 to deliver its latest update on the Moon Base, humanity's first long-term lunar exploration outpost located near the lunar South Pole.",
-          "wordCount": 134
-        },
-        "準1級": {
-          "title": "NASA Unveils Comprehensive Schedule and Highlights for MAX POWER Aerospace Showcase",
-          "text": "NASA has officially announced a detailed roster of key events for MAX POWER, the nation's premier aerospace expo and air show. Scheduled from Friday, November 6, through Sunday, November 8, the multi-day event takes place at and around the agency's Kennedy Space Center in Florida. Through diverse park experiences, NASA and a wide array of external collaborators will exhibit next-generation aircraft, autonomous vehicles, and advanced technologies shaping the future of aviation and space exploration. Notable displays include NASA's quiet supersonic X-59 plane, alongside partner-contributed Moon rovers and spacecraft, marking the culmination of the agency's recent Inspiration Tour. The weekend features public-friendly programming beginning at 9 a.m. EST on November 7 and November 8, giving attendees unique opportunities to engage with agency leadership, scientists, engineers, and veteran astronauts such as the Artemis III crew. In addition to dynamic aerial demonstrations like the F-5 flyover featuring NASA Administrator Jared Isaacman during the Air Dot Show, the agency will broadcast a crucial news conference at 5 p.m. on November 7 to provide a comprehensive update on the lunar South Pole Moon Base, which serves as humanity's pioneering long-term outpost for deep space exploration. Media and participants can also look forward to special briefings, including a nuclear media gaggle with Cynthia Simmons and opening remarks by Deputy Administrator Matt Anderson.",
-          "wordCount": 211
-        }
-      },
-      "sources": [
-        {
-          "name": "NASA News",
-          "url": "https://www.nasa.gov/news-release/nasa-releases-max-power-key-events-for-media-participants/"
-        }
-      ]
-    },
-    {
-      "id": "2026-10-31-nova-biomedical-statstrip-glucose-meter-correction",
-      "date": "2026-10-31",
+      "scope": "japan",
       "category": "health",
-      "categories": [],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "fda",
-        "glucose-meter",
-        "patient-safety",
-        "nova-biomedical"
-      ],
-      "title": "Nova Biomedical Updates Glucose Meter Instructions",
-      "summaryJa": "Nova Biomedical社は、StatStrip血糖測定器システム（Gen 2.0）について、患者IDの誤割り当てを防ぐため、ソフトウェア更新までの間、使用手順の更新と追加の確認を呼びかけています。",
-      "sourcePublishedAt": "2026-10-30T04:00:00.000Z",
-      "levels": {
-        "5級": {
-          "title": "New Rules for Glucose Meters",
-          "text": "Nova Biomedical has a new update. It is for a hospital glucose meter. The meter is the StatStrip Gen 2.0. Sometimes, results can go to the wrong patient. Users must follow new instructions. Please check patient IDs carefully. Wait for a software update to fix this problem completely. Be safe.",
-          "wordCount": 49
-        },
-        "4級": {
-          "title": "Important Update for Hospital Meters",
-          "text": "Nova Biomedical has issued important new instructions. This affects the StatStrip Glucose Hospital Meter System Gen 2.0. The device can sometimes assign glucose results to the wrong patient. While waiting for a software update, users must follow new recommendations. If you have another meter, you should stop using this one. Always check the patient ID very carefully before and after every test.",
-          "wordCount": 61
-        },
-        "3級": {
-          "title": "Nova Biomedical Updates Instructions for Hospital Glucose Meters",
-          "text": "Nova Biomedical has released updated instructions for the StatStrip Glucose Hospital Meter System Gen 2.0. This correction happens because glucose results might be assigned to the incorrect patient. The FDA considers this a serious issue that requires attention. While waiting for a software update, hospitals should follow new safety steps. If an alternative device is available, users should stop using the affected meter until it is updated. Always confirm the patient name and ID on the screen before accepting any test results to prevent dangerous mistakes in hospitals.",
-          "wordCount": 87
-        },
-        "準2級": {
-          "title": "Nova Biomedical Updates StatStrip Glucose Meter Instructions",
-          "text": "Nova Biomedical has announced an important correction for its StatStrip Glucose Hospital Meter System Gen 2.0. The company issued updated instructions because glucose test results can potentially be assigned to the incorrect patient. The FDA has classified this as a very serious situation that requires immediate attention. While customers wait for an official software update, they must follow specific safety recommendations. If an alternative device is available, users should stop using the affected meter until it is updated. Facilities must also configure their systems to automatically log operators out after each test. Additionally, medical staff must carefully verify the patient ID and name on the device screen before and after every test. These strict steps help prevent serious patient injury or data mix-ups in medical facilities.",
-          "wordCount": 125
-        },
-        "2級": {
-          "title": "Nova Biomedical Issues Important Correction for StatStrip Glucose Hospital Meters",
-          "text": "Nova Biomedical has updated its use instructions for the StatStrip Glucose Hospital Meter System Gen 2.0. This corrective action is necessary because test results might be incorrectly assigned to the wrong patient. The FDA has identified this recall as the most serious type, noting that it could cause serious injury or death if continued without proper correction. While customers await a permanent software update, they must follow temporary safety recommendations. If an alternative meter is available, users should stop using the affected StatStrip device immediately until the software update is applied. Facilities using integrated Electronic Medical Records should confirm that patient validation settings are properly configured within NovaNet. Furthermore, meters should be set to automatically log operators out after each test is completed. Users must verify patient IDs on the screen before sample collection and again when results populate, ensuring complete accuracy.",
-          "wordCount": 141
-        },
-        "準1級": {
-          "title": "Nova Biomedical Implements Critical Safety Correction for StatStrip Hospital Glucose Meters",
-          "text": "Nova Biomedical has issued updated instructions for use concerning the StatStrip Glucose Hospital Meter System Gen 2.0 due to the potential for glucose test results to be assigned to the incorrect patient. The FDA has categorized this corrective action as the most serious type of recall because continued use without proper mitigation could potentially lead to severe injury or death. While customers await a permanent software update, they are strongly advised to utilize alternative meters if available, stopping use of the affected StatStrip devices until they are updated. For those continuing to use the affected systems, Nova Biomedical has outlined strict configuration requirements. Facilities must ensure that patient validation settings are properly enabled within the NovaNet system and configure devices to automatically log operators out after every test. Furthermore, medical personnel must diligently verify that the patient ID, name, and date of birth displayed on the device screen correspond accurately to the individual being tested both before sample collection and after the final results populate. These rigorous verification protocols are essential for maintaining patient safety and preventing dangerous medical errors in hospital environments.",
-          "wordCount": 182
-        }
-      },
-      "sources": [
-        {
-          "name": "FDA MedWatch",
-          "url": "https://www.fda.gov/medical-devices/medical-device-recalls-and-early-alerts/hospital-glucose-meter-correction-nova-biomedical-updates-use-instructions-statstrip-glucose"
-        }
-      ]
-    },
-    {
-      "id": "2026-10-31-philip-lane-ai-adoption-europe",
-      "date": "2026-10-31",
-      "category": "business",
       "categories": [
         "technology"
       ],
@@ -301,50 +193,163 @@
         "undecided"
       ],
       "tags": [
-        "ECB",
-        "artificial-intelligence",
-        "europe",
-        "economy"
+        "security",
+        "cyberattack",
+        "MHLW",
+        "personal-info"
       ],
-      "title": "Philip R. Lane: AI Adoption in Europe",
-      "summaryJa": "欧州中央銀行（ECB）のフィリップ・R・レーン理事は、サンフランシスコ連邦準備銀行のシンポジウムで、欧州経済における人工知能（AI）の導入と生産性への影響について講演を行いました。",
-      "sourcePublishedAt": "2026-10-30T16:10:00.000Z",
+      "title": "Japan Warns Companies About Cyberattacks and Data Leaks",
+      "summaryJa": "厚生労働省は、不正アクセスによる個人情報の漏えい事案が相次いでいることを受け、事業者に対してセキュリティ対策の徹底を呼びかけています。",
+      "sourcePublishedAt": "2026-10-30T09:59:00.000Z",
       "levels": {
         "5級": {
-          "title": "AI in Europe",
-          "text": "Europe has new technology. AI is very important now. Philip R. Lane talks about AI in Europe. He works at the ECB. AI helps the economy grow. Many companies use computers and software. Europe invests in digital tools. This helps people work better and faster every day.",
-          "wordCount": 47
+          "title": "Japan Makes New Security Warning",
+          "text": "Japan has a new security warning. Many computers have bad problems now. Hackers take personal data from companies. The government wants businesses to be safe. You must check your computer systems. Please use good passwords. Keep your data very safe and protected from bad people.",
+          "wordCount": 45
         },
         "4級": {
-          "title": "ECB Talk on AI",
-          "text": "Philip R. Lane spoke about artificial intelligence in the economy. He is a member of the European Central Bank. He said that adopting AI is very important for Europe. Although the US and China make new AI models, Europe can use AI to grow. Digital investment in the euro area has grown a lot since 2014.",
-          "wordCount": 55
+          "title": "New Cyberattack Warnings in Japan",
+          "text": "Japan is warning companies about cyberattacks. Many computer systems have serious security problems right now. Hackers are stealing personal data from different businesses. The government wants companies to update their systems quickly. Businesses must use multi-factor authentication to stay safe. Leaders need to check their computer safety. Everyone should protect private information carefully today.",
+          "wordCount": 54
         },
         "3級": {
-          "title": "AI Adoption and the European Economy",
-          "text": "Philip R. Lane, a member of the European Central Bank, discussed artificial intelligence during a recent speech in San Francisco. He explained that while the US and China build frontier AI models, Europe focuses on AI adoption. This adoption will help European productivity grow. Digital investment in the euro area has increased significantly since 2014. Furthermore, European firms and investors are part of the global AI supply chain and fund infrastructure through equity, debt, and the banking system. ECB surveys provide important insights into these structural economic shifts.",
-          "wordCount": 87
+          "title": "MHLW Calls for Stronger Cyber Security",
+          "text": "The Ministry of Health, Labour and Welfare is warning companies about security issues. Recently, many businesses suffered cyberattacks and lost personal data from their systems. The government asks all organizations to check their computer security. Companies must apply updates and use multi-factor authentication. Leaders need to make security stronger across their supply chains. Medical organizations must be especially careful with sensitive data and patient information.",
+          "wordCount": 65
         },
         "準2級": {
-          "title": "How AI is Reshaping the Euro Area Economy",
-          "text": "Philip R. Lane, a member of the European Central Bank's Executive Board, recently spoke about artificial intelligence and its impact on the economy. While frontier AI development mostly happens in the United States and China, adopting AI is a key factor for European productivity growth. Digital investment in the euro area has expanded by 73 percent in real terms since 2014, rising from 2.3 percent to 3.3 percent of GDP. Additionally, European firms participate in the global AI supply chain, and European investors help fund global AI infrastructure through equity, debt markets, and banks. Surveys conducted by the ECB help policymakers understand these changes.",
-          "wordCount": 100
+          "title": "Japan Issues Urgent Security Warning After Data Leaks",
+          "text": "The Japanese government is urging companies to strengthen cybersecurity measures following recent incidents. Information systems handling large amounts of personal data have been invaded through unauthorized access, and data has been stolen in several cases. The National Cyber Security Operations Office is calling for organizations to take action quickly. This includes applying security patches, handling vulnerabilities through system updates, and strengthening multi-factor authentication. Business leaders must show leadership to ensure these measures are thoroughly implemented across the entire supply chain, including contractors and related partners. Furthermore, the Ministry of Health, Labour and Welfare reminds medical institutions, healthcare providers, and related companies to check their security measures carefully to prevent further breaches and protect sensitive information.",
+          "wordCount": 115
         },
         "2級": {
-          "title": "ECB Executive Board Member Discusses AI Adoption in Europe",
-          "text": "At an economic research symposium in San Francisco, European Central Bank Executive Board member Philip R. Lane discussed how artificial intelligence is reshaping the euro area economy. He noted that while frontier AI models are primarily developed in the United States and China, the adoption of AI will drive European productivity growth in the coming years. Expenditure on AI adoption also currently provides a significant economic stimulus. Digital investment in the euro area has expanded by 73 percent in real terms since 2014, increasing from 2.3 percent to 3.3 percent of GDP. Although digital investment has grown much faster in the US, the euro area has seen a clear acceleration since 2024. Most of this regional digital investment is in intangible assets rather than data centers. Furthermore, European firms contribute to the global AI supply chain, and European investors help fund global AI infrastructure through equity and debt markets as well as the banking system.",
-          "wordCount": 150
+          "title": "MHLW Urges Strict Cybersecurity Measures Following Data Breaches",
+          "text": "In response to a series of recent unauthorized access incidents where personal data was stolen from information systems, Japanese authorities have issued an urgent security warning. Large amounts of personal information are handled by businesses whose networks have been successfully invaded by hackers. Consequently, the National Cyber Security Operations Office is calling for immediate action across all sectors. Companies must apply security patches, complete software updates to address vulnerabilities, and strengthen authentication methods like multi-factor authentication. Furthermore, business leaders must show strong leadership to ensure that comprehensive cybersecurity measures are thoroughly implemented across their entire supply chains, including external contractors and partner organizations. The Ministry of Health, Labour and Welfare also specifically advises medical institutions, related organizations, and healthcare system providers to review their security guidelines and carefully protect sensitive patient data.",
+          "wordCount": 132
         },
         "準1級": {
-          "title": "Philip R. Lane Examines Artificial Intelligence Integration and Productivity Growth in the Euro Area",
-          "text": "During a keynote address at the Federal Reserve Bank of San Francisco Economic Research Symposium, European Central Bank Executive Board member Philip R. Lane outlined the multifaceted ways artificial intelligence is transforming the euro area economy. Although foundational frontier AI development is predominantly concentrated in the United States and China, Lane emphasized that the widespread adoption of AI will serve as a critical determinant of future European productivity growth. Expenditures on AI adoption currently provide significant economic stimulus to the region. Moreover, European enterprises actively participate in the global AI supply chain, and regional investors contribute substantial funding to worldwide AI infrastructure buildouts via debt and equity markets as well as the banking sector. Aggregate trends highlight that digital investment in the euro area has expanded by 73 percent in real terms since 2014, climbing from 2.3 percent to 3.3 percent of GDP. While the United States has experienced a much faster pace of digital investment, the euro area has registered a distinct acceleration since 2024. Notably, regional digital investment has primarily flowed into intangible assets, with data center investments representing a comparatively modest share. Through ongoing ECB surveys and economic data, policymakers continue to monitor these structural shifts and their broader implications for the financial system.",
-          "wordCount": 202
+          "title": "Japanese Authorities Demand Enhanced Cybersecurity Across Supply Chains",
+          "text": "Prompted by a concerning wave of unauthorized access incidents resulting in significant data breaches, Japanese authorities have issued a stern nationwide security warning. Hackers have repeatedly infiltrated the information systems of organizations managing vast amounts of personal data, successfully extracting sensitive information. In light of these events, the National Cyber Security Operations Office urges businesses to swiftly implement critical defenses, including security patches, system updates for vulnerability management, and robust multi-factor authentication protocols. Crucially, executives and leadership teams are expected to spearhead comprehensive security enhancements throughout their extended supply chains, encompassing all affiliated contractors and vendors. The Ministry of Health, Labour and Welfare has reinforced this message for its jurisdictional sectors, strongly advising medical institutions, related organizations, and healthcare system providers to rigorously review available security guidelines. Organizations are also encouraged to utilize official consultation windows provided by agencies like the Personal Information Protection Commission, JPCERT/CC, and IPA to safeguard their networks against escalating cyber threats, ensuring that patient data and other critical information remain fully protected from unauthorized access at all times across every connected entity in the broader network.",
+          "wordCount": 182
         }
       },
       "sources": [
         {
-          "name": "European Central Bank",
-          "url": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261030~08d9d540f0.en.html"
+          "name": "MHLW Japan",
+          "url": "https://www.mhlw.go.jp/stf/kinkyu/20261030.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-mv-odyssey-cruise-nightmare-cambodia",
+      "date": "2026-10-31",
+      "scope": "world",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "cruise",
+        "cambodia",
+        "shipping",
+        "fuel"
+      ],
+      "title": "The Cursed Cruise: MV Odyssey Passengers Stranded in Cambodia",
+      "summaryJa": "永遠の船旅を謳い文句にした豪華客船「MVオデッセイ号」が、燃料費高騰によりカンボジアで突如運航を停止し、乗客が下船を余儀なくされました。",
+      "sourcePublishedAt": "2026-10-31T03:00:31.000Z",
+      "levels": {
+        "5級": {
+          "title": "The Cruise Ends in Cambodia",
+          "text": "The MV Odyssey is a cruise ship. Many old people live on it. They want a long trip on the sea. But things go wrong. The ship stops in Cambodia. Passengers must leave the ship fast. They have only seven hours to go.",
+          "wordCount": 43
+        },
+        "4級": {
+          "title": "Dream Cruise Becomes a Nightmare",
+          "text": "The MV Odyssey offered a long trip around the world. Older people paid a lot of money to live on the ship and escape world troubles. They wanted a safe home on the sea for a long time. However, high fuel costs caused very big problems for the company. The price of fuel per cabin went up a lot. Because of this, the company had to stop the cruise. Passengers got a very short notice. They had to leave the ship in Cambodia.",
+          "wordCount": 83
+        },
+        "3級": {
+          "title": "The End of the Endless Cruise",
+          "text": "The MV Odyssey promised passengers a continuous voyage around the world as an escape from political stress and world troubles. People paid large amounts of money for a permanent retirement at sea with many comforts and activities. Unfortunately, an oil shock and rising fuel prices ruined the plan completely. The monthly fuel costs per cabin went up from eighteen hundred dollars to eight thousand dollars. The company abruptly ended the cruise, giving passengers just seven hours to disembark when the ship arrived in Cambodia.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "The Cursed Cruise: How a Floating Retirement Ended in Cambodia",
+          "text": "The MV Odyssey was designed to offer retirees a continuous voyage around the globe, providing an escape from political anxiety on land. For hundreds of thousands of dollars, passengers enjoyed onboard amenities while traveling the world on a residential cruise. However, global economic pressures and a sharp increase in fuel prices destroyed the business model. Monthly fuel costs per cabin surged dramatically from eighteen hundred dollars to as much as eight thousand dollars, forcing the operating company to cancel the journey. Passengers received a shocking, brief announcement stating they had only seven hours to leave the ship as it terminated its voyage in Cambodia.",
+          "wordCount": 104
+        },
+        "2級": {
+          "title": "The Cursed Cruise: The Sudden End of the MV Odyssey's Voyage in Cambodia",
+          "text": "The MV Odyssey was marketed as an ultimate escape from political turmoil, offering passengers a never-ending retirement at sea with continuous voyages around the globe. For a substantial fee, travelers could embark on a residential cruise complete with food, entertainment, and exotic ports of call. The idea was to give older people a way to cut loose from the troubles of the world. However, the dream of a carefree journey came to an abrupt halt due to severe economic disruptions and an oil shock. A massive spike in fuel prices caused monthly fuel costs per cabin to escalate sharply from eighteen hundred dollars to as much as eight thousand dollars. Unable to sustain these sudden and massive expenses, the operating company abruptly terminated the entire expedition. Passengers were given a stark and brief notice requiring them to disembark within seven hours as the ship docked in Cambodia, cutting their floating retirement short and leaving them unceremoniously dumped in Southeast Asia.",
+          "wordCount": 160
+        },
+        "準1級": {
+          "title": "The Cursed Cruise: How the Dream of Endless Luxury at Sea Became a Nightmare in Cambodia",
+          "text": "The MV Odyssey was conceived as an ambitious residential cruise designed to offer retirees an uninterrupted voyage around the globe, famously marketed as a way to escape political anxiety on land following Donald Trump's return to the White House. Passengers invested significant fortunes—ranging from hundreds of thousands of dollars upward—to secure cabins for a multi-year journey, anticipating a life of leisure complete with wellness programs, fine dining, a pool, a theater, and exotic destinations. Yet, this floating retirement community ultimately succumbed to harsh global economic realities. An oil shock driven by international conflict triggered a catastrophic surge in operational expenses, with monthly fuel costs per cabin skyrocketing from eighteen hundred dollars to a staggering eight thousand dollars. Overwhelmed by these unsustainable financial pressures, the operating company pulled the plug on the venture entirely. Passengers, many of whom were elderly individuals seeking peace and stability, received a jarring and minimal announcement granting them a mere seven hours to pack their belongings and disembark permanently as the vessel docked in Cambodia, going no further and ending their dream of never-ending luxury at sea.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "The Guardian World",
+          "url": "https://www.theguardian.com/news/ng-interactive/2026/oct/31/mv-odyssey-cruise-passengers-nightmare-stranded-cambodia"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-sports-machi-awards-2026",
+      "date": "2026-10-31",
+      "scope": "japan",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Japan Sports Agency",
+        "awards",
+        "local government"
+      ],
+      "title": "Japan Sports Agency Announces 2026 Sports Town Award Winners",
+      "summaryJa": "スポーツ庁は「スポまち！表彰2026」の受賞自治体28団体を発表しました。11月17日に東京国際フォーラムで表彰式典が開催されます。",
+      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "Japan Sports Awards",
+          "text": "The Japan Sports Agency has news. They choose twenty-eight cities and towns for sports. These places work hard for sports and health. A big ceremony is coming on November seventeenth. Many people can meet there. It is in Tokyo. Sports are very good for everyone.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Japan Sports Agency Announces 2026 Town Awards",
+          "text": "The Japan Sports Agency announced the winners of the Sports Town Awards for 2026. Twenty-eight local governments will receive prizes for their great plans to help people enjoy sports and stay healthy. A special ceremony will take place at the Tokyo International Forum in Tokyo on November seventeenth. Many guests will join the important event to celebrate the winning cities and towns.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Sports Agency Announces 2026 Town Awards",
+          "text": "The Japan Sports Agency recently announced twenty-eight winning local governments for the 2026 Sports Town Awards. This program supports communities that create wonderful environments for sports, tourism, and health. Special awards will go to Tottori Prefecture's Nanbu Town and Nagano Prefecture's Urugi Village. An award ceremony will happen at the Tokyo International Forum on November seventeenth, featuring special guests and talks for everyone.",
+          "wordCount": 62
+        },
+        "準2級": {
+          "title": "Japan Sports Agency Selects 2026 Local Government Award Winners",
+          "text": "The Japan Sports Agency has officially chosen twenty-eight local governments to receive the 2026 Sports Town Awards. Since 2021, this program has supported municipalities that promote sports tourism, disability sports, and healthy community environments. From many creative applications submitted this summer, twenty-eight winners were selected. Special prizes will be given to Nanbu Town in Tottori Prefecture and Urugi Village in Nagano Prefecture. The official award ceremony is scheduled for November seventeenth at the Tokyo International Forum in Tokyo, where sports journalist Akemi Masuda and former rugby star Ayumu Goromaru will also participate as guests.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Japan Sports Agency Reveals 2026 Sports Town Award Winners and Ceremony Details",
+          "text": "The Japan Sports Agency has announced twenty-eight winning local governments for the 2026 Sports Town Awards. Established in 2021 following the Tokyo 2020 Games, this annual program encourages regional municipalities to develop active environments through sports tourism, disability sports experiences, and health initiatives. Following a call for plans launched on July first, judges carefully selected twenty-eight outstanding local governments from across the country based on their enthusiastic ideas. Among the winners, Nanbu Town in Tottori Prefecture earned the Commissioner's Special Award, while Urugi Village in Nagano Prefecture received the Guest Special Award. An official award ceremony will be held on November seventeenth at the Tokyo International Forum. The event will feature Sports Agency Commissioner Junichi Kawai, along with special guest and sports journalist Akemi Masuda, and talk session guest Ayumu Goromaru, a former member of Japan's national rugby team.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "Japan Sports Agency Announces Twenty-Eight Municipalities as Winners of the 2026 Sports Town Awards",
+          "text": "The Japan Sports Agency has officially revealed the twenty-eight local governments chosen as winners of the 2026 Sports Town Awards. Launched in 2021 following the Tokyo 2020 Games, this annual initiative aims to support municipalities that actively promote sports tourism, disability sports interaction, and healthy community development environments. After receiving numerous enthusiastic ideas following the application period starting last July, twenty-eight regional bodies were selected for their exceptional planning through a careful screening process. Notable winners include Nanbu Town in Tottori Prefecture, which received the Commissioner's Special Award, and Urugi Village in Nagano Prefecture, honored with the Guest Special Award for their distinctive community initiatives. An official award ceremony will take place on November seventeenth at the Tokyo International Forum. The gathering will be attended by Sports Agency Commissioner Junichi Kawai and the winning municipal representatives. Additionally, sports journalist Akemi Masuda will participate as a special guest, and former Japan rugby representative Ayumu Goromaru will join as a special guest for a talk session, highlighting the community sports achievements. This annual program encourages regional municipalities to develop active environments through sports tourism, disability sports experiences, and health initiatives. Following a call for plans launched on July first, judges carefully selected twenty-eight outstanding local governments from across the country based on their enthusiastic ideas. Among the winners, Nanbu Town in Tottori Prefecture earned the Commissioner's Special Award, while Urugi Village in Nagano Prefecture received the Guest Special Award. An official award ceremony will be held on November seventeenth at the Tokyo International Forum. The event will feature Sports Agency Commissioner Junichi Kawai, along with special guest and sports journalist Akemi Masuda, and talk session guest Ayumu Goromaru, a former member of Japan's national rugby team.",
+          "wordCount": 281
+        }
+      },
+      "sources": [
+        {
+          "name": "Japan Sports Agency",
+          "url": "https://www.mext.go.jp/sports/b_menu/houdou/jsa_00247.html"
         }
       ]
     },
