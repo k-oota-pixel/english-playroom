@@ -1,4 +1,4 @@
-import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3";
+import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 
 const API='https://task-quest.onrender.com';
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));

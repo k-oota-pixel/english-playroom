@@ -27,9 +27,10 @@ installGroupGameListeningGuard();
 
 if(typeof window!=='undefined'&&typeof fetch==='function'){
  const material=window.MonstudyMaterial||(window.MonstudyMaterial={});
- material.recordActivity=appId=>{
+ material.recordActivity=async appId=>{
   if(!['eigo-meter','word-wolf'].includes(appId))return Promise.resolve({ok:false});
   const eventId=globalThis.crypto?.randomUUID?.()||'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,12);
-  return fetch('https://task-quest.onrender.com/api/material-activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({appId,eventId}),credentials:'omit',keepalive:true}).catch(()=>({ok:false}));
+  const {getAuth}=await import('./auth-session.js?v=2.3.1');const user=getAuth().currentUser;if(!user)return {ok:false};
+  return fetch('https://task-quest.onrender.com/api/material-activity',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.getIdToken()},body:JSON.stringify({appId,eventId}),credentials:'omit',keepalive:true}).catch(()=>({ok:false}));
  };
 }

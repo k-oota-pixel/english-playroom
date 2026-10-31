@@ -1,0 +1,36 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>登録コードの紐づけ｜もんすたでぃ</title><style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#f6f5ef;color:#193d38;font:15px/1.7 system-ui}main{max-width:520px;margin:40px auto;background:white;border:1px solid #dce5da;border-radius:22px;padding:28px}h1{font-size:25px}label{display:grid;gap:5px;margin:15px 0}input,button{font:inherit;padding:12px;border:1px solid #cbd8cf;border-radius:10px}button{background:#246a57;color:white;cursor:pointer}button:disabled{opacity:.5}#status{white-space:pre-wrap}a{color:#246a57}[hidden]{display:none!important}</style></head><body><main>
+<a href="./">← ホームへ戻る</a><h1 id="title">登録コードを紐づける</h1>
+<p id="note">先生から指示があったときに行ってください。紐づけは任意です。今の学習履歴・ペットを引き継いだまま、ID・パスワードを設定します。</p>
+<form id="form">
+<label id="codeField">配付された登録コード<input id="code" autocomplete="off" maxlength="32" required></label>
+<label id="idField">新しいログインID<input id="loginId" autocomplete="username" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{3,31}" minlength="4" maxlength="32" required><small>4〜32文字の半角英数字・ハイフン・アンダーバー</small></label>
+<label id="currentField" hidden>現在のパスワード・仮パスワード<input id="currentPassword" type="password" autocomplete="current-password" maxlength="128"></label>
+<label>新しいパスワード<input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+<label>新しいパスワード（確認）<input id="confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+<button id="save">紐づけて保存する</button></form><p id="status" role="status"></p></main>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
+import {getAuth,onAuthStateChanged,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.1';
+const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
+const auth=getAuth(app),$=id=>document.getElementById(id);let passwordMode=false;$('save').disabled=true;
+onAuthStateChanged(auth,async user=>{
+ if(!user||user.isAnonymous){location.replace('./login.html?return='+encodeURIComponent(location.href));return;}
+ try{const session=await accountSession(user);passwordMode=session.registered;
+ if(passwordMode){$('title').textContent='パスワードの変更';$('note').textContent='現在のパスワード、または先生から受け取った仮パスワードを入力し、新しいパスワードを設定してください。';
+ for(const id of ['codeField','idField'])$(id).hidden=true;
+ $('code').required=false;$('loginId').required=false;$('currentField').hidden=false;$('currentPassword').required=true;$('save').textContent='新しいパスワードを保存する';}
+ $('save').disabled=false;
+ }catch(error){$('status').textContent=error.message;}
+});
+$('form').onsubmit=async event=>{
+ event.preventDefault();$('save').disabled=true;
+ try{
+ const password=$('password').value;if(password!==$('confirm').value)throw Error('確認用パスワードが一致しません。');
+ if(passwordMode&&password===$('currentPassword').value)throw Error('現在のパスワードとは異なるものにしてください。');
+ const token=await auth.currentUser.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/account/'+(passwordMode?'password':'link'),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({code:$('code').value,loginId:$('loginId').value,password,currentPassword:$('currentPassword').value}),signal:AbortSignal.timeout(45000)});
+ const data=await r.json();if(!r.ok)throw Error(data.error||'保存できませんでした。');
+ await signInWithCustomToken(auth,data.token);$('form').hidden=true;$('status').textContent='保存しました。ホームへ戻って利用を続けられます。';
+ }catch(error){$('status').textContent=error.message;}finally{$('save').disabled=false;}
+};
+</script></body></html>

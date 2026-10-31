@@ -21,24 +21,34 @@ export function getAuth(app = getApp()) {
   }
 }
 
+
+const API='https://task-quest.onrender.com';
+export async function accountSession(user){
+ const response=await fetch(API+'/api/account/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.getIdToken()},body:'{}',signal:AbortSignal.timeout(30000)});
+ const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'ログインを確認できませんでした。'),{status:response.status});return data;
+}
 export function onAuthStateChanged(auth,observerOrNext,error,completed){
-  const isObserver=observerOrNext&&typeof observerOrNext==='object';
-  const next=isObserver?observerOrNext.next:observerOrNext;
-  const deliver=user=>{if(typeof next==='function')next(user);};
-  const notify=user=>{
-    if(!user){deliver(null);return;}
-    const root='/english-playroom/';
-    const path=location.pathname;
-    const allowResetPrompt=[root,root+'index.html',root+'login.html',root+'password-reset-required.html'].includes(path);
-    if(allowResetPrompt){deliver(user);return;}
-    firebaseGetIdTokenResult(user).then(result=>{
-      if(result.claims?.passwordResetRequired===true){
-        location.replace(new URL('/english-playroom/password-reset-required.html',location.origin).href);
-        return;
-      }
-      deliver(user);
-    }).catch(()=>deliver(user));
-  };
-  if(isObserver)return firebaseOnAuthStateChanged(auth,{...observerOrNext,next:notify});
-  return firebaseOnAuthStateChanged(auth,notify,error,completed);
+ const isObserver=observerOrNext&&typeof observerOrNext==='object',next=isObserver?observerOrNext.next:observerOrNext;
+ let generation=0;
+ const notify=async user=>{
+  const current=++generation,path=location.pathname,login=path==='/english-playroom/login.html',account=path==='/english-playroom/account.html';
+  const deliver=value=>{if(current===generation&&typeof next==='function')next(value);};
+  if(login||account){deliver(user);return;}
+  if(!user||user.isAnonymous){location.replace('https://k-oota-pixel.github.io/english-playroom/login.html?return='+encodeURIComponent(location.href));return;}
+  try{
+   const session=await accountSession(user);
+   if(current!==generation)return;
+   if(session.resetRequired){location.replace('https://k-oota-pixel.github.io/english-playroom/account.html?mode=password');return;}
+   const token=await firebaseGetIdTokenResult(user);
+   if(token.claims?.passwordResetRequired===true&&!token.claims?.codeAccount&&!path.endsWith('/password-reset-required.html')){
+    location.replace('https://k-oota-pixel.github.io/english-playroom/password-reset-required.html');return;
+   }
+   deliver(user);
+  }catch(e){
+   if(current!==generation)return;
+   window.dispatchEvent(new CustomEvent('monstudy-access-error',{detail:e}));
+   if(typeof error==='function')error(e);
+  }
+ };
+ return firebaseOnAuthStateChanged(auth,isObserver?{...observerOrNext,next:notify}:notify,error,completed);
 }

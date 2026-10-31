@@ -2,7 +2,7 @@ import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.7';
 import {adminContentRows} from './admin-content-model.js?v=2.1.5';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 
 const firebaseConfig={apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",authDomain:"eiken-retry.firebaseapp.com",projectId:"eiken-retry",storageBucket:"eiken-retry.firebasestorage.app",messagingSenderId:"231308672297",appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"};
 const API='https://task-quest.onrender.com';

@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<style id="monstudy-access-lock">html:before{content:"ログインを確認しています…";position:fixed;inset:0;display:grid;place-content:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style><script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.1"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css?v=1.10.8">
-<link rel="stylesheet" href="./learning-challenges.css?v=2.2.3">
+<link rel="stylesheet" href="./learning-challenges.css?v=2.3.1">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.8">
 <style>
 *{box-sizing:border-box}
@@ -139,13 +140,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.1.52"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.2.3"></script>
+<script type="module" src="./app-shell.js?v=2.3.1"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.2.3">ver2.2.3</span></div>
-    <div class="auth-area">
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.3.1">ver2.3.1</span></div>
+    <div class="auth-area"><a href="./account.html" style="font-size:11px;color:#246a57">登録コードの紐づけ・パスワード変更</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
       </button>
@@ -389,13 +390,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=2.2.3";
+import {recordLearningActivity} from "./coin-reward.js?v=2.3.1";
 import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.1.9';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut,
   onAuthStateChanged, setPersistence, browserLocalPersistence
-} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.2.1";
+} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {
   getFirestore, doc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -404,7 +405,7 @@ import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {installPasswordResetModal} from './password-reset-modal.js?v=2';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.2.3';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.3.1';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 import './pet-shop.js?v=2.1.52';
 
@@ -907,11 +908,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=2.2.3"></script>
-<script type="module" src='./version-badge-v176.js?v=2.2.3-login-fix'></script>
+<script type="module" src="./learning-challenges.js?v=2.3.1"></script>
+<script type="module" src='./version-badge-v176.js?v=2.3.1-login-fix'></script>
 <script>
 (() => {
-  const version = '2.2.3';
+  const version = '2.3.1';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

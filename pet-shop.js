@@ -5,7 +5,7 @@ import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
 import { playCareReaction } from './pet-care-animation.js?v=1.9.4';
 import { FOODS, careState, feedReward, happyDay } from './pet-care-model.js?v=1.7.8';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.1.3";
+import { getAuth, onAuthStateChanged } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import { OPTIONS, ACCESSORY_ITEM_SLOTS, hasPet, normalizeAppearance, normalizePetName, validPetName } from './pet-model.js?v=2.1.25';
 import { renderPetSVG, renderPetVisual, appearanceLabel } from './pet-art.js?v=2.1.49';
