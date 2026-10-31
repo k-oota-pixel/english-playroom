@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {minibossForStage,chooseMinibossAction} from '../pet-adventure/miniboss.js';
 const state=(floor=15)=>({boss:minibossForStage(floor),hp:35,maxHp:35,mp:10,playerHp:50,lastAction:null});
-test('five dungeon minibosses have ascending MP and SVG assets',()=>{
+test('both adventure modes select five minibosses with ascending MP and SVG assets',()=>{
  for(const [i,floor] of [15,30,45,60,75].entries()){
   const b=minibossForStage(floor);assert.equal(b.maxMp,10+i*5);
-  assert.equal(minibossForStage(floor,'tower'),null);
+  assert.deepEqual(minibossForStage(floor,'tower'),b);
+  assert.equal(minibossForStage(floor,'unknown'),null);
   assert.match(fs.readFileSync(new URL(`../pet-adventure/bosses/${b.id}.svg`,import.meta.url),'utf8'),/<svg xmlns="http:\/\/www.w3.org\/2000\/svg"/);
  }
- for(const floor of [1,5,10,20,80,90])assert.equal(minibossForStage(floor),null);
+ for(const floor of [1,5,10,20,80,90])for(const mode of ['tower','dungeon'])assert.equal(minibossForStage(floor,mode),null);
 });
 test('AI heals when wounded, attacks opportunistically, and respects MP and cooldown',()=>{
  assert.equal(chooseMinibossAction({...state(),hp:17},()=>0).id,'mimuros');

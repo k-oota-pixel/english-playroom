@@ -8,7 +8,7 @@ const BOSSES=Object.freeze([
  {floor:75,id:'abyssdragon',name:'アビスドラゴン',element:'water'}
 ]);
 export function minibossForStage(stage,mode='dungeon'){
- const boss=mode==='dungeon'&&BOSSES.find(b=>b.floor===Number(stage));
+ const boss=(mode==='dungeon'||mode==='tower')&&BOSSES.find(b=>b.floor===Number(stage));
  return boss?{...boss,level:boss.floor,maxMp:5*(1+boss.floor/15)}:null;
 }
 
