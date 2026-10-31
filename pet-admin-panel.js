@@ -1,10 +1,9 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
+import {getAuth,onAuthStateChanged,accountSession} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=2.1.25';
 import {renderPetSVG} from './pet-art.js?v=2.1.25';
 
-const ADMIN_API='https://task-quest.onrender.com/api/admin/session';
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
 const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'oyoyo',label:'およよ'},{id:'mugyu',label:'むぎゅ'},{id:'kiri',label:'きりっ'},{id:'punsuka',label:'ぷんすか'}];
 const BACKGROUNDS=[{id:'ivory',label:'おうち'},{id:'sky',label:'青空'},{id:'leaf',label:'お庭'},{id:'rose',label:'花畑'}];
@@ -39,7 +38,7 @@ function ensureStyle(){
   document.head.appendChild(style);
 }
 
-async function verifyAdmin(user){if(!user)return false;try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),20000);const token=await user.getIdToken();const res=await fetch(ADMIN_API,{headers:{Authorization:`Bearer ${token}`},signal:controller.signal});clearTimeout(timeout);try{await res.body?.cancel();}catch{}return res.ok;}catch{return false;}}
+async function verifyAdmin(user){if(!user)return false;try{const session=await accountSession(user);return session.admin===true&&!session.resetRequired;}catch{return false;}}
 
 function ensureDialog(){
   if(dialog)return dialog;ensureStyle();dialog=document.createElement('dialog');dialog.className='pet-admin-dialog';dialog.id='petAdminDialog';
@@ -108,3 +107,4 @@ if(!window[installKey]){
  new MutationObserver(removeDuplicateButtons).observe(document.documentElement,{childList:true,subtree:true});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 }
+

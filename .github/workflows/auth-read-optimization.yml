@@ -1,0 +1,34 @@
+name: Authentication read optimization
+on:
+  push:
+    paths:
+      - pet-admin-panel.js
+      - auth-session.js
+      - tests/admin-session-read*
+      - .github/workflows/auth-read-optimization.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: work/english-playroom
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/task-quest
+          path: work/task-quest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test work/task-quest/request-auth.test.mjs work/task-quest/auth-read-optimization.test.mjs work/task-quest/code-auth.test.mjs work/task-quest/security-gate.test.mjs work/task-quest/api-security.test.mjs work/task-quest/admin-data.test.mjs
+      - run: node --test tests/admin-session-read.test.cjs tests/release-version.test.js
+        working-directory: work/english-playroom
+      - run: npm install --ignore-scripts
+        working-directory: work/english-playroom
+      - run: npx playwright install --with-deps chromium
+        working-directory: work/english-playroom
+      - run: node tests/admin-session-read-browser.cjs
+        working-directory: work/english-playroom
