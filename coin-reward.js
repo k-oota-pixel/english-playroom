@@ -230,6 +230,7 @@ async function recordLearningActivity(appId=learningContentFromPage()){
 }
 
 const RETRY_OUTBOX_PREFIX='monstudy-retry-coin-outbox:';
+const RETRY_DAILY_COIN_LIMIT=20;
 const retryMemory=new Map(),retryMemoryOnly=new Set(),retryResultMemory=new Map();
 function readRetryOutbox(key){if(retryMemoryOnly.has(key))return retryMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'[]');retryMemory.set(key,rows);return rows;}catch{return retryMemory.get(key)||[];}}
 function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));retryMemoryOnly.delete(key);}catch{retryMemoryOnly.add(key);}}
@@ -247,22 +248,27 @@ function flushRetryAttempts(){
    if(fresh.length!==rows.length)writeRetryOutbox(key,fresh);rows=fresh;
    if(rows.length<5)return;
    while(rows.length&&currentUser?.uid===user.uid){
-    const group=rows.slice(0,50),ids=group.map(row=>row.eventId);let awardedCount=0,counted=0,progress=0,newCoins=0,outcomes={};
+    const group=rows.slice(0,50),ids=group.map(row=>row.eventId);let awardedCount=0,counted=0,progress=0,newCoins=0,retryEarnedToday=0,outcomes={};
     try{
      await runTransaction(db,async tx=>{
       outcomes={};const ref=walletRef(user),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{},sameDay=data.coinRewardDate===today;
       const claims=sameDay&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(value=>typeof value==='string'):[];
       newCoins=Math.max(0,Math.floor(Number(data.coins)||0));progress=Math.max(0,Math.min(4,Math.floor(Number(data.retryCoinProgress)||0)));
+      retryEarnedToday=data.retryCoinEarnedDate===today?Math.max(0,Math.floor(Number(data.retryCoinsEarnedToday)||0)):0;
       for(const row of group){
        const claim='eiken-retry:'+cleanPart(row.questionId);
        if(claims.includes(claim)){outcomes[row.eventId]={awarded:false,counted:false,reason:'already-counted'};continue;}
-       claims.push(claim);counted++;progress++;let awarded=false;
-       if(progress>=5){progress-=5;newCoins++;awardedCount++;awarded=true;}
-       outcomes[row.eventId]={awarded,counted:true,reason:awarded?'awarded':'queued'};
+       claims.push(claim);counted++;progress++;let awarded=false,reason='queued';
+       if(progress>=5){
+        progress-=5;
+        if(retryEarnedToday<RETRY_DAILY_COIN_LIMIT){newCoins++;awardedCount++;retryEarnedToday++;awarded=true;reason='awarded';}
+        else reason='daily-limit';
+       }
+       outcomes[row.eventId]={awarded,counted:true,reason};
       }
       if(!counted)return;
       const earned=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
-      tx.set(ref,{coins:newCoins,retryCoinProgress:progress,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:earned+awardedCount,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
+      tx.set(ref,{coins:newCoins,retryCoinProgress:progress,retryCoinEarnedDate:today,retryCoinsEarnedToday:retryEarnedToday,coinRewardDate:today,coinRewardClaims:claims,coinEarnedDate:today,coinsEarnedToday:earned+awardedCount,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
      });
      for(const row of group)retryResultMemory.set(user.uid+':'+today+':'+row.questionId,outcomes[row.eventId]||{awarded:false,counted:false,reason:'already-counted'});
      removeRetryRows(key,ids);rows=readRetryOutbox(key);
