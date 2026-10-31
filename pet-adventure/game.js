@@ -109,7 +109,7 @@ window.addEventListener('pageshow',()=>{allowNavigation=false;if(runActive&&!bat
 
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey+'-'+(user?.uid||'guest'))||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
 function writeRecords(){try{localStorage.setItem(storageKey+'-'+(user?.uid||'guest'),JSON.stringify(records))}catch{}}
-function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function randomEnemyElement(){const keys=['fire','water','leaf'];return keys[Math.floor(Math.random()*keys.length)]}
 function assignElements(cards){const deck=shuffle(Object.keys(ELEMENTS));return cards.map((card,index)=>({...card,element:deck[index%deck.length]}))}
 function formatStage(n){return mode==='tower'?`${n}F`:`B${n}`}
