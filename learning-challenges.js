@@ -1,5 +1,9 @@
 import {makeDialog} from './learning-titles.js?v=2.1.25';
-const LOGIN_STREAK_REWARDS=[0,1,2,5,6,7,20];
+const LOGIN_STREAK_REWARDS=Object.freeze([0,2,5,10,15,20,30]);
+function loginStreakReward(day){
+ const normalized=Math.max(0,Math.min(7,Math.floor(Number(day)||0)));
+ return normalized>=1?LOGIN_STREAK_REWARDS[normalized-1]:0;
+}
 export function createChallengeBoard({root,getUser,load,claim}){
  const refreshButton=root.querySelector('[data-challenge-refresh]'),note=root.querySelector('[data-challenge-note]'),grid=root.querySelector('[data-challenge-grid]');
  const dialog=makeDialog('チャレンジ');dialog.classList.add('challenge-dialog');note.hidden=false;const footer=root.querySelector('.challenge-footer');if(footer)footer.hidden=false;const reload=document.createElement('button');reload.type='button';reload.textContent='更新';dialog.append(reload,note,grid);if(footer)dialog.append(footer);reload.addEventListener('click',()=>refresh());
@@ -39,11 +43,11 @@ export function createLoginStreakBonus({root,getUser,getStreak,claimStreak}){
   days.replaceChildren();
   LOGIN_STREAK_REWARDS.forEach((reward,index)=>{
    const number=index+1,item=node('span',undefined,'streak-day'+(number===day?' current':number<day?' completed':''));
-   item.append(node('span',number+'日'),node('strong',reward?String(reward):'—'));days.append(item);
+   item.append(node('span',number+'日'),node('strong',String(reward)));days.append(item);
   });
   const canClaim=!!user&&!!streak?.date&&day>=2&&!streak.claimed;
   button.disabled=busy||!canClaim;
-  button.textContent=streak?.claimed?'今日の分は受け取り済み':canClaim?`🪙 ${LOGIN_STREAK_REWARDS[day]}コインを受け取る`:day===1?'明日から受け取れます':'ログインすると受け取れます';
+  button.textContent=streak?.claimed?'今日の分は受け取り済み':canClaim?`🪙 ${loginStreakReward(day)}コインを受け取る`:day===1?'明日から受け取れます':'ログインすると受け取れます';
  }
  async function receive(){
   const user=getUser(),streak=getStreak(),day=Math.max(0,Math.min(7,Math.floor(Number(streak?.day)||0)));
@@ -74,7 +78,7 @@ async function boot(){const root=document.getElementById('learningChallenges');i
    if(data.loginStreakLastDate!==expectedDate||day!==expectedDay)throw Error('ログイン状況が更新されました。チャレンジ画面を更新してください。');
    if(day<2)throw Error('1日目のコインボーナスはありません。');
    if(data.loginStreakClaimedDate===expectedDate){result={awarded:0};return;}
-   const reward=LOGIN_STREAK_REWARDS[day],coins=Math.max(0,Math.floor(Number(data.coins)||0));
+   const reward=loginStreakReward(day),coins=Math.max(0,Math.floor(Number(data.coins)||0));
    const coinsEarnedToday=data.coinEarnedDate===expectedDate?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
    const claims=data.coinRewardDate===expectedDate&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(value=>typeof value==='string'):[];
    const claimId='login-streak-'+expectedDate;
