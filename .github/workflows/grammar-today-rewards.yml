@@ -1,0 +1,39 @@
+name: Grammar and TODAY rewards
+on:
+  push:
+    paths:
+      - coin-reward.js
+      - today/**
+      - tests/title-events.test.js
+      - tests/learning-titles-browser.cjs
+      - .github/workflows/grammar-today-rewards.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rewards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: work/english-playroom
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/task-quest
+          path: work/task-quest
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/basic-quest
+          path: work/basic-quest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+        working-directory: work/english-playroom
+      - run: npx playwright install --with-deps chromium
+        working-directory: work/english-playroom
+      - run: node --test work/task-quest/grammar-today-rewards.test.mjs work/task-quest/creative-title-events.test.mjs work/task-quest/learning-titles.test.mjs work/basic-quest/tests/*.cjs
+      - run: node --test tests/title-events.test.js tests/coin-reward.test.js tests/coin-reward-extra.test.js tests/home-page.test.js tests/release-version.test.js
+        working-directory: work/english-playroom
+      - run: node tests/learning-titles-browser.cjs
+        working-directory: work/english-playroom
