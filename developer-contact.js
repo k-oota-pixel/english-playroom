@@ -97,7 +97,7 @@ function install(){
   if(!area)return;
   const accountLink=area.querySelector('a[href*="account.html"]');
   if(!accountLink)return;
-  accountLink.textContent='コード登録';
+  if(accountLink.textContent!=='コード登録')accountLink.textContent='コード登録';
   let stack=area.querySelector('.auth-links-stack');
   if(!stack){
     stack=document.createElement('span');stack.className='auth-links-stack';
@@ -109,7 +109,7 @@ function install(){
     button.addEventListener('click',()=>{const dialog=buildDialog();dialog.querySelector('[data-contact-status]').textContent='';dialog.querySelector('[data-contact-status]').className='developer-contact-status';dialog.showModal();setTimeout(()=>dialog.querySelector('textarea')?.focus(),0);});
     stack.append(button);
   }
-  const authSub=area.querySelector('#authSub');if(authSub)authSub.hidden=true;
+  const authSub=area.querySelector('#authSub');if(authSub&&!authSub.hidden)authSub.hidden=true;
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
