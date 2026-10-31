@@ -35,12 +35,12 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
       </div>
       <div class="field">
         <label class="label" for="password">パスワード</label>
-        <input id="password" class="input" type="password" autocomplete="current-password" minlength="6" placeholder="6文字以上" required>
+        <input id="password" class="input" type="password" autocomplete="current-password" minlength="6" maxlength="128" placeholder="パスワード" required>
       </div>
       <div id="codeField" class="field hidden"><label class="label" for="registrationCode">登録コード</label><input id="registrationCode" class="input" autocomplete="off" maxlength="32" placeholder="AB3D7K"><span class="hint">先生から配付されたコードを入力してください。</span></div>
       <div id="confirmField" class="field hidden">
         <label class="label" for="confirmPassword">パスワード（確認）</label>
-        <input id="confirmPassword" class="input" type="password" autocomplete="new-password" minlength="6" placeholder="同じパスワードをもう一度">
+        <input id="confirmPassword" class="input" type="password" autocomplete="new-password" minlength="6" maxlength="12" placeholder="同じパスワードをもう一度">
       </div>
       <button id="emailSubmit" class="btn primary" type="submit">IDでログイン</button>
       <div id="modeNote" class="mode-note">一度ログインすれば、この端末では基本的にログイン状態が保たれます。</div>
@@ -77,10 +77,10 @@ function setMode(value){
  mode=value;const register=mode==='register';
  for(const id of ['confirmField','codeField'])$(id).classList.toggle('hidden',!register);
  $('confirmPassword').required=register;$('registrationCode').required=register;
- $('password').minLength=register?8:6;$('password').placeholder=register?'8文字以上':'パスワード';
+ $('password').minLength=6;$('password').maxLength=register?12:128;$('password').placeholder=register?'6〜12文字':'パスワード';
  $('password').autocomplete=register?'new-password':'current-password';
  $('emailSubmit').textContent=register?'登録コードで新規登録':'IDでログイン';
- $('modeNote').textContent=register?'メールアドレスは不要です。IDは4〜32文字の英数字・ハイフン・アンダーバーで設定してください。':'既存の方はGoogle、または従来のメールアドレスでもログインできます。';
+ $('modeNote').textContent=register?'メールアドレスは不要です。IDは4〜32文字の英数字・ハイフン・アンダーバー、パスワードは6〜12文字で設定してください。':'既存の方はGoogle、または従来のメールアドレスでもログインできます。';
  for(const [id,selected]of [['loginTab',!register],['registerTab',register]]){$(id).classList.toggle('active',selected);$(id).setAttribute('aria-selected',String(selected));}
  $('modeSwitch').textContent=register?'すでに登録済みの方はこちら':'初めての方はこちら';
  $('status').className='status';
