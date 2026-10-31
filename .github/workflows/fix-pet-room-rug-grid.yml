@@ -1,0 +1,47 @@
+name: Fix pet room rug grid alignment
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/fix-pet-room-rug-grid.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align rug footprint and visual center
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('pet-room/furniture-v4.js')
+          s=p.read_text()
+
+          old="dimensions=item=>item.id==='rug'?(horizontal(item.rotation)?{w:3,h:2}:{w:2,h:3}):(horizontal(item.rotation)?{w:2,h:1}:{w:1,h:2})"
+          new="dimensions=item=>item.id==='rug'?(horizontal(item.rotation)?{w:2,h:3}:{w:3,h:2}):(horizontal(item.rotation)?{w:2,h:1}:{w:1,h:2})"
+          if old not in s:
+              raise SystemExit('rug dimensions pattern not found')
+          s=s.replace(old,new,1)
+
+          old_css="#rugActor{position:absolute;width:clamp(170px,38.5%,380px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-53%)!important;"
+          new_css="#rugActor{position:absolute;width:clamp(170px,38.5%,380px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-50%)!important;"
+          if old_css not in s:
+              raise SystemExit('rug actor transform pattern not found')
+          s=s.replace(old_css,new_css,1)
+          p.write_text(s)
+
+          p=Path('pet-room/v5.html')
+          s=p.read_text()
+          s=s.replace('ペットモード バージョン 1.4.1','ペットモード バージョン 1.4.2')
+          s=s.replace('ペットモード</span><span class="room-version-number">v1.4.1','ペットモード</span><span class="room-version-number">v1.4.2')
+          s=s.replace('furniture-v4.js?v=34','furniture-v4.js?v=35')
+          p.write_text(s)
+          PY
+          git diff --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add pet-room/furniture-v4.js pet-room/v5.html
+          git commit -m "Align pet room rug with grid"
+          git push
