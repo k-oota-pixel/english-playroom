@@ -10,8 +10,6 @@ function install() {
   const home = document.querySelector('main.home'), topbar = home?.querySelector('.topbar');
   if (!home || !topbar) return;
 
-  const versionBadge=home.querySelector('.app-version-badge');
-  if(versionBadge){versionBadge.textContent='ver2.1.60';versionBadge.setAttribute('aria-label','version 2.1.60');}
   const conversationSection=home.querySelector('#materials-conversation');
   const conversationCards=conversationSection?.querySelector('.cards');
   if(conversationCards&&!conversationCards.querySelector('[data-case-talk-card]')){
