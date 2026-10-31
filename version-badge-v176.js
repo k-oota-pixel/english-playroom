@@ -22,7 +22,7 @@ import './developer-contact.js?v=2.3.20';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.3.8').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.3.20';
+const APP_VERSION='2.3.21';
 const APP_ROOT=new URL('./',import.meta.url);
 let forceRefreshBusy=false;
 

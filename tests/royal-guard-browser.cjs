@@ -44,7 +44,7 @@ for(const [mode,width] of [['tower',1100],['dungeon',390]]){
  await page.screenshot({path:path.join(out,mode+'-arrival.png')});await page.locator('.guard-cinematic button').click();
  await page.clock.runFor(mode==='tower'?3300:20300);assert.match(await page.locator('#enemyMpText').textContent(),/40 \/ 50/);assert.match(await page.locator('#battleFlash').textContent(),/ミロゴロン/);
  await clearForm(page,mode,mode==='tower'?'answer':'magic');
- assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'90F':'B90');assert.match(await page.locator('#enemyVisual img').getAttribute('src'),/royal-guard-2/);
+ assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'90F':'B90');assert.match(await page.locator('#enemyVisual img').getAttribute('src'),/royal-guard-lion-2/);
  assert.match(await page.locator('#enemyMpText').textContent(),/40 \/ 50/);assert.notEqual(await page.locator('#petHpText').textContent(),health,'first-form defeat must not heal the player');
  const before=await page.locator('#petHpText').textContent();await page.clock.runFor(15000);assert.equal(await page.locator('#petHpText').textContent(),before);
  await page.screenshot({path:path.join(out,mode+'-evolve.png')});await page.locator('.guard-cinematic button').click();

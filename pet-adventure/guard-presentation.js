@@ -1,7 +1,7 @@
 const COPY={
- arrival:{kicker:'ROYAL GUARD · 90F',title:'大ボス・魔王親衛隊が現れた！',text:'魔王のもとへは、通さぬ。',image:'royal-guard-1.svg',button:'決戦を始める'},
- evolve:{kicker:'SECOND FORM · AWAKENING',title:'魔王親衛隊が第2形態に進化！',text:'封印解放――これが真の力だ！',image:'royal-guard-2.svg',button:'第2形態に挑む'},
- victory:{kicker:'ROYAL GUARD DEFEATED',title:'魔王親衛隊をやっつけた！',text:'二つの形態を突破！ HP・MP全回復！',image:'royal-guard-2.svg',button:'次の階へ進む'}
+ arrival:{kicker:'ROYAL GUARD · 90F',title:'大ボス・魔王親衛隊が現れた！',text:'魔王のもとへは、通さぬ。',image:'royal-guard-lion-1.svg',button:'決戦を始める'},
+ evolve:{kicker:'SECOND FORM · AWAKENING',title:'魔王親衛隊が第2形態に進化！',text:'封印解放――これが真の力だ！',image:'royal-guard-lion-2.svg',button:'第2形態に挑む'},
+ victory:{kicker:'ROYAL GUARD DEFEATED',title:'魔王親衛隊をやっつけた！',text:'二つの形態を突破！ HP・MP全回復！',image:'royal-guard-lion-2.svg',button:'次の階へ進む'}
 };
 const MAGE_COPY={
  arrival:{kicker:'DARK SORCERER · 50F',title:'大ボス・闇の魔術師が現れた！',text:'何度傷つけようとも、我が魔力は尽きぬ。',image:'dark-mage-1.svg',button:'決戦を始める'},

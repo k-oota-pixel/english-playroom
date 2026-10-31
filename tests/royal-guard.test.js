@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {royalGuardForStage,royalGuardHp,adminAdventureBest} from '../pet-adventure/royal-guard.js';
 import {minibossForStage,chooseMinibossAction} from '../pet-adventure/miniboss.js';
 import fs from 'node:fs';
-test('90th floor in both modes uses the approved black-crown forms with more MP than 75F',()=>{
+test('90th floor in both modes uses the approved ashen-lion forms with more MP than 75F',()=>{
  for(const mode of ['tower','dungeon'])for(const phase of [1,2]){
  const b=royalGuardForStage(90,mode,phase);assert.equal(b.phase,phase);assert.equal(b.royal,true);assert.ok(b.maxMp>minibossForStage(75,mode).maxMp);
  assert.match(fs.readFileSync(new URL(`../pet-adventure/bosses/${b.image}`,import.meta.url),'utf8'),/<svg/);
