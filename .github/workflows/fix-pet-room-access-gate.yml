@@ -1,0 +1,36 @@
+name: Fix pet room embedded access gate
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/fix-pet-room-access-gate.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch pet room embedded auth handling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('pet-room/v5.html')
+          s=p.read_text()
+          old='<style id="monstudy-access-lock">html:before{content:"ログインを確認しています…";position:fixed;inset:0;display:grid;place-content:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style><script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.1"></script>'
+          new='''<style id="monstudy-access-lock">html:before{content:"ログインを確認しています…";position:fixed;inset:0;display:grid;place-content:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style><script type="module">if(window.top===window){await import('../access-gate.js?v=2.3.2')}else{document.getElementById('monstudy-access-lock')?.remove()}</script>'''
+          if old not in s:
+              raise SystemExit('expected access gate markup not found')
+          s=s.replace(old,new,1)
+          s=s.replace('ペットモード バージョン 1.4.1','ペットモード バージョン 1.4.2',1)
+          s=s.replace('<span class="room-version-number">v1.4.1</span>','<span class="room-version-number">v1.4.2</span>',1)
+          s=s.replace("from '../auth-session.js?v=2.3.1'","from '../auth-session.js?v=2.3.2'",1)
+          p.write_text(s)
+          PY
+          git diff --check
+          git rm .github/workflows/fix-pet-room-access-gate.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add pet-room/v5.html
+          git commit -m "Fix pet room embedded login gate"
+          git push
