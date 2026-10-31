@@ -87,6 +87,9 @@
     if (/\/pet-room\/v4\.html$/.test(here.pathname)) {
       const s = document.createElement('script'); s.src = new URL('pet-room/furniture-v3.js?v=1', home).href; s.defer = true; document.head.append(s);
     }
+    if (/\/task-quest\/case-talk\.html$/.test(here.pathname)) {
+      const s = document.createElement('script'); s.src = new URL('case-talk-rewards.js?v=1', home).href; s.defer = true; document.head.append(s);
+    }
     parent.MonstudyShell.materialReady(window);
   }, {once:true});
 })();
