@@ -5,10 +5,10 @@ const app=getApps()[0]||initializeApp(config),auth=getAuth(app),API="https://tas
 const style=document.createElement("style");
 style.textContent=".contact-admin{margin:16px 0;padding:16px;border:1px solid #dfe7e2;border-radius:14px;background:#fff}.contact-admin button{border:1px solid #cfdad3;border-radius:8px;background:#f4f8f5;color:#173b35;padding:8px 12px;font-weight:800;cursor:pointer}.contact-admin button:disabled{opacity:.55}.contact-admin-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.contact-admin-list{display:grid;gap:10px;margin-top:14px}.contact-admin-card{border:1px solid #e5ebe7;border-radius:10px;padding:12px}.contact-admin-card p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}.contact-admin-meta{font-size:11px;color:#6f7d77}.contact-admin-status{margin-top:10px;color:#6f7d77}.contact-admin-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:#c84638;color:#fff;font-size:11px;font-weight:900;vertical-align:2px}.contact-admin-count[hidden]{display:none}.contact-admin[hidden],.contact-admin-list[hidden]{display:none}";
 document.head.append(style);
-const panel=document.createElement("section");panel.className="contact-admin";panel.hidden=true;panel.innerHTML='<div class="contact-admin-head"><strong>開発者へのメッセージ <span class="contact-admin-count" data-count hidden>0</span></strong><button type="button" data-refresh>一覧を更新</button></div><div class="contact-admin-status" data-status>一覧を開くとメッセージを読み込みます。</div><div class="contact-admin-list" data-list hidden></div><button type="button" data-more hidden>次の50件</button>';
+const panel=document.createElement("section");panel.className="contact-admin";panel.hidden=true;panel.innerHTML='<div class="contact-admin-head"><strong>開発者へのメッセージ <span class="contact-admin-count" data-count hidden>0</span></strong><button type="button" data-refresh>一覧を更新</button></div><div class="contact-admin-status" data-status>管理画面を開いたときに新着件数を確認します。</div><div class="contact-admin-list" data-list hidden></div><button type="button" data-more hidden>次の50件</button>';
 const mount=document.querySelector("main .wrap")||document.querySelector("main")||document.body;mount.append(panel);
 const countBadge=panel.querySelector("[data-count]"),status=panel.querySelector("[data-status]"),list=panel.querySelector("[data-list]"),refresh=panel.querySelector("[data-refresh]"),more=panel.querySelector("[data-more]");
-let next=null,busy=false,adminUid="",pollTimer=0;
+let next=null,busy=false,adminUid="";
 let knownIds=new Set(),baselineReady=false,unread=0;
 function seenKey(){return "monstudy.contactMessages.lastSeen.v1:"+adminUid;}
 function getSeenAt(){const value=Number(localStorage.getItem(seenKey()));return Number.isFinite(value)&&value>0?value:Date.now();}
@@ -22,9 +22,9 @@ function card(item){const el=document.createElement("article");el.className="con
 async function loadPage(token=""){if(busy)return;busy=true;refresh.disabled=true;more.disabled=true;status.textContent="読み込み中…";try{const user=auth.currentUser;if(!user)throw Error("管理者としてログインしてください。");const idToken=await user.getIdToken();const url=new URL(API+"/api/admin/contact-messages");if(token)url.searchParams.set("pageToken",token);const response=await fetch(url,{headers:{Authorization:"Bearer "+idToken},signal:AbortSignal.timeout(20000)});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"メッセージを取得できませんでした。");if(!token){list.replaceChildren();const items=data.messages||[];knownIds=new Set(items.map(item=>item.id));setUnread(0);setSeenAt(newestTime(items)||Date.now());baselineReady=true;}for(const item of data.messages||[])list.append(card(item));next=data.nextPageToken||null;more.hidden=!next;list.hidden=false;status.textContent=list.childElementCount?list.childElementCount+"件を表示中":"メッセージはまだありません。";}catch(error){status.textContent=error.message||"読み込みに失敗しました。";}finally{busy=false;refresh.disabled=false;more.disabled=false;}}
 refresh.onclick=()=>loadPage("");more.onclick=()=>next&&loadPage(next);
 onAuthStateChanged(auth,async user=>{
- panel.hidden=true;adminUid="";baselineReady=false;knownIds.clear();setUnread(0);clearInterval(pollTimer);
+ panel.hidden=true;adminUid="";baselineReady=false;knownIds.clear();setUnread(0);
  if(!user)return;
  try{const token=await user.getIdToken();const r=await fetch(API+"/api/admin/session",{headers:{Authorization:"Bearer "+token},signal:AbortSignal.timeout(10000)});if(!r.ok)return;
- adminUid=user.uid;panel.hidden=false;await pollNew();pollTimer=setInterval(pollNew,60000);
+ adminUid=user.uid;panel.hidden=false;await pollNew();
  }catch{}
 });
