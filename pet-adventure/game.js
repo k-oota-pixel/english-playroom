@@ -2,7 +2,7 @@ import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.24';
 import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.17';
 import {majorBossForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.21';
 import {createGuardPresentation} from './guard-presentation.js?v=2.3.21';
-import {createFinalEncounter,finalEnemyActions,FINAL_FLOOR} from './final-encounter.js?v=2.3.22';
+import {createFinalEncounter,finalEnemyActions,FINAL_FLOOR} from './final-encounter.js?v=2.3.24';
 import {createFinalPresentation} from './final-presentation.js?v=2.3.22';
 import {adminStatsAdjustment} from '../pet-admin-stats-adjustment.js?v=2.3.23';
 import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.23';
@@ -66,9 +66,9 @@ async function presentFinalWave(){const encounter=finalEncounter;await presentFi
 function startFinalEncounter(){finalEncounter=createFinalEncounter(mode);enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;enemyLastAction=null;pullFinalTarget();els.enemyVisual.className='enemy-visual';els.battlefield.classList.add('boss-battle','royal-guard-battle');els.stageCard.classList.add('boss-stage');els.bossBadge.hidden=false;void updateBest(FINAL_FLOOR);syncHud();prepareTurn();void presentFinalWave();}
 function finalEnemyStrike(actor){
  if(!runActive||playerHp<=0)return;const visual=finalUi.visualFor(actor,finalEncounter);
- for(const action of finalEnemyActions(actor,playerHp)){
+ for(const action of finalEnemyActions(actor,playerHp,Math.random,finalEncounter.enemies)){
   animate(visual,'attack');
-  if(action.kind==='heal')flash(`${actor.name}の${action.spell.name}\n+${action.amount} HP`);
+  if(action.kind==='heal')flash(`${actor.name}の${action.spell.name}\n${action.target!==actor?action.target.name+' ':''}+${action.amount} HP`);
   else{const damage=incomingDamage(action.amount,stats.defense);enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`${actor.name}${action.spell?'の'+action.spell.name:'の攻撃'}！\n-${damage} HP`);}
   if(playerHp<=0)break;
  }
@@ -308,6 +308,7 @@ async function init(){
 
 els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{pauseBattleClocks();els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
+
 
 
 
