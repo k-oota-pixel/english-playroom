@@ -1,6 +1,6 @@
 import {getAuth} from './auth-session.js?v=2.3.1';
 const panel=document.createElement('section');panel.style.cssText='padding:20px;border:1px solid #dce5da;border-radius:16px;margin:20px 0;background:white';
-panel.innerHTML='<h2>登録コード・アカウント管理</h2><p>生徒名との対応表は学校で認められた保管先で管理してください。ここには生徒名を入力しないでください。</p><label>発行件数（1〜200） <input id="codeCount" type="number" min="1" max="200" value="30"></label> <button id="issueCodes">発行してCSVを保存</button><p><label>追加コード一覧の取り込み <input id="importCodes" type="file" accept=".csv,.txt"></label><small>今回お渡しする10,000件は登録済みです。追加の一覧を取り込む場合に使います。</small></p><hr><label>生徒の登録コード <input id="lookupCode" autocomplete="off" placeholder="XXXX-XXXX-XXXX-XXXX"></label> <button id="lookupAccount">IDを確認</button> <button id="resetCodePassword">仮パスワードを発行</button><p id="codeAdminStatus" role="status" style="white-space:pre-wrap"></p>';
+panel.innerHTML='<h2>登録コード・アカウント管理</h2><p>生徒名との対応表は学校で認められた保管先で管理してください。ここには生徒名を入力しないでください。</p><label>発行件数（1〜200） <input id="codeCount" type="number" min="1" max="200" value="30"></label> <button id="issueCodes">発行してCSVを保存</button><p><label>追加コード一覧の取り込み <input id="importCodes" type="file" accept=".csv,.txt"></label><small>今回お渡しする10,000件は登録済みです。追加の一覧を取り込む場合に使います。</small></p><hr><label>生徒の登録コード <input id="lookupCode" autocomplete="off" placeholder="AB3D7K"></label> <button id="lookupAccount">IDを確認</button> <button id="resetCodePassword">仮パスワードを発行</button><p id="codeAdminStatus" role="status" style="white-space:pre-wrap"></p>';
 (document.querySelector('main')||document.body).append(panel);
 const $=id=>panel.querySelector('#'+id),message=text=>$('codeAdminStatus').textContent=text;
 async function call(action,body){
@@ -22,7 +22,7 @@ $('resetCodePassword').onclick=()=>operation($('resetCodePassword'),async()=>{
 $('importCodes').onchange=async()=>{
  const input=$('importCodes'),file=input.files[0];if(!file)return;input.disabled=true;
  try{
- const text=await file.text(),codes=text.split(/\r?\n/).flatMap(line=>line.split(',')).filter(value=>/^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{4}(-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{4}){3}$/.test(value.trim())).map(value=>value.trim());
+ const text=await file.text(),codes=text.split(/\r?\n/).flatMap(line=>line.split(',')).filter(value=>/^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/.test(value.trim())).map(value=>value.trim());
  if(!codes.length||codes.length>10000||new Set(codes).size!==codes.length)throw Error('コードが見つからないか、重複があります。');
  const hashes=await Promise.all(codes.map(async code=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code.replaceAll('-',''))))).map(byte=>byte.toString(16).padStart(2,'0')).join('')));
  let imported=0;for(let i=0;i<hashes.length;i+=200){message('取り込み中：'+i+' / '+hashes.length);const data=await call('import',{hashes:hashes.slice(i,i+200)});imported+=data.imported;}
