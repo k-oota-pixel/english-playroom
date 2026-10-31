@@ -2,6 +2,9 @@ import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.24';
 import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.17';
 import {majorBossForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.21';
 import {createGuardPresentation} from './guard-presentation.js?v=2.3.21';
+import {createFinalEncounter,finalEnemyActions,FINAL_FLOOR} from './final-encounter.js?v=2.3.22';
+import {createFinalPresentation} from './final-presentation.js?v=2.3.22';
+import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.22';
 import {accountSession} from '../auth-session.js?v=2.3.8';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.24';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
@@ -46,9 +49,43 @@ let persistedBest=1,bestSavePromise=Promise.resolve(true);
 let miniboss=null,enemyMp=0,enemyLastAction=null;
 let adminAdventure=false,cinematicActive=false;
 const guardPresentation=createGuardPresentation();
+const finalPresentation=createFinalPresentation(),finalUi=createFinalBattleUi(els);
+let finalEncounter=null;
 async function presentGuard(scene){
- cinematicActive=true;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();
- try{await guardPresentation.show(scene,miniboss);}finally{cinematicActive=false;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();}
+ cinematicActive=true;pauseBattleClocks();syncActionAvailability();refreshPause();
+ try{await guardPresentation.show(scene,miniboss);}finally{cinematicActive=false;pauseBattleClocks();syncActionAvailability();refreshPause();}
+}
+function pullFinalTarget(){if(!finalEncounter)return;const target=finalEncounter.target;miniboss=target;enemyHp=target.hp;enemyMax=target.maxHp;enemyMp=target.mp;enemyElement=target.element;}
+function damageEnemy(amount){if(finalEncounter){finalEncounter.damageTarget(amount);pullFinalTarget();}else enemyHp=Math.max(0,enemyHp-amount);}
+function startFloorOptions(){const floors=unlockedStartFloors(Math.min(FINAL_FLOOR,currentBest()));if(adminAdventure&&!floors.includes(FINAL_FLOOR))floors.push(FINAL_FLOOR);return floors;}
+function clearField(){return mode==='tower'?'wordTowerCleared':'eikenDungeonCleared';}
+function pauseBattleClocks(){enemyClock.tick(performance.now(),true);finalEncounter?.tick(performance.now(),true);}
+async function presentFinal(options){cinematicActive=true;pauseBattleClocks();syncActionAvailability();refreshPause();try{await finalPresentation.show(options);}finally{cinematicActive=false;pauseBattleClocks();syncActionAvailability();refreshPause();}}
+async function presentFinalWave(){const encounter=finalEncounter;await presentFinal({id:encounter.wave.id,title:encounter.wave.title,quote:encounter.wave.quote,kicker:`FINAL BATTLE · ${encounter.waveIndex+1} / ${encounter.total}`,actors:encounter.enemies,buttonText:encounter.waveIndex===0?'最終決戦を始める':'戦いを続ける'});if(runActive&&finalEncounter===encounter)prepareTurn();}
+function startFinalEncounter(){finalEncounter=createFinalEncounter(mode);enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;enemyLastAction=null;pullFinalTarget();els.enemyVisual.className='enemy-visual';els.battlefield.classList.add('boss-battle','royal-guard-battle');els.stageCard.classList.add('boss-stage');els.bossBadge.hidden=false;void updateBest(FINAL_FLOOR);syncHud();prepareTurn();void presentFinalWave();}
+function finalEnemyStrike(actor){
+ if(!runActive||playerHp<=0)return;const visual=finalUi.visualFor(actor,finalEncounter);
+ for(const action of finalEnemyActions(actor,playerHp)){
+  animate(visual,'attack');
+  if(action.kind==='heal')flash(`${actor.name}の${action.spell.name}\n+${action.amount} HP`);
+  else{const damage=incomingDamage(action.amount,stats.defense);enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.petVisual,'hurt');flash(`${actor.name}${action.spell?'の'+action.spell.name:'の攻撃'}！\n-${damage} HP`);}
+  if(playerHp<=0)break;
+ }
+ pullFinalTarget();syncHud();if(playerHp<=0)void finishRun();
+}
+function finishFinalEnemy(){
+ const encounter=finalEncounter,result=encounter.settleDefeat();pendingAdvanceMs=null;selectedAttack=null;els.quizPanel.hidden=true;els.attackPanel.hidden=true;
+ if(result.type==='complete'){playerHp=stats.hp;playerMp=stats.mp;syncHud();void finishFinalVictory(encounter);return true;}
+ pullFinalTarget();syncHud();
+ if(result.type==='target'){void (async()=>{await presentFinal({id:'target-switch',title:`${result.defeated.name}を撃破！`,quote:`次は${encounter.target.name}を狙おう！`,kicker:'ONE ENEMY REMAINS',actors:[encounter.target]});if(runActive&&finalEncounter===encounter)prepareTurn();})();}
+ else if(result.type==='wave')void presentFinalWave();
+ return false;
+}
+async function finishFinalVictory(encounter){
+ await presentFinal({id:'demon-defeated',title:'魔王をやっつけた！',quote:'長い連戦を突破し、ついに魔王を打ち破った！',kicker:'DEMON LORD DEFEATED',actors:encounter.enemies,victory:true,buttonText:'勝利の先へ'});
+ if(!runActive||finalEncounter!==encounter)return;
+ await presentFinal({id:'game-clear',title:'GAME CLEAR!',quote:`${mode==='tower'?'魔王の塔':'魔物の巣窟'}、100階完全制覇！\n勇気と知識で、世界に平和を取り戻した。`,kicker:'ALL SEVEN BATTLES CLEARED',victory:true,buttonText:'冒険の記録を見る'});
+ if(runActive&&finalEncounter===encounter)await finishRun('clear');
 }
 
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
@@ -81,7 +118,8 @@ function refreshPause(){
 }
 function battleTick(now){
   battleFrame=0;if(!runActive)return;const paused=isBattlePaused(),step=enemyClock.tick(now,paused);refreshPause();
-  if(!paused&&enemyHp>0&&step.attack)enemyStrike();
+  if(finalEncounter){for(const actor of finalEncounter.tick(now,paused)){if(!runActive||playerHp<=0)break;finalEnemyStrike(actor);}}
+  else if(!paused&&enemyHp>0&&step.attack)enemyStrike();
   if(runActive&&!paused&&pendingAdvanceMs!==null){pendingAdvanceMs-=step.delta;if(pendingAdvanceMs<=0){pendingAdvanceMs=null;advance();}}
   if(runActive)battleFrame=requestAnimationFrame(battleTick);
 }
@@ -100,13 +138,13 @@ function enemyStrike(){
   const damage=incomingDamage(miniboss?.mage?3:enemyAttack(stage,enemyIndex),stats.defense);
   enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');flash(`ENEMY ATTACK!\n-${damage} HP`);syncHud();if(playerHp<=0)finishRun();
 }
-function togglePause(){if(!runActive)return;manualPaused=!manualPaused;enemyClock.tick(performance.now(),true);refreshPause();}
-document.addEventListener('monstudy:pause',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
-document.addEventListener('visibilitychange',()=>{enemyClock.tick(performance.now(),true);refreshPause();});
-window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;enemyClock.tick(performance.now(),true);});
+function togglePause(){if(!runActive)return;manualPaused=!manualPaused;pauseBattleClocks();refreshPause();}
+document.addEventListener('monstudy:pause',()=>{pauseBattleClocks();refreshPause();});
+document.addEventListener('visibilitychange',()=>{pauseBattleClocks();refreshPause();});
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(battleFrame);battleFrame=0;pauseBattleClocks();});
 window.addEventListener('beforeunload',event=>{if((!runActive&&!finishingRun)||allowNavigation)return;event.preventDefault();event.returnValue='';});
 document.addEventListener('click',event=>{const link=event.target.closest?.('#battleView a[href]');if(!runActive||!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();if(window.confirm('冒険中です。「終了・保存」を押すと今回の記録を保存できます。このまま画面を移動すると今回の記録は保存されません。移動しますか？')){allowNavigation=true;location.href=link.href;}});
-window.addEventListener('pageshow',()=>{allowNavigation=false;if(runActive&&!battleFrame){enemyClock.tick(performance.now(),true);battleFrame=requestAnimationFrame(battleTick);}});
+window.addEventListener('pageshow',()=>{allowNavigation=false;if(runActive&&!battleFrame){pauseBattleClocks();battleFrame=requestAnimationFrame(battleTick);}});
 
 function readRecords(){try{return {...{towerBest:1,dungeonBest:1},...JSON.parse(localStorage.getItem(storageKey+'-'+(user?.uid||'guest'))||'{}')}}catch{return {towerBest:1,dungeonBest:1}}}
 function writeRecords(){try{localStorage.setItem(storageKey+'-'+(user?.uid||'guest'),JSON.stringify(records))}catch{}}
@@ -126,7 +164,7 @@ function lastDepartureGeneration(data={}){const n=Number(data.petLastDeparture?.
 function configureMode(){
   document.body.classList.add(mode==='tower'?'tower-mode':'dungeon-mode');els.modeTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';els.attackHeading.textContent=mode==='tower'?'英単語を選ぼう':'挑戦する英検級を選ぼう';els.attackHint.textContent='相性の良い攻撃でCRITICAL';els.helpTitle.textContent=mode==='tower'?'魔王の塔':'魔物の巣窟';
   els.helpBody.innerHTML=mode==='tower'?'<p>英単語の攻撃カードを選び、日本語の意味を4択で答えます。正解するとペットの攻撃がHIT！</p><ul><li>不正解は攻撃失敗し、自分に1ダメージ。</li><li>敵の弱点属性ならダメージ2倍。</li><li>難しいレベルの単語ほど攻撃力が高い。</li><li>1階に敵1体。5階ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>10階ごとに単語レベルが上がります。</li><li>10階到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>':'<p>属性と英検級だけを見て攻撃を選びます。押すとリトライノートと同じ問題DBから4択問題が出現します。</p><ul><li>正解で攻撃HIT。不正解は攻撃失敗し、自分に1ダメージ。</li><li>難しい級ほど攻撃力が高い。</li><li>1層に敵1体。5層ごとの敵はBOSS。倒すとHP・MP全回復！</li><li>5層ごとに出題級が段階的に上がり、相性の良い攻撃は上位の級。41層からは準1級のみ。</li><li>5層到達ごとに1コイン。再挑戦でも獲得できます。</li></ul>';
-  els.helpBody.innerHTML+='<p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。卵の状態でも冒険できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は20秒ごとに攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
+  els.helpBody.innerHTML+='<p>100階は魔王と配下の最終決戦です。二体同時戦は闇の魔術師を優先して狙います。連戦中のHP・MPは引き継がれ、最後の魔王を倒すとゲームクリアです。</p><p>「魔法」「アイテム」は戦闘中いつでも使用できます。魔法はペットレベルで習得しMPを消費します。アイテムはSHOPの「ダンジョンズ」で購入できます。卵の状態でも冒険できます。冒険が終わると、獲得した称号をまとめて確認できます。</p><p>敵は20秒ごとに攻撃！ 問題・解答の選択中も時間は進みます。一時停止・遊び方・魔法・アイテム・別タブ表示中は時間が止まります。</p>';
 }
 
 async function loadVocabulary(){
@@ -147,6 +185,7 @@ async function ensureAdventurePetStats(data){
 function syncActionAvailability(){const usable=runActive&&playerHp>0&&enemyHp>0&&!cinematicActive;els.magicBtn.disabled=!usable;els.itemBtn.disabled=!usable;exitRunBtn.disabled=!runActive||finishingRun||cinematicActive;}
 function syncStatLine(){els.petStats.textContent=`Lv.${petLevel} · HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense} · MP ${stats.mp}`;}
 function syncHud(){
+  pullFinalTarget();
   els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent=isBoss(stage,enemyIndex)?'BOSS 1 / 1':'ENEMY 1 / 1';els.bestLabel.textContent=formatStage(currentBest());
   els.petHpBar.style.width=`${Math.max(0,playerHp)/stats.hp*100}%`;els.petHpText.textContent=`${Math.max(0,playerHp)} / ${stats.hp}`;els.petMpBar.style.width=`${Math.max(0,playerMp)/stats.mp*100}%`;els.petMpText.textContent=`${Math.max(0,playerMp)} / ${stats.mp} MP`;
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=miniboss?miniboss.name:isBoss(stage,enemyIndex)?'BOSS':'ENEMY';
@@ -154,10 +193,10 @@ function syncHud(){
   const mpText=$('enemyMpText');mpText.hidden=!miniboss;mpText.textContent=miniboss?`Lv.${miniboss.level} · MP ${enemyMp} / ${miniboss.maxMp}`:'';
   if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.image||miniboss.id+'.svg'}?v=2.3.14`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
   else{delete els.enemyVisual.dataset.boss;els.enemyVisual.textContent=enemyEmoji();}
-  els.enemyCount.textContent=miniboss?.royal?`大ボス · 第${miniboss.phase}形態`:miniboss?'中ボス 1 / 1':els.enemyCount.textContent;syncActionAvailability();
+  els.enemyCount.textContent=miniboss?.royal?`大ボス · 第${miniboss.phase}形態`:miniboss?'中ボス 1 / 1':els.enemyCount.textContent;finalUi.render(finalEncounter);syncActionAvailability();
 }
-function createEnemy(){pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=majorBossForStage(stage,mode)||minibossForStage(stage,mode);enemyClock.reset(miniboss?.attackInterval||enemyAttackInterval(stage,mode));enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.battlefield.classList.toggle('royal-guard-battle',!!miniboss?.royal);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?.royal?`♛ ${miniboss.name} · 第1形態`:miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(miniboss?.royal)void presentGuard('arrival');else if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
-function isFinalEnemyDefeat(){return !miniboss?.royal||miniboss.phase===2;}
+function createEnemy(){finalEncounter=null;if(stage===FINAL_FLOOR){startFinalEncounter();return;}pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=majorBossForStage(stage,mode)||minibossForStage(stage,mode);enemyClock.reset(miniboss?.attackInterval||enemyAttackInterval(stage,mode));enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.battlefield.classList.toggle('royal-guard-battle',!!miniboss?.royal);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?.royal?`♛ ${miniboss.name} · 第1形態`:miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(miniboss?.royal)void presentGuard('arrival');else if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
+function isFinalEnemyDefeat(){return finalEncounter?finalEncounter.isLastEnemy():!miniboss?.royal||miniboss.phase===2;}
 async function evolveRoyalGuard(){
  const runId=adventureRunId;pendingAdvanceMs=null;selectedAttack=null;els.quizPanel.hidden=true;els.attackPanel.hidden=true;
  miniboss=majorBossForStage(stage,mode,2);if(miniboss.mage)enemyMp=miniboss.maxMp;enemyMax=royalGuardHp(enemyMaxHp(stage,enemyIndex),2);enemyHp=enemyMax;enemyElement=miniboss.element;enemyLastAction=null;enemyClock.reset(miniboss.attackInterval||enemyAttackInterval(stage,mode));els.bossBadge.textContent=`♛ ${miniboss.name} · 第2形態`;syncHud();
@@ -181,6 +220,7 @@ function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.
 function animate(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),650)}
 function revealAnswers(chosenIndex,correctIndex){[...els.answerGrid.children].forEach((b,i)=>{b.disabled=true;if(i===correctIndex)b.classList.add('correct');else if(i===chosenIndex)b.classList.add('wrong')})}
 function finishEnemyDefeat(titleRequest){
+  if(finalEncounter)return finishFinalEnemy();
   const boss=isBoss(stage,enemyIndex);selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);pendingAdvanceMs=null;
   if(miniboss?.royal&&miniboss.phase===1){void evolveRoyalGuard();return false;}
   if(boss){playerHp=stats.hp;playerMp=stats.mp;if(!miniboss?.royal)flash('BOSS CLEAR!\nHP & MP FULL!');}
@@ -190,7 +230,7 @@ function finishEnemyDefeat(titleRequest){
 function answerQuestion(index){
   if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);recordAdventureTitle('answer',{itemId:String(q.id),correct,critical:correct&&elementMultiplier(selectedAttack.element,enemyElement)>1},`answer-${++answerSequence}`);
   let defeatTitleRequest=null;
-  if(correct){const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;if(enemyHp===0&&isFinalEnemyDefeat())defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);}else{playerHp=Math.max(0,playerHp-1);enemyDamageTaken+=1;animate(els.petVisual,'hurt');flash('MISS!\n-1 HP');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 自分に1ダメージ。正解を確認して次の攻撃へ。';}
+  if(correct){const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);damageEnemy(damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;if(enemyHp===0&&isFinalEnemyDefeat())defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);}else{playerHp=Math.max(0,playerHp-1);enemyDamageTaken+=1;animate(els.petVisual,'hurt');flash('MISS!\n-1 HP');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 自分に1ダメージ。正解を確認して次の攻撃へ。';}
   selectedAttack=null;syncHud();
   if(playerHp<=0){els.nextBtn.hidden=true;busy=false;void finishRun();return;}
   if(enemyHp<=0){els.nextBtn.hidden=true;const boss=finishEnemyDefeat(defeatTitleRequest);if(boss)els.answerFeedback.textContent+=' ボス撃破！ HP・MP全回復！';}
@@ -199,16 +239,16 @@ function answerQuestion(index){
 }
 
 function canUseBattleAction(){return runActive&&playerHp>0&&enemyHp>0&&!busy&&!cinematicActive;}
-function actionDialogClosed(){enemyClock.tick(performance.now(),true);refreshPause();}
+function actionDialogClosed(){pauseBattleClocks();refreshPause();}
 function renderMagic(message='',error=false){
   els.magicMpStatus.textContent=`Lv.${petLevel}　MP ${playerMp} / ${stats.mp}`;els.magicMessage.textContent=message;els.magicMessage.classList.toggle('error',error);els.magicList.replaceChildren();
   for(const spell of MAGIC_SPELLS){const unlocked=petLevel>=spell.level,full=spell.kind==='heal'&&playerHp>=stats.hp,card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');card.innerHTML=`<strong>${spell.name}</strong><span>${unlocked?spell.description:`Lv.${spell.level}で習得`}</span><small>${unlocked?`消費MP ${spell.mpCost}`:'LOCKED'}</small><button type="button">${unlocked?'使う':'未習得'}</button>`;const button=card.querySelector('button');button.disabled=busy||!unlocked||playerMp<spell.mpCost||full;button.addEventListener('click',()=>castMagic(spell));els.magicList.append(card);}
 }
-function openMagic(){if(!canUseBattleAction())return;enemyClock.tick(performance.now(),true);renderMagic();els.magicDialog.showModal();refreshPause();}
+function openMagic(){if(!canUseBattleAction())return;pauseBattleClocks();renderMagic();els.magicDialog.showModal();refreshPause();}
 function castMagic(spell){
   if(busy||!runActive||enemyHp<=0||playerHp<=0||petLevel<spell.level||playerMp<spell.mpCost)return;if(spell.kind==='heal'&&playerHp>=stats.hp){renderMagic('HPは満タンです。',true);return;}busy=true;playerMp-=spell.mpCost;const rolled=rollMagicAmount(spell.base);
   if(spell.kind==='heal'){const before=playerHp;playerHp=Math.min(stats.hp,playerHp+rolled);const actual=playerHp-before;animate(els.petVisual,'attack');flash(`✨ ${spell.name}\nHP +${actual}`);busy=false;syncHud();els.magicDialog.close();return;}
-  enemyHp=Math.max(0,enemyHp-rolled);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(`✨ ${spell.name}\n-${rolled}`);const defeated=enemyHp===0,titleRequest=defeated&&isFinalEnemyDefeat()?recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`):null;busy=false;syncHud();els.magicDialog.close();if(defeated){const boss=finishEnemyDefeat(titleRequest);if(boss&&!miniboss?.royal)flash(`${spell.name}!\nBOSS CLEAR!`);}else{els.answerFeedback.textContent=`${spell.name}！ 敵に${rolled}ダメージ！`;els.answerFeedback.className='answer-feedback ok';}
+  damageEnemy(rolled);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(`✨ ${spell.name}\n-${rolled}`);const defeated=enemyHp===0,titleRequest=defeated&&isFinalEnemyDefeat()?recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`):null;busy=false;syncHud();els.magicDialog.close();if(defeated){const boss=finishEnemyDefeat(titleRequest);if(boss&&!miniboss?.royal)flash(`${spell.name}!\nBOSS CLEAR!`);}else{els.answerFeedback.textContent=`${spell.name}！ 敵に${rolled}ダメージ！`;els.answerFeedback.className='answer-feedback ok';}
 }
 
 async function refreshInventory(){const snap=await getDoc(walletRef(user));if(snap.exists())petData={...petData,...snap.data()};return normalizeDungeonInventory(petData.petDungeonItems);}
@@ -216,7 +256,7 @@ function renderItems(inventory,message='',error=false){
   els.itemMessage.textContent=message;els.itemMessage.classList.toggle('error',error);els.itemList.replaceChildren();
   for(const item of DUNGEON_ITEMS){const count=inventory[item.id]||0,full=item.kind==='hp'?playerHp>=stats.hp:playerMp>=stats.mp,card=document.createElement('article');card.className='battle-action-card';card.innerHTML=`<strong>${item.icon} ${item.name}</strong><span>${item.description}</span><small>所持 ${count}個</small><button type="button">使う</button>`;const button=card.querySelector('button');button.disabled=busy||count<1||full;button.addEventListener('click',()=>useItem(item));els.itemList.append(card);}
 }
-async function openItems(){if(!canUseBattleAction())return;enemyClock.tick(performance.now(),true);els.itemList.innerHTML='<p>持ち物を読み込み中…</p>';els.itemMessage.textContent='';els.itemDialog.showModal();refreshPause();try{const inventory=await refreshInventory();if(els.itemDialog.open)renderItems(inventory);}catch(error){if(els.itemDialog.open)renderItems(normalizeDungeonInventory(petData.petDungeonItems),error?.message||'持ち物を読み込めませんでした。',true);}}
+async function openItems(){if(!canUseBattleAction())return;pauseBattleClocks();els.itemList.innerHTML='<p>持ち物を読み込み中…</p>';els.itemMessage.textContent='';els.itemDialog.showModal();refreshPause();try{const inventory=await refreshInventory();if(els.itemDialog.open)renderItems(inventory);}catch(error){if(els.itemDialog.open)renderItems(normalizeDungeonInventory(petData.petDungeonItems),error?.message||'持ち物を読み込めませんでした。',true);}}
 async function useItem(item){
   if(busy||!runActive||enemyHp<=0||playerHp<=0)return;if(item.kind==='hp'&&playerHp>=stats.hp){renderItems(normalizeDungeonInventory(petData.petDungeonItems),'HPは満タンです。',true);return;}if(item.kind==='mp'&&playerMp>=stats.mp){renderItems(normalizeDungeonInventory(petData.petDungeonItems),'MPは満タンです。',true);return;}
   busy=true;
@@ -228,14 +268,14 @@ async function useItem(item){
 
 function advance(){if(busy||!runActive||isBattlePaused()||playerHp<=0)return;pendingAdvanceMs=null;if(enemyHp<=0)return;els.quizPanel.hidden=true;prepareTurn();}
 function updateBest(value){const key=bestKey(),next=Math.max(currentBest(),value);records[key]=next;syncHud();}
-function persistBest(){
+function persistBest(cleared=false){
  if(!user)return Promise.resolve(false);
- const next=currentBest();if(next<=persistedBest)return Promise.resolve(true);
+ const next=currentBest();if(next<=persistedBest&&(!cleared||petData[clearField()]))return Promise.resolve(true);
  bestSavePromise=bestSavePromise.catch(()=>{}).then(async()=>{
-   const target=currentBest();if(target<=persistedBest)return true;
+   const target=currentBest();if(target<=persistedBest&&(!cleared||petData[clearField()]))return true;
    const field=mode==='tower'?'wordTowerBest':'eikenDungeonBest';
-   await setDoc(walletRef(user),{[field]:target,petAdventureUpdatedAt:serverTimestamp()},{merge:true});
-   persistedBest=target;petData[field]=target;return true;
+   await setDoc(walletRef(user),{[field]:target,...(cleared?{[clearField()]:true}:{}),petAdventureUpdatedAt:serverTimestamp()},{merge:true});
+   persistedBest=target;petData[field]=target;if(cleared)petData[clearField()]=true;return true;
  }).catch(error=>{console.warn('best record save failed',error);return false;});
  return bestSavePromise;
 }
@@ -243,8 +283,8 @@ async function startRun(startAt=1){
  if(startRun.loading||finishingRun)return;startRun.loading=true;
  try{await titleSyncPromise;stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
  catch(error){console.error(error);alert("称号の同期を確認できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
-els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;runBestAtStart=currentBest();stage=unlockedStartFloors(runBestAtStart).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.exitRunBtn.hidden=false;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
-function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest())+(adminAdventure?' · 管理者：90階まで開放／ランキング対象外':'');els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);if(adminAdventure&&floor===90)button.classList.add('admin-guard-start');button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
+els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;runBestAtStart=currentBest();stage=startFloorOptions().includes(startAt)?startAt:1;document.body.classList.remove('game-cleared');enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.exitRunBtn.hidden=false;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
+function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest())+(adminAdventure?' · 管理者：100階の最終決戦も確認可能／ランキング対象外':'');els.startFloors.replaceChildren();for(const floor of startFloorOptions()){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);if(adminAdventure&&(floor===90||floor===100))button.classList.add('admin-guard-start');button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
 async function finishRun(reason='defeat'){
  if(!runActive||finishingRun)return;
  finishingRun=true;runActive=false;stopBattle();refreshPause();syncActionAvailability();
@@ -254,9 +294,9 @@ async function finishRun(reason='defeat'){
   const events=adventureTitleEvents.splice(0),appId=mode==='tower'?'word-tower':'eiken-dungeon';
   const coinApi=window.EnglishPlayroomCoins;const submission=typeof coinApi?.recordTitleEvents==='function'?coinApi.recordTitleEvents(appId,events):Promise.all(events.map(event=>coinApi?.recordTitleEvent?.(appId,event)));titleSyncPromise=Promise.resolve(submission).catch(error=>console.warn('Adventure title sync deferred',error));
  }
- const improved=currentBest()>persistedBest,saved=await persistBest();
+ const improved=currentBest()>persistedBest,saved=await persistBest(reason==='clear');
  if(saved&&improved&&!adminAdventure)window.dispatchEvent(new CustomEvent('pet-adventure:run-finished',{detail:{best:currentBest(),reason}}));
- finishingRun=false;refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.exitRunBtn.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=reason==='manual'?'🏁':(mode==='tower'?'🗼':'🕳️');els.resultKicker.textContent=reason==='manual'?'RUN SAVED':(mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE');els.resultTitle.textContent=reason==='manual'?`途中終了 · ${formatStage(stage)}`:`到達 ${formatStage(stage)}`;els.resultText.textContent=saved?`最高記録 ${formatStage(currentBest())}。今回の記録を保存しました。`:`最高記録 ${formatStage(currentBest())}。端末には記録しましたが、クラウド保存に失敗しました。通信を確認してください。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.retryBtn.disabled=false;els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
+ finishingRun=false;refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.exitRunBtn.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=reason==='manual'?'🏁':(mode==='tower'?'🗼':'🕳️');els.resultKicker.textContent=reason==='manual'?'RUN SAVED':(mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE');els.resultTitle.textContent=reason==='manual'?`途中終了 · ${formatStage(stage)}`:`到達 ${formatStage(stage)}`;els.resultText.textContent=saved?`最高記録 ${formatStage(currentBest())}。今回の記録を保存しました。`:`最高記録 ${formatStage(currentBest())}。端末には記録しましたが、クラウド保存に失敗しました。通信を確認してください。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.retryBtn.disabled=false;els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';if(reason==='clear'){document.body.classList.add('game-cleared');els.resultIcon.textContent='🏆';els.resultKicker.textContent='100F · COMPLETE';els.resultTitle.textContent='GAME CLEAR!';els.resultText.textContent=(mode==='tower'?'魔王の塔':'魔物の巣窟')+'の100階を完全制覇！ '+(saved?'クリア記録を保存しました。':'クリア記録をクラウドに保存できませんでした。通信を確認してください。');els.retryBtn.textContent='1階からもう一度';}} 
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.disabled=true;els.itemBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true;}
 
 async function init(){
@@ -265,6 +305,7 @@ async function init(){
    els.loadingCard.hidden=true;els.dataNote.textContent=(mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中'))+' · 途中終了・保存を押すと今回の記録を保存します。画面移動では保存されません。';if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);window.dispatchEvent(new CustomEvent('pet-adventure:ready',{detail:{best:currentBest()}}));
 }
 
-els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
+els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{pauseBattleClocks();els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
+
 

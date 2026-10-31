@@ -1,0 +1,45 @@
+.final-target-fighter{display:contents}
+#battleView .final-encounter{grid-template-columns:minmax(0,.75fr) 28px minmax(0,1.4fr)}
+#battleView .final-encounter .boss-banner{display:none}
+#battleView .final-encounter .enemy-side{display:flex;gap:5px;align-items:stretch}
+#battleView .final-encounter .final-target-fighter,#battleView .final-encounter .final-other-fighter{display:grid;grid-template-rows:16px 8px 12px 10px minmax(0,1fr);flex:1;min-width:0;position:relative;border-radius:9px}
+#battleView .final-encounter .final-target-fighter{outline:1px solid #f2ca8270;background:#e69f6d0a}
+#battleView .final-encounter .enemy-side .name-line{display:block;overflow:hidden}
+#battleView .final-encounter .enemy-side .name-line strong{display:block;white-space:nowrap;font-size:10px;line-height:14px;text-overflow:ellipsis}
+#battleView .final-encounter .enemy-side .name-line span{display:none}
+#battleView .final-encounter .enemy-side .enemy-visual{position:relative;min-height:0}
+#battleView .final-encounter .enemy-side .enemy-visual img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:auto;height:100%;max-width:100%;max-height:130px;object-fit:contain}
+#battleView .final-encounter .final-enemy-defeated{opacity:.3;filter:grayscale(1)}
+.final-cinematic{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:14px;color:#fff0de;background:radial-gradient(ellipse at 50% 55%,#68243de8,#0c0b1afa 72%);overflow:hidden;isolation:isolate}
+.final-cinematic[hidden]{display:none!important}
+.final-card{position:relative;z-index:2;width:min(850px,100%);max-height:calc(100dvh - 28px);overflow:auto;text-align:center;border:1px solid #efbd83;border-radius:26px;padding:22px;background:linear-gradient(145deg,#44203ad9,#171323e8);box-shadow:0 0 85px #db548a66,inset 0 0 45px #eb8d9030;animation:finalReveal .7s ease-out}
+.final-kicker{margin:0 0 10px;font-weight:950;letter-spacing:.2em;color:#ffdb9e;font-size:12px}
+.final-card h2{font-size:clamp(24px,4.4vw,40px);line-height:1.4;margin:0;text-wrap:balance;text-shadow:0 3px 0 #2c1229,0 0 30px #e886a766}
+.final-portraits{display:flex;justify-content:center;align-items:center;gap:6px;margin:6px auto}
+.final-portraits figure{margin:0;min-width:0;flex:0 1 280px}
+.final-portraits img{display:block;width:100%;height:clamp(150px,32dvh,280px);object-fit:contain;filter:drop-shadow(0 0 16px #df71985c);animation:finalFloat 4s ease-in-out infinite}
+.final-portraits figcaption{font-size:12px;color:#ffe1ac;font-weight:800}
+.final-trophy{font-size:clamp(90px,20dvh,150px);line-height:1.4;filter:drop-shadow(0 0 28px #ffdc7780)}
+.final-quote{margin:16px 0 20px;font-size:clamp(12px,2.4vw,16px);line-height:1.8;font-weight:800;color:#f0d3e5;white-space:pre-line}
+.final-card button{appearance:none;border:1px solid #ffda92;border-radius:13px;background:linear-gradient(100deg,#aa4e68,#71345c);color:#fff3d9;font:inherit;font-weight:900;padding:13px 30px;cursor:pointer;box-shadow:0 0 20px #f8a85c22}
+.final-card button:focus-visible{outline:3px solid #fff1bc;outline-offset:5px}
+.final-stars{position:absolute;inset:0;z-index:1;pointer-events:none;background-image:radial-gradient(circle,#ffdb96 0 1px,transparent 2px),radial-gradient(circle,#f393c0 0 2px,transparent 3px);background-size:71px 107px,133px 157px;animation:finalDust 7s linear infinite;opacity:.65}
+.final-rays{position:absolute;inset:-120%;z-index:0;pointer-events:none;background:repeating-conic-gradient(#e793ad13 0 8deg,transparent 8deg 24deg);animation:finalTurn 40s linear infinite}
+.final-cinematic[data-scene="allies-2"],.final-cinematic[data-scene="allies-3"]{background:radial-gradient(ellipse,#472454ee,#110d1dfa 72%)}
+.final-cinematic[data-scene="king-3"] .final-card{border:2px solid #ffadcd;box-shadow:0 0 110px #dc4c8977,inset 0 0 50px #de527944}
+.final-victory{background:radial-gradient(ellipse,#8d6733f5,#241526fa 75%)}
+.final-victory .final-card{border:2px solid #ffe4a1;background:linear-gradient(150deg,#805534cc,#352035ee);box-shadow:0 0 120px #ffcd6f66,inset 0 0 55px #ffdc8133}
+.final-victory h2{color:#ffe8a9;text-shadow:0 3px 0 #734122,0 0 35px #ffd28488}
+.final-victory .final-stars{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='180'%3E%3Cpath d='m18 14 6 2-4 13-6-2z' fill='%23ffcf77'/%3E%3Cpath d='m112 23 10 8-4 5-10-8z' fill='%23f4a2c7'/%3E%3Cpath d='m62 80 6-2 4 12-6 2z' fill='%238ee5d0'/%3E%3Cpath d='m128 132 5 4-9 10-5-4z' fill='%23ffcf77'/%3E%3Ccircle cx='26' cy='140' r='2' fill='%23fff1aa'/%3E%3Ccircle cx='91' cy='155' r='2' fill='%23fff1aa'/%3E%3C/svg%3E");background-size:150px 180px;opacity:.85;animation:finalConfetti 6s linear infinite}
+.final-victory[data-scene="game-clear"] h2{font-size:clamp(38px,8vw,76px);letter-spacing:.04em}
+.final-victory .final-portraits img{height:clamp(140px,24dvh,220px);filter:grayscale(.6) drop-shadow(0 0 20px #ffd08488);opacity:.7;animation:none}
+.game-cleared #resultCard{border:2px solid #ddb45b;background:linear-gradient(135deg,#fff4ce,#fffaf0);box-shadow:0 0 25px #f2ce6b50}
+@keyframes finalReveal{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:none}}
+@keyframes finalFloat{50%{transform:translateY(-7px)}}
+@keyframes finalDust{to{background-position:0 -214px,0 -314px}}
+@keyframes finalConfetti{to{background-position:30px 360px}}
+@keyframes finalTurn{to{transform:rotate(360deg)}}
+@media(max-width:520px){#battleView .final-encounter .enemy-side .name-line strong{font-size:8px}.final-card{padding:16px 12px}.final-portraits{gap:0}.final-portraits figcaption{font-size:9px}.final-portraits img{height:clamp(135px,27dvh,215px)}.final-quote{margin:12px 0 16px}.final-card h2{font-size:25px}#battleView .final-encounter .enemy-side .hp-text,#battleView .final-encounter .enemy-side .mp-text{font-size:6px;white-space:nowrap;margin-left:2px;margin-right:2px}}
+@media(max-height:620px){.final-card{padding:12px}.final-portraits img{height:140px}.final-card h2{font-size:23px}.final-kicker{font-size:10px;margin-bottom:6px}.final-quote{margin:8px 0 12px;font-size:12px}.final-card button{padding:10px 23px}}
+@media(prefers-reduced-motion:reduce){.final-cinematic *{animation:none!important}}
+

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="黒冠の魔王"><defs>
+<linearGradient id="armor" x2="0.7" y2="1"><stop stop-color="#606078"/><stop offset="1" stop-color="#292a46"/></linearGradient>
+<linearGradient id="purple" x2=".7" y2="1"><stop stop-color="#a578da"/><stop offset="1" stop-color="#554078"/></linearGradient>
+<linearGradient id="red" x2=".6" y2="1"><stop stop-color="#bb4767"/><stop offset="1" stop-color="#682b4d"/></linearGradient>
+<linearGradient id="gold" x2=".7" y2="1"><stop stop-color="#ffde8b"/><stop offset="1" stop-color="#bd843c"/></linearGradient>
+<radialGradient id="orb"><stop stop-color="#f4edff"/><stop offset=".35" stop-color="#c5a2ff"/><stop offset="1" stop-color="#6d3db1"/></radialGradient>
+<linearGradient id="bone" x2=".5" y2="1"><stop stop-color="#fff0c7"/><stop offset="1" stop-color="#bb9b86"/></linearGradient>
+</defs><ellipse cx="160" cy="283" rx="99" ry="11" fill="#171329" opacity=".18"/><g stroke="#29243f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M94 153Q54 176 53 279l47-10 60 20 60-20 47 10q-1-103-41-126Z" fill="url(#red)"/>
+<path d="m94 175-18 81 36-10m114-71 18 81-36-10" fill="none" stroke="#d7637c" stroke-width="4"/>
+<path d="m119 247-7 32 38 1 8-34m8 0 7 34 38-1-10-32" fill="#33364e"/>
+<path d="m117 267-7 13h42m20 0h41l-10-13" fill="none" stroke="#ae9a71" stroke-width="4"/>
+<path d="m109 161 51-12 51 12-10 89-41 17-41-17Z" fill="url(#armor)"/>
+<path d="m117 172 43 16 43-16-7 49-36 17-36-17Z" fill="#6a6077"/>
+<path d="m132 226 28 12 28-12m-60 17 32 12 32-12" stroke="#ae91a2" stroke-width="3" fill="none"/>
+<path d="m97 146-25 20 15 24 30-13 10-17Zm126 0 25 20-15 24-30-13-10-17Z" fill="url(#armor)"/>
+<path d="m78 162-6-25 25 13m145 12 6-25-25 13" fill="url(#bone)"/>
+<path d="m88 187-13 33 20 13 18-35m119-11 13 33-20 13-18-35" fill="#44415c"/>
+<path d="m78 216-5 21 23 7 10-18m136-10 5 21-23 7-10-18" fill="#92819e"/>
+<path d="M114 101Q76 95 82 50q11 23 43 23m81 28q38-6 32-51-11 23-43 23" fill="url(#bone)"/>
+<path d="M111 88q49-22 98 0l-3 56q-17 33-46 36-29-3-46-36Z" fill="#9b80b7"/>
+<path d="m108 101 9-35 22 11 21-30 21 30 22-11 9 35-52 11Z" fill="url(#gold)"/>
+<path d="m160 74 10 13-10 15-10-15Z" fill="#ea638b"/><path d="m158 80 -3 7" stroke="#ffe5ec" stroke-width="2.5"/><path d="m124 119 27 9q-17 16-27-9Z" fill="#ffe69c" stroke-width="3"/><path d="m169 128 27-9q-11 25-27 9Z" fill="#ffe69c" stroke-width="3"/><path d="m143 127 0 6m178 127 0 6" fill="none" stroke-width="4"/>
+<path d="m146 153q14 6 28 0" fill="none" stroke-width="3"/>
+<path d="m146 153 4 7 4-5m14 0 4 5 3-7" fill="#fff0dc" stroke="none"/>
+<path d="m111 161 26 11-10 19-17-13m99-17-26 11 10 19 17-13" fill="url(#gold)"/>
+<path d="m160 191 10 13-10 15-10-15Z" fill="#ea638b"/><path d="m158 197 -3 7" stroke="#ffe5ec" stroke-width="2.5"/>
+</g></svg>
