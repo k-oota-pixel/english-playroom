@@ -1,4 +1,4 @@
-import {ensureTowerSeasonReset,installTowerSeasonAnnouncement} from './tower-season.js?v=2.3.26-hq1';
+import {ensureTowerSeasonReset,installTowerSeasonAnnouncement} from './tower-season.js?v=2.3.26-hq2';
 
 const mode=new URLSearchParams(location.search).get('mode');
 if(mode==='tower'||mode==='dungeon'){
