@@ -1,131 +1,607 @@
 {
-  "generatedAt": "2026-10-31T03:00:00+09:00",
+  "generatedAt": "2026-10-31T00:31:08.036Z",
+  "editionDate": "2026-10-31",
+  "automation": {
+    "version": 1,
+    "dailyCount": 6,
+    "maxArchiveArticles": 540,
+    "lastSuccessfulEdition": "2026-10-31"
+  },
   "articles": [
     {
-      "id": "2026-10-31-healthy-housing",
+      "id": "2026-10-31-actvet-virtual-teaching-standards",
       "date": "2026-10-31",
-      "category": "world",
-      "categories": ["health","environment","life"],
-      "careerTags": ["public","medicine","engineering"],
-      "tags": ["cities","housing","health","WHO","urban"],
-      "title": "WHO Says Healthy Cities Begin with Healthy Homes",
-      "summaryJa": "WHOが世界都市デーに、安全で健康的な住宅をすべての人に確保する重要性を訴えました。",
+      "category": "education",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "education"
+      ],
+      "tags": [
+        "UNESCO",
+        "ACTVET",
+        "virtual learning",
+        "teaching standards"
+      ],
+      "title": "ACTVET Publishes New Virtual Teaching Standards",
+      "summaryJa": "新型コロナウイルス感染症のパンデミックに対応するため、ACTVETは教師と協力し、バーチャル学習環境における教育の質を維持するための基準を策定しました。",
+      "sourcePublishedAt": "2020-05-19T21:48:35.",
       "levels": {
-        "4級": {"title":"Healthy Homes, Healthy Cities","text":"The World Health Organization says homes are important for our health. Many people do not have safe homes. Some homes are too hot, too cold, or too crowded. These problems can make people sick. WHO says cities should make homes safer and easier to use. Good homes can help children, older people, and people with disabilities. Healthy cities need healthy homes."},
-        "3級": {"title":"Healthy Homes Can Make Better Cities","text":"The World Health Organization, or WHO, says that housing is an important health issue. Many people around the world do not have safe and good homes. Crowded rooms, very hot or cold homes, and dangerous buildings can hurt people's health. WHO says city leaders should think about health when they plan housing. Safe homes can help children grow well and help older people live more independently. They can also protect people during extreme weather. On World Cities Day, WHO asked governments and communities to work together so that everyone can live in a home that supports health and dignity."},
-        "準2級": {"title":"WHO Calls for Safe and Healthy Housing for Everyone","text":"The World Health Organization says the place where people live can strongly affect their health. On World Cities Day 2026, WHO called for safer and healthier housing around the world. According to a UN-Habitat report cited by WHO, billions of people still lack secure, safe and adequate housing. Poor housing can expose people to overcrowding, extreme heat or cold, injury risks and other problems. These risks often affect disadvantaged people most strongly. WHO says housing policy should therefore be treated as health policy. Better homes can support children's development, help older people remain independent and make communities more resilient during severe weather. The organization is asking health, housing, planning and finance officials to work together. Its message is simple: a home should protect a person's health rather than threaten it."},
-        "2級": {"title":"Housing Policy Is Also Health Policy, WHO Says","text":"The World Health Organization used World Cities Day 2026 to highlight a connection that is sometimes overlooked: housing is a major health issue. WHO cited UN-Habitat's World Cities Report 2026, which estimates that up to 3.4 billion people lack secure, safe and adequate housing. More than one billion people live in informal settlements and slums. Poor housing can expose residents to overcrowding, unsafe temperatures, injury hazards and barriers for people with disabilities. Such risks can contribute to illness and deepen existing inequalities. WHO argues that decisions about housing and urban development should therefore include public-health experts, not only planners and finance officials. Healthy housing can protect children, support older people who want to remain independent and help families cope with extreme heat and severe weather. It can also improve energy efficiency and reduce emissions. As cities continue to grow, WHO says cooperation among government departments and local communities will be essential. The goal is not simply to build more homes, but to create homes and neighborhoods that support health, safety and dignity throughout people's lives."},
-        "準1級": {"title":"WHO Frames the Global Housing Crisis as a Public-Health Challenge","text":"On World Cities Day 2026, the World Health Organization urged governments to recognize adequate housing as a central public-health issue rather than treating it solely as a matter of construction or urban planning. WHO cited UN-Habitat's World Cities Report 2026, which estimates that as many as 3.4 billion people lack secure, safe and adequate housing, including more than one billion people living in informal settlements and slums. The organization argues that housing conditions influence health throughout a person's life. Overcrowding can facilitate the spread of disease, unsafe indoor temperatures can threaten vulnerable residents, and poorly designed buildings can create injury risks or exclude people with disabilities. These burdens often fall most heavily on communities that are already disadvantaged, reinforcing health inequalities. WHO therefore wants health authorities to take part in decisions traditionally led by housing, planning and finance departments. It also stresses that healthier homes can deliver wider benefits: they can improve childhood development, enable older adults to remain independent, strengthen resilience to extreme weather, increase energy efficiency and reduce emissions. Existing WHO networks are already helping cities respond to challenges such as extreme heat and energy insecurity, but the organization says such efforts must become normal practice rather than isolated examples. As urban populations expand, the choices cities make about housing will shape health and equality for generations. WHO's message is that a healthy city begins at home, and that housing policy should be designed with health, accessibility, dignity and long-term resilience in mind."}
+        "5級": {
+          "title": "ACTVET Makes New Rules",
+          "text": "ACTVET has new rules for teachers. The world has the COVID-19 pandemic. Classes are online now. ACTVET works with teachers. They want good teaching online. Students can learn well from home. This is very important for everyone today. We need good teachers in the virtual school.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "ACTVET Creates Virtual Teaching Standards",
+          "text": "During the COVID-19 pandemic, schools had to change. ACTVET worked with many teachers to help them. They wanted to make new rules for online classes. These rules are very important. They help teachers keep the quality of education high in virtual learning environments. Students can study safely at home now. This change helps everyone learn better.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "ACTVET Publishes Standards for Virtual Teaching",
+          "text": "In response to the COVID-19 pandemic, education systems around the world had to face major changes. During this difficult time, ACTVET worked directly with many teachers in order to address new challenges. They wanted to create clear guidelines and define important rules. These standards help maintain the quality of teaching in an increasingly virtual learning environment. As more students and teachers moved to online classes, having proper support became essential. The new standards ensure that education remains strong, effective, and accessible for everyone involved in digital learning today.",
+          "wordCount": 88
+        },
+        "準2級": {
+          "title": "ACTVET Creates New Standards to Support Virtual Teaching",
+          "text": "In response to the COVID-19 pandemic, educational institutions experienced sudden and dramatic shifts across the globe. Traditional classrooms closed temporarily, forcing students and teachers to rely heavily on digital platforms. In order to address this challenge, ACTVET worked closely with teachers to define clear and practical standards. These guidelines are carefully designed to maintain the overall quality of teaching in an increasingly virtual learning environment. As schools transitioned to remote instruction, educators needed structured support to keep lessons engaging and effective. This important initiative helps ensure that students continue receiving a proper education while studying safely from home during times of crisis.",
+          "wordCount": 102
+        },
+        "2級": {
+          "title": "ACTVET Collaborates with Teachers to Publish Virtual Teaching Standards",
+          "text": "The COVID-19 pandemic brought unprecedented disruptions to educational systems across the globe, forcing institutions to transition rapidly toward remote instruction. In response to this global crisis, ACTVET worked together with teachers in order to define comprehensive standards. These guidelines were specifically created to maintain the high quality of teaching in an increasingly virtual learning environment. As schools and educators adapted to digital classrooms, they required structured frameworks to support student learning and maintain academic standards. By establishing these clear rules, ACTVET helps guarantee that remote education remains robust, organized, and effective. This collaborative effort highlights the importance of adaptability and preparation in modern education, providing essential guidance for educators and learners alike as they navigate the complexities of digital teaching environments. Furthermore, technical and vocational education and training systems continue to evolve through international cooperation and digital transformation strategies.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "ACTVET Publishes New Standards to Support Quality in Virtual Teaching",
+          "text": "In response to the unprecedented challenges brought by the COVID-19 pandemic, educational systems worldwide faced rapid and profound transformations across multiple regions. As traditional classrooms experienced widespread closures, educational institutions and individual educators had to transition toward remote instruction platforms almost overnight. To address the mounting demands of this sudden shift, the organization known as ACTVET undertook a collaborative initiative, working directly with teachers in order to define robust and comprehensive standards. These carefully crafted guidelines were specifically designed to maintain the high quality of instruction in an increasingly virtual learning environment. Educators required structured pedagogical support to sustain student engagement, deliver effective lessons, and successfully navigate the complexities of digital classrooms during a time of global crisis. By establishing these essential benchmarks, ACTVET provides critical assistance for instructors striving to preserve educational integrity. This proactive measure ensures that remote learning remains structured, resilient, and effective, ultimately safeguarding the future of students and supporting educators as they adapt to the demands of modern digital education within technical and vocational frameworks across the globe today. Furthermore, technical and vocational education and training systems continue to evolve through international cooperation and digital transformation strategies supported by the UNESCO-UNEVOC International Centre for TVET. The global TVET community gathers to discuss innovative approaches and data-driven governance that can build the robust educational systems of the future, empowering youth and adults alike with essential skills and knowledge.",
+          "wordCount": 232
+        }
       },
-      "sources": [{"name":"World Health Organization — World Cities Day 2026","url":"https://www.who.int/news-room/commentaries/detail/on-world-cities-day-2026--who-calls-for-safe--healthy-housing-for-all"}]
+      "sources": [
+        {
+          "name": "UNESCO-UNEVOC",
+          "url": "https://unevoc.unesco.org/up/Virtual_Teaching_Standards_Booklet.pdf"
+        }
+      ]
     },
     {
-      "id": "2026-10-30-hubble-service",
-      "date": "2026-10-30",
-      "category": "science",
-      "categories": ["technology"],
-      "careerTags": ["science","engineering","it"],
-      "tags": ["NASA","Hubble","space","telescope","engineering"],
-      "title": "NASA Looks at New Ways to Keep Hubble Working",
-      "summaryJa": "NASAがハッブル宇宙望遠鏡の寿命を延ばすため、民間企業による軌道上サービスの可能性を調べています。",
+      "id": "2026-10-31-alaska-mariculture-oyster-research",
+      "date": "2026-10-31",
+      "category": "environment",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Mariculture",
+        "Alaska",
+        "Oysters",
+        "NOAA",
+        "Research"
+      ],
+      "title": "Researching Oyster Mariculture in Alaska",
+      "summaryJa": "エッカード大学の学生エラ・スコニエツニーが、アラスカのジュノーにあるNOAAの研究所で夏季インターンシップを行い、太平洋イカボウシ（マガキ）の環境適応能力を調査するマリカチャー（海面養殖）の研究に参加しました。",
+      "sourcePublishedAt": "2026-10-16T15:02:33.",
       "levels": {
-        "4級": {"title":"NASA Wants to Help Hubble","text":"NASA wants ideas to help the Hubble Space Telescope. Hubble went into space in 1990. It has studied space for more than 35 years. Its orbit is slowly getting lower. Hubble cannot move to a higher orbit by itself. NASA wants companies to share ideas. A future mission may move Hubble higher, repair it, or help it return safely at the end of its life."},
-        "3級": {"title":"Can Hubble Stay in Space Longer?","text":"NASA is looking for new ways to help the Hubble Space Telescope. Hubble has worked in space since 1990 and has made many important discoveries. However, its orbit is slowly becoming lower because of the thin atmosphere around Earth. The telescope does not have its own system to move to a higher orbit. NASA has asked private companies for ideas. A future mission might raise Hubble's orbit, improve some of its systems, or help control its return to Earth when its work is finished. NASA says Hubble still has useful science to do and wants to study practical ways to keep it working longer."},
-        "準2級": {"title":"NASA Studies Commercial Missions to Extend Hubble's Life","text":"NASA is asking private space companies to share ideas for servicing the Hubble Space Telescope in orbit. Hubble was launched in 1990 and has changed scientists' understanding of the universe, but its orbit is slowly getting lower because of atmospheric drag. The telescope has no propulsion system that can raise its orbit on its own. NASA says a future commercial mission could possibly boost Hubble to a higher altitude, service or improve the telescope, or support a safe end-of-mission plan. Current analysis suggests Hubble could re-enter Earth's atmosphere in the 2030s if nothing changes. NASA is not announcing a mission yet. Instead, it has issued a Request for Information to learn what private companies may be able to do and how much different options could cost. The agency says extending Hubble's life could create more opportunities for scientific discoveries."},
-        "2級": {"title":"NASA Explores Commercial Options for Hubble's Future","text":"NASA has begun exploring whether commercial space companies could help extend the scientific life of the Hubble Space Telescope. On October 29, the agency issued a Request for Information asking industry to describe possible in-space servicing capabilities. Hubble has operated for more than three decades and continues to make important observations, but its altitude is gradually decreasing because of atmospheric drag in low Earth orbit. Since Hubble has no propulsion system for maintaining its own orbit, NASA estimates that the telescope could re-enter the atmosphere around 2033 or 2034 if no action is taken. Possible future options include boosting Hubble into a higher orbit, servicing the telescope to improve its capabilities, or carrying out a controlled re-entry or other safe disposal plan at the end of the mission. NASA stresses that it has not selected a mission and is currently gathering information about technical possibilities and costs. Commercial space technology has advanced rapidly in areas such as satellite capture and servicing, so the agency wants to understand whether those capabilities could be used for Hubble. If a practical solution is found, keeping the telescope operating longer could provide additional scientific observations while NASA develops future flagship space missions."},
-        "準1級": {"title":"Commercial Space Capabilities Could Shape the Next Chapter of Hubble","text":"NASA is examining whether the rapidly developing commercial space industry could help prolong the life of the Hubble Space Telescope, one of the most influential scientific instruments ever placed in orbit. The agency issued a Request for Information on October 29 seeking proposals and technical information about potential in-space servicing. Hubble, launched in 1990, continues to produce valuable observations, but like other spacecraft in low Earth orbit, it is gradually losing altitude because of atmospheric drag. It lacks a propulsion system capable of maintaining or raising its orbit. NASA's current analysis suggests that, without intervention, Hubble is likely to re-enter Earth's atmosphere around 2033 or 2034. The agency is therefore interested in several possibilities: a commercial mission could boost the telescope to a higher altitude, service or enhance its systems, or eventually support a controlled re-entry or safe orbital disposal. NASA has not committed to any of these options, and the information request is intended to clarify what industry can realistically offer and at what cost. The timing reflects a broader change in spaceflight. Private companies have developed increasingly sophisticated capabilities for rendezvous, satellite capture and in-space operations that were far less mature when Hubble's final Space Shuttle servicing mission took place. NASA officials argue that if an innovative and cost-effective method can extend the life of a functioning scientific asset, it deserves careful study. Any future mission would still need to balance technical risk, expense and scientific value, but the process could determine whether Hubble remains productive well into the next decade."}
+        "5級": {
+          "title": "Ella Works in Alaska",
+          "text": "Ella Skonieczny is a college student. She loves the ocean. This summer, she works in Alaska. She helps NOAA. She learns about fish and water. She sees many Pacific oysters. Ella has a great time in Juneau. She is very happy to study nature there.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Studying Oysters in Juneau",
+          "text": "Ella Skonieczny is a student at Eckerd College. She studies marine science and environmental studies. This summer, she has a special internship in Juneau, Alaska. She works at the Alaska Fisheries Science Center. Ella helps the mariculture team. She looks at Pacific oysters. She learns how they live and grow in cold water and how they survive.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "Researching Oyster Mariculture in Alaska",
+          "text": "Ella Skonieczny is a senior student at Eckerd College. She majors in marine science and environmental studies. This summer, Ella works at the Ted Stevens Marine Research Institute in Juneau, Alaska. She joins the mariculture team for a special research project. The team studies Pacific oysters to see how they survive temperature changes and find food. Her work helps the growing oyster industry in Alaska and supports local farms.",
+          "wordCount": 69
+        },
+        "準2級": {
+          "title": "Exploring Mariculture and Oyster Research in Alaska",
+          "text": "Ella Skonieczny, a senior at Eckerd College majoring in marine science and environmental studies, spent her summer working as an intern in Juneau, Alaska. She joined the mariculture team at the Alaska Fisheries Science Center Ted Stevens Marine Research Institute. During her internship, Ella participated in a research project to study Pacific oysters. The research focuses on understanding how food availability affects the ability of oysters to survive extreme temperature changes, such as heat and cold stress. Her valuable experiences in the hatchery and on local oyster farms helped support Alaska's growing mariculture industry.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "Investigating Pacific Oyster Resilience in Alaska's Mariculture Industry",
+          "text": "Ella Skonieczny, a rising senior studying marine science and environmental studies at Eckerd College, recently completed an enriching summer internship in Juneau, Alaska. Working at the Ted Stevens Marine Research Institute under the Alaska Fisheries Science Center, Ella joined the mariculture team to assist with an important collaborative research study between NOAA and Canada's Department of Fisheries and Oceans. The primary goal of this investigation is to understand how food availability influences the capacity of Pacific oysters to survive and adapt to environmental pressures like extreme heat and cold stress. By collecting water samples, monitoring chlorophyll levels, and visiting local farms such as the Salty Lady Seafood Company, Ella and her colleagues gathered essential data that will help sustain and inform Alaska's rapidly expanding mariculture industry while supporting local oyster farmers.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Advancing Mariculture Research and Oyster Sustainability in Juneau, Alaska",
+          "text": "Ella Skonieczny, an undergraduate senior double majoring in marine science and environmental studies at Eckerd College, spent an eventful summer undertaking a prestigious internship in Juneau, Alaska. Working at the Alaska Fisheries Science Center's Ted Stevens Marine Research Institute within the Auke Bay Laboratory division, Ella collaborated with the mariculture team on a vital research initiative shared between NOAA and Canada's Department of Fisheries and Oceans. This scientific investigation is carefully designed to examine how varying food availability alters the physiological resilience of Pacific oysters, determining their capacity to survive and adapt to external environmental stresses, including significant temperature fluctuations such as severe heat and cold. Alongside her fellow Hollings intern Alleyah Britton, mentor Becca, and other colleagues, Ella engaged in comprehensive fieldwork that involved visiting local oyster farms like the Salty Lady Seafood Company, collecting water samples to survey chlorophyll-a levels and nutrients, and monitoring for harmful algal bloom species. The empirical results yielded from this ongoing study are intended to provide critical insights for the burgeoning mariculture sector in Alaska, ultimately helping farmers sustain healthy oyster populations, optimize farm management practices, and ensure long-term environmental balance in the region as the industry continues to expand significantly across local coastal communities.",
+          "wordCount": 202
+        }
       },
-      "sources": [{"name":"NASA Science — Potential Commercial Servicing for Hubble","url":"https://science.nasa.gov/missions/hubble/nasa-explores-potential-commercial-servicing-for-hubble-telescope/"}]
+      "sources": [
+        {
+          "name": "NOAA",
+          "url": "https://www.noaa.gov/office-education/hollings-scholarship/stories/mariculture-in-alaska-reflecting-on-my-time-spent-in-hatchery-and-creating-home-in-juneau-alaska"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-ecb-governing-council-decisions-october-2026",
+      "date": "2026-10-31",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ECB",
+        "Christine Lagarde",
+        "Europe",
+        "Central Bank"
+      ],
+      "title": "ECB Announces Important Leadership and Policy Updates",
+      "summaryJa": "欧州中央銀行（ECB）は、ラガルド総裁が2027年2月7日付で退任することを発表しました。また、T2決済システムの合意や法的な意見書の発行など、その他の重要な決定も行われました。",
+      "sourcePublishedAt": "2026-10-30T14:00:00.",
+      "levels": {
+        "5級": {
+          "title": "ECB Has New News",
+          "text": "The European Central Bank has new news today. ECB President Christine Lagarde will step down soon. She will leave her job on February 7, 2027. The bank also makes other choices. They work with Sweden and Denmark. People can see the new plans on the web.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Changes at the European Central Bank",
+          "text": "The European Central Bank made important choices in October. ECB President Christine Lagarde told the leaders that she will step down from her job. She will leave on February 7, 2027. The bank also approved new agreements with Sweden and Denmark for payment services. Many people are reading these updates on the official web page today.",
+          "wordCount": 54
+        },
+        "3級": {
+          "title": "Important Decisions by the European Central Bank",
+          "text": "The European Central Bank announced several important decisions in October. Most notably, ECB President Christine Lagarde informed officials that she will step down from her position on February 7, 2027. In addition to this news, the Governing Council approved new payment service agreements with Sweden and Denmark. The bank also adopted several legal opinions and appointed Petra Senkovic as the new Chair of the Legal Committee starting in November to help guide future work.",
+          "wordCount": 72
+        },
+        "準2級": {
+          "title": "ECB President Christine Lagarde to Step Down in February 2027",
+          "text": "The European Central Bank released details about recent decisions made by its Governing Council. The most significant announcement is that ECB President Christine Lagarde will step down from her position on February 7, 2027. She informed the Governing Council and the President of the European Council about her decision in late October. Besides leadership news, the Governing Council approved T2 currency participation agreements with Sveriges Riksbank and Danmarks Nationalbank. Furthermore, the bank adopted official opinions on financial legislation requested by Belgium, Cyprus, and Slovenia, and appointed Petra Senkovic as the new Chair of the Legal Committee for the upcoming term.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "European Central Bank Governing Council Announces Leadership and Policy Updates",
+          "text": "The European Central Bank has published a comprehensive summary of decisions taken by its Governing Council in October 2026. The most prominent announcement involves ECB President Christine Lagarde, who formally informed the Governing Council and the President of the European Council that she will step down from her high-profile role on February 7, 2027. Beyond leadership changes, the Governing Council focused heavily on market infrastructure and payments, approving updated T2 Currency Participation Agreements with Sveriges Riksbank and Danmarks Nationalbank following successful assessments. Additionally, the bank adopted multiple official opinions on national legislation requested by Belgium, Cyprus, and Slovenia regarding banking governance, cash usage, and financial regulations. In corporate governance, the ECB amended its accounting and financial reporting framework to enhance transparency and appointed Petra Senkovic as the new Chair of the Legal Committee, succeeding the retiring Chiara Zilioli starting in November 2026.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "European Central Bank Outlines Major Strategic and Leadership Transitions",
+          "text": "The European Central Bank has detailed a series of administrative, legal, and strategic resolutions adopted by its Governing Council during October 2026. Dominating the announcements is the impending departure of ECB President Christine Lagarde, who formally notified the Governing Council and European Council President António Costa that she will step down from her leadership position on February 7, 2027. This pivotal transition signals a forthcoming shift at the helm of the eurozone monetary authority. In the sphere of market infrastructure and payments, the Governing Council approved critical T2 Currency Participation Agreements with both Sveriges Riksbank and Danmarks Nationalbank. These updates follow comprehensive operational assessments and aim to standardize participation services across connected central banks. Furthermore, the Governing Council exercised its advisory mandate by adopting multiple formal opinions concerning legislative proposals requested by national authorities in Belgium, Cyprus, and Slovenia. These legal evaluations touch upon critical areas such as management bans in credit institutions, institutional governance, and public access to cash services. Corporate governance updates also featured prominently in the latest agenda. The ECB adopted an amended guideline designed to enhance transparency within the Eurosystem financial reporting framework by modifying balance sheet classifications. Concurrently, internal leadership renewals were finalized with the appointment of Petra Senkovic as the incoming Chair of the Legal Committee, succeeding Chiara Zilioli upon her retirement, ensuring continuity in legal governance through the end of 2028.",
+          "wordCount": 224
+        }
+      },
+      "sources": [
+        {
+          "name": "European Central Bank",
+          "url": "https://www.ecb.europa.eu//press/govcdec/otherdec/2026/html/ecb.gc261030~e40f864093.en.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-nasa-cneos-news-archive-system-update",
+      "date": "2026-10-31",
+      "category": "science",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NASA",
+        "CNEOS",
+        "news",
+        "archive",
+        "astronomy"
+      ],
+      "title": "NASA CNEOS Updates News Archive System",
+      "summaryJa": "NASAのCNEOS（地球近傍天体研究センター）がニュースアーカイブシステムの設定とデータテーブルの表示を更新しました。",
+      "sourcePublishedAt": "2026-10-22T17:49:19.",
+      "levels": {
+        "5級": {
+          "title": "NASA CNEOS News",
+          "text": "NASA CNEOS has a news system today. The system uses a special table to show data. Users can read dates, images, and titles. It helps people find space news easily.",
+          "wordCount": 30
+        },
+        "4級": {
+          "title": "NASA CNEOS News Archive",
+          "text": "NASA CNEOS manages an online news archive system for people. The system loads data from a source file and displays it in a clear table. Users can check dates, images, titles, and excerpts easily every day. If data is missing, the system shows a message.",
+          "wordCount": 45
+        },
+        "3級": {
+          "title": "NASA CNEOS News Archive System",
+          "text": "NASA CNEOS operates a news archive platform today. The system uses a special data table configuration to load records from a source file. It displays dates, images, titles, and excerpts in columns clearly. Users can read space news and find important updates easily every day. If data is missing or temporarily unavailable, the system shows a polite message. This helps people check asteroid research information without any trouble. Researchers and students can review the news archive table whenever they want to learn more about space science.",
+          "wordCount": 86
+        },
+        "準2級": {
+          "title": "NASA CNEOS News Archive System Update",
+          "text": "NASA CNEOS manages an online news archive platform driven by a special data table configuration today. The application dynamically retrieves records from a designated source file and organizes information into structured columns for visitors. Users can view dates, images, titles, and descriptive excerpts clearly on the page every single day. Special rendering rules handle updated content seamlessly to ensure accurate tracking across the entire website. Furthermore, built-in error-handling mechanisms display a polite notification if data is temporarily unavailable, maintaining a reliable experience for everyone who visits the platform to read space science updates, asteroid research information, and planetary defense news.",
+          "wordCount": 100
+        },
+        "2級": {
+          "title": "Technical Overview of NASA CNEOS Archive System",
+          "text": "NASA CNEOS operates a specialized news archive platform driven by a robust data table configuration. The application dynamically retrieves records from a designated source file, organizing information into structured columns that display publication dates, thumbnail images, titles, and descriptive excerpts for visitors every day. Special rendering rules handle updated content seamlessly to ensure accurate tracking and presentation across the entire website. Furthermore, built-in error-handling mechanisms display a polite notification if data is temporarily unavailable, ensuring a reliable browsing experience for researchers and members of the general public who follow asteroid research and planetary defense news closely. NASA CNEOS ensures that all visitors can easily read space science updates through this structured system configuration, allowing everyone interested in astronomy to check the latest records whenever they visit the online platform for information.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Detailed Architecture of the NASA CNEOS News Archive Platform",
+          "text": "The Center for Near Earth Object Studies, known as NASA CNEOS, operates a specialized news archive platform driven by a sophisticated data table configuration. Within this online environment, the application dynamically retrieves records from a designated source file called news.json, organizing information into structured columns that display publication dates, thumbnail images, linked titles, and descriptive excerpts for every single entry. Special rendering rules handle updated content seamlessly to ensure accurate tracking and presentation across all devices when visitors access the website today. Furthermore, the interface includes built-in pagination, natural sorting, and robust error-handling mechanisms that display a polite notification if data is temporarily unavailable, thereby maintaining a reliable and professional experience for users seeking planetary defense and asteroid research updates today. The system configuration ensures that researchers, students, and members of the public can easily examine asteroid research information and space science updates whenever they review the online platform. NASA CNEOS continuously provides this structured news archive configuration to support everyone interested in astronomy. The specialized configuration ensures that visitors can always read space science updates through this structured platform arrangement, allowing everyone interested in astronomy to check the latest records whenever they visit the online interface for information.",
+          "wordCount": 200
+        }
+      },
+      "sources": [
+        {
+          "name": "NASA CNEOS",
+          "url": "https://cneos.jpl.nasa.gov/news/news.js"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-nova-biomedical-statstrip-glucose-meter-correction",
+      "date": "2026-10-31",
+      "category": "health",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "fda-recall",
+        "glucose-meter",
+        "nova-biomedical",
+        "patient-safety"
+      ],
+      "title": "Nova Biomedical Updates Instructions for StatStrip Glucose Meters",
+      "summaryJa": "ノバ・バイオメディカル社は、血糖値測定器「StatStrip」の一部モデルにおいて、患者IDの誤割り当てを防ぐための使用手順の更新を発表しました。",
+      "sourcePublishedAt": "2026-10-30T04:00:00.",
+      "levels": {
+        "5級": {
+          "title": "New Rules for Glucose Meters",
+          "text": "Nova Biomedical has a new update. It is for the StatStrip Glucose Hospital Meter System. Users must follow new instructions. This can stop wrong results for patients. Please check your meter today. A software update will come soon. Stay safe and follow the rules.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Important Update for Hospital Meters",
+          "text": "Nova Biomedical has updated the use instructions for the StatStrip Glucose Hospital Meter System. This update helps prevent glucose results from going to the wrong patient. The FDA takes this issue very seriously. Users should follow the new recommendations while waiting for a software update. If you have another meter, you can use that one instead.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Nova Biomedical Issues Correction for Glucose Meters",
+          "text": "Nova Biomedical has announced a correction for the StatStrip Glucose Hospital Meter System. The company wants users to follow updated instructions. This action prevents glucose results from being sent to the incorrect patient. The FDA calls this a very serious situation. Customers should check their settings, such as the patient validation feature and operator logoff mode. If an alternative device is available, users should stop using the affected meter until the software update is ready. Please follow these important safety rules.",
+          "wordCount": 81
+        },
+        "準2級": {
+          "title": "Nova Biomedical Updates Instructions for StatStrip Glucose Meters",
+          "text": "Nova Biomedical has issued important new instructions for the StatStrip Glucose Hospital Meter System, specifically the Gen 2.0 model. This correction addresses a serious issue where glucose test results might be assigned to the wrong patient. The FDA has classified this as a serious situation that requires immediate attention. While waiting for a future software update, hospitals and medical staff must follow specific safety recommendations. These steps include confirming patient IDs on the screen before pressing accept and setting the meters to automatically log out operators after each test. If an alternative meter is available, users should stop using the affected device until it receives the software update.",
+          "wordCount": 107
+        },
+        "2級": {
+          "title": "Nova Biomedical Issues Correction for StatStrip Glucose Hospital Meter Systems",
+          "text": "Nova Biomedical has updated its use instructions for the StatStrip Glucose Hospital Meter System, focusing exclusively on the recent Gen 2.0 model. This correction is necessary because of the potential for glucose test results to be assigned to the incorrect patient, a problem that the FDA has identified as extremely serious. To reduce risks while awaiting a permanent software update, Nova Biomedical sent letters to customers outlining essential safety actions. Medical staff must verify that patient IDs are properly validated through integrated Electronic Medical Record systems and ensure that meters automatically log operators out after every test. Furthermore, users are strongly advised to manually verify patient names and IDs both before testing and when results appear on the screen. If an alternative device is available, facilities should stop using the affected meter until the software update is fully installed.",
+          "wordCount": 138
+        },
+        "準1級": {
+          "title": "Nova Biomedical Announces StatStrip Glucose Meter Correction and Safety Instructions",
+          "text": "Nova Biomedical has issued a critical correction for the StatStrip Glucose Hospital Meter System, applying specifically to the Gen 2.0 model. This essential update addresses a serious software and workflow vulnerability that could cause glucose test results to be incorrectly assigned to the wrong patient. Recognizing the severity of this issue, the FDA has classified it among the most serious types of device recalls, noting that continued use without proper corrections could potentially lead to severe injury or death. To mitigate these risks while a permanent software solution is being actively developed, Nova Biomedical has instructed affected customers to implement specific operational safeguards and recommendations. These vital precautions include verifying that the patient validation setting is active within NovaNet, configuring meters to automatically log out operators after each test, and manually confirming patient identification details on the screen both before testing and when results appear. If alternative testing devices are accessible, healthcare providers and facilities are strongly advised to halt the use of the affected StatStrip meters until the official software update has been successfully applied across their entire system and operations can resume safely.",
+          "wordCount": 184
+        }
+      },
+      "sources": [
+        {
+          "name": "FDA MedWatch",
+          "url": "https://www.fda.gov/medical-devices/medical-device-recalls-and-early-alerts/hospital-glucose-meter-correction-nova-biomedical-updates-use-instructions-statstrip-glucose"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-31-philip-r-lane-ai-adoption-in-europe",
+      "date": "2026-10-31",
+      "category": "business",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "AI",
+        "Europe",
+        "ECB",
+        "economy",
+        "investment"
+      ],
+      "title": "Philip R. Lane: AI adoption in Europe",
+      "summaryJa": "欧州中央銀行（ECB）のフィリップ・R・レーン理事は、米サンフランシスコでのシンポジウムで、欧州経済におけるAIの採用と生産性への影響について基調講演を行いました。欧州のデジタル投資は増加しており、グローバルなAIサプライチェーンやインフラ資金調達にも貢献しています。",
+      "sourcePublishedAt": "2026-10-30T16:10:00.",
+      "levels": {
+        "5級": {
+          "title": "AI in Europe",
+          "text": "Europe has new technology. AI is very important. Many companies use AI now. Philip R. Lane talks about the economy. He works at the European Central Bank. Digital investment grows in Europe. AI helps productivity grow. People can see changes in the euro area. It is a big topic today.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Artificial Intelligence in the Euro Area",
+          "text": "Philip R. Lane spoke about artificial intelligence in San Francisco. He is a member of the European Central Bank. Although the United States and China make many AI models, Europe adopts AI for productivity. Digital investment in the euro area has grown since 2014. European firms and investors also help fund global AI infrastructure. This helps the economy change.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "How AI is Reshaping the European Economy",
+          "text": "Philip R. Lane recently discussed artificial intelligence at a conference in San Francisco. He explained how AI adoption will shape European productivity and economic growth. While the United States and China lead in building frontier AI models, European firms are very active in the global supply chain. Furthermore, European investors help fund AI infrastructure through markets and banks. Digital investment in the euro area has increased significantly since 2014, moving from 2.3 percent to 3.3 percent of the gross domestic product by 2026.",
+          "wordCount": 79
+        },
+        "準2級": {
+          "title": "ECB Executive Board Member Discusses AI Adoption and Digital Investment",
+          "text": "Philip R. Lane, a member of the Executive Board of the European Central Bank, recently delivered a keynote speech in San Francisco regarding artificial intelligence and the economy. He highlighted that while the United States and China primarily develop frontier AI models, adopting these technologies will greatly determine European productivity growth. Additionally, European firms participate in the global AI supply chain, and regional investors contribute to funding global infrastructure. Data shows that digital investment in the euro area has expanded substantially, growing from 2.3 percent of GDP in 2014 to 3.3 percent by mid-2026, marking a clear and important economic shift across the region.",
+          "wordCount": 101
+        },
+        "2級": {
+          "title": "Philip R. Lane Addresses the Economic Impact of AI Adoption in Europe",
+          "text": "In a recent keynote speech at an economic research symposium in San Francisco, Philip R. Lane, a member of the Executive Board of the European Central Bank, detailed how artificial intelligence is reshaping the euro area economy. He noted that although the United States and China spearhead the development of frontier AI models, the adoption of these technologies will serve as a primary catalyst for European productivity growth. Furthermore, European enterprises are fully integrated into the global AI supply chain, and local investors actively support worldwide AI infrastructure buildouts through equity, debt, and banking systems. ECB surveys also provide crucial insights into adoption processes and financial implications. Aggregate economic data reveals that digital investment in the euro area has expanded by 73 percent in real terms since 2014, rising from 2.3 percent to 3.3 percent of GDP by mid-2026, highlighting a major structural transformation.",
+          "wordCount": 140
+        },
+        "準1級": {
+          "title": "ECB's Philip R. Lane Explores AI Integration, Digital Investment, and Euro Area Productivity",
+          "text": "Addressing an audience at the Federal Reserve Bank of San Francisco Economic Research Symposium, Philip R. Lane, Member of the Executive Board of the European Central Bank, offered a comprehensive and detailed overview of how artificial intelligence is transforming the modern euro area economy. Lane pointed out during his keynote address that while the creation and development of frontier artificial intelligence models remain heavily concentrated in the United States and China, the subsequent adoption of these advanced technologies will profoundly influence European productivity growth in the years ahead. Concurrently, expenditure on such artificial intelligence adoption acts as a vital economic stimulus across the region. Moreover, European corporations are deeply embedded within the global artificial intelligence supply chain, and regional investors are actively financing worldwide infrastructure through capital markets, debt markets, and banking channels. European Central Bank surveys indicate clear structural trends, which are further supported by comprehensive macroeconomic data showing that real digital investment in the euro area has surged by 73 percent since 2014. This significant rise has elevated digital investment from 2.3 percent to 3.3 percent of gross domestic product, demonstrating a fundamental economic shift characterized primarily by intangible asset accumulation rather than heavy data center construction.",
+          "wordCount": 195
+        }
+      },
+      "sources": [
+        {
+          "name": "European Central Bank",
+          "url": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261030~08d9d540f0.en.html"
+        }
+      ]
     },
     {
       "id": "2026-10-30-agent-compute",
       "date": "2026-10-30",
       "category": "technology",
-      "categories": ["business"],
-      "careerTags": ["it","engineering","business"],
-      "tags": ["AI","agents","Google Cloud","computing","security"],
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "it",
+        "engineering",
+        "business"
+      ],
+      "tags": [
+        "AI",
+        "agents",
+        "Google Cloud",
+        "computing",
+        "security"
+      ],
       "title": "Google Builds New Computers for AI Agents",
       "summaryJa": "Google Cloudが、AIエージェントを安全かつ効率的に動かすための新しい計算基盤を発表しました。",
       "levels": {
-        "4級": {"title":"New Computers for AI Agents","text":"Google Cloud is making a new computer service for AI agents. AI agents can do tasks, use tools, and sometimes write code. They need safe places to work. The new service is called Agent Compute Engine. It gives an AI agent a small computer in the cloud. Google says the system can start and stop quickly. It is also designed to keep one agent's work separate from another agent's work."},
-        "3級": {"title":"Google Cloud Makes a Service for AI Agents","text":"Google Cloud has introduced a new service called Agent Compute Engine. It is designed for AI agents that do more than answer questions. These agents may use tools, run programs, or work on long tasks. Google says traditional cloud computers are not always ideal for this kind of work. The new service gives each agent a small, isolated computer called a microVM. It can start quickly and pause when the agent is waiting. This can save computer resources. Google is also adding tools to control what agents can access and to watch what they do. The company plans to make the service available in preview in the coming months."},
-        "準2級": {"title":"Google Cloud Designs New Infrastructure for AI Agents","text":"Google Cloud has announced Agent Compute Engine, a new computing service designed specifically for AI agents. Unlike a simple chatbot, an AI agent may write and run code, use external tools, control a browser or continue working across many steps. Google says these activities create different computing needs from ordinary cloud applications. Agent Compute Engine gives each agent its own isolated microVM, or small virtual computer. The system is designed to start quickly, pause while an agent is waiting, and resume later without wasting as many computing resources. Google is also expanding governance tools that can manage an agent's identity, access and activity. Security is important because agents may run unfamiliar code or connect to private company data. The service is expected to enter preview in the coming months. Google says technology developed to support Gemini's large-scale agent workloads helped shape the new system."},
-        "2級": {"title":"Google Cloud Introduces Purpose-Built Infrastructure for AI Agents","text":"Google Cloud is developing a new type of computing infrastructure for the growing number of AI agents that can take actions as well as generate answers. The company has announced Agent Compute Engine, a service that provides each agent with a hardware-isolated microVM. AI agents can have unusual workloads: they may write and execute code, operate browsers, call tools, wait for outside information and then resume work. According to Google, conventional cloud systems were not designed for this rapid cycle of activity and waiting. Agent Compute Engine aims to make those workloads more efficient by allowing microVMs to start quickly, pause when idle and resume from saved states. Google also says each environment will have its own identity and security controls, which is important when agents handle company data or run untrusted code. Alongside the compute service, Google is expanding governance features such as Agent Gateway and Agent Registry to help organizations control which agents and tools are allowed to operate. The company says the technology grew out of infrastructure used for Gemini's own agent workloads. Agent Compute Engine is targeted for preview in the coming months, showing how cloud providers are adapting their systems as AI moves from answering questions toward carrying out multi-step tasks."},
-        "準1級": {"title":"Agentic AI Is Forcing Cloud Infrastructure to Evolve","text":"Google Cloud has unveiled Agent Compute Engine, a purpose-built computing service intended to address the unusual infrastructure demands created by autonomous AI agents. Whereas traditional applications tend to perform relatively predictable workloads, an agent may repeatedly write and execute code, invoke tools, control a browser, wait for a human response and then resume its work. Google argues that this high-churn pattern requires a different approach to computing. Agent Compute Engine gives individual agents hardware-isolated microVM environments that can activate rapidly, pause during idle periods and resume from checkpoints. The company says this architecture can improve resource efficiency while maintaining isolation between workloads. Security and governance are equally central to the design because agents may execute untrusted code or access sensitive enterprise systems. Google is therefore expanding related controls for agent identity, network access, policy enforcement and observability. The infrastructure was developed partly to handle the scale of Google's own Gemini agent workloads, and a preview for outside customers is planned in the coming months. The announcement illustrates a broader shift in the technology industry: as AI systems move from generating information to taking actions, the supporting cloud layer must manage not only model inference but also persistent workspaces, credentials, tools and potentially risky code. This creates opportunities for more capable automated workflows, while also making questions of isolation, auditing and access control increasingly important. The next phase of AI competition may therefore depend as much on secure infrastructure as on the intelligence of the models themselves."}
+        "4級": {
+          "title": "New Computers for AI Agents",
+          "text": "Google Cloud is making a new computer service for AI agents. AI agents can do tasks, use tools, and sometimes write code. They need safe places to work. The new service is called Agent Compute Engine. It gives an AI agent a small computer in the cloud. Google says the system can start and stop quickly. It is also designed to keep one agent's work separate from another agent's work."
+        },
+        "3級": {
+          "title": "Google Cloud Makes a Service for AI Agents",
+          "text": "Google Cloud has introduced a new service called Agent Compute Engine. It is designed for AI agents that do more than answer questions. These agents may use tools, run programs, or work on long tasks. Google says traditional cloud computers are not always ideal for this kind of work. The new service gives each agent a small, isolated computer called a microVM. It can start quickly and pause when the agent is waiting. This can save computer resources. Google is also adding tools to control what agents can access and to watch what they do. The company plans to make the service available in preview in the coming months."
+        },
+        "準2級": {
+          "title": "Google Cloud Designs New Infrastructure for AI Agents",
+          "text": "Google Cloud has announced Agent Compute Engine, a new computing service designed specifically for AI agents. Unlike a simple chatbot, an AI agent may write and run code, use external tools, control a browser or continue working across many steps. Google says these activities create different computing needs from ordinary cloud applications. Agent Compute Engine gives each agent its own isolated microVM, or small virtual computer. The system is designed to start quickly, pause while an agent is waiting, and resume later without wasting as many computing resources. Google is also expanding governance tools that can manage an agent's identity, access and activity. Security is important because agents may run unfamiliar code or connect to private company data. The service is expected to enter preview in the coming months. Google says technology developed to support Gemini's large-scale agent workloads helped shape the new system."
+        },
+        "2級": {
+          "title": "Google Cloud Introduces Purpose-Built Infrastructure for AI Agents",
+          "text": "Google Cloud is developing a new type of computing infrastructure for the growing number of AI agents that can take actions as well as generate answers. The company has announced Agent Compute Engine, a service that provides each agent with a hardware-isolated microVM. AI agents can have unusual workloads: they may write and execute code, operate browsers, call tools, wait for outside information and then resume work. According to Google, conventional cloud systems were not designed for this rapid cycle of activity and waiting. Agent Compute Engine aims to make those workloads more efficient by allowing microVMs to start quickly, pause when idle and resume from saved states. Google also says each environment will have its own identity and security controls, which is important when agents handle company data or run untrusted code. Alongside the compute service, Google is expanding governance features such as Agent Gateway and Agent Registry to help organizations control which agents and tools are allowed to operate. The company says the technology grew out of infrastructure used for Gemini's own agent workloads. Agent Compute Engine is targeted for preview in the coming months, showing how cloud providers are adapting their systems as AI moves from answering questions toward carrying out multi-step tasks."
+        },
+        "準1級": {
+          "title": "Agentic AI Is Forcing Cloud Infrastructure to Evolve",
+          "text": "Google Cloud has unveiled Agent Compute Engine, a purpose-built computing service intended to address the unusual infrastructure demands created by autonomous AI agents. Whereas traditional applications tend to perform relatively predictable workloads, an agent may repeatedly write and execute code, invoke tools, control a browser, wait for a human response and then resume its work. Google argues that this high-churn pattern requires a different approach to computing. Agent Compute Engine gives individual agents hardware-isolated microVM environments that can activate rapidly, pause during idle periods and resume from checkpoints. The company says this architecture can improve resource efficiency while maintaining isolation between workloads. Security and governance are equally central to the design because agents may execute untrusted code or access sensitive enterprise systems. Google is therefore expanding related controls for agent identity, network access, policy enforcement and observability. The infrastructure was developed partly to handle the scale of Google's own Gemini agent workloads, and a preview for outside customers is planned in the coming months. The announcement illustrates a broader shift in the technology industry: as AI systems move from generating information to taking actions, the supporting cloud layer must manage not only model inference but also persistent workspaces, credentials, tools and potentially risky code. This creates opportunities for more capable automated workflows, while also making questions of isolation, auditing and access control increasingly important. The next phase of AI competition may therefore depend as much on secure infrastructure as on the intelligence of the models themselves."
+        }
       },
-      "sources": [{"name":"Google Cloud — Agent Compute Engine","url":"https://cloud.google.com/blog/topics/ai-infrastructure/introducing-agent-compute-engine-and-expanded-agent-governance/"}]
+      "sources": [
+        {
+          "name": "Google Cloud — Agent Compute Engine",
+          "url": "https://cloud.google.com/blog/topics/ai-infrastructure/introducing-agent-compute-engine-and-expanded-agent-governance/"
+        }
+      ]
     },
     {
       "id": "2026-10-30-barbados-hiv",
       "date": "2026-10-30",
       "category": "health",
-      "categories": ["world"],
-      "careerTags": ["medicine","public","global"],
-      "tags": ["Barbados","HIV","WHO","pregnancy","public health"],
+      "categories": [
+        "world"
+      ],
+      "careerTags": [
+        "medicine",
+        "public",
+        "global"
+      ],
+      "tags": [
+        "Barbados",
+        "HIV",
+        "WHO",
+        "pregnancy",
+        "public health"
+      ],
       "title": "Barbados Reaches Major HIV Public-Health Milestone",
       "summaryJa": "WHOが、バルバドスにおけるHIVの母子感染が公衆衛生上の問題として排除されたと認定しました。",
       "levels": {
-        "4級": {"title":"Good Health News from Barbados","text":"Barbados has reached an important health goal. The World Health Organization says the country has stopped HIV from passing from mothers to babies as a public health problem. From 2022 to 2024, no babies in Barbados got HIV from their mothers. Most pregnant women received care and HIV tests. Treatment was also free for pregnant women with HIV. WHO says good health services helped make this possible."},
-        "3級": {"title":"Barbados Stops Mother-to-Child HIV Transmission","text":"The World Health Organization has recognized Barbados for eliminating mother-to-child transmission of HIV as a public health problem. This means the country has met important international health targets. From 2022 to 2024, Barbados reported no new HIV infections in babies caused by transmission from their mothers. WHO says 98 percent of pregnant women received care before birth, 98 percent were tested for HIV, and 98 percent of pregnant women with HIV received treatment. HIV testing and treatment are free for pregnant women in the country. Barbados will need to continue these services to keep its elimination status in the future."},
-        "準2級": {"title":"WHO Recognizes Barbados for Eliminating Mother-to-Child HIV Transmission","text":"The World Health Organization has certified Barbados for eliminating mother-to-child transmission of HIV as a public health problem. The achievement followed an independent assessment of the country's health services and results. According to WHO, no new HIV infections caused by mother-to-child transmission were reported among babies born in Barbados from 2022 through 2024. During the same period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Public clinics and hospitals provide HIV testing and treatment free of charge to pregnant women, regardless of nationality. Babies who may have been exposed to HIV also receive early testing and follow-up care. WHO says Barbados now joins a growing group of countries and territories that have reached important goals against the transmission of HIV, syphilis or hepatitis B from mothers to children. Continued investment and monitoring will be needed to protect the progress."},
-        "2級": {"title":"Barbados Wins WHO Recognition for Preventing HIV Transmission to Babies","text":"Barbados has been recognized by the World Health Organization for eliminating mother-to-child transmission of HIV as a public health problem, marking a significant achievement for the Caribbean country. WHO certification follows an independent review showing that Barbados met international targets for preventing transmission during pregnancy, birth and early childhood. From 2022 to 2024, the country reported no new infant HIV infections caused by mother-to-child transmission. Coverage of key health services was also consistently high: 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Barbados offers HIV testing and treatment free of charge to all pregnant women, regardless of nationality, and babies exposed to HIV receive early testing and continued follow-up. WHO officials said the result demonstrates what can be achieved when health services are widely accessible and respect patients' rights and privacy. Barbados joins other countries and territories recognized for progress toward eliminating the transmission of HIV, syphilis or hepatitis B from mothers to children. However, certification does not mean the work is finished. The country must continue investing in health services, data systems, testing and follow-up care to maintain its status and prevent future infections."},
-        "準1級": {"title":"Barbados Shows How Universal Maternal Care Can Prevent HIV Transmission","text":"The World Health Organization has validated Barbados for eliminating mother-to-child transmission of HIV as a public-health problem, a milestone that reflects both strong clinical coverage and long-term investment in maternal care. An independent assessment found that no new HIV infections resulting from mother-to-child transmission were reported among infants born in Barbados between 2022 and 2024. During that three-year period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Those figures are significant because effective testing and treatment can greatly reduce the risk that HIV will be transmitted during pregnancy, delivery or breastfeeding. Barbados provides universal health care through public clinics and hospitals, while HIV testing and treatment are free for pregnant women regardless of nationality. Infants who may have been exposed to the virus receive early testing and follow-up care. WHO and the Pan American Health Organization highlighted these policies as evidence that eliminating transmission is possible when women can obtain high-quality services without major financial or social barriers. The country now belongs to a group of nations and territories recognized for eliminating, or making substantial progress toward eliminating, mother-to-child transmission of HIV, syphilis or hepatitis B. Nevertheless, validation is not a permanent finish line. Barbados will need to maintain investment, update clinical guidelines, strengthen health information systems and ensure continued follow-up for mothers and children. The achievement therefore offers both a reason for celebration and a reminder that lasting public-health success depends on sustained access to care."}
+        "4級": {
+          "title": "Good Health News from Barbados",
+          "text": "Barbados has reached an important health goal. The World Health Organization says the country has stopped HIV from passing from mothers to babies as a public health problem. From 2022 to 2024, no babies in Barbados got HIV from their mothers. Most pregnant women received care and HIV tests. Treatment was also free for pregnant women with HIV. WHO says good health services helped make this possible."
+        },
+        "3級": {
+          "title": "Barbados Stops Mother-to-Child HIV Transmission",
+          "text": "The World Health Organization has recognized Barbados for eliminating mother-to-child transmission of HIV as a public health problem. This means the country has met important international health targets. From 2022 to 2024, Barbados reported no new HIV infections in babies caused by transmission from their mothers. WHO says 98 percent of pregnant women received care before birth, 98 percent were tested for HIV, and 98 percent of pregnant women with HIV received treatment. HIV testing and treatment are free for pregnant women in the country. Barbados will need to continue these services to keep its elimination status in the future."
+        },
+        "準2級": {
+          "title": "WHO Recognizes Barbados for Eliminating Mother-to-Child HIV Transmission",
+          "text": "The World Health Organization has certified Barbados for eliminating mother-to-child transmission of HIV as a public health problem. The achievement followed an independent assessment of the country's health services and results. According to WHO, no new HIV infections caused by mother-to-child transmission were reported among babies born in Barbados from 2022 through 2024. During the same period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Public clinics and hospitals provide HIV testing and treatment free of charge to pregnant women, regardless of nationality. Babies who may have been exposed to HIV also receive early testing and follow-up care. WHO says Barbados now joins a growing group of countries and territories that have reached important goals against the transmission of HIV, syphilis or hepatitis B from mothers to children. Continued investment and monitoring will be needed to protect the progress."
+        },
+        "2級": {
+          "title": "Barbados Wins WHO Recognition for Preventing HIV Transmission to Babies",
+          "text": "Barbados has been recognized by the World Health Organization for eliminating mother-to-child transmission of HIV as a public health problem, marking a significant achievement for the Caribbean country. WHO certification follows an independent review showing that Barbados met international targets for preventing transmission during pregnancy, birth and early childhood. From 2022 to 2024, the country reported no new infant HIV infections caused by mother-to-child transmission. Coverage of key health services was also consistently high: 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Barbados offers HIV testing and treatment free of charge to all pregnant women, regardless of nationality, and babies exposed to HIV receive early testing and continued follow-up. WHO officials said the result demonstrates what can be achieved when health services are widely accessible and respect patients' rights and privacy. Barbados joins other countries and territories recognized for progress toward eliminating the transmission of HIV, syphilis or hepatitis B from mothers to children. However, certification does not mean the work is finished. The country must continue investing in health services, data systems, testing and follow-up care to maintain its status and prevent future infections."
+        },
+        "準1級": {
+          "title": "Barbados Shows How Universal Maternal Care Can Prevent HIV Transmission",
+          "text": "The World Health Organization has validated Barbados for eliminating mother-to-child transmission of HIV as a public-health problem, a milestone that reflects both strong clinical coverage and long-term investment in maternal care. An independent assessment found that no new HIV infections resulting from mother-to-child transmission were reported among infants born in Barbados between 2022 and 2024. During that three-year period, 98 percent of pregnant women received antenatal care, 98 percent were tested for HIV, and 98 percent of pregnant women living with HIV received antiretroviral treatment. Those figures are significant because effective testing and treatment can greatly reduce the risk that HIV will be transmitted during pregnancy, delivery or breastfeeding. Barbados provides universal health care through public clinics and hospitals, while HIV testing and treatment are free for pregnant women regardless of nationality. Infants who may have been exposed to the virus receive early testing and follow-up care. WHO and the Pan American Health Organization highlighted these policies as evidence that eliminating transmission is possible when women can obtain high-quality services without major financial or social barriers. The country now belongs to a group of nations and territories recognized for eliminating, or making substantial progress toward eliminating, mother-to-child transmission of HIV, syphilis or hepatitis B. Nevertheless, validation is not a permanent finish line. Barbados will need to maintain investment, update clinical guidelines, strengthen health information systems and ensure continued follow-up for mothers and children. The achievement therefore offers both a reason for celebration and a reminder that lasting public-health success depends on sustained access to care."
+        }
       },
-      "sources": [{"name":"World Health Organization — Barbados eliminates mother-to-child transmission of HIV","url":"https://www.who.int/singapore/news/detail-global/30-10-2026-barbados-eliminates-mother-to-child-transmission-of-hiv"}]
+      "sources": [
+        {
+          "name": "World Health Organization — Barbados eliminates mother-to-child transmission of HIV",
+          "url": "https://www.who.int/singapore/news/detail-global/30-10-2026-barbados-eliminates-mother-to-child-transmission-of-hiv"
+        }
+      ]
     },
     {
       "id": "2026-10-30-dakar-yog",
       "date": "2026-10-30",
       "category": "sports",
-      "categories": ["world","education"],
-      "careerTags": ["sports","global","education"],
-      "tags": ["Dakar","Youth Olympics","Senegal","Africa","sports"],
+      "categories": [
+        "world",
+        "education"
+      ],
+      "careerTags": [
+        "sports",
+        "global",
+        "education"
+      ],
+      "tags": [
+        "Dakar",
+        "Youth Olympics",
+        "Senegal",
+        "Africa",
+        "sports"
+      ],
       "title": "Dakar 2026 Brings the Youth Olympics to Africa for the First Time",
       "summaryJa": "セネガルのダカールでユースオリンピックが開幕。アフリカ大陸で初めて開催されるオリンピック競技大会です。",
       "levels": {
-        "4級": {"title":"Youth Olympics Come to Africa","text":"The Youth Olympic Games are starting in Dakar, Senegal. This is a special event because it is the first Olympic sports event in Africa. About 2,700 young athletes can take part. They are 14 to 17 years old. The Games have many sports and events. The opening ceremony is on October 31. The competitions continue until November 13. Young people from many countries will meet and compete in Senegal."},
-        "3級": {"title":"Dakar Hosts a Historic Youth Olympic Games","text":"The 2026 Youth Olympic Games are beginning in Dakar, Senegal. They are historic because this is the first Olympic sporting event to be held in Africa. About 2,700 young athletes from around the world have places at the Games. Most are between 14 and 17 years old. The program includes 25 competition sports and 153 medal events. Events are being held in Dakar, Diamniadio and Saly. The Games also have education and cultural activities for young people. The opening ceremony takes place on October 31, and competitions continue into November. Organizers hope the event will create opportunities for young athletes and leave useful sports facilities for local communities."},
-        "準2級": {"title":"Dakar 2026 Makes Olympic History in Senegal","text":"The Dakar 2026 Youth Olympic Games are making history as the first Olympic sporting event ever held on African soil. The Games in Senegal officially open on October 31, with competition running from October 30 to November 13. Around 2,700 athlete places have been allocated, and young competitors aged mainly 14 to 17 are arriving from around the world. The program includes 25 competition sports and 153 medal events, with venues in Dakar, Diamniadio and Saly. The event is also designed to have an impact beyond competition. Education programs connected to Dakar 2026 have already reached large numbers of schoolchildren in Senegal, while sports facilities have been renovated for future community use. Organizers say the Games will combine sport, culture and youth engagement. Dakar 2026 also features full gender balance across athlete quota places, sports, disciplines and events. For Senegal and the wider continent, the event represents a major moment in Olympic history and a chance to showcase African sport and culture to an international audience."},
-        "2級": {"title":"Dakar 2026 Opens a New Chapter for the Olympic Movement in Africa","text":"The Youth Olympic Games in Dakar, Senegal, mark a historic first: never before has an Olympic sporting event been staged on African soil. Dakar 2026 opens on October 31, with competition beginning a day earlier and continuing through November 13. Approximately 2,700 athlete quota places have been allocated, bringing together young competitors from across the world. The program features 25 competition sports and 153 medal events at venues in Dakar, Diamniadio and Saly. Organizers have emphasized that the Games are intended to produce benefits beyond the medal table. More than one million schoolchildren in Senegal have been reached through an Olympic values education program, and hundreds of thousands of young people have taken part in related activities. Local sports facilities have also been renovated with the aim of supporting participation after the Games end. Dakar 2026 is the first Youth Olympic Games to provide full gender equality across athlete quota places, sports, disciplines and events. A Refugee Olympic Team is also participating in the Youth Games for the first time. The combination of competition, education and community investment reflects an effort to make the event a long-term opportunity for Senegal and African sport. For young athletes, meanwhile, it offers a rare international stage at the beginning of their sporting careers."},
-        "準1級": {"title":"Dakar 2026 Seeks a Legacy Beyond Africa's First Olympic Sporting Event","text":"Dakar 2026 represents a symbolic milestone for the Olympic movement: the Youth Olympic Games in Senegal are the first Olympic sporting event ever hosted on African soil. Competition runs from October 30 to November 13, with the opening ceremony taking place on October 31. Roughly 2,700 athlete quota places have been allocated, and the program contains 25 competition sports and 153 medal events across venues in Dakar, Diamniadio and Saly. Yet organizers are presenting the Games as more than a two-week sporting festival. A major emphasis has been placed on youth development, education and infrastructure that can continue to serve communities after international athletes leave. Olympic values programs have reached more than one million schoolchildren across Senegal, while other initiatives have provided hundreds of thousands of young people with opportunities to participate in Games-related activities. Sports facilities have been renovated, and young professionals have received training connected with event management. Dakar 2026 also includes several notable institutional firsts. It is the first Youth Olympic Games with full gender equality across athlete quota places, sports, disciplines and events, and a Refugee Olympic Team is participating in the Youth Games for the first time. These measures reflect the event's broader themes of access and inclusion. Hosting a major international competition inevitably brings logistical and financial challenges, so the long-term value of the Games will ultimately depend on whether facilities, skills and opportunities remain useful after 2026. For now, however, Dakar is providing a global stage for young athletes while marking a significant moment in the history of sport on the African continent."}
+        "4級": {
+          "title": "Youth Olympics Come to Africa",
+          "text": "The Youth Olympic Games are starting in Dakar, Senegal. This is a special event because it is the first Olympic sports event in Africa. About 2,700 young athletes can take part. They are 14 to 17 years old. The Games have many sports and events. The opening ceremony is on October 31. The competitions continue until November 13. Young people from many countries will meet and compete in Senegal."
+        },
+        "3級": {
+          "title": "Dakar Hosts a Historic Youth Olympic Games",
+          "text": "The 2026 Youth Olympic Games are beginning in Dakar, Senegal. They are historic because this is the first Olympic sporting event to be held in Africa. About 2,700 young athletes from around the world have places at the Games. Most are between 14 and 17 years old. The program includes 25 competition sports and 153 medal events. Events are being held in Dakar, Diamniadio and Saly. The Games also have education and cultural activities for young people. The opening ceremony takes place on October 31, and competitions continue into November. Organizers hope the event will create opportunities for young athletes and leave useful sports facilities for local communities."
+        },
+        "準2級": {
+          "title": "Dakar 2026 Makes Olympic History in Senegal",
+          "text": "The Dakar 2026 Youth Olympic Games are making history as the first Olympic sporting event ever held on African soil. The Games in Senegal officially open on October 31, with competition running from October 30 to November 13. Around 2,700 athlete places have been allocated, and young competitors aged mainly 14 to 17 are arriving from around the world. The program includes 25 competition sports and 153 medal events, with venues in Dakar, Diamniadio and Saly. The event is also designed to have an impact beyond competition. Education programs connected to Dakar 2026 have already reached large numbers of schoolchildren in Senegal, while sports facilities have been renovated for future community use. Organizers say the Games will combine sport, culture and youth engagement. Dakar 2026 also features full gender balance across athlete quota places, sports, disciplines and events. For Senegal and the wider continent, the event represents a major moment in Olympic history and a chance to showcase African sport and culture to an international audience."
+        },
+        "2級": {
+          "title": "Dakar 2026 Opens a New Chapter for the Olympic Movement in Africa",
+          "text": "The Youth Olympic Games in Dakar, Senegal, mark a historic first: never before has an Olympic sporting event been staged on African soil. Dakar 2026 opens on October 31, with competition beginning a day earlier and continuing through November 13. Approximately 2,700 athlete quota places have been allocated, bringing together young competitors from across the world. The program features 25 competition sports and 153 medal events at venues in Dakar, Diamniadio and Saly. Organizers have emphasized that the Games are intended to produce benefits beyond the medal table. More than one million schoolchildren in Senegal have been reached through an Olympic values education program, and hundreds of thousands of young people have taken part in related activities. Local sports facilities have also been renovated with the aim of supporting participation after the Games end. Dakar 2026 is the first Youth Olympic Games to provide full gender equality across athlete quota places, sports, disciplines and events. A Refugee Olympic Team is also participating in the Youth Games for the first time. The combination of competition, education and community investment reflects an effort to make the event a long-term opportunity for Senegal and African sport. For young athletes, meanwhile, it offers a rare international stage at the beginning of their sporting careers."
+        },
+        "準1級": {
+          "title": "Dakar 2026 Seeks a Legacy Beyond Africa's First Olympic Sporting Event",
+          "text": "Dakar 2026 represents a symbolic milestone for the Olympic movement: the Youth Olympic Games in Senegal are the first Olympic sporting event ever hosted on African soil. Competition runs from October 30 to November 13, with the opening ceremony taking place on October 31. Roughly 2,700 athlete quota places have been allocated, and the program contains 25 competition sports and 153 medal events across venues in Dakar, Diamniadio and Saly. Yet organizers are presenting the Games as more than a two-week sporting festival. A major emphasis has been placed on youth development, education and infrastructure that can continue to serve communities after international athletes leave. Olympic values programs have reached more than one million schoolchildren across Senegal, while other initiatives have provided hundreds of thousands of young people with opportunities to participate in Games-related activities. Sports facilities have been renovated, and young professionals have received training connected with event management. Dakar 2026 also includes several notable institutional firsts. It is the first Youth Olympic Games with full gender equality across athlete quota places, sports, disciplines and events, and a Refugee Olympic Team is participating in the Youth Games for the first time. These measures reflect the event's broader themes of access and inclusion. Hosting a major international competition inevitably brings logistical and financial challenges, so the long-term value of the Games will ultimately depend on whether facilities, skills and opportunities remain useful after 2026. For now, however, Dakar is providing a global stage for young athletes while marking a significant moment in the history of sport on the African continent."
+        }
       },
-      "sources": [{"name":"International Olympic Committee — Dakar 2026 by numbers","url":"https://www.olympics.com/ioc/news/dakar-2026-by-numbers-key-facts-and-figures-behind-historic-youth-olympic-games"}]
+      "sources": [
+        {
+          "name": "International Olympic Committee — Dakar 2026 by numbers",
+          "url": "https://www.olympics.com/ioc/news/dakar-2026-by-numbers-key-facts-and-figures-behind-historic-youth-olympic-games"
+        }
+      ]
     },
     {
-      "id": "2026-10-31-scotland-stories",
-      "date": "2026-10-31",
-      "category": "culture",
-      "categories": ["life","education"],
-      "careerTags": ["arts","education","global"],
-      "tags": ["Scotland","storytelling","festival","culture","nature"],
-      "title": "Scotland's Storytelling Festival Celebrates Birds and Beasts",
-      "summaryJa": "スコットランド国際ストーリーテリング・フェスティバルが最終日を迎え、自然や動物を題材にした物語が各地で語られています。",
+      "id": "2026-10-30-hubble-service",
+      "date": "2026-10-30",
+      "category": "science",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "science",
+        "engineering",
+        "it"
+      ],
+      "tags": [
+        "NASA",
+        "Hubble",
+        "space",
+        "telescope",
+        "engineering"
+      ],
+      "title": "NASA Looks at New Ways to Keep Hubble Working",
+      "summaryJa": "NASAがハッブル宇宙望遠鏡の寿命を延ばすため、民間企業による軌道上サービスの可能性を調べています。",
       "levels": {
-        "4級": {"title":"A Festival of Stories in Scotland","text":"People are sharing stories in Scotland. The Scottish International Storytelling Festival runs from October 21 to October 31. It has more than 200 events. Storytellers come from Scotland and other countries. This year's theme is Bird and Beast. Many stories are about people, animals, birds, and nature. There are also songs, music, workshops, and family events. The festival wants people to enjoy old stories and create new ones."},
-        "3級": {"title":"Scotland Celebrates the Art of Storytelling","text":"The Scottish International Storytelling Festival is finishing its 2026 program on October 31. The 11-day festival has more than 200 events in Edinburgh and other parts of Scotland. This year's theme is Bird and Beast, so many stories explore the relationship between people, animals and the natural world. Scottish storytellers are joined by guests from countries including Canada, Ireland, Italy and Türkiye. The program includes live stories, music, songs, workshops and events for families. Some activities also invite visitors to share stories of their own. Organizers say storytelling connects people with cultural traditions while also giving new voices and ideas a place to grow."},
-        "準2級": {"title":"International Festival Keeps Scotland's Storytelling Tradition Alive","text":"The 37th Scottish International Storytelling Festival is reaching the end of an 11-day program filled with more than 200 events in Edinburgh and across Scotland. Running from October 21 to 31, the festival brings together Scottish performers and guest storytellers from several countries. The 2026 theme, Bird and Beast, explores connections between humans, animals and the natural world. Events combine oral storytelling with music, song, dance and workshops. The program includes traditional tales as well as new performances, and some sessions allow members of the audience to bring and share their own stories. Family activities have also introduced younger visitors to the art of telling stories aloud. Organizers describe storytelling as a living tradition: it can protect cultural heritage while also making room for contemporary ideas and international exchange. The festival shows that stories do not have to remain only in books. When people tell them face to face, the voice, the audience and the moment can change how a story is experienced."},
-        "2級": {"title":"Scotland's Storytelling Festival Connects Oral Tradition with New Voices","text":"The Scottish International Storytelling Festival is concluding its 37th edition after presenting more than 200 events in Edinburgh and communities across Scotland. The festival, which runs from October 21 to 31, is one of the world's largest annual celebrations of live storytelling. Its 2026 theme, Bird and Beast, focuses on the relationship between human beings, animals and the natural environment. Scottish storytellers have shared stages with guests from Canada, England, Ireland, Italy and Türkiye, creating a program that combines local traditions with international perspectives. Performances range from folk tales and myths to newly created work, often accompanied by music, song, dance or traditional crafts. The festival also includes workshops, family activities and informal circles in which audience members can share stories themselves. Organizers argue that oral storytelling is not simply a way to preserve the past. Because a live storyteller can respond to a particular audience, traditional material can be reinterpreted and connected with contemporary experiences. This year's nature-centered theme also gives performers a way to explore how people understand and respect the animals and landscapes around them. By bringing established artists, international visitors and young storytellers together, the festival aims to protect cultural heritage while ensuring that the tradition continues to change and develop."},
-        "準1級": {"title":"A Living Tradition: Scotland's Festival Reimagines Storytelling for Contemporary Audiences","text":"The 37th Scottish International Storytelling Festival is drawing to a close after an 11-day program of more than 200 events in Edinburgh and across Scotland. Described by its organizers as the world's largest annual celebration of storytelling, the festival places oral performance at the center of cultural exchange. The 2026 theme, Bird and Beast, examines the relationship between people, animals and the natural world, allowing traditional tales to address contemporary questions about place, identity and the environment. Storytellers from Scotland have been joined by guests from Canada, England, Ireland, Italy and Türkiye. The program combines spoken narratives with music, song, dance and other art forms, and includes both inherited folk material and newly developed performances. Workshops and informal story circles also encourage audience members to become participants rather than passive listeners. This emphasis reflects an important feature of oral tradition: unlike a printed text, a live story can shift according to the speaker, audience and setting. Organizers see that flexibility as a strength rather than a threat to tradition. Their aim is to safeguard cultural knowledge while creating space for new voices, interpretations and international connections. Family programs and projects involving younger storytellers are particularly important to that goal because a tradition survives only when another generation makes it its own. In an age dominated by short digital content, the festival offers a contrasting experience in which people gather in the same place and give sustained attention to a human voice. Its popularity suggests that an ancient form of communication can still feel immediate when communities use it to explore issues that matter now."}
+        "4級": {
+          "title": "NASA Wants to Help Hubble",
+          "text": "NASA wants ideas to help the Hubble Space Telescope. Hubble went into space in 1990. It has studied space for more than 35 years. Its orbit is slowly getting lower. Hubble cannot move to a higher orbit by itself. NASA wants companies to share ideas. A future mission may move Hubble higher, repair it, or help it return safely at the end of its life."
+        },
+        "3級": {
+          "title": "Can Hubble Stay in Space Longer?",
+          "text": "NASA is looking for new ways to help the Hubble Space Telescope. Hubble has worked in space since 1990 and has made many important discoveries. However, its orbit is slowly becoming lower because of the thin atmosphere around Earth. The telescope does not have its own system to move to a higher orbit. NASA has asked private companies for ideas. A future mission might raise Hubble's orbit, improve some of its systems, or help control its return to Earth when its work is finished. NASA says Hubble still has useful science to do and wants to study practical ways to keep it working longer."
+        },
+        "準2級": {
+          "title": "NASA Studies Commercial Missions to Extend Hubble's Life",
+          "text": "NASA is asking private space companies to share ideas for servicing the Hubble Space Telescope in orbit. Hubble was launched in 1990 and has changed scientists' understanding of the universe, but its orbit is slowly getting lower because of atmospheric drag. The telescope has no propulsion system that can raise its orbit on its own. NASA says a future commercial mission could possibly boost Hubble to a higher altitude, service or improve the telescope, or support a safe end-of-mission plan. Current analysis suggests Hubble could re-enter Earth's atmosphere in the 2030s if nothing changes. NASA is not announcing a mission yet. Instead, it has issued a Request for Information to learn what private companies may be able to do and how much different options could cost. The agency says extending Hubble's life could create more opportunities for scientific discoveries."
+        },
+        "2級": {
+          "title": "NASA Explores Commercial Options for Hubble's Future",
+          "text": "NASA has begun exploring whether commercial space companies could help extend the scientific life of the Hubble Space Telescope. On October 29, the agency issued a Request for Information asking industry to describe possible in-space servicing capabilities. Hubble has operated for more than three decades and continues to make important observations, but its altitude is gradually decreasing because of atmospheric drag in low Earth orbit. Since Hubble has no propulsion system for maintaining its own orbit, NASA estimates that the telescope could re-enter the atmosphere around 2033 or 2034 if no action is taken. Possible future options include boosting Hubble into a higher orbit, servicing the telescope to improve its capabilities, or carrying out a controlled re-entry or other safe disposal plan at the end of the mission. NASA stresses that it has not selected a mission and is currently gathering information about technical possibilities and costs. Commercial space technology has advanced rapidly in areas such as satellite capture and servicing, so the agency wants to understand whether those capabilities could be used for Hubble. If a practical solution is found, keeping the telescope operating longer could provide additional scientific observations while NASA develops future flagship space missions."
+        },
+        "準1級": {
+          "title": "Commercial Space Capabilities Could Shape the Next Chapter of Hubble",
+          "text": "NASA is examining whether the rapidly developing commercial space industry could help prolong the life of the Hubble Space Telescope, one of the most influential scientific instruments ever placed in orbit. The agency issued a Request for Information on October 29 seeking proposals and technical information about potential in-space servicing. Hubble, launched in 1990, continues to produce valuable observations, but like other spacecraft in low Earth orbit, it is gradually losing altitude because of atmospheric drag. It lacks a propulsion system capable of maintaining or raising its orbit. NASA's current analysis suggests that, without intervention, Hubble is likely to re-enter Earth's atmosphere around 2033 or 2034. The agency is therefore interested in several possibilities: a commercial mission could boost the telescope to a higher altitude, service or enhance its systems, or eventually support a controlled re-entry or safe orbital disposal. NASA has not committed to any of these options, and the information request is intended to clarify what industry can realistically offer and at what cost. The timing reflects a broader change in spaceflight. Private companies have developed increasingly sophisticated capabilities for rendezvous, satellite capture and in-space operations that were far less mature when Hubble's final Space Shuttle servicing mission took place. NASA officials argue that if an innovative and cost-effective method can extend the life of a functioning scientific asset, it deserves careful study. Any future mission would still need to balance technical risk, expense and scientific value, but the process could determine whether Hubble remains productive well into the next decade."
+        }
       },
-      "sources": [{"name":"TRACS — Scottish International Storytelling Festival 2026","url":"https://tracscotland.org/news-post/?newsid=27208"}]
+      "sources": [
+        {
+          "name": "NASA Science — Potential Commercial Servicing for Hubble",
+          "url": "https://science.nasa.gov/missions/hubble/nasa-explores-potential-commercial-servicing-for-hubble-telescope/"
+        }
+      ]
     },
     {
       "id": "2026-10-30-oyster-algae",
       "date": "2026-10-30",
       "category": "environment",
-      "categories": ["science","health"],
-      "careerTags": ["science","medicine","public"],
-      "tags": ["NASA","oysters","algae","Chesapeake Bay","environment"],
+      "categories": [
+        "science",
+        "health"
+      ],
+      "careerTags": [
+        "science",
+        "medicine",
+        "public"
+      ],
+      "tags": [
+        "NASA",
+        "oysters",
+        "algae",
+        "Chesapeake Bay",
+        "environment"
+      ],
       "title": "Satellite Data Helps Virginia Study Oyster Loss After Algae Bloom",
       "summaryJa": "NASAの支援を受けた研究者が、米バージニア州沿岸で発生した有害な藻類ブルームによるカキ養殖への影響を調べています。",
       "levels": {
-        "4級": {"title":"Scientists Study Oyster Loss","text":"Some oyster farms in Virginia in the United States lost many oysters. A harmful algae bloom happened in the water. Scientists are now studying the problem. NASA supports some of this work. Researchers can use information from satellites and other tools to understand the water and the algae. Oysters are important for food and for the environment. The study may help people protect oyster farms in the future."},
-        "3級": {"title":"NASA Data Helps Scientists Study Oysters","text":"Scientists in Virginia are studying damage to oyster farms after a harmful algae bloom. The bloom happened near the eastern side of Chesapeake Bay. Algae are a natural part of water, but some kinds can grow very quickly and create problems for sea life. NASA-supported researchers are helping local officials understand what happened. They can combine observations from the water with information collected from above, including satellite data. Oysters are valuable to local businesses and also help the environment by filtering water. By studying the bloom and the areas where oysters were lost, researchers hope to understand the event better and help communities prepare for similar problems in the future."},
-        "準2級": {"title":"NASA-Supported Research Examines Oyster Loss After Harmful Algae Bloom","text":"NASA-supported researchers are helping officials in Virginia understand how a recent harmful algae bloom affected oyster farms along the eastern side of Chesapeake Bay. Algae are common in natural waters, but under certain conditions they can grow rapidly and form blooms that damage ecosystems and local industries. Scientists are combining measurements collected in the affected area with information from remote-sensing tools. Satellite observations can help researchers see changes over a much larger area than they could study from boats alone. Oysters are especially important because they support aquaculture businesses and can improve water quality by filtering particles from the water. A major loss can therefore have both economic and environmental effects. By mapping where the bloom occurred and comparing it with oyster damage, researchers hope to identify the conditions that caused the problem. The work could also help farmers and public agencies respond more quickly if similar blooms appear in the future."},
-        "2級": {"title":"Earth Observation Helps Investigators Measure the Impact of a Harmful Algae Bloom","text":"Researchers supported by NASA are assisting Virginia officials as they assess oyster losses connected with a harmful algae bloom along the Eastern Shore of Chesapeake Bay. Algae are essential parts of aquatic ecosystems, but some species can multiply rapidly when conditions are favorable. These harmful blooms may reduce oxygen, produce toxins or otherwise create conditions that threaten marine organisms. Understanding the scale of an event can be difficult because water conditions can change over a wide area and over a short period of time. Remote sensing offers one way to fill that information gap. Scientists can combine satellite observations with measurements taken directly in the water to identify patterns that might not be visible from a single location. The investigation is important for both environmental and economic reasons. Oyster farms support local jobs and food production, while oysters themselves help filter water and form habitat for other species. Researchers hope that a clearer picture of where and when the bloom developed will explain why some oyster-growing areas were hit especially hard. Better monitoring could also provide earlier warnings to farmers and agencies in the future. The project is an example of how space-based Earth observation can contribute to decisions made by communities working with very local environmental problems."},
-        "準1級": {"title":"NASA-Supported Remote Sensing Connects Space Data with a Local Aquaculture Crisis","text":"NASA-supported scientists are helping Virginia officials investigate substantial oyster losses that followed a harmful algal bloom along the Eastern Shore of Chesapeake Bay. The project demonstrates how Earth-observation technology can be applied to a problem that is both environmentally complex and economically local. Algae are normal components of marine and freshwater ecosystems, but certain species can grow explosively when temperature, nutrients and other conditions align. Depending on the species and circumstances, a bloom may produce toxins, reduce available oxygen or alter water conditions in ways that harm marine organisms. For oyster farmers, the consequences can be severe, yet identifying the exact causes and geographic extent of damage is challenging when observations are limited to individual boats, farms or monitoring stations. Satellite and other remote-sensing data can provide a broader view. Researchers can compare patterns seen from above with direct measurements of water quality and reports from affected oyster-growing areas. That combination may reveal how the bloom developed, where it was most intense and why losses differed from place to place. The stakes extend beyond aquaculture revenue. Oysters are ecosystem engineers: by filtering water and creating reef habitat, they contribute to the health of coastal environments. A better understanding of harmful blooms could therefore support both businesses and conservation. Researchers also hope improved monitoring will strengthen early-warning systems, giving farmers and public agencies more time to respond when dangerous conditions begin to develop. The work illustrates a growing role for satellite science: translating large-scale environmental observations into practical information for decisions made at the community level."}
+        "4級": {
+          "title": "Scientists Study Oyster Loss",
+          "text": "Some oyster farms in Virginia in the United States lost many oysters. A harmful algae bloom happened in the water. Scientists are now studying the problem. NASA supports some of this work. Researchers can use information from satellites and other tools to understand the water and the algae. Oysters are important for food and for the environment. The study may help people protect oyster farms in the future."
+        },
+        "3級": {
+          "title": "NASA Data Helps Scientists Study Oysters",
+          "text": "Scientists in Virginia are studying damage to oyster farms after a harmful algae bloom. The bloom happened near the eastern side of Chesapeake Bay. Algae are a natural part of water, but some kinds can grow very quickly and create problems for sea life. NASA-supported researchers are helping local officials understand what happened. They can combine observations from the water with information collected from above, including satellite data. Oysters are valuable to local businesses and also help the environment by filtering water. By studying the bloom and the areas where oysters were lost, researchers hope to understand the event better and help communities prepare for similar problems in the future."
+        },
+        "準2級": {
+          "title": "NASA-Supported Research Examines Oyster Loss After Harmful Algae Bloom",
+          "text": "NASA-supported researchers are helping officials in Virginia understand how a recent harmful algae bloom affected oyster farms along the eastern side of Chesapeake Bay. Algae are common in natural waters, but under certain conditions they can grow rapidly and form blooms that damage ecosystems and local industries. Scientists are combining measurements collected in the affected area with information from remote-sensing tools. Satellite observations can help researchers see changes over a much larger area than they could study from boats alone. Oysters are especially important because they support aquaculture businesses and can improve water quality by filtering particles from the water. A major loss can therefore have both economic and environmental effects. By mapping where the bloom occurred and comparing it with oyster damage, researchers hope to identify the conditions that caused the problem. The work could also help farmers and public agencies respond more quickly if similar blooms appear in the future."
+        },
+        "2級": {
+          "title": "Earth Observation Helps Investigators Measure the Impact of a Harmful Algae Bloom",
+          "text": "Researchers supported by NASA are assisting Virginia officials as they assess oyster losses connected with a harmful algae bloom along the Eastern Shore of Chesapeake Bay. Algae are essential parts of aquatic ecosystems, but some species can multiply rapidly when conditions are favorable. These harmful blooms may reduce oxygen, produce toxins or otherwise create conditions that threaten marine organisms. Understanding the scale of an event can be difficult because water conditions can change over a wide area and over a short period of time. Remote sensing offers one way to fill that information gap. Scientists can combine satellite observations with measurements taken directly in the water to identify patterns that might not be visible from a single location. The investigation is important for both environmental and economic reasons. Oyster farms support local jobs and food production, while oysters themselves help filter water and form habitat for other species. Researchers hope that a clearer picture of where and when the bloom developed will explain why some oyster-growing areas were hit especially hard. Better monitoring could also provide earlier warnings to farmers and agencies in the future. The project is an example of how space-based Earth observation can contribute to decisions made by communities working with very local environmental problems."
+        },
+        "準1級": {
+          "title": "NASA-Supported Remote Sensing Connects Space Data with a Local Aquaculture Crisis",
+          "text": "NASA-supported scientists are helping Virginia officials investigate substantial oyster losses that followed a harmful algal bloom along the Eastern Shore of Chesapeake Bay. The project demonstrates how Earth-observation technology can be applied to a problem that is both environmentally complex and economically local. Algae are normal components of marine and freshwater ecosystems, but certain species can grow explosively when temperature, nutrients and other conditions align. Depending on the species and circumstances, a bloom may produce toxins, reduce available oxygen or alter water conditions in ways that harm marine organisms. For oyster farmers, the consequences can be severe, yet identifying the exact causes and geographic extent of damage is challenging when observations are limited to individual boats, farms or monitoring stations. Satellite and other remote-sensing data can provide a broader view. Researchers can compare patterns seen from above with direct measurements of water quality and reports from affected oyster-growing areas. That combination may reveal how the bloom developed, where it was most intense and why losses differed from place to place. The stakes extend beyond aquaculture revenue. Oysters are ecosystem engineers: by filtering water and creating reef habitat, they contribute to the health of coastal environments. A better understanding of harmful blooms could therefore support both businesses and conservation. Researchers also hope improved monitoring will strengthen early-warning systems, giving farmers and public agencies more time to respond when dangerous conditions begin to develop. The work illustrates a growing role for satellite science: translating large-scale environmental observations into practical information for decisions made at the community level."
+        }
       },
-      "sources": [{"name":"NASA Earth Science — Oyster loss after recent algae bloom","url":"https://science.nasa.gov/earth/recent-news/"}]
+      "sources": [
+        {
+          "name": "NASA Earth Science — Oyster loss after recent algae bloom",
+          "url": "https://science.nasa.gov/earth/recent-news/"
+        }
+      ]
     }
   ]
 }
