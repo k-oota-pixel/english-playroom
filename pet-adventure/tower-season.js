@@ -5,7 +5,7 @@ export const TOWER_SEASON_ID='2026-11-maou';
 const ADVENTURE_STORAGE_KEY='monstudy-pet-adventure-v1';
 const ANNOUNCEMENT_KEY='monstudy-tower-season-news';
 const CLOUD_RESET_KEY='monstudy-tower-season-cloud-reset';
-const POSTER_URL='https://raw.githubusercontent.com/k-oota-pixel/english-playroom/main/pet-adventure/maou-tower-season-open.webp?v=2.3.26';
+const POSTER_URL='https://raw.githubusercontent.com/k-oota-pixel/english-playroom/main/pet-adventure/maou-tower-season-open.webp?v=2.3.26-hq1';
 
 function safeGet(key){try{return localStorage.getItem(key)}catch{return null}}
 function safeSet(key,value){try{localStorage.setItem(key,value)}catch{}}
@@ -38,7 +38,7 @@ export async function installTowerSeasonAnnouncement(){
  dialog.id='towerSeasonDialog';dialog.className='tower-season-dialog';dialog.setAttribute('aria-label','魔王の塔 新シーズンのお知らせ');
  dialog.innerHTML=`<div class="tower-season-sheet">
    <button type="button" class="tower-season-close" aria-label="お知らせを閉じる">×</button>
-   <img class="tower-season-poster" src="${POSTER_URL}" alt="新シーズン開幕 魔王の塔。魔王のいる100階に君はたどり着けるか！？" decoding="async">
+   <img class="tower-season-poster" src="${POSTER_URL}" alt="新シーズン開幕 魔王の塔。魔王のいる100階に君はたどり着けるか！？" width="720" height="900" decoding="async">
    <div class="tower-season-controls">
      <label class="tower-season-suppress"><input type="checkbox"> <span>次回以降表示しない</span></label>
      <button type="button" class="tower-season-dismiss">閉じる</button>
@@ -47,7 +47,7 @@ export async function installTowerSeasonAnnouncement(){
  document.body.append(dialog);
  const poster=dialog.querySelector('.tower-season-poster');
  poster.addEventListener('error',()=>{
-   const fallback=new URL('./maou-tower-season-open.webp?v=2.3.26',import.meta.url).href;
+   const fallback=new URL('./maou-tower-season-open.webp?v=2.3.26-hq1',import.meta.url).href;
    if(poster.src!==fallback)poster.src=fallback;
  },{once:true});
  const checkbox=dialog.querySelector('input[type="checkbox"]');
