@@ -28,13 +28,13 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   assert.equal(await page.locator('#learningList').isVisible(),false);assert.equal(await page.locator('#coinRankList').isVisible(),false);
   await page.locator('#coinRankRefresh').click();await page.waitForFunction(()=>document.getElementById('coinsToday').textContent==='11');assert.equal(rankingCalls,1);assert.match(await page.locator('#coinRankList').textContent(),/テストペット/);
   await page.keyboard.press('Escape');
-  await page.locator('#learningShow').click();await page.waitForSelector('.learning-item');assert.equal(await page.locator('.learning-item').count(),12);assert.match(await page.locator('#learningList').textContent(),/クリア回数：3/);
+  await page.locator('#learningShow').click();await page.waitForSelector('.learning-item');assert.equal(await page.locator('.learning-item').count(),14);assert.match(await page.locator('#learningList').textContent(),/クリア回数：3/);
   await page.evaluate(()=>window.failNext=true);await page.locator('#learningShow').click();await page.waitForFunction(()=>document.getElementById('learningShow').textContent==='再試行');assert.equal(await page.locator('#learningList').isVisible(),false);
   await page.locator('#learningShow').click();await page.waitForSelector('.learning-item:visible');
   await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.evaluate(()=>{window.waitForData=true;dashboard.refresh();});await page.waitForFunction(()=>!!window.pending);
   await page.evaluate(()=>{window.user=null;dashboard.reset();window.pending();});await page.waitForTimeout(50);
   assert.equal(await page.locator('#learningList').isVisible(),false);assert.equal(await page.locator('#learningList').textContent(),'');assert.equal(await page.locator('#learningShow').isDisabled(),true);
-  console.log('On-demand ranking and dashboard: no automatic reads, twelve contents, retry, mobile, and stale logout response checks passed');
+  console.log('On-demand ranking and dashboard: no automatic reads, fourteen contents, retry, mobile, and stale logout response checks passed');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
