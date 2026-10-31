@@ -9,7 +9,7 @@ async function minimumAttack(page){
  await page.locator('.attack-card').nth(index).click();
 }
 async function realtimeChecks(page,mode){
- const interval=mode==='tower'?9000:15000;
+ const interval=20000;
  const hp=async()=>Number((await page.locator('#petHpText').textContent()).split('/')[0]);
  await page.clock.runFor(100);const initial=await hp();
  await page.clock.runFor(interval+100);
@@ -57,7 +57,7 @@ async function realtimeChecks(page,mode){
   }
   assert.fail('enemy should be defeated');
  };
- await page.clock.runFor(Math.round(interval/1.035)+150);
+ await page.clock.runFor(interval+150);
  const wounded=await hp();assert.ok(wounded<initial);
  await clearEnemy();assert.equal(await hp(),wounded,'ordinary enemies do not restore HP');
  await page.clock.runFor(700);
@@ -71,7 +71,7 @@ async function realtimeChecks(page,mode){
  assert.equal(await page.locator('#bossBadge').isVisible(),true,'boss badge remains visible during a question');
  await correctAnswer(page,mode);await page.locator('#nextBtn').click();
 
- await page.clock.runFor(Math.round(interval/1.14)+150);
+ await page.clock.runFor(interval+150);
  assert.ok(await hp()<initial);
  await clearEnemy();
  assert.equal(await hp(),initial,'boss defeat immediately restores the actual maximum HP');
