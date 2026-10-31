@@ -21,26 +21,12 @@ import './material-return.js?v=4.0.0';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.1.9').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.1.57';
+const APP_VERSION='2.1.58';
 
 function updateHomeHeroCopy(){
   const heading=document.querySelector('.hero-intro h1');
   if(!heading)return;
   heading.textContent='今日はどの教材を使う？？';
-}
-
-function installTodayCard(){
-  const section=document.getElementById('materials-reading');
-  const cards=section?.querySelector('.cards');
-  if(!section||!cards||cards.querySelector('[data-today-card]'))return;
-  const link=document.createElement('a');
-  link.className='card task';
-  link.href='./today/';
-  link.dataset.todayCard='1';
-  link.innerHTML='<div class="eyebrow">DAILY ENGLISH NEWS</div><div class="title">TODAY<span class="eiken-badge">4級〜準1級</span></div><div class="desc">世界を、自分の英語で読む。興味・進路に合わせたニュースを5段階の英文で読み比べ。</div><div class="chips"><span class="chip">6ニュース</span><span class="chip">5レベル</span><span class="chip">おすすめ・アーカイブ</span></div><div class="open-note">今日の英語ニュースを読む</div>';
-  cards.prepend(link);
-  const count=section.querySelector('.material-group-head > span');
-  if(count)count.textContent=`${cards.querySelectorAll(':scope > .card').length}教材`;
 }
 
 function installVersionBadge(){
@@ -63,6 +49,6 @@ function installVersionBadge(){
   logo.appendChild(badge);
 }
 
-function installHomeUi(){updateHomeHeroCopy();installTodayCard();installVersionBadge();}
+function installHomeUi(){updateHomeHeroCopy();installVersionBadge();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installHomeUi,{once:true});
 else installHomeUi();
