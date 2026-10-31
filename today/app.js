@@ -24,6 +24,7 @@ const PROFILE_KEY_PREFIX='monstudy-today-profile-v1';
 const BEHAVIOR_KEY_PREFIX='monstudy-today-behavior-v1';
 const PROFILE_SYNC_KEY_PREFIX='monstudy-today-profile-synced-v1';
 const CACHE_KEY='monstudy-today-news-v1';
+const BEGINNER_TITLE_LEVELS=new Set(['5級','4級','3級']);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const readJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback;}catch{return fallback;}};
 const saveJSON=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{}};
@@ -33,6 +34,8 @@ const scopedKey=(prefix,uid)=>`${prefix}:${uid||'guest'}`;
 const localDate=date=>new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'}).format(date);
 const dayKey=date=>{const d=new Date(date);return Number.isNaN(d.valueOf())?'':`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 const categoryInfo=id=>CATEGORIES.find(c=>c.id===id)||{id,label:'ニュース',icon:'📰'};
+const displayTitle=(article,level,levelTitle='')=>BEGINNER_TITLE_LEVELS.has(level)?(article.titleJa||article.summaryJa||levelTitle||article.title||''):(levelTitle||article.title||'');
+const titleUsesSummary=(article,level)=>BEGINNER_TITLE_LEVELS.has(level)&&!article.titleJa&&Boolean(article.summaryJa);
 
 const emptyBehavior=()=>({read:{},completed:{},bookmarks:{},difficulty:{},categoryReads:{},levelUses:{}});
 let currentUser=null;
@@ -197,7 +200,9 @@ function card(article,index,{personal=true}={}){
   const cat=categoryInfo(article.category);
   const level=recommendedLevel(profile,article,behavior);
   const bookmarked=Boolean(behavior.bookmarks[article.id]);
-  return `<button class="news-card ${personal&&index<3?'recommended':''}" data-open="${esc(article.id)}"><div class="category"><span>${cat.icon}</span><span>${esc(cat.label)}</span>${bookmarked?'<span class="bookmark-mark" title="あとで読む">★</span>':''}</div><h3>${esc(article.title)}</h3><div class="ja">${esc(article.summaryJa||'')}</div>${personal?`<div class="why">${index<3?'✨ あなたへのおすすめ · ':''}${esc(recommendationReason(article,profile,behavior))}</div>`:''}<div class="card-foot"><span>${esc(dayKey(article.date))}</span><span class="badge">${esc(level)}から読む</span></div></button>`;
+  const title=displayTitle(article,profile.level);
+  const summary=titleUsesSummary(article,profile.level)?'':(article.summaryJa||'');
+  return `<button class="news-card ${personal&&index<3?'recommended':''}" data-open="${esc(article.id)}"><div class="category"><span>${cat.icon}</span><span>${esc(cat.label)}</span>${bookmarked?'<span class="bookmark-mark" title="あとで読む">★</span>':''}</div><h3>${esc(title)}</h3>${summary?`<div class="ja">${esc(summary)}</div>`:''}${personal?`<div class="why">${index<3?'✨ あなたへのおすすめ · ':''}${esc(recommendationReason(article,profile,behavior))}</div>`:''}<div class="card-foot"><span>${esc(dayKey(article.date))}</span><span class="badge">${esc(level)}から読む</span></div></button>`;
 }
 
 function renderToday(){
@@ -211,7 +216,7 @@ function renderToday(){
 
 function archivePool(){
   const q=archiveQuery.trim().toLowerCase();
-  return articles.filter(a=>archiveCategory==='all'||a.category===archiveCategory).filter(a=>!q||[a.title,a.summaryJa,...(a.tags||[])].join(' ').toLowerCase().includes(q)).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
+  return articles.filter(a=>archiveCategory==='all'||a.category===archiveCategory).filter(a=>!q||[a.title,a.titleJa,a.summaryJa,...(a.tags||[])].join(' ').toLowerCase().includes(q)).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
 }
 function renderArchive(){
   const pool=archivePool();
@@ -250,7 +255,9 @@ function renderArticle(scroll=true){
   const cat=categoryInfo(current.category),content=current.levels[currentLevel]||current.levels['4級']||current.levels['準2級'];
   const completed=Boolean(behavior.completed[current.id]),bookmarked=Boolean(behavior.bookmarks[current.id]),difficulty=behavior.difficulty[current.id];
   const paragraphs=String(content.text).split(/\n\s*\n/).filter(Boolean);
-  app.innerHTML=`<div class="article"><article class="paper"><button id="backToFeed" class="back">← ${view==='archive'?'アーカイブ':'TODAY'}へ戻る</button><header class="article-heading"><div class="category">${cat.icon} ${esc(cat.label)} · ${esc(dayKey(current.date))}</div><h1>${esc(content.title||current.title)}</h1><div class="ja-title">${esc(current.summaryJa||'')}</div></header><div class="levels" aria-label="英文レベル">${availableLevels.map(level=>{const item=current.levels[level],wc=Number(item?.wordCount)||countWords(item?.text||'');return `<button class="level ${level===currentLevel?'active':''}" data-level="${level}">${level}<small>${wc} words</small></button>`;}).join('')}</div><div class="article-text" lang="en">${paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div></article><aside class="article-side"><span class="eyebrow">WHY THIS STORY?</span><h3>${esc(recommendationReason(current,profile,behavior))}</h3><p class="side-note">おすすめレベルは目安です。知っているテーマなら上のレベル、難しいテーマなら下のレベルに自由に変えてください。</p><div class="action-stack"><button id="complete" class="side-action ${completed?'done':''}">${completed?'✓ 読了しました':'✓ 読み終わった'}</button><button id="bookmark" class="side-action">${bookmarked?'★ あとで読むに保存済み':'☆ あとで読む'}</button></div><h3 style="margin-top:17px">この${esc(currentLevel)}版は？</h3><div class="difficulty"><button data-difficulty="easy" class="${difficulty==='easy'?'active':''}">簡単</button><button data-difficulty="just" class="${difficulty==='just'?'active':''}">ちょうど</button><button data-difficulty="hard" class="${difficulty==='hard'?'active':''}">難しい</button></div><div class="sources"><h3>Original Sources</h3><p class="side-note">記事本文はTODAY用に独自作成しています。事実確認に使った元情報です。</p>${current.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(s.name)}</a>`).join('')}</div></aside></div>`;
+  const heading=displayTitle(current,currentLevel,content.title||current.title);
+  const summary=titleUsesSummary(current,currentLevel)?'':(current.summaryJa||'');
+  app.innerHTML=`<div class="article"><article class="paper"><button id="backToFeed" class="back">← ${view==='archive'?'アーカイブ':'TODAY'}へ戻る</button><header class="article-heading"><div class="category">${cat.icon} ${esc(cat.label)} · ${esc(dayKey(current.date))}</div><h1>${esc(heading)}</h1>${summary?`<div class="ja-title">${esc(summary)}</div>`:''}</header><div class="levels" aria-label="英文レベル">${availableLevels.map(level=>{const item=current.levels[level],wc=Number(item?.wordCount)||countWords(item?.text||'');return `<button class="level ${level===currentLevel?'active':''}" data-level="${level}">${level}<small>${wc} words</small></button>`;}).join('')}</div><div class="article-text" lang="en">${paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div></article><aside class="article-side"><span class="eyebrow">WHY THIS STORY?</span><h3>${esc(recommendationReason(current,profile,behavior))}</h3><p class="side-note">おすすめレベルは目安です。知っているテーマなら上のレベル、難しいテーマなら下のレベルに自由に変えてください。</p><div class="action-stack"><button id="complete" class="side-action ${completed?'done':''}">${completed?'✓ 読了しました':'✓ 読み終わった'}</button><button id="bookmark" class="side-action">${bookmarked?'★ あとで読むに保存済み':'☆ あとで読む'}</button></div><h3 style="margin-top:17px">この${esc(currentLevel)}版は？</h3><div class="difficulty"><button data-difficulty="easy" class="${difficulty==='easy'?'active':''}">簡単</button><button data-difficulty="just" class="${difficulty==='just'?'active':''}">ちょうど</button><button data-difficulty="hard" class="${difficulty==='hard'?'active':''}">難しい</button></div><div class="sources"><h3>Original Sources</h3><p class="side-note">記事本文はTODAY用に独自作成しています。事実確認に使った元情報です。</p>${current.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(s.name)}</a>`).join('')}</div></aside></div>`;
   app.querySelector('#backToFeed').addEventListener('click',()=>{current=null;render();window.scrollTo({top:0});});
   app.querySelectorAll('[data-level]').forEach(b=>b.addEventListener('click',()=>useLevel(b.dataset.level)));
   app.querySelector('#complete').addEventListener('click',()=>markComplete(current));
