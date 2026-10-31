@@ -1,0 +1,50 @@
+name: Fix pet room rug rotation
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/fix-pet-room-rug.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch rug rotation safely
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('pet-room/furniture-v4.js')
+          s=p.read_text()
+
+          old_style="#rugActor{position:absolute;width:clamp(170px,38.5%,380px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-50%)!important;transform-origin:50% 50%!important;transition:left .18s ease,top .18s ease,filter .18s ease!important;filter:drop-shadow(0 2px 3px #5b3d2926)!important}#rugActor[hidden]{display:none!important}#rugActor img{display:block;width:100%!important;height:auto!important;filter:none!important;transform:scaleY(.86);transform-origin:50% 50%!important;transition:transform .18s ease!important}"
+          new_style="#rugActor{position:absolute;width:clamp(170px,38.5%,380px)!important;pointer-events:auto!important;cursor:pointer!important;transform:translate(-50%,-53%)!important;transform-origin:50% 50%!important;transition:left .18s ease,top .18s ease,filter .18s ease!important;filter:drop-shadow(0 3px 2px #5b3d2938)!important}#rugActor[hidden]{display:none!important}#rugActor img{display:block;width:100%!important;height:auto!important;filter:none!important;transform:scaleY(.86);transform-origin:50% 50%!important;transition:none!important}"
+          if old_style not in s:
+              raise SystemExit('rug style target not found')
+          s=s.replace(old_style,new_style,1)
+
+          old_apply="if(item.id==='rug'){const transforms=['scaleY(.86)','matrix(0,.5,-1.72,0,0,0) scaleY(.86)','matrix(-1,0,0,-1,0,0) scaleY(.86)','matrix(0,-.5,1.72,0,0,0) scaleY(.86)'];item.img.style.transformOrigin='50% 50%';item.img.style.transform=transforms[item.rotation];return}"
+          new_apply="if(item.id==='rug'){item.img.style.transformOrigin='50% 50%';item.img.style.transform=item.rotation%2===0?'scaleY(.86)':'scaleX(-1) scaleY(.86)';return}"
+          if old_apply not in s:
+              raise SystemExit('rug applyAsset target not found')
+          s=s.replace(old_apply,new_apply,1)
+          p.write_text(s)
+
+          p=Path('pet-room/v5.html')
+          s=p.read_text()
+          if 'furniture-v4.js?v=33' not in s:
+              raise SystemExit('furniture cache-bust target not found')
+          s=s.replace('furniture-v4.js?v=33','furniture-v4.js?v=34',1)
+          s=s.replace('バージョン 1.4.0','バージョン 1.4.1',1)
+          s=s.replace('>v1.4.0<','>v1.4.1<',1)
+          p.write_text(s)
+          PY
+          git diff --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add pet-room/furniture-v4.js pet-room/v5.html
+          git rm .github/workflows/fix-pet-room-rug.yml
+          git commit -m "Stabilize pet room rug rendering"
+          git push
