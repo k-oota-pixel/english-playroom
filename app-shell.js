@@ -1,5 +1,5 @@
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.29';
+const MATERIAL_RELEASE='2.1.30';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh']
@@ -9,6 +9,22 @@ function install() {
   if (window !== top || window.MonstudyShell) return;
   const home = document.querySelector('main.home'), topbar = home?.querySelector('.topbar');
   if (!home || !topbar) return;
+
+  const versionBadge=home.querySelector('.app-version-badge');
+  if(versionBadge){versionBadge.textContent='ver2.1.59';versionBadge.setAttribute('aria-label','version 2.1.59');}
+  const conversationSection=home.querySelector('#materials-conversation');
+  const conversationCards=conversationSection?.querySelector('.cards');
+  if(conversationCards&&!conversationCards.querySelector('[data-case-talk-card]')){
+    const card=document.createElement('a');
+    card.className='card task';
+    card.href='https://k-oota-pixel.github.io/task-quest/case-talk.html';
+    card.dataset.caseTalkCard='1';
+    card.innerHTML='<div class="eyebrow">COMMUNICATION REPAIR</div><div class="title">サポート付きケーストーク</div><div class="desc">相手に伝わるまで言い直す実践英会話。EASYはヒント多め、NORMALは聞き返し中心。</div><div class="chips"><span class="chip">EASY / NORMAL</span><span class="chip">言い直し</span><span class="chip">AI判定</span></div><div class="play"><span>ケーストークを始める</span><span>→</span></div>';
+    conversationCards.append(card);
+    const count=conversationSection.querySelector('.material-group-head>span');
+    if(count)count.textContent=conversationCards.querySelectorAll('a.card').length+'教材';
+  }
+
   const groups = [...home.querySelectorAll('.material-group')].map(group => ({
     name:group.querySelector('h2').textContent,
     items:[...group.querySelectorAll('a.card')].map(card => {
