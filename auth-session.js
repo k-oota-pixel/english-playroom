@@ -23,10 +23,22 @@ export function getAuth(app = getApp()) {
 
 
 const API='https://task-quest.onrender.com';
+const sessionChecks=globalThis[Symbol.for('monstudy.auth.sessionChecks')]||(globalThis[Symbol.for('monstudy.auth.sessionChecks')]=new WeakMap());
 export async function accountSession(user){
- const response=await fetch(API+'/api/account/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.getIdToken()},body:'{}',signal:AbortSignal.timeout(30000)});
- const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'ログインを確認できませんでした。'),{status:response.status});return data;
+ const token=await user.getIdToken();
+ const existing=sessionChecks.get(user);
+ if(existing&&existing.token===token&&existing.until>Date.now())return existing.promise;
+ const entry={token,until:Infinity,promise:null};
+ entry.promise=(async()=>{
+  try{
+   const response=await fetch(API+'/api/account/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:'{}',signal:AbortSignal.timeout(30000)});
+   const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'ログインを確認できませんでした。'),{status:response.status});
+   entry.until=Date.now()+5000;return data;
+  }catch(error){if(sessionChecks.get(user)===entry)sessionChecks.delete(user);throw error;}
+ })();
+ sessionChecks.set(user,entry);return entry.promise;
 }
+
 export function onAuthStateChanged(auth,observerOrNext,error,completed){
  const isObserver=observerOrNext&&typeof observerOrNext==='object',next=isObserver?observerOrNext.next:observerOrNext;
  let generation=0;

@@ -1,5 +1,5 @@
 import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged,signOut} from './auth-session.js?v=2.3.1';
+import {getAuth,onAuthStateChanged,signOut} from './auth-session.js?v=2.3.2';
 if(document.readyState==='loading')await new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
 await new Promise(resolve=>setTimeout(resolve,0));
 const app=getApps().find(app=>app.name==='[DEFAULT]')||initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
