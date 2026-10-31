@@ -28,6 +28,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - uses: actions/checkout@v4
+        with:
+          repository: k-oota-pixel/eiken-retry
+          path: work/eiken-retry
       - run: npm install --ignore-scripts
         working-directory: work/english-playroom
       - run: npx playwright install --with-deps chromium
@@ -37,3 +41,4 @@ jobs:
         working-directory: work/english-playroom
       - run: node tests/learning-titles-browser.cjs
         working-directory: work/english-playroom
+
