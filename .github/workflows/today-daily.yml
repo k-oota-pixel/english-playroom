@@ -1,5 +1,6 @@
 name: TODAY daily news
 
+# The backend selection policy is Japan-first by default (5 Japan-related stories + 1 WORLD story).
 on:
   schedule:
     - cron: '10 21,7 * * *' # 06:10 JST, plus 16:10 JST after Gemini daily quota reset
