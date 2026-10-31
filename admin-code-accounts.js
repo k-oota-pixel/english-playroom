@@ -22,7 +22,7 @@ $('resetCodePassword').onclick=()=>operation($('resetCodePassword'),async()=>{
 $('importCodes').onchange=async()=>{
  const input=$('importCodes'),file=input.files[0];if(!file)return;input.disabled=true;
  try{
- const text=await file.text(),codes=text.split(/\r?\n/).flatMap(line=>line.split(',')).filter(value=>/^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/.test(value.trim())).map(value=>value.trim());
+ const text=await file.text(),codes=text.split(/\r?\n/).flatMap(line=>line.split(',')).filter(value=>/^[A-Z0-9]{6}$/.test(value.trim())).map(value=>value.trim());
  if(!codes.length||codes.length>10000||new Set(codes).size!==codes.length)throw Error('コードが見つからないか、重複があります。');
  const hashes=await Promise.all(codes.map(async code=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code.replaceAll('-',''))))).map(byte=>byte.toString(16).padStart(2,'0')).join('')));
  let imported=0;for(let i=0;i<hashes.length;i+=200){message('取り込み中：'+i+' / '+hashes.length);const data=await call('import',{hashes:hashes.slice(i,i+200)});imported+=data.imported;}
