@@ -1,23 +1,46 @@
 import {LEVELS,CATEGORIES,CAREERS,normalizeProfile,recommendedLevel,rankArticles,recommendationReason,countWords,validateArticle} from './model.js?v=1.1.0';
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
+import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+
+const firebaseConfig={
+  apiKey:'AIzaSyCeU9C8JeIl92dAjUIDSIsifNB9ExGlEPc',
+  authDomain:'english-playroom-2025.firebaseapp.com',
+  projectId:'english-playroom-2025',
+  storageBucket:'english-playroom-2025.firebasestorage.app',
+  messagingSenderId:'512038602250',
+  appId:'1:512038602250:web:00125c30096c9420a85c14'
+};
+const firebaseApp=initializeApp(firebaseConfig,'today');
+const auth=getAuth(firebaseApp);
+const db=getFirestore(firebaseApp);
 
 const app=document.getElementById('app');
 const dialog=document.getElementById('profileDialog');
 const form=document.getElementById('profileForm');
 const profileButton=document.getElementById('profileButton');
 const profileError=document.getElementById('profileError');
-const PROFILE_KEY='monstudy-today-profile-v1';
-const BEHAVIOR_KEY='monstudy-today-behavior-v1';
+const PROFILE_KEY_PREFIX='monstudy-today-profile-v1';
+const BEHAVIOR_KEY_PREFIX='monstudy-today-behavior-v1';
+const PROFILE_SYNC_KEY_PREFIX='monstudy-today-profile-synced-v1';
 const CACHE_KEY='monstudy-today-news-v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const readJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback;}catch{return fallback;}};
-const saveJSON=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{}}
+const saveJSON=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{}};
+const sessionRead=key=>{try{return sessionStorage.getItem(key);}catch{return null;}};
+const sessionWrite=(key,value)=>{try{sessionStorage.setItem(key,value);}catch{}};
+const scopedKey=(prefix,uid)=>`${prefix}:${uid||'guest'}`;
 const localDate=date=>new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'}).format(date);
 const dayKey=date=>{const d=new Date(date);return Number.isNaN(d.valueOf())?'':`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 const categoryInfo=id=>CATEGORIES.find(c=>c.id===id)||{id,label:'ニュース',icon:'📰'};
 
+const emptyBehavior=()=>({read:{},completed:{},bookmarks:{},difficulty:{},categoryReads:{},levelUses:{}});
+let currentUser=null;
+let profileKey=scopedKey(PROFILE_KEY_PREFIX,'guest');
+let behaviorKey=scopedKey(BEHAVIOR_KEY_PREFIX,'guest');
 let articles=[];
-let profile=normalizeProfile(readJSON(PROFILE_KEY,{}));
-let behavior=readJSON(BEHAVIOR_KEY,{read:{},completed:{},bookmarks:{},difficulty:{},categoryReads:{},levelUses:{}});
+let profile=normalizeProfile({});
+let behavior=emptyBehavior();
 let view='today';
 let current=null;
 let currentLevel=profile.level;
@@ -34,10 +57,69 @@ function normalizeBehavior(raw={}){
     levelUses:raw.levelUses&&typeof raw.levelUses==='object'?raw.levelUses:{}
   };
 }
-behavior=normalizeBehavior(behavior);
 
-function saveProfile(){profile=normalizeProfile(profile);saveJSON(PROFILE_KEY,profile);}
-function saveBehavior(){saveJSON(BEHAVIOR_KEY,behavior);}
+function waitForAuth(){
+  return new Promise(resolve=>{
+    let unsubscribe=()=>{};
+    unsubscribe=onAuthStateChanged(auth,user=>{unsubscribe();resolve(user);},error=>{console.warn('[TODAY] auth state unavailable',error);unsubscribe();resolve(null);});
+  });
+}
+
+async function hydrateProfileFromFirestore(){
+  if(!currentUser)return;
+  const marker=scopedKey(PROFILE_SYNC_KEY_PREFIX,currentUser.uid);
+  if(sessionRead(marker)==='1')return;
+  try{
+    const snap=await getDoc(doc(db,'users',currentUser.uid,'apps','today-profile'));
+    if(snap.exists()){
+      const remote=snap.data()||{};
+      profile=normalizeProfile({
+        ...profile,
+        interests:Array.isArray(remote.interests)?remote.interests:profile.interests,
+        careers:Array.isArray(remote.careers)?remote.careers:profile.careers,
+        level:LEVELS.includes(remote.level)?remote.level:profile.level,
+        updatedAt:profile.updatedAt||Date.now()
+      });
+      saveJSON(profileKey,profile);
+    }
+    sessionWrite(marker,'1');
+  }catch(error){
+    console.warn('[TODAY] profile read failed; using this device only',error);
+  }
+}
+
+async function initializeUserState(){
+  currentUser=await waitForAuth();
+  const uid=currentUser?.uid||'guest';
+  profileKey=scopedKey(PROFILE_KEY_PREFIX,uid);
+  behaviorKey=scopedKey(BEHAVIOR_KEY_PREFIX,uid);
+  profile=normalizeProfile(readJSON(profileKey,{}));
+  behavior=normalizeBehavior(readJSON(behaviorKey,emptyBehavior()));
+  await hydrateProfileFromFirestore();
+  currentLevel=profile.level;
+}
+
+async function syncProfileToFirestore(){
+  if(!currentUser)return;
+  try{
+    await setDoc(doc(db,'users',currentUser.uid,'apps','today-profile'),{
+      interests:[...profile.interests],
+      careers:[...profile.careers],
+      level:profile.level,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    sessionWrite(scopedKey(PROFILE_SYNC_KEY_PREFIX,currentUser.uid),'1');
+  }catch(error){
+    console.warn('[TODAY] profile write failed; local copy was kept',error);
+  }
+}
+
+function saveProfile(){
+  profile=normalizeProfile(profile);
+  saveJSON(profileKey,profile);
+  void syncProfileToFirestore();
+}
+function saveBehavior(){saveJSON(behaviorKey,behavior);}
 function hasProfile(){return profile.interests.length>0||profile.careers.length>0||profile.updatedAt>0;}
 
 function buildSurvey(){
@@ -166,7 +248,6 @@ function renderArticle(scroll=true){
   const availableLevels=LEVELS.filter(level=>current.levels[level]?.text);
   if(!current.levels[currentLevel]?.text)currentLevel=availableLevels[0]||'4級';
   const cat=categoryInfo(current.category),content=current.levels[currentLevel]||current.levels['4級']||current.levels['準2級'];
-  const words=Number(content.wordCount)||countWords(content.text);
   const completed=Boolean(behavior.completed[current.id]),bookmarked=Boolean(behavior.bookmarks[current.id]),difficulty=behavior.difficulty[current.id];
   const paragraphs=String(content.text).split(/\n\s*\n/).filter(Boolean);
   app.innerHTML=`<div class="article"><article class="paper"><button id="backToFeed" class="back">← ${view==='archive'?'アーカイブ':'TODAY'}へ戻る</button><header class="article-heading"><div class="category">${cat.icon} ${esc(cat.label)} · ${esc(dayKey(current.date))}</div><h1>${esc(content.title||current.title)}</h1><div class="ja-title">${esc(current.summaryJa||'')}</div></header><div class="levels" aria-label="英文レベル">${availableLevels.map(level=>{const item=current.levels[level],wc=Number(item?.wordCount)||countWords(item?.text||'');return `<button class="level ${level===currentLevel?'active':''}" data-level="${level}">${level}<small>${wc} words</small></button>`;}).join('')}</div><div class="article-text" lang="en">${paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div></article><aside class="article-side"><span class="eyebrow">WHY THIS STORY?</span><h3>${esc(recommendationReason(current,profile,behavior))}</h3><p class="side-note">おすすめレベルは目安です。知っているテーマなら上のレベル、難しいテーマなら下のレベルに自由に変えてください。</p><div class="action-stack"><button id="complete" class="side-action ${completed?'done':''}">${completed?'✓ 読了しました':'✓ 読み終わった'}</button><button id="bookmark" class="side-action">${bookmarked?'★ あとで読むに保存済み':'☆ あとで読む'}</button></div><h3 style="margin-top:17px">この${esc(currentLevel)}版は？</h3><div class="difficulty"><button data-difficulty="easy" class="${difficulty==='easy'?'active':''}">簡単</button><button data-difficulty="just" class="${difficulty==='just'?'active':''}">ちょうど</button><button data-difficulty="hard" class="${difficulty==='hard'?'active':''}">難しい</button></div><div class="sources"><h3>Original Sources</h3><p class="side-note">記事本文はTODAY用に独自作成しています。事実確認に使った元情報です。</p>${current.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(s.name)}</a>`).join('')}</div></aside></div>`;
@@ -183,8 +264,9 @@ function render(){
   if(view==='archive')renderArchive();else if(view==='saved')renderSaved();else renderToday();
 }
 
-buildSurvey();
 app.innerHTML='<div class="empty">TODAYを読み込んでいます…</div>';
+await initializeUserState();
+buildSurvey();
 await loadNews();
 render();
 if(!hasProfile())setTimeout(openSurvey,250);
