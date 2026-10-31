@@ -39,7 +39,7 @@ jobs:
         run: node --test tests/today-daily-update.test.js
       - name: Generate today's six stories
         env:
-          TODAY_FORCE: '1' # One-time migration refresh; restore normal guard after this run.
+          TODAY_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force == true && '1' || '0' }}
         run: node today/update-daily-news.mjs
       - name: Commit TODAY archive
         run: |
