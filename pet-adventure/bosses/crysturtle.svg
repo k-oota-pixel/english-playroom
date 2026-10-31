@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" role="img" aria-label="青晶ガメ・クリスタートル"><ellipse cx="150" cy="252" rx="102" ry="12" fill="#18213a" opacity=".15"/><g stroke="#23243f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M88 211 Q61 225 48 203 L62 185" fill="#5bb5c9"/>
+<ellipse cx="113" cy="228" rx="27" ry="16" fill="#64c4ce"/><ellipse cx="210" cy="227" rx="25" ry="16" fill="#64c4ce"/>
+<path d="M67 204 Q57 119 139 110 Q222 108 231 203Z" fill="#3587b1"/>
+<path d="M88 174 112 139 157 135 187 171 166 208 116 207Z" fill="#79d9ee"/>
+<path d="m111 140 10-60 28 23 8 32m8 0 22-64 22 28-11 53m-105 1-10-43 26 5" fill="#a4f0ff"/>
+<path d="m121 80 8 46m58-55-4 56" fill="none" stroke="#e6fcff" stroke-width="4"/>
+<path d="M222 158 Q266 154 267 195 Q268 232 231 231 Q198 230 198 203" fill="#7bd4d7"/>
+<ellipse cx="224" cy="190" rx="8" ry="11" fill="#202339"/><ellipse cx="262" cy="190" rx="8" ry="11" fill="#202339"/><circle cx="222" cy="186" r="3" fill="white"/><circle cx="260" cy="186" r="3" fill="white"/><path d="M233 212q9 6 17-1" fill="none" stroke-width="3"/>
+</g></svg>

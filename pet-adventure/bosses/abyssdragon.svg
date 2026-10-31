@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" role="img" aria-label="深淵竜・アビスドラゴン"><ellipse cx="150" cy="252" rx="102" ry="12" fill="#18213a" opacity=".15"/><g stroke="#23243f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M113 152Q66 91 28 120l15 80 34-21 24 22m86-49q48-61 86-32l-15 80-34-21-24 22" fill="#6f5b9d"/>
+<path d="m40 131 58 48-41-11m204-37-58 48 41-11" fill="none" stroke="#b7a0e3" stroke-width="4"/>
+<path d="M194 215q59 18 69-17l14 11q-18 52-80 29" fill="#414575"/>
+<ellipse cx="151" cy="192" rx="56" ry="51" fill="#4b507f"/>
+<ellipse cx="152" cy="204" rx="29" ry="32" fill="#9798c5"/>
+<path d="m114 225-14 21h40l3-16m18 0 4 16h40l-16-21" fill="#4b507f"/>
+<path d="m107 128-8-49 29 26m46 0 29-26-8 49" fill="#bba0fb"/>
+<path d="M101 138q0-36 50-36t50 36l-10 40q-40 25-81 0Z" fill="#535784"/>
+<ellipse cx="131" cy="144" rx="8" ry="11" fill="#202339"/><ellipse cx="169" cy="144" rx="8" ry="11" fill="#202339"/><circle cx="129" cy="140" r="3" fill="white"/><circle cx="167" cy="140" r="3" fill="white"/><path d="m136 169 15 6 15-6" fill="none" stroke-width="3"/>
+<path d="m153 112 4 9 10 3-10 4-4 10-4-10-10-4 10-3Z" fill="#e1d4ff" stroke="none"/>
+<circle cx="112" cy="192" r="4" fill="#d6caff" stroke="none"/><circle cx="187" cy="207" r="3" fill="#d6caff" stroke="none"/>
+</g></svg>

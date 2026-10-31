@@ -1,4 +1,5 @@
 import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.21';
+import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.9';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.24';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -39,6 +40,7 @@ globalThis.MonstudyMaterial?.setActivityGuard(()=>runActive);
 let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
 let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0,runBestAtStart=1;
 let persistedBest=1,bestSavePromise=Promise.resolve(true);
+let miniboss=null,enemyMp=0,enemyLastAction=null;
 
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
   if(!adventureRunId||!adventureRunUser)return Promise.resolve();
@@ -76,7 +78,16 @@ function battleTick(now){
 }
 function stopBattle(){cancelAnimationFrame(battleFrame);battleFrame=0;pendingAdvanceMs=null;}
 function enemyStrike(){
-  if(!runActive||playerHp<=0||enemyHp<=0)return;const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);
+  if(!runActive||playerHp<=0||enemyHp<=0)return;
+  const spell=chooseMinibossAction({boss:miniboss,hp:enemyHp,maxHp:enemyMax,mp:enemyMp,playerHp,lastAction:enemyLastAction});
+  enemyLastAction=spell?'spell':'attack';
+  if(spell){
+    enemyMp-=spell.mpCost;const amount=rollMagicAmount(spell.base);animate(els.enemyVisual,'attack');
+    if(spell.kind==='heal'){const healed=Math.min(amount,enemyMax-enemyHp);enemyHp+=healed;flash(`✨ 敵の${spell.name}\n+${healed} HP`);}
+    else{enemyDamageTaken+=amount;playerHp=Math.max(0,playerHp-amount);animate(els.petVisual,'hurt');flash(`✨ 敵の${spell.name}\n-${amount} HP`);}
+    syncHud();if(playerHp<=0)finishRun();return;
+  }
+  const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);
   enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');flash(`ENEMY ATTACK!\n-${damage} HP`);syncHud();if(playerHp<=0)finishRun();
 }
 function togglePause(){if(!runActive)return;manualPaused=!manualPaused;enemyClock.tick(performance.now(),true);refreshPause();}
@@ -128,9 +139,14 @@ function syncStatLine(){els.petStats.textContent=`Lv.${petLevel} · HP ${stats.h
 function syncHud(){
   els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent=isBoss(stage,enemyIndex)?'BOSS 1 / 1':'ENEMY 1 / 1';els.bestLabel.textContent=formatStage(currentBest());
   els.petHpBar.style.width=`${Math.max(0,playerHp)/stats.hp*100}%`;els.petHpText.textContent=`${Math.max(0,playerHp)} / ${stats.hp}`;els.petMpBar.style.width=`${Math.max(0,playerMp)/stats.mp*100}%`;els.petMpText.textContent=`${Math.max(0,playerMp)} / ${stats.mp} MP`;
-  const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=isBoss(stage,enemyIndex)?'BOSS':'ENEMY';els.enemyVisual.textContent=enemyEmoji();syncActionAvailability();
+  const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=miniboss?miniboss.name:isBoss(stage,enemyIndex)?'BOSS':'ENEMY';
+  els.enemySide.classList.toggle('miniboss-side',!!miniboss);
+  const mpText=$('enemyMpText');mpText.hidden=!miniboss;mpText.textContent=miniboss?`Lv.${miniboss.level} · MP ${enemyMp} / ${miniboss.maxMp}`:'';
+  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.id}.svg?v=2.3.9`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
+  else{delete els.enemyVisual.dataset.boss;els.enemyVisual.textContent=enemyEmoji();}
+  els.enemyCount.textContent=miniboss?'中ボス 1 / 1':els.enemyCount.textContent;syncActionAvailability();
 }
-function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;enemyElement=randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;syncHud();prepareTurn();if(boss)flash(`BOSS BATTLE!\n${formatStage(stage)}`)}
+function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=minibossForStage(stage,mode);enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
 function towerCards(){const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();return assignElements(indexes.map((idx,pos)=>{const level=LEVELS[idx],pool=vocab[level.id]||[];let item=null;for(const candidate of shuffle(pool)){if(!used.has(candidate.id)){item=candidate;break}}item=item||pool[0]||Object.values(vocab)[0][0];used.add(item.id);return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)+stats.attack};}))}
 function dungeonCards(){return shuffle(dungeonAttackLayout(stage,enemyElement)).map(({grade,element},pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,element,power:attackPowerForGrade(grade,stage)+stats.attack}))}
@@ -233,3 +249,4 @@ async function init(){
 
 els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
+

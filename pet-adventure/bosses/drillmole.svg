@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" role="img" aria-label="坑道番長・ドリルモグラ"><ellipse cx="150" cy="252" rx="102" ry="12" fill="#18213a" opacity=".15"/><g stroke="#23243f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M209 212q42 0 41-29" fill="none" stroke="#a77b69" stroke-width="12"/>
+<ellipse cx="112" cy="237" rx="29" ry="13" fill="#a77b69"/><ellipse cx="191" cy="237" rx="29" ry="13" fill="#a77b69"/>
+<path d="M76 185Q68 110 131 100q67-15 91 61 14 48-22 70-47 26-96 1-25-13-28-47Z" fill="#66504b"/>
+<path d="M116 191q36-20 67 0l9 39q-39 16-77-2Z" fill="#b38d70" stroke="none"/>
+<path d="M87 127q-2-56 61-57 63 0 65 57Z" fill="#d99a34"/>
+<path d="M106 112q1-28 25-31m50 0q17 12 18 30" fill="none" stroke="#f7cf70" stroke-width="6"/>
+<path d="M82 123q63-14 135 0l-1 15q-64-9-132 1Z" fill="#f4bd52"/>
+<rect x="133" y="87" width="36" height="37" rx="11" fill="#74675b"/>
+<circle cx="151" cy="105" r="12" fill="#fff1a3"/><path d="m146 101 6-3" stroke="white" stroke-width="4"/>
+<path d="m105 139 27 10m38 0 26-10" fill="none" stroke-width="7"/>
+<path d="m110 150 22 7q-12 13-22-7m60 7 22-7q-10 20-22 7" fill="#fff0bd" stroke-width="3"/>
+<path d="m122 155 1 6m55-6-1 6" fill="none" stroke-width="4"/>
+<ellipse cx="149" cy="176" rx="27" ry="22" fill="#d4ad8c" stroke="none"/>
+<ellipse cx="148" cy="167" rx="18" ry="12" fill="#cf8690"/>
+<path d="M132 185q17 8 34-2-6 18-20 14-10-2-14-12Z" fill="#49333b" stroke-width="3"/>
+<path d="m136 187 8 2-3 7Zm20 0 7-2-3 9Z" fill="#fff1cf" stroke="none"/>
+<path d="m116 164-20-4m20 12-20 5m82-13 21-4m-21 12 21 5" fill="none" stroke-width="3"/>
+<path d="M87 171q-26-9-40 16-12 28 12 39 26 12 43-11l10-20Z" fill="#9b7461"/>
+<path d="M211 171q26-9 40 16 12 28-12 39-26 12-43-11l-10-20Z" fill="#9b7461"/>
+<path d="m48 199-15 29q20 0 29-23m0 3-9 29q20-4 23-27m1 1-2 25q19-8 17-27" fill="#f4e0bb" stroke-width="4"/>
+<path d="m250 199 15 29q-20 0-29-23m0 3 9 29q-20-4-23-27m-1 1 2 25q-19-8-17-27" fill="#f4e0bb" stroke-width="4"/>
+</g></svg>

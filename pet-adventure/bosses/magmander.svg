@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" role="img" aria-label="溶岩獣・マグマンダー"><ellipse cx="150" cy="252" rx="102" ry="12" fill="#18213a" opacity=".15"/><g stroke="#23243f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M204 208q66 18 62-53 35 87-39 86l-38-13" fill="#424154"/>
+<path d="m267 174-14-23 15-28 15 32Z" fill="#ff914d"/>
+<ellipse cx="145" cy="189" rx="72" ry="52" fill="#484456"/>
+<path d="m95 217-27 24h48l13-19m42 0 12 19h48l-29-26" fill="#484456"/>
+<path d="M88 146 74 119 103 126 120 98 138 120 168 103 180 129 209 123 199 156" fill="#ff9560"/>
+<path d="M80 164Q75 121 143 123q67-4 66 42l-6 31q-58 35-115 0Z" fill="#555065"/>
+<path d="m112 132 7 26-13 13m72-37-9 24 13 14m-53 40 14-20 16 21-7 16" stroke="#ff9b50" fill="none" stroke-width="7"/>
+<ellipse cx="120" cy="172" rx="8" ry="11" fill="#202339"/><ellipse cx="158" cy="172" rx="8" ry="11" fill="#202339"/><circle cx="118" cy="168" r="3" fill="white"/><circle cx="156" cy="168" r="3" fill="white"/><path d="M128 193q15 12 31 0" fill="none" stroke-width="4"/>
+</g></svg>

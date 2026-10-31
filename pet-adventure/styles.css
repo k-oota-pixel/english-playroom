@@ -82,3 +82,7 @@
 
 /* Eggs share the fighter's attack and hurt animations. */
 #battleView .adventure-egg{font-size:clamp(40px,10dvh,92px);line-height:1.2}
+
+.enemy-visual img{display:block;width:178px;height:166px;max-width:100%;object-fit:contain}.dungeon-mode #enemyMpText{color:#d5cdf5}.dungeon-mode #enemyName{color:#fff3d4}
+#battleView .fighter.miniboss-side{grid-template-rows:16px 8px 12px 10px minmax(0,1fr)}#battleView .enemy-visual img{height:100%;width:auto;max-height:130px;max-width:100%;min-height:0}#battleView .miniboss-side .enemy-visual{position:relative}#battleView .miniboss-side .enemy-visual img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);object-fit:contain}
+
