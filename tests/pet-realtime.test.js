@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {enemyAttackInterval,createAttackClock} from '../pet-adventure/realtime.js';
 
-test('enemy attack interval stays fixed at twenty seconds in both modes',()=>{
- for(const mode of ['tower','dungeon']){
-  for(const stage of [1,5,20,100,2000])assert.equal(enemyAttackInterval(stage,mode),20000);
- }
- assert.equal(enemyAttackInterval(-10),20000);
+test('tower keeps its progressive attack cycle while dungeon stays fixed at twenty seconds',()=>{
+ assert.equal(enemyAttackInterval(1,'tower'),9000);
+ assert.ok(enemyAttackInterval(20,'tower')<enemyAttackInterval(1,'tower'));
+ assert.equal(enemyAttackInterval(120,'tower'),3000);
+ for(const stage of [1,5,20,100,2000])assert.equal(enemyAttackInterval(stage,'dungeon'),20000);
+ assert.equal(enemyAttackInterval(-10,'tower'),9000);
 });
 test('enemy attacks repeat on elapsed active time, independently of player actions',()=>{
  const clock=createAttackClock(1000);let hits=0;
