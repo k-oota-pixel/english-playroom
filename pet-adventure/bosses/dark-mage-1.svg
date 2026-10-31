@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="月蝕の大魔王"><defs>
+<linearGradient id="armor" x2="0.7" y2="1"><stop stop-color="#606078"/><stop offset="1" stop-color="#292a46"/></linearGradient>
+<linearGradient id="purple" x2=".7" y2="1"><stop stop-color="#a578da"/><stop offset="1" stop-color="#554078"/></linearGradient>
+<linearGradient id="red" x2=".6" y2="1"><stop stop-color="#bb4767"/><stop offset="1" stop-color="#682b4d"/></linearGradient>
+<linearGradient id="gold" x2=".7" y2="1"><stop stop-color="#ffde8b"/><stop offset="1" stop-color="#bd843c"/></linearGradient>
+<radialGradient id="orb"><stop stop-color="#f4edff"/><stop offset=".35" stop-color="#c5a2ff"/><stop offset="1" stop-color="#6d3db1"/></radialGradient>
+<linearGradient id="bone" x2=".5" y2="1"><stop stop-color="#fff0c7"/><stop offset="1" stop-color="#bb9b86"/></linearGradient>
+</defs><ellipse cx="160" cy="283" rx="99" ry="11" fill="#171329" opacity=".18"/><g stroke="#29243f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="151" cy="277" rx="80" ry="11" fill="#9670c5" opacity=".2" stroke="none"/>
+<path d="M106 148q-29 35-41 115l32-6 24 20 30-11 31 11 25-20 31 6q-12-80-41-115Z" fill="#443355"/>
+<path d="m116 162-24 89 30-13 29 19 29-19 30 13-24-89Z" fill="url(#purple)"/>
+<path d="m151 181-23 66 23-9 23 9Z" fill="#302b46"/>
+<path d="m136 228 15-25 15 25-15-8Z" fill="#d6b57d" stroke="none"/>
+<path d="m104 149-26 20 28 36 23-25m69-31 26 20-28 36-23-25" fill="#72608e"/>
+<path d="m85 175-34 25 10 19 43-17m113-27 27 25-10 19-37-17" fill="#604a7b"/>
+<path d="M106 82Q83 64 94 39l32 38m72 5q23-18 12-43l-32 38" fill="url(#gold)"/>
+<path d="M99 94q16-43 52-47 36 4 52 47l9 65-31 26-30-17-30 17-31-26Z" fill="url(#purple)"/>
+<path d="M105 103q46-30 92 0l-6 45-40 16-40-16Z" fill="#232238"/>
+<path d="m102 101 49-39 49 39" fill="none" stroke="#d9b775" stroke-width="4"/>
+<path d="m118 118 23 7-18 7m61-14-23 7 18 7" fill="#aeece7" stroke="#b3fff2" stroke-width="3"/>
+<path d="m151 73 10 13-10 15-10-15Z" fill="#a3e8df"/><path d="m149 79 -3 7" stroke="#ffe5ec" stroke-width="2.5"/>
+<path d="m110 154 26 16-12 19-24-20m92-15-26 16 12 19 24-20" fill="url(#gold)"/>
+<path d="M251 111v162" stroke="#b59b75" stroke-width="9"/><path d="M251 111v162" stroke="#e5c88f" stroke-width="3"/>
+<path d="M265 56q-29-14-37 12-10 30 19 38 18 3 28-12-24 8-28-12-5-16 18-26Z" fill="url(#gold)"/>
+<circle cx="258" cy="82" r="12" fill="url(#orb)" stroke-width="3"/>
+<path d="m239 202 16-5 8 9-8 14-16-2" fill="#ad91bf"/>
+<path d="m24 185 30-8 26 14-2 35-26-12-30 5Z" fill="#b78272"/>
+<path d="m27 181 27-8 23 13-24 15-27-10Z" fill="#f4dfb8"/>
+<path d="m53 201 1 13m-18-28 12-3m10-3 10 6" stroke="#8c6776" fill="none" stroke-width="3"/>
+<path d="m43 150 4-9 4 9-4 8m24 6 3-6 3 6-3 6" fill="#ba9cec" stroke="none"/>
+</g></svg>

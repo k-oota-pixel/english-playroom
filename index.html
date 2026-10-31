@@ -151,7 +151,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.3.13">ver2.3.13</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.3.14">ver2.3.14</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">登録コードの紐づけ・パスワード変更</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -916,10 +916,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
 <script type="module" src="./learning-challenges.js?v=2.3.8"></script>
-<script type="module" src='./version-badge-v176.js?v=2.3.13'></script>
+<script type="module" src='./version-badge-v176.js?v=2.3.14'></script>
 <script>
 (() => {
-  const version = '2.3.13';
+  const version = '2.3.14';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

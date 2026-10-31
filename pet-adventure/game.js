@@ -1,7 +1,7 @@
 import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.24';
-import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.13';
-import {royalGuardForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.13';
-import {createGuardPresentation} from './guard-presentation.js?v=2.3.13';
+import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.14';
+import {majorBossForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.14';
+import {createGuardPresentation} from './guard-presentation.js?v=2.3.14';
 import {accountSession} from '../auth-session.js?v=2.3.8';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.24';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
@@ -48,7 +48,7 @@ let adminAdventure=false,cinematicActive=false;
 const guardPresentation=createGuardPresentation();
 async function presentGuard(scene){
  cinematicActive=true;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();
- try{await guardPresentation.show(scene);}finally{cinematicActive=false;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();}
+ try{await guardPresentation.show(scene,miniboss);}finally{cinematicActive=false;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();}
 }
 
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
@@ -89,6 +89,7 @@ function stopBattle(){cancelAnimationFrame(battleFrame);battleFrame=0;pendingAdv
 function enemyStrike(){
   if(!runActive||playerHp<=0||enemyHp<=0)return;
   const spell=chooseMinibossAction({boss:miniboss,hp:enemyHp,maxHp:enemyMax,mp:enemyMp,playerHp,lastAction:enemyLastAction});
+  if(spell?.kind==='wait'){enemyLastAction='wait';return;}
   enemyLastAction=spell?'spell':'attack';
   if(spell){
     enemyMp-=spell.mpCost;const rolled=rollMagicAmount(spell.base),amount=spell.kind==='heal'?rolled:incomingDamage(rolled,stats.defense);animate(els.enemyVisual,'attack');
@@ -96,7 +97,7 @@ function enemyStrike(){
     else{enemyDamageTaken+=amount;playerHp=Math.max(0,playerHp-amount);animate(els.petVisual,'hurt');flash(`✨ 敵の${spell.name}\n-${amount} HP`);}
     syncHud();if(playerHp<=0)finishRun();return;
   }
-  const damage=incomingDamage(enemyAttack(stage,enemyIndex),stats.defense);
+  const damage=incomingDamage(miniboss?.mage?3:enemyAttack(stage,enemyIndex),stats.defense);
   enemyDamageTaken+=damage;playerHp=Math.max(0,playerHp-damage);animate(els.enemyVisual,'attack');animate(els.petVisual,'hurt');flash(`ENEMY ATTACK!\n-${damage} HP`);syncHud();if(playerHp<=0)finishRun();
 }
 function togglePause(){if(!runActive)return;manualPaused=!manualPaused;enemyClock.tick(performance.now(),true);refreshPause();}
@@ -151,15 +152,15 @@ function syncHud(){
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=miniboss?miniboss.name:isBoss(stage,enemyIndex)?'BOSS':'ENEMY';
   els.enemySide.classList.toggle('miniboss-side',!!miniboss);
   const mpText=$('enemyMpText');mpText.hidden=!miniboss;mpText.textContent=miniboss?`Lv.${miniboss.level} · MP ${enemyMp} / ${miniboss.maxMp}`:'';
-  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.image||miniboss.id+'.svg'}?v=2.3.13`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
+  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.image||miniboss.id+'.svg'}?v=2.3.14`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
   else{delete els.enemyVisual.dataset.boss;els.enemyVisual.textContent=enemyEmoji();}
   els.enemyCount.textContent=miniboss?.royal?`大ボス · 第${miniboss.phase}形態`:miniboss?'中ボス 1 / 1':els.enemyCount.textContent;syncActionAvailability();
 }
-function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=royalGuardForStage(stage,mode)||minibossForStage(stage,mode);enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.battlefield.classList.toggle('royal-guard-battle',!!miniboss?.royal);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?.royal?'♛ 魔王親衛隊 · 第1形態':miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(miniboss?.royal)void presentGuard('arrival');else if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
+function createEnemy(){pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=majorBossForStage(stage,mode)||minibossForStage(stage,mode);enemyClock.reset(miniboss?.attackInterval||enemyAttackInterval(stage,mode));enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.battlefield.classList.toggle('royal-guard-battle',!!miniboss?.royal);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?.royal?`♛ ${miniboss.name} · 第1形態`:miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(miniboss?.royal)void presentGuard('arrival');else if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
 function isFinalEnemyDefeat(){return !miniboss?.royal||miniboss.phase===2;}
 async function evolveRoyalGuard(){
  const runId=adventureRunId;pendingAdvanceMs=null;selectedAttack=null;els.quizPanel.hidden=true;els.attackPanel.hidden=true;
- miniboss=royalGuardForStage(stage,mode,2);enemyMax=royalGuardHp(enemyMaxHp(stage,enemyIndex),2);enemyHp=enemyMax;enemyElement=miniboss.element;enemyLastAction=null;enemyClock.reset(enemyAttackInterval(stage,mode));els.bossBadge.textContent='♛ 魔王親衛隊 · 第2形態';syncHud();
+ miniboss=majorBossForStage(stage,mode,2);if(miniboss.mage)enemyMp=miniboss.maxMp;enemyMax=royalGuardHp(enemyMaxHp(stage,enemyIndex),2);enemyHp=enemyMax;enemyElement=miniboss.element;enemyLastAction=null;enemyClock.reset(miniboss.attackInterval||enemyAttackInterval(stage,mode));els.bossBadge.textContent=`♛ ${miniboss.name} · 第2形態`;syncHud();
  await presentGuard('evolve');if(runActive&&adventureRunId===runId)prepareTurn();
 }
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
@@ -266,3 +267,4 @@ async function init(){
 
 els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
+

@@ -31,7 +31,8 @@ async function clearForm(page,mode,kind){for(let i=0;i<20;i++){
  if(await page.locator('.guard-cinematic').isVisible())return;
  if(kind!=='magic')await page.locator('#nextBtn').click();
 }throw Error('Form did not end');}
-(async()=>{const b=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
+module.exports={fixture,correct,cast,clearForm};
+if(require.main===module)(async()=>{const b=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
 for(const [mode,width] of [['tower',1100],['dungeon',390]]){
  const {page,errors}=await fixture(b,{mode,width});
  assert.equal(await page.evaluate(()=>wallet.wordTowerBest),90);assert.equal(await page.evaluate(()=>wallet.eikenDungeonBest),90);
@@ -41,7 +42,7 @@ for(const [mode,width] of [['tower',1100],['dungeon',390]]){
  assert.match(await page.locator('#enemyMpText').textContent(),/50 \/ 50/);
  const health=await page.locator('#petHpText').textContent();await page.clock.runFor(15000);assert.equal(await page.locator('#petHpText').textContent(),health);
  await page.screenshot({path:path.join(out,mode+'-arrival.png')});await page.locator('.guard-cinematic button').click();
- await page.clock.runFor(mode==='tower'?3300:5300);assert.match(await page.locator('#enemyMpText').textContent(),/40 \/ 50/);assert.match(await page.locator('#battleFlash').textContent(),/ミロゴロン/);
+ await page.clock.runFor(mode==='tower'?3300:20300);assert.match(await page.locator('#enemyMpText').textContent(),/40 \/ 50/);assert.match(await page.locator('#battleFlash').textContent(),/ミロゴロン/);
  await clearForm(page,mode,mode==='tower'?'answer':'magic');
  assert.equal(await page.locator('#stageLabel').textContent(),mode==='tower'?'90F':'B90');assert.match(await page.locator('#enemyVisual img').getAttribute('src'),/royal-guard-2/);
  assert.match(await page.locator('#enemyMpText').textContent(),/40 \/ 50/);assert.notEqual(await page.locator('#petHpText').textContent(),health,'first-form defeat must not heal the player');
@@ -59,4 +60,5 @@ for(const [mode,width] of [['tower',1100],['dungeon',390]]){
 }
 const {page,errors}=await fixture(b,{admin:false});assert.equal(await page.locator('[data-start-floor="90"]').count(),0);assert.equal(await page.evaluate(()=>wallet.wordTowerBest),32);assert.deepEqual(errors,[]);await page.close();console.log('PASS normal players retain actual best and cannot start at 90F');
 }finally{await b.close()}})().catch(e=>{console.error(e);process.exit(1)});
+
 

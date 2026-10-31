@@ -4,14 +4,15 @@ import fs from 'node:fs';
 import {minibossForStage,chooseMinibossAction} from '../pet-adventure/miniboss.js';
 import {incomingDamage} from '../pet-strength-model.js';
 const state=(floor=15)=>({boss:minibossForStage(floor),hp:35,maxHp:35,mp:10,playerHp:50,lastAction:null});
-test('both adventure modes select five minibosses with ascending MP and SVG assets',()=>{
- for(const [i,floor] of [15,30,45,60,75].entries()){
-  const b=minibossForStage(floor);assert.equal(b.maxMp,10+i*5);
+test('both adventure modes select four minibosses with floor-appropriate MP and SVG assets',()=>{
+ for(const [floor,mp] of [[15,10],[30,15],[60,25],[75,30]]){
+  const b=minibossForStage(floor);assert.equal(b.maxMp,mp);
   assert.deepEqual(minibossForStage(floor,'tower'),b);
   assert.equal(minibossForStage(floor,'unknown'),null);
   assert.match(fs.readFileSync(new URL(`../pet-adventure/bosses/${b.id}.svg`,import.meta.url),'utf8'),/<svg xmlns="http:\/\/www.w3.org\/2000\/svg"/);
  }
- for(const floor of [1,5,10,20,80,90])for(const mode of ['tower','dungeon'])assert.equal(minibossForStage(floor,mode),null);
+ assert.equal(minibossForStage(30).id,'magmander');
+ for(const floor of [1,5,10,20,45,50,80,90])for(const mode of ['tower','dungeon'])assert.equal(minibossForStage(floor,mode),null);
 });
 test('AI heals when wounded, attacks opportunistically, and respects MP and cooldown',()=>{
  assert.equal(chooseMinibossAction({...state(),hp:17},()=>0).id,'mimuros');
@@ -30,10 +31,11 @@ test('enemy attack magic uses pet defense in the shared tower and dungeon battle
  assert.match(game,/spell\.kind==='heal'\?rolled:incomingDamage\(rolled,stats\.defense\)/);
 });
 test('a long battle cannot spend more than its initial MP or heal forever',()=>{
- for(const floor of [15,30,45,60,75]){
+ for(const floor of [15,30,60,75]){
   const s={...state(floor),hp:10,maxHp:100,mp:minibossForStage(floor).maxMp};let casts=0;
   for(let i=0;i<100;i++){const action=chooseMinibossAction(s,()=>0);s.lastAction=action?'spell':'attack';if(action){s.mp-=action.mpCost;casts++;}assert.ok(s.mp>=0);}
   assert.equal(casts,s.boss.maxMp/5);assert.equal(s.mp,0);
  }
 });
+
 

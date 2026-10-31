@@ -27,3 +27,6 @@
 @media(max-height:620px){.guard-cinematic-card{padding:12px}.guard-portrait{width:155px;height:155px}.guard-kicker{margin-bottom:5px;font-size:10px}.guard-cinematic h2{font-size:23px}.guard-quote{margin-bottom:10px;font-size:12px}.guard-cinematic button{padding:10px 22px}}
 @media(prefers-reduced-motion:reduce){.guard-cinematic *{animation:none!important}}
 
+
+.guard-cinematic[data-boss="mage"]{background:radial-gradient(ellipse at 50% 45%,#3a236af2,#0f0b20fa 70%)}.guard-cinematic[data-boss="mage"] .guard-cinematic-card{border-color:#c7a1ed;box-shadow:0 0 80px #8054c05c,inset 0 0 40px #aa72dc22}.guard-cinematic[data-boss="mage"] .guard-portrait img{filter:drop-shadow(0 0 20px #ac7efb90)}.guard-cinematic[data-boss="mage"][data-scene="victory"]{background:radial-gradient(ellipse,#69532cf2,#201323fa 72%)}
+
