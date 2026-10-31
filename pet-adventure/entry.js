@@ -5,4 +5,5 @@ if(mode==='tower'||mode==='dungeon'){
  await import('./game.js?v=2.1.50');
  await import('./ranking-publisher.js?v=2.1.15');
 }
-else{await import('./rankings.js?v=2.1.10');}
+else{await import('./rankings.js?v=2.3.6');}
+

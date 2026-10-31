@@ -1,0 +1,23 @@
+name: Adventure ranking authentication
+on:
+  push:
+    paths:
+      - pet-adventure/**
+      - tests/adventure-ranking-auth.test.cjs
+      - tests/adventure-rankings-browser.cjs
+      - .github/workflows/adventure-ranking-auth.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rankings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: node --test tests/adventure-ranking-auth.test.cjs tests/release-version.test.js
+      - run: node tests/adventure-rankings-browser.cjs
