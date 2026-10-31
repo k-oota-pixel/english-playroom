@@ -30,7 +30,7 @@ $('form').onsubmit=async event=>{
  if(passwordMode&&password===$('currentPassword').value)throw Error('現在のパスワードとは異なるものにしてください。');
  const token=await auth.currentUser.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/account/'+(passwordMode?'password':'link'),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({code:$('code').value,loginId:$('loginId').value,password,currentPassword:$('currentPassword').value}),signal:AbortSignal.timeout(45000)});
  const data=await r.json();if(!r.ok)throw Error(data.error||'保存できませんでした。');
- await signInWithCustomToken(auth,data.token);$('form').hidden=true;$('status').textContent='保存しました。ホームへ戻って利用を続けられます。';
+ await signInWithCustomToken(auth,data.token);$('form').hidden=true;$('title').hidden=true;$('note').hidden=true;$('status').textContent='保存しました。ホームへ戻って利用を続けられます。';
  }catch(error){$('status').textContent=error.message;}finally{$('save').disabled=false;}
 };
 </script></body></html>
