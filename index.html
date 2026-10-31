@@ -6,7 +6,7 @@
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css?v=1.10.8">
-<link rel="stylesheet" href="./learning-challenges.css?v=2.1.58">
+<link rel="stylesheet" href="./learning-challenges.css?v=2.1.62">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.8">
 <style>
 *{box-sizing:border-box}
@@ -139,12 +139,12 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.1.52"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.1.58"></script>
+<script type="module" src="./app-shell.js?v=2.1.62"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.58">ver2.1.58</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.1.62">ver2.1.62</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -905,11 +905,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=2.1.58"></script>
-<script type="module" src='./version-badge-v176.js?v=2.1.58'></script>
+<script type="module" src="./learning-challenges.js?v=2.1.62"></script>
+<script type="module" src='./version-badge-v176.js?v=2.1.62'></script>
 <script>
 (() => {
-  const version = '2.1.58';
+  const version = '2.1.62';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {

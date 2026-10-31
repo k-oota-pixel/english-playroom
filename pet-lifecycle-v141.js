@@ -5,7 +5,7 @@ import {hasPet,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
 
 import {growthPatch,hatchPatch,hatchDay} from './pet-growth.js';
 import {renderPetVisual} from './pet-art.js?v=2.1.25';
-import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=1.5.30';
+import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=2.1.62';
 import {advanceHealth} from './pet-health-model.js?v=1.8.1';
 const LIFECYCLE_VERSION=141;
 const MAX_MEMORIES=40;

@@ -24,18 +24,16 @@ test('new illness day is protected from departure, including the age roll',()=>{
  const data=pet(25);let uid;for(let i=0;i<2000;i++){const id='new-sick-'+i;if(advanceHealth(data,today,id).patch.petHealth?.sick){uid=id;break;}}
  assert.ok(uid);const result=advance(data,today,uid);assert.equal(result.event,'');assert.equal(result.data.petHealth.sick,true);assert.equal(result.data.petHealth.sickDays,0);
 });
-test('all age band boundaries use the shortened base probabilities',()=>{
- for(const [day,chance] of [[0,0],[5,0],[6,.1],[10,.1],[11,.25],[15,.25],[16,.5],[20,.5],[21,.8],[25,.8],[26,1],[10000,1]])assert.equal(chanceFor(day),chance);
+test('all age band boundaries use the requested base probabilities',()=>{
+ for(const [day,chance] of [[0,0],[5,0],[6,.03],[10,.03],[11,.08],[15,.08],[16,.12],[20,.12],[21,.15],[25,.15],[26,.20],[10000,.20]])assert.equal(chanceFor(day),chance);
 });
-test('all eleven HAPPY levels use agreed multipliers; MAX never exceeds 10%',()=>{
- const multipliers=[1,.9,.8,.7,.6,.5,.42,.34,.26,.18,.1];
- for(let day=0;day<=1000;day++){
-  for(let happy=0;happy<=10;happy++)close(departureChance(saved(happy),today,day),chanceFor(day)*multipliers[happy]);
-  assert.ok(departureChance(saved(10),today,day)<=.1);
+test('only yesterday full gauge halves every age band; partial feeding gives no relief',()=>{
+ for(const day of [1,5,6,10,11,15,16,20,21,25,26,10000]){
+  for(let happy=0;happy<=10;happy++)close(departureChance(saved(happy),today,day),chanceFor(day)*(happy===10?.5:1));
  }
 });
 test('only yesterday counts; missing, old, future and undated totals give no relief',()=>{
- for(const petCare of [undefined,{happy:999},{happy:10,happyDate:today},{happy:10,happyDate:'2026-10-17'},{happy:10,happyDate:'2026-10-20'},{previousHappy:10,previousHappyDate:'2026-10-17'}])assert.equal(departureChance({petCare},today,26),1);
+ for(const petCare of [undefined,{happy:999},{happy:10,happyDate:today},{happy:10,happyDate:'2026-10-17'},{happy:10,happyDate:'2026-10-20'},{previousHappy:10,previousHappyDate:'2026-10-17'}])assert.equal(departureChance({petCare},today,26),.2);
  for(const happy of [-5,'bad',null])assert.equal(previousHappy(saved(happy),today),0);
  assert.equal(previousHappy(saved(999),today),10);
 });
@@ -72,8 +70,10 @@ test('repeat login/tab never increments or draws twice; skipped days add one log
  const skipped=advance({...pet(4),petLastLifeLoginDate:'2026-10-01'},today,uid);
  assert.equal(skipped.data.petLifeDays,5);
 });
-test('26+ without yesterday HAPPY departs and preserves wallet/shop/memories',()=>{
- const data={...pet(25),...saved(0)},result=advance(data,today,'test-user');
+test('26+ death preserves wallet/shop/memories when the daily draw is below 20%',()=>{
+ let uid;for(let i=0;i<10000;i++){const id='departure-'+i;if(!advanceHealth(pet(25),today,id).patch.petHealth?.sick&&shouldDepart(id,2,today,26,saved(0))){uid=id;break;}}
+ assert.ok(uid);
+ const data={...pet(25),...saved(0)},result=advance(data,today,uid);
  assert.equal(result.event,'departed');assert.equal(result.data.petLifeDays,0);
  assert.equal(result.data.petGeneration,3);assert.equal(result.data.petHatched,false);
  assert.equal(result.memory.lifetimeDays,26);assert.equal(result.memory.name,'ふわ');
@@ -94,4 +94,13 @@ test('old lifecycle migration does not perform an extra check or erase rewards',
  const data={...pet(),...saved(10),petLifecycleVersion:0},result=advance(data,today,'test-user');
  assert.equal(result.event,'migrated');assert.equal(result.data.petLifeDays,45);
  assert.equal(result.data.petCare.happy,10);assert.equal(result.data.coins,30);
+});
+
+test('26+ without yesterday full can survive; relief never changes illness death risk',()=>{
+ let uid;for(let i=0;i<10000;i++){const id='survivor-'+i;if(!shouldDepart(id,2,today,26,saved(0))){uid=id;break;}}
+ assert.ok(uid);assert.equal(advance({...pet(25),...saved(0)},today,uid).event,'');
+ for(const days of [0,1,2,10]){
+  const data={...pet(3),petHealth:{generation:2,checkedDate:yesterday,sick:true,sickDays:days}};
+  assert.deepEqual(advanceHealth({...data,...saved(0)},today,'illness'),advanceHealth({...data,...saved(10)},today,'illness'));
+ }
 });
