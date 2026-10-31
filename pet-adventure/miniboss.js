@@ -15,11 +15,12 @@ export function minibossForStage(stage,mode='dungeon'){
 // A spell replaces the normal timed attack. Every spell is followed by a normal attack.
 export function chooseMinibossAction({boss,hp,maxHp,mp,playerHp,lastAction},random=Math.random){
  if(!boss||hp<=0||playerHp<=0||lastAction==='spell')return null;
- const heal=MAGIC_SPELLS.find(s=>s.id==='mimuros');
- const attack=MAGIC_SPELLS.find(s=>s.id==='mirogoro');
+ const heal=MAGIC_SPELLS.find(s=>s.id===(boss.royal&&mp>=10&&maxHp-hp>=25?'mimurose':'mimuros'));
+ const attack=MAGIC_SPELLS.find(s=>s.id===(boss.royal&&mp>=10?'mirogoron':'mirogoro'));
  const canCast=spell=>boss.level>=spell.level&&mp>=spell.mpCost;
  if(canCast(heal)&&hp/maxHp<=.5&&maxHp-hp>=heal.base)return heal;
- if(canCast(attack)&&(playerHp<=attack.base-2||random()<.35))return attack;
+ if(canCast(attack)&&(playerHp<=attack.base-2||random()<(boss.royal?(boss.phase===2?.55:.4):.35)))return attack;
  return null;
 }
+
 

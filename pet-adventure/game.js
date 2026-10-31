@@ -1,5 +1,8 @@
 import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.21';
-import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.11';
+import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.3.13';
+import {royalGuardForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.13';
+import {createGuardPresentation} from './guard-presentation.js?v=2.3.13';
+import {accountSession} from '../auth-session.js?v=2.3.8';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=1.10.24';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -41,6 +44,12 @@ let battleFrame=0,manualPaused=false,pendingAdvanceMs=null;
 let adventureRunId='',adventureRunUser='',answerSequence=0,enemyDamageTaken=0,runBestAtStart=1;
 let persistedBest=1,bestSavePromise=Promise.resolve(true);
 let miniboss=null,enemyMp=0,enemyLastAction=null;
+let adminAdventure=false,cinematicActive=false;
+const guardPresentation=createGuardPresentation();
+async function presentGuard(scene){
+ cinematicActive=true;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();
+ try{await guardPresentation.show(scene);}finally{cinematicActive=false;enemyClock.tick(performance.now(),true);syncActionAvailability();refreshPause();}
+}
 
 function recordAdventureTitle(kind,payload={},eventSuffix=''){
   if(!adventureRunId||!adventureRunUser)return Promise.resolve();
@@ -50,8 +59,8 @@ function recordAdventureTitle(kind,payload={},eventSuffix=''){
 async function waitForTitleDialogsToClose(){
   while(true){const dialogs=[...document.querySelectorAll('.titles-dialog[open]')];if(!dialogs.length)return;await Promise.race(dialogs.map(dialog=>new Promise(resolve=>dialog.addEventListener('close',resolve,{once:true}))));}
 }
-async function continueAfterDefeat(titleRequest,runId,clearedStage){
-  await Promise.all([Promise.resolve(titleRequest),new Promise(resolve=>setTimeout(resolve,650))]);
+async function continueAfterDefeat(titleRequest,runId,clearedStage,presentation=null){
+  await Promise.all([Promise.resolve(titleRequest),presentation,new Promise(resolve=>setTimeout(resolve,650))]);
   await waitForTitleDialogsToClose();
   if(!runActive||adventureRunId!==runId||stage!==clearedStage||enemyHp>0||playerHp<=0)return;
   enemyIndex=0;stage++;awardMilestoneCoin();
@@ -65,7 +74,7 @@ function awardMilestoneCoin(){
 }
 
 const enemyClock=createAttackClock(enemyAttackInterval(1,mode));
-function isBattlePaused(){return window.MonstudyMaterial?.paused||manualPaused||document.hidden||els.helpDialog.open||els.magicDialog.open||els.itemDialog.open||!!document.querySelector('.titles-dialog[open]');}
+function isBattlePaused(){return cinematicActive||window.MonstudyMaterial?.paused||manualPaused||document.hidden||els.helpDialog.open||els.magicDialog.open||els.itemDialog.open||!!document.querySelector('.titles-dialog[open]');}
 function refreshPause(){
   els.pauseBtn.disabled=!runActive;if(!runActive){els.battleStatus.textContent='FINISH';return;}
   const paused=isBattlePaused();els.pauseBtn.textContent=manualPaused?'再開':'一時停止';els.pauseBtn.setAttribute('aria-pressed',String(manualPaused));els.battleStatus.textContent=paused?'PAUSED':'LIVE';
@@ -105,7 +114,7 @@ function randomEnemyElement(){const keys=['fire','water','leaf'];return keys[Mat
 function assignElements(cards){const deck=shuffle(Object.keys(ELEMENTS));return cards.map((card,index)=>({...card,element:deck[index%deck.length]}))}
 function formatStage(n){return mode==='tower'?`${n}F`:`B${n}`}
 function bestKey(){return mode==='tower'?'towerBest':'dungeonBest'}
-function currentBest(){return Math.max(1,Number(records[bestKey()])||1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1)}
+function currentBest(){return adminAdventureBest(Math.max(1,Number(records[bestKey()])||1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1),adminAdventure)}
 function enemyEmoji(){if(isBoss(stage,enemyIndex))return mode==='tower'?'🐉':'👹';const tower=['👾','🦇','🐺','🦂','🦉'],cave=['🦇','🕷️','🦂','👻','🗿'];const pool=mode==='tower'?tower:cave;return pool[(stage+enemyIndex-1)%pool.length]}
 function areaName(){const i=Math.min(4,Math.floor((stage-1)/10));return mode==='tower'?['風の塔','雲の回廊','天空庭園','星見の塔','天界'][i]:['入口の洞窟','青晶洞','古代坑道','溶岩層','深淵遺跡'][i]}
 function cleanQuestion(text){return escapeHtml(String(text||'')).replace(/\(____\)/g,'<span class="blank">?</span>')}
@@ -134,7 +143,7 @@ async function ensureAdventurePetStats(data){
   await setDoc(walletRef(user),patch,{merge:true});return {...data,...patch};
 }
 
-function syncActionAvailability(){const usable=runActive&&playerHp>0&&enemyHp>0;els.magicBtn.disabled=!usable;els.itemBtn.disabled=!usable;exitRunBtn.disabled=!runActive||finishingRun;}
+function syncActionAvailability(){const usable=runActive&&playerHp>0&&enemyHp>0&&!cinematicActive;els.magicBtn.disabled=!usable;els.itemBtn.disabled=!usable;exitRunBtn.disabled=!runActive||finishingRun||cinematicActive;}
 function syncStatLine(){els.petStats.textContent=`Lv.${petLevel} · HP ${stats.hp} · 攻撃力 ${stats.attack} · 防御力 ${stats.defense} · MP ${stats.mp}`;}
 function syncHud(){
   els.areaLabel.textContent=areaName();els.stageLabel.textContent=formatStage(stage);els.enemyCount.textContent=isBoss(stage,enemyIndex)?'BOSS 1 / 1':'ENEMY 1 / 1';els.bestLabel.textContent=formatStage(currentBest());
@@ -142,11 +151,17 @@ function syncHud(){
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}`;els.enemyName.textContent=miniboss?miniboss.name:isBoss(stage,enemyIndex)?'BOSS':'ENEMY';
   els.enemySide.classList.toggle('miniboss-side',!!miniboss);
   const mpText=$('enemyMpText');mpText.hidden=!miniboss;mpText.textContent=miniboss?`Lv.${miniboss.level} · MP ${enemyMp} / ${miniboss.maxMp}`:'';
-  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.id}.svg?v=2.3.11`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
+  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.image||miniboss.id+'.svg'}?v=2.3.13`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
   else{delete els.enemyVisual.dataset.boss;els.enemyVisual.textContent=enemyEmoji();}
-  els.enemyCount.textContent=miniboss?'中ボス 1 / 1':els.enemyCount.textContent;syncActionAvailability();
+  els.enemyCount.textContent=miniboss?.royal?`大ボス · 第${miniboss.phase}形態`:miniboss?'中ボス 1 / 1':els.enemyCount.textContent;syncActionAvailability();
 }
-function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=minibossForStage(stage,mode);enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
+function createEnemy(){enemyClock.reset(enemyAttackInterval(stage,mode));pendingAdvanceMs=null;enemyDamageTaken=0;miniboss=royalGuardForStage(stage,mode)||minibossForStage(stage,mode);enemyMp=miniboss?.maxMp||0;enemyLastAction=null;enemyElement=miniboss?.element||randomEnemyElement();enemyMax=enemyMaxHp(stage,enemyIndex);enemyHp=enemyMax;els.enemyVisual.className='enemy-visual';const boss=isBoss(stage,enemyIndex);els.battlefield.classList.toggle('boss-battle',boss);els.battlefield.classList.toggle('royal-guard-battle',!!miniboss?.royal);els.stageCard.classList.toggle('boss-stage',boss);els.bossBadge.hidden=!boss;els.bossBadge.textContent=miniboss?.royal?'♛ 魔王親衛隊 · 第1形態':miniboss?'⚔ 中ボス BATTLE':'⚔ BOSS BATTLE';syncHud();prepareTurn();if(miniboss?.royal)void presentGuard('arrival');else if(boss)flash(`${miniboss?'中ボス登場！':'BOSS BATTLE!'}\n${formatStage(stage)}`)}
+function isFinalEnemyDefeat(){return !miniboss?.royal||miniboss.phase===2;}
+async function evolveRoyalGuard(){
+ const runId=adventureRunId;pendingAdvanceMs=null;selectedAttack=null;els.quizPanel.hidden=true;els.attackPanel.hidden=true;
+ miniboss=royalGuardForStage(stage,mode,2);enemyMax=royalGuardHp(enemyMaxHp(stage,enemyIndex),2);enemyHp=enemyMax;enemyElement=miniboss.element;enemyLastAction=null;enemyClock.reset(enemyAttackInterval(stage,mode));els.bossBadge.textContent='♛ 魔王親衛隊 · 第2形態';syncHud();
+ await presentGuard('evolve');if(runActive&&adventureRunId===runId)prepareTurn();
+}
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
 function towerCards(){const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();return assignElements(indexes.map((idx,pos)=>{const level=LEVELS[idx],pool=vocab[level.id]||[];let item=null;for(const candidate of shuffle(pool)){if(!used.has(candidate.id)){item=candidate;break}}item=item||pool[0]||Object.values(vocab)[0][0];used.add(item.id);return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)+stats.attack};}))}
 function dungeonCards(){return shuffle(dungeonAttackLayout(stage,enemyElement)).map(({grade,element},pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,element,power:attackPowerForGrade(grade,stage)+stats.attack}))}
@@ -166,13 +181,15 @@ function animate(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classLi
 function revealAnswers(chosenIndex,correctIndex){[...els.answerGrid.children].forEach((b,i)=>{b.disabled=true;if(i===correctIndex)b.classList.add('correct');else if(i===chosenIndex)b.classList.add('wrong')})}
 function finishEnemyDefeat(titleRequest){
   const boss=isBoss(stage,enemyIndex);selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);pendingAdvanceMs=null;
-  if(boss){playerHp=stats.hp;playerMp=stats.mp;flash('BOSS CLEAR!\nHP & MP FULL!');}
-  syncHud();void continueAfterDefeat(titleRequest,adventureRunId,stage);return boss;
+  if(miniboss?.royal&&miniboss.phase===1){void evolveRoyalGuard();return false;}
+  if(boss){playerHp=stats.hp;playerMp=stats.mp;if(!miniboss?.royal)flash('BOSS CLEAR!\nHP & MP FULL!');}
+  const presentation=miniboss?.royal?presentGuard('victory'):null;
+  syncHud();void continueAfterDefeat(titleRequest,adventureRunId,stage,presentation);return boss;
 }
 function answerQuestion(index){
   if(busy||!runActive||isBattlePaused()||!selectedAttack||playerHp<=0||enemyHp<=0)return;busy=true;const q=selectedAttack.question,correct=index===q.correctIndex;revealAnswers(index,q.correctIndex);recordAdventureTitle('answer',{itemId:String(q.id),correct,critical:correct&&elementMultiplier(selectedAttack.element,enemyElement)>1},`answer-${++answerSequence}`);
   let defeatTitleRequest=null;
-  if(correct){const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;if(enemyHp===0)defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);}else{playerHp=Math.max(0,playerHp-1);enemyDamageTaken+=1;animate(els.petVisual,'hurt');flash('MISS!\n-1 HP');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 自分に1ダメージ。正解を確認して次の攻撃へ。';}
+  if(correct){const mult=elementMultiplier(selectedAttack.element,enemyElement),damage=calculateDamage(selectedAttack.power,mult);enemyHp=Math.max(0,enemyHp-damage);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(mult>1?`CRITICAL HIT!\n-${damage}`:`HIT! -${damage}`);els.answerFeedback.className='answer-feedback ok';els.answerFeedback.textContent=`正解！ ${mult>1?'CRITICAL HIT! ':' '}敵に${damage}ダメージ。`;if(enemyHp===0&&isFinalEnemyDefeat())defeatTitleRequest=recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`);}else{playerHp=Math.max(0,playerHp-1);enemyDamageTaken+=1;animate(els.petVisual,'hurt');flash('MISS!\n-1 HP');els.answerFeedback.className='answer-feedback no';els.answerFeedback.textContent='不正解。攻撃失敗！ 自分に1ダメージ。正解を確認して次の攻撃へ。';}
   selectedAttack=null;syncHud();
   if(playerHp<=0){els.nextBtn.hidden=true;busy=false;void finishRun();return;}
   if(enemyHp<=0){els.nextBtn.hidden=true;const boss=finishEnemyDefeat(defeatTitleRequest);if(boss)els.answerFeedback.textContent+=' ボス撃破！ HP・MP全回復！';}
@@ -180,7 +197,7 @@ function answerQuestion(index){
   busy=false;
 }
 
-function canUseBattleAction(){return runActive&&playerHp>0&&enemyHp>0&&!busy;}
+function canUseBattleAction(){return runActive&&playerHp>0&&enemyHp>0&&!busy&&!cinematicActive;}
 function actionDialogClosed(){enemyClock.tick(performance.now(),true);refreshPause();}
 function renderMagic(message='',error=false){
   els.magicMpStatus.textContent=`Lv.${petLevel}　MP ${playerMp} / ${stats.mp}`;els.magicMessage.textContent=message;els.magicMessage.classList.toggle('error',error);els.magicList.replaceChildren();
@@ -190,7 +207,7 @@ function openMagic(){if(!canUseBattleAction())return;enemyClock.tick(performance
 function castMagic(spell){
   if(busy||!runActive||enemyHp<=0||playerHp<=0||petLevel<spell.level||playerMp<spell.mpCost)return;if(spell.kind==='heal'&&playerHp>=stats.hp){renderMagic('HPは満タンです。',true);return;}busy=true;playerMp-=spell.mpCost;const rolled=rollMagicAmount(spell.base);
   if(spell.kind==='heal'){const before=playerHp;playerHp=Math.min(stats.hp,playerHp+rolled);const actual=playerHp-before;animate(els.petVisual,'attack');flash(`✨ ${spell.name}\nHP +${actual}`);busy=false;syncHud();els.magicDialog.close();return;}
-  enemyHp=Math.max(0,enemyHp-rolled);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(`✨ ${spell.name}\n-${rolled}`);const defeated=enemyHp===0,titleRequest=defeated?recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`):null;busy=false;syncHud();els.magicDialog.close();if(defeated){const boss=finishEnemyDefeat(titleRequest);if(boss)flash(`${spell.name}!\nBOSS CLEAR!`);}else{els.answerFeedback.textContent=`${spell.name}！ 敵に${rolled}ダメージ！`;els.answerFeedback.className='answer-feedback ok';}
+  enemyHp=Math.max(0,enemyHp-rolled);animate(els.petVisual,'attack');animate(els.enemyVisual,'hurt');flash(`✨ ${spell.name}\n-${rolled}`);const defeated=enemyHp===0,titleRequest=defeated&&isFinalEnemyDefeat()?recordAdventureTitle('defeat',{noDamage:enemyDamageTaken===0},`defeat-${stage}`):null;busy=false;syncHud();els.magicDialog.close();if(defeated){const boss=finishEnemyDefeat(titleRequest);if(boss&&!miniboss?.royal)flash(`${spell.name}!\nBOSS CLEAR!`);}else{els.answerFeedback.textContent=`${spell.name}！ 敵に${rolled}ダメージ！`;els.answerFeedback.className='answer-feedback ok';}
 }
 
 async function refreshInventory(){const snap=await getDoc(walletRef(user));if(snap.exists())petData={...petData,...snap.data()};return normalizeDungeonInventory(petData.petDungeonItems);}
@@ -226,7 +243,7 @@ async function startRun(startAt=1){
  try{await titleSyncPromise;stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);syncStatLine();}
  catch(error){console.error(error);alert("称号の同期を確認できませんでした。通信を確認して再度お試しください。");return;}finally{startRun.loading=false;}
 els.startDialog.close();stopBattle();adventureRunId=crypto.randomUUID();adventureRunUser=user?.uid||'';answerSequence=0;adventureTitleEvents=[];manualPaused=false;busy=false;selectedAttack=null;runBestAtStart=currentBest();stage=unlockedStartFloors(runBestAtStart).includes(startAt)?startAt:1;enemyIndex=0;playerHp=stats.hp;playerMp=stats.mp;runActive=true;els.resultCard.hidden=true;els.exitRunBtn.hidden=false;els.attackPanel.hidden=false;recordAdventureTitle('run',{score:0},'start');createEnemy();refreshPause();battleFrame=requestAnimationFrame(battleTick);}
-function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest());els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
+function chooseStartFloor(){runActive=false;stopBattle();refreshPause();syncActionAvailability();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.startTitle.textContent=mode==='tower'?'開始する階を選ぼう':'開始する層を選ぼう';els.startBest.textContent='最高到達記録 '+formatStage(currentBest())+(adminAdventure?' · 管理者：90階まで開放／ランキング対象外':'');els.startFloors.replaceChildren();for(const floor of unlockedStartFloors(currentBest())){const button=document.createElement('button');button.type='button';button.className='secondary-btn';button.dataset.startFloor=String(floor);if(adminAdventure&&floor===90)button.classList.add('admin-guard-start');button.textContent=(mode==='tower'?floor+'階':'地下'+floor+'層')+'から挑戦';button.addEventListener('click',()=>startRun(floor));els.startFloors.append(button);}els.startDialog.showModal();}
 async function finishRun(reason='defeat'){
  if(!runActive||finishingRun)return;
  finishingRun=true;runActive=false;stopBattle();refreshPause();syncActionAvailability();
@@ -237,16 +254,17 @@ async function finishRun(reason='defeat'){
   const coinApi=window.EnglishPlayroomCoins;const submission=typeof coinApi?.recordTitleEvents==='function'?coinApi.recordTitleEvents(appId,events):Promise.all(events.map(event=>coinApi?.recordTitleEvent?.(appId,event)));titleSyncPromise=Promise.resolve(submission).catch(error=>console.warn('Adventure title sync deferred',error));
  }
  const improved=currentBest()>persistedBest,saved=await persistBest();
- if(saved&&improved)window.dispatchEvent(new CustomEvent('pet-adventure:run-finished',{detail:{best:currentBest(),reason}}));
+ if(saved&&improved&&!adminAdventure)window.dispatchEvent(new CustomEvent('pet-adventure:run-finished',{detail:{best:currentBest(),reason}}));
  finishingRun=false;refreshPause();syncActionAvailability();selectedAttack=null;[...els.answerGrid.children].forEach(b=>b.disabled=true);els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.exitRunBtn.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent=reason==='manual'?'🏁':(mode==='tower'?'🗼':'🕳️');els.resultKicker.textContent=reason==='manual'?'RUN SAVED':(mode==='tower'?'TOWER RUN COMPLETE':'DUNGEON RUN COMPLETE');els.resultTitle.textContent=reason==='manual'?`途中終了 · ${formatStage(stage)}`:`到達 ${formatStage(stage)}`;els.resultText.textContent=saved?`最高記録 ${formatStage(currentBest())}。今回の記録を保存しました。`:`最高記録 ${formatStage(currentBest())}。端末には記録しましたが、クラウド保存に失敗しました。通信を確認してください。`;els.retryBtn.textContent=mode==='tower'?'1Fから再挑戦':'B1から再挑戦';els.retryBtn.disabled=false;els.checkpointBtn.hidden=unlockedStartFloors(currentBest()).length<=1;els.checkpointBtn.textContent='開始する'+(mode==='tower'?'階':'層')+'を選ぶ';}
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.disabled=true;els.itemBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true;}
 
 async function init(){
   configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}
-  try{const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(petData.petHatched&&!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
+  try{const session=await accountSession(user);adminAdventure=session.admin===true&&!session.resetRequired;const snap=await getDoc(walletRef(user));petData=snap.exists()?(snap.data()||{}):{};if(petData.petHatched&&!hasPet(petData)){showUnavailable('ペットを育てよう','ペットが生まれると魔王の塔と魔物の巣窟で一緒に戦えます。');return}if(adminAdventure){const progress=await runTransaction(db,async tx=>{const ref=walletRef(user),snapshot=await tx.get(ref),data=snapshot.data()||{},next={wordTowerBest:adminAdventureBest(data.wordTowerBest,true),eikenDungeonBest:adminAdventureBest(data.eikenDungeonBest,true)};if(next.wordTowerBest!==data.wordTowerBest||next.eikenDungeonBest!==data.eikenDungeonBest)tx.set(ref,{...next,petAdventureUpdatedAt:serverTimestamp()},{merge:true});return next;});petData={...petData,...progress};}persistedBest=Math.max(1,Number(petData[mode==='tower'?'wordTowerBest':'eikenDungeonBest'])||1);petData=await ensureAdventurePetStats(petData);stats=strengthStatsFromAllocation(petData.petStrength,petData.petBaseStats,{ageDays:petData.petLifeDays,adult:hasPet(petData)&&petData.petAdult!==false});petLevel=strengthLevel(petData.petStrengthLevelPoints,petData.petStrength);installPet();syncStatLine();}catch(error){console.error(error);showUnavailable('読み込めませんでした','ペットデータを確認できませんでした。通信状態を確認してください。');return}
    els.loadingCard.hidden=true;els.dataNote.textContent=(mode==='tower'?(dataOk?'ワードブレイカーの中1〜高2語彙データを使用中':'予備語彙で起動中'):(dataOk?'リトライノートの英検4級〜準1級問題DBを使用中':'予備問題で起動中'))+' · 途中終了・保存を押すと今回の記録を保存します。画面移動では保存されません。';if(unlockedStartFloors(currentBest()).length>1)chooseStartFloor();else startRun(1);window.dispatchEvent(new CustomEvent('pet-adventure:ready',{detail:{best:currentBest()}}));
 }
 
 els.pauseBtn.addEventListener('click',togglePause);els.exitRunBtn.addEventListener('click',()=>void finishRun('manual'));els.nextBtn.addEventListener('click',advance);els.retryBtn.addEventListener('click',()=>startRun(1));els.checkpointBtn.addEventListener('click',chooseStartFloor);els.helpBtn.addEventListener('click',()=>{enemyClock.tick(performance.now(),true);els.helpDialog.showModal();refreshPause();});els.helpDialog.addEventListener('close',actionDialogClosed);els.helpClose.addEventListener('click',()=>els.helpDialog.close());els.helpDialog.addEventListener('click',e=>{if(e.target===els.helpDialog)els.helpDialog.close()});els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',()=>void openItems());els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());els.magicDialog.addEventListener('close',actionDialogClosed);els.itemDialog.addEventListener('close',actionDialogClosed);els.magicDialog.addEventListener('click',e=>{if(e.target===els.magicDialog)els.magicDialog.close()});els.itemDialog.addEventListener('click',e=>{if(e.target===els.itemDialog)els.itemDialog.close()});els.startDialog.addEventListener('cancel',event=>event.preventDefault());
 init();
+
 

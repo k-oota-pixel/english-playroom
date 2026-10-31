@@ -1,4 +1,5 @@
 import {auth,authReady} from '../coin-reward.js?v=2.1.2';
+import {accountSession} from '../auth-session.js?v=2.3.8';
 
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const endpoint='https://task-quest.onrender.com/api/adventure/rankings';
@@ -16,6 +17,7 @@ async function send(token,expectedFloor=0){
 }
 async function publish(expectedFloor){
  await authReady;const current=auth.currentUser;if(!current)return;
+ const session=await accountSession(current);if(session.admin===true)return;
  cachedToken=await current.getIdToken();
  for(let attempt=0;attempt<4;attempt++){
   const result=await send(cachedToken,expectedFloor);if(!result.pending){lastPublishedFloor=Math.max(lastPublishedFloor,expectedFloor);return;}
@@ -24,3 +26,4 @@ async function publish(expectedFloor){
  throw Error('自己ベストの保存完了を待っています。');
 }
 window.addEventListener('pet-adventure:run-finished',event=>{const floor=floorFromLabel(event.detail?.best);if(floor>lastPublishedFloor)void publish(floor).catch(error=>console.warn('Adventure ranking sync deferred',error));});
+
