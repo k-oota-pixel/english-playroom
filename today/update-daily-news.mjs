@@ -93,7 +93,7 @@ async function generateDailyNews(token){
     method:'POST',
     headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json','User-Agent':'monstudy-today-daily'},
     body:JSON.stringify({force:process.env.TODAY_FORCE==='1'}),
-    signal:AbortSignal.timeout(360_000)
+    signal:AbortSignal.timeout(900_000)
   });
   let data={};try{data=await response.json();}catch{}
   if(!response.ok)throw new Error(`TODAY生成API: HTTP ${response.status} ${String(data?.error||'').slice(0,300)}`);
