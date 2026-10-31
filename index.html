@@ -6,7 +6,7 @@
 <title>もんすたでぃ</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./pet.css?v=1.10.8">
-<link rel="stylesheet" href="./learning-challenges.css?v=2.2.2">
+<link rel="stylesheet" href="./learning-challenges.css?v=2.2.3">
 <link rel="stylesheet" href="./pet-effects.css?v=1.7.8">
 <style>
 *{box-sizing:border-box}
@@ -139,12 +139,12 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.1.52"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.2.2"></script>
+<script type="module" src="./app-shell.js?v=2.2.3"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.2.2">ver2.2.2</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.2.3">ver2.2.3</span></div>
     <div class="auth-area">
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -274,6 +274,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="title">並べ替え問題（基本文法）</div>
       <div class="desc">エイゴジュンの英文で、基本の語順を練習しよう。be動詞から接続詞まで、12単元・204問。</div>
       <div class="chips"><span class="chip">単元別</span><span class="chip">途中保存</span><span class="chip">間違いを再挑戦</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>その日の初回回答5問中3問以上正解</span><small>同じ問題は1日1回・称号15種類</small></div></div>
       <div class="open-note">基本文法の並べ替え問題</div>
     </a>
 <a class="card order" href="https://k-oota-pixel.github.io/basic-quest/?mode=grammar" target="_blank" rel="noopener noreferrer">
@@ -281,6 +282,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="title">並べ替え問題（文法別）</div>
       <div class="desc">英文法のパターンごとに、日本語に合う語順へ並べ替えよう。参考書の例文を使った英文づくり。</div>
       <div class="chips"><span class="chip">72文法セクション</span><span class="chip">各15問</span><span class="chip">日本語訳つき</span></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>その日の初回回答5問中3問以上正解</span><small>同じ問題は1日1回・称号15種類</small></div></div>
       <div class="open-note">文法別の並べ替え問題</div>
     </a>
 <a class="card retry" href="https://k-oota-pixel.github.io/eiken-retry/" target="_blank" rel="noopener noreferrer">
@@ -298,7 +300,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
       <div class="title">TODAY<span class="eiken-badge">5級〜準1級</span></div>
       <div class="desc">世界を、自分の英語で読む。興味・進路に合わせたニュースを6段階の英文で読み比べ。</div>
       <div class="chips"><span class="chip">6ニュース</span><span class="chip">6レベル</span><span class="chip">おすすめ・アーカイブ</span></div>
-      <div class="open-note">今日の英語ニュースを読む</div>
+      <div class="open-note">コイン付与なし・読了で称号15種類</div>
     </a>
 <a class="card order" href="https://k-oota-pixel.github.io/eiken-cloze/" target="_blank" rel="noopener noreferrer">
       <div class="eyebrow">READING &amp; CLOZE</div>
@@ -387,7 +389,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=2.2.2";
+import {recordLearningActivity} from "./coin-reward.js?v=2.2.3";
 import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.1.9';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -402,7 +404,7 @@ import {createLearningDashboard} from './learning-dashboard.js?v=1';
 import {installPasswordResetModal} from './password-reset-modal.js?v=2';
 import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
-import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.2.2';
+import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.2.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 import './pet-shop.js?v=2.1.52';
 
@@ -905,11 +907,11 @@ window.addEventListener('online',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 
-<script type="module" src="./learning-challenges.js?v=2.2.2"></script>
-<script type="module" src='./version-badge-v176.js?v=2.2.2-login-fix'></script>
+<script type="module" src="./learning-challenges.js?v=2.2.3"></script>
+<script type="module" src='./version-badge-v176.js?v=2.2.3-login-fix'></script>
 <script>
 (() => {
-  const version = '2.2.2';
+  const version = '2.2.3';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
@@ -930,3 +932,4 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 </script>
 </body>
 </html>
+

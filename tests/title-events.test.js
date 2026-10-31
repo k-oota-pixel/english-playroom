@@ -4,3 +4,20 @@ function fixture(blocked=false){const storage=new Map(),calls=[],notifications=[
 test('title events survive transient failure and use the same event receipt on retry',async()=>{const f=fixture();let failed=true;f.c.fetch=async(url,o)=>{f.calls.push(JSON.parse(o.body));return {ok:!failed,status:503,json:async()=>({freshTitles:[]})};};await f.c.recordTitleEvent('ateru',{kind:'run',score:5});assert.equal(JSON.parse(f.storage.get('monstudy-title-outbox:one')).length,1);failed=false;f.c.flushTitleEvents();await vm.runInContext('titleQueue',f.c);assert.equal(f.calls.length,2);assert.equal(f.calls[0].eventId,f.calls[1].eventId);assert.equal(JSON.parse(f.storage.get('monstudy-title-outbox:one')).length,0);});
 test('a request awaiting authentication cannot move to the next logged-in user',async()=>{const f=fixture();let release;f.c.currentUser.getIdToken=()=>new Promise(r=>release=r);const pending=f.c.recordTitleEvent('ateru',{kind:'run',score:5});await new Promise(r=>setTimeout(r,0));f.c.currentUser={uid:'two',getIdToken:async()=>'other'};release('old-token');await pending;assert.equal(f.calls.length,0);assert.equal(f.notifications.length,0);await f.c.recordTitleEvent('ateru',{kind:'run',score:5,expectedUid:'one'});assert.equal(f.calls.length,0);});
 test('blocking local storage does not stop an authenticated title event',async()=>{const f=fixture(true);await f.c.recordTitleEvent('ateru',{kind:'run',score:5});assert.equal(f.calls.length,1);});
+
+test('grammar sends five answers in one request and flushes a partial set explicitly',async()=>{
+ const f=fixture();f.c.todayKey=()=> '2026-10-31';
+ for(let i=0;i<4;i++)await f.c.recordGrammarAnswer('basic-grammar','1:'+i,true);
+ assert.equal(f.calls.length,0);
+ await f.c.recordGrammarAnswer('basic-grammar','1:4',false);assert.equal(f.calls.length,1);assert.equal(f.calls[0].events.length,5);
+ for(let i=0;i<20;i++)await f.c.recordGrammarAnswer('basic-grammar','1:4',false);assert.equal(f.calls.length,1);
+ await f.c.recordGrammarAnswer('basic-grammar','1:5',true);await f.c.flushGrammarAnswers();assert.equal(f.calls.length,2);assert.equal(f.calls[1].events.length,1);
+});
+
+test('TODAY repeated clicks are suppressed locally, and signed-out reads create no records',async()=>{
+ const f=fixture();f.c.todayKey=()=> '2026-10-31';
+ for(let i=0;i<30;i++)await f.c.recordTodayRead('article-1','5級','2026-10-31');assert.equal(f.calls.length,1);
+ await f.c.recordTodayRead('article-1','4級','2026-10-31');assert.equal(f.calls.length,2);
+ f.c.currentUser=null;await f.c.recordTodayRead('article-2','5級','2026-10-31');assert.equal(f.calls.length,2);
+});
+

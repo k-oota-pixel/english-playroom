@@ -1,3 +1,4 @@
+import {authReady as rewardAuthReady} from '../coin-reward.js?v=2.2.3';
 import {LEVELS,CATEGORIES,CAREERS,normalizeProfile,recommendedLevel,rankArticles,recommendationReason,countWords,validateArticle} from './model.js?v=1.1.0';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
@@ -186,7 +187,13 @@ function toggleBookmark(article){
   if(behavior.bookmarks[article.id])delete behavior.bookmarks[article.id];else behavior.bookmarks[article.id]={at:Date.now()};
   saveBehavior();renderArticle();
 }
-function markComplete(article){behavior.completed[article.id]={at:Date.now(),level:currentLevel};saveBehavior();renderArticle();}
+function markComplete(article){
+ window.EnglishPlayroomCoins?.recordTodayRead?.(article.id,currentLevel,String(article.date).slice(0,10));
+ const previous=behavior.completed[article.id]||{};
+ if(previous.level===currentLevel||previous.levels?.includes(currentLevel))return;
+ behavior.completed[article.id]={at:Date.now(),level:currentLevel,levels:[...new Set([...(previous.levels||[]),...(previous.level?[previous.level]:[]),currentLevel])]};
+ saveBehavior();renderArticle();
+}
 function setDifficulty(article,value){behavior.difficulty[article.id]=value;saveBehavior();renderArticle();}
 function useLevel(level){currentLevel=level;behavior.levelUses[level]=(Number(behavior.levelUses[level])||0)+1;saveBehavior();renderArticle(false);}
 
@@ -253,11 +260,11 @@ function renderArticle(scroll=true){
   const availableLevels=LEVELS.filter(level=>current.levels[level]?.text);
   if(!current.levels[currentLevel]?.text)currentLevel=availableLevels[0]||'4級';
   const cat=categoryInfo(current.category),content=current.levels[currentLevel]||current.levels['4級']||current.levels['準2級'];
-  const completed=Boolean(behavior.completed[current.id]),bookmarked=Boolean(behavior.bookmarks[current.id]),difficulty=behavior.difficulty[current.id];
+  const completed=Boolean(behavior.completed[current.id]?.levels?.includes(currentLevel)||behavior.completed[current.id]?.level===currentLevel),bookmarked=Boolean(behavior.bookmarks[current.id]),difficulty=behavior.difficulty[current.id];
   const paragraphs=String(content.text).split(/\n\s*\n/).filter(Boolean);
   const heading=displayTitle(current,currentLevel,content.title||current.title);
   const summary=titleUsesSummary(current,currentLevel)?'':(current.summaryJa||'');
-  app.innerHTML=`<div class="article"><article class="paper"><button id="backToFeed" class="back">← ${view==='archive'?'アーカイブ':'TODAY'}へ戻る</button><header class="article-heading"><div class="category">${cat.icon} ${esc(cat.label)} · ${esc(dayKey(current.date))}</div><h1>${esc(heading)}</h1>${summary?`<div class="ja-title">${esc(summary)}</div>`:''}</header><div class="levels" aria-label="英文レベル">${availableLevels.map(level=>{const item=current.levels[level],wc=Number(item?.wordCount)||countWords(item?.text||'');return `<button class="level ${level===currentLevel?'active':''}" data-level="${level}">${level}<small>${wc} words</small></button>`;}).join('')}</div><div class="article-text" lang="en">${paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div></article><aside class="article-side"><span class="eyebrow">WHY THIS STORY?</span><h3>${esc(recommendationReason(current,profile,behavior))}</h3><p class="side-note">おすすめレベルは目安です。知っているテーマなら上のレベル、難しいテーマなら下のレベルに自由に変えてください。</p><div class="action-stack"><button id="complete" class="side-action ${completed?'done':''}">${completed?'✓ 読了しました':'✓ 読み終わった'}</button><button id="bookmark" class="side-action">${bookmarked?'★ あとで読むに保存済み':'☆ あとで読む'}</button></div><h3 style="margin-top:17px">この${esc(currentLevel)}版は？</h3><div class="difficulty"><button data-difficulty="easy" class="${difficulty==='easy'?'active':''}">簡単</button><button data-difficulty="just" class="${difficulty==='just'?'active':''}">ちょうど</button><button data-difficulty="hard" class="${difficulty==='hard'?'active':''}">難しい</button></div><div class="sources"><h3>Original Sources</h3><p class="side-note">記事本文はTODAY用に独自作成しています。事実確認に使った元情報です。</p>${current.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(s.name)}</a>`).join('')}</div></aside></div>`;
+  app.innerHTML=`<div class="article"><article class="paper"><button id="backToFeed" class="back">← ${view==='archive'?'アーカイブ':'TODAY'}へ戻る</button><header class="article-heading"><div class="category">${cat.icon} ${esc(cat.label)} · ${esc(dayKey(current.date))}</div><h1>${esc(heading)}</h1>${summary?`<div class="ja-title">${esc(summary)}</div>`:''}</header><div class="levels" aria-label="英文レベル">${availableLevels.map(level=>{const item=current.levels[level],wc=Number(item?.wordCount)||countWords(item?.text||'');return `<button class="level ${level===currentLevel?'active':''}" data-level="${level}">${level}<small>${wc} words</small></button>`;}).join('')}</div><div class="article-text" lang="en">${paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div></article><aside class="article-side"><span class="eyebrow">WHY THIS STORY?</span><h3>${esc(recommendationReason(current,profile,behavior))}</h3><p class="side-note">おすすめレベルは目安です。知っているテーマなら上のレベル、難しいテーマなら下のレベルに自由に変えてください。</p><div class="action-stack"><button id="complete" class="side-action ${completed?'done':''}">${completed?'✓ 読了しました':'✓ 読み終わった'}</button><p class="side-note">読了で称号の進捗を記録します。コイン付与はありません。</p><button id="bookmark" class="side-action">${bookmarked?'★ あとで読むに保存済み':'☆ あとで読む'}</button></div><h3 style="margin-top:17px">この${esc(currentLevel)}版は？</h3><div class="difficulty"><button data-difficulty="easy" class="${difficulty==='easy'?'active':''}">簡単</button><button data-difficulty="just" class="${difficulty==='just'?'active':''}">ちょうど</button><button data-difficulty="hard" class="${difficulty==='hard'?'active':''}">難しい</button></div><div class="sources"><h3>Original Sources</h3><p class="side-note">記事本文はTODAY用に独自作成しています。事実確認に使った元情報です。</p>${current.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(s.name)}</a>`).join('')}</div></aside></div>`;
   app.querySelector('#backToFeed').addEventListener('click',()=>{current=null;render();window.scrollTo({top:0});});
   app.querySelectorAll('[data-level]').forEach(b=>b.addEventListener('click',()=>useLevel(b.dataset.level)));
   app.querySelector('#complete').addEventListener('click',()=>markComplete(current));
@@ -273,7 +280,9 @@ function render(){
 
 app.innerHTML='<div class="empty">TODAYを読み込んでいます…</div>';
 await initializeUserState();
+await rewardAuthReady;
 buildSurvey();
 await loadNews();
 render();
 if(!hasProfile())setTimeout(openSurvey,250);
+

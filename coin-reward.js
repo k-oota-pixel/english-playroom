@@ -125,14 +125,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else installTaskQuestAnswerGuard();
 
 
-const titleMemory=new Map(),titleMemoryOnly=new Set();let titleQueue=Promise.resolve(),titleFlushTimer=0,titleFlushRunning=false;
+const titleMemory=new Map(),titleMemoryOnly=new Set();let titleQueue=Promise.resolve(),titleFlushTimer=0,titleFlushRunning=false,titleRetryDelay=10000;
 function newClientEventId(){return globalThis.crypto?.randomUUID?.()||`e${Date.now().toString(36)}${Math.random().toString(36).slice(2,12)}`;}
 function readTitleOutbox(key){if(titleMemoryOnly.has(key))return titleMemory.get(key)||[];try{const rows=JSON.parse(localStorage.getItem(key)||'null')||[];titleMemory.set(key,rows);return rows;}catch{return titleMemory.get(key)||[];}}
 function writeTitleOutbox(key,rows){titleMemory.set(key,rows);try{localStorage.setItem(key,JSON.stringify(rows));titleMemoryOnly.delete(key);}catch{titleMemoryOnly.add(key);}}
 async function stableBatchId(values){return String(values.at(-1)||values[0]||newClientEventId());}
 function scheduleTitleFlush(delay=5000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(titleFlushTimer);titleFlushTimer=setTimeout(()=>void flushTitleEvents(),delay);}
 function removeTitleRows(key,ids){const remove=new Set(ids);writeTitleOutbox(key,readTitleOutbox(key).filter(row=>!remove.has(row.event?.eventId)));}
-function titleRowsReady(rows){const valid=(rows||[]).filter(row=>row?.event);return valid.some(row=>!row.batchVersion||row.event.appId!=='eiken-retry')||valid.filter(row=>row.batchVersion===2&&row.event.appId==='eiken-retry').length>=5;}
+const bufferedTitleApps=new Set(['eiken-retry','basic-grammar','grammar']);
+const titleAttemptSeen=new Set();
+function titleRowsReady(rows){const valid=(rows||[]).filter(row=>row?.event);return valid.some(row=>!row.batchVersion||!bufferedTitleApps.has(row.event.appId)||row.forceFlush)||[...bufferedTitleApps].some(appId=>valid.filter(row=>row.event.appId===appId).length>=5);}
 function flushTitleEvents(){
  const user=currentUser;if(!user)return Promise.resolve({freshTitles:[]});
  globalThis.clearTimeout?.(titleFlushTimer);
@@ -155,14 +157,14 @@ function flushTitleEvents(){
    const apps=[...new Set(rows.map(row=>row.event.appId))];
    for(const appId of apps){
     const pending=rows.filter(row=>row.event.appId===appId);
-    if(appId==='eiken-retry')pending.splice(Math.floor(pending.length/5)*5);
+    if(bufferedTitleApps.has(appId)&&!pending.some(row=>row.forceFlush))pending.splice(Math.floor(pending.length/5)*5);
     while(pending.length){
      const group=pending.splice(0,25);if(currentUser?.uid!==user.uid)return {freshTitles};
      const ids=group.map(row=>row.event.eventId),batchId=await stableBatchId([appId,...ids]),token=await user.getIdToken();if(currentUser?.uid!==user.uid)return {freshTitles};
      try{
       const response=await fetch('https://task-quest.onrender.com/api/learning/title-event',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({appId,batchId,events:group.map(row=>row.event)})});
       if(!response.ok){if(response.status===400){removeTitleRows(key,ids);continue;}break;}
-      const result=await response.json();removeTitleRows(key,ids);freshTitles.push(...(result.freshTitles||[]));
+      const result=await response.json();removeTitleRows(key,ids);freshTitles.push(...(result.freshTitles||[]));if(result.awardedCoins>0)toast(`🪙 +${result.awardedCoins}　並べ替え5問中3問以上正解！`);
      }catch{break;}
     }
    }
@@ -170,7 +172,7 @@ function flushTitleEvents(){
    return {freshTitles};
   }finally{
    titleFlushRunning=false;
-   if(currentUser?.uid===user.uid&&titleRowsReady(readTitleOutbox(key)))scheduleTitleFlush(1000);
+   if(currentUser?.uid===user.uid&&titleRowsReady(readTitleOutbox(key))){scheduleTitleFlush(titleRetryDelay);titleRetryDelay=Math.min(60000,titleRetryDelay*2);}
   }
  });
  return titleQueue;
@@ -183,12 +185,39 @@ function enqueueTitleEvents(appId,payloads,flushNow=false){
   if(!known.has(event.eventId)){pending.push({event,at:Date.now(),batchVersion:2});known.add(event.eventId);}
  }
  writeTitleOutbox(key,pending.slice(-500));
- const retryPending=appId==='eiken-retry'?pending.filter(row=>row.event?.appId===appId).length:0;
- if(flushNow||(appId==='eiken-retry'&&retryPending>=5)||typeof setTimeout!=='function'&&appId!=='eiken-retry')return flushTitleEvents();
- if(appId!=='eiken-retry')scheduleTitleFlush();return Promise.resolve({queued:true,freshTitles:[]});
+ const retryPending=bufferedTitleApps.has(appId)?pending.filter(row=>row.event?.appId===appId).length:0;
+ if(flushNow||(bufferedTitleApps.has(appId)&&retryPending>=5)||typeof setTimeout!=='function'&&!bufferedTitleApps.has(appId))return flushTitleEvents();
+ if(!bufferedTitleApps.has(appId))scheduleTitleFlush();return Promise.resolve({queued:true,freshTitles:[]});
 }
 function recordTitleEvent(appId,payload={}){return enqueueTitleEvents(appId,[payload]);}
 function recordTitleEvents(appId,payloads=[]){return enqueueTitleEvents(appId,payloads,true);}
+function recordGrammarAnswer(appId,itemId,correct){
+ const uid=currentUser?.uid;if(!uid||!['basic-grammar','grammar'].includes(appId))return;
+ // Repeated correct answers and repeated wrong answers add no new title information.
+ const seenKey='monstudy-grammar-seen:'+uid+':'+todayKey()+':'+appId;
+ let seen={};try{seen=JSON.parse(localStorage.getItem(seenKey)||'{}');}catch{}
+ const signature=uid+':'+todayKey()+':'+appId+':'+itemId+':'+correct;
+ if(titleAttemptSeen.has(signature)||seen[itemId+':'+correct])return;
+ titleAttemptSeen.add(signature);seen[itemId+':'+correct]=true;
+ const queued=enqueueTitleEvents(appId,[{kind:'question',itemId,correct,course:todayKey(),expectedUid:uid}]);
+ try{localStorage.setItem(seenKey,JSON.stringify(seen));}catch{}
+ return queued;
+}
+function flushGrammarAnswers(){
+ const uid=currentUser?.uid;if(!uid)return Promise.resolve();
+ const key='monstudy-title-outbox:'+uid,rows=readTitleOutbox(key);
+ for(const row of rows)if(['basic-grammar','grammar'].includes(row.event?.appId))row.forceFlush=true;
+ writeTitleOutbox(key,rows);return flushTitleEvents();
+}
+function recordTodayRead(itemId,grade,course){
+ const uid=currentUser?.uid;if(!uid)return;
+ const key='monstudy-today-titles:'+uid+':'+todayKey();let seen=[];try{seen=JSON.parse(localStorage.getItem(key)||'[]');}catch{}
+ const id=itemId+':'+grade,signature=key+':'+id;if(seen.includes(id)||titleAttemptSeen.has(signature))return;
+ titleAttemptSeen.add(signature);
+ const queued=enqueueTitleEvents('today',[{kind:'read',itemId,grade,course,expectedUid:uid}]);
+ try{localStorage.setItem(key,JSON.stringify([...seen,id].slice(-1000)));}catch{}
+ return queued;
+}
 window.addEventListener('online',()=>{void flushTitleEvents();void flushLearningActivities();void flushRetryAttempts();});
 
 let lastLearningUid='',lastLearningApp='',lastLearningSent=0;
@@ -280,7 +309,7 @@ function flushRetryAttempts(){
  });
  return retryQueue;
 }
-window.addEventListener('pagehide',()=>{void flushTitleEvents();void flushLearningActivities();void flushRetryAttempts();});
+window.addEventListener('pagehide',()=>{void flushGrammarAnswers();void flushLearningActivities();void flushRetryAttempts();});
 async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
@@ -322,6 +351,9 @@ async function recordRetryAttempt(questionId){
 window.EnglishPlayroomCoins=Object.freeze({
   getUserId:()=>currentUser?.uid||'',
   recordTitleEvent,
+  recordGrammarAnswer,
+  flushGrammarAnswers,
+  recordTodayRead,
   recordTitleEvents,
   recordLearningActivity,
   awardOncePerDay,
@@ -339,3 +371,4 @@ window.EnglishPlayroomCoins=Object.freeze({
   awardGrade3Interview:questionId=>awardOncePerDay('eiken-grade3-interview','card-'+cleanPart(questionId),'３級Q2・Q3に挑戦！'),
   awardGrade3InterviewQ45:questionId=>awardOncePerDay('eiken-grade3-interview-q45','question-'+cleanPart(questionId),'３級Q4・Q5に挑戦！')
 });
+
