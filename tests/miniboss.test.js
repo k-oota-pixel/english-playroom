@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {minibossForStage,chooseMinibossAction} from '../pet-adventure/miniboss.js';
+import {incomingDamage} from '../pet-strength-model.js';
 const state=(floor=15)=>({boss:minibossForStage(floor),hp:35,maxHp:35,mp:10,playerHp:50,lastAction:null});
 test('both adventure modes select five minibosses with ascending MP and SVG assets',()=>{
  for(const [i,floor] of [15,30,45,60,75].entries()){
@@ -21,6 +22,12 @@ test('AI heals when wounded, attacks opportunistically, and respects MP and cool
  assert.equal(chooseMinibossAction({...state(),hp:10,lastAction:'spell'},()=>0),null);
  assert.equal(chooseMinibossAction({...state(),boss:null},()=>0),null);
  assert.equal(chooseMinibossAction({...state(),hp:0},()=>0),null);
+});
+test('enemy attack magic uses pet defense in the shared tower and dungeon battle runtime',()=>{
+ assert.equal(incomingDamage(15,6),9);
+ assert.equal(incomingDamage(15,30),1);
+ const game=fs.readFileSync(new URL('../pet-adventure/game.js',import.meta.url),'utf8');
+ assert.match(game,/spell\.kind==='heal'\?rolled:incomingDamage\(rolled,stats\.defense\)/);
 });
 test('a long battle cannot spend more than its initial MP or heal forever',()=>{
  for(const floor of [15,30,45,60,75]){
