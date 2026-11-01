@@ -1,4 +1,4 @@
-import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.7';
+import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.8';
 import {adminContentRows} from './admin-content-model.js?v=2.1.5';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
@@ -118,7 +118,7 @@ onAuthStateChanged(auth,user=>{usagePanel.reset();generation++;viewGeneration++;
 
 // No automatic request: the button reads only the displayed users, at most ten.
 const retryLogsButton=document.createElement('button');retryLogsButton.type='button';retryLogsButton.className='btn';retryLogsButton.textContent='リトライノートの画面離脱記録を取得';
-const retryLogsNote=document.createElement('div');retryLogsNote.className='sub';retryLogsNote.textContent='表示中の最大10人が対象。取得時のみ各1件読み取り（直近100プレイ）。再表示はキャッシュを使用します。';
+const retryLogsNote=document.createElement('div');retryLogsNote.className='sub';retryLogsNote.textContent='表示中の最大6人が対象。取得時のみ各1件読み取り（直近100プレイ）。再表示はキャッシュを使用します。';
 const retryLogsResult=document.createElement('div');retryLogsResult.className='sub';
 $('panel').append(retryLogsButton,retryLogsNote,retryLogsResult);
 const retryLogCache=new Map();
