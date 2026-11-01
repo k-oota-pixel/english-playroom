@@ -1,6 +1,6 @@
 // These keys match the public learning pages, not their storage documents.
 export const ADMIN_CONTENTS=Object.freeze([
- ['word-breaker','ワードブレイカー'],['ateru','アテル'],['basic-quest','並べ替え問題（基礎）'],['eiken-retry','リトライノート'],['task-quest','タスク別英会話'],['eiken-cloze','長文空所補充'],['eiken-title','長文概要把握'],['listening-training','リスニング演習＆ディクテーション'],['pre2-interview-questions','準2級面接・質問4・5対策'],['eiken-pre2-interview-a','準2級面接A練習'],['talk-quest','テーマ別日常英会話'],['pet-catch','PET CATCH'],['word-tower','魔王の塔'],['eiken-dungeon','魔物の巣窟']
+ ['word-breaker','ワードブレイカー'],['ateru','アテル'],['basic-quest','並べ替え問題（基礎）'],['eiken-retry','リトライノート'],['task-quest','タスク別英会話'],['eiken-cloze','長文空所補充'],['eiken-title','長文概要把握'],['listening-training','リスニング演習＆ディクテーション'],['pre2-interview-questions','準2級面接・質問4・5対策'],['eiken-pre2-interview-a','準2級面接A練習'],['talk-quest','テーマ別日常英会話'],['pet-catch','PET CATCH'],['pet-fishing','PET FISHING'],['word-tower','魔王の塔'],['eiken-dungeon','魔物の巣窟']
 ]);
 const count=value=>Math.max(0,Math.floor(Number(value)||0));
 export function adminContentRows(apps={},activity={}){
@@ -18,6 +18,10 @@ export function adminContentRows(apps={},activity={}){
    const field=id==='word-tower'?'wordTowerBest':'eikenDungeonBest';if(wallet[field]!=null)add('最高到達'+(id==='word-tower'?'階':'層'),count(wallet[field]));
   }else if(id==='pet-catch'){
    add('プレイ回数',wallet.petCatchGames);add('最高スコア',wallet.petCatchBestScore);add('正解数',wallet.petCatchCorrectTotal);add('最終学習日',wallet.petCatchLastPlayedDate);
+  }else if(id==='pet-fishing'){
+   const fishing=wallet.petFishing||{},collection=fishing.collection&&typeof fishing.collection==='object'?fishing.collection:{},sizes=fishing.maxSizes&&typeof fishing.maxSizes==='object'?fishing.maxSizes:{};
+   const discovered=Object.values(collection).filter(v=>count(v)>0).length,total=count(fishing.totalCatches),maxSize=Math.max(0,...Object.values(sizes).map(v=>Number(v)||0));
+   if(total)add('総釣果',total);if(discovered)add('図鑑登録',discovered+' / 18');if(maxSize)add('最大サイズ記録',maxSize.toLocaleString('ja-JP',{maximumFractionDigits:1})+' cm');historicalLastLearningAt=wallet.petFishingUpdatedAt||wallet.petFishingLastAttemptAt||null;
   }else{
    const data=id==='eiken-pre2-interview-a'?{...stored,...wallet.pre2InterviewA}:stored;
    for(const [key,title] of [['submissions','解答回数'],['correctAnswers','正解数'],['completedStages','クリアしたステージ'],['attemptedIds','取り組んだ問題'],['clearCount','クリア回数'],['rounds','ラウンド数'],['attempts','挑戦回数'],['lastPlayedDate','最終学習日']]){
