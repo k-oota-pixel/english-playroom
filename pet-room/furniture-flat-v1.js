@@ -43,7 +43,7 @@ for(const def of defs){
  items.push(Object.assign({},def,saved,{actor,button}));
 }
 const css=document.createElement("style");
-css.textContent="#sofaActor.flat-furniture{filter:none!important}#sofaActor.flat-furniture img{display:none!important}.flat-furniture{position:absolute;display:block;overflow:visible;cursor:pointer;pointer-events:auto;transform-origin:50% 50%;transition:left .18s ease,top .18s ease,transform .18s ease;filter:none!important}.flat-furniture[hidden]{display:none!important}.flat-furniture svg{display:block;width:100%;height:auto;overflow:visible;filter:none!important}.flat-furniture.is-editing{filter:none!important}#room.placing .flat-furniture.is-editing{filter:none!important}#flatFurnitureHud{position:absolute;z-index:1400;width:140px;padding:8px;border:1px solid #5553;border-radius:16px;background:#fff;box-shadow:none;transform:translateY(-50%);touch-action:manipulation}#flatFurnitureHud[hidden]{display:none!important}.ff-pad{display:grid;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px;gap:1px;justify-content:center;align-items:center}.ff-key{appearance:none;border:1px solid #bbb;background:#fff;color:#426c53;border-radius:5px;font-size:22px;line-height:1}.ff-key:disabled{opacity:.28}.ff-mid{grid-column:2;grid-row:2;display:grid;place-items:center;width:30px;height:30px;margin:auto;border:1px solid #ddd}.ff-ul{grid-column:1;grid-row:1}.ff-ur{grid-column:3;grid-row:1}.ff-dl{grid-column:1;grid-row:3}.ff-dr{grid-column:3;grid-row:3}.ff-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:6px}.ff-action{appearance:none;min-height:32px;border:1px solid #bbb;border-radius:5px;background:#fff;color:#444;font-size:11px;font-weight:700}.ff-confirm{background:#4c765a;color:#fff;border-color:#4c765a}@media(max-width:700px){#flatFurnitureHud{width:132px;padding:7px}.ff-pad{grid-template-columns:35px 35px 35px;grid-template-rows:35px 35px 35px}.ff-action{font-size:10px}}";
+css.textContent="#sofaActor.flat-furniture{filter:none!important}#sofaActor.flat-furniture img{display:none!important}.flat-furniture{position:absolute;display:block;overflow:visible;cursor:pointer;pointer-events:auto;transform-origin:50% 50%;transition:left .18s ease,top .18s ease,transform .18s ease;filter:none!important}.flat-furniture[hidden]{display:none!important}.flat-furniture svg{display:block;width:100%;height:auto;overflow:hidden!important;filter:none!important}.flat-furniture.is-editing{filter:none!important}#room.placing .flat-furniture.is-editing{filter:none!important}#flatFurnitureHud{position:absolute;z-index:1400;width:140px;padding:8px;border:1px solid #5553;border-radius:16px;background:#fff;box-shadow:none;transform:translateY(-50%);touch-action:manipulation}#flatFurnitureHud[hidden]{display:none!important}.ff-pad{display:grid;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px;gap:1px;justify-content:center;align-items:center}.ff-key{appearance:none;border:1px solid #bbb;background:#fff;color:#426c53;border-radius:5px;font-size:22px;line-height:1}.ff-key:disabled{opacity:.28}.ff-mid{grid-column:2;grid-row:2;display:grid;place-items:center;width:30px;height:30px;margin:auto;border:1px solid #ddd}.ff-ul{grid-column:1;grid-row:1}.ff-ur{grid-column:3;grid-row:1}.ff-dl{grid-column:1;grid-row:3}.ff-dr{grid-column:3;grid-row:3}.ff-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}.ff-action{appearance:none;min-height:32px;border:1px solid #bbb;border-radius:5px;background:#fff;color:#444;font-size:11px;font-weight:700}.ff-confirm{background:#4c765a;color:#fff;border-color:#4c765a}@media(max-width:700px){#flatFurnitureHud{width:132px;padding:7px}.ff-pad{grid-template-columns:35px 35px 35px;grid-template-rows:35px 35px 35px}.ff-action{font-size:10px}}";
 document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
 function makeSvg(item){
@@ -65,7 +65,7 @@ function place(item){
  item.actor.style.width=(width/10)+"%";item.actor.style.left=(p.x/10)+"%";item.actor.style.top=(p.y/7.48)+"%";item.actor.style.transform="translate(-50%,-"+(100*anchor).toFixed(3)+"%)";item.actor.style.zIndex=String(90+Math.round(p.y));
  item.actor.innerHTML=makeSvg(item);item.actor.hidden=!item.state.placed&&active!==item.id;
 }
-const hud=document.createElement("div");hud.id="flatFurnitureHud";hud.hidden=true;hud.innerHTML='<div class="ff-pad"><button class="ff-key ff-ul" data-d="ul">↖</button><button class="ff-key ff-ur" data-d="ur">↗</button><div class="ff-mid">◇</div><button class="ff-key ff-dl" data-d="dl">↙</button><button class="ff-key ff-dr" data-d="dr">↘</button></div><div class="ff-actions"><button class="ff-action" data-a="cancel">×戻す</button><button class="ff-action" data-a="rotate">↻回転</button><button class="ff-action ff-confirm" data-a="ok">決定</button></div>';room.append(hud);
+const hud=document.createElement("div");hud.id="flatFurnitureHud";hud.hidden=true;hud.innerHTML='<div class="ff-pad"><button class="ff-key ff-ul" data-d="ul">↖</button><button class="ff-key ff-ur" data-d="ur">↗</button><div class="ff-mid">◇</div><button class="ff-key ff-dl" data-d="dl">↙</button><button class="ff-key ff-dr" data-d="dr">↘</button></div><div class="ff-actions"><button class="ff-action" data-a="cancel">×戻す</button><button class="ff-action" data-a="rotate">↻回転</button><button class="ff-action" data-a="putAway">手元へ</button><button class="ff-action ff-confirm" data-a="ok">決定</button></div>';room.append(hud);
 let active=null,backup=null,gridWasShown=false;
 function current(){return active?items.find(item=>item.id===active):null}
 function clearPreview(){grid.querySelectorAll(".grid-cell").forEach(cell=>cell.classList.remove("preview-valid","preview-invalid"))}
@@ -109,6 +109,11 @@ function finish(){
  if(note)note.textContent="家具をタップすると、位置や向きを変更できます。";
  sync();
 }
+function putAway(){
+ const item=current();if(!item)return;
+ item.state.placed=false;save(item);finish();
+ if(note)note.textContent=item.label+"を手元に戻しました。";
+}
 function confirm(){
  const item=current();if(!item||!valid(item))return;
  item.state.placed=true;save(item);addOcc(item);finish();
@@ -131,7 +136,7 @@ for(const item of items){
 hud.addEventListener("click",event=>{
  const d=event.target.closest("[data-d]");if(d&&!d.disabled){move(d.dataset.d);return}
  const a=event.target.closest("[data-a]");if(!a)return;
- if(a.dataset.a==="rotate")rotate();if(a.dataset.a==="ok")confirm();if(a.dataset.a==="cancel")cancel();
+ if(a.dataset.a==="rotate")rotate();if(a.dataset.a==="ok")confirm();if(a.dataset.a==="cancel")cancel();if(a.dataset.a==="putAway")putAway();
 });
 window.addEventListener("resize",hudPosition,{passive:true});
 window.MonStudyRoomFurniture={get items(){return items.map(item=>({id:item.id,...item.state,rotation:item.rotation}))},get occupied(){return occupied}};
