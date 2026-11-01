@@ -198,7 +198,9 @@ function markComplete(article){
  const previous=behavior.completed[article.id]||{};
  if(previous.level===currentLevel||previous.levels?.includes(currentLevel))return;
  behavior.completed[article.id]={at:Date.now(),level:currentLevel,levels:[...new Set([...(previous.levels||[]),...(previous.level?[previous.level]:[]),currentLevel])]};
- saveBehavior();renderArticle();
+ saveBehavior();
+ void fetch('https://task-quest.onrender.com/api/material-activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({appId:'today',eventId:crypto.randomUUID()})}).then(response=>{if(!response.ok)throw Error(`usage tracking failed (${response.status})`);}).catch(error=>console.warn('[TODAY] usage tracking failed',error));
+ renderArticle();
 }
 function setDifficulty(article,value){behavior.difficulty[article.id]=value;saveBehavior();renderArticle();}
 function useLevel(level){currentLevel=level;behavior.levelUses[level]=(Number(behavior.levelUses[level])||0)+1;saveBehavior();renderArticle(false);}
