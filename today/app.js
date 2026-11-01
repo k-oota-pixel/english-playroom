@@ -1,5 +1,5 @@
 import {authReady as rewardAuthReady} from '../coin-reward.js?v=2.2.3';
-import {LEVELS,CATEGORIES,CAREERS,normalizeProfile,recommendedLevel,rankArticles,recommendationReason,countWords,validateArticle} from './model.js?v=1.1.0';
+import {LEVELS,CATEGORIES,CAREERS,normalizeProfile,recommendedLevel,rankArticles,recommendationReason,countWords,validateArticle} from './model.js?v=1.1.1';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
 import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
@@ -24,7 +24,7 @@ const profileError=document.getElementById('profileError');
 const PROFILE_KEY_PREFIX='monstudy-today-profile-v1';
 const BEHAVIOR_KEY_PREFIX='monstudy-today-behavior-v1';
 const PROFILE_SYNC_KEY_PREFIX='monstudy-today-profile-synced-v1';
-const CACHE_KEY='monstudy-today-news-v1';
+const CACHE_KEY='monstudy-today-news-v2';
 const BEGINNER_TITLE_LEVELS=new Set(['5級','4級','3級']);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const readJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback;}catch{return fallback;}};
@@ -36,6 +36,12 @@ const localDate=date=>new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'lon
 const dayKey=date=>{const d=new Date(date);return Number.isNaN(d.valueOf())?'':`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 const categoryInfo=id=>CATEGORIES.find(c=>c.id===id)||{id,label:'ニュース',icon:'📰'};
 const displayTitle=(article,level,levelTitle='')=>BEGINNER_TITLE_LEVELS.has(level)?(article.titleJa||article.summaryJa||levelTitle||article.title||''):(levelTitle||article.title||'');
+const shortJapaneseHeadline=article=>{
+  const value=String(article?.titleJa||article?.summaryJa||'').replace(/[。.!?！？].*$/u,'').trim();
+  const chars=Array.from(value);
+  if(chars.length<=14)return value||article?.title||'';
+  return `${chars.slice(0,13).join('')}…`;
+};
 const titleUsesSummary=(article,level)=>BEGINNER_TITLE_LEVELS.has(level)&&!article.titleJa&&Boolean(article.summaryJa);
 
 const emptyBehavior=()=>({read:{},completed:{},bookmarks:{},difficulty:{},categoryReads:{},levelUses:{}});
@@ -207,8 +213,8 @@ function card(article,index,{personal=true}={}){
   const cat=categoryInfo(article.category);
   const level=recommendedLevel(profile,article,behavior);
   const bookmarked=Boolean(behavior.bookmarks[article.id]);
-  const title=displayTitle(article,profile.level);
-  const summary=titleUsesSummary(article,profile.level)?'':(article.summaryJa||'');
+  const title=shortJapaneseHeadline(article);
+  const summary=article.summaryJa||'';
   return `<button class="news-card ${personal&&index<3?'recommended':''}" data-open="${esc(article.id)}"><div class="category"><span>${cat.icon}</span><span>${esc(cat.label)}</span>${bookmarked?'<span class="bookmark-mark" title="あとで読む">★</span>':''}</div><h3>${esc(title)}</h3>${summary?`<div class="ja">${esc(summary)}</div>`:''}${personal?`<div class="why">${index<3?'✨ あなたへのおすすめ · ':''}${esc(recommendationReason(article,profile,behavior))}</div>`:''}<div class="card-foot"><span>${esc(dayKey(article.date))}</span><span class="badge">${esc(level)}から読む</span></div></button>`;
 }
 

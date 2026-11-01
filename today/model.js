@@ -105,6 +105,7 @@ export function rankArticles(articles,profile,behavior={},limit=6,now=Date.now()
 
 export function validateArticle(article){
   if(!article||typeof article.id!=='string'||typeof article.title!=='string'||typeof article.date!=='string')return false;
+  if(article.titleJa!=null&&(typeof article.titleJa!=='string'||Array.from(article.titleJa).length>14))return false;
   if(!CATEGORIES.some(c=>c.id===article.category))return false;
   if(!article.levels)return false;
   const requiredLevels=article.levels['5級']?LEVELS:LEGACY_LEVELS;
