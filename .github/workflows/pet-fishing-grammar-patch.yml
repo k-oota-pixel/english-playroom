@@ -32,3 +32,4 @@ jobs:
           git add pet-fishing/index.html
           git commit -m 'Add EigoJun grammar mode to PET FISHING'
           git push
+# trigger after workflow registration
