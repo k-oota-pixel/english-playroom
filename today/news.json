@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-31T21:40:35.591Z",
+  "generatedAt": "2026-11-01T03:43:20.337Z",
   "editionDate": "2026-11-01",
   "automation": {
     "version": 1,
@@ -9,351 +9,373 @@
   },
   "articles": [
     {
-      "id": "2026-11-01-bird-flu-negative-miyagi-2026",
-      "date": "2026-11-01",
-      "scope": "japan",
-      "category": "environment",
-      "categories": [],
+      "id": "2026-11-01-highschool-ehime-local-catalog-gift",
+      "scope": "regional",
+      "category": "business",
+      "categories": [
+        "education",
+        "community"
+      ],
       "careerTags": [
-        "science"
+        "business",
+        "media"
       ],
       "tags": [
-        "bird-flu",
-        "miyagi",
-        "environment-ministry"
+        "high-school",
+        "ehime",
+        "local-business"
       ],
-      "title": "No Highly Pathogenic Bird Flu Found in Miyagi Wild Goose",
-      "summaryJa": "環境省は、宮城県栗原市で回収された死亡したマガンから見つかった鳥インフルエンザについて、遺伝子検査の結果、高病原性ではないと発表し、監視区域を解除しました。",
-      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
-      "levels": {
-        "5級": {
-          "title": "Dead Bird in Miyagi",
-          "text": "A dead bird is found in Miyagi. It is a wild goose. People check the bird. They find an A-type flu. But it is not a high-pathogenic bird flu. The government cancels the watch zone today. People can stay calm and wash hands.",
-          "wordCount": 43
-        },
-        "4級": {
-          "title": "Bird Flu Test is Negative",
-          "text": "On October 27, a dead wild goose was found in Kurihara City, Miyagi Prefecture. A quick test showed an A-type bird flu virus. Then, experts did a genetic test at the National Institute for Environmental Studies. On October 30, they announced that no highly pathogenic bird flu was found. The monitoring zone is now lifted. The government asks people to stay calm and wash hands.",
-          "wordCount": 63
-        },
-        "3級": {
-          "title": "Miyagi Bird Flu Monitoring Zone Lifted",
-          "text": "On October 27, a dead wild goose was found in Kurihara City, Miyagi Prefecture. A quick test confirmed an A-type bird flu reaction. Because of this, the local government set up a monitoring zone around the area. However, a detailed genetic test by experts at the National Institute for Environmental Studies showed no highly pathogenic bird flu virus. Therefore, the Ministry of the Environment lifted the monitoring zone on October 30. Officials ask citizens to stay calm and remember to wash hands after touching bird droppings.",
-          "wordCount": 84
-        },
-        "準2級": {
-          "title": "No Highly Pathogenic Bird Flu Confirmed in Kurihara",
-          "text": "The Ministry of the Environment announced that a dead wild goose found in Kurihara City, Miyagi Prefecture, tested negative for the highly pathogenic bird flu virus. The bird was collected on October 27, and an initial quick test showed a positive reaction for the A-type bird flu virus. Following this discovery, a ten-kilometer monitoring zone was established around the location. Experts at the National Institute for Environmental Studies then conducted a precise genetic test on the sample. The results confirmed that the virus was not highly pathogenic. As a result, the monitoring zone was officially lifted on October 30. Authorities emphasized that bird flu rarely infects humans through normal daily activities. They advised the public to remain calm and maintain basic hygiene, such as washing hands and gargling after contact with bird droppings.",
-          "wordCount": 131
-        },
-        "2級": {
-          "title": "Ministry Lifts Bird Flu Monitoring Zone in Miyagi Prefecture",
-          "text": "The Ministry of the Environment has officially lifted the wild bird monitoring zone in Kurihara City, Miyagi Prefecture, after genetic testing confirmed that a dead wild goose did not carry the highly pathogenic bird flu virus. The incident began on October 27, when a dead bean goose was recovered within the city. An initial rapid test yielded a positive reaction for the A-type avian influenza virus, prompting local authorities to establish a ten-kilometer monitoring radius to strengthen surveillance across the area. Subsequent genetic analysis was conducted by specialist examiners at the National Institute for Environmental Studies. On October 30, the test results proved negative for high pathogenicity, leading to the immediate removal of the surveillance restrictions. Government officials noted that avian influenza viruses rarely transmit to humans unless there is intense, direct contact with infected birds. The ministry urged the public to stay calm and maintain simple everyday hygiene practices, such as washing hands and gargling, while also requesting that citizens report any discoveries of multiple dead wild birds to local municipal offices.",
-          "wordCount": 171
-        },
-        "準1級": {
-          "title": "Miyagi Avian Influenza Scare Resolved as Genetic Tests Return Negative",
-          "text": "The Ministry of the Environment officially dismantled the designated wild bird monitoring zone in Kurihara City, Miyagi Prefecture, following conclusive genetic test results proving that a recently recovered wild goose was free of the highly pathogenic avian influenza strain. The sequence of events unfolded on October 27, when a deceased bean goose was discovered and retrieved within the municipality. An initial rapid screening test returned a positive reaction for the A-type avian influenza virus, which immediately triggered regional precautionary measures. In response, authorities established a ten-kilometer surveillance radius around the recovery site to intensify observation and prevent potential viral spread. The biological sample was subsequently sent for advanced genetic testing conducted by specialized analysts at the National Institute for Environmental Studies. On October 30, the definitive analysis confirmed the absence of the highly pathogenic virus, allowing the ministry to dissolve the monitoring zone on the same day. Government representatives reassured the public that avian influenza transmission to humans is extremely rare under normal circumstances, typically requiring dense and direct exposure to infected animals. Citizens were advised to exercise calm, practice standard daily hygiene routines such as handwashing after outdoor activities, and promptly report any clusters of dead wildlife to prefectural or municipal authorities.",
-          "wordCount": 201
-        }
-      },
+      "titleJa": "高校生が地域ギフト制作",
+      "title": "High School Students Create a Local Gift Catalog",
+      "summaryJa": "愛媛県の宇和高校と野村高校の生徒26人が、西予市の事業者を取材して地域産品を紹介するカタログギフトを制作しました。生徒は商品の調査、取材、撮影、記事の編集まで担当し、文化祭とオンラインで販売を始めました。",
+      "sourcePublishedAt": "2026-10-31T00:00:00.000Z",
       "sources": [
         {
-          "name": "Ministry of Environment Japan",
-          "url": "https://www.env.go.jp/press/111118_00083.html"
+          "name": "毎日キレイ（愛媛新聞社）",
+          "url": "https://mainichikirei.jp/prtimes/article/20261031prt00m100000056a.html"
         }
       ],
-      "titleJa": "マガンの鳥インフル低病原性"
+      "levels": {
+        "5級": {
+          "title": "A Gift from Our Town",
+          "text": "Students make a gift catalog. They visit local shops. They take photos and write about local food. They sell the catalog at school and online. The project helps people learn about their town.",
+          "wordCount": 33
+        },
+        "4級": {
+          "title": "Students Share Local Products",
+          "text": "Students from two high schools in Ehime made a gift catalog. They visited local businesses in Seiyo City and learned about their products. The students took photos and wrote short stories. They started selling the catalog at a school festival and online.",
+          "wordCount": 42
+        },
+        "3級": {
+          "title": "A Catalog Made by High School Students",
+          "text": "Twenty-six students from Uwa and Nomura high schools worked together on a gift catalog. They visited local businesses in Seiyo City, took photos, and wrote about products. They also learned how to edit their stories. The catalog went on sale at a school festival and online on October 31.",
+          "wordCount": 49
+        },
+        "準2級": {
+          "title": "Students Connect Their Town with Shoppers",
+          "text": "High school students in Ehime created a catalog gift featuring products from local businesses. Twenty-six students from Uwa and Nomura high schools researched the products, interviewed business owners, took photographs, and edited the descriptions. The project gives the businesses another way to reach customers and lets students practice communication and marketing.",
+          "wordCount": 51
+        },
+        "2級": {
+          "title": "A Student-Made Catalog Promotes Ehime Businesses",
+          "text": "Twenty-six students from Uwa and Nomura high schools in Ehime worked with local businesses to create a catalog gift. They researched products, interviewed business owners in Seiyo City, photographed the items, and wrote and edited the introductions with help from professionals. Sales began at the Nomura High School festival and online on October 31. Part of the proceeds will support educational activities at the two schools.",
+          "wordCount": 66
+        },
+        "準1級": {
+          "title": "High School Students Turn Local Reporting into a Gift Product",
+          "text": "A group of 26 students from Uwa and Nomura high schools in Ehime produced a catalog gift to introduce businesses and products from Seiyo City. The students handled research, interviews, photography, writing, and editing, with guidance from professional writers, photographers, and designers. The catalog launched at the Nomura High School festival on October 31 and is also available online. Part of the proceeds will fund educational activities, while the project aims to raise awareness of local businesses and expand their reach.",
+          "wordCount": 81
+        }
+      },
+      "date": "2026-11-01"
     },
     {
-      "id": "2026-11-01-digital-agency-updates-mynumber-card-info-vol-157-158",
-      "date": "2026-11-01",
+      "id": "2026-11-01-johoku-highschool-local-food-collab",
+      "scope": "regional",
+      "category": "business",
+      "categories": [
+        "education",
+        "food"
+      ],
+      "careerTags": [
+        "business",
+        "food"
+      ],
+      "tags": [
+        "high-school",
+        "kumamoto",
+        "local-business"
+      ],
+      "titleJa": "高校生が地元商品を開発",
+      "title": "Students and Local Businesses Make Festival Food",
+      "summaryJa": "熊本県山鹿市の城北高校の生徒が地元企業と弁当やドーナツなどを開発し、学園祭で販売しました。売上は熊本地震の被災地支援に寄付されます。",
+      "sourcePublishedAt": "2026-10-31T08:00:00.000Z",
+      "sources": [
+        {
+          "name": "熊本日日新聞",
+          "url": "https://www.kumanichi.com/articles/2052575"
+        }
+      ],
+      "levels": {
+        "5級": {
+          "title": "Food for a School Festival",
+          "text": "Students make lunch boxes and doughnuts. They work with local companies. They sell the food at their school festival. The money will help people after an earthquake.",
+          "wordCount": 27
+        },
+        "4級": {
+          "title": "A Local Food Project",
+          "text": "Students at Johoku High School in Kumamoto worked with local companies. Together they made lunch boxes and doughnuts. Students sold the new foods at their school festival. They will give the money to help people affected by the Kumamoto earthquake.",
+          "wordCount": 40
+        },
+        "3級": {
+          "title": "Students Create Festival Foods with Local Companies",
+          "text": "First-year students in the sports science course at Johoku High School made original food with local businesses. Their products included lunch boxes and doughnuts. They sold them at the school festival on October 30 and 31. The profits will be donated to support areas affected by the Kumamoto earthquake.",
+          "wordCount": 49
+        },
+        "準2級": {
+          "title": "A School Festival Supports Local Businesses and Communities",
+          "text": "Students at Johoku High School in Yamaga City worked with local companies to develop foods such as lunch boxes and doughnuts. They sold the products at their school festival on October 30 and 31. The project gave students experience in planning and selling products, and the profits will support communities affected by the 2016 Kumamoto earthquake.",
+          "wordCount": 56
+        },
+        "2級": {
+          "title": "Students Put Their Ideas on the Festival Menu",
+          "text": "First-year students in Johoku High School’s sports science course teamed up with businesses in Yamaga City to create original lunch boxes, doughnuts, and other foods. They sold the products at the school festival over two days. The project connected classroom learning with local business, and the proceeds are expected to be donated to support areas affected by the Kumamoto earthquake.",
+          "wordCount": 60
+        },
+        "準1級": {
+          "title": "Local Collaboration Brings Student-Designed Foods to a School Festival",
+          "text": "Students in the sports science course at Johoku High School in Kumamoto Prefecture worked with local businesses to develop original foods, including lunch boxes and doughnuts. The products were sold at the school festival on October 30 and 31. By taking part in product development and sales, students gained practical experience, while proceeds from the project will be donated to communities affected by the Kumamoto earthquake.",
+          "wordCount": 66
+        }
+      },
+      "date": "2026-11-01"
+    },
+    {
+      "id": "2026-11-01-kofu-commerce-seven-traditional-vegetables",
+      "scope": "regional",
+      "category": "business",
+      "categories": [
+        "education",
+        "food",
+        "community"
+      ],
+      "careerTags": [
+        "business",
+        "food"
+      ],
+      "tags": [
+        "high-school",
+        "yamanashi",
+        "seven-eleven",
+        "local-farmers"
+      ],
+      "titleJa": "高校生×セブン伝統野菜",
+      "title": "Students and Seven-Eleven Bring Local Vegetables to Stores",
+      "summaryJa": "甲府商業高校の生徒が生産者やセブン‐イレブン・ジャパンと連携し、山梨県の伝統野菜「長禅寺菜」を使った商品3品を開発しました。11月2日から山梨・長野の店舗で販売し、3日には高校生が学校行事で販売します。",
+      "sourcePublishedAt": "2026-10-26T00:00:00.000Z",
+      "sources": [
+        {
+          "name": "山梨県（フーズチャネル掲載）",
+          "url": "https://foods-ch.infomart.co.jp/news/348610"
+        }
+      ],
+      "levels": {
+        "5級": {
+          "title": "A Local Vegetable in Stores",
+          "text": "Students make new food with a local vegetable. They work with farmers and Seven-Eleven. The food goes on sale on November 2. Students will also sell it at school.",
+          "wordCount": 29
+        },
+        "4級": {
+          "title": "Students Make Products with Local Farmers",
+          "text": "Students at Kofu Commercial High School worked with local farmers and Seven-Eleven Japan. They made three products using a traditional vegetable from Yamanashi. The products will go on sale in stores on November 2.",
+          "wordCount": 34
+        },
+        "3級": {
+          "title": "A Traditional Vegetable Gets a New Look",
+          "text": "Students at Kofu Commercial High School helped create three products using Chozenji-na, a traditional vegetable from Yamanashi. They worked with local growers and Seven-Eleven Japan. The products will be sold in stores in Yamanashi and Nagano from November 2. Students will also sell them at a school event.",
+          "wordCount": 48
+        },
+        "準2級": {
+          "title": "Students Take a Local Vegetable to Convenience Stores",
+          "text": "Kofu Commercial High School students teamed up with local growers and Seven-Eleven Japan to develop three products using Chozenji-na, a traditional vegetable from Yamanashi. Sales are scheduled to begin at stores in Yamanashi and some stores in Nagano on November 2. Students will sell the products themselves at their school’s Koshō Department Store event on November 3.",
+          "wordCount": 57
+        },
+        "2級": {
+          "title": "A Student Idea Reaches Convenience Store Shelves",
+          "text": "Students at Kofu Commercial High School worked with growers and Seven-Eleven Japan to turn Chozenji-na, a traditional Yamanashi vegetable, into three new products. The items are scheduled to go on sale in Yamanashi and at some stores in Nagano on November 2. The following day, students will sell them at their school’s annual Koshō Department Store event. The project aims to introduce the vegetable to more shoppers and support local producers.",
+          "wordCount": 71
+        },
+        "準1級": {
+          "title": "Local Produce Meets Student Ideas and Retail Experience",
+          "text": "Kofu Commercial High School students collaborated with local producers and Seven-Eleven Japan to develop three products featuring Chozenji-na, a traditional vegetable from Yamanashi. The products are scheduled to reach stores in Yamanashi and some locations in Nagano on November 2. Students will also sell them at the school’s Koshō Department Store event on November 3. The partnership links local agriculture with retail and gives students hands-on experience in product development and sales.",
+          "wordCount": 72
+        }
+      },
+      "date": "2026-11-01"
+    },
+    {
+      "id": "2026-11-01-souya-line-bear-derailment",
+      "scope": "regional",
+      "category": "society",
+      "categories": [
+        "transportation",
+        "environment"
+      ],
+      "careerTags": [
+        "transportation",
+        "safety"
+      ],
+      "tags": [
+        "hokkaido",
+        "jr-hokkaido",
+        "souya-line",
+        "bear"
+      ],
+      "titleJa": "北海道特急がクマと衝突",
+      "title": "Bear Collision Derails a Train in Hokkaido",
+      "summaryJa": "JR宗谷線で特急列車がクマと衝突して先頭車両が脱線し、乗客32人が車内で一夜を過ごしました。11月1日も一部区間で運休が続き、JR北海道は代行バスを運行するとしています。",
+      "sourcePublishedAt": "2026-11-01T05:30:00.000Z",
+      "sources": [
+        {
+          "name": "北海道文化放送 UHB",
+          "url": "https://www.uhb.jp/news/single.html?id=63265"
+        }
+      ],
+      "levels": {
+        "5級": {
+          "title": "A Train Stops in Hokkaido",
+          "text": "A train hits a bear in Hokkaido. The train cannot move. People stay inside overnight. Some trains stop today. Buses take their place.",
+          "wordCount": 23
+        },
+        "4級": {
+          "title": "A Bear Stops a Train",
+          "text": "A limited express train hit a bear on the Soya Line in Hokkaido. The front car left the tracks. Thirty-two passengers stayed on the train overnight. Some trains were canceled on November 1, so JR Hokkaido planned bus services.",
+          "wordCount": 39
+        },
+        "3級": {
+          "title": "Train Service Affected After Bear Collision",
+          "text": "A limited express train on the Soya Line hit a bear on October 30. The front car derailed, and 32 passengers spent the night inside the train. On November 1, trains were still canceled on part of the line. JR Hokkaido arranged buses to carry passengers around the closed section.",
+          "wordCount": 50
+        },
+        "準2級": {
+          "title": "JR Hokkaido Uses Buses After Train Derails",
+          "text": "A limited express train on Hokkaido’s Soya Line struck a bear between Teshio-Nakagawa and Toikanbetsu stations on October 30. Its front car derailed, and 32 passengers stayed inside overnight. Train service remained suspended on part of the route on November 1, so JR Hokkaido planned replacement buses while repairs and an investigation continued.",
+          "wordCount": 53
+        },
+        "2級": {
+          "title": "Bear Collision Disrupts Soya Line Travel",
+          "text": "A limited express train hit a bear on the Soya Line in northern Hokkaido on October 30, and the front car derailed. The 32 passengers aboard spent the night inside the train before being moved. Service was still suspended on part of the route on November 1. JR Hokkaido arranged replacement buses, while investigators examined the accident.",
+          "wordCount": 57
+        },
+        "準1級": {
+          "title": "Derailment After Bear Strike Leaves Hokkaido Passengers Overnight",
+          "text": "A limited express train on the Soya Line struck a bear between Teshio-Nakagawa and Toikanbetsu on October 30. The bear became trapped beneath the train, and the front car was later found to have derailed. Thirty-two passengers spent the night aboard without injuries. JR Hokkaido suspended service on part of the line on November 1 and arranged replacement buses as the railway company and investigators assessed the damage.",
+          "wordCount": 68
+        }
+      },
+      "date": "2026-11-01"
+    },
+    {
+      "id": "2026-11-01-yanmar-agri-high-school-hanasaka",
+      "scope": "japan",
+      "category": "education",
+      "categories": [
+        "business",
+        "food"
+      ],
+      "careerTags": [
+        "agriculture",
+        "business"
+      ],
+      "tags": [
+        "yanmar",
+        "agriculture-high-school",
+        "food"
+      ],
+      "titleJa": "農業高校生の収穫祭",
+      "title": "Yanmar Festival Features Farm Products by High School Students",
+      "summaryJa": "ヤンマーホールディングスは、農業高校42校が育てた農産物や加工品を生徒自身が販売する収穫祭を東京で開催しました。生徒が育てた米を使うレストランの特別メニューも11月に提供されます。",
+      "sourcePublishedAt": "2026-10-27T05:30:00.000Z",
+      "sources": [
+        {
+          "name": "ヤンマーホールディングス（PR TIMES）",
+          "url": "https://prtimes.jp/main/html/rd/p/000000395.000034384.html"
+        }
+      ],
+      "levels": {
+        "5級": {
+          "title": "A Festival for Farm Students",
+          "text": "Students from farm high schools sell food they grow. They bring crops and food to Tokyo. A restaurant also serves rice grown by students.",
+          "wordCount": 24
+        },
+        "4級": {
+          "title": "High School Farm Products in Tokyo",
+          "text": "Yanmar held a festival with 42 agricultural high schools. Students sold crops and food they made. A restaurant in Tokyo also serves a special meal with rice grown by high school students.",
+          "wordCount": 32
+        },
+        "3級": {
+          "title": "Students Sell Their Farm Products",
+          "text": "Yanmar held a two-day harvest festival in Tokyo on October 31 and November 1. Students from 42 agricultural high schools sold crops and processed foods they had grown or made. A restaurant also began offering a special menu using rice grown by students.",
+          "wordCount": 43
+        },
+        "準2級": {
+          "title": "A Company Helps Agricultural Students Meet Customers",
+          "text": "Yanmar organized a harvest festival in Tokyo with students from 42 agricultural high schools. The students sold crops and processed foods themselves, learning about selling and distribution. A restaurant at Yanmar Tokyo also began serving a limited-time course featuring rice grown by high school students.",
+          "wordCount": 45
+        },
+        "2級": {
+          "title": "Agricultural Students Bring Their Work to a Tokyo Market",
+          "text": "Students from 42 agricultural high schools took part in Yanmar’s harvest festival in Tokyo on October 31 and November 1. They sold crops and processed foods they had grown or made, gaining experience in distribution and sales. A restaurant in the Yanmar Tokyo building also introduced a limited-time menu featuring rice cultivated by students.",
+          "wordCount": 54
+        },
+        "準1級": {
+          "title": "Yanmar Event Connects Agricultural Schools with Consumers",
+          "text": "Yanmar Holdings hosted a harvest festival in Tokyo featuring students from 42 agricultural high schools. The students sold crops and processed goods, giving them practical experience in how agricultural products reach customers. The company also arranged a restaurant collaboration: from November 1 through November 28, a Tokyo restaurant planned to serve a limited-time course using rice grown by high school students.",
+          "wordCount": 61
+        }
+      },
+      "date": "2026-11-01"
+    },
+    {
+      "id": "2026-11-01-murata-mlcc-capacity-expansion",
       "scope": "japan",
       "category": "technology",
       "categories": [
-        "business"
+        "business",
+        "science"
       ],
       "careerTags": [
+        "engineering",
         "business"
       ],
       "tags": [
-        "Mynumber",
-        "DigitalAgency",
-        "Japan"
+        "murata",
+        "electronics",
+        "manufacturing"
       ],
-      "title": "Digital Agency Releases New My Number Card Updates",
-      "summaryJa": "デジタル庁は民間事業者向けにマイナンバーカード・インフォの新号Vol.157およびVol.158を掲載し、デジタル認証アプリの「マイナアプリ」への統合などを発表しました。",
-      "sourcePublishedAt": "2026-10-30T06:00:00.000Z",
-      "levels": {
-        "5級": {
-          "title": "New App for My Number Card",
-          "text": "The Digital Agency has new news. It is about the My Number Card. People can use a new app. The name of the app is the Myna App. It helps private businesses and people. You can use it easily today. This is very good for everyone in Japan now.",
-          "wordCount": 49
-        },
-        "4級": {
-          "title": "Digital Agency Shares My Number Updates",
-          "text": "The Digital Agency published new information for private businesses. It is My Number Card Info Vol.157 and Vol.158. The agency integrated the digital authentication app into the new Myna App. Private companies and government offices can continue using these digital services for safe identity checks and procedures across the country.",
-          "wordCount": 50
-        },
-        "3級": {
-          "title": "Digital Agency Publishes Latest My Number Card Info",
-          "text": "The Digital Agency in Japan recently published the latest My Number Card Info volumes 157 and 158 for private businesses and public organizations. One major update is the integration of the digital authentication app into the new Myna App. Because of this change, the older service has been renamed to the digital authentication service. Businesses and government offices can still use these tools easily for online identity verification and various digital procedures across the country.",
-          "wordCount": 73
-        },
-        "準2級": {
-          "title": "Digital Agency Updates Business Information and Integrates Authentication App",
-          "text": "The Digital Agency of Japan has released the latest editions of My Number Card Info, specifically volumes 157 and 158, for private businesses and public organizations. A key update is that the digital authentication app has been integrated into the new Myna App. Following this release, the digital authentication app service has been renamed to the digital authentication service. Government agencies and private companies can continue utilizing this service for secure verification. The My Number Card Info page shares helpful usage examples, such as online identity checks and school festival age confirmation, helping businesses adopt digital solutions effectively.",
-          "wordCount": 96
-        },
-        "2級": {
-          "title": "Digital Agency Updates Private Business Guidelines for My Number Card Usage",
-          "text": "The Digital Agency has published new updates in its My Number Card Info series for private businesses and public organizations, highlighting volumes 157 and 158. A central announcement is the integration of the digital authentication app into the newly launched Myna App, which began providing its features to users recently. Consequently, the former digital authentication service has been renamed to the digital authentication service, but public and private entities can continue to use its verified features safely. The agency regularly shares practical examples of how companies across various industries utilize the My Number Card to promote better understanding and implementation. Recent volumes feature specific use cases, such as age verification at school festivals using the My Number Card face-to-face check app, and smartphone identity verification for loan applications. These resources help businesses understand public policies and improve their digital authentication processes for customers efficiently across the country.",
-          "wordCount": 145
-        },
-        "準1級": {
-          "title": "Digital Agency Releases New My Number Card Information and Integrates Authentication Services",
-          "text": "The Digital Agency of Japan has officially published volumes 157 and 158 of its My Number Card Info, providing essential updates and practical resources for private businesses and public organizations across the country. Among the notable announcements is the integration of the former digital authentication app functions into the newly introduced Myna App, which commenced its service provision to streamline user access for residents and corporate entities alike. Accompanying this release, the digital authentication app service has been officially renamed the digital authentication service, ensuring that government bodies and commercial organizations can seamlessly maintain their identity verification processes and utilize the security tools effectively. The comprehensive information portal continues to serve as a reliable guide for enterprises by sharing diverse corporate use cases, ranging from smartphone-based identity verification for loan applications, such as services offered by NTT Docomo Financial Group, to innovative age confirmation methods at school festivals using face-to-face confirmation applications. By compiling these practical examples and outlining government policies in a clear, accessible manner, the Digital Agency aims to support secure digital adoption and card utilization across multiple sectors throughout Japan, helping organizations understand and implement public policies efficiently.",
-          "wordCount": 189
-        }
-      },
-      "sources": [
-        {
-          "name": "Digital Agency Japan",
-          "url": "https://www.digital.go.jp/policies/mynumber/private-business/info"
-        }
-      ],
-      "titleJa": "マイナカード新情報更新"
-    },
-    {
-      "id": "2026-11-01-mext-cs-youth-leader-university-event-2026",
-      "date": "2026-11-01",
-      "scope": "japan",
-      "category": "education",
-      "categories": [],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "MEXT",
-        "Community School",
-        "Yamaguchi University"
-      ],
-      "title": "MEXT Announces New University Event by CS Youth Leaders",
-      "summaryJa": "文部科学省は、コミュニティ・スクールや地域学校協働活動の推進に向け、CSユースリーダーによる大学生対象のイベントを山口大学で開催すると発表しました。",
+      "titleJa": "村田製作所、部品増産へ",
+      "title": "Murata Plans to Expand Production of Tiny Electronic Parts",
+      "summaryJa": "村田製作所は、スマートフォンや電子機器に使われる積層セラミックコンデンサの生産能力を今後拡大する方針を公表しました。小型化が進む電子部品の需要に応えるため、製造体制を強化します。",
       "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
-      "levels": {
-        "5級": {
-          "title": "New Event for Students",
-          "text": "Japan has a new event for college students. The Ministry of Education makes this plan. It helps young people. Students can meet in December. They can talk about schools and towns. The event is free for everyone. Many students can join this fun meeting to learn new things together today.",
-          "wordCount": 50
-        },
-        "4級": {
-          "title": "Learning About Community Schools",
-          "text": "The Ministry of Education in Japan is planning a special event for college students. It will happen on December 19 at Yamaguchi University. Young leaders called CS Youth Leaders will talk about schools and local communities. The main goal is to help students connect with towns. Students can join group talks and share their ideas freely at the meeting.",
-          "wordCount": 58
-        },
-        "3級": {
-          "title": "Connecting Students and Local Schools",
-          "text": "Japan's Ministry of Education announced a new event aimed at university students. The event will take place on December 19 at Yamaguchi University. Its main theme is connecting local communities and schools. CS Youth Leaders, appointed by the ministry, will share their activities and insights. Participants will also join group discussions to talk about youth involvement. The organizers hope this meeting will encourage more students to participate in local school activities. The meeting is free to attend, but registration must be completed by December 16 to secure a spot for the session.",
-          "wordCount": 90
-        },
-        "準2級": {
-          "title": "MEXT Hosts University Event to Promote Community Schools",
-          "text": "The Ministry of Education, Culture, Sports, Science and Technology announced a new university event organized by CS Youth Leaders. Scheduled for December 19 at Yamaguchi University, the program focuses on connecting local communities and schools. The ministry recently appointed young CS Youth Leaders to promote community schools and regional activities from a youth perspective. The event features activity reports, presentations by university students, and group talks. Through these activities, the ministry hopes to encourage students to take an active role in regional communities. Registration is completely free and remains open until December 16 for all interested participants.",
-          "wordCount": 95
-        },
-        "2級": {
-          "title": "MEXT and Yamaguchi University to Hold Event Connecting Students and Local Communities",
-          "text": "The Japanese Ministry of Education has announced an upcoming event targeted at university students, designed to foster deeper connections between young people and local educational institutions. Scheduled for December 19, 2026, at Yamaguchi University, the event is part of broader efforts to promote community schools and collaborative regional activities. A key feature of the program involves CS Youth Leaders, who are young individuals newly appointed by the ministry this year to communicate the value of community schools from a youth perspective. The schedule includes a briefing on government policies, activity reports from youth leaders, student presentations, and interactive group discussions. Organizers aim to inspire students to engage proactively with their local communities. Admission is free, with a capacity of 80 participants, and applications remain open through December 16, 2026, via the official online application form provided by the ministry.",
-          "wordCount": 134
-        },
-        "準1級": {
-          "title": "MEXT Announces New Event at Yamaguchi University Featuring CS Youth Leaders to Engage University Students in Regional Community Building",
-          "text": "In a strategic effort to advance community schools and collaborative regional education, Japan's Ministry of Education, Culture, Sports, Science and Technology has announced a dedicated event tailored for university students. Set for December 19, 2026, at Yamaguchi University, the program centers on bridging the gap between local communities and educational institutions under the core theme of connecting schools and regions through grassroots student involvement. This initiative highlights the newly established CS Youth Leaders, who are young advocates appointed by the ministry starting this fiscal year to champion the significance of community schools and regional activities through a youthful lens. The agenda features comprehensive policy explanations from ministry officials, inspiring activity reports, student-led presentations, and collaborative group discussions designed to stimulate active civic participation among attendees. By creating structured opportunities for dialogue, the organizers intend to empower students to transform their initial ideas into meaningful community involvement. Registration is currently underway and will close on December 16, 2026, welcoming up to eighty participants free of charge for this special session. The Ministry of Education, Culture, Sports, Science and Technology and Yamaguchi University are jointly hosting this gathering to help young people discover new pathways for connecting with local institutions. Interested individuals can complete their registration online through the official application form provided by the Ministry of Education, Culture, Sports, Science and Technology before the final deadline arrives in December.",
-          "wordCount": 224
-        }
-      },
       "sources": [
         {
-          "name": "MEXT Japan",
-          "url": "https://www.mext.go.jp/b_menu/houdou/mext_01698.html"
+          "name": "村田製作所",
+          "url": "https://corporate.murata.com/ja-jp/newsroom/news?page=1&year=2026"
         }
       ],
-      "titleJa": "大学生の地域活動イベント"
-    },
-    {
-      "id": "2026-11-01-mhlw-cybersecurity-alert-2026",
-      "date": "2026-11-01",
-      "scope": "japan",
-      "category": "health",
-      "categories": [],
-      "careerTags": [
-        "it"
-      ],
-      "tags": [
-        "cybersecurity",
-        "mhlw",
-        "japan",
-        "data-protection"
-      ],
-      "title": "MHLW Issues Urgent Cybersecurity Alert for Businesses",
-      "summaryJa": "厚生労働省は不正アクセスによる情報漏えい事案の増加を受け、事業者に対しサイバーセキュリティ対策の徹底を呼びかけました。",
-      "sourcePublishedAt": "2026-10-30T09:59:00.000Z",
       "levels": {
         "5級": {
-          "title": "Cybersecurity Alert",
-          "text": "The government has a new warning. Many computers have bad security problems now. Hackers can steal personal information easily. Companies must check their systems today. Please protect your data and passwords carefully. Leaders need to help stop cyber attacks in Japan very soon.",
+          "title": "A Company Makes More Parts",
+          "text": "Murata makes tiny parts for electronics. The company plans to make more of them. These parts are used in phones and other devices.",
+          "wordCount": 23
+        },
+        "4級": {
+          "title": "Murata Plans to Make More Parts",
+          "text": "Japanese electronics company Murata plans to increase production of tiny parts called ceramic capacitors. Many phones and other electronic devices use these parts.",
+          "wordCount": 23
+        },
+        "3級": {
+          "title": "More Tiny Parts for Electronic Devices",
+          "text": "Murata Manufacturing announced plans to expand production capacity for multilayer ceramic capacitors. These small components are used in smartphones and many other electronic products. The company plans to strengthen its production system to meet demand.",
+          "wordCount": 35
+        },
+        "準2級": {
+          "title": "Murata Responds to Demand for Electronic Components",
+          "text": "Murata Manufacturing plans to expand its production capacity for multilayer ceramic capacitors, or MLCCs. These tiny components help electronic devices store and manage electrical energy. They are used in smartphones and many other products, so stable supply is important for manufacturers.",
+          "wordCount": 41
+        },
+        "2級": {
+          "title": "A Production Expansion for Components Inside Phones",
+          "text": "Murata Manufacturing announced plans to increase its production capacity for multilayer ceramic capacitors. MLCCs are small components found in smartphones, computers, and other electronics. Expanding capacity can help the company respond to demand as devices become more advanced and manufacturers need reliable supplies.",
           "wordCount": 43
         },
-        "4級": {
-          "title": "New Security Warning in Japan",
-          "text": "The Japanese government issued an urgent security warning recently. Many company computers are facing illegal access by hackers. Personal information and data were stolen in several cases. Officials ask businesses to update software and use strong passwords. Leaders must make security stronger across their supply chains to protect important user information safely and carefully.",
-          "wordCount": 54
-        },
-        "3級": {
-          "title": "MHLW Calls for Stronger Security Measures",
-          "text": "The Ministry of Health, Labour and Welfare issued an important security alert for businesses across Japan. Recent cases show that hackers are using unauthorized access to steal large amounts of personal data from company systems. To prevent further attacks, the government asks organizations to apply software updates quickly and use multi-factor authentication. Business leaders must take responsibility and strengthen cybersecurity across their entire supply chain, especially in organizations handling sensitive information today.",
-          "wordCount": 72
-        },
-        "準2級": {
-          "title": "Japan Issues Urgent Cybersecurity Warning Following Data Leaks",
-          "text": "The Ministry of Health, Labour and Welfare has issued an urgent cybersecurity alert following a series of unauthorized access incidents that resulted in data leaks from various business systems. Because hackers have successfully stolen large amounts of personal information from organizations, the National Cyber Security Operations Office urges businesses to take immediate action. Companies must apply security patches, update their systems to fix vulnerabilities, and strengthen authentication methods like multi-factor authentication. Furthermore, leaders must ensure that these protective measures are thoroughly implemented across their entire supply chain, including contractors and partner companies. Organizations handling sensitive medical data or large amounts of personal information must exercise extreme caution and reinforce their overall security framework under executive leadership.",
-          "wordCount": 116
-        },
-        "2級": {
-          "title": "Ministry Urges Comprehensive Security Measures After Cyber Attacks",
-          "text": "The Ministry of Health, Labour and Welfare has issued a stern warning and call for action following a continuous wave of unauthorized access incidents targeting Japanese organizations. In these recent cases, malicious actors breached information systems handling massive amounts of personal data, successfully stealing sensitive records. In response to this growing threat, the National Cyber Security Operations Office has urged all business operators to urgently review and enhance their security postures. Essential measures include promptly applying software patches, addressing system vulnerabilities, strengthening authentication methods such as multi-factor authentication, and ensuring thorough data protection. Crucially, companies are instructed to extend these security enhancements across their entire supply chain, including external vendors and outsourced partners. Business leaders must personally demonstrate strong leadership to reinforce cybersecurity frameworks. Organizations that possess large volumes of personal data or handle highly sensitive information, including medical institutions and healthcare system providers, are strongly advised to take immediate precautionary action.",
-          "wordCount": 152
-        },
         "準1級": {
-          "title": "Japanese Authorities Issue Strong Security Alert Amid Rising Unauthorized Access Incidents",
-          "text": "In response to a continuous series of alarming incidents where unauthorized access led to severe data breaches, the Ministry of Health, Labour and Welfare has issued a formal warning and request for heightened security measures across the country. Information systems managing massive quantities of personal data have been repeatedly targeted and compromised by malicious actors, resulting in the theft of sensitive records. Prompted by this vulnerable operational landscape, the National Cyber Security Operations Office has strongly advised business operators to immediately evaluate and reinforce their defensive capabilities. Organizations are urged to apply essential security patches, update software regularly to mitigate system vulnerabilities, and implement robust authentication protocols such as multi-factor authentication. Furthermore, companies must ensure that comprehensive data protection practices are strictly enforced throughout their entire supply chain, incorporating all third-party vendors and contractors. Executive management is expected to lead these initiatives proactively, recognizing that robust cyber resilience is vital. Healthcare institutions and providers of medical information systems must exercise extraordinary vigilance, carefully reviewing official guidelines from relevant authorities and utilizing available consultation resources to safeguard critical information assets against evolving cyber threats.",
-          "wordCount": 183
+          "title": "Murata Strengthens Manufacturing Capacity for Ceramic Capacitors",
+          "text": "Murata Manufacturing plans to expand production capacity for multilayer ceramic capacitors, components used in smartphones and a wide range of electronic equipment. The parts are small but essential to the operation of modern devices. The company’s announced plan is intended to strengthen its manufacturing system and respond to future demand from electronics makers.",
+          "wordCount": 53
         }
       },
-      "sources": [
-        {
-          "name": "MHLW Japan",
-          "url": "https://www.mhlw.go.jp/stf/kinkyu/20261030.html"
-        }
-      ],
-      "titleJa": "企業に情報対策を要請"
-    },
-    {
-      "id": "2026-11-01-sports-machi-awards-2026",
-      "date": "2026-11-01",
-      "scope": "japan",
-      "category": "sports",
-      "categories": [],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "Japan Sports Agency",
-        "Sports Machi Awards",
-        "local government",
-        "awards ceremony"
-      ],
-      "title": "Japan Sports Agency Announces 2026 Sports Machi Award Winners",
-      "summaryJa": "スポーツ庁は「スポまち！表彰2026」の受賞自治体28団体を発表しました。11月17日に東京国際フォーラムで表彰式典が開催されます。",
-      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
-      "levels": {
-        "5級": {
-          "title": "Japan Sports Agency Has New Awards",
-          "text": "The Japan Sports Agency has good news. They chose twenty-eight cities and towns. These places work hard for sports. They make good sports plans. A nice ceremony is coming soon. It is on November seventeen. Many people can go. Sports are very fun for everyone in Japan.",
-          "wordCount": 47
-        },
-        "4級": {
-          "title": "Announcing the 2026 Sports Machi Award Winners",
-          "text": "The Japan Sports Agency announced the winners of the 2026 Sports Machi Awards. They chose twenty-eight local governments for this great honor. These cities and towns create wonderful environments for sports and health. A special ceremony will happen on November seventeenth in Tokyo. Special guests will join the wonderful event to celebrate these regional efforts.",
-          "wordCount": 54
-        },
-        "3級": {
-          "title": "Japan Sports Agency Holds 2026 Sports Machi Awards Ceremony",
-          "text": "The Japan Sports Agency recently announced the twenty-eight local governments chosen for the 2026 Sports Machi Awards. The agency supports towns and cities that promote sports tourism, disability sports, and healthy community development. This year, many municipal governments submitted creative plans. The agency selected twenty-eight winners for their outstanding efforts. A special ceremony will take place on November seventeenth at the Tokyo International Forum. Special guests, including sports experts, will attend the exciting event to celebrate regional sports development.",
-          "wordCount": 78
-        },
-        "準2級": {
-          "title": "Japan Sports Agency Announces Winners of the 2026 Sports Machi Awards",
-          "text": "The Japan Sports Agency has announced the twenty-eight local governments selected for the 2026 Sports Machi Awards. Established in 2021, this annual program recognizes municipalities that actively promote sports tourism, disability sports, and healthy community development. Following a call for entries launched in July, the agency reviewed numerous innovative plans from across Japan. Special awards were also decided, including a commissioner's special award for Nanbu Town in Tottori Prefecture and a guest special award for Urugi Village in Nagano Prefecture. An official awards ceremony will be held on November seventeenth at the Tokyo International Forum. The event will feature the Commissioner of the Sports Agency, Junichi Kawai, alongside special guests such as sports journalist Akemi Masuda and former rugby national team player Ayumu Goromaru. This gathering highlights the ongoing nationwide commitment to improving local health and fitness environments through inspiring community initiatives.",
-          "wordCount": 140
-        },
-        "2級": {
-          "title": "Japan Sports Agency to Host Awards Ceremony for the 2026 Sports Machi Award Winners",
-          "text": "The Japan Sports Agency has officially announced the twenty-eight municipal governments chosen as winners of the 2026 Sports Machi Awards. Launched in 2021 following the Tokyo Olympic and Paralympic Games, this initiative aims to support local governments that actively promote sports tourism, create opportunities for disability sports, and build environments where residents can easily exercise. After beginning the application process in July, the agency carefully evaluated numerous enthusiastic proposals from all over the country before finalizing the list of twenty-eight recipients. Among the winners, special honors were awarded to specific standout projects: the Commissioner's Special Award went to Nanbu Town in Tottori Prefecture, while the Guest Special Award was given to Urugi Village in Nagano Prefecture. To honor these achievements, an official awards ceremony is scheduled for November seventeenth at the Tokyo International Forum in Tokyo. The event will welcome Sports Agency Commissioner Junichi Kawai and the winning local representatives. Furthermore, special guests will participate, including prominent sports journalist Akemi Masuda and former Japanese rugby national team star Ayumu Goromaru, who will join a talk session. Through these efforts, the agency continues to encourage regional revitalization and healthy lifestyles nationwide.",
-          "wordCount": 188
-        },
-        "準1級": {
-          "title": "Japan Sports Agency Finalizes Winners and Prepares Ceremony for the 2026 Sports Machi Awards",
-          "text": "The Japan Sports Agency has formally announced the twenty-eight local governments that have been selected as recipients of the 2026 Sports Machi Awards. Established in 2021 in the wake of the Tokyo 2020 Games, this annual commendation program was created to support municipalities that demonstrate proactive leadership in regional sports promotion. By encouraging sports tourism, expanding access to disability sports, and developing robust infrastructure for physical activity, these local initiatives aim to build healthier communities. Following a nationwide call for entries that began on July first, the agency reviewed a diverse array of enthusiastic proposals and rigorous plans submitted by local authorities across the country. After careful evaluation, twenty-eight outstanding municipalities were chosen for recognition. Notably, special accolades were also designated to highlight particularly innovative projects, with the Commissioner's Special Award being presented to Nanbu Town in Tottori Prefecture, and the Guest Special Award awarded to Urugi Village in Nagano Prefecture. To celebrate these accomplishments, an official awards ceremony will be convened on November seventeenth at the Tokyo International Forum in Marunouchi, Tokyo. The ceremony will be attended by Sports Agency Commissioner Junichi Kawai and representatives from the honored regional bodies. Adding to the significance of the day, the event will feature prominent figures in Japanese athletics, including sports journalist and university professor Akemi Masuda as a special guest, alongside former rugby national team player Ayumu Goromaru, who will participate in a special talk session. Media coverage has also been arranged to showcase these regional success stories, reinforcing the agency's ongoing mission to foster vibrant, health-oriented communities through sports nationwide.",
-          "wordCount": 257
-        }
-      },
-      "sources": [
-        {
-          "name": "Japan Sports Agency",
-          "url": "https://www.mext.go.jp/sports/b_menu/houdou/jsa_00247.html"
-        }
-      ],
-      "titleJa": "スポまち表彰28自治体"
-    },
-    {
-      "id": "2026-11-01-thousands-demonstrate-paris-protests-spread-europe",
-      "date": "2026-11-01",
-      "scope": "world",
-      "category": "world",
-      "categories": [],
-      "careerTags": [
-        "undecided"
-      ],
-      "tags": [
-        "Paris",
-        "France",
-        "protests",
-        "Europe"
-      ],
-      "title": "Thousands Demonstrate in Paris as Protests Spread Across Europe",
-      "summaryJa": "フランス全土で生活費の高騰や公共サービスの悪化に抗議する大規模なデモが行われ、パリでは警察と衝突して多くの逮捕者が出ました。こうした抗議活動はヨーロッパ各国にも広がっています。",
-      "sourcePublishedAt": "2026-10-31T21:29:01.000Z",
-      "levels": {
-        "5級": {
-          "title": "People Protest in France",
-          "text": "Many people go to the streets in France. They are not happy. Life is very expensive. Public services are not good. Police and some people have big fights in Paris. Many people join this protest. The government is worried. Protests are in other European countries too.",
-          "wordCount": 46
-        },
-        "4級": {
-          "title": "Mass Protests Take Place in France",
-          "text": "Hundreds of thousands of people demonstrated across France. They are protesting against the rising cost of living and poor public services. In Paris, police fired tear gas and clashed with protesters during the weekend. More than 320,000 people took part in the country. Police arrested at least 290 protesters. Similar protests are also happening in other European countries.",
-          "wordCount": 56
-        },
-        "3級": {
-          "title": "Protests Spread Across France and Europe",
-          "text": "Hundreds of thousands of protesters demonstrated across France as the nation prepares for a general strike. In Paris, police fired tear gas and clashed with protesters during a third weekend of nationwide demonstrations. The main reasons for these protests are the rising cost of living and poor public services. According to the interior ministry, more than 320,000 people took to the streets nationwide, and at least 290 protesters were arrested. Furthermore, similar demonstrations also took place in Albania, Germany, and Italy.",
-          "wordCount": 79
-        },
-        "準2級": {
-          "title": "Thousands Demonstrate in Paris as Protests Spread Across Europe",
-          "text": "Hundreds of thousands of protesters have demonstrated across France as the country prepares for a general strike in the coming days. In Paris, police fired tear gas and clashed with protesters during a third weekend of nationwide demonstrations. The main grievances are the rising cost of living and poor public services. More than 320,000 people took to the streets around the country, and at least 290 protesters were arrested, according to France's interior ministry. Police report that about 70,000 demonstrators gathered in Paris alone. The authorities prepared extensively to prevent a repeat of the severe violence and looting seen two weeks prior. Furthermore, protests have also taken place in countries like Albania, Germany, and Italy as young people increasingly take to the streets across the European region today.",
-          "wordCount": 125
-        },
-        "2級": {
-          "title": "Thousands Demonstrate in Paris as Protests Spread Across Europe",
-          "text": "Hundreds of thousands of protesters recently demonstrated across France as the country prepares itself for a general strike in the coming days. In Paris, police fired tear gas and clashed with demonstrators during what marked the third consecutive weekend of nationwide protests. The movement centers on deep public frustration regarding the rising cost of living and deteriorating public services. According to France's interior ministry, more than 320,000 people took to the streets nationwide, leading to the arrest of at least 290 individuals. Police figures indicate that approximately 70,000 people participated in the demonstrations within Paris alone. Authorities had prepared extensively in advance to avoid a repeat of the extreme violence, rioting, and looting that occurred two weeks earlier. Beyond France, similar protests have also erupted in Albania, Germany, and Italy, reflecting a broader trend of youth taking to the streets across Europe while demanding urgent government action.",
-          "wordCount": 144
-        },
-        "準1級": {
-          "title": "Thousands Demonstrate in Paris as Protests Spread Across Europe",
-          "text": "Hundreds of thousands of disgruntled protesters have taken to the streets across France as the nation braces itself for an imminent general strike in the coming days. In Paris, police deployed tear gas and engaged in direct clashes with demonstrators during what marked a third consecutive weekend of nationwide mobilization against the escalating cost of living and increasingly inadequate public services. Official figures released by France's interior ministry reveal that over 320,000 citizens participated nationwide, resulting in the police making at least 290 arrests. Furthermore, authorities noted that roughly 70,000 people demonstrated in the capital alone, following extensive security preparations designed to avert a repetition of the severe violence, rioting, and looting that had been witnessed two weeks prior. This wave of social unrest is by no means confined to France; similar demonstrations have simultaneously broken out in several other nations including Albania, Germany, and Italy. According to reports from correspondents such as the BBC's James Waterhouse, young people are increasingly mobilizing and taking to the streets across the entire European region, signaling a broader regional discontent that continues to challenge local authorities and public order as leaders struggle to address public grievances.",
-          "wordCount": 190
-        }
-      },
-      "sources": [
-        {
-          "name": "BBC World",
-          "url": "https://www.bbc.co.uk/news/videos/ck0j0y87j303o?at_medium=RSS&at_campaign=rss"
-        }
-      ],
-      "titleJa": "欧州に広がる生活費デモ"
+      "date": "2026-11-01"
     },
     {
       "id": "2026-10-31-bird-flu-negative-miyagi-2026",
