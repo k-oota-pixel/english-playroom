@@ -6,6 +6,15 @@ const api=window.MonStudyRoomGrid,room=api&&api.room,grid=api&&api.grid,point=ap
 const sofa=document.getElementById("sofaActor"),sofaButton=document.getElementById("sofaButton");
 if(!room||!grid||!point||!occupied||!sofa||!sofaButton)return;
 const CELL_X=1000/15,CELL_Y=1000/30;
+const SPRITES=Object.freeze({
+ sofa:{x:38,y:264,w:242,h:214},
+ bed:{x:283,y:267,w:255,h:221},
+ rug:{x:540,y:297,w:254,h:150},
+ table:{x:804,y:295,w:184,h:153},
+ shelf:{x:82,y:498,w:159,h:266},
+ plant:{x:342,y:498,w:145,h:244},
+ cabinet:{x:575,y:532,w:207,h:212}
+});
 const defs=[
 {id:"sofa",label:"ソファ",icon:"🛋️",w:2,h:1,elev:58,x:0,y:0,blocking:true},
 {id:"bed",label:"ベッド",icon:"🛏️",w:2,h:1,elev:72,x:4,y:0,blocking:true},
@@ -38,69 +47,10 @@ css.textContent="#sofaActor.flat-furniture{filter:none!important}#sofaActor.flat
 document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
 function makeSvg(item){
- const d=dims(item),w=d.w,h=d.h,width=CELL_X*(w+h),floorH=CELL_Y*(w+h),elev=item.elev,totalH=floorH+elev;
- function p(u,v,z){return{x:CELL_X*(u-v+h),y:CELL_Y*(u+v)-(z||0)}}
- function poly(points,fill,stroke,sw){const pts=points.map(q=>fmt(q.x)+","+fmt(q.y)).join(" ");return'<polygon points="'+pts+'" fill="'+fill+'" stroke="'+(stroke||"#725d4d")+'" stroke-width="'+(sw||2)+'" stroke-linejoin="round"/>'}
- function plane(u0,v0,u1,v1,z,fill,stroke,sw){return poly([p(u0,v0,z),p(u1,v0,z),p(u1,v1,z),p(u0,v1,z)],fill,stroke,sw)}
- function wall(u0,v0,u1,v1,z,fill){return poly([p(u0,v0,0),p(u1,v1,0),p(u1,v1,z),p(u0,v0,z)],fill)}
- function post(u,v,z,fill,size){const a=p(u,v,0),b=p(u,v,z),r=size||4;return poly([{x:a.x-r,y:a.y},{x:a.x+r,y:a.y},{x:b.x+r,y:b.y},{x:b.x-r,y:b.y}],fill,"#725d4d",1.5)}
- function line(points,color,width){return'<polyline points="'+points.map(q=>fmt(q.x)+","+fmt(q.y)).join(" ")+'" fill="none" stroke="'+color+'" stroke-width="'+(width||2)+'" stroke-linecap="round" stroke-linejoin="round"/>'}
- function circle(x,y,r,fill){return'<circle cx="'+fmt(x)+'" cy="'+fmt(y)+'" r="'+r+'" fill="'+fill+'" stroke="#725d4d" stroke-width="1.5"/>'}
- function screenPoly(points,fill){return poly(points,fill,"#725d4d",1.5)}
- let art="";
- if(item.id==="sofa"){
-  art+=wall(0,0,w,0,70,"#cf7881")+plane(0,0,w,.22,70,"#e69aa1");
-  art+=wall(0,0,0,h,44,"#c96f79")+wall(w,0,w,h,44,"#d77f87");
-  art+=plane(0,0,.2,h,44,"#e69aa1")+plane(w-.2,0,w,h,44,"#e69aa1");
-  art+=wall(0,h,w,h,21,"#bd6874")+plane(.1,.2,w-.1,h-.08,32,"#f0b2b4");
-  const mid=p(w/2,.24,33),near=p(w/2,h-.1,33);art+=line([mid,near],"#d98f96",2);
-  art+=plane(0,0,w,h,0,"#ffffff00","none",0);
- }else if(item.id==="bed"){
-  art+=plane(0,0,w,h,12,"#bd8758");
-  art+=wall(0,0,w,0,72,"#a76e45")+plane(0,0,w,.12,72,"#d2a071");
-  art+=wall(0,h,w,h,30,"#a76e45");
-  art+=plane(.08,.12,w-.08,h-.08,24,"#fff1db");
-  art+=plane(.16,.16,w-.16,.46,28,"#efd8bd");
-  art+=plane(.1,h-.42,w-.1,h-.1,29,"#d98d96");
-  art+=line([p(.1,h-.42,29),p(w-.1,h-.42,29)],"#bd727c",2);
-  art+=wall(0,h,w,h,12,"#a76e45");
- }else if(item.id==="rug"){
-  art+=plane(0,0,w,h,0,"#dfb9bb","#886d6c",2.5);
-  art+=plane(.16,.16,w-.16,h-.16,0,"#e9c9ca","#f5e2df",2);
-  art+=line([p(.35,.35,0),p(w-.35,.35,0),p(w-.35,h-.35,0),p(.35,h-.35,0),p(.35,.35,0)],"#d5a6aa",2);
- }else if(item.id==="table"){
-  art+=post(.2,.2,54,"#79512f",4)+post(w-.2,.2,54,"#79512f",4)+post(.2,h-.2,54,"#79512f",4)+post(w-.2,h-.2,54,"#79512f",4);
-  art+=wall(0,h,w,h,9,"#8b5e39")+wall(w,0,w,h,9,"#9a6840");
-  art+=plane(0,0,w,h,60,"#bd8957","#755a43",2.5);
-  art+=plane(.12,.1,w-.12,h-.1,61,"#c99a67","#a47a53",1.5);
- }else if(item.id==="shelf"){
-  art+=wall(0,0,w,0,124,"#ae774b")+wall(0,0,0,h,124,"#936342")+wall(w,0,w,h,124,"#b47e50");
-  art+=plane(0,0,w,h,124,"#d1a16b");
-  for(let z=30;z<124;z+=31){art+=plane(.02,.02,w-.02,h-.02,z,"#c9955e","#8c6343",1.5)}
-  for(let i=0;i<4;i++){const x=width*.2+i*width*.13;art+=screenPoly([{x:x,y:-8},{x:x+8,y:-8},{x:x+8,y:18},{x:x,y:18}],["#d98183","#e6c67d","#8ea87c","#8aa7b0"][i])}
- }else if(item.id==="plant"){
-  const cx=width/2,cy=floorH/2;
-  art+=plane(.25,.25,.75,.75,8,"#c67c57");
-  art+=wall(.25,.25,.25,.75,34,"#a95f45")+wall(.75,.25,.75,.75,34,"#bb704f");
-  art+=plane(.24,.24,.76,.76,35,"#d58c65","#805d49",1.5);
-  const base={x:cx,y:cy-37};
-  art+=screenPoly([base,{x:cx-7,y:base.y-42},{x:cx-31,y:base.y-65},{x:cx-20,y:base.y-35}],"#739b70");
-  art+=screenPoly([base,{x:cx+7,y:base.y-52},{x:cx+30,y:base.y-73},{x:cx+18,y:base.y-39}],"#86ad7d");
-  art+=screenPoly([base,{x:cx-1,y:base.y-75},{x:cx-7,y:base.y-102},{x:cx+7,y:base.y-103},{x:cx+5,y:base.y-72}],"#5f8c68");
-  art+=screenPoly([base,{x:cx-35,y:base.y-43},{x:cx-49,y:base.y-54},{x:cx-31,y:base.y-25}],"#91b57f");
-  art+=screenPoly([base,{x:cx+35,y:base.y-39},{x:cx+51,y:base.y-53},{x:cx+31,y:base.y-24}],"#6f9b6b");
- }else if(item.id==="cabinet"){
-  art+=wall(0,0,w,0,48,"#b98050")+wall(0,0,0,h,48,"#9a6841")+wall(w,0,w,h,48,"#aa7348");
-  art+=plane(0,0,w,h,48,"#d6ad7d","#725d4d",2);
-  art+=wall(.12,h-.12,w-.12,h-.12,31,"#b27a4d");
-  const knob=p(w/2,h-.13,38);art+=circle(knob.x,knob.y,3,"#735840");
-  art+=plane(0,h-.12,w,h,9,"#9f6c45");
- }
- const pts=[p(0,0,0),p(w,0,0),p(w,h,0),p(0,h,0)];
- const mirrored=item.rotation>=2;
- const wrapped=mirrored?'<g transform="translate('+fmt(width)+' 0) scale(-1 1)">'+art+'</g>':art;
- const topPct=(100*(elev+floorH/2)/totalH).toFixed(3);
- return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 '+(-elev)+' '+fmt(width)+' '+fmt(totalH)+'" aria-hidden="true" focusable="false">'+wrapped+'</svg>';
+ const s=SPRITES[item.id],r=((item.rotation%4)+4)%4;
+ const transform=r===1?'translate('+(2*s.x+s.w)+' 0) scale(-1 1)':r===2?'translate('+(2*s.x+s.w)+' '+(2*s.y+s.h)+') scale(-1 -1)':r===3?'translate(0 '+(2*s.y+s.h)+') scale(1 -1)':'';
+ const image='<image href="./assets/recraft-furniture.svg" x="0" y="0" width="1024" height="1024"/>';
+ return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+s.x+' '+s.y+' '+s.w+' '+s.h+'" aria-hidden="true" focusable="false">'+(transform?'<g transform="'+transform+'">'+image+'</g>':image)+'</svg>';
 }
 function footprint(item){const d=dims(item),cells=[];for(let yy=0;yy<d.h;yy++)for(let xx=0;xx<d.w;xx++)cells.push({x:item.state.x+xx,y:item.state.y+yy});return cells}
 function inBounds(c){return c.x>=0&&c.y>=0&&c.x<GRID&&c.y<GRID}
@@ -111,7 +61,7 @@ function valid(item){return footprint(item).every(c=>inBounds(c)&&(!item.blockin
 function save(item){localStorage.setItem(item.store,JSON.stringify({x:item.state.x,y:item.state.y,placed:item.state.placed,rotation:item.rotation}))}
 function place(item){
  const d=dims(item),w=d.w,h=d.h,p=point((item.state.x+w/2)/GRID,(item.state.y+h/2)/GRID);
- const width=CELL_X*(w+h),floorH=CELL_Y*(w+h),totalH=floorH+item.elev,anchor=(item.elev+floorH/2)/totalH;
+ const width=CELL_X*(w+h),floorH=CELL_Y*(w+h),sprite=SPRITES[item.id],artHeight=width*sprite.h/sprite.w,anchor=1-floorH/(2*artHeight);
  item.actor.style.width=(width/10)+"%";item.actor.style.left=(p.x/10)+"%";item.actor.style.top=(p.y/7.48)+"%";item.actor.style.transform="translate(-50%,-"+(100*anchor).toFixed(3)+"%)";item.actor.style.zIndex=String(90+Math.round(p.y));
  item.actor.innerHTML=makeSvg(item);item.actor.hidden=!item.state.placed&&active!==item.id;
 }
