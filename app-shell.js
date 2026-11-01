@@ -84,6 +84,32 @@ function install() {
   });
   const signout=document.createElement('button');signout.type='button';signout.className='ms-signout';signout.textContent='ログアウト';signout.hidden=true;
   signout.onclick=()=>document.getElementById('logoutBtn')?.click();featureContainer.after(signout);
+  let sharedScreenTheme=null;
+  function applySharedScreenTheme(){
+    try{
+      const doc=frame.contentDocument;
+      if(!doc?.documentElement)return;
+      let style=doc.getElementById('monstudy-shared-screen-theme');
+      if(!sharedScreenTheme){style?.remove();return;}
+      if(!style){style=doc.createElement('style');style.id='monstudy-shared-screen-theme';(doc.head||doc.documentElement).append(style);}
+      const color=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.color||'')?sharedScreenTheme.color:'#f6f5ef';
+      const foreground=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.textColor||'')?sharedScreenTheme.textColor:'#193d38';
+      style.textContent=`html,body{--screen-background:${color};--screen-foreground:${foreground};background-color:${color}!important;background-image:none!important;color:${foreground}!important;transition:background-color .2s,color .2s}`;
+    }catch{}
+  }
+  function cleanLegacyMaterialChrome(){
+    try{
+      const doc=frame.contentDocument;
+      if(!doc?.documentElement)return;
+      if(!doc.getElementById('monstudy-shared-chrome-cleanup')){
+        const style=doc.createElement('style');
+        style.id='monstudy-shared-chrome-cleanup';
+        style.textContent='.monstudy-home-wrap,.authbar,.authrow,.auth-area,.auth-status,.auth-note,.authnote,.syncnote,.firebase-logout,.logoutbtn,#basicLogin,#basicLogout,#ateruLogin,#ateruLogout,#firebaseLogin,#firebaseLogout,#logoutBtn,button[id$="Logout"],a[id$="Logout"]{display:none!important}';
+        (doc.head||doc.documentElement).append(style);
+      }
+    }catch{}
+  }
+  function updateMaterialPresentation(){applySharedScreenTheme();cleanLegacyMaterialChrome();}
   function child() {try{return frame.contentWindow?.MonstudyMaterial;}catch{return null;}}
   function hasModal(){return !!document.querySelector('dialog[open]');}
   function syncPause(){child()?.setPaused(hasModal()||Boolean(pendingFeature));}
@@ -167,7 +193,7 @@ function install() {
     show(u);
     document.querySelectorAll('dialog[open]').forEach(d=>d.close());
   });
-  window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;syncPause();}};
+  window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,updateScreenTheme(theme){sharedScreenTheme=theme&&theme.color?{theme:theme.theme,color:theme.color,textColor:theme.textColor}:null;updateMaterialPresentation();},materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;updateMaterialPresentation();syncPause();}};
   document.addEventListener('click',e=>{
     if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
     const a=e.target.closest('a[href]');if(!a||a.hasAttribute('download'))return;
@@ -196,6 +222,7 @@ function install() {
   frame.addEventListener('load',()=>{
     if(!current)return;
     hideRetryMaterialHeader();
+    updateMaterialPresentation();
     status.hidden=true;
     try {
       const u=new URL(frame.contentWindow.location.href);
