@@ -12,7 +12,7 @@ const SPRITES=Object.freeze({
  rug:{x:540,y:297,w:254,h:150},
  table:{x:804,y:295,w:184,h:153},
  shelf:{x:82,y:498,w:159,h:266},
- plant:{x:352,y:500,w:98,h:241},
+ plant:{x:342,y:498,w:145,h:244},
  cabinet:{x:575,y:532,w:207,h:212}
 });
 const defs=[
