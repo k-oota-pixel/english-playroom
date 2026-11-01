@@ -28,15 +28,15 @@ function restorePageMeta(){
 }
 async function load(index=pageIndex,force=false){
  if(busy||searchQuery()||!auth.currentUser)return;const own=generation,request=++viewGeneration,key=cursors[index];if(key===undefined)return;
- busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('10人分の一覧を読み込んでいます…');
+ busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('6人分の一覧を読み込んでいます…');
  try{
   if(force)pageCache.delete(key);
-  let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=10'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
+  let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=6'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
   if(own!==generation||request!==viewGeneration)return;
   allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLearningAt||0)-Number(a.lastLearningAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
   restorePageMeta();
-  setStatus('一覧は最終学習日時が新しい順に10人ずつ表示します。検索欄では登録者全員からニックネームを探せます。','ok');render();
+  setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体からコード名またはニックネームを検索できます。','ok');render();
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
@@ -57,7 +57,7 @@ async function runSearch(){
 function onSearchInput(){
  clearTimeout(searchTimer);searchSerial++;expandedUid='';detailCache.clear();
  const q=searchQuery();
- if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に10人ずつ表示します。検索欄では登録者全員からニックネームを探せます。','ok');render();return;}
+ if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体からコード名またはニックネームを検索できます。','ok');render();return;}
  searchResults=null;searchTotal=0;searchTruncated=false;updateRefresh();$('prev').disabled=true;$('next').disabled=true;render();
  searchTimer=setTimeout(runSearch,320);
 }
@@ -76,11 +76,11 @@ function render(){
   if(searchResults===null)$('count').textContent='登録者全体を検索中…';
   else if(searchTruncated)$('count').textContent=`検索結果 ${list.length} / ${searchTotal}人（上位${list.length}人）`;
   else $('count').textContent=`検索結果 ${searchTotal}人（登録者全体）`;
- }else $('count').textContent=(pageIndex+1)+'ページ目・'+list.length+' / '+allUsers.length+'人（10人ずつ）';
+ }else $('count').textContent=(pageIndex+1)+'ページ目・'+list.length+' / '+allUsers.length+'人（6人ずつ）';
  if(searching&&searchResults===null){$('users').innerHTML='<div class="empty">登録者全体から検索しています…</div>';return;}
  $('users').innerHTML=list.map(u=>{
   const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps,activity:detail.activity}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
-  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="identity"><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">ペット：'+esc(u.petName||'ペット名未設定')+'</div></div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
+  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="code-name">コード名：'+esc(u.codeName||'未登録')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
  }).join('')||'<div class="empty">一致する登録者はいません。</div>';
  document.querySelectorAll('.user-summary').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));
  document.querySelectorAll('.detail-retry').forEach(b=>b.onclick=()=>{const uid=b.closest('.user').dataset.uid;detailCache.delete(uid);expandedUid='';expand(uid);});
@@ -120,10 +120,10 @@ onAuthStateChanged(auth,user=>{usagePanel.reset();generation++;viewGeneration++;
 const retryLogsButton=document.createElement('button');retryLogsButton.type='button';retryLogsButton.className='btn';retryLogsButton.textContent='リトライノートの画面離脱記録を取得';
 const retryLogsNote=document.createElement('div');retryLogsNote.className='sub';retryLogsNote.textContent='表示中の最大10人が対象。取得時のみ各1件読み取り（直近100プレイ）。再表示はキャッシュを使用します。';
 const retryLogsResult=document.createElement('div');retryLogsResult.className='sub';
-$('updated').before(retryLogsButton,retryLogsNote,retryLogsResult);
+$('panel').append(retryLogsButton,retryLogsNote,retryLogsResult);
 const retryLogCache=new Map();
 retryLogsButton.onclick=async()=>{
- const selected=(searchQuery()?(searchResults||[]):allUsers).slice(0,10),own=generation;
+ const selected=(searchQuery()?(searchResults||[]):allUsers).slice(0,6),own=generation;
  if(!selected.length){retryLogsResult.textContent='対象の利用者がいません。';return;}
  retryLogsButton.disabled=true;retryLogsResult.textContent='画面離脱記録を取得しています…';
  try{
@@ -133,6 +133,6 @@ retryLogsButton.onclick=async()=>{
   retryLogsResult.innerHTML=selected.map(u=>{const logs=retryLogCache.get(u.uid)||[];return '<details><summary>'+esc(u.nickname||'ニックネーム未登録')+'：'+logs.length+'プレイ ／ 離脱 '+logs.reduce((n,r)=>n+(Number(r.count)||0),0)+'回</summary>'+ (logs.length?logs.slice().reverse().map(r=>'<div>'+esc(fmtDate(r.endedAt))+' ／ '+esc(r.correct)+' / '+esc(r.total)+'問正解 ／ 画面離脱 '+esc(r.count)+'回・'+Math.round((Number(r.totalMs)||0)/1000)+'秒</div>').join(''):'記録がありません。機能追加後に終了したプレイから記録されます。')+'</details>';}).join('')+'<p>通知や誤操作でも発生するため、不正の判定には使えません。最新記録の再取得は下のボタンで行います。</p>';
  }catch(e){if(own===generation)retryLogsResult.textContent=e.message;}finally{retryLogsButton.disabled=false;}
 };
-const retryLogsRefresh=document.createElement('button');retryLogsRefresh.type='button';retryLogsRefresh.className='btn';retryLogsRefresh.textContent='画面離脱記録を再取得';retryLogsResult.after(retryLogsRefresh);
+const retryLogsRefresh=document.createElement('button');retryLogsRefresh.type='button';retryLogsRefresh.className='btn';retryLogsRefresh.textContent='画面離脱記録を再取得';$('panel').append(retryLogsRefresh);
 retryLogsRefresh.onclick=()=>{retryLogCache.clear();retryLogsButton.click();};
 onAuthStateChanged(auth,()=>{retryLogCache.clear();retryLogsResult.replaceChildren();});
