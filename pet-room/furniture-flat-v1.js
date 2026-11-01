@@ -30,8 +30,7 @@ for(const def of defs){
  actor.classList.add("flat-furniture");
  if(def.id!=="sofa"){actor.hidden=true;room.insertBefore(actor,pet||grid)}
  actor.setAttribute("role","button");actor.setAttribute("aria-label",def.label+"を移動");
- const button=document.createElement("button");button.type="button";button.className="furniture-btn";button.textContent=def.label+"を移動";
- buttonAnchor.after(button);buttonAnchor=button;
+ let button;if(def.id==="sofa"){button=sofaButton;button.textContent=def.label+"を移動";buttonAnchor=button}else{button=document.createElement("button");button.type="button";button.className="furniture-btn";button.textContent=def.label+"を移動";buttonAnchor.after(button);buttonAnchor=button}
  items.push(Object.assign({},def,saved,{actor,button}));
 }
 const css=document.createElement("style");
