@@ -1,7 +1,7 @@
 export function createMaterialUsagePanel({host,request,getIdentity}){
  const root=document.createElement('section');root.className='material-usage';
  root.innerHTML='<div class="usage-head"><h2>教材別の利用回数</h2><button type="button" class="btn" data-usage-load>本日・通算を表示する</button></div><p class="sub" data-usage-note role="status">ボタンを押したときだけ集計を取得します。</p><div data-usage-body hidden><div class="toolbar"><label>並び順 <select data-usage-sort><option value="today">本日が多い順</option><option value="total">通算が多い順</option></select></label></div><div class="usage-scroll"><table><thead><tr><th scope="col">教材</th><th scope="col">本日</th><th scope="col">通算</th></tr></thead><tbody></tbody></table></div></div>';
- host.before(root);
+ host.closest('#panel').append(root);
  const button=root.querySelector('[data-usage-load]'),note=root.querySelector('[data-usage-note]'),body=root.querySelector('[data-usage-body]'),sort=root.querySelector('select'),tbody=root.querySelector('tbody');let revision=0,data=null;
  function render(){tbody.replaceChildren();for(const row of [...data.rows].sort((a,b)=>(b[sort.value]-a[sort.value])||b.total-a.total||a.label.localeCompare(b.label,'ja'))){const tr=document.createElement('tr');tr.dataset.contentId=row.id;for(const value of [row.label,row.today.toLocaleString('ja-JP')+'回',row.total.toLocaleString('ja-JP')+'回']){const td=document.createElement('td');td.textContent=value;tr.append(td);}tbody.append(tr);}body.hidden=false;}
  function reset(){revision++;data=null;body.hidden=true;tbody.replaceChildren();sort.value='today';button.disabled=!getIdentity();button.textContent='本日・通算を表示する';button.setAttribute('aria-expanded','false');note.textContent='ボタンを押したときだけ集計を取得します。';}
