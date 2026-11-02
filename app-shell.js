@@ -98,7 +98,7 @@ function install() {
     themedSurfaceOriginals.clear();themedSurfaceDoc=null;themedSurfaceKey='';
   }
   function cssRgb(value){
-    const m=String(value||'').match(/rgba?\\(\\s*([\\d.]+)[,\\s]+([\\d.]+)[,\\s]+([\\d.]+)(?:[,\\s/]+([\\d.]+))?/i);
+    const m=String(value||'').match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+))?/i);
     return m?{r:+m[1],g:+m[2],b:+m[3],a:m[4]===undefined?1:+m[4]}:null;
   }
   function colorLuminance(rgb){
@@ -138,7 +138,7 @@ function install() {
       const style=win.getComputedStyle(element),background=cssRgb(style.backgroundColor);
       let light=Boolean(background&&background.a>.94&&colorLuminance(background)>.88);
       if(!light&&style.backgroundImage&&style.backgroundImage!=='none'){
-        const stops=[...style.backgroundImage.matchAll(/#[0-9a-f]{3,8}\\b/ig)].map(m=>hexRgb(m[0]));
+        const stops=[...style.backgroundImage.matchAll(/#[0-9a-f]{3,8}\b/ig)].map(m=>hexRgb(m[0]));
         if(stops.length&&stops.length<=8&&stops.every(stop=>colorLuminance(stop)>.86))light=true;
       }
       const formControl=/^(INPUT|TEXTAREA|SELECT|OPTION)$/.test(element.tagName);
@@ -174,7 +174,7 @@ function install() {
       if(!themedSurfaceObserver||themedSurfaceDoc!==doc){
         themedSurfaceObserver=new doc.defaultView.MutationObserver(()=>{
           if(themedSurfaceTimer)clearTimeout(themedSurfaceTimer);
-          themedSurfaceTimer=setTimeout(()=>{themedSurfaceTimer=0;scanThemedSurfaces(doc,color,foreground);},90);
+          themedSurfaceTimer=setTimeout(()=>{themedSurfaceTimer=0;restoreThemedSurfaces();scanThemedSurfaces(doc,color,foreground);},90);
         });
         themedSurfaceObserver.observe(doc.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
       }
