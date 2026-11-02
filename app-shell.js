@@ -108,9 +108,9 @@ function install() {
   }
   function hexRgb(hex){
     const value=String(hex||'').replace('#','');
-    if(!/^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(value))return null;
-    const full=value.length===3?[...value].map(c=>c+c).join(''):value;
-    return {r:parseInt(full.slice(0,2),16),g:parseInt(full.slice(2,4),16),b:parseInt(full.slice(4,6),16),a:1};
+    if(!/^(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value))return null;
+    const short=value.length<=4,full=short?[...value.slice(0,3)].map(c=>c+c).join('')+ (value.length===4?value[3]+value[3]:''):value;
+    return {r:parseInt(full.slice(0,2),16),g:parseInt(full.slice(2,4),16),b:parseInt(full.slice(4,6),16),a:full.length===8?parseInt(full.slice(6,8),16)/255:1};
   }
   function mixedHex(background,foreground){
     const a=hexRgb(background)||hexRgb('#202421'),b=hexRgb(foreground)||hexRgb('#ffffff');
