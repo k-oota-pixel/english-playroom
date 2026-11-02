@@ -1,13 +1,439 @@
 {
-  "generatedAt": "2026-11-02T08:30:04.133Z",
-  "editionDate": "2026-11-02",
+  "generatedAt": "2026-11-02T21:46:45.592Z",
+  "editionDate": "2026-11-03",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-02"
+    "lastSuccessfulEdition": "2026-11-03"
   },
   "articles": [
+    {
+      "id": "2026-11-03-ai-digital-reform-council-first-meeting",
+      "date": "2026-11-03",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ai",
+        "digital-agency",
+        "japan-policy",
+        "ax"
+      ],
+      "titleJa": "AI・デジタル改革推進会議…",
+      "title": "First Meeting of Japan AI and Digital Reform Council",
+      "summaryJa": "日本政府は、人口減少や人手不足を克服するため、AIとデジタル改革を活用した「AX」の推進に向けた第一回会議を開催しました。",
+      "sourcePublishedAt": "2026-11-02T08:16:27.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事を読んで、日本政府がAI・デジタル改革を進める主な理由を確認する。",
+        "followUpJa": "人口減少や人手不足の中でAIを活用する具体的な目的は何ですか？",
+        "questions": {
+          "5級": "What did the Japanese government hold?",
+          "4級": "Where was the first meeting held?",
+          "3級": "Why does Japan need AI and digital reform?",
+          "準2級": "What does AX mean for Japan according to the discussion?",
+          "2級": "What specific goals are set to be summarized within the year by the council?",
+          "準1級": "How do ministers plan to turn national challenges like an aging society and disasters into advantages using AI?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "The First Meeting",
+          "text": "Japan had a new meeting. The meeting is about AI and digital reform. Many leaders came together. They talked about computers and the future. Japan wants to use good technology to help people live better lives now.",
+          "wordCount": 37
+        },
+        "4級": {
+          "title": "First Meeting for AI and Digital",
+          "text": "The Japanese government held the first meeting of the AI and Digital Reform Council at the Prime Minister's Official Residence. Leaders gathered to discuss important issues like population decline and labor shortages. They talked about using new technology and artificial intelligence to build a stronger society. The council wants to create a clear plan before the end of the year to help the country grow and face future challenges safely.",
+          "wordCount": 70
+        },
+        "3級": {
+          "title": "Starting Japan's Digital Reform",
+          "text": "Japan held the first meeting of the AI and Digital Reform Council at the Prime Minister's Official Residence. Ministers and experts discussed how population decline creates serious labor shortages. Without new changes, maintaining the current society and economy will be very difficult. The government wants to use trusted artificial intelligence and digital reforms to rebuild supply structures. They plan to summarize concrete goals and action plans before the end of the year.",
+          "wordCount": 72
+        },
+        "準2級": {
+          "title": "First Meeting of the AI and Digital Reform Council",
+          "text": "The Japanese government recently convened the first meeting of the AI and Digital Reform Council at the Prime Minister's Official Residence. Ministers and experts gathered to address serious structural challenges, particularly population decline and critical labor shortages. Officials emphasized that continuing with traditional supply structures could make it difficult to sustain society and the economy. By advancing artificial intelligence and digital reforms to achieve AX, Japan aims to secure growth and improve international competitiveness. The council plans to compile concrete visions, reform principles, and action plans within the year to guide future policies and accelerate social implementation.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "Launching the AI and Digital Reform Council in Japan",
+          "text": "The Japanese government recently convened the first meeting of the AI and Digital Reform Council at the Prime Minister's Official Residence. Ministers, industry leaders, and academic experts gathered at the Prime Minister's Official Residence to address severe structural challenges, notably population decline and critical labor shortages. Officials stated that maintaining traditional supply structures could make it difficult to sustain the socio-economy. Therefore, promoting artificial intelligence and digital reforms to achieve AX is necessary for both growth investments and crisis management investments. The council discussed key topics, including creating a trustworthy artificial intelligence society, establishing new regulations, and accelerating artificial intelligence implementation in labor-shortage industries. Officials aim to compile concrete visions, reform principles, and action plans by the end of the year to guide future policies. The Japanese government wants to use trusted artificial intelligence and digital reforms to rebuild supply structures. Ministers, industry leaders, and academic experts will continue working together to ensure that the council can finalize these important plans and support future development across the nation.",
+          "wordCount": 168
+        },
+        "準1級": {
+          "title": "Inaugural Session of the Japan AI and Digital Reform Council",
+          "text": "The Japanese government officially convened the inaugural meeting of the AI and Digital Reform Council at the Prime Minister's Official Residence, bringing together key ministers, industry leaders, and academic experts. The primary focus of the session was addressing Japan's severe structural challenges, particularly population decline and the resulting labor shortages. Officials stressed that continuing with conventional supply structures threatens the sustainability of society and the economy. To overcome this, the administration aims to advance artificial intelligence and digital transformation, known as AX, viewing it as both a growth investment for global competitiveness and a crisis management investment. Key discussions centered on establishing trusted artificial intelligence frameworks, updating regulations and legal systems in cooperation with the regulatory reform council, and accelerating social implementation in vulnerable sectors like manufacturing, healthcare, and construction. Ministers also highlighted how leveraging unique domestic data from an aging society and disaster experiences could build world-class physical artificial intelligence to turn challenges into distinct advantages. The council intends to finalize concrete visions, reform principles, and action plans within the year to guide upcoming policy decisions and ensure future national growth.",
+          "wordCount": 182
+        }
+      },
+      "sources": [
+        {
+          "name": "Digital Agency Japan",
+          "url": "https://www.digital.go.jp/councils/ai_digital/1f3aa34a-786d-4b56-99a4-469f8f933f1c"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-03-autumn-josho-medals-2026",
+      "date": "2026-11-03",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "awards",
+        "medals",
+        "japan",
+        "news"
+      ],
+      "titleJa": "秋の叙勲受章者発表",
+      "title": "Japan Announces Autumn Medals for 3861 People",
+      "summaryJa": "政府は今年の秋の叙勲受章者を発表し、各界で功労のあった3861人が選ばれました。",
+      "sourcePublishedAt": "2026-11-02T21:39:49.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "今年度の秋の叙勲で表彰された総人数や具体的な勲章の種類を確認します。",
+        "followUpJa": "受章者の数や注目されるポイントについてクラスで話し合ってみましょう。",
+        "questions": {
+          "5級": "How many people get the Autumn Medals?",
+          "4級": "What is the total number of people who will receive the medals this year?",
+          "3級": "Which specific medals are mentioned for the highest ranks in the Autumn Medals list?",
+          "準2級": "How many people in total are announced to receive the medals for their contributions in various fields?",
+          "2級": "What specific grand cordons are highlighted among the highest honors in this year's Autumn Medals announcement?",
+          "準1級": "Based on the announcement, what is the total number of honorees recognized for their distinguished contributions across various fields?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Medals in Japan",
+          "text": "Japan has a new news story. The government announced the Autumn Medals. Many people get medals. A total of 3861 people are on the list. These people worked hard in different fields. Everyone is very happy for them. It is a big honor for Japan today.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Autumn Medals Announced",
+          "text": "The Japanese government announced the winners of the Autumn Medals. A total of 3861 people will receive these special medals. They worked very hard in many different fields. This event happens every year to honor great contributions. Seven people will receive the Grand Cordon of the Rising Sun, and four people will receive the Grand Cordon of the Order of the Precious Crown. Many citizens celebrate this important news.",
+          "wordCount": 68
+        },
+        "3級": {
+          "title": "Japan Announces 3861 Autumn Medal Honorees",
+          "text": "The Japanese government has officially announced the recipients of this year's Autumn Medals. A total of 3861 individuals from various fields will receive recognition for their significant contributions to society. Among the honored citizens, seven people will receive the Grand Cordon of the Rising Sun, while four will receive the Grand Cordon of the Order of the Precious Crown. This national announcement highlights the dedication of people who worked hard in different areas throughout their careers and lives, bringing great pride and joy to the entire country today.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Government Announces 3861 Recipients for Autumn Medals",
+          "text": "The Japanese government recently announced the list of recipients for the annual Autumn Medals. This year, a total of 3861 people who have made remarkable contributions in various professional and social fields will be honored for their service. The prestigious awards include several high-level recognitions across the country. Specifically, the official announcement notes that seven individuals will receive the Grand Cordon of the Rising Sun, and four people will be awarded the Grand Cordon of the Order of the Precious Crown. This nationwide celebration of public service and dedication acknowledges the lifelong efforts of citizens who have helped shape different sectors of Japanese society through hard work.",
+          "wordCount": 106
+        },
+        "2級": {
+          "title": "Japan Unveils 3861 Honorees for the Annual Autumn Medals",
+          "text": "The Japanese government has officially announced the list of recipients for the prestigious Autumn Medals, honoring individuals who have made distinguished contributions across various sectors of society. According to the recent announcement, a total of 3861 people will receive awards this year for their hard work and dedication in many different professional backgrounds. Among the highest distinctions noted in the official report, seven people will receive the Grand Cordon of the Rising Sun, and four individuals will be awarded the Grand Cordon of the Order of the Precious Crown. This long-standing national tradition not only celebrates individual career achievements and public service but also highlights the diverse ways people contribute to the betterment of the community. Citizens across the country read the announcement to learn about the remarkable stories and efforts of this year's recognized leaders and workers.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Government Reveals 3861 Recipients in Annual Autumn Medals Announcement",
+          "text": "The Japanese government has released the official list of recipients for the prestigious Autumn Medals, celebrating a total of 3861 individuals who have demonstrated exceptional dedication and service across diverse fields. This annual announcement highlights the remarkable achievements of people whose hard work has significantly impacted society in various ways. According to the recent report, the distinguished group of honorees spans numerous professional backgrounds, industries, and disciplines throughout the nation, representing decades of commitment to public welfare and cultural enrichment. Among the highest accolades highlighted in the official announcement, seven individuals are set to receive the Grand Cordon of the Rising Sun, while four others will be honored with the Grand Cordon of the Order of the Precious Crown. This esteemed national tradition underscores the vital importance of public recognition for lifelong contributions, inspiring future generations of citizens by showcasing exemplary efforts in governance, culture, industry, and community development. As the news spreads widely across the country, people throughout the nation reflect on the profound impact these 3861 honorees have made on Japan's ongoing progress, social stability, and collective well-being through their many years of dedicated, tireless service in their respective fields.",
+          "wordCount": 190
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261103de69860"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-03-bunka-chosakuken-shingikai-2026-11",
+      "date": "2026-11-03",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "copyright",
+        "agency-for-cultural-affairs",
+        "meeting",
+        "japan"
+      ],
+      "titleJa": "文化庁が著作権の小委員会を…",
+      "title": "Agency for Cultural Affairs Holds Copyright Subcommittee Meeting",
+      "summaryJa": "文化庁は令和8年11月9日に第26期文化審議会著作権分科会政策小委員会（第2回）を開催し、海賊版対策などについて協議することを発表しました。",
+      "sourcePublishedAt": "2026-11-02T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "著作権に関する小委員会の開催日時や主な議題について情報を探してみましょう。",
+        "followUpJa": "会議の主な議題は何ですか？記事から見つけて説明してみましょう。",
+        "questions": {
+          "5級": "What time is the meeting on Monday?",
+          "4級": "Where will the subcommittee meeting take place?",
+          "3級": "What is the main topic for the meeting?",
+          "準2級": "How can people watch the meeting if they do not attend in person?",
+          "2級": "What are the specific registration deadlines and requirements for reporters who want to cover the event?",
+          "準1級": "Explain the background and purpose of the subcommittee meeting based on the official announcement details."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Copyright Meeting",
+          "text": "The Agency for Cultural Affairs has a plan. It is a new meeting. The meeting is on November 9, 2026. It is about copyrights. People can watch it online. The office wants to stop bad copies. Everyone can check the website for more news soon.",
+          "wordCount": 43
+        },
+        "4級": {
+          "title": "Agency Holds Copyright Meeting",
+          "text": "The Agency for Cultural Affairs will hold a special subcommittee meeting soon. The date is November 9, 2026. It starts at two in the afternoon. The meeting will talk about anti-piracy measures and related topics. People can watch a live stream online instead of going to the venue. Reporters must register early if they want to join the physical location.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "Culture Agency Announces Policy Meeting",
+          "text": "The Agency for Cultural Affairs announced its second subcommittee meeting for copyright policy. The meeting will happen on November 9, 2026, starting at fourteen hundred hours. It takes place at the Ministry of Education. Officials will discuss measures against copyright piracy with related groups. Citizens can watch the live stream online if they register in advance. The government wants to make sure everyone understands the new plans and rules for protecting intellectual property across the country. Official documents will be published on the main website before the session begins for everyone to read carefully.",
+          "wordCount": 92
+        },
+        "準2級": {
+          "title": "Japan Cultural Affairs Agency Holds Second Copyright Subcommittee",
+          "text": "The Agency for Cultural Affairs has announced that the second meeting of the 26th Copyright Policy Subcommittee will take place on November 9, 2026. The meeting starts at 14:00 at the Ministry of Education and is also accessible online. The main agenda includes hearing from related organizations about counter-piracy measures. The agency will stream the meeting live for the public in place of physical attendance. Media representatives must follow strict registration rules to cover the event in person. All interested participants must complete their registration through the online form before the official deadline arrives to secure access.",
+          "wordCount": 93
+        },
+        "2級": {
+          "title": "Cultural Affairs Agency Schedules Second Copyright Subcommittee Meeting",
+          "text": "The Agency for Cultural Affairs in Japan has officially announced the upcoming second meeting of the 26th Cultural Council Copyright Subcommittee Policy Committee. Scheduled for November 9, 2026, the session will run from 14:00 to 16:00 at the Ministry of Education building and will also be broadcast via live streaming. The primary item on the agenda is hearing testimonies and opinions from relevant organizations concerning anti-piracy measures. In lieu of physical attendance, the general public can register to watch the live stream through an online form. Meanwhile, media personnel wishing to take photographs at the beginning of the session must complete both general listening and press registration by November 5, 2026. Official documents will be published online before the meeting starts. Additionally, the agency has outlined specific rules regarding press identification and media access during the proceedings to ensure orderly coverage of the event.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Agency for Cultural Affairs Schedules Second Copyright Policy Subcommittee Meeting",
+          "text": "The Agency for Cultural Affairs has officially announced that the agency will hold the second meeting of the 26th Cultural Council Copyright Subcommittee Policy Committee on November 9, 2026. The official proceedings for the upcoming session are scheduled to run from 14:00 to 16:00 at the Ministry of Education building, specifically inside the first special conference room on the third floor of the eastern building. In addition to physical access at the ministry location, the Agency for Cultural Affairs has arranged a live streaming broadcast so that members of the general public can observe the discussions remotely. The primary item on the official agenda for the subcommittee session involves conducting hearings and gathering reports from related organizations concerning ongoing anti-piracy measures to protect intellectual property rights. Citizens who wish to watch the online broadcast must complete their registration through the designated online application form during the established submission window. Meanwhile, media representatives who intend to cover the opening minutes of the proceeding in person must submit a separate press application by the November 5 registration deadline. The Agency for Cultural Affairs will publish all official meeting documents on the official agency website by noon on the day of the event for public review.",
+          "wordCount": 197
+        }
+      },
+      "sources": [
+        {
+          "name": "Agency for Cultural Affairs Japan",
+          "url": "https://www.bunka.go.jp/koho_hodo_oshirase/hodohappyo/94458801.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-03-mhlw-dental-hygienist-report",
+      "date": "2026-11-03",
+      "scope": "japan",
+      "category": "health",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "dental-hygienist",
+        "mhlw",
+        "report"
+      ],
+      "titleJa": "歯科衛生士の中間報告",
+      "title": "MHLW Releases Interim Report on Dental Hygienists",
+      "summaryJa": "厚生労働省の検討会が、歯科衛生士の業務のあり方に関する中間報告を公表しました。",
+      "sourcePublishedAt": "2026-11-02T08:06:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事から中間報告を発表した組織とテーマを把握します。",
+        "followUpJa": "歯科衛生士の役割について自分の考えをまとめてみましょう。",
+        "questions": {
+          "5級": "What job is the report about?",
+          "4級": "Which ministry released the interim report?",
+          "3級": "What is the main topic of the interim report released today?",
+          "準2級": "Who leads the study group discussed in the interim report?",
+          "2級": "What was the main purpose of the study group established by the Ministry of Health, Labour and Welfare?",
+          "準1級": "How does the interim report reflect ongoing discussions regarding the professional duties of dental hygienists?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Dental Report",
+          "text": "Japan has a new report. It is about dental hygienists. The Ministry of Health, Labour and Welfare made this report. They talk about work. Many people can read it. It is an interim report. Good dental care is important for everyone in Japan today.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Dental Hygienist Report Released",
+          "text": "The Japanese government released a new report today. The Ministry of Health, Labour and Welfare made an interim report about dental hygienists and their work. Experts discussed how they can do their jobs better in medical settings. People can read the PDF file online. This report helps us understand dental health care in Japan today. The official page provides more details for everyone.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Interim Report on Dental Hygienists",
+          "text": "The Ministry of Health, Labour and Welfare in Japan has published an interim report today. This report focuses on the work of dental hygienists and their future roles. A special study group discussed many important topics about their daily duties. Hideki Fukuda led this group as the chair. Now, the public can check the details online through the official website. This report is a big step for better dental care.",
+          "wordCount": 70
+        },
+        "準2級": {
+          "title": "Ministry Publishes Dental Hygienist Study Report",
+          "text": "Japan's Ministry of Health, Labour and Welfare announced a new interim report today regarding the duties and future roles of dental hygienists. The study group, chaired by Hideki Fukuda from the National Institute of Public Health, worked hard to create this important document. Officials want to improve how dental hygienists support patients across the country through these detailed discussions. Anyone interested can view the report files online to learn more about these medical updates and official policy guidelines. The ministry hopes that sharing this information will help medical professionals understand upcoming changes in dental care services and improve daily practices for everyone involved in public health across Japan today.",
+          "wordCount": 109
+        },
+        "2級": {
+          "title": "MHLW Announces Interim Report on Dental Hygienist Duties",
+          "text": "The Ministry of Health, Labour and Welfare has officially released an interim report regarding the work and roles of dental hygienists in Japan. The discussion took place inside a dedicated study group led by chair Hideki Fukuda, who is a senior researcher at the National Institute of Public Health. This newly published document outlines various ideas about how dental hygienists should perform their professional duties in modern medical settings. Citizens, researchers, and medical professionals can access the official PDF files online to review the complete findings and understand future directions for dental care services. The ministry released this report to encourage better understanding and careful discussion among healthcare providers regarding professional standards and patient support systems throughout the nation. To ensure that everyone understands these updates, government officials have made the complete documentation available online for public review, allowing experts and citizens alike to examine the detailed findings and consider how these policy changes might influence future medical practices and public health initiatives across the entire country during this important transition period.",
+          "wordCount": 172
+        },
+        "準1級": {
+          "title": "Comprehensive Interim Report Issued on Dental Hygienist Roles",
+          "text": "In a recent development concerning public healthcare in Japan, the Ministry of Health, Labour and Welfare has officially made public an interim report detailing the professional duties and future scope of dental hygienists. The deliberations regarding the professional duties and future scope of dental hygienists were carefully conducted by a specialized advisory panel known as the study group on the ideal state of dental hygienist duties, which operates under the leadership of Hideki Fukuda. Hideki Fukuda serves as a principal researcher at the National Institute of Public Health, bringing valuable expertise to the discussions. This comprehensive document addresses evolving demands in dental care and examines how practitioners can optimize their daily operations within various clinical environments across the nation. By publishing these findings today, the Ministry of Health, Labour and Welfare aims to foster transparent discussions among healthcare professionals, industry experts, and the general public, ensuring that dental services remain high in quality and responsive to societal needs throughout the country. Interested individuals and medical practitioners can access the detailed PDF files online to review the full scope of the committee's findings and official considerations. Furthermore, this initiative reflects ongoing efforts by health authorities to address structural challenges within the medical sector, providing a solid foundation for future policy adjustments and professional development standards that will benefit patients and practitioners alike throughout the nation during this important transition period.",
+          "wordCount": 229
+        }
+      },
+      "sources": [
+        {
+          "name": "MHLW Japan",
+          "url": "https://www.mhlw.go.jp/stf/shingi/newpage_77154.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-03-nasa-johnson-space-center-65-years",
+      "date": "2026-11-03",
+      "scope": "world",
+      "category": "science",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NASA",
+        "Space Center",
+        "Houston",
+        "Artemis",
+        "Mercury"
+      ],
+      "titleJa": "ジョンソン宇宙センター",
+      "title": "NASA's Johnson Space Center Celebrates 65 Years of Human Spaceflight",
+      "summaryJa": "NASAのジョンソン宇宙センターが創設65周年を迎え、マーキュリー計画からアルテミス計画まで有人宇宙飛行の中心地として果たしてきた歴史と役割が紹介されています。",
+      "sourcePublishedAt": "2026-11-02T21:35:59.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "宇宙センターの歴史や現在の役割について正確な情報を把握するため。",
+        "followUpJa": "自分の興味がある宇宙プログラムについてさらに調べてみましょう。",
+        "questions": {
+          "5級": "Where is NASA's Johnson Space Center?",
+          "4級": "When did the space center officially open in Houston?",
+          "3級": "Who gave a speech in 1961 that committed the US to landing a man on the Moon?",
+          "準2級": "What was the original name of the Johnson Space Center when it was established in 1961?",
+          "2級": "Why did the Space Task Group need a new dedicated field center outside of Virginia?",
+          "準1級": "How has the scope of the Johnson Space Center's programs evolved from early low Earth orbit missions to current endeavors?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A New Space Home",
+          "text": "NASA has a big space center in Houston. It is sixty-five years old today. This place helps people fly into space. Many brave astronauts work there. They do important jobs for America. Everyone is very happy to celebrate this special day now.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Sixty-Five Years of Space",
+          "text": "Sixty-five years ago, a new space center started in Houston, Texas. It helps lead America's human spaceflight program. From Project Mercury to Artemis, workers support many missions. Today, it is home to America's astronaut corps and the famous Mission Control Center. Houston is a very important place for space discovery, research, and innovation in America.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Celebrating Sixty-Five Years in Houston",
+          "text": "Sixty-five years ago, a bold vision started in Houston to build a center for human spaceflight. Since 1961, NASA's Johnson Space Center has led America's space programs, supporting missions from Project Mercury to Artemis. Today, Johnson is home to the astronaut corps and the Mission Control Center. As space programs evolve, the center remains at the forefront, managing the International Space Station, Moon Base, and Orion programs for future human space exploration.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "The Evolution of Johnson Space Center",
+          "text": "Sixty-five years ago, NASA's Johnson Space Center was established in Houston, Texas, to lead the nation's human spaceflight program. Following President John F. Kennedy's 1961 speech committing the US to landing on the Moon, the agency required a dedicated facility. Originally named the Manned Spacecraft Center, it officially opened in late 1961. Over the decades, it grew to support Mercury, Gemini, Apollo, and the Space Shuttle. Today, Johnson directs International Space Station operations, commercial low Earth orbit partnerships, and deep-space initiatives like the Moon Base and Orion programs, protecting astronaut health and driving space innovation.",
+          "wordCount": 93
+        },
+        "2級": {
+          "title": "NASA's Johnson Space Center Marks 65 Years of Exploration",
+          "text": "Marking sixty-five years of innovation, NASA's Johnson Space Center in Houston remains the heart of America's human spaceflight program. The center's origins trace back to President John F. Kennedy's 1961 address challenging the nation to land a man on the Moon and return him safely to Earth. Because the Space Task Group outgrew its facilities in Virginia, NASA selected a Clear Lake site near Houston in late 1961. Initially called the Manned Spacecraft Center, employees worked in leased buildings until the new campus opened in the 1960s. Renamed in 1973 to honor President Lyndon B. Johnson, the facility currently oversees International Space Station operations, commercial low Earth orbit partnerships, and advanced initiatives like the Orion and Moon Base programs. Furthermore, directorates dedicated to human research and health ensure astronaut safety as missions venture deeper into space.",
+          "wordCount": 132
+        },
+        "準1級": {
+          "title": "Six Decades of Discovery: Celebrating the Legacy and Future of Johnson Space Center",
+          "text": "Commemorating six and a half decades of groundbreaking achievements and continuous innovation, NASA’s Johnson Space Center in Houston continues to steer humanity's most ambitious space endeavors forward. The center's genesis officially began on November 1, 1961, following a pivotal moment earlier that year on May 25, when President John F. Kennedy addressed a joint session of Congress and committed the nation to landing a man on the Moon and returning him safely to Earth before the decade concluded. As NASA's Space Task Group rapidly outgrew its operational capacity at Virginia's Langley Research Center while managing Project Mercury, the agency recognized the urgent need for a dedicated field installation. After thoroughly evaluating multiple prospective sites across the country, NASA selected Houston in September 1961. While construction steadily advanced on the sprawling Clear Lake campus starting in 1962, the newly established Manned Spacecraft Center initially utilized multiple leased commercial spaces throughout southeast Houston. In 1973, the institution was officially renamed in tribute to President Lyndon B. Johnson, honoring his steadfast support for the American space program since its very inception. Over the decades, the facility seamlessly transitioned from executing landmark lunar missions to managing the Space Shuttle program. Today, Johnson serves as the undisputed epicenter for the International Space Station, commercial low Earth orbit destinations, and advanced deep-space architectures including the Orion and Moon Base programs. Furthermore, specialized divisions such as the Human Research Program and the Human Health and Performance Directorate work diligently to safeguard crew health and performance as modern missions venture ever deeper into the cosmos, ensuring that the center remains at the forefront of aerospace discovery during this exciting new golden age.",
+          "wordCount": 268
+        }
+      },
+      "sources": [
+        {
+          "name": "NASA News",
+          "url": "https://www.nasa.gov/centers-and-facilities/johnson/happy-65-years-nasas-johnson-space-center-then-and-now/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-03-nhk-executive-elected-abu-president",
+      "date": "2026-11-03",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ABU",
+        "NHK",
+        "Asia-Pacific",
+        "broadcasting"
+      ],
+      "titleJa": "NHK山名氏が会長に",
+      "title": "NHK Vice Chairman Elected as Next ABU President",
+      "summaryJa": "NHKの山名啓雄副会長が、アジア・太平洋地域の放送機関などが加盟するアジア太平洋放送連合（ABU）の次の会長に選出されました。",
+      "sourcePublishedAt": "2026-11-02T12:46:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "ABUの規模やNHKの新しい役職に関する情報を正確に把握する。",
+        "followUpJa": "国際的なメディア組織における日本の役割について話し合ってみましょう。",
+        "questions": {
+          "5級": "Who is the new president?",
+          "4級": "What organization chose the new leader?",
+          "3級": "How many countries and regions are members of ABU?",
+          "準2級": "What kind of work does ABU do besides having member broadcasters?",
+          "2級": "What specific role did Hiroo Yamana hold at NHK before becoming the ABU president?",
+          "準1級": "How does the structure and membership of ABU influence regional broadcasting cooperation across member nations?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "NHK Leader Gets New Role",
+          "text": "A big news is here. Mr. Hiroo Yamana is from NHK. He is the vice chairman. Now, he has a new job. He is chosen as the next president of ABU. ABU is a big group. It helps broadcasters in Asia and the Pacific. Many people are very happy about this news.",
+          "wordCount": 52
+        },
+        "4級": {
+          "title": "New President for ABU",
+          "text": "There is important news in the media world. Mr. Hiroo Yamana is the vice chairman of NHK. He was chosen as the next president of the Asia-Pacific Broadcasting Union, known as ABU. This organization connects many broadcasting groups across the Asia and Pacific regions. ABU members work together on programs and broadcasting technology. Mr. Yamana will lead this large group in its future work.",
+          "wordCount": 64
+        },
+        "3級": {
+          "title": "NHK Vice Chairman Chosen as Next ABU President",
+          "text": "Important media news has been announced in Japan. Mr. Hiroo Yamana, who serves as the vice chairman of NHK, has been selected as the next president of the Asia-Pacific Broadcasting Union, or ABU. The ABU is a large international organization. It includes broadcasting institutions from 66 countries and regions. Members work together on various projects, such as joint program production and sharing broadcasting technology. Mr. Yamana's new leadership role highlights the active participation of Japanese public media in the wider Asia-Pacific region today.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "NHK Vice Chairman Hiroo Yamana Appointed as Next ABU President",
+          "text": "In recent media developments, it was announced that NHK Vice Chairman Hiroo Yamana has been chosen as the next president of the Asia-Pacific Broadcasting Union (ABU). The organization serves as a major network for broadcasting institutions across the Asia and Pacific regions. Currently, the ABU comprises broadcasting organizations from 66 different countries and regions. These members actively cooperate through joint television program production and the exchange of advanced broadcasting technology. Mr. Yamana's selection places a prominent Japanese broadcasting leader at the head of this extensive international network, reflecting Japan's ongoing commitment to regional media collaboration and communication development across borders.",
+          "wordCount": 99
+        },
+        "2級": {
+          "title": "NHK Vice Chairman Hiroo Yamana Selected to Lead the Asia-Pacific Broadcasting Union",
+          "text": "In a significant development for international media cooperation, NHK Vice Chairman Hiroo Yamana has officially been chosen as the next president of the Asia-Pacific Broadcasting Union, known as the ABU. This prominent organization unites broadcasting institutions from 66 countries and territories across the Asia-Pacific region. Its primary activities involve fostering cooperation among members through joint program production and the advancement of broadcasting technology. By stepping into this international leadership position, Mr. Yamana will oversee efforts to strengthen cooperative ties and promote media development across diverse member nations. This appointment underscores the influential role that Japanese public media organizations continue to play in shaping the broader landscape of broadcasting throughout the entire Asia-Pacific area. The announcement was welcomed by professionals in the industry who value regional collaboration. Media networks across the region work together closely to share important technical expertise and improve broadcasting standards for all member countries. This election highlights the strong ongoing contributions of Japanese leadership within major international media organizations today.",
+          "wordCount": 162
+        },
+        "準1級": {
+          "title": "NHK Vice Chairman Hiroo Yamana Elected as President of the Asia-Pacific Broadcasting Union",
+          "text": "In a notable development for international broadcasting governance, NHK Vice Chairman Hiroo Yamana has been elected as the incoming president of the Asia-Pacific Broadcasting Union, which is widely recognized as the ABU. Operating as a vital coalition within the global media landscape, the Asia-Pacific Broadcasting Union encompasses broadcasting institutions from 66 distinct countries and territories located across the entire Asia-Pacific region. The organization is dedicated to facilitating deep cooperation among its vast membership, driving important initiatives such as joint program production and the continuous enhancement of broadcasting technologies. Mr. Yamana's ascension to the presidency places a seasoned Japanese media executive at the helm of an organization that heavily influences regional information sharing and cultural exchange. As member networks increasingly navigate professional transformations and evolving audience demands, his leadership is expected to steer collaborative strategies and foster stronger ties across diverse broadcasting environments throughout the entire region, ensuring continued growth, technical innovation, and enduring international cooperation among participating nations and media institutions. The active participation of various member countries further strengthens the foundation for collective progress and mutual understanding within the global broadcasting community. NHK Vice Chairman Hiroo Yamana will officially lead the Asia-Pacific Broadcasting Union, bringing his extensive experience in public media to the international organization. The Asia-Pacific Broadcasting Union currently includes 66 countries and regions among its members, all working together on essential broadcasting initiatives.",
+          "wordCount": 224
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261102de69830"
+        }
+      ]
+    },
     {
       "id": "2026-11-02-agency-for-cultural-affairs-copyright-committee-meetin",
       "date": "2026-11-02",
