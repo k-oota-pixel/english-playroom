@@ -1,6 +1,6 @@
 import {getAuth} from './auth-session.js?v=2.3.1';
 const panel=document.createElement('section');panel.style.cssText='padding:20px;border:1px solid #dce5da;border-radius:16px;margin:20px 0;background:white';
-panel.innerHTML='<h2>登録コード・アカウント管理</h2><p>生徒名との対応表は学校で認められた保管先で管理してください。ここには生徒名を入力しないでください。</p><label>発行件数（1〜200） <input id="codeCount" type="number" min="1" max="200" value="30"></label> <button id="issueCodes">発行してCSVを保存</button><p><label>追加コード一覧の取り込み <input id="importCodes" type="file" accept=".csv,.txt"></label><small>今回お渡しする10,000件は登録済みです。追加の一覧を取り込む場合に使います。</small></p><hr><label>生徒の登録コード <input id="lookupCode" autocomplete="off" placeholder="AB3D7K"></label> <button id="lookupAccount">IDを確認</button> <button id="resetCodePassword">仮パスワードを発行</button><p id="codeAdminStatus" role="status" style="white-space:pre-wrap"></p>';
+panel.innerHTML='<h2>登録コード・アカウント管理</h2><p>生徒名との対応表は学校で認められた保管先で管理してください。ここには生徒名を入力しないでください。</p><label>発行件数（1〜200） <input id="codeCount" type="number" min="1" max="200" value="30"></label> <button id="issueCodes">発行してCSVを保存</button><p><label>追加コード一覧の取り込み <input id="importCodes" type="file" accept=".csv,.txt"></label><small>今回お渡しする10,000件は登録済みです。追加の一覧を取り込む場合に使います。</small></p><p><label>既存利用者のコード名を復元 <input id="restoreCodeNames" type="file" accept=".csv,.txt"></label><small>発行時のCSVを読み込むと、登録済みコードを利用者一覧に表示できます。コード本体は管理用情報として保存されます。</small></p><hr><label>生徒の登録コード <input id="lookupCode" autocomplete="off" placeholder="AB3D7K"></label> <button id="lookupAccount">IDを確認</button> <button id="resetCodePassword">仮パスワードを発行</button><p id="codeAdminStatus" role="status" style="white-space:pre-wrap"></p>';
 (document.querySelector('main')||document.body).append(panel);
 const $=id=>panel.querySelector('#'+id),message=text=>$('codeAdminStatus').textContent=text;
 async function call(action,body){
@@ -28,4 +28,15 @@ $('importCodes').onchange=async()=>{
  let imported=0;for(let i=0;i<hashes.length;i+=200){message('取り込み中：'+i+' / '+hashes.length);const data=await call('import',{hashes:hashes.slice(i,i+200)});imported+=data.imported;}
  message('取り込み完了：新規 '+imported+'件（既存コードは上書きしません）。');
  }catch(error){message(error.message+' 再度同じファイルを取り込んでも使用済み状態は維持されます。');}finally{input.disabled=false;}
+};
+$('restoreCodeNames').onchange=async()=>{
+ const input=$('restoreCodeNames'),file=input.files[0];if(!file)return;input.disabled=true;
+ try{
+  const rows=(await file.text()).replace(/^\uFEFF/,'').split(/\r?\n/);
+  const codes=rows.map(line=>{const cells=line.split(',').map(value=>value.trim().replace(/^"|"$/g,''));return cells.find(value=>/^[A-Z0-9]{6}$/i.test(value))||'';}).filter(Boolean).map(value=>value.toUpperCase());
+  const unique=[...new Set(codes)];if(!unique.length)throw Error('登録コードが見つかりません。発行時のCSVを選択してください。');
+  let restored=0,unchanged=0,unlinked=0;
+  for(let i=0;i<unique.length;i+=200){message('コード名を復元中：'+Math.min(i+200,unique.length)+' / '+unique.length);const result=await call('code-name-import',{codes:unique.slice(i,i+200)});restored+=Number(result.restored)||0;unchanged+=Number(result.unchanged)||0;unlinked+=Number(result.unlinked)||0;}
+  message('復元完了：'+restored+'人分。既に設定済み '+unchanged+'件、未登録・未紐づけ '+unlinked+'件。利用者一覧を更新してください。');
+ }catch(error){message(error.message);}finally{input.disabled=false;input.value='';}
 };
