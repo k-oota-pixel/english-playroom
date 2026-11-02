@@ -82,7 +82,7 @@ function setMode(value){
  $('identityLabel').textContent=register?'ログインID':'メールアドレスまたはログインID';
  $('email').placeholder=register?'設定するログインID':'コード登録前：メールアドレス／登録後：ログインID';
  $('emailSubmit').textContent=register?'登録コードで新規登録':'ログイン';
- $('modeNote').textContent=register?'メールアドレスは不要です。IDは4〜32文字の英数字・ハイフン・アンダーバー、パスワードは6〜12文字で設定してください。':'コード登録前に作成された方は、登録時のメールアドレス（またはGoogle）でログインできます。コード登録済みの方はログインIDを入力してください。';
+ $('modeNote').textContent=register?'メールアドレスは不要です。ログインIDは4〜32文字で設定できます。英数字だけでも登録可能です。パスワードは6〜12文字で設定してください。':'コード登録前に作成された方は、登録時のメールアドレス（またはGoogle）でログインできます。コード登録済みの方はログインIDを入力してください。';
  for(const [id,selected]of [['loginTab',!register],['registerTab',register]]){$(id).classList.toggle('active',selected);$(id).setAttribute('aria-selected',String(selected));}
  $('modeSwitch').textContent=register?'すでに登録済みの方はこちら':'初めての方はこちら';
  $('status').className='status';
