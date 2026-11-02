@@ -48,10 +48,9 @@ document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
 function makeSvg(item){
  const s=SPRITES[item.id],r=((item.rotation%4)+4)%4;
- const viewW=r%2===0?s.w:s.h,viewH=r%2===0?s.h:s.w;
- const transform=r===1?'translate('+s.h+' 0) rotate(90)':r===2?'translate('+s.w+' '+s.h+') rotate(180)':r===3?'translate(0 '+s.w+') rotate(270)':'';
- const image='<svg x="0" y="0" width="'+s.w+'" height="'+s.h+'" viewBox="'+s.x+' '+s.y+' '+s.w+' '+s.h+'" aria-hidden="true" focusable="false"><image href="./assets/recraft-furniture.svg" x="0" y="0" width="1024" height="1024"/></svg>';
- return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+viewW+' '+viewH+'" aria-hidden="true" focusable="false">'+(transform?'<g transform="'+transform+'">'+image+'</g>':image)+'</svg>';
+ const transform=r===1?'translate('+(2*s.x+s.w)+' 0) scale(-1 1)':r===2?'translate('+(2*s.x+s.w)+' '+(2*s.y+s.h)+') scale(-1 -1)':r===3?'translate(0 '+(2*s.y+s.h)+') scale(1 -1)':'';
+ const image='<image href="./assets/recraft-furniture.svg" x="0" y="0" width="1024" height="1024"/>';
+ return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+s.x+' '+s.y+' '+s.w+' '+s.h+'" aria-hidden="true" focusable="false">'+(transform?'<g transform="'+transform+'">'+image+'</g>':image)+'</svg>';
 }
 function footprint(item){const d=dims(item),cells=[];for(let yy=0;yy<d.h;yy++)for(let xx=0;xx<d.w;xx++)cells.push({x:item.state.x+xx,y:item.state.y+yy});return cells}
 function inBounds(c){return c.x>=0&&c.y>=0&&c.x<GRID&&c.y<GRID}
@@ -62,7 +61,7 @@ function valid(item){return footprint(item).every(c=>inBounds(c)&&(!item.blockin
 function save(item){localStorage.setItem(item.store,JSON.stringify({x:item.state.x,y:item.state.y,placed:item.state.placed,rotation:item.rotation}))}
 function place(item){
  const d=dims(item),w=d.w,h=d.h,p=point((item.state.x+w/2)/GRID,(item.state.y+h/2)/GRID);
- const width=CELL_X*(w+h),floorH=CELL_Y*(w+h),sprite=SPRITES[item.id],viewW=item.rotation%2===0?sprite.w:sprite.h,viewH=item.rotation%2===0?sprite.h:sprite.w,artHeight=width*viewH/viewW,anchor=1-floorH/(2*artHeight);
+ const width=CELL_X*(w+h),floorH=CELL_Y*(w+h),sprite=SPRITES[item.id],artHeight=width*sprite.h/sprite.w,anchor=1-floorH/(2*artHeight);
  item.actor.style.width=(width/10)+"%";item.actor.style.left=(p.x/10)+"%";item.actor.style.top=(p.y/7.48)+"%";item.actor.style.transform="translate(-50%,-"+(100*anchor).toFixed(3)+"%)";item.actor.style.zIndex=String(90+Math.round(p.y));
  item.actor.innerHTML=makeSvg(item);item.actor.hidden=!item.state.placed&&active!==item.id;
 }
