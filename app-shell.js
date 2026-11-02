@@ -1,5 +1,5 @@
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.30';
+const MATERIAL_RELEASE='2.1.31';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh']
@@ -35,7 +35,7 @@ function install() {
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)}
   ]});
-  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)}];
+  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
   const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
