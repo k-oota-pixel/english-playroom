@@ -36,7 +36,7 @@ async function load(index=pageIndex,force=false){
   allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLearningAt||0)-Number(a.lastLearningAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
   restorePageMeta();
-  setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体からコード名またはニックネームを検索できます。','ok');render();
+  setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体から登録コード、IDまたはニックネームを検索できます。','ok');render();
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
@@ -80,7 +80,7 @@ function render(){
  if(searching&&searchResults===null){$('users').innerHTML='<div class="empty">登録者全体から検索しています…</div>';return;}
  $('users').innerHTML=list.map(u=>{
   const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps,activity:detail.activity}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
-  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="code-name">コード名：'+esc(u.codeName||'未登録')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
+  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="code-name">コード名：'+esc(u.loginId?(u.codeName||'未復元'):'—')+'</div><div class="login-id">ID：'+esc(u.loginId||'—')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
  }).join('')||'<div class="empty">一致する登録者はいません。</div>';
  document.querySelectorAll('.user-summary').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));
  document.querySelectorAll('.detail-retry').forEach(b=>b.onclick=()=>{const uid=b.closest('.user').dataset.uid;detailCache.delete(uid);expandedUid='';expand(uid);});
