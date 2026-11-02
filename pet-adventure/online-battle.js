@@ -55,7 +55,7 @@ function battlePanel(room){
  if(!currentCard)return '<div class="tower-loading">問題を読み込んでいます…</div>';
  const cards=questionPool.filter(q=>q.level===gradeLevel(room.grade)).slice(0,4);
  const selected='<div class="tower-quiz"><div class="tower-quiz-title">英単語を選ぼう</div><div class="tower-word-grid">'+cards.map(card=>'<button class="tower-word-card '+(card.id===currentCard.id?'chosen':'')+'" data-word="'+esc(card.id)+'"><span class="element-badge">'+(['🔥','⚡','🍃','💧'][cards.indexOf(card)%4])+'</span><strong>'+esc(card.word)+'</strong><small>中'+(cards.indexOf(card)+1)+'</small><span class="power">POWER '+(30+cards.indexOf(card))+'</span></button>').join('')+'</div><p class="tower-question">「'+esc(currentCard.word)+'」の日本語の意味は？</p><div class="answer-grid">'+currentCard.choices.map((choice,i)=>'<button class="answer-choice" data-answer="'+i+'">'+esc(choice)+'</button>').join('')+'</div></div>';
- return '<div class="tower-battle-ui"><div class="tower-action-row"><span>CHOOSE YOUR ATTACK</span><button type="button" class="tower-tool" disabled>✨ 魔法</button><button type="button" class="tower-tool" disabled>🎒 アイテム</button></div>'+selected+'</div>';
+ return '<div class="tower-battle-ui"><div class="tower-action-row"><span>CHOOSE YOUR ATTACK</span><button type="button" class="tower-tool" data-special="magic" '+(room.noItems?'disabled':'')+'>✨ 魔法</button><button type="button" class="tower-tool" data-special="item" '+(room.noItems?'disabled':'')+'>🎒 アイテム</button></div>'+selected+'</div>';
 }
 function showResult(room){
  const fx=$('resultFx'),win=room.winnerUid===user.uid;
@@ -76,14 +76,15 @@ function renderRoom(room){
  const canReady=waiting&&room.players?.length===2&&!mine?.ready;
  const waitingText=waiting?(room.players?.length<2?'相手の入室を待っています。':'２人が準備完了を押すと対戦が始まります。'):'';
  const readyLine=waiting?'<div class="count-line">準備完了 '+readyCount+'/2</div>':finished?'<div class="count-line">再戦準備 '+rematchCount+'/2</div>':'';
- roomView.innerHTML='<section class="room-panel"><div class="room-head"><div><h2>ルーム '+esc(room.roomId)+'</h2><div class="room-rule">英検'+esc(room.grade||'4級')+' · '+(room.noItems?'魔法・アイテムなし':'魔法・アイテムあり')+'</div></div><span class="room-state">'+roomStatus(room)+'</span></div><div class="duel">'+fighter(mine,true)+'<div class="versus">VS</div>'+fighter(other,false)+'</div><p class="battle-log" id="battleLog">'+esc(room.lastEvent?.type==='attack'?(room.lastEvent.from===user.uid?'正解！ 相手に'+room.lastEvent.damage+'ダメージ！':'相手の攻撃！ '+room.lastEvent.damage+'ダメージを受けた！'):room.lastEvent?.type==='miss'?(room.lastEvent.from===user.uid?'不正解… 自分に1ダメージ。':'相手が不正解。'):'')+'</p>'+readyLine+(waiting?'<div class="waiting">'+waitingText+(mine?.ready?' あなたは準備完了です。':'')+(other?.ready?' 相手は準備完了です。':'')+'</div>':'')+(playing?battlePanel(room):'')+'<div class="controls">'+(canReady?'<button class="primary" data-act="ready">準備完了</button>':'')+(finished?'<button class="primary" data-act="continue">もう一度対戦</button>':'')+((waiting||finished)?'<button class="danger" data-act="leave">対戦を終了する</button>':'')+'</div></section>';
+ roomView.innerHTML='<section class="room-panel"><div class="room-head"><div><h2>ルーム '+esc(room.roomId)+'</h2><div class="room-rule">英検'+esc(room.grade||'4級')+' · '+(room.noItems?'魔法・アイテムなし':'魔法・アイテムあり')+'</div></div><span class="room-state">'+roomStatus(room)+'</span></div><div class="duel">'+fighter(mine,true)+'<div class="versus">VS</div>'+fighter(other,false)+'</div><p class="battle-log" id="battleLog">'+esc((room.lastEvent?.type==='attack'||room.lastEvent?.type==='magic')?(room.lastEvent.from===user.uid?'攻撃成功！ 相手に'+room.lastEvent.damage+'ダメージ！':'相手の攻撃！ '+room.lastEvent.damage+'ダメージを受けた！'):room.lastEvent?.type==='item'?(room.lastEvent.from===user.uid?'アイテムでHPを3回復！':'相手がアイテムを使った。'):room.lastEvent?.type==='miss'?(room.lastEvent.from===user.uid?'不正解… 自分に1ダメージ。':'相手が不正解。'):'')+'</p>'+readyLine+(waiting?'<div class="waiting">'+waitingText+(mine?.ready?' あなたは準備完了です。':'')+(other?.ready?' 相手は準備完了です。':'')+'</div>':'')+(playing?battlePanel(room):'')+'<div class="controls">'+(canReady?'<button class="primary" data-act="ready">準備完了</button>':'')+(finished?'<button class="primary" data-act="continue">もう一度対戦</button>':'')+((waiting||finished)?'<button class="danger" data-act="leave">対戦を終了する</button>':'')+'</div></section>';
  roomView.querySelector('[data-act="ready"]')?.addEventListener('click',()=>act('ready'));
  roomView.querySelector('[data-act="continue"]')?.addEventListener('click',()=>act('continue'));
  roomView.querySelector('[data-act="leave"]')?.addEventListener('click',()=>act('leave'));
  roomView.querySelectorAll('[data-word]').forEach(btn=>btn.addEventListener('click',()=>{const q=questionPool.find(x=>x.id===btn.dataset.word);if(q){currentCard={...q,choices:[q.meaning,...questionPool.filter(x=>x.meaning!==q.meaning).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.meaning)].sort(()=>Math.random()-.5)};renderRoom(room);}}));
+ roomView.querySelectorAll('[data-special]').forEach(btn=>btn.addEventListener('click',()=>{if(!room.noItems){currentCard=null;void act(btn.dataset.special);}}));
  roomView.querySelectorAll('[data-answer]').forEach(btn=>btn.addEventListener('click',()=>{const correct=currentCard&&currentCard.choices[Number(btn.dataset.answer)]===currentCard.meaning;currentCard=null;void act(correct?'attack':'miss');}));
  if(finished&&room.seq!==lastSeq){lastSeq=room.seq;showResult(room);void updateCoins();}else if(!finished)$('resultFx').hidden=true;
- if(room.lastEvent?.type==='attack'&&room.seq!==lastSeq){lastSeq=room.seq;const target=room.lastEvent.to===user.uid?'[data-fighter="me"]':'[data-fighter="opponent"]';roomView.querySelector(target)?.classList.add('impact');}
+ if((room.lastEvent?.type==='attack'||room.lastEvent?.type==='magic')&&room.seq!==lastSeq){lastSeq=room.seq;const target=room.lastEvent.to===user.uid?'[data-fighter="me"]':'[data-fighter="opponent"]';roomView.querySelector(target)?.classList.add('impact');}
 }
 async function refreshRooms(){
  try{
@@ -107,7 +108,7 @@ async function enterRoom(id){
 }
 async function act(action){
  const button=roomView.querySelector('[data-act="'+action+'"]');if(button)button.disabled=true;
- try{const data=await api('/room/'+activeRoom+'/'+action,'POST');if(action==='leave'){activeRoom='';$('resultFx').hidden=true;await loadQuestionPool();await updateCoins();await refreshRooms();return;}renderRoom(data.room);await updateCoins();say(action==='attack'?'攻撃を処理しました。':'対戦状態を更新しました。');}
+ try{const data=await api('/room/'+activeRoom+'/'+action,'POST');if(action==='leave'){activeRoom='';$('resultFx').hidden=true;await loadQuestionPool();await updateCoins();await refreshRooms();return;}renderRoom(data.room);await updateCoins();say(action==='attack'?'攻撃を処理しました。':action==='magic'?'魔法を使いました。':action==='item'?'アイテムを使いました。':'対戦状態を更新しました。');}
  catch(e){say(e.message,true);await refreshRoom();}
 }
 async function loadQuestionPool(){
