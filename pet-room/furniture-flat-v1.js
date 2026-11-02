@@ -48,7 +48,7 @@ document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
 function makeSvg(item){
  const s=SPRITES[item.id],r=((item.rotation%4)+4)%4;
- const transform=r===1?'translate('+(2*s.x+s.w)+' 0) scale(-1 1)':r===2?'translate('+(2*s.x+s.w)+' '+(2*s.y+s.h)+') scale(-1 -1)':r===3?'translate(0 '+(2*s.y+s.h)+') scale(1 -1)':'';
+ const transform=r%2===1?'translate('+(2*s.x+s.w)+' 0) scale(-1 1)':'';
  const image='<image href="./assets/recraft-furniture.svg" x="0" y="0" width="1024" height="1024"/>';
  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+s.x+' '+s.y+' '+s.w+' '+s.h+'" aria-hidden="true" focusable="false">'+(transform?'<g transform="'+transform+'">'+image+'</g>':image)+'</svg>';
 }
