@@ -4,7 +4,7 @@ let petData={};
 function install(){
  let b=document.getElementById('petPlayOpen');
  if(!b){const a=document.getElementById('petClean')||document.getElementById('petFeed')||document.getElementById('petShopOpen');if(!a)return;b=document.createElement('button');b.id='petPlayOpen';b.className='pet-shop-open';b.type='button';b.textContent='PLAY';b.onclick=openMenu;a.after(b);}
- b.disabled=!auth.currentUser;
+ b.disabled=!auth.currentUser;b.onclick=openMenu;
 }
 document.addEventListener('pet-state-updated',e=>{petData=e.detail||{};install();});
 new MutationObserver(install).observe(document.body,{childList:true,subtree:true});
