@@ -52,10 +52,10 @@ function chooseCard(room){
 }
 function battlePanel(room){
  if(!currentCard)currentCard=chooseCard(room);
- if(!currentCard)return '<div class="waiting">問題を読み込んでいます…</div>';
+ if(!currentCard)return '<div class="tower-loading">問題を読み込んでいます…</div>';
  const cards=questionPool.filter(q=>q.level===gradeLevel(room.grade)).slice(0,4);
- const selected=currentCard?'<div class="selected-word"><span>選択した単語</span><strong>'+esc(currentCard.word)+'</strong><small>日本語の意味を選んでください</small><div class="answer-grid">'+currentCard.choices.map((choice,i)=>'<button class="answer-choice" data-answer="'+i+'">'+esc(choice)+'</button>').join('')+'</div></div>':'';
- return '<div class="attack-panel"><p class="panel-title">攻撃する単語を選んでください</p><div class="word-grid">'+cards.map(card=>'<button class="word-card" data-word="'+esc(card.id)+'"><strong>'+esc(card.word)+'</strong><small>'+esc(card.levelLabel||'')+'</small></button>').join('')+'</div>'+selected+'</div>';
+ const selected='<div class="tower-quiz"><div class="tower-quiz-title">英単語を選ぼう</div><div class="tower-word-grid">'+cards.map(card=>'<button class="tower-word-card '+(card.id===currentCard.id?'chosen':'')+'" data-word="'+esc(card.id)+'"><span class="element-badge">'+(['🔥','⚡','🍃','💧'][cards.indexOf(card)%4])+'</span><strong>'+esc(card.word)+'</strong><small>中'+(cards.indexOf(card)+1)+'</small><span class="power">POWER '+(30+cards.indexOf(card))+'</span></button>').join('')+'</div><p class="tower-question">「'+esc(currentCard.word)+'」の日本語の意味は？</p><div class="answer-grid">'+currentCard.choices.map((choice,i)=>'<button class="answer-choice" data-answer="'+i+'">'+esc(choice)+'</button>').join('')+'</div></div>';
+ return '<div class="tower-battle-ui"><div class="tower-action-row"><span>CHOOSE YOUR ATTACK</span><button type="button" class="tower-tool" disabled>✨ 魔法</button><button type="button" class="tower-tool" disabled>🎒 アイテム</button></div>'+selected+'</div>';
 }
 function showResult(room){
  const fx=$('resultFx'),win=room.winnerUid===user.uid;
