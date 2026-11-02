@@ -55,7 +55,7 @@ function renderRoom(room){
  roomView.querySelector('[data-act="attack"]')?.addEventListener('click',()=>act('attack'));
  roomView.querySelector('[data-act="continue"]')?.addEventListener('click',()=>act('continue'));
  roomView.querySelector('[data-act="leave"]')?.addEventListener('click',()=>act('leave'));
- if(finished&&room.seq!==lastSeq){lastSeq=room.seq;showResult(room);}else if(!finished)$('resultFx').hidden=true;
+ if(finished&&room.seq!==lastSeq){lastSeq=room.seq;showResult(room);void updateCoins();}else if(!finished)$('resultFx').hidden=true;
  if(room.lastEvent?.type==='attack'&&room.seq!==lastSeq){lastSeq=room.seq;const target=room.lastEvent.to===user.uid?'[data-fighter="me"]':'[data-fighter="opponent"]';roomView.querySelector(target)?.classList.add('impact');}
 }
 async function refreshRooms(){
