@@ -57,7 +57,6 @@ function renderRoom(room){
  roomView.querySelector('[data-act="leave"]')?.addEventListener('click',()=>act('leave'));
  if(finished&&room.seq!==lastSeq){lastSeq=room.seq;showResult(room);}else if(!finished)$('resultFx').hidden=true;
  if(room.lastEvent?.type==='attack'&&room.seq!==lastSeq){lastSeq=room.seq;const target=room.lastEvent.to===user.uid?'[data-fighter="me"]':'[data-fighter="opponent"]';roomView.querySelector(target)?.classList.add('impact');}
- if(mine)updateCoins();
 }
 async function refreshRooms(){
  try{
