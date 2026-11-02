@@ -57,7 +57,7 @@ async function runSearch(){
 function onSearchInput(){
  clearTimeout(searchTimer);searchSerial++;expandedUid='';detailCache.clear();
  const q=searchQuery();
- if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体からコード名またはニックネームを検索できます。','ok');render();return;}
+ if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体から登録コード、IDまたはニックネームを検索できます。','ok');render();return;}
  searchResults=null;searchTotal=0;searchTruncated=false;updateRefresh();$('prev').disabled=true;$('next').disabled=true;render();
  searchTimer=setTimeout(runSearch,320);
 }
