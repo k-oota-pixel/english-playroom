@@ -122,7 +122,7 @@ async function init(){
  try{
   await authReady;user=auth.currentUser;
   if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}
-  await updateCoins();await refreshRooms();
+  await loadQuestionPool();await updateCoins();await refreshRooms();
   pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},2500);
   roomsTimer=window.setInterval(()=>{if(!activeRoom)void refreshRooms();},10000);
  }catch(e){say(e.message||'初期化できませんでした。',true);}
