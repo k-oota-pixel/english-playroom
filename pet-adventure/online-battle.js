@@ -53,7 +53,7 @@ function chooseCard(room){
 function battlePanel(room){
  if(!currentCard)currentCard=chooseCard(room);
  if(!currentCard)return '<div class="tower-loading">問題を読み込んでいます…</div>';
- const cards=questionPool.filter(q=>q.level===gradeLevel(room.grade)).slice(0,4);
+ const pool=questionPool.filter(q=>q.level===gradeLevel(room.grade)); const cards=[currentCard,...pool.filter(q=>q.id!==currentCard.id)].slice(0,4);
  const selected='<div class="tower-quiz"><div class="tower-quiz-title">英単語を選ぼう</div><div class="tower-word-grid">'+cards.map(card=>'<button class="tower-word-card '+(card.id===currentCard.id?'chosen':'')+'" data-word="'+esc(card.id)+'"><span class="element-badge">'+(['🔥','⚡','🍃','💧'][cards.indexOf(card)%4])+'</span><strong>'+esc(card.word)+'</strong><small>中'+(cards.indexOf(card)+1)+'</small><span class="power">POWER '+(30+cards.indexOf(card))+'</span></button>').join('')+'</div><p class="tower-question">「'+esc(currentCard.word)+'」の日本語の意味は？</p><div class="answer-grid">'+currentCard.choices.map((choice,i)=>'<button class="answer-choice" data-answer="'+i+'">'+esc(choice)+'</button>').join('')+'</div></div>';
  return '<div class="tower-battle-ui"><div class="tower-action-row"><span>CHOOSE YOUR ATTACK</span><button type="button" class="tower-tool" data-special="magic" '+(room.noItems?'disabled':'')+'>✨ 魔法</button><button type="button" class="tower-tool" data-special="item" '+(room.noItems?'disabled':'')+'>🎒 アイテム</button></div>'+selected+'</div>';
 }
