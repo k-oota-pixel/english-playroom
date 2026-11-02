@@ -33,7 +33,7 @@ $('restoreCodeNames').onchange=async()=>{
  const input=$('restoreCodeNames'),file=input.files[0];if(!file)return;input.disabled=true;
  try{
   const rows=(await file.text()).replace(/^\uFEFF/,'').split(/\r?\n/);
-  const codes=rows.map(line=>{const cells=line.split(',').map(value=>value.trim().replace(/^"|"$/g,''));return cells.find(value=>/^[A-Z0-9]{6}$/i.test(value))||'';}).filter(Boolean).map(value=>value.toUpperCase());
+  const codes=rows.map(line=>{const cells=line.split(',').map(value=>value.trim().replace(/^"|"$/g,''));return cells.find(value=>/^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]{6}$/i.test(value))||'';}).filter(Boolean).map(value=>value.toUpperCase());
   const unique=[...new Set(codes)];if(!unique.length)throw Error('登録コードが見つかりません。発行時のCSVを選択してください。');
   let restored=0,unchanged=0,unlinked=0;
   for(let i=0;i<unique.length;i+=200){message('コード名を復元中：'+Math.min(i+200,unique.length)+' / '+unique.length);const result=await call('code-name-import',{codes:unique.slice(i,i+200)});restored+=Number(result.restored)||0;unchanged+=Number(result.unchanged)||0;unlinked+=Number(result.unlinked)||0;}
