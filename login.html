@@ -17,7 +17,7 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
   <section class="card">
     <div class="brand">もんすたでぃ</div>
     <h1>ログイン</h1>
-    <p class="lead">IDとパスワードでログインできます。新規登録には先生から配付された登録コードが必要です。</p>
+    <p class="lead">コード登録前の方は、登録時のメールアドレスまたはGoogleでログインできます。登録コードでIDを設定済みの方は、ログインIDとパスワードを入力してください。</p>
 
     <button id="googleBtn" class="btn google" type="button"><span class="gmark">G</span>Googleでログイン（既存の方）</button>
 
@@ -30,8 +30,8 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
 
     <form id="emailForm" class="form">
       <div class="field">
-        <label class="label" for="email">ログインID</label>
-        <input id="email" class="input" type="text" autocomplete="username" maxlength="254" placeholder="設定したID（既存の方はメールアドレスも可）" required>
+        <label id="identityLabel" class="label" for="email">メールアドレスまたはログインID</label>
+        <input id="email" class="input" type="text" autocomplete="username" maxlength="254" placeholder="コード登録前：メールアドレス／登録後：ログインID" required>
       </div>
       <div class="field">
         <label class="label" for="password">パスワード</label>
@@ -79,8 +79,10 @@ function setMode(value){
  $('confirmPassword').required=register;$('registrationCode').required=register;
  $('password').minLength=6;$('password').maxLength=register?12:128;$('password').placeholder=register?'6〜12文字':'パスワード';
  $('password').autocomplete=register?'new-password':'current-password';
- $('emailSubmit').textContent=register?'登録コードで新規登録':'IDでログイン';
- $('modeNote').textContent=register?'メールアドレスは不要です。IDは4〜32文字の英数字・ハイフン・アンダーバー、パスワードは6〜12文字で設定してください。':'既存の方はGoogle、または従来のメールアドレスでもログインできます。';
+ $('identityLabel').textContent=register?'ログインID':'メールアドレスまたはログインID';
+ $('email').placeholder=register?'設定するログインID':'コード登録前：メールアドレス／登録後：ログインID';
+ $('emailSubmit').textContent=register?'登録コードで新規登録':'ログイン';
+ $('modeNote').textContent=register?'メールアドレスは不要です。IDは4〜32文字の英数字・ハイフン・アンダーバー、パスワードは6〜12文字で設定してください。':'コード登録前に作成された方は、登録時のメールアドレス（またはGoogle）でログインできます。コード登録済みの方はログインIDを入力してください。';
  for(const [id,selected]of [['loginTab',!register],['registerTab',register]]){$(id).classList.toggle('active',selected);$(id).setAttribute('aria-selected',String(selected));}
  $('modeSwitch').textContent=register?'すでに登録済みの方はこちら':'初めての方はこちら';
  $('status').className='status';
@@ -104,7 +106,7 @@ $('emailForm').addEventListener('submit',async event=>{
  }else if(loginId.includes('@')){await signInWithEmailAndPassword(auth,loginId,password);}
  else{const data=await call('login',{loginId,password});await signInWithCustomToken(auth,data.token);}
  await proceed();
- }catch(error){status(error.message?.startsWith('Firebase:')?'ログインできませんでした。入力内容を確認してください。':error.message);}finally{busy(false);}
+ }catch(error){status(error.message?.startsWith('Firebase:')?'ログインできませんでした。コード登録前の方は、登録時のメールアドレスかGoogleでログインしてください。':error.message);}finally{busy(false);}
 });
 $('googleBtn').onclick=async()=>{
  if(working)return;busy(true);status('Googleログインを確認しています…');
