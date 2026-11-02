@@ -5,30 +5,88 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#173d35">
 <title>オンライン対戦 | もんすたでぃ</title>
-<link rel="stylesheet" href="./styles.css?v=2.3.42"><link rel="stylesheet" href="./final.css?v=2.3.22"><link rel="stylesheet" href="./online-battle.css?v=1.3.4">
+<link rel="stylesheet" href="./styles.css?v=2.3.42">
+<link rel="stylesheet" href="./guard.css?v=2.3.14">
+<link rel="stylesheet" href="./final.css?v=2.3.22">
+<link rel="stylesheet" href="./online-battle.css?v=2.0.0">
 <script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.14"></script>
-<script type="module" src="./online-battle.js?v=1.4.0"></script>
+<script type="module" src="./online-battle.js?v=2.0.0"></script>
 </head>
 <body>
-<header class="topbar"><a href="./" class="brand">← 魔王の塔へ戻る</a><span class="logo">MONSTUDY · DUEL</span></header>
-<main class="wrap">
-  <section class="intro">
-    <span class="eyebrow">ONLINE PET BATTLE</span>
-    <h1>ペット対戦</h1>
-    <p>友だちと同じルームに入って、育てたペットで勝負しよう。時間制限はありません。</p>
-    <div class="coin-pill">所持コイン <strong id="coinCount">—</strong></div>
+<main class="app-shell">
+  <section id="lobbyView" class="adventure-select online-lobby">
+    <a class="back" href="./">← エイゴダンジョンズへ</a>
+    <p class="kicker">ONLINE PET BATTLE</p>
+    <h1>オンライン対戦</h1>
+    <p class="select-intro">友だちと同じルームに入り、育てたペットで勝負しよう。</p>
+    <div class="online-wallet">所持コイン <strong id="coinCount">—</strong></div>
+    <p id="notice" class="online-notice" role="status">ログイン情報を確認しています…</p>
+    <section id="roomList" class="online-room-list" hidden>
+      <div class="online-room-heading"><h2>対戦ルーム</h2><button id="refreshBtn" class="secondary-btn" type="button">更新</button></div>
+      <p class="hint">同じ番号のルームに入ってください。4級・3級・準2級・2級から選べます。2人が準備完了すると対戦が始まります。</p>
+      <div id="rooms" class="online-rooms"></div>
+    </section>
   </section>
-  <p id="notice" class="notice" role="status">ログイン情報を確認しています…</p>
-  <section id="roomList" class="room-list" hidden>
-    <div class="section-heading"><h2>対戦ルーム</h2><button id="refreshBtn" class="subtle" type="button">更新</button></div>
-    <p class="hint">同じ番号のルームに入ってください。4級・3級・準2級・2級から選べます。２人が準備完了すると対戦が始まります。</p>
-    <div id="rooms" class="rooms"></div>
-  </section>
-  <section id="roomView" hidden></section>
+
+  <div id="battleView" hidden>
+    <header class="topbar">
+      <a class="back" href="./online-battle.html" aria-label="対戦ルーム一覧へ戻る">←</a>
+      <div><div class="brand">MONSTUDY · エイゴダンジョンズ</div><h1 id="modeTitle">オンライン対戦</h1></div>
+      <span class="sound-chip" aria-label="オンライン対戦">VS</span>
+    </header>
+
+    <section class="stage-card" id="stageCard">
+      <div class="stage-meta"><span id="areaLabel">ONLINE BATTLE</span><strong id="stageLabel">ROOM</strong><span id="enemyCount">WAITING</span></div>
+      <div class="best-line">RULE <strong id="bestLabel">—</strong></div>
+    </section>
+
+    <section class="battle-tools" aria-label="ペットの能力と道具">
+      <span id="petStats">HP — · 攻撃力 — · 防御力 — · MP —</span>
+      <div><button id="magicBtn" type="button" disabled>✨ 魔法</button><button id="itemBtn" type="button" disabled>🎒 アイテム</button><button id="exitRunBtn" class="exit-run-btn" type="button" disabled>対戦を終了する</button></div>
+    </section>
+
+    <section class="battlefield" id="battlefield" aria-label="オンラインバトル画面">
+      <strong class="boss-banner" id="bossBadge">⚔ ONLINE BATTLE</strong>
+      <div class="fighter pet-side" data-fighter="me">
+        <div class="name-line"><strong id="petName">MY PET</strong><span id="myNickname">YOU</span></div>
+        <div class="hp"><i id="petHpBar"></i></div><div class="hp-text" id="petHpText">— / —</div>
+        <div class="mp"><i id="petMpBar"></i></div><div class="mp-text" id="petMpText">— / — MP</div>
+        <div class="pet-visual" id="adventurePetVisual" aria-label="自分のペット">🐾</div>
+      </div>
+      <div class="versus"><span id="battleStatus" role="status">WAITING</span><button id="pauseBtn" type="button" disabled>ONLINE</button></div>
+      <div class="fighter enemy-side" id="enemySide" data-fighter="opponent">
+        <div class="name-line"><strong id="enemyName">OPPONENT</strong><span id="enemyElement">WAITING</span></div>
+        <div class="hp enemy-hp"><i id="enemyHpBar"></i></div><div class="hp-text" id="enemyHpText">— / —</div>
+        <div class="mp-text" id="enemyMpText">ONLINE</div>
+        <div class="enemy-visual online-opponent-pet" id="enemyVisual" aria-label="相手のペット">👾</div>
+      </div>
+      <div class="battle-flash" id="battleFlash" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" id="attackPanel" hidden>
+      <div class="panel-head"><div><span class="kicker">CHOOSE YOUR ATTACK</span><h2 id="attackHeading">英単語を選ぼう</h2></div><span class="hint" id="attackHint">ATTACK</span></div>
+      <div class="attack-grid" id="attackGrid"></div>
+    </section>
+
+    <section class="panel quiz-panel" id="quizPanel" hidden>
+      <div class="quiz-top"><span class="attack-badge" id="attackBadge">🔥 FIRE</span><span id="attackPower">POWER —</span></div>
+      <div class="question" id="questionText"></div><div class="answer-grid" id="answerGrid"></div><div class="answer-feedback" id="answerFeedback" aria-live="polite"></div>
+      <button class="next-btn" id="nextBtn" type="button" hidden>次へ →</button>
+    </section>
+
+    <section class="loading-card" id="waitingCard"><div class="spinner" aria-hidden="true"></div><strong id="waitingTitle">対戦相手を待っています…</strong><span id="waitingText">同じルームに2人そろうと準備できます</span></section>
+
+    <section class="result-card" id="resultCard" hidden><div class="result-icon" id="resultIcon">🏁</div><span class="kicker">BATTLE COMPLETE</span><h2 id="resultTitle">BATTLE END</h2><p id="resultText"></p><div class="result-actions"><button class="primary-btn" id="retryBtn" type="button">もう一度対戦</button><button class="secondary-btn" id="leaveBtn" type="button">対戦を終了する</button></div></section>
+
+    <section id="onlineControls" class="online-controls" aria-live="polite">
+      <div id="readyCount" class="online-ready-count"></div>
+      <button id="readyBtn" class="primary-btn" type="button" hidden>準備完了</button>
+    </section>
+    <p class="footnote" id="dataNote">対戦開始時に1コイン消費します。勝利すると2コイン獲得します。</p>
+  </div>
 </main>
-<div id="resultFx" class="result-fx" hidden aria-live="assertive">
-  <div class="confetti" aria-hidden="true"></div>
-  <div class="result-card"><span id="resultMark">🏆</span><p id="resultTitle">VICTORY</p><strong id="resultText">勝利！</strong><small>対戦結果が確定しました</small></div>
-</div>
+
+<dialog id="magicDialog" class="battle-action-dialog" aria-labelledby="magicTitle"><div class="battle-action-inner"><button class="dialog-close" id="magicClose" type="button" aria-label="閉じる">×</button><span class="kicker">MAGIC</span><h2 id="magicTitle">✨ 魔法</h2><p class="battle-action-resource" id="magicMpStatus">オンライン対戦用の魔法攻撃です。</p><div id="magicList" class="battle-action-list"></div><p id="magicMessage" class="battle-action-message" role="status"></p></div></dialog>
+<dialog id="itemDialog" class="battle-action-dialog" aria-labelledby="itemTitle"><div class="battle-action-inner"><button class="dialog-close" id="itemClose" type="button" aria-label="閉じる">×</button><span class="kicker">ITEM</span><h2 id="itemTitle">🎒 アイテム</h2><p class="battle-action-resource">オンライン対戦用の回復アイテムです。</p><div id="itemList" class="battle-action-list"></div><p id="itemMessage" class="battle-action-message" role="status"></p></div></dialog>
 </body>
 </html>
