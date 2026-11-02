@@ -1,13 +1,359 @@
 {
-  "generatedAt": "2026-11-01T03:43:20.337Z",
-  "editionDate": "2026-11-01",
+  "generatedAt": "2026-11-02T08:30:04.133Z",
+  "editionDate": "2026-11-02",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-01"
+    "lastSuccessfulEdition": "2026-11-02"
   },
   "articles": [
+    {
+      "id": "2026-11-02-agency-for-cultural-affairs-copyright-committee-meetin",
+      "date": "2026-11-02",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "copyright",
+        "agency for cultural affairs",
+        "japan"
+      ],
+      "titleJa": "文化庁が著作権小委員会を開催",
+      "title": "Agency for Cultural Affairs Holds Copyright Committee Meeting",
+      "summaryJa": "文化庁は第26期文化審議会著作権分科会政策小委員会の第2回会合を11月9日に開催すると発表しました。",
+      "sourcePublishedAt": "2026-11-02T00:00:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "Japan Has a Meeting",
+          "text": "The Agency for Cultural Affairs has a meeting. It is about copyright. The meeting is on November 9, 2026. People can watch it online. The government talks about important rules. Everyone can check the new news on the website.",
+          "wordCount": 37
+        },
+        "4級": {
+          "title": "Agency Holds Copyright Meeting",
+          "text": "The Agency for Cultural Affairs announced a new meeting in Japan. It is the second meeting of the policy subcommittee. The event will take place on November 9, 2026. Officials will talk about measures against pirate sites. They plan to hear from related groups during the session. People can watch the live stream online.",
+          "wordCount": 52
+        },
+        "3級": {
+          "title": "Agency Announces Second Policy Subcommittee Meeting",
+          "text": "The Agency for Cultural Affairs announced that it will hold its second policy subcommittee meeting. The event is scheduled for November 9, 2026. Officials will gather at the Ministry of Education and also hold an online session. They plan to hear from related groups about anti-piracy measures. People who want to watch the discussion can register for a live stream online. The agency will publish the meeting documents on its official website before the event starts for everyone to read.",
+          "wordCount": 78
+        },
+        "準2級": {
+          "title": "Cultural Affairs Agency Schedules Second Copyright Subcommittee Meeting",
+          "text": "The Agency for Cultural Affairs announced that it will hold the second meeting of the policy subcommittee on November 9, 2026. The session will take place at the Ministry of Education and through an online broadcast. During the meeting, members will conduct hearings with related organizations regarding anti-piracy measures. The agency plans to broadcast the proceedings live so that the public can observe the discussion. Interested individuals can register online through the provided registration forms to access the live stream before the deadline. Meeting documents will also be published on the official website.",
+          "wordCount": 91
+        },
+        "2級": {
+          "title": "Agency for Cultural Affairs Schedules Copyright Policy Subcommittee Session",
+          "text": "The Agency for Cultural Affairs has officially announced that it will hold the second meeting of the 26th Cultural Council Copyright Division Policy Subcommittee on November 9, 2026. The session is scheduled to take place at the Ministry of Education East Building Special Conference Room, and it will also be held via an online platform. According to the announcement, the planned agenda includes conducting hearings with related organizations regarding countermeasures against copyright piracy, alongside other matters. To ensure transparency, the agency plans to publicly broadcast the proceedings through a live stream instead of allowing in-person observers. Interested participants must complete their registration using the designated online form within the established application period, which runs from November 2 until November 5, 2026. Furthermore, meeting documents will be published on the official website around 12:00 PM on the day of the event so that the public can review them prior to the start of the discussions.",
+          "wordCount": 147
+        },
+        "準1級": {
+          "title": "Agency for Cultural Affairs Schedules Second Copyright Subcommittee Meeting",
+          "text": "The Agency for Cultural Affairs has officially confirmed the schedule for the second meeting of the twenty-sixth Cultural Council Copyright Division Policy Subcommittee. The governmental session is scheduled to take place on November ninth, 2026, at the Ministry of Education East Building Special Conference Room, and it will also be conducted through an online broadcast option. The agenda for the subcommittee meeting will focus primarily on conducting hearings with related industrial organizations concerning comprehensive countermeasures against copyright piracy, in addition to other general matters. The government body has arranged for a public live stream of the proceedings to maintain complete transparency, replacing traditional in-person observation. Members of the general public and news media representatives are strictly mandated to complete their registration through designated digital forms prior to the established application deadline of November fifth, 2026. For news media personnel, specific guidelines permit brief on-site photography during the opening moments, provided that the media personnel register in advance and wear designated press armbands. Comprehensive meeting documentation will also be made publicly available on the official Agency for Cultural Affairs website by approximately noon on the day of the scheduled discussions for thorough public review.",
+          "wordCount": 191
+        }
+      },
+      "sources": [
+        {
+          "name": "Agency for Cultural Affairs Japan",
+          "url": "https://www.bunka.go.jp/koho_hodo_oshirase/hodohappyo/94458801.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-02-digital-agency-ai-digital-reform-council",
+      "date": "2026-11-02",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "AI",
+        "Digital Agency",
+        "Japan"
+      ],
+      "titleJa": "AI推進会議を開催",
+      "title": "Japan Holds First AI and Digital Reform Council Meeting",
+      "summaryJa": "デジタル庁は、AI・デジタル改革推進会議の第1回会合を開催し、AX社会の実現に向けた論点を議論しました。",
+      "sourcePublishedAt": "2026-11-02T08:16:27.000Z",
+      "levels": {
+        "5級": {
+          "title": "Level 5: Simple News",
+          "text": "Japan has a new meeting. It is about AI and digital reform. The first meeting is in Tokyo. Ministers and experts talk here. They want to use AI in society. They want to make life better. The government will work hard on this plan.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Level 4: Basic News",
+          "text": "Japan held the first meeting of the AI and Digital Reform Council at the Prime Minister's Office. Cabinet ministers and experts gathered to talk about artificial intelligence and digital reform. Officials said that Japan faces a population decline and labor shortages. They need to use AI to rebuild supply structures and realize an AX society. The council discussed key points like trustworthy AI, new rules, and social implementation in various fields to prepare for the future.",
+          "wordCount": 76
+        },
+        "3級": {
+          "title": "Level 3: Intermediate News",
+          "text": "The Digital Agency of Japan recently published the minutes from the first meeting of the AI and Digital Reform Council. Cabinet officials and industry experts gathered at the Prime Minister's Office to discuss national technology strategies. Because Japan faces a shrinking population and labor shortages, leaders emphasized that digital reform is necessary to maintain social and economic stability. They talked about five main points, including a vision for trustworthy AI by the end of the year, updating regulations, and accelerating technology use in fields such as manufacturing and healthcare.",
+          "wordCount": 89
+        },
+        "準2級": {
+          "title": "Level 2: Upper Intermediate News",
+          "text": "The Digital Agency of Japan has released the official record of the inaugural AI and Digital Reform Council meeting held at the Prime Minister's Office. Chaired by key cabinet officials, the council brought together academic experts and business leaders to discuss national technology strategies. Officials highlighted that Japan faces severe structural labor shortages driven by a declining population. To maintain economic stability, the government aims to drive artificial intelligence and digital transformation forward. The discussion focused on establishing a clear vision for trustworthy AI by the end of the year, updating regulatory frameworks, accelerating social implementation in labor-deficient sectors, strengthening AI governance against risks, and improving foundational environments.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "Level 1: Advanced News",
+          "text": "The Digital Agency of Japan has officially published the minutes and associated documents from the inaugural meeting of the AI and Digital Reform Council, which took place at the Prime Minister's Office. Convened by high-ranking cabinet ministers alongside distinguished academics and industry executives, the council addressed the critical imperative of integrating artificial intelligence into the nation's socio-economic fabric. In the face of a declining population and structural labor shortages, leaders argued that maintaining traditional economic frameworks is no longer viable. Consequently, the administration is prioritizing growth and crisis-management investments powered by digital innovation. The session centered on five core deliberation topics: formulating a comprehensive vision for trustworthy AI applications by year's end to update the artificial intelligence basic plan, reforming regulations in cooperation with regulatory panels, accelerating social implementation across labor-intensive sectors such as manufacturing and healthcare, reinforcing institutional governance to mitigate emerging risks like advanced cyber threats, and upgrading cross-cutting environments encompassing data, systems, and human resources.",
+          "wordCount": 158
+        },
+        "準1級": {
+          "title": "Level S: Professional News",
+          "text": "The Digital Agency of Japan has officially published the minutes and associated documents from the inaugural meeting of the AI and Digital Reform Council. Convened at the Prime Minister's Office and co-chaired by high-ranking cabinet ministers alongside distinguished academics and industry executives, the council addressed the critical imperative of integrating artificial intelligence into the nation's socio-economic fabric. In the face of a rapidly aging demographic and structural labor shortages, leaders argued that maintaining traditional economic frameworks is no longer viable. Consequently, the administration is prioritizing robust growth and crisis-management investments powered by digital innovation. The session centered on five core deliberation topics: formulating a comprehensive vision for trustworthy AI applications by year's end to update the artificial intelligence basic plan; reforming regulations and establishing new principles in cooperation with regulatory panels; accelerating social implementation across labor-intensive sectors such as manufacturing and healthcare; reinforcing institutional governance to mitigate emerging risks including advanced cyber threats; and upgrading cross-cutting environments encompassing data, systems, and human resources. Ministers emphasized leveraging unique domestic data assets, particularly in disaster management and industrial automation, to transform demographic challenges into global technological advantages.",
+          "wordCount": 185
+        }
+      },
+      "sources": [
+        {
+          "name": "Digital Agency Japan",
+          "url": "https://www.digital.go.jp/councils/ai_digital/1f3aa34a-786d-4b56-99a4-469f8f933f1c"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-02-hiroshima-oysters-harvest-start",
+      "date": "2026-11-02",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "hiroshima",
+        "oysters",
+        "fishing",
+        "japan"
+      ],
+      "titleJa": "広島のかき水揚げ開始",
+      "title": "Hiroshima Oysters Harvest Begins",
+      "summaryJa": "昨年大量死の被害を受けた広島特産の養殖かきが、例年より約1か月遅れて11月2日に水揚げを始めました。関係者には期待と不安の両方があります。",
+      "sourcePublishedAt": "2026-11-02T08:15:03.000Z",
+      "levels": {
+        "5級": {
+          "title": "Oysters Start",
+          "text": "Hiroshima oysters can start now. Last year, many oysters died here. Today, fishermen start to take them out of the water. People are happy. But some people feel worried. This is a big news for Japan today.",
+          "wordCount": 37
+        },
+        "4級": {
+          "title": "Hiroshima Oysters Harvest Begins",
+          "text": "Famous oysters from Hiroshima can be harvested today. Last year, many oysters died in the sea. This year, the work starts about one month later than normal years. Local people have high hopes for the new season. However, they also have some worries about the harvest. People in Hiroshima want to see good results this time. Fishermen are working hard today.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Hiroshima Oysters Harvested Today",
+          "text": "Famous farmed oysters in Hiroshima have started their harvest season today. Last year, a large number of these oysters died unexpectedly in the water. Because of that damage, the harvest began about one month later than usual. Local workers feel very happy to start their work again. At the same time, many people still feel worried about the new season and the future of their business.",
+          "wordCount": 66
+        },
+        "準2級": {
+          "title": "Hiroshima Oysters Start Season",
+          "text": "Farmed oysters, which are a famous specialty of Hiroshima, finally started their seasonal harvest today, coming about one month later than in typical years. This follows a serious disaster last year when a massive number of farmed oysters died unexpectedly in the water. Because of those past damages and difficulties, local people involved in the industry feel a complex mix of strong hope and deep anxiety as the new fishing season begins. Workers and business owners hope that everything goes well this year and that they can recover from the losses of the previous season, while keeping a close watch on the situation.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Hiroshima Oyster Harvest Begins with Hope and Worry",
+          "text": "Farmed oysters, which are a major specialty product of Hiroshima, officially began their seasonal harvest today, starting approximately one month later than in a typical year. This delayed opening comes after last year when the region suffered severe damage, with a massive number of farmed oysters dying unexpectedly in the water. Due to those lingering concerns from the previous disaster, today's resumption of work brings out mixed emotions across the local community. While industry workers and related personnel are filled with anticipation to finally resume their operations and bring their products to market, many voices continue to express deep anxiety about what this new season will actually bring for their business. Furthermore, local people are closely watching how the oysters will grow this season after the heavy losses experienced last year, hoping that the industry can recover steadily over the coming months as operations continue across the region.",
+          "wordCount": 148
+        },
+        "準1級": {
+          "title": "Hiroshima Oyster Harvest Starts Late Amid Mixed Feelings of Hope and Anxiety",
+          "text": "Farmed oysters, which represent a cherished and famous specialty product of Hiroshima Prefecture, officially commenced their seasonal harvesting operations today on November second, arriving approximately one month later than the usual schedule in a typical year. This delayed start follows a devastating period last year when the local aquaculture industry suffered catastrophic losses, as a massive number of farmed oysters perished unexpectedly in the water due to severe environmental pressures such as decreasing oxygen concentration levels. As local workers and industry participants finally pull the first batches from the sea today, people connected to the industry express a complex combination of eager anticipation and profound anxiety. They desperately hope for a stable and prosperous season to help rebuild their livelihoods, yet the painful memories of last year's severe damage leave many watching the current situation very carefully to see how the harvest develops over the coming weeks and months. Industry participants, fishermen, and local observers note that while everyone is glad to see the new season finally get underway across Hiroshima Prefecture, uncertainty remains a major factor for everyone involved in producing and distributing these famous regional products throughout the broader market. Furthermore, the local community and related organizations continue to monitor the water conditions and the growth of the surviving oysters very closely, hoping that the industry can recover steadily after the unprecedented difficulties and heavy losses experienced during the previous season.",
+          "wordCount": 233
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261102de69556"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-02-ireland-nations-championship-2026",
+      "date": "2026-11-02",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "rugby",
+        "Ireland",
+        "Nations Championship",
+        "Andy Farrell"
+      ],
+      "titleJa": "アイルランド代表の挑戦",
+      "title": "How Ireland are shaping up for the Nations Championship",
+      "summaryJa": "アイルランド代表は秋の国際大会に向けて準備を進めており、強豪相手に巻き返しを図ります。",
+      "sourcePublishedAt": "2026-11-02T08:07:54.000Z",
+      "levels": {
+        "5級": {
+          "title": "アイルランドのラグビー",
+          "text": "Ireland has a good rugby team. Andy Farrell is the coach. They play games in autumn. They want to win. Argentina and Fiji are playing soon. South Africa is also coming to Dublin. Ireland can play very well. Fans are happy to watch them.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "アイルランドの秋の試合",
+          "text": "Ireland is preparing for the Nations Championship. Andy Farrell is the coach of the team. They will play against Argentina, Fiji, and South Africa in Dublin this month. In the past, Ireland had some difficult losses to top teams. Now, they want to win and show their best skills. The team is working hard to improve every game and make fans happy.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "アイルランド代表の新しい挑戦",
+          "text": "As Ireland prepares for the 2026 Nations Championship, coach Andy Farrell is shaping up his side. They will face Argentina, Fiji, and South Africa in Dublin over the next three weeks. Ireland wants to improve after some tough losses against top teams like New Zealand and France. Winning against the world champions, South Africa, would be a huge statement for the team and help them build confidence for the future.",
+          "wordCount": 69
+        },
+        "準2級": {
+          "title": "アイルランド代表の巻き返しに向けた挑戦",
+          "text": "As Ireland prepares for the 2026 Nations Championship, coach Andy Farrell is shaping up his squad for a crucial autumn series. Over the next three weeks, Ireland will host Argentina, Fiji, and South Africa in Dublin. The team aims to improve its trajectory following a series of difficult defeats against rugby heavyweights, including New Zealand and France. Although Ireland showed brilliant form against England earlier this year, recent losses have raised questions about their standing among elite teams. Facing the world champion Springboks will be a major test for Farrell's conditioned side, especially after prop Tadhg Furlong was confirmed available for selection following a disciplinary review.",
+          "wordCount": 105
+        },
+        "2級": {
+          "title": "ネイションズ・チャンピオンシップへ向けたアイルランド代表の状況",
+          "text": "As Ireland prepares for the autumn series in the 2026 Nations Championship, Andy Farrell's side is shaping up for a demanding schedule. The team faces upcoming matches against Argentina, Fiji, and South Africa in Dublin over the next three weeks. While Ireland previously reached the top of the world rankings, recent years have brought persistent defeats against rugby heavyweights like New Zealand, France, and South Africa. Ireland has lost their past six meetings with these elite teams by double-digit margins. Despite a thrilling victory over England earlier this year, Farrell's side needs a strong performance this month to alter their narrative. Defeating world champions South Africa, who won 24-13 on their last visit to Dublin, would provide a vital boost on the journey to the next World Cup. To strengthen their squad, Ireland has placed a heavy emphasis on physical conditioning, while the availability of seasoned prop Tadhg Furlong provides a timely lift for the front row.",
+          "wordCount": 155
+        },
+        "準1級": {
+          "title": "アイルランド代表が迎える試練の秋：ネイションズ・チャンピオンシップへの展望",
+          "text": "As Ireland prepares for the northern hemisphere series in the 2026 Nations Championship, attention turns to how Andy Farrell's side is shaping up for a demanding autumn schedule. With Argentina, Fiji, and South Africa set to visit Dublin over the coming weeks, Ireland faces a crucial opportunity to recalibrate its trajectory. The context surrounding the team has shifted notably since the previous World Cup cycle, during which Ireland peaked at the summit of the world rankings following an iconic series victory over the All Blacks in New Zealand. However, subsequent defeats against rugby's traditional heavyweights—including New Zealand, France, and South Africa—have prompted questions regarding the squad's standing among the global elite. Ireland has suffered six consecutive losses to these top-tier opponents by double-digit margins, with heavy reversals against France and New Zealand highlighting persistent vulnerabilities. Although these setbacks are tempered by a brilliant performance against England earlier in the year, Farrell's men must extinguish error-prone tendencies to avoid unprecedented home defeats against Argentina and Fiji. The ultimate test will arrive when they renew hostilities with world champions South Africa, whose formidable scrum dismantled the Irish pack in a previous Dublin encounter. In their pursuit of redemption, the coaching staff has placed an intensified focus on conditioning as a distinct competitive advantage, while the confirmation of Tadhg Furlong's availability offers a timely boost for the front row as they prepare to battle the world champions.",
+          "wordCount": 235
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/rugby-union/articles/cjn5v93w4gqno?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-02-mhlw-memorial-projects-november-2026",
+      "date": "2026-11-02",
+      "scope": "japan",
+      "category": "health",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "MHLW",
+        "memorial",
+        "bone-collection",
+        "Japan"
+      ],
+      "titleJa": "厚生労働省が戦没者慰霊事業",
+      "title": "MHLW Announces November 2026 Memorial Projects",
+      "summaryJa": "厚生労働省は令和8年11月に実施する戦没者慰霊事業および遺骨収集の計画を発表しました。",
+      "sourcePublishedAt": "2026-11-02T07:00:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "Japan Has Memorial Projects",
+          "text": "Japan has new memorial projects. They start in November 2026. The Ministry of Health, Labour and Welfare makes this plan. People go to Iwo Jima and other places. They look for bones of fallen soldiers. Ministry workers and members join this important work.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Japan Announces Memorial Projects for November",
+          "text": "Japan announced memorial projects for November 2026. The Ministry of Health, Labour and Welfare leads this important work. Teams will visit places like Papua New Guinea, Iwo Jima, and the Solomon Islands. They collect remains of fallen soldiers. Bereaved families can also join memorial pilgrimages to honor them. Ministry officials and authorized association members work together on these missions.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "Ministry Announces November Memorial and Bone Collection Plans",
+          "text": "The Ministry of Health, Labour and Welfare in Japan has announced its memorial projects for November 2026. These activities include collecting remains and memorial pilgrimages in several regions. Teams will travel to Eastern New Guinea, the Solomon Islands, Iwo Jima, and the Philippines. Ministry officials and members of an authorized association will work together on these missions. Families will also visit Iwo Jima and the Philippines to pay their respects and remember the fallen soldiers.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Japan Outlines Government Memorial and Bone Collection Projects for November",
+          "text": "The Japanese Ministry of Health, Labour and Welfare has released its schedule for memorial projects and remains collection slated for November 2026. These missions are designed to recover the remains of fallen soldiers and offer memorial pilgrimages for bereaved families. Teams consisting of ministry officials and members of the Japan Association for Recovery and Repatriation of War Casualties will visit multiple regions. These areas include Eastern New Guinea, the Solomon Islands, Iwo Jima, and the Philippines. In addition to bone collection, grieving families will travel to Iwo Jima and the Philippines to honor their ancestors and remember those who lost their lives during the war.",
+          "wordCount": 104
+        },
+        "2級": {
+          "title": "Ministry of Health, Labour and Welfare Details November 2026 Memorial and Recovery Operations",
+          "text": "The Ministry of Health, Labour and Welfare of Japan has officially announced its comprehensive schedule of memorial projects and remains collection activities for November 2026. Under the Act on the Promotion of Recovery and Repatriation of War Casualties' Remains, authorized associations work closely with ministry officials to execute these vital missions. Throughout November, multiple teams will deploy to overseas locations and domestic sites, including Eastern New Guinea in Papua New Guinea, the Solomon Islands, Iwo Jima, and the Philippines. These missions involve careful field surveys and bone collection operations to bring fallen soldiers home. Furthermore, organized memorial pilgrimages will enable hundreds of bereaved family members and ministry staff to visit Iwo Jima and the Philippines, ensuring that the memory of the fallen is honored with profound respect and dedicated government support.",
+          "wordCount": 130
+        },
+        "準1級": {
+          "title": "Japan Releases Comprehensive November Schedule for War Memorial and Remains Recovery Missions",
+          "text": "The Japanese Ministry of Health, Labour and Welfare has officially published its detailed schedule outlining war memorial initiatives and remains recovery operations scheduled throughout November 2026. Operating under the legal framework established by the Act on the Promotion of Recovery and Repatriation of War Casualties' Remains, these national projects are carried out by the Japan Association for Recovery and Repatriation of War Casualties under strict government supervision and guidance. The November itinerary encompasses multiple distinct phases of field surveys and bone collection missions across designated foreign and domestic territories, including the fourth and fifth Eastern New Guinea field surveys and bone collection missions in Papua New Guinea, the third Iwo Jima remains recovery operation, and the Solomon Islands mission. Personnel comprising ministry officials and association specialists will coordinate these sensitive recovery efforts across all targeted regions. In parallel with the bone collection operations, government-backed memorial pilgrimages are organized for Iwo Jima and the Philippines. These pilgrimages enable scores of bereaved family members, accompanied and supported by ministry personnel, to travel to these historic sites to pay their respects and honor the memory of those who perished during the conflict. Through these carefully planned operations, the ministry continues its ongoing commitment to recovering fallen soldiers and supporting grieving families.",
+          "wordCount": 207
+        }
+      },
+      "sources": [
+        {
+          "name": "MHLW Japan",
+          "url": "https://www.mhlw.go.jp/stf/newpage_77136.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-02-north-safari-sapporo-inspection",
+      "date": "2026-11-02",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "North Safari Sapporo",
+        "Sapporo City",
+        "illegal buildings",
+        "inspection"
+      ],
+      "titleJa": "札幌市が立入検査",
+      "title": "Sapporo City Inspects North Safari Sapporo After Deadline Passes",
+      "summaryJa": "札幌市にある動物園ノースサファリサッポロの違法建築問題で、撤去期限を過ぎても建物や動物が残っているため、札幌市が現地調査を行いました。",
+      "sourcePublishedAt": "2026-11-02T06:58:00.000Z",
+      "levels": {
+        "5級": {
+          "title": "Sapporo City Checks Zoo",
+          "text": "Sapporo City has a problem. North Safari Sapporo is a zoo. Some buildings are illegal. The city told the zoo to remove them. The time limit passed. But some buildings and animals are still there. The city checks the zoo today.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "Sapporo City Inspects North Safari Sapporo",
+          "text": "Sapporo City visited North Safari Sapporo today. This zoo has a big illegal building problem. The city gave an official order to remove all the buildings completely. However, the deadline has already passed. Because of this, some buildings and animals are still on the site. Therefore, city officials went to check the actual situation closely today.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Sapporo City Conducts On-Site Inspection at Zoo",
+          "text": "Sapporo City conducted an on-site inspection at North Safari Sapporo today. The zoo had a serious problem involving illegally constructed buildings. The city previously issued an order to remove all the buildings by a specific date. However, that deadline has already passed, and some buildings and animals still remain at the location. Because of this situation, city officials visited the zoo to check the current status closely.",
+          "wordCount": 67
+        },
+        "準2級": {
+          "title": "Sapporo City Inspects Zoo Over Unremoved Buildings",
+          "text": "Sapporo City conducted an on-site inspection at North Safari Sapporo today to check its current status regarding illegal structures. The zoo had faced major issues because buildings were constructed illegally on its grounds. Although the city previously issued an official removal order requiring the complete elimination of all structures, the deadline has already passed. Despite this strict administrative order, some buildings and animals still remain at the facility because the removal could not be finished in time. Consequently, municipal officials visited the zoo today to confirm the details and address the ongoing situation directly.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "Sapporo City Inspects North Safari Sapporo After Removal Deadline Passes",
+          "text": "On November 2, Sapporo City conducted an on-site inspection at North Safari Sapporo, a zoo located within the city, to check its current status regarding illegal structures. This action was taken because the facility had been constructed illegally, and the deadline for an official removal order issued by the city had already passed. Despite this established deadline, some buildings and animals still remained on the premises without being completely cleared away. As a result, municipal officials visited the location to check the actual conditions directly and determine the next steps regarding the unremoved structures and animals that are still present at the site. Sapporo City previously ordered the complete removal of all structures because the zoo buildings were constructed illegally within the municipality. However, the deadline for this official removal order has now passed, and the complete removal has not been finished yet by the management of North Safari Sapporo. Because some buildings and animals still remain on the premises, municipal officials from Sapporo City visited North Safari Sapporo on November 2 to confirm the exact situation firsthand.",
+          "wordCount": 176
+        },
+        "準1級": {
+          "title": "Sapporo City Officials Conduct On-Site Inspection at North Safari Sapporo Following Expiration of Building Removal Order",
+          "text": "On November 2, municipal officials from Sapporo City conducted an on-site inspection at North Safari Sapporo, a local zoo situated within the municipality, to assess the current situation accurately. The inspection was prompted by an ongoing controversy regarding illegally constructed facilities at the location. Previously, Sapporo City had issued a strict removal order demanding the complete demolition of all unauthorized structures by a specified deadline. However, that official deadline has now passed, and multiple buildings along with various animals still remain on the premises of North Safari Sapporo because the necessary removal work could not be finished in time. To verify the facts firsthand and determine how to proceed with the unresolved removal issue, municipal authorities from Sapporo City visited the site today to evaluate all remaining concerns. The zoo, known as North Safari Sapporo, faced this administrative action because unauthorized buildings were erected on its grounds. Sapporo City previously ordered the complete removal of all structures because those zoo buildings were constructed illegally within the municipality. However, the deadline for this official removal order has now passed, and the complete removal has not been finished yet by the management of North Safari Sapporo. Because some buildings and animals still remain on the premises, municipal officials from Sapporo City visited North Safari Sapporo on November 2 to confirm the exact situation firsthand.",
+          "wordCount": 220
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261102de69564"
+        }
+      ]
+    },
     {
       "id": "2026-11-01-highschool-ehime-local-catalog-gift",
       "scope": "regional",
@@ -194,63 +540,62 @@
       "date": "2026-11-01"
     },
     {
-      "id": "2026-11-01-souya-line-bear-derailment",
-      "scope": "regional",
-      "category": "society",
+      "id": "2026-11-01-murata-mlcc-capacity-expansion",
+      "scope": "japan",
+      "category": "technology",
       "categories": [
-        "transportation",
-        "environment"
+        "business",
+        "science"
       ],
       "careerTags": [
-        "transportation",
-        "safety"
+        "engineering",
+        "business"
       ],
       "tags": [
-        "hokkaido",
-        "jr-hokkaido",
-        "souya-line",
-        "bear"
+        "murata",
+        "electronics",
+        "manufacturing"
       ],
-      "titleJa": "北海道特急がクマと衝突",
-      "title": "Bear Collision Derails a Train in Hokkaido",
-      "summaryJa": "JR宗谷線で特急列車がクマと衝突して先頭車両が脱線し、乗客32人が車内で一夜を過ごしました。11月1日も一部区間で運休が続き、JR北海道は代行バスを運行するとしています。",
-      "sourcePublishedAt": "2026-11-01T05:30:00.000Z",
+      "titleJa": "村田製作所、部品増産へ",
+      "title": "Murata Plans to Expand Production of Tiny Electronic Parts",
+      "summaryJa": "村田製作所は、スマートフォンや電子機器に使われる積層セラミックコンデンサの生産能力を今後拡大する方針を公表しました。小型化が進む電子部品の需要に応えるため、製造体制を強化します。",
+      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
       "sources": [
         {
-          "name": "北海道文化放送 UHB",
-          "url": "https://www.uhb.jp/news/single.html?id=63265"
+          "name": "村田製作所",
+          "url": "https://corporate.murata.com/ja-jp/newsroom/news?page=1&year=2026"
         }
       ],
       "levels": {
         "5級": {
-          "title": "A Train Stops in Hokkaido",
-          "text": "A train hits a bear in Hokkaido. The train cannot move. People stay inside overnight. Some trains stop today. Buses take their place.",
+          "title": "A Company Makes More Parts",
+          "text": "Murata makes tiny parts for electronics. The company plans to make more of them. These parts are used in phones and other devices.",
           "wordCount": 23
         },
         "4級": {
-          "title": "A Bear Stops a Train",
-          "text": "A limited express train hit a bear on the Soya Line in Hokkaido. The front car left the tracks. Thirty-two passengers stayed on the train overnight. Some trains were canceled on November 1, so JR Hokkaido planned bus services.",
-          "wordCount": 39
+          "title": "Murata Plans to Make More Parts",
+          "text": "Japanese electronics company Murata plans to increase production of tiny parts called ceramic capacitors. Many phones and other electronic devices use these parts.",
+          "wordCount": 23
         },
         "3級": {
-          "title": "Train Service Affected After Bear Collision",
-          "text": "A limited express train on the Soya Line hit a bear on October 30. The front car derailed, and 32 passengers spent the night inside the train. On November 1, trains were still canceled on part of the line. JR Hokkaido arranged buses to carry passengers around the closed section.",
-          "wordCount": 50
+          "title": "More Tiny Parts for Electronic Devices",
+          "text": "Murata Manufacturing announced plans to expand production capacity for multilayer ceramic capacitors. These small components are used in smartphones and many other electronic products. The company plans to strengthen its production system to meet demand.",
+          "wordCount": 35
         },
         "準2級": {
-          "title": "JR Hokkaido Uses Buses After Train Derails",
-          "text": "A limited express train on Hokkaido’s Soya Line struck a bear between Teshio-Nakagawa and Toikanbetsu stations on October 30. Its front car derailed, and 32 passengers stayed inside overnight. Train service remained suspended on part of the route on November 1, so JR Hokkaido planned replacement buses while repairs and an investigation continued.",
-          "wordCount": 53
+          "title": "Murata Responds to Demand for Electronic Components",
+          "text": "Murata Manufacturing plans to expand its production capacity for multilayer ceramic capacitors, or MLCCs. These tiny components help electronic devices store and manage electrical energy. They are used in smartphones and many other products, so stable supply is important for manufacturers.",
+          "wordCount": 41
         },
         "2級": {
-          "title": "Bear Collision Disrupts Soya Line Travel",
-          "text": "A limited express train hit a bear on the Soya Line in northern Hokkaido on October 30, and the front car derailed. The 32 passengers aboard spent the night inside the train before being moved. Service was still suspended on part of the route on November 1. JR Hokkaido arranged replacement buses, while investigators examined the accident.",
-          "wordCount": 57
+          "title": "A Production Expansion for Components Inside Phones",
+          "text": "Murata Manufacturing announced plans to increase its production capacity for multilayer ceramic capacitors. MLCCs are small components found in smartphones, computers, and other electronics. Expanding capacity can help the company respond to demand as devices become more advanced and manufacturers need reliable supplies.",
+          "wordCount": 43
         },
         "準1級": {
-          "title": "Derailment After Bear Strike Leaves Hokkaido Passengers Overnight",
-          "text": "A limited express train on the Soya Line struck a bear between Teshio-Nakagawa and Toikanbetsu on October 30. The bear became trapped beneath the train, and the front car was later found to have derailed. Thirty-two passengers spent the night aboard without injuries. JR Hokkaido suspended service on part of the line on November 1 and arranged replacement buses as the railway company and investigators assessed the damage.",
-          "wordCount": 68
+          "title": "Murata Strengthens Manufacturing Capacity for Ceramic Capacitors",
+          "text": "Murata Manufacturing plans to expand production capacity for multilayer ceramic capacitors, components used in smartphones and a wide range of electronic equipment. The parts are small but essential to the operation of modern devices. The company’s announced plan is intended to strengthen its manufacturing system and respond to future demand from electronics makers.",
+          "wordCount": 53
         }
       },
       "date": "2026-11-01"
@@ -312,67 +657,6 @@
           "title": "Yanmar Event Connects Agricultural Schools with Consumers",
           "text": "Yanmar Holdings hosted a harvest festival in Tokyo featuring students from 42 agricultural high schools. The students sold crops and processed goods, giving them practical experience in how agricultural products reach customers. The company also arranged a restaurant collaboration: from November 1 through November 28, a Tokyo restaurant planned to serve a limited-time course using rice grown by high school students.",
           "wordCount": 61
-        }
-      },
-      "date": "2026-11-01"
-    },
-    {
-      "id": "2026-11-01-murata-mlcc-capacity-expansion",
-      "scope": "japan",
-      "category": "technology",
-      "categories": [
-        "business",
-        "science"
-      ],
-      "careerTags": [
-        "engineering",
-        "business"
-      ],
-      "tags": [
-        "murata",
-        "electronics",
-        "manufacturing"
-      ],
-      "titleJa": "村田製作所、部品増産へ",
-      "title": "Murata Plans to Expand Production of Tiny Electronic Parts",
-      "summaryJa": "村田製作所は、スマートフォンや電子機器に使われる積層セラミックコンデンサの生産能力を今後拡大する方針を公表しました。小型化が進む電子部品の需要に応えるため、製造体制を強化します。",
-      "sourcePublishedAt": "2026-10-30T00:00:00.000Z",
-      "sources": [
-        {
-          "name": "村田製作所",
-          "url": "https://corporate.murata.com/ja-jp/newsroom/news?page=1&year=2026"
-        }
-      ],
-      "levels": {
-        "5級": {
-          "title": "A Company Makes More Parts",
-          "text": "Murata makes tiny parts for electronics. The company plans to make more of them. These parts are used in phones and other devices.",
-          "wordCount": 23
-        },
-        "4級": {
-          "title": "Murata Plans to Make More Parts",
-          "text": "Japanese electronics company Murata plans to increase production of tiny parts called ceramic capacitors. Many phones and other electronic devices use these parts.",
-          "wordCount": 23
-        },
-        "3級": {
-          "title": "More Tiny Parts for Electronic Devices",
-          "text": "Murata Manufacturing announced plans to expand production capacity for multilayer ceramic capacitors. These small components are used in smartphones and many other electronic products. The company plans to strengthen its production system to meet demand.",
-          "wordCount": 35
-        },
-        "準2級": {
-          "title": "Murata Responds to Demand for Electronic Components",
-          "text": "Murata Manufacturing plans to expand its production capacity for multilayer ceramic capacitors, or MLCCs. These tiny components help electronic devices store and manage electrical energy. They are used in smartphones and many other products, so stable supply is important for manufacturers.",
-          "wordCount": 41
-        },
-        "2級": {
-          "title": "A Production Expansion for Components Inside Phones",
-          "text": "Murata Manufacturing announced plans to increase its production capacity for multilayer ceramic capacitors. MLCCs are small components found in smartphones, computers, and other electronics. Expanding capacity can help the company respond to demand as devices become more advanced and manufacturers need reliable supplies.",
-          "wordCount": 43
-        },
-        "準1級": {
-          "title": "Murata Strengthens Manufacturing Capacity for Ceramic Capacitors",
-          "text": "Murata Manufacturing plans to expand production capacity for multilayer ceramic capacitors, components used in smartphones and a wide range of electronic equipment. The parts are small but essential to the operation of modern devices. The company’s announced plan is intended to strengthen its manufacturing system and respond to future demand from electronics makers.",
-          "wordCount": 53
         }
       },
       "date": "2026-11-01"
