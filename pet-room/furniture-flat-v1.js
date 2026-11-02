@@ -15,6 +15,16 @@ const SPRITES=Object.freeze({
  plant:{x:342,y:498,w:145,h:244},
  cabinet:{x:575,y:532,w:207,h:212}
 });
+const FOUR_WAY=Object.freeze({
+ bed:[[124,49,202,185],[374,60,322,176],[122,246,204,212],[374,246,322,218]],
+ sofa:[[93,61,250,163],[374,26,321,222],[95,246,248,216],[374,246,318,248]],
+ rug:[[108,49,205,171],[374,55,333,169],[124,246,173,212],[374,246,336,217]],
+ table:[[97,44,251,192],[374,45,299,185],[99,246,247,205],[374,246,298,220]],
+ shelf:[[169,13,150,228],[374,5,227,243],[172,246,151,246],[374,246,231,252]],
+ plant:[[123,11,224,226],[374,19,255,218],[132,246,227,233],[374,246,298,233]],
+ cabinet:[[127,23,235,211],[374,21,255,215],[137,246,231,227],[374,246,255,226]]
+});
+
 const defs=[
 {id:"sofa",label:"ソファ",icon:"🛋️",w:2,h:1,elev:58,x:0,y:0,blocking:true},
 {id:"bed",label:"ベッド",icon:"🛏️",w:2,h:1,elev:72,x:4,y:0,blocking:true},
@@ -47,10 +57,11 @@ css.textContent="#sofaActor.flat-furniture{filter:none!important}#sofaActor.flat
 document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
 function makeSvg(item){
- const s=SPRITES[item.id],r=((item.rotation%4)+4)%4;
- const transform=r%2===1?'translate('+(2*s.x+s.w)+' 0) scale(-1 1)':'';
- const image='<image href="./assets/recraft-furniture.svg" x="0" y="0" width="1024" height="1024"/>';
- return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+s.x+' '+s.y+' '+s.w+' '+s.h+'" aria-hidden="true" focusable="false">'+(transform?'<g transform="'+transform+'">'+image+'</g>':image)+'</svg>';
+ const s=SPRITES[item.id],box=FOUR_WAY[item.id][((item.rotation%4)+4)%4];
+ const scale=Math.min(s.w/box[2],s.h/box[3]),offsetX=(s.w-box[2]*scale)/2,offsetY=(s.h-box[3]*scale)/2;
+ const transform='translate('+fmt(offsetX)+' '+fmt(offsetY)+') scale('+fmt(scale)+') translate('+(-box[0])+' '+(-box[1])+')';
+ const image='<image href="./assets/furniture-directional/'+item.id+'-4way-v1.png" x="0" y="0" width="768" height="512" transform="'+transform+'"/>';
+ return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+s.w+' '+s.h+'" aria-hidden="true" focusable="false">'+image+'</svg>';
 }
 function footprint(item){const d=dims(item),cells=[];for(let yy=0;yy<d.h;yy++)for(let xx=0;xx<d.w;xx++)cells.push({x:item.state.x+xx,y:item.state.y+yy});return cells}
 function inBounds(c){return c.x>=0&&c.y>=0&&c.x<GRID&&c.y<GRID}
