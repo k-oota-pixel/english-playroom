@@ -174,7 +174,7 @@ function install() {
       if(!themedSurfaceObserver||themedSurfaceDoc!==doc){
         themedSurfaceObserver=new doc.defaultView.MutationObserver(()=>{
           if(themedSurfaceTimer)clearTimeout(themedSurfaceTimer);
-          themedSurfaceTimer=setTimeout(()=>{themedSurfaceTimer=0;restoreThemedSurfaces();scanThemedSurfaces(doc,color,foreground);},90);
+          themedSurfaceTimer=setTimeout(()=>{themedSurfaceTimer=0;restoreThemedSurfaces();applySharedScreenTheme();},90);
         });
         themedSurfaceObserver.observe(doc.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
       }
