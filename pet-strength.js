@@ -7,6 +7,7 @@ import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
 const RESPEC_PRICE=30;
 const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0,mp:0});
+function canStrengthen(data={}){return hasPet(data)||(!data.petHatched&&!data.petLastDeparture);}
 
 const titleCountCache=new Map(),titleCountRequests=new Map();
 function storedTitleCount(data={}){
@@ -84,7 +85,7 @@ const button=document.getElementById('petStrengthOpen');
 if(button){
  const dialog=document.createElement('dialog');
  dialog.className='strength-dialog';dialog.setAttribute('aria-labelledby','strengthHeading');
- dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力・MPは＋1ずつ強化できます。初めて使う強化ポイント1つにつきレベルが1上がります。</p><div data-body></div><p data-message role="status"></p>';
+ dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>たまごの状態でも称号ポイントを配分できます。獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力・MPは＋1ずつ強化でき、初めて使う強化ポイント1つにつきレベルが1上がります。</p><div data-body></div><p data-message role="status"></p>';
  document.body.append(dialog);
  const body=dialog.querySelector('[data-body]'),message=dialog.querySelector('[data-message]');
  let busy=false,generation=0,loadedCount=null;
@@ -92,14 +93,14 @@ if(button){
  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
 
  function render(count,data){
-  const state=strengthState(count,data.petStrength,data.petBaseStats,{ageDays:data.petLifeDays,adult:data.petAdult!==false,grantedPoints:grantedStrengthPoints(data)}),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
+  const state=strengthState(count,data.petStrength,data.petBaseStats,{ageDays:data.petLifeDays,adult:hasPet(data)&&data.petAdult!==false,grantedPoints:grantedStrengthPoints(data)}),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
   const levelCard=document.createElement('div');levelCard.className='strength-level-card';levelCard.innerHTML=`<span>PET LEVEL</span><strong>Lv.${level}</strong>`;body.append(levelCard);
   const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
   const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
   for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1],['mp','MP',1]]){
    const row=document.createElement('div');row.className='strength-row';
    const text=document.createElement('strong');text.textContent=`${label}　${state.stats[key]}`;
-   const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!hasPet(data)||state.available<1;add.onclick=()=>save(key);
+   const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!canStrengthen(data)||state.available<1;add.onclick=()=>save(key);
    row.append(text,add);body.append(row);
   }
   const magicEffect=spell=>spell.description.replace('体力','HP');
@@ -108,7 +109,7 @@ if(button){
   for(const spell of learned){const item=document.createElement('p');item.innerHTML=`<strong>${spell.name}</strong><span>${magicEffect(spell)} ／ 消費MP ${spell.mpCost}</span>`;list.append(item);}
   if(!learned.length){const empty=document.createElement('p');empty.textContent='まだ魔法を習得していません。';list.append(empty);}body.append(list);
   const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」\n${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法を習得済み！';body.append(magic);
-  const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです（レベルは下がりません）。':'ペットが生まれると強化できます。';body.append(note);
+  const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです（レベルは下がりません）。':canStrengthen(data)?'配分した強化ポイントとレベルは、孵化後の冒険から反映されます。':'新しいたまごを迎えると強化できます。';body.append(note);
  }
 
  async function load(){
@@ -133,7 +134,7 @@ if(button){
    const result=await runTransaction(db,async tx=>{
     if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
-    if(!hasPet(data))throw Error('ペットが生まれると強化できます。');
+    if(!canStrengthen(data))throw Error('たまごの状態またはペットがいるときに強化できます。');
     const count=storedTitleCount(data);if(count===null)throw Error('称号が更新されました。閉じてもう一度開くと最新のポイントを確認できます。');
     const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key,grantedStrengthPoints(data));
     const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength)),afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
@@ -169,7 +170,7 @@ function ensureRespecShopCard(){
   try{
    await runTransaction(db,async tx=>{
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
-    if(!hasPet(data))throw Error('ペットが生まれてから使えます。');
+    if(!canStrengthen(data))throw Error('たまごの状態またはペットがいるときに使えます。');
     if(allocationTotal(data.petStrength)<1)throw Error('振り分け済みの強化ポイントがありません。');
     const coins=Math.max(0,Math.floor(Number(data.coins)||0));
     if(coins<RESPEC_PRICE)throw Error('コインが足りません。');
