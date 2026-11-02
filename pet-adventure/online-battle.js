@@ -1,6 +1,8 @@
 import {auth,authReady,walletRef} from '../coin-reward.js?v=2.1.11';
 import {getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
+import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
+import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=1.10.22';
 
 const API='https://task-quest.onrender.com/api/online-battle';
 const $=id=>document.getElementById(id);
@@ -14,18 +16,20 @@ const els={
  quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),
  waitingCard:$('waitingCard'),waitingTitle:$('waitingTitle'),waitingText:$('waitingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultTitle:$('resultTitle'),resultText:$('resultText'),
  readyBtn:$('readyBtn'),readyCount:$('readyCount'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),
- magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
+ magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
-let user=null,activeRoom='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[];
+let user=null,activeRoom='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false;
 
 function say(message,error=false){notice.textContent=message;notice.classList.toggle('error',error);}
-function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
 function shuffle(values){const out=[...values];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;}
 function gradeLevel(grade){return ({'4級':'junior1','3級':'junior2','準2級':'junior3','2級':'high1'})[grade]||'junior1';}
 function roomStatus(room){if(room.status==='playing')return '対戦中';if(room.status==='finished')return '結果発表';if(room.players?.length===1)return '1人が待機中';if(room.players?.length===2)return '2人が準備中';return '空室';}
 function roomRuleText(room){return '英検'+(room.grade||'4級')+' · '+(room.noItems?'魔法・アイテムなし':'魔法・アイテムあり');}
 function setBar(el,value,max){const pct=max>0?Math.max(0,Math.min(100,value/max*100)):0;el.style.width=pct+'%';}
+function minePlayer(room=currentRoom){return (room?.players||[]).find(p=>p.uid===user?.uid)||null;}
+function ownLevel(){return strengthLevel(ownData.petStrengthLevelPoints,ownData.petStrength);}
 function petArt(player){
  if(!player)return '👾';
  if(!player.petHatched)return '<span class="online-egg" role="img" aria-label="たまご">🥚</span>';
@@ -38,7 +42,10 @@ async function api(path,method='GET',body=null){
  if(!response.ok)throw new Error(data.error||'通信に失敗しました。');
  return data;
 }
-async function updateCoins(){try{const snap=await getDoc(walletRef(user));coins=Math.max(0,Math.floor(Number(snap.data()?.coins)||0));els.coinCount.textContent=coins;}catch{els.coinCount.textContent='—';}}
+async function refreshOwnData(){
+ const snap=await getDoc(walletRef(user));ownData=snap.exists()?(snap.data()||{}):{};coins=Math.max(0,Math.floor(Number(ownData.coins)||0));els.coinCount.textContent=coins;return ownData;
+}
+async function updateCoins(){try{await refreshOwnData();}catch{els.coinCount.textContent='—';}}
 
 function renderRooms(list){
  roomsEl.replaceChildren();
@@ -61,14 +68,14 @@ function resetTurn(){turnCards=[];selectedAttack=null;currentQuestion=null;els.a
 function updateFighters(room){
  const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  if(mine){
-  const max=Math.max(1,Number(mine.stats?.hp)||1),hp=Math.max(0,Number(mine.hp)||0),mp=Math.max(0,Number(mine.stats?.mp)||0);
+  const max=Math.max(1,Number(mine.stats?.hp)||1),hp=Math.max(0,Number(mine.hp)||0),maxMp=Math.max(0,Number(mine.stats?.mp)||0),mp=Math.max(0,Number(mine.mp??maxMp)||0);
   els.petName.textContent=mine.petName||'MY PET';els.myNickname.textContent=mine.nickname||'YOU';els.petHpText.textContent=hp+' / '+max;setBar(els.petHpBar,hp,max);
-  els.petMpText.textContent=mp+' / '+mp+' MP';setBar(els.petMpBar,mp,Math.max(1,mp));els.petStats.textContent=`HP ${max} · 攻撃力 ${Number(mine.stats?.attack||1)} · 防御力 ${Number(mine.stats?.defense||1)} · MP ${mp}`;
+  els.petMpText.textContent=mp+' / '+maxMp+' MP';setBar(els.petMpBar,mp,Math.max(1,maxMp));els.petStats.textContent=`HP ${max} · 攻撃力 ${Number(mine.stats?.attack||1)} · 防御力 ${Number(mine.stats?.defense||1)} · MP ${mp}/${maxMp}`;
   els.petVisual.innerHTML=petArt(mine);
  }
  if(other){
-  const max=Math.max(1,Number(other.stats?.hp)||1),hp=Math.max(0,Number(other.hp)||0);
-  els.enemyName.textContent=other.petName||'OPPONENT';els.enemyElement.textContent=other.nickname||'RIVAL';els.enemyHpText.textContent=hp+' / '+max;setBar(els.enemyHpBar,hp,max);els.enemyVisual.innerHTML=petArt(other);els.enemyMpText.textContent='対戦相手';
+  const max=Math.max(1,Number(other.stats?.hp)||1),hp=Math.max(0,Number(other.hp)||0),maxMp=Math.max(0,Number(other.stats?.mp)||0),mp=Math.max(0,Number(other.mp??maxMp)||0);
+  els.enemyName.textContent=other.petName||'OPPONENT';els.enemyElement.textContent=other.nickname||'RIVAL';els.enemyHpText.textContent=hp+' / '+max;setBar(els.enemyHpBar,hp,max);els.enemyVisual.innerHTML=petArt(other);els.enemyMpText.textContent='MP '+mp+' / '+maxMp;
  }else{
   els.enemyName.textContent='OPPONENT';els.enemyElement.textContent='WAITING';els.enemyHpText.textContent='— / —';setBar(els.enemyHpBar,0,1);els.enemyVisual.textContent='👾';els.enemyMpText.textContent='相手を待っています';
  }
@@ -78,12 +85,21 @@ function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.
 function animateEvent(room){
  if(room.seq===lastEventSeq||!room.lastEvent)return;lastEventSeq=room.seq;
  const ev=room.lastEvent,mine=ev.from===user.uid;
- if(ev.type==='attack'||ev.type==='magic'){
+ if(ev.type==='attack'){
   const target=ev.to===user.uid?els.petVisual:els.enemyVisual;target.classList.remove('hurt');void target.offsetWidth;target.classList.add('hurt');
-  if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash((ev.type==='magic'?'魔法攻撃！':'攻撃成功！')+'\n-'+ev.damage+' HP');}
-  else flash((ev.type==='magic'?'相手の魔法！':'相手の攻撃！')+'\n-'+ev.damage+' HP');
+  if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash('攻撃成功！\n-'+ev.damage+' HP');}
+  else flash('相手の攻撃！\n-'+ev.damage+' HP');
+ }else if(ev.type==='magic'){
+  const name=ev.name||'魔法';
+  if(ev.kind==='heal'){
+   const caster=mine?els.petVisual:els.enemyVisual;caster.classList.remove('attack');void caster.offsetWidth;caster.classList.add('attack');flash((mine?'✨ '+name:'相手の '+name)+'\nHP +'+(ev.heal||0));
+  }else{
+   const target=ev.to===user.uid?els.petVisual:els.enemyVisual;target.classList.remove('hurt');void target.offsetWidth;target.classList.add('hurt');
+   if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash('✨ '+name+'！\n-'+ev.damage+' HP');}
+   else flash('相手の '+name+'！\n-'+ev.damage+' HP');
+  }
  }else if(ev.type==='miss')flash(mine?'不正解…\n自分に1ダメージ':'相手が不正解！');
- else if(ev.type==='item')flash(mine?'アイテムで回復！':'相手がアイテムで回復！');
+ else if(ev.type==='item')flash((mine?'': '相手の ')+(ev.icon||'🎒')+' '+(ev.name||'アイテム')+'\n'+String(ev.kind||'hp').toUpperCase()+' +'+(ev.amount||0));
  else if(ev.type==='start')flash('BATTLE START!');
 }
 
@@ -159,21 +175,50 @@ async function refreshRooms(){
 }
 async function refreshRoom(){if(!activeRoom)return;try{const data=await api('/room/'+activeRoom),room=data.room;if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';await refreshRooms();return;}renderRoom(room);}catch(e){say(e.message,true);}}
 async function enterRoom(id){try{say('ルームに入室しています…');const data=await api('/room/'+id+'/join','POST');activeRoom=id;lastEventSeq=data.room.seq;lastStatus='';resetTurn();renderRoom(data.room);say('');}catch(e){say(e.message,true);await refreshRooms();}}
-async function act(action,{render=true}={}){
+async function act(action,{render=true,body=null}={}){
  try{
-  const data=await api('/room/'+activeRoom+'/'+action,'POST');
+  const data=await api('/room/'+activeRoom+'/'+action,'POST',body);
   if(action==='leave'){activeRoom='';currentRoom=null;resetTurn();await updateCoins();await refreshRooms();return null;}
   currentRoom=data.room;if(render)renderRoom(data.room);await updateCoins();return data.room;
  }catch(e){say(e.message,true);await refreshRoom();throw e;}
 }
 
-function openMagic(){
- if(els.magicBtn.disabled)return;els.magicMessage.textContent='';els.magicMessage.className='battle-action-message';els.magicList.innerHTML=`<article class="battle-action-card"><strong>✨ オンライン魔法</strong><span>相手に魔法ダメージを与えます</span><small>対戦専用</small><button type="button" data-use-magic>使う</button></article>`;
- els.magicList.querySelector('[data-use-magic]').addEventListener('click',async e=>{e.currentTarget.disabled=true;busy=true;try{els.magicDialog.close();resetTurn();const room=await act('magic',{render:false});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}catch(err){busy=false;els.magicMessage.textContent=err.message;els.magicMessage.className='battle-action-message error';}});els.magicDialog.showModal();
+function renderMagic(message='',error=false){
+ const mine=minePlayer(),level=ownLevel(),maxMp=Math.max(0,Number(mine?.stats?.mp)||0),mp=Math.max(0,Number(mine?.mp??maxMp)||0);
+ els.magicMpStatus.textContent=`Lv.${level}　MP ${mp} / ${maxMp}`;els.magicMessage.textContent=message;els.magicMessage.className='battle-action-message'+(error?' error':'');els.magicList.replaceChildren();
+ for(const spell of MAGIC_SPELLS){
+  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');
+  card.innerHTML=`<strong>${esc(spell.name)}</strong><span>${unlocked?esc(spell.description):`Lv.${spell.level}で習得`}</span><small>${unlocked?`消費MP ${spell.mpCost}`:'LOCKED'}</small><button type="button">${unlocked?'使う':'未習得'}</button>`;
+  const button=card.querySelector('button');button.disabled=busy||!unlocked||mp<spell.mpCost||full;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
+ }
 }
-function openItem(){
- if(els.itemBtn.disabled)return;els.itemMessage.textContent='';els.itemMessage.className='battle-action-message';els.itemList.innerHTML=`<article class="battle-action-card"><strong>🎒 回復アイテム</strong><span>HPを3回復します</span><small>対戦専用</small><button type="button" data-use-item>使う</button></article>`;
- els.itemList.querySelector('[data-use-item]').addEventListener('click',async e=>{e.currentTarget.disabled=true;busy=true;try{els.itemDialog.close();resetTurn();const room=await act('item',{render:false});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}catch(err){busy=false;els.itemMessage.textContent=err.message;els.itemMessage.className='battle-action-message error';}});els.itemDialog.showModal();
+async function openMagic(){
+ if(els.magicBtn.disabled)return;els.magicList.innerHTML='<p>魔法を読み込み中…</p>';els.magicMessage.textContent='';els.magicDialog.showModal();
+ try{await refreshOwnData();if(els.magicDialog.open)renderMagic();}catch(error){if(els.magicDialog.open)renderMagic(error?.message||'魔法を読み込めませんでした。',true);}
+}
+async function castMagic(spell){
+ if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
+ try{els.magicDialog.close();const room=await act('magic',{render:false,body:{spellId:spell.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
+ catch(error){busy=false;try{await refreshOwnData();}catch{}renderMagic(error?.message||'魔法を使えませんでした。',true);if(!els.magicDialog.open)els.magicDialog.showModal();}
+}
+function renderItems(inventory,message='',error=false){
+ const mine=minePlayer(),maxHp=Math.max(1,Number(mine?.stats?.hp)||1),hp=Math.max(0,Number(mine?.hp)||0),maxMp=Math.max(0,Number(mine?.stats?.mp)||0),mp=Math.max(0,Number(mine?.mp??maxMp)||0);
+ els.itemMessage.textContent=message;els.itemMessage.className='battle-action-message'+(error?' error':'');els.itemList.replaceChildren();
+ for(const item of DUNGEON_ITEMS){
+  const count=inventory[item.id]||0,full=item.kind==='hp'?hp>=maxHp:mp>=maxMp,card=document.createElement('article');card.className='battle-action-card';
+  card.innerHTML=`<strong>${item.icon} ${esc(item.name)}</strong><span>${esc(item.description)}</span><small>所持 ${count}個</small><button type="button">使う</button>`;
+  const button=card.querySelector('button');button.disabled=busy||count<1||full;button.addEventListener('click',()=>void useItem(item));els.itemList.append(card);
+ }
+}
+async function openItem(){
+ if(els.itemBtn.disabled)return;els.itemList.innerHTML='<p>持ち物を読み込み中…</p>';els.itemMessage.textContent='';els.itemDialog.showModal();
+ try{const data=await refreshOwnData();if(els.itemDialog.open)renderItems(normalizeDungeonInventory(data.petDungeonItems));}
+ catch(error){if(els.itemDialog.open)renderItems(normalizeDungeonInventory(ownData.petDungeonItems),error?.message||'持ち物を読み込めませんでした。',true);}
+}
+async function useItem(item){
+ if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
+ try{els.itemDialog.close();const room=await act('item',{render:false,body:{itemId:item.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
+ catch(error){busy=false;try{await refreshOwnData();}catch{}renderItems(normalizeDungeonInventory(ownData.petDungeonItems),error?.message||'アイテムを使えませんでした。',true);if(!els.itemDialog.open)els.itemDialog.showModal();}
 }
 
 async function loadQuestionPool(){
@@ -189,7 +234,7 @@ els.readyBtn.addEventListener('click',()=>void act('ready'));
 els.retryBtn.addEventListener('click',()=>void act('continue'));
 els.leaveBtn.addEventListener('click',()=>void act('leave'));
 els.exitRunBtn.addEventListener('click',()=>void act('leave'));
-els.magicBtn.addEventListener('click',openMagic);els.itemBtn.addEventListener('click',openItem);
+els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEventListener('click',()=>void openItem());
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
 async function init(){
