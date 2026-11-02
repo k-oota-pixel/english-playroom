@@ -17,16 +17,18 @@ async function api(path,method='GET'){
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 async function updateCoins(){try{const snap=await getDoc(walletRef(user));coins=Math.max(0,Math.floor(Number(snap.data()?.coins)||0));$('coinCount').textContent=coins;}catch{$('coinCount').textContent='—';}}
 function roomStatus(room){if(room.status==='playing')return '対戦中';if(room.status==='finished')return '結果発表';if(room.players?.length===1)return '１人が待機中';if(room.players?.length===2)return '２人が準備中';return '空室';}
+function roomRuleText(room){return '英検'+(room.grade||'4級')+' · '+(room.noItems?'魔法・アイテムなし':'魔法・アイテムあり');}
 function renderRooms(list){
  roomsEl.replaceChildren();
  for(const room of list){
   const card=document.createElement('article');card.className='room-card';
   const heading=document.createElement('strong');heading.textContent='ルーム '+room.roomId;
+  const rule=document.createElement('span');rule.className='room-rule';rule.textContent=roomRuleText(room);
   const state=document.createElement('span');state.className='room-state';state.textContent=roomStatus(room)+' · '+(room.players?.length||0)+'/2人';
-  const btn=document.createElement('button');btn.type='button';btn.textContent=(room.players||[]).some(p=>p.uid===user.uid)?'入室する':'入室する';
+  const btn=document.createElement('button');btn.type='button';btn.textContent='入室する';
   btn.disabled=['playing','finished'].includes(room.status)||(room.players?.length||0)>=2&&!(room.players||[]).some(p=>p.uid===user.uid);
   btn.addEventListener('click',()=>enterRoom(room.roomId));
-  card.append(heading,state,btn);roomsEl.append(card);
+  card.append(heading,rule,state,btn);roomsEl.append(card);
  }
 }
 function petArt(player){
@@ -43,14 +45,24 @@ function showResult(room){
  const fx=$('resultFx'),win=room.winnerUid===user.uid;
  $('resultMark').textContent=win?'🏆':'💫';$('resultTitle').textContent=win?'VICTORY':'BATTLE END';$('resultText').textContent=win?'勝利！ ２コイン獲得':'敗北… 次の対戦へ';
  fx.hidden=false;
+ const card=fx.querySelector('.result-card');
+ card.querySelector('[data-result-actions]')?.remove();
+ const actions=document.createElement('div');actions.dataset.resultActions='';actions.className='controls';
+ actions.innerHTML='<button class="primary" data-result="continue">もう一度対戦</button><button class="danger" data-result="leave">対戦を終了する</button>';
+ card.append(actions);
+ card.querySelector('[data-result="continue"]').addEventListener('click',()=>act('continue'));
+ card.querySelector('[data-result="leave"]').addEventListener('click',()=>act('leave'));
 }
 function renderRoom(room){
  const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  roomList.hidden=true;roomView.hidden=false;
  const waiting=room.status==='waiting',playing=room.status==='playing',finished=room.status==='finished';
+ const readyCount=(room.players||[]).filter(p=>p.ready).length;
+ const rematchCount=(room.players||[]).filter(p=>p.rematchReady).length;
  const canReady=waiting&&room.players?.length===2&&!mine?.ready;
- const waitingText=waiting?(room.players?.length<2?'相手が入室するまで待機します。':'２人が準備完了を押すと対戦が始まります。'):'';
- roomView.innerHTML='<section class="room-panel"><div class="room-head"><h2>ルーム '+esc(room.roomId)+'</h2><span class="room-state">'+roomStatus(room)+'</span></div><div class="duel">'+fighter(mine,true)+'<div class="versus">VS</div>'+fighter(other,false)+'</div><p class="battle-log" id="battleLog">'+esc(room.lastEvent?.type==='attack'?(room.lastEvent.from===user.uid?'攻撃！ 相手に'+room.lastEvent.damage+'ダメージ！':'相手の攻撃！ '+room.lastEvent.damage+'ダメージを受けた！'):'')+'</p>'+(waiting?'<div class="waiting">'+waitingText+(mine?.ready?' あなたは準備完了です。':'')+(other?.ready?' 相手は準備完了です。':'')+'</div>':'')+'<div class="controls">'+(canReady?'<button class="primary" data-act="ready">準備完了</button>':'')+(playing?'<button class="primary" data-act="attack">⚔️ 攻撃する</button>':'')+(finished?'<button class="primary" data-act="continue">対戦を続ける</button>':'')+((waiting||finished)?'<button class="danger" data-act="leave">対戦を終了する</button>':'')+'</div></section>';
+ const waitingText=waiting?(room.players?.length<2?'相手の入室を待っています。':'２人が準備完了を押すと対戦が始まります。'):'';
+ const readyLine=waiting?'<div class="count-line">準備完了 '+readyCount+'/2</div>':finished?'<div class="count-line">再戦準備 '+rematchCount+'/2</div>':'';
+ roomView.innerHTML='<section class="room-panel"><div class="room-head"><div><h2>ルーム '+esc(room.roomId)+'</h2><div class="room-rule">'+esc(roomRuleText(room))+'</div></div><span class="room-state">'+roomStatus(room)+'</span></div><div class="duel">'+fighter(mine,true)+'<div class="versus">VS</div>'+fighter(other,false)+'</div><p class="battle-log" id="battleLog">'+esc(room.lastEvent?.type==='attack'?(room.lastEvent.from===user.uid?'攻撃！ 相手に'+room.lastEvent.damage+'ダメージ！':'相手の攻撃！ '+room.lastEvent.damage+'ダメージを受けた！'):'')+'</p>'+readyLine+(waiting?'<div class="waiting">'+waitingText+(mine?.ready?' あなたは準備完了です。':'')+(other?.ready?' 相手は準備完了です。':'')+'</div>':'')+'<div class="controls">'+(canReady?'<button class="primary" data-act="ready">準備完了</button>':'')+(playing?'<button class="primary" data-act="attack">⚔️ 攻撃する</button>':'')+(finished?'<button class="primary" data-act="continue">もう一度対戦</button>':'')+((waiting||finished)?'<button class="danger" data-act="leave">対戦を終了する</button>':'')+'</div></section>';
  roomView.querySelector('[data-act="ready"]')?.addEventListener('click',()=>act('ready'));
  roomView.querySelector('[data-act="attack"]')?.addEventListener('click',()=>act('attack'));
  roomView.querySelector('[data-act="continue"]')?.addEventListener('click',()=>act('continue'));
