@@ -7,7 +7,9 @@ import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dunge
 const API='https://task-quest.onrender.com/api/online-battle';
 const $=id=>document.getElementById(id);
 const ELEMENTS=[['fire','🔥','FIRE'],['thunder','⚡','THUNDER'],['leaf','🍃','LEAF'],['water','💧','WATER']];
-const lobbyView=$('lobbyView'),battleView=$('battleView'),roomList=$('roomList'),roomsEl=$('rooms'),notice=$('notice');
+const lobbyView=$('lobbyView'),battleView=$('battleView'),gradePicker=$('gradePicker'),roomList=$('roomList'),roomsEl=$('rooms'),notice=$('notice'),selectedGradeTitle=$('selectedGradeTitle');
+const GRADES=Object.freeze([{key:'4',label:'4級'},{key:'3',label:'3級'},{key:'pre2',label:'準2級'},{key:'2',label:'2級'}]);
+const ROOM_STORAGE_KEY='monstudy-online-room-v2';
 const els={
  coinCount:$('coinCount'),modeTitle:$('modeTitle'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),
  petStats:$('petStats'),petName:$('petName'),myNickname:$('myNickname'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petMpBar:$('petMpBar'),petMpText:$('petMpText'),petVisual:$('adventurePetVisual'),
@@ -18,15 +20,15 @@ const els={
  readyBtn:$('readyBtn'),readyCount:$('readyCount'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
-let user=null,activeRoom='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
+let user=null,activeRoom='',selectedGrade='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false;
 
 function say(message,error=false){notice.textContent=message;notice.classList.toggle('error',error);}
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
 function shuffle(values){const out=[...values];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;}
 function gradeLevel(grade){return ({'4級':'junior1','3級':'junior2','準2級':'junior3','2級':'high1'})[grade]||'junior1';}
-function roomStatus(room){if(room.status==='playing')return '対戦中';if(room.status==='finished')return '結果発表';if(room.players?.length===1)return '1人が待機中';if(room.players?.length===2)return '2人が準備中';return '空室';}
-function roomRuleText(room){return '英検'+(room.grade||'4級')+' · '+(room.noItems?'魔法・アイテムなし':'魔法・アイテムあり');}
+function roomPlayerCount(room){return Math.max(0,Math.min(2,Number(room.playerCount??room.players?.length??0)||0));}
+function roomStatus(room){const count=roomPlayerCount(room);if(room.status==='playing')return '対戦中';if(room.status==='finished')return '結果発表';if(count===1)return '1人待機中';if(count===2)return '準備中';return '空室';}
 function setBar(el,value,max){const pct=max>0?Math.max(0,Math.min(100,value/max*100)):0;el.style.width=pct+'%';}
 function minePlayer(room=currentRoom){return (room?.players||[]).find(p=>p.uid===user?.uid)||null;}
 function ownLevel(){return strengthLevel(ownData.petStrengthLevelPoints,ownData.petStrength);}
@@ -50,15 +52,22 @@ async function updateCoins(){try{await refreshOwnData();}catch{els.coinCount.tex
 function renderRooms(list){
  roomsEl.replaceChildren();
  for(const room of list){
-  const card=document.createElement('article');card.className='online-room-card';
-  const heading=document.createElement('strong');heading.textContent='ルーム '+room.roomId;
-  const rule=document.createElement('span');rule.className='online-room-rule';rule.textContent=roomRuleText(room);
-  const state=document.createElement('span');state.className='online-room-state';state.textContent=roomStatus(room)+' · '+(room.players?.length||0)+'/2人';
+  const count=roomPlayerCount(room),card=document.createElement('article');card.className='online-room-card';card.dataset.status=room.status||'open';
+  const heading=document.createElement('strong');heading.textContent='ルーム '+(room.roomNo||String(room.roomId||'').split('-').pop());
+  const state=document.createElement('span');state.className='online-room-state';state.innerHTML=`<b>${esc(roomStatus(room))}</b><span>${count} / 2人</span>`;
   const btn=document.createElement('button');btn.type='button';btn.className='primary-btn';btn.textContent='入室する';
-  btn.disabled=['playing','finished'].includes(room.status)||((room.players?.length||0)>=2&&!(room.players||[]).some(p=>p.uid===user.uid));
+  btn.disabled=['playing','finished'].includes(room.status)||count>=2;
   btn.addEventListener('click',()=>void enterRoom(room.roomId));
-  card.append(heading,rule,state,btn);roomsEl.append(card);
+  card.append(heading,state,btn);roomsEl.append(card);
  }
+}
+function gradeLabel(key){return GRADES.find(entry=>entry.key===key)?.label||'4級';}
+function showGradePicker(){selectedGrade='';roomList.hidden=true;gradePicker.hidden=false;roomsEl.replaceChildren();say('');}
+async function selectGrade(key){if(!GRADES.some(entry=>entry.key===key))return;selectedGrade=key;selectedGradeTitle.textContent=gradeLabel(key);gradePicker.hidden=true;roomList.hidden=false;await refreshLobby();}
+async function refreshLobby(){
+ if(!selectedGrade||activeRoom)return;
+ try{const data=await api('/lobby/'+selectedGrade),lobby=data.lobby||{};selectedGradeTitle.textContent=lobby.grade||gradeLabel(selectedGrade);renderRooms(lobby.rooms||[]);say('');}
+ catch(e){say(e.message,true);}
 }
 
 function enterBattleLayout(){lobbyView.hidden=true;battleView.hidden=false;document.body.classList.add('battle-mode');}
@@ -161,26 +170,26 @@ function renderPlaying(room){
 }
 function renderRoom(room){
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
- els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+room.roomId;els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent=room.noItems?'ITEM OFF':'ITEM ON';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
+ els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+(room.roomNo||String(room.roomId||'').split('-').pop());els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent='MAGIC / ITEM';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
  updateFighters(room);animateEvent(room);
  if(lastStatus!==room.status){if(room.status==='playing')resetTurn();lastStatus=room.status;}
  const playable=room.status==='playing'&&!busy;els.magicBtn.disabled=!playable||room.noItems;els.itemBtn.disabled=!playable||room.noItems;els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
  if(room.status==='waiting')renderWaiting(room,mine,other);else if(room.status==='playing')renderPlaying(room);else if(room.status==='finished')renderFinished(room,mine);
 }
 
-async function refreshRooms(){
- try{
-  const data=await api('/rooms'),list=data.rooms||[];const active=list.find(r=>(r.players||[]).some(p=>p.uid===user.uid)&&['waiting','playing','finished'].includes(r.status));
-  if(active){activeRoom=active.roomId;renderRoom(active);say('');return;}
-  activeRoom='';currentRoom=null;lastStatus='';lastEventSeq=-1;resetTurn();enterLobbyLayout();roomList.hidden=false;renderRooms(list);say('空いているルームを選んでください。');
- }catch(e){say(e.message,true);}
+async function refreshRoom(){
+ if(!activeRoom)return;
+ try{const data=await api('/room/'+activeRoom),room=data.room;if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return;}renderRoom(room);say('');}
+ catch(e){say(e.message,true);}
 }
-async function refreshRoom(){if(!activeRoom)return;try{const data=await api('/room/'+activeRoom),room=data.room;if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';await refreshRooms();return;}renderRoom(room);}catch(e){say(e.message,true);}}
-async function enterRoom(id){try{say('ルームに入室しています…');const data=await api('/room/'+id+'/join','POST');activeRoom=id;lastEventSeq=data.room.seq;lastStatus='';resetTurn();renderRoom(data.room);say('');}catch(e){say(e.message,true);await refreshRooms();}}
+async function enterRoom(id){
+ try{say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;const data=await api('/room/'+id+'/join','POST');activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);lastEventSeq=data.room.seq;lastStatus='';resetTurn();renderRoom(data.room);say('');}
+ catch(e){say(e.message,true);await refreshLobby();}
+}
 async function act(action,{render=true,body=null}={}){
  try{
   const data=await api('/room/'+activeRoom+'/'+action,'POST',body);
-  if(action==='leave'){activeRoom='';currentRoom=null;resetTurn();await updateCoins();await refreshRooms();return null;}
+  if(action==='leave'){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;resetTurn();await updateCoins();enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return null;}
   currentRoom=data.room;if(render)renderRoom(data.room);await updateCoins();return data.room;
  }catch(e){say(e.message,true);await refreshRoom();throw e;}
 }
@@ -231,7 +240,9 @@ async function loadQuestionPool(){
  }catch(e){console.warn('online battle question load failed',e);questionPool=[{id:'f1',level:'junior1',word:'apple',meaning:'りんご'},{id:'f2',level:'junior1',word:'book',meaning:'本'},{id:'f3',level:'junior1',word:'water',meaning:'水'},{id:'f4',level:'junior1',word:'school',meaning:'学校'},{id:'f5',level:'junior1',word:'friend',meaning:'友だち'}];}
 }
 
-$('refreshBtn').addEventListener('click',()=>void refreshRooms());
+$('refreshBtn').addEventListener('click',()=>void refreshLobby());
+$('backToGradesBtn').addEventListener('click',()=>showGradePicker());
+gradePicker.querySelectorAll('[data-grade]').forEach(button=>button.addEventListener('click',()=>void selectGrade(button.dataset.grade)));
 els.readyBtn.addEventListener('click',()=>void act('ready'));
 els.retryBtn.addEventListener('click',()=>void act('continue'));
 els.leaveBtn.addEventListener('click',()=>void act('leave'));
@@ -240,7 +251,7 @@ els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEvent
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
 async function init(){
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();await updateCoins();await refreshRooms();pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},2500);roomsTimer=window.setInterval(()=>{if(!activeRoom)void refreshRooms();},10000);}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();await updateCoins();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},2500);roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},15000);}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
 window.addEventListener('pagehide',()=>{clearInterval(pollTimer);clearInterval(roomsTimer);});
 init();

@@ -9,10 +9,10 @@
 <link rel="stylesheet" href="./dungeons-actions.css?v=1.10.24">
 <link rel="stylesheet" href="./guard.css?v=2.3.14">
 <link rel="stylesheet" href="./final.css?v=2.3.22">
-<link rel="stylesheet" href="./online-battle.css?v=2.1.0">
+<link rel="stylesheet" href="./online-battle.css?v=2.3.45">
 <script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.14"></script>
 <script src="../shell-bridge.js?v=2.1.1"></script>
-<script type="module" src="./online-battle.js?v=2.2.0"></script>
+<script type="module" src="./online-battle.js?v=2.3.45"></script>
 </head>
 <body>
 <main class="app-shell">
@@ -20,12 +20,20 @@
     <a class="back" href="./">← エイゴダンジョンズへ</a>
     <p class="kicker">ONLINE PET BATTLE</p>
     <h1>オンライン対戦</h1>
-    <p class="select-intro">友だちと同じルームに入り、育てたペットで勝負しよう。</p>
     <div class="online-wallet">所持コイン <strong id="coinCount">—</strong></div>
     <p id="notice" class="online-notice" role="status">ログイン情報を確認しています…</p>
+    <section id="gradePicker" class="online-grade-picker" aria-label="英検級を選ぶ" hidden>
+      <button type="button" data-grade="4">4級</button>
+      <button type="button" data-grade="3">3級</button>
+      <button type="button" data-grade="pre2">準2級</button>
+      <button type="button" data-grade="2">2級</button>
+    </section>
     <section id="roomList" class="online-room-list" hidden>
-      <div class="online-room-heading"><h2>対戦ルーム</h2><button id="refreshBtn" class="secondary-btn" type="button">更新</button></div>
-      <p class="hint">同じ番号のルームに入ってください。4級・3級・準2級・2級から選べます。2人が準備完了すると対戦が始まります。</p>
+      <div class="online-room-heading">
+        <button id="backToGradesBtn" class="online-grade-back" type="button">← 級を選ぶ</button>
+        <h2 id="selectedGradeTitle">4級</h2>
+        <button id="refreshBtn" class="secondary-btn" type="button">更新</button>
+      </div>
       <div id="rooms" class="online-rooms"></div>
     </section>
   </section>
