@@ -58,7 +58,7 @@ function handleVisibility(){
 function say(message,error=false){notice.textContent=message;notice.classList.toggle('error',error);}
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
 function shuffle(values){const out=[...values];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;}
-function gradeLevel(grade){return ({'4級':'junior1','3級':'junior2','準2級':'junior3','2級':'high1'})[grade]||'junior1';}
+function gradeLevel(grade){return ({'4級':'4','3級':'3','準2級':'pre2','2級':'2'})[grade]||'4';}
 function roomPlayerCount(room){return Math.max(0,Math.min(2,Number(room.playerCount??room.players?.length??0)||0));}
 function roomStatus(room){const count=roomPlayerCount(room);if(room.status==='playing')return '対戦中';if(room.status==='finished')return '結果発表';if(count===1)return '1人待機中';if(count===2)return '準備中';return '空室';}
 function setBar(el,value,max){const pct=max>0?Math.max(0,Math.min(100,value/max*100)):0;el.style.width=pct+'%';}
@@ -266,10 +266,25 @@ async function useItem(item){
 
 async function loadQuestionPool(){
  try{
-  const response=await fetch('https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5',{cache:'force-cache'}),payload=await response.json(),source=payload?.levels||payload?.courses||payload,rows=[];
-  for(const [level,items] of Object.entries(source||{})){const list=Array.isArray(items)?items:items?.words||[];for(const [i,item] of list.entries()){const word=String(item?.word||'').trim(),meaning=(Array.isArray(item?.answers)?item.answers:[]).find(v=>typeof v==='string'&&v.trim())?.trim()||String(item?.meaning||'').trim();if(word&&meaning)rows.push({id:level+'-'+(item.id||i),level,word,meaning});}}
+  const response=await fetch('https://k-oota-pixel.github.io/word-breaker/eiken_vocab_master.json?v=1.0.0',{cache:'force-cache'}),payload=await response.json(),source=payload?.grades||{},rows=[];
+  for(const grade of ['4','3','pre2','2']){
+   const items=source?.[grade]?.words||[];
+   for(const [i,item] of items.entries()){
+    const word=String(item?.word||'').trim(),meaning=(Array.isArray(item?.answers)?item.answers:[]).find(v=>typeof v==='string'&&v.trim())?.trim()||String(item?.meaning||'').trim();
+    if(word&&meaning)rows.push({id:grade+'-'+(item.id||i),level:grade,word,meaning});
+   }
+  }
+  if(!['4','3','pre2','2'].every(grade=>rows.filter(q=>q.level===grade).length>=4))throw new Error('級別語彙データが不足しています。');
   questionPool=rows;
- }catch(e){console.warn('online battle question load failed',e);questionPool=[{id:'f1',level:'junior1',word:'apple',meaning:'りんご'},{id:'f2',level:'junior1',word:'book',meaning:'本'},{id:'f3',level:'junior1',word:'water',meaning:'水'},{id:'f4',level:'junior1',word:'school',meaning:'学校'},{id:'f5',level:'junior1',word:'friend',meaning:'友だち'}];}
+ }catch(e){
+  console.warn('online battle question load failed',e);
+  questionPool=[
+   {id:'f4-1',level:'4',word:'apple',meaning:'りんご'},{id:'f4-2',level:'4',word:'book',meaning:'本'},{id:'f4-3',level:'4',word:'water',meaning:'水'},{id:'f4-4',level:'4',word:'school',meaning:'学校'},
+   {id:'f3-1',level:'3',word:'outside',meaning:'外で'},{id:'f3-2',level:'3',word:'realize',meaning:'気づく'},{id:'f3-3',level:'3',word:'exercise',meaning:'運動'},{id:'f3-4',level:'3',word:'visitor',meaning:'訪問者'},
+   {id:'fp2-1',level:'pre2',word:'include',meaning:'含む'},{id:'fp2-2',level:'pre2',word:'achieve',meaning:'達成する'},{id:'fp2-3',level:'pre2',word:'maintain',meaning:'維持する'},{id:'fp2-4',level:'pre2',word:'audience',meaning:'観客'},
+   {id:'f2-1',level:'2',word:'potential',meaning:'可能性'},{id:'f2-2',level:'2',word:'threaten',meaning:'脅かす'},{id:'f2-3',level:'2',word:'quantity',meaning:'量'},{id:'f2-4',level:'2',word:'accomplish',meaning:'成し遂げる'}
+  ];
+ }
 }
 
 $('refreshBtn').addEventListener('click',()=>void refreshLobby());
