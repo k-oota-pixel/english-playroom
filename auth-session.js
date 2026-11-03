@@ -21,11 +21,34 @@ export function getAuth(app = getApp()) {
   }
 }
 
-
 const API='https://task-quest.onrender.com';
+const SESSION_TTL_MS=12*60*60*1000;
+const SESSION_STORAGE_PREFIX='monstudy.accountSession.v2.';
 const sessionChecks=globalThis[Symbol.for('monstudy.auth.sessionChecks')]||(globalThis[Symbol.for('monstudy.auth.sessionChecks')]=new WeakMap());
+
+function readSessionCache(user,token){
+ try{
+  const raw=sessionStorage.getItem(SESSION_STORAGE_PREFIX+user.uid);
+  if(!raw)return null;
+  const cached=JSON.parse(raw);
+  if(!cached||cached.token!==token||!Number.isFinite(cached.expiresAt)||cached.expiresAt<=Date.now()){
+   sessionStorage.removeItem(SESSION_STORAGE_PREFIX+user.uid);
+   return null;
+  }
+  return cached.data||null;
+ }catch{return null;}
+}
+function writeSessionCache(user,token,data){
+ try{sessionStorage.setItem(SESSION_STORAGE_PREFIX+user.uid,JSON.stringify({token,expiresAt:Date.now()+SESSION_TTL_MS,data}));}catch{}
+}
+function clearSessionCache(user){
+ try{if(user?.uid)sessionStorage.removeItem(SESSION_STORAGE_PREFIX+user.uid);}catch{}
+}
+
 export async function accountSession(user){
  const token=await user.getIdToken();
+ const cached=readSessionCache(user,token);
+ if(cached)return cached;
  const existing=sessionChecks.get(user);
  if(existing&&existing.token===token&&existing.until>Date.now())return existing.promise;
  const entry={token,until:Infinity,promise:null};
@@ -33,10 +56,17 @@ export async function accountSession(user){
   try{
    const response=await fetch(API+'/api/account/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:'{}',signal:AbortSignal.timeout(30000)});
    const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'ログインを確認できませんでした。'),{status:response.status});
-   entry.until=Date.now()+5000;return data;
+   entry.until=Date.now()+5000;
+   writeSessionCache(user,token,data);
+   return data;
   }catch(error){if(sessionChecks.get(user)===entry)sessionChecks.delete(user);throw error;}
  })();
  sessionChecks.set(user,entry);return entry.promise;
+}
+
+export function clearAccountSessionCache(user){
+ clearSessionCache(user);
+ sessionChecks.delete(user);
 }
 
 export function onAuthStateChanged(auth,observerOrNext,error,completed){
@@ -50,10 +80,10 @@ export function onAuthStateChanged(auth,observerOrNext,error,completed){
   try{
    const session=await accountSession(user);
    if(current!==generation)return;
-   if(session.resetRequired){location.replace('https://k-oota-pixel.github.io/english-playroom/account.html?mode=password');return;}
+   if(session.resetRequired){clearSessionCache(user);location.replace('https://k-oota-pixel.github.io/english-playroom/account.html?mode=password');return;}
    const token=await firebaseGetIdTokenResult(user);
    if(token.claims?.passwordResetRequired===true&&!token.claims?.codeAccount&&!path.endsWith('/password-reset-required.html')){
-    location.replace('https://k-oota-pixel.github.io/english-playroom/password-reset-required.html');return;
+    clearSessionCache(user);location.replace('https://k-oota-pixel.github.io/english-playroom/password-reset-required.html');return;
    }
    deliver(user);
   }catch(e){
