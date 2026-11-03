@@ -1,5 +1,5 @@
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.32';
+const MATERIAL_RELEASE='2.1.33';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh']
@@ -33,7 +33,8 @@ function install() {
   groups.push({name:'エイゴダンジョンズ',items:[
     {name:'冒険先を選ぶ',url:new URL('pet-adventure/',root)},
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
-    {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)}
+    {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
+    {name:'オンライン対戦',url:new URL('pet-adventure/online-battle.html',root)}
   ]});
   const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
