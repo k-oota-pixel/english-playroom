@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - run: sed -i 's/2.3.43/2.3.44/g' index.html
       - run: python .github/scripts/online_battle_grade_lobby_ui.py
       - run: node --check pet-adventure/online-battle.js
       - run: |
