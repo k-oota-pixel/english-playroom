@@ -1,13 +1,445 @@
 {
-  "generatedAt": "2026-11-02T21:46:45.592Z",
-  "editionDate": "2026-11-03",
+  "generatedAt": "2026-11-03T21:50:02.626Z",
+  "editionDate": "2026-11-04",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-03"
+    "lastSuccessfulEdition": "2026-11-04"
   },
   "articles": [
+    {
+      "id": "2026-11-04-kuramoto-so-kita-no-kuni-kara-sequel",
+      "date": "2026-11-04",
+      "scope": "japan",
+      "category": "life",
+      "categories": [
+        "culture"
+      ],
+      "careerTags": [
+        "arts"
+      ],
+      "tags": [
+        "Kuramoto So",
+        "Kita no Kuni Kara",
+        "Furano",
+        "TV drama"
+      ],
+      "titleJa": "倉本聰が語った続編構想",
+      "title": "So Kuramoto Shared Plans for a Sequel to Kita no Kuni Kara",
+      "summaryJa": "故・倉本聰氏が、生前に名作ドラマ「北の国から」の知られざる続編の構想や、舞台となった富良野での創作活動への思いを明かしました。",
+      "sourcePublishedAt": "2026-11-03T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "倉本氏の続編アイディアや富良野への思いを理解し、彼がどのような物語を描きたかったかを自分の言葉で考察してみましょう。",
+        "followUpJa": "もしあなたがドラマの続編を作るなら、どのようなエピソードを加えたいですか？",
+        "questions": {
+          "5級": "What is the famous TV drama name?",
+          "4級": "How many years did So Kuramoto live in Furano?",
+          "3級": "What were the two main ideas for the sequel that Kuramoto thought about?",
+          "準2級": "Why did Kuramoto want to write a drama where Kunie Tanaka's character dies?",
+          "2級": "How did Kuramoto describe his 91-year life and career when looking back at his time in Furano?",
+          "準1級": "In what ways did living in the nature of Furano continuously inspire Kuramoto's creative work and perspective on his career?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "So Kuramoto Talks About a Drama",
+          "text": "So Kuramoto is a famous writer. He lived in Furano for a long time. He loved nature there. He wrote many TV shows. He thought about a new story for Kita no Kuni Kara. He wanted to write more.",
+          "wordCount": 39
+        },
+        "4級": {
+          "title": "So Kuramoto Shared Plans for a Famous TV Show Sequel",
+          "text": "So Kuramoto lived in Furano for fifty years. He found many ideas for dramas in the great nature there. Before he passed away, he talked about a secret sequel to his famous television show, Kita no Kuni Kara. He thought about writing a story where Kunie Tanaka's character passes away. He also wanted to follow the growth of Hotaru's child. He felt happy about his long work and career.",
+          "wordCount": 69
+        },
+        "3級": {
+          "title": "The Hidden Sequel Plans and Thoughts of So Kuramoto",
+          "text": "So Kuramoto lived in Furano for fifty years and wrote many stories using the big nature as his canvas. Before he passed away, he shared his thoughts about a hidden sequel to Kita no Kuni Kara. He thought about writing a story where Kunie Tanaka's character dies. He also wanted to show the growth of Hotaru's child. Looking back at his long life, he felt very fulfilled and grateful that he was able to keep working for so many years.",
+          "wordCount": 80
+        },
+        "準2級": {
+          "title": "So Kuramoto's Unfilmed Sequel Visions for Kita no Kuni Kara",
+          "text": "As a prominent creator, So Kuramoto spent fifty years living in Furano, Hokkaido. Surrounded by majestic nature, he found endless ideas for his dramas. In an interview before his passing, Kuramoto discussed his hidden plans for a sequel to his masterpiece, Kita no Kuni Kara. He revealed that he seriously considered writing a storyline where Kunie Tanaka's character passes away. Furthermore, he wanted to follow the growth of Hotaru's child. Reflecting on his life and career, Kuramoto felt deeply satisfied, noting that he was simply grateful to have been able to sustain his creative work for so many years.",
+          "wordCount": 99
+        },
+        "2級": {
+          "title": "Looking Back at So Kuramoto's Kita no Kuni Kara Sequel Plans",
+          "text": "Renowned Japanese screenwriter So Kuramoto dedicated his ninety-one-year life to creative pursuits. Having moved from Tokyo to Furano, he spent five decades drawing endless inspiration from the magnificent natural surroundings. In an interview recorded before his death, Kuramoto spoke candidly about his physical decline and his unfilmed ideas for a sequel to his legendary television drama, Kita no Kuni Kara. He explained that he had seriously contemplated writing a storyline featuring the death of actor Kunie Tanaka's beloved character. Additionally, he wanted to explore the future growth of Hotaru's child. Looking back at his decades in Furano, where he also focused on nature conservation and nurturing younger talent, Kuramoto expressed deep fulfillment, remarking that rather than just feeling he did a good job, he was simply grateful to have been able to keep working for so long.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Unveiling So Kuramoto's Vision for a Kita no Kuni Kara Sequel and His Life in Furano",
+          "text": "Spanning a remarkable ninety-one years, the life of visionary creator So Kuramoto was deeply intertwined with the majestic landscapes of Furano, Hokkaido, where he relocated five decades ago. Finding an endless wellspring of inspiration within the unchanging natural environment, Kuramoto dedicated his career to storytelling, environmental preservation, and mentoring aspiring artists. In an interview conducted prior to his passing, he reflected candidly on his advancing age and physical decline, noting how human fragility becomes apparent as the body weakens with time. Despite these physical challenges, he revealed untold conceptual plans for a sequel to his iconic television masterpiece, Kita no Kuni Kara. Kuramoto shared that he had spent considerable time contemplating the narrative direction, particularly envisioning a dramatic storyline centered on the death of Kunie Tanaka's beloved character after Tanaka's actual passing. Alongside this poignant idea, he also wanted to follow the future growth of Hotaru's child, Kai. Reflecting on his prolific journey and fifty years of living and creating in Furano, Kuramoto expressed a profound sense of fulfillment, remarking that rather than simply feeling he had done a good job, he felt deeply grateful simply to have been able to sustain his life's work for so many years in such an inspiring and enduring natural setting.",
+          "wordCount": 207
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63330"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-04-man-utd-eye-ait-nouri-gossip",
+      "date": "2026-11-04",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "Manchester United",
+        "Manchester City",
+        "Premier League",
+        "transfer gossip",
+        "football news"
+      ],
+      "titleJa": "マンUがアイト＝ヌーリに関心",
+      "title": "Man Utd eye Man City defender Ait-Nouri in surprise transfer gossip",
+      "summaryJa": "マンチェスター・ユナイテッドがマンチェスター・シティのDFラヤン・アイト＝ヌーリの獲得を検討しているほか、欧州サッカー界の様々な移籍の噂が報じられています。",
+      "sourcePublishedAt": "2026-11-03T21:20:43.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "マンチェスター・ユナイテッドが狙う新たな選手の移籍の噂について理解し、チームの補強方針について判断を下すため。",
+        "followUpJa": "あなたならこの移籍の噂をクラブ経営陣としてどう評価しますか？意見を話し合ってみましょう。",
+        "questions": {
+          "5級": "Who is the surprise target for Manchester United?",
+          "4級": "Which club does Rayan Ait-Nouri play for in the report?",
+          "3級": "Why might Rayan Ait-Nouri be a surprise transfer target for Manchester United?",
+          "準2級": "What does the report say about personal terms for the potential deal involving Rayan Ait-Nouri?",
+          "2級": "How are personal terms described regarding the potential transfer of Rayan Ait-Nouri to Manchester United?",
+          "準1級": "What specific details does the report provide regarding the potential transfer of Rayan Ait-Nouri and the stance on personal terms?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Man Utd and Ait-Nouri",
+          "text": "Manchester United have a surprise plan. They want to sign Rayan Ait-Nouri. He is a defender. He plays for Manchester City now. People talk about this transfer news. Personal terms are not a big problem for this deal. The Algeria player can move. Many football fans are watching this story today.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "Surprise Football Transfer Gossip",
+          "text": "Manchester United are thinking about a surprise move. They want Manchester City defender Rayan Ait-Nouri. He is 25 years old and plays for Algeria. Reports say that personal terms are not a problem for the deal. Elsewhere, Crystal Palace and Arsenal are also in the news. Football teams are busy with new player plans and future matches.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Transfer News: Man Utd Eyeing Ait-Nouri",
+          "text": "Manchester United are considering a shock move for Manchester City left-back Rayan Ait-Nouri. The 25-year-old Algeria international is a surprise transfer target for the club. Sources report that personal terms are not a barrier to any potential deal. Meanwhile, other teams like Arsenal and Crystal Palace are also facing important decisions about their players and managers during the football season. We will see what happens next in the Premier League.",
+          "wordCount": 70
+        },
+        "準2級": {
+          "title": "Manchester United Target Manchester City Defender",
+          "text": "In the latest football gossip column, Manchester United are reportedly considering a shock transfer move for Manchester City left-back Rayan Ait-Nouri. The twenty-five-year-old Algeria international has emerged as a surprising target, and personal terms are said not to be a barrier to any potential agreement between the clubs. Beyond this primary story, other European football clubs are also making headlines across the sports world. Crystal Palace are linked with England assistant manager Anthony Barry if Pierre Sage leaves his position, while Barcelona keep a close eye on Arsenal centre-back Piero Hincapie. Fans and sports analysts are closely following all these updates as winter transfer window speculations continue to grow across major leagues.",
+          "wordCount": 112
+        },
+        "2級": {
+          "title": "Shock Transfer Rumors Surround Manchester United and City",
+          "text": "The latest football gossip reveals that Manchester United are considering a shock move for Manchester City left-back Rayan Ait-Nouri. The twenty-five-year-old Algeria international has become a surprising target for the club, with reports indicating that personal terms will not be a barrier to any potential deal. Elsewhere in the Premier League and across European football, managerial uncertainties and transfer plans continue to dominate the news cycle. Crystal Palace are reportedly looking at England assistant manager Anthony Barry as a potential replacement if Pierre Sage is sacked from his managerial role. Furthermore, clubs across Europe are closely monitoring key players as the winter transfer window approaches, highlighting the constant movement and speculation in modern football as teams prepare for future matches, strategic squad improvements, and upcoming challenges during the ongoing competitive season.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Transfer Gossip: Manchester United Linked with Surprise Move for Ait-Nouri",
+          "text": "In the latest round of European football gossip, Manchester United are reportedly weighing up a shock transfer move for Manchester City left-back Rayan Ait-Nouri. The twenty-five-year-old Algeria international has emerged as an unexpected target for the football club, and reports suggest that personal terms would not present a barrier to a prospective agreement for the talented player. This surprising development highlights the aggressive strategic planning occurring behind the scenes at major Premier League clubs as they evaluate potential squad additions during the ongoing competitive season. Meanwhile, managerial and squad uncertainties are unfolding elsewhere in English football and across continental Europe. Crystal Palace are reportedly eyeing England assistant manager Anthony Barry as a prime candidate should Pierre Sage be dismissed from his managerial position, while Barcelona maintain their active interest in defensive talents at Arsenal, including twenty-four-year-old Ecuadorian defender Piero Hincapie. Furthermore, Bayern Munich are continuing to monitor Arsenal captain Martin Odegaard while uncertainty surrounds the twenty-seven-year-old Norway midfielder and his next contract with the Gunners. Spain midfielder Martin Zubimendi is also reportedly prepared to consider leaving Arsenal during the upcoming winter transfer window. These ongoing speculations underline the continuous tactical maneuvers and player evaluations shaping the future of competitive football clubs as they navigate current seasonal challenges, prepare for upcoming matches, and assess future transfer market opportunities across major European leagues today.",
+          "wordCount": 222
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/c3vgx8qkqx4jo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-04-nhk-pickup-news-20261104",
+      "date": "2026-11-04",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "NHK",
+        "news",
+        "video"
+      ],
+      "titleJa": "NHKニュース動画まとめ",
+      "title": "NHK Releases One-Minute News Video Summary",
+      "summaryJa": "NHKは、これまでに届いた最新ニュースを1分の動画にまとめて配信しています。",
+      "sourcePublishedAt": "2026-11-03T21:39:27.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "最新のニュース動画や関連コンテンツから、どのような話題が取り上げられているか情報を集めましょう。",
+        "followUpJa": "気になったトピックについてさらに詳しく調べてみましょう。",
+        "questions": {
+          "5級": "What is the news video about?",
+          "4級": "How long is the news summary video?",
+          "3級": "What kind of topics are included in the video summary?",
+          "準2級": "Why are video summaries helpful for busy viewers?",
+          "2級": "What features or deep-dive contents are mentioned alongside the news update?",
+          "準1級": "How do short news roundups and deep-dive contents serve modern media consumers?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Short News Video",
+          "text": "NHK has a new video today. It is one minute long. It tells the latest news to you. You can watch it online now. The video is very useful for everyone. Please check it out.",
+          "wordCount": 35
+        },
+        "4級": {
+          "title": "One-Minute News Summary",
+          "text": "NHK brings you a special video today. The video is only one minute long. It shows many news stories all together for viewers. Please note that data broadcasting cannot show this video. You can check online to see the latest updates and find out what is happening around the world right now.",
+          "wordCount": 52
+        },
+        "3級": {
+          "title": "NHK News Video Update",
+          "text": "NHK now shares a convenient one-minute video that summarizes the latest news for everyone. This quick update helps people understand important current events in a short time. Please note that data broadcasting cannot play this video format. You can visit the website to watch the full video and explore more deep-dive contents about global and domestic news stories. We hope you will check it out today.",
+          "wordCount": 66
+        },
+        "準2級": {
+          "title": "NHK Releases One-Minute News Video Summary",
+          "text": "NHK provides a special service for people who want to stay informed about current events in a very short time. The broadcaster has released a new video summary that covers the latest news in just one minute. This format is very helpful for busy viewers because they can quickly understand important updates without spending too much time. Please note that data broadcasting cannot display this video. In addition to the quick one-minute summary, viewers can explore various deep-dive contents on the website. These materials cover interesting topics such as American politics, historical mysteries, and wildlife tracking, giving audiences a chance to learn much more about the stories that are currently making headlines around the world today.",
+          "wordCount": 116
+        },
+        "2級": {
+          "title": "NHK Offers One-Minute Video Summary and Deep-Dive Content",
+          "text": "NHK has officially released its latest one-minute video summary, which is carefully designed to deliver essential news updates to the general public in a fast, concise, and accessible format. This special service helps busy viewers catch up on the most important stories of the day efficiently without spending too much time. However, viewers should always note that standard data broadcasting cannot display this video content, meaning that checking online digital platforms is completely necessary to watch it successfully. Alongside this brief news update, the online platform features a wide range of deep-dive contents for people who want more detailed information. These additional features cover various fascinating and important subjects, including American political developments and elections, historical mysteries from the Edo period, wildlife tracking regarding bears, and global current affairs. By offering these materials, NHK allows audiences to explore complex topics thoroughly and gain a much deeper understanding of current events happening around the world today.",
+          "wordCount": 155
+        },
+        "準1級": {
+          "title": "NHK Delivers Concise One-Minute News Summary and Detailed Features",
+          "text": "In an ongoing effort to keep audiences rapidly informed about current events, NHK has released a comprehensive one-minute video summary encapsulating the most pertinent news stories of the day. This digestible format enables busy viewers to stay abreast of important developments with minimal time investment. Although technical limitations prevent standard data broadcasting services from displaying the moving images, digital platforms provide seamless access for everyone seeking immediate updates. In addition to the primary news roundup, the media outlet features a rich variety of deep-dive contents, offering thorough background analysis and investigative perspectives on complex international and domestic affairs. These supplemental materials cover diverse subjects such as American political dynamics including elections and military operations, historical mysteries like the Edo-period legend of the mysterious ship, wildlife tracking involving bears, and broader social issues, ensuring that modern news consumers receive both a broad overview and nuanced context for every major development reported across the country and the world today. NHK provides these resources to help audiences explore complex topics thoroughly and gain a much deeper understanding of current events happening worldwide. Furthermore, NHK ensures that viewers can access additional reporting on topics such as the agricultural cooperative organization JA Zen-Noh raising fertilizer prices for next spring due to Middle East tensions, or the unusual online format of the APEC ministerial meeting, and the ongoing voting in the United States midterm elections where counting begins for some areas starting at eight in the morning Japan time. These comprehensive news summaries and extensive digital offerings serve modern media consumers by delivering essential information efficiently across various platforms.",
+          "wordCount": 263
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261103de70039"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-04-rizin-asakura-gustavo-rematch",
+      "date": "2026-11-04",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [
+        "sports"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "RIZIN",
+        "MikuruAsakura",
+        "RobertoDeSouzaGustavo",
+        "MMA",
+        "Nagoya"
+      ],
+      "titleJa": "朝倉未来が再戦決定",
+      "title": "Mikuru Asakura and Gustavo Rematch Announced for RIZIN Nagoya Event",
+      "summaryJa": "RIZINの大晦日名古屋大会に関する緊急記者会見が3日に行われ、朝倉未来とグスタボの再戦決定や、タイトル戦に関する双方の意見が語られました。",
+      "sourcePublishedAt": "2026-11-03T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "選手たちの希望の違いを理解し、大晦日に行われる試合の最適な位置づけを自分で考えるため。",
+        "followUpJa": "どちらの選手の意見に賛成するか、クラスメイトや友人と話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the fighter who will fight Mikuru Asakura again?",
+          "4級": "When and where was the special press conference held for the RIZIN event?",
+          "3級": "Why does Mikuru Asakura think they do not need a title match for this fight?",
+          "準2級": "What different things do Mikuru Asakura and Champion Gustavo want for their upcoming match?",
+          "2級": "How did the press conference reveal the different motivations between the challenger and the current champion regarding the belt?",
+          "準1級": "Analyze the strategic and promotional implications of holding a rematch without the title on the line versus a championship bout from the perspectives of both fighters."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Asakura Rematch",
+          "text": "Mikuru Asakura will fight. A RIZIN press conference was held on November 3. He will face Gustavo again. Fans can watch it in Nagoya on New Year's Eve. They have different ideas about the match.",
+          "wordCount": 34
+        },
+        "4級": {
+          "title": "New Rematch Announced for RIZIN",
+          "text": "A special RIZIN press conference happened on November 3. Fighters talked about the big Nagoya event on New Year's Eve. Mikuru Asakura will have a rematch with Gustavo. Asakura said he does not want a title match. However, the champion Gustavo wants a title fight. Both fighters have different ideas about the match. Fans are very excited to watch this big fight in Nagoya very soon.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Asakura and Gustavo Rematch Set for Nagoya",
+          "text": "On November 3, a special RIZIN press conference took place to announce upcoming fights. Officials revealed an exciting rematch between Mikuru Asakura and Gustavo for the New Year's Eve event in Nagoya. During the meeting, Asakura stated that he does not want a title match for this bout. On the other hand, the current champion Gustavo hopes to have a proper title fight. Fans and sports followers are now waiting to see how this interesting disagreement will affect the big event as December approaches quickly.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "Rematch Confirmed at RIZIN Press Conference",
+          "text": "An emergency RIZIN press conference was held on November 3 to discuss the upcoming year-end event in Nagoya. Participating fighters gathered to share their thoughts and make important announcements for the fans. One major announcement was the official confirmation of a rematch between Mikuru Asakura and Gustavo. During the conference, Asakura stated that he feels a title match is unnecessary for this fight. Meanwhile, the reigning champion Gustavo expressed his desire to have a title match instead. This difference in opinion has created much discussion among sports fans and media members who are following the story closely.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "Clashing Desires Ahead of RIZIN Nagoya Rematch",
+          "text": "On November 3, RIZIN held an emergency press conference regarding the upcoming year-end event in Nagoya. Several participating fighters attended the gathering to share their thoughts and build excitement for the fights. The primary announcement of the day was the official confirmation of a high-profile rematch between Mikuru Asakura and Gustavo. However, the two athletes revealed contrasting opinions regarding the stakes of the bout during the meeting. Mikuru Asakura stated that from his perspective, a title match is not necessary for this meeting. Conversely, the current champion, Gustavo, expressed a strong preference for a championship bout with the belt on the line. This disagreement has added extra intrigue to the highly anticipated Nagoya showdown, leaving sports fans eager to see how the situation will develop before they step into the ring together in the coming weeks. The emergency press conference successfully brought attention to the contrasting ambitions of both competitors as they prepare for the big event on New Year's Eve.",
+          "wordCount": 160
+        },
+        "準1級": {
+          "title": "Contrasting Ambitions: Asakura and Gustavo Prepare for Nagoya Rematch",
+          "text": "The atmosphere surrounding the year-end combat sports scene intensified significantly on November 3, when RIZIN hosted an emergency press conference in preparation for their major Nagoya event scheduled for New Year's Eve. Key fighters assembled at the venue to articulate their goals and enthusiasm, but the spotlight firmly fixed on the announcement of a high-profile rematch between Mikuru Asakura and Gustavo. As the details of the bout unfolded during the meeting, a fascinating divergence of views emerged between the competitors concerning the match's official status. Mikuru Asakura publicly asserted that, from his viewpoint, a title match was entirely unwarranted for this particular encounter, prioritizing the competitive narrative of the rematch itself over championship stakes. In stark contrast, reigning champion Gustavo voiced his firm aspiration to put the championship on the line, emphasizing the prestige and importance of a proper title defense. This subtle clash of intentions has injected an extra layer of psychological drama into the buildup, leaving pundits and fans alike to speculate on how these conflicting stances might influence the fighters' preparations as the festive season approaches quickly. The emergency press conference successfully brought attention to the contrasting ambitions of both competitors as they prepare for the big event on New Year's Eve.",
+          "wordCount": 204
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261103-5249281/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-04-telecy-ai-strategy",
+      "date": "2026-11-04",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "生成AI",
+        "テレシー",
+        "人材育成"
+      ],
+      "titleJa": "広告代理店のAI戦略",
+      "title": "Ad Agency Uses AI for All",
+      "summaryJa": "広告代理店のテレシーは、全社員のAIスキル向上と情報基盤の整備を通じて、業務効率化と質の向上を実現しました。",
+      "sourcePublishedAt": "2026-11-03T21:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "企業が全社で生成AIを活用する際、どのような課題を解決し、どのような取り組みを行うべきかアドバイスを得るため。",
+        "followUpJa": "あなたの会社やチームでAIを導入する際、社員のスキル格差や安全性を守るためにどのようなステップを取り入れますか？",
+        "questions": {
+          "5級": "What tool does Telecy use?",
+          "4級": "Why did Telecy need to train all workers?",
+          "3級": "What exam did all full-time workers have to pass?",
+          "準2級": "How did the company help employees learn about AI without worry?",
+          "2級": "What two main things did Telecy do to solve the gap in AI skills and risks?",
+          "準1級": "Explain how requiring a specific certification changed employee attitudes compared to traditional training."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "AI in the Company",
+          "text": "Telecy is a big company in Japan. They want to use AI for all workers. AI can help people do work fast. But some workers do not know how to use AI. The company wants all workers to learn AI. They want to help customers very well.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Helping All Workers",
+          "text": "Telecy makes marketing and TV commercials. They want to use AI to help customers. However, some workers are afraid of using AI. They worry about security risks. Also, some people do not know how to use it well. The company wants every worker to have the same basic knowledge. They made a plan to teach everyone about AI and keep data safe.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "Training Every Employee",
+          "text": "Telecy wanted to make its customer support better and faster. Because of this, the company decided to use generative AI for all employees. However, they found a problem. Some workers did not know how to use AI, and others were afraid of security risks like data leaks. To solve this issue, Telecy decided to train all full-time workers. They made every worker get a special AI certificate. This helped the staff learn about basic knowledge and risks. The company paid for exam fees and study materials so everyone could learn safely during work hours.",
+          "wordCount": 94
+        },
+        "準2級": {
+          "title": "Overcoming AI Gaps",
+          "text": "Telecy, a marketing agency handling television commercials, introduced generative AI to improve customer support. However, they faced a big challenge. There was a gap in AI skills among employees, and some people were afraid of information leaks or did not know how to use the tools. To solve this, Telecy focused on two main things: human resource development and information infrastructure. First, the company made it mandatory for all full-time employees to obtain a generative AI certification. They wanted everyone to study actively instead of just listening to a lecture. The company paid for the exam fees and study materials, and workers could study during work hours. As a result, all full-time workers gained basic knowledge and reduced their hesitation to use AI safely.",
+          "wordCount": 124
+        },
+        "2級": {
+          "title": "Building an AI-Ready Company",
+          "text": "Telecy, an advertising agency that focuses on TV commercial marketing, wanted to improve the speed and quality of its customer support by using generative AI. However, the company faced significant challenges. There was a clear gap in AI literacy among employees, and some workers worried about security risks and data leaks, while others simply did not know how to use the system. To overcome these issues, Telecy realized they needed both better employee training and a solid information infrastructure. First, the company required all full-time employees to earn a specific generative AI certificate. The management believed that studying for a qualification encouraged an active learning attitude, unlike passive company lectures. The company covered all exam fees and textbook costs and even allowed study time during working hours. By August 2026, every full-time employee held the certificate. This requirement helped lower psychological barriers and gave workers a shared standard for using AI safely. In addition to training, Telecy organized company information using Notion and Notion AI, which helped reduce preparation time for business meetings by three to four hours.",
+          "wordCount": 177
+        },
+        "準1級": {
+          "title": "Comprehensive AI Strategy at Telecy",
+          "text": "In an effort to elevate the quality and speed of customer support, advertising agency Telecy implemented generative AI across its entire organization. Nevertheless, the company quickly confronted hurdles, notably a disparity in AI literacy among staff members and widespread concerns regarding information security and data leaks. To successfully navigate these challenges, Telecy concluded that a dual approach combining workforce development and information infrastructure enhancement was indispensable. Rather than relying on traditional, passive corporate training seminars, the company mandated that all full-time employees acquire a recognized generative AI certification. Management reasoned that preparing for a formal examination would foster an assertive learning mindset and ensure that every employee shared a fundamental understanding of both utilization methods and potential risks. To support this initiative, the company covered all examination and study material expenses while permitting study sessions during regular working hours, successfully achieving a one hundred percent certification rate among full-time staff. Furthermore, to complement this human capital investment, Telecy centralized its internal data using Notion and integrated Notion AI to streamline analysis tasks, successfully reducing meeting preparation time by several hours and advancing overall operational automation.",
+          "wordCount": 185
+        }
+      },
+      "sources": [
+        {
+          "name": "ITmedia AI+",
+          "url": "https://kn.itmedia.co.jp/kn/article/2611/04/2000002712/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-04-unicharm-japan-market-growth",
+      "date": "2026-11-04",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Unicharm",
+        "Domestic Market",
+        "Value Creation",
+        "Adult Diapers"
+      ],
+      "titleJa": "ユニ・チャーム社長が語る",
+      "title": "Unicharm CEO Sees Growth in Japan",
+      "summaryJa": "ユニ・チャームの高原社長は、付加価値を高めた商品開発やアジアでのペットケア事業などにより、国内の人口減少市場でも成長を続けられると語った。",
+      "sourcePublishedAt": "2026-11-04T06:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "人口減少市場で企業がどのように成長を維持できるか、その戦略を理解する。",
+        "followUpJa": "自社の事業や日常の買い物において、付加価値を高めることの重要性を話し合ってみましょう。",
+        "questions": {
+          "5級": "What does Unicharm make?",
+          "4級": "What does the president say about the domestic market in Japan?",
+          "3級": "How does Unicharm try to raise product prices instead of just making a simple price increase?",
+          "準2級": "What are the three main axes that Unicharm emphasizes in its product development strategy?",
+          "2級": "How has the expansion of e-commerce changed the way Unicharm communicates product value and benefits to consumers?",
+          "準1級": "Analyze how Unicharm leverages its core feminine care technology and shifting consumer values into broader healthcare and pet care sectors to drive its value-transfer strategy."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Unicharm in Japan",
+          "text": "Unicharm is a big company in Japan. The president is Takahisa Takahara. He thinks the Japan market is still very good. They can make new things. Many people need diapers and pet goods. Unicharm wants to grow more. They make useful items for families. Customers like good products very much.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Growing in Japan",
+          "text": "Unicharm is a large daily goods maker in Japan. The population is going down, but President Takahisa Takahara says the domestic market still has big potential. Instead of simple price increases, the company focuses on adding value. They create new products with better functions. Customers understand these benefits and buy them happily. They also use online stores to explain details.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Strategy for Growth",
+          "text": "Unicharm is a major daily goods maker in Japan. The population is going down, but the company finds new ways to grow. President Takahisa Takahara explains that they focus on value transfer instead of simple price increases. When they introduce new items, they add useful functions and explain the benefits to buyers. Their product development is based on three main axes: expanding existing categories, dealing with climate change, and responding to changing consumer values. They want to make good products for everyone.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Unicharm's Value-Transfer Strategy",
+          "text": "Unicharm is focusing on value creation to succeed in Japan's shrinking market. President Takahisa Takahara explains that the company does not simply raise prices. Instead, they introduce new products with high added value, such as advanced functions that match modern lifestyles. Their product development relies on three key axes: expanding existing categories, addressing climate change, and adapting to changing consumer values. For example, they turned feminine care technology into women's health items like check kits. They also developed cooling products and special pet snacks in cooperation with snack brands. With the help of e-commerce, they can clearly explain these specific benefits to consumers, leading to strong sales.",
+          "wordCount": 107
+        },
+        "2級": {
+          "title": "Expanding Growth in Japan",
+          "text": "Despite Japan's declining population, Unicharm President Takahisa Takahara remains confident about domestic market potential. Rather than implementing simple price hikes, the company pursues a strategy of value transfer. They upgrade products by adding sophisticated functions and communicating those benefits clearly to consumers. Product development centers on three vital pillars: expanding existing categories, adapting to climate change, and responding to evolving consumer values. For instance, Unicharm expanded feminine hygiene technology into women's healthcare, launching items to track ovulation and check iron deficiency through the Sofy brand. They also introduced cooling products suited for hot environments and pet snacks developed with famous confectionery brands like Morinaga and Calbee. Furthermore, the spread of e-commerce enables the company to highlight product advantages that limited store displays could not convey, helping consumers appreciate how items fit their specific lifestyles and daily needs, such as dependable absorption performance.",
+          "wordCount": 142
+        },
+        "準1級": {
+          "title": "Unicharm's Value-Driven Domestic Strategy",
+          "text": "Facing demographic headwinds in Japan, Unicharm President Takahisa Takahara articulates a robust vision for domestic market expansion centered on value transfer rather than inflationary price hikes. By embedding superior functionality and distinct utility into new product iterations, Unicharm successfully justifies adjusted price points to discerning consumers amidst rising living costs. This approach relies heavily on a three-pronged development framework: category expansion, climate change adaptation, and alignment with shifting consumer values. Illustrative of category expansion, Unicharm has ingeniously repurposed core feminine care technology into comprehensive health monitoring tools, such as ovulation and iron-deficiency check sheets under the Sofy brand. To combat climate change, Unicharm has adapted Southeast Asian cooling technologies for domestic use across various product lines. Moreover, recognizing pets as family members, Unicharm collaborated with confectionery brands like Morinaga and Calbee to launch specialized dog treats. The proliferation of e-commerce has been instrumental in this strategy, providing a digital medium to articulate detailed product benefits that surpass the physical constraints of retail shelves, thereby assuring consumers of high absorption performance, lifestyle compatibility, and reliable everyday utility. Through these concerted initiatives, Unicharm demonstrates how a company can continuously stimulate domestic demand and achieve sustainable business growth within a shrinking population market.",
+          "wordCount": 200
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/962810?display=b"
+        }
+      ]
+    },
     {
       "id": "2026-11-03-ai-digital-reform-council-first-meeting",
       "date": "2026-11-03",
