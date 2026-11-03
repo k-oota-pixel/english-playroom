@@ -10,6 +10,7 @@ const ELEMENTS=[['fire','🔥','FIRE'],['thunder','⚡','THUNDER'],['leaf','🍃
 const lobbyView=$('lobbyView'),battleView=$('battleView'),gradePicker=$('gradePicker'),roomList=$('roomList'),roomsEl=$('rooms'),notice=$('notice'),selectedGradeTitle=$('selectedGradeTitle');
 const GRADES=Object.freeze([{key:'4',label:'4級'},{key:'3',label:'3級'},{key:'pre2',label:'準2級'},{key:'2',label:'2級'}]);
 const ROOM_STORAGE_KEY='monstudy-online-room-v2';
+const AUTO_IDLE_MS=5*60*1000;
 const els={
  coinCount:$('coinCount'),modeTitle:$('modeTitle'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),
  petStats:$('petStats'),petName:$('petName'),myNickname:$('myNickname'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petMpBar:$('petMpBar'),petMpText:$('petMpText'),petVisual:$('adventurePetVisual'),
@@ -22,6 +23,37 @@ const els={
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false;
+let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
+
+function stopAutoRefresh(){
+ if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
+ if(roomsTimer){clearInterval(roomsTimer);roomsTimer=0;}
+}
+function startAutoRefresh(){
+ if(document.hidden||!user||autoPausedForIdle)return;
+ if(!pollTimer)pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},2500);
+ if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},15000);
+}
+function armIdlePause(){
+ clearTimeout(idleTimer);
+ idleTimer=window.setTimeout(()=>{autoPausedForIdle=true;stopAutoRefresh();},AUTO_IDLE_MS);
+}
+async function syncVisibleState(){
+ if(document.hidden||!user||resumeSyncing)return;
+ const now=Date.now();if(now-lastResumeSyncAt<750)return;lastResumeSyncAt=now;resumeSyncing=true;
+ try{if(activeRoom)await refreshRoom();else if(selectedGrade)await refreshLobby();}
+ finally{resumeSyncing=false;}
+}
+function registerActivity(){
+ if(document.hidden||!user)return;
+ const shouldResync=autoPausedForIdle||(!pollTimer&&!roomsTimer);
+ autoPausedForIdle=false;armIdlePause();startAutoRefresh();
+ if(shouldResync)void syncVisibleState();
+}
+function handleVisibility(){
+ if(document.hidden){stopAutoRefresh();return;}
+ autoPausedForIdle=false;armIdlePause();startAutoRefresh();void syncVisibleState();
+}
 
 function say(message,error=false){notice.textContent=message;notice.classList.toggle('error',error);}
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
@@ -251,7 +283,12 @@ els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEvent
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
 async function init(){
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();await updateCoins();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},2500);roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},15000);}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();await updateCoins();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
-window.addEventListener('pagehide',()=>{clearInterval(pollTimer);clearInterval(roomsTimer);});
+window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
+window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
+window.addEventListener('keydown',registerActivity,true);
+document.addEventListener('visibilitychange',handleVisibility);
+window.addEventListener('focus',handleVisibility);
+window.addEventListener('pagehide',()=>{stopAutoRefresh();clearTimeout(idleTimer);});
 init();
