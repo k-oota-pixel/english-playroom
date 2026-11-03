@@ -1,0 +1,30 @@
+name: Online battle read guard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/online-battle-read-guard.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Patch online battle polling guard
+        run: python .github/scripts/online_battle_read_guard.py
+      - name: Validate online battle JavaScript
+        run: node --check pet-adventure/online-battle.js
+      - name: Commit polling guard
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pet-adventure/online-battle.js pet-adventure/online-battle.html
+          git diff --cached --check
+          git commit -m "Pause online battle polling when inactive"
+          git push
