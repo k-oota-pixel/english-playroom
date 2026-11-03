@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
 
+# Trigger after workflow exists on the default branch.
 jobs:
   patch:
     runs-on: ubuntu-latest
