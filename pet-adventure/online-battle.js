@@ -22,7 +22,7 @@ const els={
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
-let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false,readyPending=false;
+let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 
 function stopAutoRefresh(){
@@ -167,7 +167,14 @@ function makeChoices(card,room){
 }
 function buildTurn(room){
  const level=gradeLevel(room.grade),pool=questionPool.filter(q=>q.level===level),source=pool.length?pool:questionPool;
- const available=source.filter(q=>q.id!==lastQuestionId),picked=shuffle(available.length>=4?available:source).slice(0,4);
+ // Do not re-offer words already shown in the same match until the grade pool is exhausted.
+ let available=source.filter(q=>!seenQuestionIds.has(q.id)),count=Math.min(ELEMENTS.length,source.length);
+ if(available.length<count){
+  seenQuestionIds.clear();
+  available=source.filter(q=>q.id!==lastQuestionId);
+ }
+ const picked=shuffle(available.length>=count?available:source).slice(0,count);
+ for(const card of picked)seenQuestionIds.add(card.id);
  turnCards=picked.map((q,i)=>({...q,element:ELEMENTS[i],power:Math.max(1,Number((room.players||[]).find(p=>p.uid===user.uid)?.stats?.attack||1)+2)}));
  renderAttackCards(room);
 }
@@ -218,7 +225,7 @@ function renderRoom(room){
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+(room.roomNo||String(room.roomId||'').split('-').pop());els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent='MAGIC / ITEM';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
  updateFighters(room);animateEvent(room);
- if(lastStatus!==room.status){if(room.status==='playing')resetTurn();lastStatus=room.status;}
+ if(lastStatus!==room.status){if(room.status==='playing'){resetTurn();seenQuestionIds.clear();lastQuestionId='';}lastStatus=room.status;}
  const playable=room.status==='playing'&&!busy;els.magicBtn.disabled=!playable||room.noItems;els.itemBtn.disabled=!playable||room.noItems;els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
  if(room.status==='waiting')renderWaiting(room,mine,other);else if(room.status==='playing')renderPlaying(room);else if(room.status==='finished')renderFinished(room,mine);
 }
@@ -286,26 +293,37 @@ async function useItem(item){
 }
 
 async function loadQuestionPool(){
- try{
-  const response=await fetch('https://k-oota-pixel.github.io/word-breaker/eiken_vocab_master.json?v=1.0.0',{cache:'force-cache'}),payload=await response.json(),source=payload?.grades||{},rows=[];
-  for(const grade of ['4','3','pre2','2']){
-   const items=source?.[grade]?.words||[];
-   for(const [i,item] of items.entries()){
-    const word=String(item?.word||'').trim(),meaning=(Array.isArray(item?.answers)?item.answers:[]).find(v=>typeof v==='string'&&v.trim())?.trim()||String(item?.meaning||'').trim();
-    if(word&&meaning)rows.push({id:grade+'-'+(item.id||i),level:grade,word,meaning});
+ const sources=[
+  './online-battle-vocab.json?v=2.3.50',
+  'https://k-oota-pixel.github.io/word-breaker/eiken_vocab_master.json?v=1.0.0'
+ ];
+ const failures=[];
+ for(const sourceUrl of sources){
+  try{
+   const response=await fetch(sourceUrl,{cache:'force-cache'});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   const payload=await response.json(),source=payload?.grades||{},rows=[];
+   for(const grade of ['4','3','pre2','2']){
+    const items=source?.[grade]?.words||[];
+    for(const [i,item] of items.entries()){
+     const word=String(item?.word||'').trim(),meaning=(Array.isArray(item?.answers)?item.answers:[]).find(v=>typeof v==='string'&&v.trim())?.trim()||String(item?.meaning||'').trim();
+     if(word&&meaning)rows.push({id:grade+'-'+(item.id||i),level:grade,word,meaning});
+    }
    }
-  }
-  if(!['4','3','pre2','2'].every(grade=>rows.filter(q=>q.level===grade).length>=4))throw new Error('級別語彙データが不足しています。');
-  questionPool=rows;
- }catch(e){
-  console.warn('online battle question load failed',e);
-  questionPool=[
+   if(!['4','3','pre2','2'].every(grade=>rows.filter(q=>q.level===grade).length>=4))throw new Error('級別語彙データが不足しています。');
+   questionPool=rows;
+   return;
+  }catch(e){failures.push(sourceUrl+': '+(e?.message||e));}
+ }
+ console.warn('online battle question load failed',failures);
+ questionPool=[
    {id:'f4-1',level:'4',word:'apple',meaning:'りんご'},{id:'f4-2',level:'4',word:'book',meaning:'本'},{id:'f4-3',level:'4',word:'water',meaning:'水'},{id:'f4-4',level:'4',word:'school',meaning:'学校'},
    {id:'f3-1',level:'3',word:'outside',meaning:'外で'},{id:'f3-2',level:'3',word:'realize',meaning:'気づく'},{id:'f3-3',level:'3',word:'exercise',meaning:'運動'},{id:'f3-4',level:'3',word:'visitor',meaning:'訪問者'},
    {id:'fp2-1',level:'pre2',word:'include',meaning:'含む'},{id:'fp2-2',level:'pre2',word:'achieve',meaning:'達成する'},{id:'fp2-3',level:'pre2',word:'maintain',meaning:'維持する'},{id:'fp2-4',level:'pre2',word:'audience',meaning:'観客'},
    {id:'f2-1',level:'2',word:'potential',meaning:'可能性'},{id:'f2-2',level:'2',word:'threaten',meaning:'脅かす'},{id:'f2-3',level:'2',word:'quantity',meaning:'量'},{id:'f2-4',level:'2',word:'accomplish',meaning:'成し遂げる'}
   ];
- }
+ const note=$('dataNote');
+ if(note)note.textContent='問題データの読み込みに失敗したため、簡易問題を使用しています。ページを再読み込みしてください。';
 }
 
 async function handleReadyClick(){
