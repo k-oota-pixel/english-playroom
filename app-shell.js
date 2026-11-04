@@ -92,7 +92,7 @@ function install() {
     themedSurfaceObserver?.disconnect();themedSurfaceObserver=null;
     if(themedSurfaceTimer){clearTimeout(themedSurfaceTimer);themedSurfaceTimer=0;}
     for(const [element,original] of themedSurfaceOriginals){
-      for(const [property,value,priority] of [['background-color',original.backgroundColor,original.backgroundColorPriority],['background-image',original.backgroundImage,original.backgroundImagePriority],['color',original.color,original.colorPriority]]){
+      for(const [property,value,priority] of [['background-color',original.backgroundColor,original.backgroundColorPriority],['background-image',original.backgroundImage,original.backgroundImagePriority],['color',original.color,original.colorPriority],['caret-color',original.caretColor,original.caretColorPriority],['-webkit-text-fill-color',original.textFillColor,original.textFillColorPriority]]){
         if(value)element.style.setProperty(property,value,priority);else element.style.removeProperty(property);
       }
     }
@@ -122,7 +122,9 @@ function install() {
     if(!themedSurfaceOriginals.has(element))themedSurfaceOriginals.set(element,{
       backgroundColor:element.style.getPropertyValue('background-color'),backgroundColorPriority:element.style.getPropertyPriority('background-color'),
       backgroundImage:element.style.getPropertyValue('background-image'),backgroundImagePriority:element.style.getPropertyPriority('background-image'),
-      color:element.style.getPropertyValue('color'),colorPriority:element.style.getPropertyPriority('color')
+      color:element.style.getPropertyValue('color'),colorPriority:element.style.getPropertyPriority('color'),
+      caretColor:element.style.getPropertyValue('caret-color'),caretColorPriority:element.style.getPropertyPriority('caret-color'),
+      textFillColor:element.style.getPropertyValue('-webkit-text-fill-color'),textFillColorPriority:element.style.getPropertyPriority('-webkit-text-fill-color')
     });
     if(element.style.getPropertyValue(property)!==value||element.style.getPropertyPriority(property)!=='important')element.style.setProperty(property,value,'important');
   }
@@ -158,6 +160,17 @@ function install() {
         if(style.display==='none'||style.visibility==='hidden')continue;
         if(colorLuminance(cssRgb(style.color))<.36)patchThemedSurface(element,'color',foreground);
       }
+    }
+    // Form fields have no text nodes, so the surface scanner above cannot adjust
+    // the entered text. Keep background, ink and caret together for dark themes.
+    // Exclude non-text inputs (checkboxes, buttons, sliders, etc.) to preserve their UI.
+    for(const control of doc.body.querySelectorAll('textarea,select,input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]):not([type="color"]):not([type="file"])')){
+      const appearance=win.getComputedStyle(control);
+      if(appearance.display==='none'||appearance.visibility==='hidden')continue;
+      patchThemedSurface(control,'background-color',surfaceColor);
+      patchThemedSurface(control,'color',foreground);
+      patchThemedSurface(control,'caret-color',foreground);
+      patchThemedSurface(control,'-webkit-text-fill-color',foreground);
     }
     themedSurfaceObserver?.takeRecords();
   }
