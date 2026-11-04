@@ -69,6 +69,12 @@ const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDo
 enableAppCheck(app);const auth=getAuth(app);await setPersistence(auth,browserLocalPersistence);
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search);
 let mode='login',working=false;
+function timeoutSignal(ms){
+  if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')return AbortSignal.timeout(ms);
+  const controller=new AbortController();
+  setTimeout(()=>controller.abort(),ms);
+  return controller.signal;
+}
 function safeReturn(raw){try{const u=new URL(raw||'./',location.href);return u.origin===location.origin&&!u.pathname.endsWith('/login.html')?u.href:new URL('./',location.href).href;}catch{return new URL('./',location.href).href;}}
 const returnUrl=safeReturn(params.get('return'));
 function status(text){$('status').textContent=text;$('status').className='status show';}
@@ -88,7 +94,7 @@ function setMode(value){
  $('status').className='status';
 }
 async function call(action,body){
- const r=await fetch('https://task-quest.onrender.com/api/account/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(45000)});
+ const r=await fetch('https://task-quest.onrender.com/api/account/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:timeoutSignal(45000)});
  const data=await r.json();if(!r.ok)throw Error(data.error||'処理に失敗しました。');return data;
 }
 async function proceed(){
