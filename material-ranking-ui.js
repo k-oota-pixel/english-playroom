@@ -58,7 +58,7 @@ export async function openMaterialRanking(appId){
   const user=getAuth().currentUser;
   if(!user)throw Error('ログインするとランキングを確認できます。');
   const token=await user.getIdToken();
-  const response=await fetch(ENDPOINT+'?appId='+encodeURIComponent(appId),{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(20000)});
+  const response=await fetch(ENDPOINT+'?appId='+encodeURIComponent(appId),{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function'?AbortSignal.timeout(20000):undefined});
   const data=await response.json();if(!response.ok)throw Error(data.error||'取得に失敗しました。');
   if(!status.isConnected)return;
   const list=Array.isArray(data.leaders)?data.leaders:[];
