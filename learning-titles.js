@@ -48,7 +48,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   dialog=makeDialog('実績・称号コレクション');
   const status=el('p',state.selectedTitle?'表示中：ー'+state.selectedTitle+'ー':'称号を表示しない');status.setAttribute('role','status');dialog.append(status);
   const tabs=el('div');tabs.className='titles-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','称号の種類');
-  for(const [key,label] of [['normal','🏆 従来の称号'],['weekly','⚔️ 週間称号'],['master','👑 教材マスター']]){
+  for(const [key,label] of [['normal','🏆 教材別称号'],['weekly','⚔️ 週間称号'],['master','👑 教材マスター']]){
    const tab=el('button',label);tab.type='button';tab.className='titles-tab'+(activeTab===key?' active':'');
    tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(activeTab===key));
    tab.addEventListener('click',()=>{if(activeTab!==key){activeTab=key;render();}});
@@ -62,13 +62,12 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   const panel=el('div');panel.className='titles-tab-panel';panel.setAttribute('role','tabpanel');
   const allTitles=Array.isArray(state.titles)?state.titles:[];
   const isMaster=t=>t.category==='master'||String(t.id).startsWith('master:');
-  if(activeTab==='weekly'){
-   const info=el('section');info.className='titles-planned';info.append(el('h3','⚔️ 週間称号（準備中）'),el('p','1週間のランキング実績に応じた称号を、教材別ランキングの集計機能が完成してから追加します。'));
-   panel.append(info);
-  }else{
-   const filtered=allTitles.filter(t=>activeTab==='master'?isMaster(t):!isMaster(t)&&t.category!=='weekly'&&!String(t.id).startsWith('weekly:'));
+  {
+   const isWeekly=t=>t.category==='weekly'||String(t.id).startsWith('weekly:');
+   const filtered=allTitles.filter(t=>activeTab==='master'?isMaster(t):activeTab==='weekly'?isWeekly(t):!isMaster(t)&&!isWeekly(t));
    const groups=new Map();for(const t of filtered){if(!groups.has(t.appId))groups.set(t.appId,[]);groups.get(t.appId).push(t);}
-   if(activeTab==='normal')panel.append(el('p','これまでの称号をそのまま確認できます。リトライノートの級別称号や塔・巣窟の最高到達記録も引き継ぎます。'));
+   if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノートや塔・巣窟の記録も引き継ぎます。'));
+   if(activeTab==='weekly')panel.append(el('p','月曜日から日曜日までの挑戦。前日までに確定した順位を集計し、4日達成で永久に獲得します。'));
    if(activeTab==='master')panel.append(el('p','教材の対象称号をすべて解放すると、特別なマスター称号を獲得できます。'));
    if(!groups.size)panel.append(el('p','この種類の称号はまだありません。'));
    for(const list of groups.values()){
