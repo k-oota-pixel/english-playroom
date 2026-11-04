@@ -19,7 +19,7 @@ import './pet-lion-v149.js?v=2.1.25';
 import './pet-play-menu-v164.js?v=2.3.40';
 import './material-return.js?v=4.0.0';
 import './developer-contact.js?v=2.3.20';
-import './today-home-card.js?v=2.3.44';
+import './today-home-card.js?v=2.3.52';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.3.8').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
