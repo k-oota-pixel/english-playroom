@@ -24,6 +24,12 @@ export function getAuth(app = getApp()) {
 const API='https://task-quest.onrender.com';
 const SESSION_TTL_MS=12*60*60*1000;
 const SESSION_STORAGE_PREFIX='monstudy.accountSession.v2.';
+export function timeoutSignal(ms){
+ if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')return AbortSignal.timeout(ms);
+ const controller=new AbortController();
+ setTimeout(()=>controller.abort(),ms);
+ return controller.signal;
+}
 const sessionChecks=globalThis[Symbol.for('monstudy.auth.sessionChecks')]||(globalThis[Symbol.for('monstudy.auth.sessionChecks')]=new WeakMap());
 
 function signInSignature(user){return String(user?.metadata?.lastSignInTime||user?.metadata?.lastLoginAt||'');}
@@ -55,7 +61,7 @@ export async function accountSession(user){
  entry.promise=(async()=>{
   try{
    const token=await user.getIdToken();
-   const response=await fetch(API+'/api/account/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:'{}',signal:AbortSignal.timeout(30000)});
+   const response=await fetch(API+'/api/account/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:'{}',signal:timeoutSignal(30000)});
    const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'ログインを確認できませんでした。'),{status:response.status});
    entry.until=Date.now()+5000;
    writeSessionCache(user,data);
