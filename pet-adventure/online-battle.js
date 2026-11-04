@@ -244,7 +244,7 @@ async function act(action,{render=true,body=null}={}){
   const data=await api('/room/'+activeRoom+'/'+action,'POST',body);
   if(action==='leave'){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;resetTurn();await updateCoins();enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return null;}
   currentRoom=data.room;if(render)renderRoom(data.room);await updateCoins();return data.room;
- }catch(e){say(e.message,true);await refreshRoom();throw e;}
+ }catch(e){await refreshRoom();say(e.message,true);throw e;}
 }
 
 function renderMagic(message='',error=false){
