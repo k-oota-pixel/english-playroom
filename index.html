@@ -96,12 +96,13 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .coin-rank-refresh{border:1px solid #d6e1d8;background:#fff;color:#41665a;border-radius:999px;padding:6px 9px;font:inherit;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap}
 .coin-rank-refresh:hover{background:#edf5ef}.coin-rank-refresh:disabled{cursor:wait;opacity:.6}
 .coin-rank-list{display:grid;gap:7px;margin:11px 0 0;padding:0;list-style:none}
-.coin-rank-item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:32px;padding:5px 8px;border-radius:10px;background:#f7f8f4}
+.coin-rank-item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:32px;padding:5px 8px;border-radius:10px;background:#f7f8f4;color:#193d38}
 .coin-rank-item:nth-child(1){background:#fff6df}.coin-rank-item:nth-child(2){background:#f1f4f2}.coin-rank-item:nth-child(3){background:#f8efe5}
 .coin-rank-place{font-size:12px;font-weight:950;color:#8a6a25;text-align:center}
 .coin-rank-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:850}
 .coin-rank-coins{font-size:11px;font-weight:850;color:#7c6125;font-variant-numeric:tabular-nums;white-space:nowrap}
 .coin-rank-note{min-height:15px;margin-top:7px;font-size:9.5px;color:#829087}
+body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 @media(max-width:620px){.coin-board{grid-template-columns:1fr;gap:10px}.coin-today{min-height:126px;padding:15px 17px}.coin-total strong{font-size:38px}}
 
 
@@ -147,7 +148,7 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.3.24"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.3.51"></script>
+<script type="module" src="./app-shell.js?v=2.3.53"></script>
 </head>
 <body>
 <main class="home">
