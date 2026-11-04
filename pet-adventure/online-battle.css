@@ -17,6 +17,54 @@
 
 @media(max-width:520px){.online-room-list{padding:13px}.online-rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.online-room-card{padding:11px}.online-room-card>strong{font-size:15px}#battleView .pet-visual,#battleView .online-opponent-pet{padding:2px 4px 0}.online-controls{margin:0 10px 9px}#waitingCard{padding-bottom:68px}}
 
-@media(prefers-color-scheme:dark){.online-wallet,.online-room-list,.online-room-card{background:#1b2822;color:#e7efe8;border-color:#3b4d40}.online-lobby>h1,.online-room-heading h2{color:#e3f0e2}.online-lobby .select-intro,.online-notice,.online-room-state{color:#c1cec2}.online-room-rule{color:#e0c38a}.online-wallet{color:#efd996}.online-ready-count{color:#d7e5dc;text-shadow:none}}
+/* Use the equipped もんすたでぃ SHOP dark palette rather than the device setting.
+   Dark and light surfaces have explicit text colors so OS dark mode cannot create mixed themes. */
+html[data-monstudy-screen-theme="dark"]{color-scheme:dark}
+html[data-monstudy-screen-theme="dark"] .online-wallet,
+html[data-monstudy-screen-theme="dark"] .online-room-list,
+html[data-monstudy-screen-theme="dark"] .online-room-card{background:#1b2822;color:#e7efe8;border-color:#455c4e}
+html[data-monstudy-screen-theme="dark"] .online-lobby>h1,
+html[data-monstudy-screen-theme="dark"] .online-room-heading h2{color:#eaf5ec}
+html[data-monstudy-screen-theme="dark"] .online-lobby .select-intro,
+html[data-monstudy-screen-theme="dark"] .online-notice,
+html[data-monstudy-screen-theme="dark"] .online-room-state{color:#c6d8ce}
+html[data-monstudy-screen-theme="dark"] .online-notice.error{color:#ffafa4}
+html[data-monstudy-screen-theme="dark"] .online-room-state b,
+html[data-monstudy-screen-theme="dark"] .online-grade-back{color:#b1eed2}
+html[data-monstudy-screen-theme="dark"] .online-room-card[data-status="playing"] .online-room-state b,
+html[data-monstudy-screen-theme="dark"] .online-room-card[data-status="finished"] .online-room-state b{color:#ffc3a0}
+html[data-monstudy-screen-theme="dark"] .online-room-rule{color:#f4d49a}
+html[data-monstudy-screen-theme="dark"] .online-wallet{color:#f1d899}
+html[data-monstudy-screen-theme="dark"] .online-ready-count{color:#e7f2eb;text-shadow:none}
+html[data-monstudy-screen-theme="dark"] .online-lobby .back{background:#293d33;border-color:#5b7666;color:#e7f5ee}
+html[data-monstudy-screen-theme="dark"] .online-lobby .kicker{color:#c4e6d2}
+html[data-monstudy-screen-theme="dark"] .online-room-heading .secondary-btn{background:#34483c;border-color:#789a86;color:#e7f5ee}
+html[data-monstudy-screen-theme="dark"] .online-room-card .primary-btn:disabled{opacity:.65}
+html[data-monstudy-screen-theme="dark"] #battleView .battlefield:not(.boss-battle){color:#173d35}
+html[data-monstudy-screen-theme="dark"] #battleView .battlefield:not(.boss-battle) .name-line span,
+html[data-monstudy-screen-theme="dark"] #battleView .battlefield:not(.boss-battle) :is(.hp-text,.mp-text,.versus){color:#415c52}
+html[data-monstudy-screen-theme="dark"] #battleView :is(.panel,.loading-card,.result-card){background:#28323f;border-color:#4a5b70;color:#f7f5fc}
+html[data-monstudy-screen-theme="dark"] #battleView .loading-card{color:#cbd8e4}
+html[data-monstudy-screen-theme="dark"] #battleView .loading-card strong,
+html[data-monstudy-screen-theme="dark"] #battleView .result-card h2{color:#f7f5fc}
+html[data-monstudy-screen-theme="dark"] #battleView .result-card p{color:#cbd8e4}
+html[data-monstudy-screen-theme="dark"] #battleView :is(.hint,.quiz-top,.attack-card .attack-sub){color:#cbd8e4}
+html[data-monstudy-screen-theme="dark"] #battleView .attack-badge{color:#a6ecd6}
+html[data-monstudy-screen-theme="dark"] #battleView .question{color:#f7f5fc}
+html[data-monstudy-screen-theme="dark"] #battleView .attack-card{background:#344255;border-color:#65758a;color:#f7f5fc}
+html[data-monstudy-screen-theme="dark"] #battleView .attack-card.critical{background:#24465a;border-color:#88cddc}
+html[data-monstudy-screen-theme="dark"] #battleView .attack-card.critical::after{background:#d2f4ff;color:#18516a}
+html[data-monstudy-screen-theme="dark"] #battleView .answer-btn{background:#344255;border-color:#65758a;color:#f7f5fc}
+html[data-monstudy-screen-theme="dark"] #battleView .answer-btn.correct{background:#244a35;border-color:#62c58a;color:#e4ffed}
+html[data-monstudy-screen-theme="dark"] #battleView .answer-btn.wrong{background:#552e38;border-color:#ef8491;color:#ffe5e8}
+html[data-monstudy-screen-theme="dark"] #battleView .answer-feedback.ok{color:#9ae6b7}
+html[data-monstudy-screen-theme="dark"] #battleView .answer-feedback.no{color:#ffb7a9}
+html[data-monstudy-screen-theme="dark"] #battleView .secondary-btn{background:#394b5e;border-color:#72869a;color:#f7f5fc}
+html[data-monstudy-screen-theme="dark"] #battleView .battle-tools>span{color:#cfddd7}
+html[data-monstudy-screen-theme="dark"] #battleView .battle-tools button{background:#35463e;border-color:#718c7d;color:#f0faf4}
+html[data-monstudy-screen-theme="dark"] #battleView .battle-tools .exit-run-btn{background:#62502d;border-color:#a88d50;color:#fff0bf}
+html[data-monstudy-screen-theme="dark"] .online-battle-feedback:not([hidden]){background:#284637;color:#daf5e2}
+html[data-monstudy-screen-theme="dark"] .online-battle-feedback.error:not([hidden]){background:#53313a;color:#ffc1b9}
+
 
 @media(max-width:760px){.online-rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.online-grade-picker{gap:10px}.online-grade-picker button{min-height:88px}.online-room-heading{grid-template-columns:1fr auto}.online-room-heading h2{grid-column:1/-1;grid-row:1}.online-grade-back{grid-column:1;grid-row:2;justify-self:start}.online-room-heading .secondary-btn{grid-column:2;grid-row:2}}
