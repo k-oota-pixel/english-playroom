@@ -18,11 +18,11 @@ const els={
  battleStatus:$('battleStatus'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackGrid:$('attackGrid'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),
  quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),
  waitingCard:$('waitingCard'),waitingTitle:$('waitingTitle'),waitingText:$('waitingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultTitle:$('resultTitle'),resultText:$('resultText'),
- readyBtn:$('readyBtn'),readyCount:$('readyCount'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),
+ readyBtn:$('readyBtn'),readyCount:$('readyCount'),readyFeedback:$('readyFeedback'),resultFeedback:$('resultFeedback'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
-let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false;
+let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false,readyPending=false;
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 
 function stopAutoRefresh(){
@@ -55,7 +55,15 @@ function handleVisibility(){
  autoPausedForIdle=false;armIdlePause();startAutoRefresh();void syncVisibleState();
 }
 
-function say(message,error=false){notice.textContent=message;notice.classList.toggle('error',error);}
+function say(message,error=false){
+ notice.textContent=message;notice.classList.toggle('error',error);
+ // The lobby notice is hidden in the battle layout: show action errors where players can see them.
+ const target=!battleView.hidden?(!els.waitingCard.hidden?els.readyFeedback:!els.resultCard.hidden?els.resultFeedback:null):null;
+ if(target){target.textContent=message;target.hidden=!message;target.classList.toggle('error',error);}
+}
+function clearBattleFeedback(){
+ for(const target of [els.readyFeedback,els.resultFeedback]){target.textContent='';target.hidden=true;target.classList.remove('error');}
+}
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
 function shuffle(values){const out=[...values];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;}
 function gradeLevel(grade){return ({'4級':'4','3級':'3','準2級':'pre2','2級':'2'})[grade]||'4';}
@@ -71,7 +79,13 @@ function petArt(player){
 }
 async function api(path,method='GET',body=null){
  const token=await user.getIdToken();
- const response=await fetch(API+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store'});
+ let response;
+ try{
+  response=await fetch(API+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store',signal:AbortSignal.timeout(30000)});
+ }catch(error){
+  if(error?.name==='TimeoutError'||error?.name==='AbortError')throw new Error('通信がタイムアウトしました。もう一度お試しください。');
+  throw new Error('サーバーに接続できませんでした。通信環境を確認してください。');
+ }
  const data=await response.json().catch(()=>({}));
  if(!response.ok)throw new Error(data.error||'通信に失敗しました。');
  return data;
@@ -183,7 +197,7 @@ async function answerQuestion(index){
 
 function renderWaiting(room,mine,other){
  els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=true;els.waitingCard.hidden=false;els.readyCount.textContent='準備完了 '+(room.players||[]).filter(p=>p.ready).length+'/2';
- const two=Boolean(mine&&other);els.readyBtn.hidden=!two||mine?.ready;els.readyBtn.disabled=!two||Boolean(mine?.ready);
+ const two=Boolean(mine&&other);els.readyBtn.hidden=!two||mine?.ready;els.readyBtn.disabled=readyPending||!two||Boolean(mine?.ready);els.readyBtn.textContent=readyPending?'確認中…':'準備完了';
  if(!other){els.waitingTitle.textContent='対戦相手を待っています…';els.waitingText.textContent='友だちに同じルーム番号を伝えてください';}
  else if(mine?.ready){els.waitingTitle.textContent='準備完了！';els.waitingText.textContent='相手の準備を待っています';}
  else{els.waitingTitle.textContent='対戦準備OK';els.waitingText.textContent='「準備完了」を押すと、2人そろった時点で開始します';}
@@ -211,11 +225,18 @@ function renderRoom(room){
 
 async function refreshRoom(){
  if(!activeRoom)return;
- try{const data=await api('/room/'+activeRoom),room=data.room;if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return;}renderRoom(room);say('');}
+ try{
+  const roomId=activeRoom,data=await api('/room/'+roomId),room=data.room;
+  if(roomId!==activeRoom)return;
+  // A slow polling response must not roll back a freshly confirmed ready/start state.
+  if(currentRoom?.roomId===roomId&&Number(room.seq)<Number(currentRoom.seq))return;
+  if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return;}
+  renderRoom(room);
+ }
  catch(e){say(e.message,true);}
 }
 async function enterRoom(id){
- try{say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;const data=await api('/room/'+id+'/join','POST');activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);lastEventSeq=data.room.seq;lastStatus='';resetTurn();renderRoom(data.room);say('');}
+ try{say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;const data=await api('/room/'+id+'/join','POST');activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);lastEventSeq=data.room.seq;lastStatus='';readyPending=false;clearBattleFeedback();resetTurn();renderRoom(data.room);say('');}
  catch(e){say(e.message,true);await refreshLobby();}
 }
 async function act(action,{render=true,body=null}={}){
@@ -287,13 +308,22 @@ async function loadQuestionPool(){
  }
 }
 
+async function handleReadyClick(){
+ if(readyPending||!activeRoom||currentRoom?.status!=='waiting')return;
+ readyPending=true;els.readyBtn.disabled=true;els.readyBtn.textContent='確認中…';
+ say('準備状態を確認しています…');
+ try{await act('ready');say('');}
+ catch{/* act displays the actual error and refreshes the room; allow the next attempt. */}
+ finally{readyPending=false;if(activeRoom&&currentRoom)renderRoom(currentRoom);}
+}
+
 $('refreshBtn').addEventListener('click',()=>void refreshLobby());
 $('backToGradesBtn').addEventListener('click',()=>showGradePicker());
 gradePicker.querySelectorAll('[data-grade]').forEach(button=>button.addEventListener('click',()=>void selectGrade(button.dataset.grade)));
-els.readyBtn.addEventListener('click',()=>void act('ready'));
-els.retryBtn.addEventListener('click',()=>void act('continue'));
-els.leaveBtn.addEventListener('click',()=>void act('leave'));
-els.exitRunBtn.addEventListener('click',()=>void act('leave'));
+els.readyBtn.addEventListener('click',()=>void handleReadyClick());
+els.retryBtn.addEventListener('click',()=>void act('continue').catch(()=>{}));
+els.leaveBtn.addEventListener('click',()=>void act('leave').catch(()=>{}));
+els.exitRunBtn.addEventListener('click',()=>void act('leave').catch(()=>{}));
 els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEventListener('click',()=>void openItem());
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
