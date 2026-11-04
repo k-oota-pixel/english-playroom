@@ -59,12 +59,14 @@ function installStyle(){
   const style=document.createElement('style');
   style.id='todayHomeCardStyle';
   style.textContent=`
-.today-news-home-card{box-sizing:border-box;width:100%;margin-top:10px;display:flex!important;flex-direction:column;justify-content:center;min-width:0;text-decoration:none!important;cursor:pointer;overflow:hidden;transition:transform .14s,box-shadow .14s,border-color .14s;color:inherit}
+.today-news-home-card{box-sizing:border-box;width:100%;margin-top:10px;display:flex!important;flex-direction:column;justify-content:center;min-width:0;text-decoration:none!important;cursor:pointer;overflow:hidden;transition:transform .14s,box-shadow .14s,border-color .14s;background:#fffaf0;color:#193d38}
+/* Keep the cream card readable even when the SHOP dark theme makes body text white. */
+body[data-screen-theme="dark"] .today-news-home-card{background:#fffaf0;color:#193d38;border-color:#eadfc7}
 .today-news-home-card:hover{transform:translateY(-1px)}
 .today-news-home-card:focus-visible{outline:3px solid #e4af37;outline-offset:3px}
-.today-news-home-kicker{display:block;font-size:10px;line-height:1.2;letter-spacing:.13em;font-weight:900;color:inherit;opacity:.72;white-space:nowrap}
-.today-news-home-title{display:block;min-width:0;margin-top:8px;font-size:15px;line-height:1.4;font-weight:900;color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.today-news-home-meta{display:block;min-width:0;margin-top:8px;font-size:10.5px;line-height:1.35;font-weight:750;color:inherit;opacity:.68;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.today-news-home-kicker{display:block;font-size:10px;line-height:1.2;letter-spacing:.13em;font-weight:900;color:#765522;opacity:1;white-space:nowrap}
+.today-news-home-title{display:block;min-width:0;margin-top:8px;font-size:15px;line-height:1.4;font-weight:900;color:#193d38;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.today-news-home-meta{display:block;min-width:0;margin-top:8px;font-size:10.5px;line-height:1.35;font-weight:750;color:#51665a;opacity:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:760px){.today-news-home-card{margin-top:10px}.today-news-home-title{font-size:14px}}
 `;
   document.head.appendChild(style);
