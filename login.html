@@ -64,7 +64,7 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
 <script type="module">
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.1';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.15';
 const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
 enableAppCheck(app);const auth=getAuth(app);await setPersistence(auth,browserLocalPersistence);
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search);
