@@ -13,8 +13,8 @@ export function announceTitles(titles){
 }
 export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  const mountKey=Symbol.for('monstudy.titles.controller');if(root[mountKey])return root[mountKey];
- styles();const button=root.querySelector('[data-titles-open]'),note=root.querySelector('[data-titles-note]');let generation=0,state=null,dialog=null,busy=false,activeTab='normal',ranking=null,rankingBusy=false,rankingError='',rankingLoadId=0;
- function reset(){generation++;rankingLoadId++;state=null;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';onSelection('');busy=false;if(dialog){dialog.close();dialog.remove();dialog=null;}button.disabled=!getUser();note.textContent=getUser()?'教材ごとの実績と、表示する称号を確認できます。':'ログインすると称号を確認・選択できます。';}
+ styles();const button=root.querySelector('[data-titles-open]'),note=root.querySelector('[data-titles-note]');let generation=0,state=null,dialog=null,busy=false,activeTab='normal',ranking=null,rankingBusy=false,rankingError='',rankingLoadId=0,weeklyBusy=false,weeklyLoaded=false,weeklyError='';
+ function reset(){generation++;rankingLoadId++;state=null;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';onSelection('');busy=false;if(dialog){dialog.close();dialog.remove();dialog=null;}button.disabled=!getUser();note.textContent=getUser()?'教材ごとの実績と、表示する称号を確認できます。':'ログインすると称号を確認・選択できます。';}
  function hydrateSelection(data={}){const selectedId=typeof data.selectedId==='string'?data.selectedId:typeof data.selectedTitleId==='string'?data.selectedTitleId:'',selectedTitle=typeof data.selectedTitle==='string'?data.selectedTitle:'';state={...(state||{}),selectedId,selectedTitle};onSelection(selectedTitle);note.textContent=selectedTitle?'表示中：ー'+selectedTitle+'ー':'称号を選んでランキングに表示できます。';}
  function renderRanking(){
   if(!dialog)return;
@@ -51,7 +51,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   for(const [key,label] of [['normal','🏆 教材別称号'],['weekly','⚔️ 週間称号'],['master','👑 教材マスター']]){
    const tab=el('button',label);tab.type='button';tab.className='titles-tab'+(activeTab===key?' active':'');
    tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(activeTab===key));
-   tab.addEventListener('click',()=>{if(activeTab!==key){activeTab=key;render();}});
+   tab.addEventListener('click',()=>{if(activeTab!==key){activeTab=key;render();if(key==='weekly'&&!weeklyLoaded&&!weeklyBusy)void loadWeekly();}});
    tabs.append(tab);
   }
   dialog.append(tabs);
@@ -67,7 +67,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    const filtered=allTitles.filter(t=>activeTab==='master'?isMaster(t):activeTab==='weekly'?isWeekly(t):!isMaster(t)&&!isWeekly(t));
    const groups=new Map();for(const t of filtered){if(!groups.has(t.appId))groups.set(t.appId,[]);groups.get(t.appId).push(t);}
    if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノートや塔・巣窟の記録も引き継ぎます。'));
-   if(activeTab==='weekly')panel.append(el('p','月曜日から日曜日までの挑戦。前日までに確定した順位を集計し、4日達成で永久に獲得します。'));
+   if(activeTab==='weekly'){panel.append(el('p','月曜日から日曜日までの挑戦。前日までに確定した順位を集計し、4日達成で永久に獲得します。'));if(weeklyBusy)panel.append(el('p','週間ランキングを集計しています…'));if(weeklyError)panel.append(el('p',weeklyError));}
    if(activeTab==='master')panel.append(el('p','教材の対象称号をすべて解放すると、特別なマスター称号を獲得できます。'));
    if(!groups.size)panel.append(el('p','この種類の称号はまだありません。'));
    for(const list of groups.values()){
@@ -81,7 +81,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  }
  async function load(){
   const user=getUser();if(!user||busy)return;
-  busy=true;button.disabled=true;ranking=null;rankingBusy=true;rankingError='';activeTab='normal';
+  busy=true;button.disabled=true;ranking=null;rankingBusy=true;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';
   const id=++generation,rankId=++rankingLoadId;
   note.textContent='称号を読み込み中…';
   if(dialog){dialog.close();dialog.remove();}
@@ -101,6 +101,21 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   }catch(error){
    if(id===generation){note.textContent=error.message||'称号を取得できませんでした。もう一度お試しください。';dialog.append(el('p',note.textContent));}
   }finally{if(id===generation){busy=false;button.disabled=false;}}
+ }
+ async function loadWeekly(){
+  const user=getUser();if(!user||weeklyBusy||weeklyLoaded)return;
+  const id=generation;weeklyBusy=true;weeklyError='';render();
+  try{
+   const data=await request(user,undefined,'weekly');
+   if(id!==generation||getUser()?.uid!==user.uid)return;
+   state={...state,...data};weeklyLoaded=true;weeklyBusy=false;
+   onSelection(state.selectedTitle||'');
+   if(dialog?.open)render();
+  }catch(error){
+   if(id!==generation)return;
+   weeklyBusy=false;weeklyError=error.message||'週間称号を取得できませんでした。';
+   if(dialog?.open)render();
+  }
  }
  async function select(selectedId){const user=getUser();if(!user||busy)return;busy=true;const id=++generation;for(const b of dialog.querySelectorAll('button'))b.disabled=true;try{const data=await request(user,{selectedId});if(id!==generation||getUser()?.uid!==user.uid)return;state={...state,...data};onSelection(state.selectedTitle||'');const cached=window.EnglishPlayroomWallet;if(cached?.uid===user.uid&&cached.data){cached.data={...cached.data,selectedTitleId:state.selectedId||'',selectedTitle:state.selectedTitle||''};}busy=false;render();note.textContent=state.selectedTitle?'表示中：ー'+state.selectedTitle+'ー':'称号を表示しません。';}catch(error){if(id===generation){busy=false;render();dialog.prepend(el('p',error.message||'保存できませんでした。再試行してください。'));}}finally{if(id===generation)busy=false;}}
  async function refreshSelection(){const user=getUser();if(!user)return;const id=generation;const data=await request(user,undefined,'selection');if(id!==generation||getUser()?.uid!==user.uid)return;hydrateSelection(data);}
