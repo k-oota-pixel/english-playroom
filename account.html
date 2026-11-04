@@ -11,7 +11,7 @@
 <button id="save">紐づけて保存する</button></form><p id="status" role="status"></p></main>
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.1';
+import {getAuth,onAuthStateChanged,signInWithCustomToken,accountSession,timeoutSignal} from './auth-session.js?v=2.3.15';
 const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
 const auth=getAuth(app),$=id=>document.getElementById(id);let passwordMode=false;$('save').disabled=true;
 onAuthStateChanged(auth,async user=>{
@@ -28,7 +28,7 @@ $('form').onsubmit=async event=>{
  try{
  const password=$('password').value;if(password!==$('confirm').value)throw Error('確認用パスワードが一致しません。');
  if(passwordMode&&password===$('currentPassword').value)throw Error('現在のパスワードとは異なるものにしてください。');
- const token=await auth.currentUser.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/account/'+(passwordMode?'password':'link'),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({code:$('code').value,loginId:$('loginId').value,password,currentPassword:$('currentPassword').value}),signal:AbortSignal.timeout(45000)});
+ const token=await auth.currentUser.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/account/'+(passwordMode?'password':'link'),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({code:$('code').value,loginId:$('loginId').value,password,currentPassword:$('currentPassword').value}),signal:timeoutSignal(45000)});
  const data=await r.json();if(!r.ok)throw Error(data.error||'保存できませんでした。');
  await signInWithCustomToken(auth,data.token);$('form').hidden=true;$('title').hidden=true;$('note').hidden=true;$('status').textContent='保存しました。ホームへ戻って利用を続けられます。';
  }catch(error){$('status').textContent=error.message;}finally{$('save').disabled=false;}
