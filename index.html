@@ -462,6 +462,12 @@ const passwordResetModal=installPasswordResetModal(auth);
 const db=getFirestore(app);
 const provider=new GoogleAuthProvider();
 provider.setCustomParameters({prompt:"select_account"});
+function timeoutSignal(ms){
+  if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')return AbortSignal.timeout(ms);
+  const controller=new AbortController();
+  setTimeout(()=>controller.abort(),ms);
+  return controller.signal;
+}
 
 const loginBtn=document.getElementById("loginBtn");
 const logoutBtn=document.getElementById("logoutBtn");
@@ -497,7 +503,7 @@ let signingIn=false;
 let coinBoardUser=null;
 const learningDashboard=createLearningDashboard({button:document.getElementById('learningShow'),list:document.getElementById('learningList'),note:document.getElementById('learningNote'),getUser:()=>coinBoardUser,load:async user=>{
  const token=await user.getIdToken();
- const response=await fetch('https://task-quest.onrender.com/api/learning/dashboard',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
+ const response=await fetch('https://task-quest.onrender.com/api/learning/dashboard',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:timeoutSignal(45000)});
  const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||'学習記録を取得できませんでした。');return result;
 }});
 
@@ -650,7 +656,7 @@ async function sendPetChat(quickText=''){
   try{
     const user=auth.currentUser;if(!user)throw Error('ログインし直してください。');
     const token=await user.getIdToken();
-    const response=await fetch(PET_CHAT_ENDPOINT,{method:'POST',headers:await apiHeaders(),body:JSON.stringify({species:petChatSpecies(),petName:petChatName(),topic:petDailyTopic().id,message:text,history:previous}),signal:AbortSignal.timeout(45000)});
+    const response=await fetch(PET_CHAT_ENDPOINT,{method:'POST',headers:await apiHeaders(),body:JSON.stringify({species:petChatSpecies(),petName:petChatName(),topic:petDailyTopic().id,message:text,history:previous}),signal:timeoutSignal(45000)});
     let result={};try{result=await response.json();}catch{}
     if(!response.ok)throw Error(result.error||'ペットとおしゃべりできませんでした。');
     if(typeof result.reply!=='string'||!result.reply.trim())throw Error('返事を読み取れませんでした。');
@@ -848,7 +854,7 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
   try{
     const token=await user.getIdToken();
     const rankingUrl=force?`${COIN_LEADERBOARD_API}?refresh=1`:COIN_LEADERBOARD_API;
-    const response=await fetch(rankingUrl,{headers:{Authorization:`Bearer ${token}`},cache:"no-store",signal:AbortSignal.timeout(45000)});
+    const response=await fetch(rankingUrl,{headers:{Authorization:`Bearer ${token}`},cache:"no-store",signal:timeoutSignal(45000)});
     const result=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(result.error||"ランキングを取得できませんでした。");
     if(!isCurrent())return;
