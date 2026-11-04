@@ -4,6 +4,11 @@
 /* Online uses pet vs pet. Give the opponent its own MP row and contain both SVGs inside the battlefield. */
 #battleView .fighter{min-height:0}#battleView .fighter.enemy-side{grid-template-rows:16px 8px 12px 10px minmax(0,1fr)!important}#battleView .pet-visual,#battleView .online-opponent-pet{min-height:0;overflow:hidden;padding:3px 5px 0;place-items:end center}#battleView .online-opponent-pet{font-size:0;filter:drop-shadow(0 10px 8px #163a3322)}#battleView .pet-visual svg,#battleView .online-opponent-pet svg{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain}#battleView .online-egg{font-size:clamp(38px,8dvh,70px);line-height:1;display:block;align-self:end}
 
+/* Network/coin errors must be visible inside the battle, not in the hidden lobby. */
+.online-battle-feedback:not([hidden]){display:block;max-width:100%;padding:6px 10px;border-radius:10px;background:#edf5ec;color:#315d4b;font-size:11px;line-height:1.4;font-weight:800;overflow-wrap:anywhere}
+.online-battle-feedback.error:not([hidden]){background:#fff1e9;color:#a04230}
+#waitingCard .online-battle-feedback[hidden],#resultCard .online-battle-feedback[hidden]{display:none!important}
+
 /* Ready controls sit over the bottom of the normal tower loading card while waiting. */
 .online-controls{grid-area:actions;align-self:end;z-index:6;margin:0 12px 12px;display:grid;gap:6px;pointer-events:none}.online-controls .primary-btn{pointer-events:auto}.online-ready-count{text-align:center;font-size:10px;font-weight:900;color:#557168;text-shadow:0 1px #fff}.online-controls:has(.primary-btn[hidden]) .online-ready-count:empty{display:none}#resultCard:not([hidden])~.online-controls{display:none}.online-controls .primary-btn[hidden]{display:none!important}#waitingCard{padding-bottom:74px}
 
