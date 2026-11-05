@@ -112,7 +112,7 @@ function showGradePicker(){selectedGrade='';roomList.hidden=true;gradePicker.hid
 async function selectGrade(key){if(!GRADES.some(entry=>entry.key===key))return;selectedGrade=key;selectedGradeTitle.textContent=gradeLabel(key);gradePicker.hidden=true;roomList.hidden=false;await refreshLobby();}
 async function refreshLobby(){
  if(!selectedGrade||activeRoom)return;
- try{const data=await api('/lobby/'+selectedGrade),lobby=data.lobby||{};selectedGradeTitle.textContent=lobby.grade||gradeLabel(selectedGrade);renderRooms(lobby.rooms||[]);say('');}
+ try{const data=await api('/lobby/'+selectedGrade),lobby=data.lobby||{};selectedGradeTitle.textContent=lobby.grade||gradeLabel(selectedGrade);renderRooms(lobby.rooms||[]);if(!notice.classList.contains('error'))say('');}
  catch(e){say(e.message,true);}
 }
 
@@ -244,7 +244,7 @@ async function refreshRoom(){
 }
 async function enterRoom(id){
  try{say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;const data=await api('/room/'+id+'/join','POST');activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);lastEventSeq=data.room.seq;lastStatus='';readyPending=false;clearBattleFeedback();resetTurn();renderRoom(data.room);say('');}
- catch(e){say(e.message,true);await refreshLobby();}
+ catch(e){await refreshLobby();say(e.message,true);}
 }
 async function act(action,{render=true,body=null}={}){
  try{
