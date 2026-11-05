@@ -64,17 +64,11 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
 <script type="module">
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.15';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.1';
 const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
 enableAppCheck(app);const auth=getAuth(app);await setPersistence(auth,browserLocalPersistence);
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search);
 let mode='login',working=false;
-function timeoutSignal(ms){
-  if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')return AbortSignal.timeout(ms);
-  const controller=new AbortController();
-  setTimeout(()=>controller.abort(),ms);
-  return controller.signal;
-}
 function safeReturn(raw){try{const u=new URL(raw||'./',location.href);return u.origin===location.origin&&!u.pathname.endsWith('/login.html')?u.href:new URL('./',location.href).href;}catch{return new URL('./',location.href).href;}}
 const returnUrl=safeReturn(params.get('return'));
 function status(text){$('status').textContent=text;$('status').className='status show';}
@@ -94,7 +88,7 @@ function setMode(value){
  $('status').className='status';
 }
 async function call(action,body){
- const r=await fetch('https://task-quest.onrender.com/api/account/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:timeoutSignal(45000)});
+ const r=await fetch('https://task-quest.onrender.com/api/account/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(45000)});
  const data=await r.json();if(!r.ok)throw Error(data.error||'処理に失敗しました。');return data;
 }
 async function proceed(){

@@ -1,5 +1,5 @@
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.33';
+const MATERIAL_RELEASE='2.1.32';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh']
@@ -33,8 +33,7 @@ function install() {
   groups.push({name:'エイゴダンジョンズ',items:[
     {name:'冒険先を選ぶ',url:new URL('pet-adventure/',root)},
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
-    {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
-    {name:'オンライン対戦',url:new URL('pet-adventure/online-battle.html',root)}
+    {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)}
   ]});
   const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
@@ -92,7 +91,7 @@ function install() {
     themedSurfaceObserver?.disconnect();themedSurfaceObserver=null;
     if(themedSurfaceTimer){clearTimeout(themedSurfaceTimer);themedSurfaceTimer=0;}
     for(const [element,original] of themedSurfaceOriginals){
-      for(const [property,value,priority] of [['background-color',original.backgroundColor,original.backgroundColorPriority],['background-image',original.backgroundImage,original.backgroundImagePriority],['color',original.color,original.colorPriority],['caret-color',original.caretColor,original.caretColorPriority],['-webkit-text-fill-color',original.textFillColor,original.textFillColorPriority]]){
+      for(const [property,value,priority] of [['background-color',original.backgroundColor,original.backgroundColorPriority],['background-image',original.backgroundImage,original.backgroundImagePriority],['color',original.color,original.colorPriority]]){
         if(value)element.style.setProperty(property,value,priority);else element.style.removeProperty(property);
       }
     }
@@ -122,9 +121,7 @@ function install() {
     if(!themedSurfaceOriginals.has(element))themedSurfaceOriginals.set(element,{
       backgroundColor:element.style.getPropertyValue('background-color'),backgroundColorPriority:element.style.getPropertyPriority('background-color'),
       backgroundImage:element.style.getPropertyValue('background-image'),backgroundImagePriority:element.style.getPropertyPriority('background-image'),
-      color:element.style.getPropertyValue('color'),colorPriority:element.style.getPropertyPriority('color'),
-      caretColor:element.style.getPropertyValue('caret-color'),caretColorPriority:element.style.getPropertyPriority('caret-color'),
-      textFillColor:element.style.getPropertyValue('-webkit-text-fill-color'),textFillColorPriority:element.style.getPropertyPriority('-webkit-text-fill-color')
+      color:element.style.getPropertyValue('color'),colorPriority:element.style.getPropertyPriority('color')
     });
     if(element.style.getPropertyValue(property)!==value||element.style.getPropertyPriority(property)!=='important')element.style.setProperty(property,value,'important');
   }
@@ -139,7 +136,7 @@ function install() {
     for(const element of candidates){
       if(/^(SVG|PATH|IMG|VIDEO|CANVAS|IFRAME|SCRIPT|STYLE)$/.test(element.tagName))continue;
       const style=win.getComputedStyle(element),background=cssRgb(style.backgroundColor);
-      let light=Boolean(background&&background.a>=.90&&colorLuminance(background)>.88);
+      let light=Boolean(background&&background.a>.94&&colorLuminance(background)>.88);
       if(!light&&style.backgroundImage&&style.backgroundImage!=='none'){
         const stops=[...style.backgroundImage.matchAll(/#[0-9a-f]{3,8}\b/ig)].map(m=>hexRgb(m[0]));
         if(stops.length&&stops.length<=8&&stops.every(stop=>colorLuminance(stop)>.86))light=true;
@@ -161,17 +158,6 @@ function install() {
         if(colorLuminance(cssRgb(style.color))<.36)patchThemedSurface(element,'color',foreground);
       }
     }
-    // Form fields have no text nodes, so the surface scanner above cannot adjust
-    // the entered text. Keep background, ink and caret together for dark themes.
-    // Exclude non-text inputs (checkboxes, buttons, sliders, etc.) to preserve their UI.
-    for(const control of doc.body.querySelectorAll('textarea,select,input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]):not([type="color"]):not([type="file"])')){
-      const appearance=win.getComputedStyle(control);
-      if(appearance.display==='none'||appearance.visibility==='hidden')continue;
-      patchThemedSurface(control,'background-color',surfaceColor);
-      patchThemedSurface(control,'color',foreground);
-      patchThemedSurface(control,'caret-color',foreground);
-      patchThemedSurface(control,'-webkit-text-fill-color',foreground);
-    }
     themedSurfaceObserver?.takeRecords();
   }
   function applySharedScreenTheme(){
@@ -179,12 +165,10 @@ function install() {
       const doc=frame.contentDocument;
       if(!doc?.documentElement)return;
       let style=doc.getElementById('monstudy-shared-screen-theme');
-      if(!sharedScreenTheme){doc.documentElement.removeAttribute('data-monstudy-screen-theme');style?.remove();restoreThemedSurfaces();return;}
+      if(!sharedScreenTheme){style?.remove();restoreThemedSurfaces();return;}
       if(!style){style=doc.createElement('style');style.id='monstudy-shared-screen-theme';(doc.head||doc.documentElement).append(style);}
       const color=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.color||'')?sharedScreenTheme.color:'#f6f5ef';
       const foreground=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.textColor||'')?sharedScreenTheme.textColor:'#193d38';
-      // The equipped SHOP palette is the single source of truth; child materials use this attribute for matched surfaces and text.
-      doc.documentElement.setAttribute('data-monstudy-screen-theme',sharedScreenTheme.theme==='dark'?'dark':'light');
       style.textContent=`html,body{--screen-background:${color};--screen-foreground:${foreground};background-color:${color}!important;background-image:none!important;color:${foreground}!important;transition:background-color .2s,color .2s}input::placeholder,textarea::placeholder{color:color-mix(in srgb,${foreground} 62%,${color} 38%)!important}option{background-color:${color};color:${foreground}}`;
       scanThemedSurfaces(doc,color,foreground);
       if(!themedSurfaceObserver||themedSurfaceDoc!==doc){

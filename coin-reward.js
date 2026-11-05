@@ -1,7 +1,5 @@
-import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.3.51';
+import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.1.25';
 import './material-open.js?v=2.3.1';
-import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.3.51';
-installStandaloneMaterialRanking();
 import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
 import './nickname-profile.js?v=2.2.2';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
@@ -268,7 +266,7 @@ function writeRetryOutbox(key,rows){retryMemory.set(key,rows);try{localStorage.s
 let retryTimer=0,retryQueue=Promise.resolve(),retryFlushRunning=false;
 function scheduleRetryFlush(delay=10000){if(typeof setTimeout!=='function')return;globalThis.clearTimeout?.(retryTimer);retryTimer=setTimeout(()=>void flushRetryAttempts(),delay);}
 function removeRetryRows(key,ids){const remove=new Set(ids);writeRetryOutbox(key,readRetryOutbox(key).filter(row=>!remove.has(row.eventId)));}
-function flushRetryAttempts(force=false){
+function flushRetryAttempts(){
  const user=currentUser;if(!user)return Promise.resolve();
  globalThis.clearTimeout?.(retryTimer);
  retryQueue=retryQueue.catch(()=>{}).then(async()=>{
@@ -277,7 +275,7 @@ function flushRetryAttempts(force=false){
   try{
    const today=todayKey();let rows=readRetryOutbox(key),fresh=rows.filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
    if(fresh.length!==rows.length)writeRetryOutbox(key,fresh);rows=fresh;
-   if(!rows.length||(!force&&rows.length<5))return;
+   if(rows.length<5)return;
    while(rows.length&&currentUser?.uid===user.uid){
     const group=rows.slice(0,50),ids=group.map(row=>row.eventId);let awardedCount=0,counted=0,progress=0,newCoins=0,retryEarnedToday=0,outcomes={};
     try{
@@ -340,38 +338,6 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   }catch(error){console.error('Coin reward failed',error);return {awarded:false,reason:'error',error};}
 }
 
-async function recordRetrySession({sessionId='',attempts=[]}={}){
- await authReady;
- const user=currentUser;if(!user)return {ok:false,reason:'signed-out'};
- const today=todayKey(),session=cleanPart(sessionId||newClientEventId()).slice(0,32),raw=Array.isArray(attempts)?attempts:[];
- const seen=new Set(),normalized=[];
- for(const attempt of raw){
-  const questionId=String(attempt?.questionId||'').trim();if(!questionId)continue;
-  const coinId=cleanPart(questionId);if(seen.has(coinId))continue;seen.add(coinId);
-  normalized.push({questionId,coinId,grade:String(attempt?.grade||'').slice(0,20),correct:!!attempt?.correct,first:attempt?.first===true,series:attempt?.series===true,previousMistakes:Math.max(0,Math.min(100000,Math.floor(Number(attempt?.previousMistakes)||0))),previousWrongAt:Math.max(0,Math.floor(Number(attempt?.previousWrongAt)||0))});
- }
- if(!normalized.length)return {ok:true,sessionId:String(sessionId||''),attempts:0};
- const coinKey=RETRY_OUTBOX_PREFIX+user.uid;
- await flushRetryAttempts(true);
- const oldPending=readRetryOutbox(coinKey).filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000);
- if(oldPending.length)throw new Error('以前のリトライコイン処理を完了できませんでした。');
- const CHUNK_SIZE=100;
- for(let offset=0;offset<normalized.length;offset+=CHUNK_SIZE){
-  const chunk=normalized.slice(offset,offset+CHUNK_SIZE),existing=readRetryOutbox(coinKey).filter(row=>row.day===today&&row.at&&Date.now()-row.at<=86400000),queued=new Set(existing.map(row=>row.questionId));
-  for(const attempt of chunk)if(!queued.has(attempt.coinId)){existing.push({eventId:newClientEventId(),questionId:attempt.coinId,day:today,at:Date.now()});queued.add(attempt.coinId);}
-  writeRetryOutbox(coinKey,existing.slice(-500));
-  await flushRetryAttempts(true);
-  const coinIds=new Set(chunk.map(attempt=>attempt.coinId));
-  if(readRetryOutbox(coinKey).some(row=>row.day===today&&coinIds.has(row.questionId)))throw new Error('リトライのコイン処理を完了できませんでした。');
-  const titleEvents=chunk.map((attempt,index)=>({eventId:`retry-${session}-${(offset+index).toString(36)}-${attempt.coinId.slice(0,32)}`,kind:'answer',itemId:attempt.questionId,sessionId:String(sessionId||session).slice(0,300),grade:attempt.grade,correct:attempt.correct,first:attempt.first,series:attempt.series,previousMistakes:attempt.previousMistakes,previousWrongAt:attempt.previousWrongAt,expectedUid:user.uid}));
-  await recordTitleEvents('eiken-retry',titleEvents);
-  const titleKey='monstudy-title-outbox:'+user.uid,titleIds=new Set(titleEvents.map(event=>event.eventId));
-  if(readTitleOutbox(titleKey).some(row=>titleIds.has(row.event?.eventId)))throw new Error('リトライの称号・統計処理を完了できませんでした。');
- }
- void recordLearningActivity('eiken-retry');
- return {ok:true,sessionId:String(sessionId||''),attempts:normalized.length};
-}
-
 async function recordRetryAttempt(questionId){
  await authReady;const user=currentUser;if(!user)return {awarded:false,counted:false,reason:'signed-out'};
  const normalized=cleanPart(questionId),today=todayKey(),resultKey=user.uid+':'+today+':'+normalized,cached=retryResultMemory.get(resultKey);if(cached)return {awarded:false,counted:false,reason:'already-counted'};
@@ -392,7 +358,6 @@ window.EnglishPlayroomCoins=Object.freeze({
   recordLearningActivity,
   awardOncePerDay,
   recordRetryAttempt,
-  recordRetrySession,
   awardAteru:roundId=>awardOncePerDay('ateru',`round-${cleanPart(roundId)}`,'アテル3問以上正解！'),
   awardBasic:stageId=>awardOncePerDay('basic-quest',`stage-${cleanPart(stageId)}`,'Basic Questクリア！'),
   awardCloze:themeId=>awardOncePerDay('eiken-cloze',`theme-${cleanPart(themeId)}`,'空所補充に挑戦！'),

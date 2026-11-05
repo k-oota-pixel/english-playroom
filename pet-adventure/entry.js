@@ -11,7 +11,7 @@ if(mode==='tower'||mode==='dungeon'){
  await import('./ranking-publisher.js?v=2.3.14');
 }
 else{
- await Promise.all([installTowerSeasonAnnouncement(),import('./rankings.js?v=2.3.42')]);
+ await Promise.all([installTowerSeasonAnnouncement(),import('./rankings.js?v=2.3.6')]);
 }
 
 

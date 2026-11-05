@@ -1,4 +1,3 @@
-import {materialRankingAppId,openMaterialRanking} from './material-ranking-ui.js?v=2.3.51';
 const HOME=new URL('./',import.meta.url);
 
 function install(){
@@ -15,10 +14,6 @@ function install(){
     #monstudyMaterialReturn[hidden]{display:none!important}
     #monstudyMaterialReturn button{appearance:none;border:1px solid #d5e0d7;background:#fff;color:#285c4c;border-radius:999px;padding:7px 12px;font:800 12px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 2px 8px #173d3508}
     #monstudyMaterialReturn button:hover{background:#edf5ef}
-    #monstudyMaterialReturn button[hidden]{display:none!important}
-    #monstudyMaterialReturn .ms-material-rank-open{margin-left:auto;background:#eff8f1;color:#236145;border-color:#bdd3c4}
-    body[data-screen-theme="dark"] #monstudyMaterialReturn{background:#1d3026;border-color:#416450}
-    body[data-screen-theme="dark"] #monstudyMaterialReturn button{background:#2f4638;color:#ebf6ec;border-color:#719382}
     #monstudyMaterialReturn button:focus-visible{outline:3px solid #dfb54d;outline-offset:2px}
     #monstudyShell.ms-showing-material .ms-material{height:calc(100% - 44px)}
     @media(max-width:800px){#monstudyMaterialReturn{height:40px;padding:5px 10px}#monstudyMaterialReturn button{font-size:11px;padding:6px 10px}#monstudyShell.ms-showing-material .ms-material{height:calc(100% - 40px)}}
@@ -34,14 +29,10 @@ function install(){
   back.setAttribute('aria-label','もんすたでぃのメイン画面に戻る');
   back.addEventListener('click',()=>window.MonstudyShell?.navigate(HOME));
   bar.append(back);
-  const rankingBtn=document.createElement('button');rankingBtn.type='button';rankingBtn.className='ms-material-rank-open';rankingBtn.textContent='🏆 本日のランキング';
-  rankingBtn.addEventListener('click',()=>{const id=materialRankingAppId(frame.src);if(id)void openMaterialRanking(id);});
-  bar.append(rankingBtn);
   workspace.prepend(bar);
 
-  const sync=()=>{bar.hidden=!shell.classList.contains('ms-showing-material');rankingBtn.hidden=!materialRankingAppId(frame.src);};
+  const sync=()=>{bar.hidden=!shell.classList.contains('ms-showing-material');};
   new MutationObserver(sync).observe(shell,{attributes:true,attributeFilter:['class']});
-  frame.addEventListener('load',sync);
   sync();
 
   let childObserver=null;

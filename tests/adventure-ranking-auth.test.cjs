@@ -4,7 +4,7 @@ function fixture({authReady=Promise.resolve(),user={uid:'learner',getIdToken:asy
  const nodes={},calls=[],buttons=['tower','dungeon'].map(mode=>node({ranking:mode}));
  function node(dataset={}){return {dataset,textContent:'',children:[],events:{},disabled:false,addEventListener(k,fn){this.events[k]=fn;},replaceChildren(){this.children=[];},append(...children){this.children.push(...children);},showModal(){},close(){this.events.close?.();}};}
  const auth={currentUser:user};
- const c=vm.createContext({auth,authReady,AbortController,Error,document:{getElementById(id){return nodes[id]||=(node());},querySelectorAll(){return buttons;},createElement(){return node();},createTextNode(text){const item=node();item.textContent=text;return item;}},fetch:async(url,options)=>{calls.push({url,options});return response?response(url,options):{ok:true,status:200,json:async()=>({leaders:[{rank:1,petName:'もこ',title:'塔の冒険者',floor:50}]})};}});
+ const c=vm.createContext({auth,authReady,AbortController,Error,document:{getElementById(id){return nodes[id]||=(node());},querySelectorAll(){return buttons;},createElement(){return node();}},fetch:async(url,options)=>{calls.push({url,options});return response?response(url,options):{ok:true,status:200,json:async()=>({leaders:[{rank:1,petName:'もこ',title:'塔の冒険者',floor:50}]})};}});
  vm.runInContext(source,c);
  return {auth,c,nodes,calls,load:mode=>vm.runInContext(`mode='${mode}';load()`,c)};
 }
@@ -35,6 +35,6 @@ test('server failures retain retry guidance and retry renders the ranking',async
  let failed=true;const f=fixture({response:()=>({ok:!failed,status:failed?503:200,json:async()=>failed?{error:'failed'}:{leaders:[{rank:1,petName:'もこ',floor:8}]}})});await f.load('tower');assert.match(f.nodes.rankingStatus.textContent,/再表示/);failed=false;await f.load('tower');assert.equal(f.nodes.rankingList.children.length,1);
 });
 test('the released entry loads the new ranking module',()=>{
- assert.match(fs.readFileSync(path.join(root,'pet-adventure/index.html'),'utf8'),/entry\.js\?v=2\.3\.42/);
- assert.match(fs.readFileSync(path.join(root,'pet-adventure/entry.js'),'utf8'),/rankings\.js\?v=2\.3\.42/);
+ assert.match(fs.readFileSync(path.join(root,'pet-adventure/index.html'),'utf8'),/entry\.js\?v=2\.3\.6/);
+ assert.match(fs.readFileSync(path.join(root,'pet-adventure/entry.js'),'utf8'),/rankings\.js\?v=2\.3\.6/);
 });

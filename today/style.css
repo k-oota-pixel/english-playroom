@@ -19,17 +19,3 @@ body{background:var(--today-background);color:var(--today-foreground)}
 .archive-search::placeholder{color:var(--today-muted)}
 .dialog-actions{background:var(--today-surface)}
 @media(max-width:540px){.dialog-actions{background:var(--today-surface)}}
-
-
-/* Purposeful reading mission */
-.mission-card{margin:10px 0 24px;padding:16px 17px;border:1px solid #e2c88d;border-radius:15px;background:linear-gradient(145deg,#fff8e7,#fffdf8)}
-.mission-kicker{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#8a6428;font-size:10px;font-weight:950;letter-spacing:.08em}
-.mission-type{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#f5e6bd;color:#6f531f;letter-spacing:0}
-.mission-purpose{margin:10px 0 7px;color:#64736c;font-size:11px;line-height:1.65}
-.mission-question{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:clamp(18px,3vw,24px);font-weight:850;line-height:1.45;color:#183c37}
-.mission-follow{margin:8px 0 0;color:#7d6b47;font-size:10.5px;line-height:1.6}
-.mission-card{background:color-mix(in srgb,var(--today-surface) 84%,#f5d88f 16%);border-color:color-mix(in srgb,var(--today-border) 62%,#c99b45 38%)}
-.mission-question{color:var(--today-foreground)}
-.mission-purpose,.mission-follow{color:var(--today-muted)}
-.mission-type{background:var(--today-soft-surface);color:var(--today-foreground)}
-@media(max-width:540px){.mission-card{padding:14px;margin-bottom:20px}.mission-kicker{align-items:flex-start}.mission-question{font-size:19px}}

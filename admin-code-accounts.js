@@ -1,6 +1,6 @@
 import {getAuth} from './auth-session.js?v=2.3.1';
 const panel=document.createElement('section');panel.style.cssText='padding:20px;border:1px solid #dce5da;border-radius:16px;margin:20px 0;background:white';
-panel.innerHTML='<h2>登録コード・アカウント管理</h2><p>生徒名との対応表は学校で認められた保管先で管理してください。ここには生徒名を入力しないでください。</p><label>発行件数（1〜200） <input id="codeCount" type="number" min="1" max="200" value="30"></label> <button id="issueCodes">発行してCSVを保存</button><p><label>追加コード一覧の取り込み <input id="importCodes" type="file" accept=".csv,.txt"></label><small>今回お渡しする10,000件は登録済みです。追加の一覧を取り込む場合に使います。</small></p><p><button id="autoRestoreCodeNames" type="button">未復元のコード名を自動復元</button> <small>既存の10,000件と使用済みコードを照合し、コード名が空の利用者だけ復元します。既に設定済みのコード名やコードの使用状態は変更しません。</small></p><p><label>既存利用者のコード名をCSVから復元 <input id="restoreCodeNames" type="file" accept=".csv,.txt"></label><small>追加発行したコードなどを復元する場合は、発行時のCSVを読み込んでください。</small></p><hr><label>生徒の登録コード <input id="lookupCode" autocomplete="off" placeholder="AB3D7K"></label> <button id="lookupAccount">IDを確認</button> <button id="resetCodePassword">仮パスワードを発行</button><p id="codeAdminStatus" role="status" style="white-space:pre-wrap"></p>';
+panel.innerHTML='<h2>登録コード・アカウント管理</h2><p>生徒名との対応表は学校で認められた保管先で管理してください。ここには生徒名を入力しないでください。</p><label>発行件数（1〜200） <input id="codeCount" type="number" min="1" max="200" value="30"></label> <button id="issueCodes">発行してCSVを保存</button><p><label>追加コード一覧の取り込み <input id="importCodes" type="file" accept=".csv,.txt"></label><small>今回お渡しする10,000件は登録済みです。追加の一覧を取り込む場合に使います。</small></p><p><label>既存利用者のコード名を復元 <input id="restoreCodeNames" type="file" accept=".csv,.txt"></label><small>発行時のCSVを読み込むと、登録済みコードを利用者一覧に表示できます。コード本体は管理用情報として保存されます。</small></p><hr><label>生徒の登録コード <input id="lookupCode" autocomplete="off" placeholder="AB3D7K"></label> <button id="lookupAccount">IDを確認</button> <button id="resetCodePassword">仮パスワードを発行</button><p id="codeAdminStatus" role="status" style="white-space:pre-wrap"></p>';
 (document.querySelector('main')||document.body).append(panel);
 const $=id=>panel.querySelector('#'+id),message=text=>$('codeAdminStatus').textContent=text;
 async function call(action,body){
@@ -18,12 +18,6 @@ $('lookupAccount').onclick=()=>operation($('lookupAccount'),async()=>{const data
 $('resetCodePassword').onclick=()=>operation($('resetCodePassword'),async()=>{
  if(!confirm('このコードに紐づいた利用者のパスワードを再設定しますか？現在のパスワードは使えなくなり、本人による変更まで教材の利用が制限されます。'))return;
  const data=await call('reset',{code:$('lookupCode').value});message('ログインID：'+data.loginId+'\n仮パスワード：'+data.temporaryPassword+'\n有効期限：発行から24時間\n本人へ個別に伝えてください。ログイン後に変更が必要です。');
-});
-$('autoRestoreCodeNames').onclick=()=>operation($('autoRestoreCodeNames'),async()=>{
- if(!confirm('コード名が「未復元」の既存利用者を自動復元しますか？既に設定済みのコード名と登録コードの使用状態は変更しません。'))return;
- message('使用済み登録コードと既存の10,000件を照合しています…');
- const result=await call('name-auto-restore',{});
- message('自動復元完了：'+(Number(result.restored)||0)+'人分。既に設定済み '+(Number(result.unchanged)||0)+'件、紐づけ不明 '+(Number(result.unlinked)||0)+'件。照合できた使用済みコード '+(Number(result.linked)||0)+'件。利用者一覧を更新してください。');
 });
 $('importCodes').onchange=async()=>{
  const input=$('importCodes'),file=input.files[0];if(!file)return;input.disabled=true;

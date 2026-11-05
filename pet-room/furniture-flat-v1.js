@@ -57,8 +57,8 @@ css.textContent="#sofaActor.flat-furniture{filter:none!important}#sofaActor.flat
 document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
 const ISOMETRIC_SPRITES=Object.freeze({
- bed:{file:"bed-isometric-4way-v3.png",width:1309,height:1201,views:[[25,605,600,570],[25,25,600,570],[675,25,600,570],[675,605,600,570]]},
- sofa:{file:"sofa-isometric-4way-v3.png",width:1309,height:1201,views:[[25,25,600,570],[25,605,600,570],[675,605,600,570],[675,25,600,570]]}
+ bed:{file:"bed-isometric-4way-v3.png",width:1261,height:1247,views:[[20,600,600,620],[20,20,600,620],[650,20,600,620],[650,600,600,620]]},
+ sofa:{file:"sofa-isometric-4way-v3.png",width:1309,height:1201,views:[[20,20,600,590],[20,600,600,590],[680,600,600,590],[680,20,600,590]]}
 });
 function makeSvg(item){
  const s=SPRITES[item.id],asset=ISOMETRIC_SPRITES[item.id],box=asset?asset.views[((item.rotation%4)+4)%4]:FOUR_WAY[item.id][((item.rotation%4)+4)%4];
