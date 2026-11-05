@@ -56,11 +56,16 @@ const css=document.createElement("style");
 css.textContent="#sofaActor.flat-furniture{filter:none!important}#sofaActor.flat-furniture img{display:none!important}.flat-furniture{position:absolute;display:block;overflow:visible;cursor:pointer;pointer-events:auto;transform-origin:50% 50%;transition:left .18s ease,top .18s ease,transform .18s ease;filter:none!important}.flat-furniture[hidden]{display:none!important}.flat-furniture svg{display:block;width:100%;height:auto;overflow:hidden!important;filter:none!important}.flat-furniture.is-editing{filter:none!important}#room.placing .flat-furniture.is-editing{filter:none!important}#flatFurnitureHud{position:absolute;z-index:1400;width:140px;padding:8px;border:1px solid #5553;border-radius:16px;background:#fff;box-shadow:none;transform:translateY(-50%);touch-action:manipulation}#flatFurnitureHud[hidden]{display:none!important}.ff-pad{display:grid;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px;gap:1px;justify-content:center;align-items:center}.ff-key{appearance:none;border:1px solid #bbb;background:#fff;color:#426c53;border-radius:5px;font-size:22px;line-height:1}.ff-key:disabled{opacity:.28}.ff-mid{grid-column:2;grid-row:2;display:grid;place-items:center;width:30px;height:30px;margin:auto;border:1px solid #ddd}.ff-ul{grid-column:1;grid-row:1}.ff-ur{grid-column:3;grid-row:1}.ff-dl{grid-column:1;grid-row:3}.ff-dr{grid-column:3;grid-row:3}.ff-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}.ff-action{appearance:none;min-height:32px;border:1px solid #bbb;border-radius:5px;background:#fff;color:#444;font-size:11px;font-weight:700}.ff-confirm{background:#4c765a;color:#fff;border-color:#4c765a}@media(max-width:700px){#flatFurnitureHud{width:132px;padding:7px}.ff-pad{grid-template-columns:35px 35px 35px;grid-template-rows:35px 35px 35px}.ff-action{font-size:10px}}";
 document.head.append(css);
 function fmt(n){return Number(n.toFixed(1))}
+const ISOMETRIC_SPRITES=Object.freeze({
+ bed:{file:"bed-isometric-4way-v3.png",width:1309,height:1201,views:[[25,605,600,570],[25,25,600,570],[675,25,600,570],[675,605,600,570]]},
+ sofa:{file:"sofa-isometric-4way-v3.png",width:1309,height:1201,views:[[25,25,600,570],[25,605,600,570],[675,605,600,570],[675,25,600,570]]}
+});
 function makeSvg(item){
- const s=SPRITES[item.id],box=FOUR_WAY[item.id][((item.rotation%4)+4)%4];
+ const s=SPRITES[item.id],asset=ISOMETRIC_SPRITES[item.id],box=asset?asset.views[((item.rotation%4)+4)%4]:FOUR_WAY[item.id][((item.rotation%4)+4)%4];
  const scale=Math.min(s.w/box[2],s.h/box[3]),offsetX=(s.w-box[2]*scale)/2,offsetY=(s.h-box[3]*scale)/2;
  const transform='translate('+fmt(offsetX)+' '+fmt(offsetY)+') scale('+fmt(scale)+') translate('+(-box[0])+' '+(-box[1])+')';
- const image='<image href="./assets/furniture-directional/'+item.id+'-4way-v1.png" x="0" y="0" width="768" height="512" transform="'+transform+'"/>';
+ const file=asset?asset.file:item.id+'-4way-v1.png',width=asset?asset.width:768,height=asset?asset.height:512;
+ const image='<image href="./assets/furniture-directional/'+file+'" x="0" y="0" width="'+width+'" height="'+height+'" transform="'+transform+'"/>';
  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+s.w+' '+s.h+'" aria-hidden="true" focusable="false">'+image+'</svg>';
 }
 function footprint(item){const d=dims(item),cells=[];for(let yy=0;yy<d.h;yy++)for(let xx=0;xx<d.w;xx++)cells.push({x:item.state.x+xx,y:item.state.y+yy});return cells}
