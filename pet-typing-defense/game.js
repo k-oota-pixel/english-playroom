@@ -42,7 +42,7 @@ function hud(){
  $('killMeter').textContent=run.kills+' / '+TOTAL;
  $('hpMeter').textContent='♥ '.repeat(run.hp).trim()+' ♡'.repeat(MAX_HP-run.hp);
  $('courseName').textContent=STAGE_NAMES[stage];
- $('phaseName').textContent=PHASE_NAMES[stage][phase];
+ $('phaseName').textContent=stage===0&&run.mode==='hard'?'英検2級・第'+(phase+1)+'フェーズ':PHASE_NAMES[stage][phase];
  $('waveMeter').textContent=run.enemies.filter(e=>e.resolved).length+' / '+QUESTIONS_PER_PHASE;
 }
 function currentEnemy(){
@@ -148,7 +148,7 @@ function showOverlay(eyebrow,heading,body,buttonLabel,fn){
  $('overlayHeading').textContent=heading;
  $('overlayBody').textContent=body;
  const button=$('nextPhase');
- button.textContent=buttonLabel;button.onclick=fn;
+ button.textContent=buttonLabel;button.onclick=fn;button.disabled=false;
  $('rewardStatus').textContent='';
  $('retryReward').hidden=true;
  over.hidden=false;
@@ -176,6 +176,7 @@ async function payPhaseReward(stage,phase,id){
  const receipt=$('rewardStatus'),retry=$('retryReward');
  if(!description)return;
  if(run.rewardPaid.has(id))return;
+ $('nextPhase').disabled=true;
  receipt.textContent='🪙 コイン報酬を確認中…';
  retry.hidden=true;
  try{
@@ -198,6 +199,8 @@ async function payPhaseReward(stage,phase,id){
   retry.hidden=false;
   retry.onclick=()=>{void payPhaseReward(stage,phase,id)};
   console.warn('Typing defense reward error',error);
+ }finally{
+  if(id===rewardRunId)$('nextPhase').disabled=false;
  }
 }
 
