@@ -17,7 +17,7 @@ export const PHASE_NAMES=[
 export const STAGE_COUNT=5, PHASES_PER_STAGE=5, QUESTIONS_PER_PHASE=5;
 export const TOTAL_QUESTIONS=STAGE_COUNT*PHASES_PER_STAGE*QUESTIONS_PER_PHASE;
 export function enemySpawnInterval(stageIndex,mode='normal'){
- const intervals=mode==='hard'?[3,10,12,14,16]:[1.65,3,4,5,7];
+ const intervals=mode==='hard'?[3,5,7,9,11]:[1.65,3,4,5,7];
  return intervals[stageIndex]??intervals[intervals.length-1];
 }
 const GRAMMAR_UNITS=[['be'],['general','mixed'],['perfect','infinitive'],['participle','relative'],['question','svoo','svoc','indirect','conjunction']];
