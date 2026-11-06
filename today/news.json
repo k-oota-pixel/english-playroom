@@ -1,13 +1,441 @@
 {
-  "generatedAt": "2026-11-04T21:52:50.632Z",
-  "editionDate": "2026-11-05",
+  "generatedAt": "2026-11-06T15:00:28.965Z",
+  "editionDate": "2026-11-06",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-05"
+    "lastSuccessfulEdition": "2026-11-06"
   },
   "articles": [
+    {
+      "id": "2026-11-06-free-open-source-app-hob-local-ai",
+      "date": "2026-11-06",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "AI",
+        "open source",
+        "Windows",
+        "Mac",
+        "Linux"
+      ],
+      "titleJa": "無料のAIアプリ「Hob」",
+      "title": "Free Open-Source App Hob Runs AI Locally",
+      "summaryJa": "PC上でローカルAIをオフラインで簡単に利用できる無料のオープンソースアプリ「Hob」が登場しました。",
+      "sourcePublishedAt": "2026-11-06T14:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事から「Hob」の特徴や機能に関する情報を正確に見つけ出すため。",
+        "followUpJa": "自分のパソコンでAIツールを使う際に、どのような機能があると便利だと思うか考えてみましょう。",
+        "questions": {
+          "5級": "What is the name of the new free app?",
+          "4級": "Which operating systems can run the Hob app?",
+          "3級": "How does Hob help users choose a model for their computer?",
+          "準2級": "What file types can Hob analyze and edit using chat?",
+          "2級": "What specific model is used for image analysis in Hob, and how is it downloaded?",
+          "準1級": "How does Hob handle privacy and offline usage, and what limitations do users note regarding its advanced configuration?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Free App Hob",
+          "text": "A new free app is here. The app is called Hob. You can use AI on your PC. It works offline. It is very easy to use. It runs on Windows, Mac, and Linux. You can chat with the AI now.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "Using AI on Your PC",
+          "text": "Running AI on your own computer can be hard. You need to choose the right model and set up your PC. A new free app called Hob makes this very easy. Hob works on Windows, Mac, and Linux. It automatically finds the best AI model for your computer. Then, it helps you build the setup. You can chat with the AI and read files easily. It is completely free to use.",
+          "wordCount": 71
+        },
+        "3級": {
+          "title": "An Easy Tool for Local AI",
+          "text": "Using artificial intelligence on your personal computer often requires difficult setups and careful model choices. However, a new free and open-source application called Hob solves this problem. It runs on Windows, Mac, and Linux systems. Hob automatically checks your computer memory and GPU to select the best AI model for you. After a quick download, you can start chatting. It supports thirty-two languages and helps you work with documents and spreadsheets directly through simple chat messages.",
+          "wordCount": 76
+        },
+        "準2級": {
+          "title": "Hob Brings Offline AI to Everyone",
+          "text": "Running an AI model on a personal computer usually demands technical knowledge to choose correct settings and configure execution environments. To make this easier, developers released a free open-source application named Hob. Compatible with Windows, Mac, and Linux, Hob automatically inspects your computer hardware to suggest and download a suitable AI model. Once installed, users can interact with documents, analyze spreadsheets, and create charts simply by chatting. The tool supports thirty-two languages and can read PDFs or images using an additional small model. Although it lacks deep manual configuration for advanced users, Hob offers an accessible way to run open-weight AI models locally on your own machine without requiring constant internet access.",
+          "wordCount": 112
+        },
+        "2級": {
+          "title": "Open-Source App Hob Simplifies Local AI Execution",
+          "text": "Operating artificial intelligence locally on personal hardware typically requires users to select appropriate models and build complex execution environments. Furthermore, analyzing or editing local files often demands additional configuration steps. To automate these tasks, a free open-source application called Hob has been released, supporting Windows, Mac, and Linux operating systems. Hob evaluates computer specifications to automatically choose and set up an optimal AI model. Users can then manage documents, analyze spreadsheet data, generate charts, and read PDF files or images through a straightforward chat interface. The application supports thirty-two languages, including Japanese, and operates offline after the initial model download to protect user privacy. While some online discussions note that advanced configuration options like temperature control or context length adjustment are missing, Hob provides an approachable alternative for users seeking a simple, ready-to-use local AI solution.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "Exploring Hob: A Streamlined Open-Source Solution for Local AI Integration",
+          "text": "Deploying artificial intelligence models locally has historically presented significant hurdles regarding hardware compatibility, execution environment configuration, and local file parsing. Addressing these common barriers, a novel free open-source application designated as Hob has emerged, offering seamless cross-platform support for Windows, Mac, and Linux environments. Upon initial installation, Hob conducts a comprehensive hardware assessment of system memory and graphics capabilities, subsequently recommending and downloading an appropriate open-weight model tailored to the user's specific computer. The application empowers users to execute complex tasks such as generating spreadsheet charts, summarizing PDF documents, analyzing image files, and managing folder projects entirely through intuitive natural language chat commands. Notably, Hob supports thirty-two languages and ensures robust privacy by functioning completely offline once models are secured, though web searches and external API integrations still require active connectivity. Despite some online community discussions noting limitations regarding fine-grained parameter tuning, lack of advanced configuration options like temperature control, and challenges with uninstalling large model files, Hob successfully prioritizes user accessibility over intricate manual setup. By automating model selection and environment building, the application makes local artificial intelligence deployment considerably more approachable for everyday computer users seeking a simple, ready-to-use solution.",
+          "wordCount": 192
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261106-hob/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-06-hokkaido-clean-ammonia-company",
+      "date": "2026-11-06",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "environment"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ammonia",
+        "Hokkaido",
+        "clean-energy",
+        "business"
+      ],
+      "titleJa": "新会社設立",
+      "title": "New Company for Clean Ammonia in Hokkaido",
+      "summaryJa": "北海道電力など4社が、低炭素アンモニアの供給拠点を築くための新会社を設立しました。",
+      "sourcePublishedAt": "2026-11-06T01:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "新会社の役割と目指す目標を正確に把握する",
+        "followUpJa": "新会社がどのような分野にアンモニアを供給しようとしているか話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the new company?",
+          "4級": "Why did the four companies establish this new company in Hokkaido?",
+          "3級": "What kind of supply chain are the companies trying to build by 2030?",
+          "準2級": "What are the main functions of the new ammonia hub in the Tomakomai and Atsuma areas?",
+          "2級": "How does the certified project under the Hydrogen Society Promotion Act contribute to regional decarbonization?",
+          "準1級": "Explain the strategic importance of establishing Japan's first commercial low-carbon ammonia supply chain project."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Clean Energy Company",
+          "text": "Four companies make a new company. The name is Hokkaido Clean Ammonia Terminal. They want to make clean energy in Hokkaido. They work hard for a new future. People can use clean ammonia soon. This is very good for the earth.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "New Company for Ammonia",
+          "text": "Four Japanese companies started a new business today. They want to build an ammonia supply base in Hokkaido. Hokkaido Electric Power is one of these partners. They plan to finish this important project by the year 2030. They will bring low-carbon ammonia from other countries to the region. This project helps make the local area clean and green.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "New Company for Clean Ammonia",
+          "text": "Four companies established a new business called Hokkaido Clean Ammonia Terminal Company. They want to build a special hub for low-carbon ammonia in the Tomakomai and Atsuma areas. The project aims to finish by the 2030 fiscal year. They plan to import low-carbon ammonia from overseas to supply power and industrial sectors. This project will help the local area reduce carbon emissions and grow its economy.",
+          "wordCount": 65
+        },
+        "準2級": {
+          "title": "Hokkaido Clean Ammonia Terminal Established",
+          "text": "Hokkaido Electric Power and three other partners have officially established a new firm named Hokkaido Clean Ammonia Terminal Company. This move follows government certification under the Hydrogen Society Promotion Act received earlier. The project focuses on creating Japan's first commercial-scale supply chain for low-carbon ammonia. By the 2030 fiscal year, the companies aim to build a major hub in the Tomakomai and Atsuma regions to receive, store, and distribute imported ammonia. This facility will provide a stable energy supply for power generation and industrial uses, contributing significantly to regional decarbonization and economic development.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Four Companies Launch Hokkaido Clean Ammonia Terminal to Advance Regional Decarbonization",
+          "text": "Hokkaido Electric Power, Mitsui & Co., IHI Corporation, and Tomakomai Port have officially joined forces to establish a new joint venture known as Hokkaido Clean Ammonia Terminal Company. This strategic milestone follows their earlier government certification under the Hydrogen Society Promotion Act, which was granted by the Minister of Economy, Trade and Industry and the Minister of Land, Infrastructure, Transport and Tourism. The collaborative initiative aims to construct Japan's inaugural commercial-scale supply chain project for low-carbon ammonia by the end of fiscal 2030. Centered primarily in the Tomakomai and Atsuma regions of Hokkaido, the newly formed entity will handle the overseas procurement, safe reception, long-term storage, and stable distribution of low-carbon ammonia to diverse energy and industrial customers. Through this ambitious and forward-looking project, the founding partners intend to significantly advance regional decarbonization efforts while fostering long-term economic growth and industrial development across the local community.",
+          "wordCount": 144
+        },
+        "準1級": {
+          "title": "Strategic Establishment of Hokkaido Clean Ammonia Terminal for Decarbonized Growth",
+          "text": "In a decisive stride toward achieving a sustainable and decarbonized economy, Hokkaido Electric Power, Mitsui & Co., IHI Corporation, and Tomakomai Port have officially incorporated Hokkaido Clean Ammonia Terminal Company to advance regional decarbonization across the local community. This specialized corporate entity operationalizes a certified business plan under the Hydrogen Society Promotion Act, which secured official approval from both the Minister of Economy, Trade and Industry and the Minister of Land, Infrastructure, Transport and Tourism. Representing Japan's pioneering commercial endeavor in low-carbon ammonia supply chain development, the venture seeks to establish a comprehensive receiving, storage, and supply terminal in the Tomakomai and Atsuma regions by the end of fiscal 2030. Sourced internationally from dependable global partners, the low-carbon ammonia will be securely imported and reliably distributed to power generation and industrial sectors. This critical infrastructure project not only underscores the participating corporations' unwavering commitment to securing stable and diversified energy supplies for the future, but it also serves as a powerful catalyst for comprehensive regional revitalization, industrial competitiveness, and long-term environmental sustainability across Hokkaido. The founding partners intend to continue examining how this supply chain can contribute to regional decarbonization and economic development.",
+          "wordCount": 191
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253233_2073.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-06-home-visit-care-support-plan",
+      "date": "2026-11-06",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "home-care",
+        "MHLW",
+        "aging-society",
+        "welfare"
+      ],
+      "titleJa": "訪問介護に新方針",
+      "title": "New Support Plan for Home-Visit Care in Japan",
+      "summaryJa": "厚生労働省は、高齢化社会に不可欠な訪問介護サービスを維持するため、経営が厳しい事業者向けに新たな支援策の案を示しました。",
+      "sourcePublishedAt": "2026-11-06T14:50:29.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "訪問介護の事業者や高齢者の生活を維持するためにどのような支援が求められているか、記事の内容を基に考えてみましょう。",
+        "followUpJa": "家族や自分が将来介護を受けるとき、どのようなサービス維持の工夫があれば安心できるか議論してみましょう。",
+        "questions": {
+          "5級": "What service does the Ministry of Health, Labour and Welfare want to help?",
+          "4級": "Why are some home-visit care businesses in a difficult situation today?",
+          "3級": "What did the Ministry of Health, Labour and Welfare show on November 6?",
+          "準2級": "Why is the home-visit care system extremely important for society according to the article?",
+          "2級": "What are the main management challenges that home-visit care providers are currently facing in an aging society?",
+          "準1級": "How might the new support policy proposed by the ministry impact the sustainability of home-visit care services?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Home Care Help",
+          "text": "Many old people live in Japan. They need home-visit care. But some care businesses have money problems. On November 6, the Ministry of Health, Labour and Welfare showed a new support plan. Can Japan keep this important care service safe for everyone?",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "New Support for Home Care",
+          "text": "Home-visit care lets people get help at home. It is a very important system for our aging society. However, some care providers have hard business conditions now. On November 6, the Ministry of Health, Labour and Welfare showed a new support plan. Will Japan be able to keep these care services going for everyone who needs them?",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Ministry Shows Support Plan for Home-Visit Care",
+          "text": "Home-visit care is a very important service where elderly people can receive necessary care right at their own homes. This system is truly essential for Japan's aging society. However, some care businesses are facing difficult management conditions today. On November 6, the Ministry of Health, Labour and Welfare showed a new support plan. People across the country are now wondering if these vital home-visit care services can be safely maintained for everyone who depends on them.",
+          "wordCount": 75
+        },
+        "準2級": {
+          "title": "New Support Plan Proposed for Home-Visit Care",
+          "text": "Home-visit care allows elderly individuals to receive necessary care right in their own homes, making it an indispensable system for Japan's aging society. However, an increasing number of care providers are currently facing severe business conditions and financial difficulties. On November 6, the Ministry of Health, Labour and Welfare presented a new support plan to address these pressing issues and ensure the continuity of welfare services. The big question remains whether these essential home-visit care services can be successfully maintained and protected across the country for those who depend on them. Local communities and experts are closely following how these new measures will be implemented to support struggling operators and secure the future of elderly care in every region.",
+          "wordCount": 118
+        },
+        "2級": {
+          "title": "Ministry of Health Proposes New Support Plan for Home-Visit Care",
+          "text": "Home-visit care, which enables elderly individuals to receive necessary assistance directly in their own homes, serves as an indispensable institutional framework for Japan's rapidly aging society. Despite its vital role in daily life, various care operators delivering these services are currently struggling with severe business environments and financial hardships, raising widespread concerns about the future of local welfare systems. On November 6, the Ministry of Health, Labour and Welfare introduced a draft for a new support policy to address these challenges and help maintain essential care operations. As concerns continue to grow among local communities and industry stakeholders, society is watching closely to see whether these crucial home-visit care services can be effectively maintained and protected for the future. Furthermore, policymakers are discussing what additional measures might be necessary to stabilize management conditions for providers across the nation.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Ministry Outlines New Support Measures to Maintain Home-Visit Care Services",
+          "text": "Home-visit care, a critical system that allows elderly individuals to receive essential welfare and support directly within their private residences, serves as an absolute cornerstone of daily life in Japan's rapidly graying demographic landscape. Nevertheless, a growing number of home-visit care service providers are currently grappling with severe management challenges and financial strain under difficult economic conditions, threatening the continuous delivery of care to those who need assistance the most. Against this backdrop, the Ministry of Health, Labour and Welfare officially unveiled a draft proposal outlining new support measures on November 6 to help stabilize struggling operators across the nation. This important initiative raises critical questions regarding the future stability of the care sector, prompting local stakeholders, administrators, and policymakers to evaluate whether these vital home-visit care services can be sustainably maintained amidst ongoing societal pressures. Observers and industry experts emphasize that comprehensive strategies will be essential to ensure that vulnerable elderly citizens do not lose access to the indispensable daily support upon which they rely so heavily for their well-being and daily living within Japan today.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261106de71869"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-06-jaguars-defeat-ravens-2026",
+      "date": "2026-11-06",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NFL",
+        "Jaguars",
+        "Ravens"
+      ],
+      "titleJa": "ジャガーズが勝利",
+      "title": "Jaguars inflict fourth straight defeat on Ravens",
+      "summaryJa": "ジャクソンビル・ジャガーズがボルチモア・レイブンズを33-10で破り、レイブンズは4連敗となりました。",
+      "sourcePublishedAt": "2026-11-06T14:27:19.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "試合の結果とレイブンズの状況を正しく把握するために情報を探しましょう。",
+        "followUpJa": "勝敗のスコアやチームの連続敗戦数について話し合ってみましょう。",
+        "questions": {
+          "5級": "Who won the game?",
+          "4級": "What was the final score of the game?",
+          "3級": "How many straight defeats did the Ravens suffer?",
+          "準2級": "Which week of the NFL season did this match open?",
+          "2級": "What details are given about the performance of the Jaguars in this game?",
+          "準1級": "How does the outcome of this match reflect the recent trajectory of both teams in the NFL?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Jaguars Win",
+          "text": "The Jaguars play a football game. They play against the Ravens. The game is fun. The Jaguars win the game. The score is 33 to 10. The Ravens are sad. They lose again. It is their fourth loss. The fans are very happy for the team.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Jaguars Beat Ravens",
+          "text": "The Jacksonville Jaguars play a big football game. They play against the Baltimore Ravens. This game opens week nine of the NFL. The Jaguars play very well. They get a big victory. The final score is 33-10. The Ravens try hard, but they cannot win. This is a very bad time for the Ravens. They now have four straight defeats in the season.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "Jaguars Defeat Ravens",
+          "text": "The Jacksonville Jaguars open week nine of the NFL season with an exciting match against the Baltimore Ravens. The Jaguars play very well during the game and secure a convincing victory over their opponents. The final score is 33 to 10 in favor of the Jaguars. Meanwhile, the Baltimore Ravens struggle on the field. They cannot stop the strong offense of the Jaguars and suffer their fourth straight defeat. Fans watch the game and see how the team continues to lose consecutive matches this season.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Jaguars Inflict Fourth Straight Defeat on Ravens",
+          "text": "The Jacksonville Jaguars officially opened week nine of the NFL season with an impressive and convincing performance. They faced the Baltimore Ravens in a match that ended with a dominant 33-10 victory for Jacksonville. From the very beginning of the contest, the Jaguars played with great energy and control. For the Baltimore Ravens, the game was a deeply disappointing experience. They struggled to find any momentum on the field and ultimately slumped to their fourth straight defeat. This result leaves the Ravens facing serious questions about their current form as the season continues.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Jaguars Claim Convincing Win Over Struggling Ravens",
+          "text": "The Jacksonville Jaguars successfully opened week nine of the NFL season with a decisive and impressive performance on the field. They achieved a very convincing 33-10 victory against the Baltimore Ravens in a matchup that showcased their strong preparation and execution. From the early stages of the game, the Jaguars demonstrated superior control over their opponents, allowing them to secure a comfortable and well-deserved lead. On the other hand, the Baltimore Ravens experienced another very difficult outing as they tried to find their rhythm. This latest setback marks their fourth straight defeat, plunging the team into a challenging phase of the season. The Ravens must now urgently evaluate their gameplay and strategy to arrest their current losing streak, while the triumphant Jaguars celebrate an important win that boosts their momentum for the upcoming games of the schedule.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "Jaguars Deliver Impressive Victory to Extend Ravens' Losing Streak",
+          "text": "The Jacksonville Jaguars officially commenced week nine of the NFL schedule with a commanding and comprehensive display of athletic execution, cruising to a dominant 33-10 victory over the Baltimore Ravens in an emphatic opening contest that highlighted their readiness for the competition. The Jacksonville Jaguars controlled the tempo of the matchup from the very outset, executing their tactical game plan effectively and leaving their opponents with virtually no answers on either side of the ball throughout the entire duration of the game. Conversely, the Baltimore Ravens endured another dismal outing that further compounded their recent struggles on the field, continuing an alarming downward trend in their performance levels across the professional football season. This heavy defeat represents their fourth straight defeat of the season, highlighting mounting concerns regarding the team's overall consistency and strategic approach as the professional football schedule progresses. While the Jacksonville Jaguars celebrate a much-needed and thoroughly convincing triumph that elevates their standing and momentum, the Baltimore Ravens face an increasingly difficult challenge to recalibrate their strategy and find a definitive way to arrest their current losing streak in the coming weeks. The Jacksonville Jaguars demonstrated their strength from the start to the finish of the game against the Baltimore Ravens. The Baltimore Ravens struggled to find any momentum on the field during this game, which opened week nine of the NFL season. The Jacksonville Jaguars played with great energy and control, securing a final score of 33-10 against the Baltimore Ravens. Fans of the Jacksonville Jaguars celebrated the wonderful win, while supporters of the Baltimore Ravens watched their team slump to a fourth straight defeat in the NFL.",
+          "wordCount": 270
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/american-football/videos/cwp8gge4r428o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-06-lovelive-joysound-campaign-2026",
+      "date": "2026-11-06",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "LoveLive",
+        "JOYSOUND",
+        "Karaoke",
+        "Anime"
+      ],
+      "titleJa": "ラブライブ15周年",
+      "title": "LoveLive! and JOYSOUND Start Special Campaign",
+      "summaryJa": "ラブライブシリーズ15周年を記念して、JOYSOUNDで待ち受け画像やタンバリンが当たるコラボキャンペーンが6日から始まった。",
+      "sourcePublishedAt": "2026-11-06T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "記事の内容からJOYSOUNDのキャンペーンに参加する方法や特典を確認し、どのグッズが欲しいか選ぶため。",
+        "followUpJa": "友達と一緒にどの曲を歌いに行くか話し合ってみましょう。",
+        "questions": {
+          "5級": "What can you get for free at JOYSOUND?",
+          "4級": "How do you join the campaign with your phone?",
+          "3級": "How many types of original wait-screen images can you get?",
+          "準2級": "What special prize can you win in the W-chance draw, and how many people can get it?",
+          "2級": "What are the campaign dates, and which four machine models are supported?",
+          "準1級": "Explain the application process for the wait-screen images and how the W-chance prize differs in terms of choice."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "LoveLive! Campaign",
+          "text": "LoveLive! is a famous anime. Now, a new campaign is here. It starts today. You can go to JOYSOUND karaoke. You can sing nice songs. You can get a free picture. Many fans are very happy. Please go and sing songs with your friends.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Sing and Get Pictures",
+          "text": "The LoveLive! series has a big 15th anniversary. JOYSOUND has a special campaign now. Fans can visit karaoke shops and sing LoveLive! songs to join. You need to use your smartphone app to enter. Every person can get a free original wait-screen image. There are seven random types for you to collect. You can also win a special tambourine prize.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "LoveLive! and JOYSOUND",
+          "text": "To celebrate the 15th anniversary of the LoveLive! series, JOYSOUND started a special campaign today. Fans can join by singing related songs at karaoke shops. You need to use the free app on your smartphone to select songs. All participants can get a free wait-screen image. There are seven different designs available. Also, twenty-one people can win an original tambourine by lottery.",
+          "wordCount": 61
+        },
+        "準2級": {
+          "title": "Special Collaboration Campaign",
+          "text": "The LoveLive! series is celebrating its 15th anniversary with a big milestone event. To mark this occasion, a collaboration campaign with JOYSOUND began on November 6. Fans can participate by visiting karaoke locations equipped with target machines and singing LoveLive! songs using the Kyokunabi JOYSOUND smartphone app. Every participant instantly receives an original wait-screen image. There are seven random types available, and users can collect one per song each day. Furthermore, a W-chance sweepstakes offers original tambourines to twenty-one winners in total, with three prizes for each of the seven designs. The campaign runs until January 11, 2027.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "Celebrating 15 Years of LoveLive! with JOYSOUND",
+          "text": "The popular multimedia project LoveLive! is celebrating its 15th anniversary. In honor of this milestone, a special collaboration campaign with the karaoke brand JOYSOUND launched on November 6. Fans visiting participating karaoke rooms can sing LoveLive! songs by using the free smartphone app Kyokunabi JOYSOUND as a remote control. Every participant instantly receives an original wait-screen image, with seven random designs available and one obtainable per song each day. Additionally, a W-chance lottery offers twenty-one winners an original tambourine featuring designs from the various series, and applicants can choose their preferred prize design. The campaign runs until January 11, 2027, and is supported on four machine models: JOYSOUND X1, MAX GO, MAX2, and MAX. Furthermore, the 15th anniversary live event will take place on November 14 and 15 at Vantelin Dome Nagoya, where JOYSOUND will also operate a special karaoke booth for attendees to enjoy.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "JOYSOUND and LoveLive! Launch Anniversary Collaboration Campaign",
+          "text": "Marking a decade and a half of musical and animated storytelling since the franchise began in 2010, the LoveLive! series has initiated a major tie-up with karaoke provider JOYSOUND to celebrate its ongoing milestones. Running from November 6 until January 11, 2027, the promotional campaign invites passionate fans to engage with the extensive musical catalog across four compatible machine models: JOYSOUND X1, JOYSOUND MAX GO, JOYSOUND MAX2, and JOYSOUND MAX. Participants utilize the Kyokunabi JOYSOUND smartphone application as a remote control to select qualifying tracks, immediately unlocking one of seven random digital wait-screen images per song daily. Beyond the guaranteed digital downloads, a secondary W-chance sweepstakes offers twenty-one lucky participants a custom tambourine representing one of the franchise's distinct groups, allowing applicants to specify their preferred design among the available options. This campaign builds immense anticipation for the upcoming LoveLive! Series 15th Anniversary LoveLive! Fest scheduled for November 14 and 15 at Vantelin Dome Nagoya, where JOYSOUND plans to host an interactive karaoke booth for the attending community. The LoveLive! series, which first started in 2010 as a multimedia project featuring school idols, continues to expand through various television anime, music releases, and live events. Fans visiting the venue can enjoy special企画 while participating in ongoing surveys regarding their favorite school idol members they would like to visit karaoke with during this special anniversary period.",
+          "wordCount": 215
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261106-5270351/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-06-sapporo-recycling-station-theft",
+      "date": "2026-11-06",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "sapporo",
+        "theft",
+        "security-camera",
+        "recycling"
+      ],
+      "titleJa": "無人回収所から窃盗事件",
+      "title": "Four Men Arrested for Theft at Sapporo Recycling Stations",
+      "summaryJa": "北海道札幌市の無人資源回収所で、携帯電話やパソコンなど64台を盗んだとして、16歳から61歳の男4人が逮捕されました。防犯カメラの映像が決め手となりました。",
+      "sourcePublishedAt": "2026-11-06T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "防犯カメラの重要性を理解し、自分が店舗のオーナーならどのような対策を追加ですべきか考えましょう。",
+        "followUpJa": "防犯カメラ以外の対策についてクラスで話し合ってみましょう。",
+        "questions": {
+          "5級": "What did the men steal?",
+          "4級": "Where did the men steal the computers and phones?",
+          "3級": "How did the police catch the four men?",
+          "準2級": "How many recycling stations were targeted, and what was the total number of stolen devices reported?",
+          "2級": "What was the main purpose behind the thefts committed by the four men, according to the police investigation?",
+          "準1級": "Discuss how the cooperation between the victimized company and the police helped uncover the extent of the crimes."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Theft in Sapporo",
+          "text": "Four men stole many phones and computers. They went to a recycling station in Sapporo. No people were there. Security cameras showed the theft. The police arrested the four men. They can steal things, but security cameras catch them easily now.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "Security Cameras Catch Thieves",
+          "text": "Four men from sixteen to sixty-one years old stole sixty-four devices in Sapporo. They took mobile phones and laptop computers from unmanned recycling stations. The police caught them because security cameras recorded everything. The men wanted to sell the stolen items. Now, the police are checking more possible crimes. They used security cameras to find the thieves very quickly.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Four Men Arrested for Recycling Station Thefts",
+          "text": "Four men between the ages of sixteen and sixty-one were arrested in Sapporo. Between August and September, they stole sixty-four items, including mobile phones and laptop computers, from six unmanned recycling stations. The victims used security cameras to record the crimes. These camera videos were the deciding factor for the police arrest. The suspects admitted to the charges and likely planned to resell the stolen goods. The police are continuing to investigate other cases.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Security Camera Footage Leads to Arrests in Sapporo Theft Case",
+          "text": "Police in Sapporo have arrested four men, aged sixteen to sixty-one, on suspicion of theft. The suspects targeted six unmanned resource recycling stations between August and September. They stole a total of sixty-four items, such as mobile phones and laptop computers, from collection boxes. Security camera footage proved to be the crucial evidence that led to their arrests. Investigators believe the men, who knew each other, stole the electronics to resell them for profit. The company that manages the stations reported sixty-five cases of damage to the police, and authorities are continuing their investigation into other possible crimes across the area.",
+          "wordCount": 101
+        },
+        "2級": {
+          "title": "Unmanned Recycling Station Thefts Solved by Security Cameras in Sapporo",
+          "text": "In Sapporo, Hokkaido, four men ranging in age from sixteen to sixty-one have been arrested and sent to prosecutors on suspicion of theft. The incidents took place at six unmanned resource recycling stations managed by the \"Junkan Convenience\" network between August and September. Investigators stated that the suspects stole a total of sixty-four items, including mobile phones and laptop computers, from large collection boxes located at these unattended sites. The crucial breakthrough for local authorities came from security camera footage, which clearly captured a suspect searching through the boxes and removing devices such as two laptop computers. Police revealed that the four individuals were acquaintances centered around a sixty-one-year-old suspect named Mutsunari Takahashi. They are believed to have committed these repeated thefts with the intention of reselling the stolen electronics for money. The affected company has already reported sixty-five separate incidents of damage and loss to the police, and investigators are now actively pursuing additional potential offenses connected to the group's ongoing activities across the area.",
+          "wordCount": 166
+        },
+        "準1級": {
+          "title": "Decisive Camera Evidence Unmasks Sapporo Recycling Station Theft Ring",
+          "text": "A string of coordinated thefts targeting unmanned resource recycling stations across Sapporo, Hokkaido, has culminated in the formal arrest and prosecution of four individuals ranging in age from sixteen to sixty-one years old. Over a strategic two-month period spanning August and September, the group allegedly made off with a total of sixty-four electronic devices, prominently featuring mobile phones and laptops, harvested directly from secure collection bins situated at six different unmanned facilities operated by the Junkan Convenience recycling service network. The criminal investigation gained critical momentum and definitive direction thanks to high-definition security camera footage supplied by the victimized company, which clearly captured the suspects meticulously rummaging through the large collection boxes and walking away with valuable electronics such as two laptop computers. This robust visual evidence served as the decisive factor for local law enforcement to execute their arrests. Authorities indicate that the unlawful operation was spearheaded by a sixty1-year-old suspect named Mutsunari Takahashi, alongside three other acquaintances, with the primary economic aim of liquidating the stolen goods on the secondary resale market. Following their apprehension, the suspects have largely acknowledged their involvement in the criminal acts. With the victimized company formally documenting sixty-five distinct loss reports to the police, investigators are currently probing the suspects for potential involvement in further unsolved regional incidents to determine the full scope of their unlawful activities.",
+          "wordCount": 224
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63432"
+        }
+      ]
+    },
     {
       "id": "2026-11-05-ai-oss-maintainer-stops-pull-requests",
       "date": "2026-11-05",
