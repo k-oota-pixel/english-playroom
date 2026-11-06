@@ -260,7 +260,13 @@ function install() {
     }catch{}
   }
   function show(u){
-    current=isHome(u)?'':key(u);
+    const next=isHome(u)?'':key(u);
+    if(current&&current!==next){
+      // Give the outgoing material a chance to release live server resources
+      // before its iframe is replaced by another material or the home view.
+      try{child()?.onNavigateAway?.();}catch(error){console.warn('material navigation cleanup failed',error);}
+    }
+    current=next;
     shell.classList.toggle('ms-showing-material',!!current);
     shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
     syncTitle(u);
