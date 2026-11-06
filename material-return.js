@@ -57,7 +57,10 @@ function install(){
   const sync=()=>{
     bar.hidden=!shell.classList.contains('ms-showing-material');
     let isDefense=false;
-    try{isDefense=/\\/pet-typing-defense\\/(?:index\\.html)?$/.test(new URL(frame.src,HOME).pathname);}catch{}
+    try{
+      const pathname=new URL(frame.src,HOME).pathname;
+      isDefense=pathname.endsWith('/pet-typing-defense/')||pathname.endsWith('/pet-typing-defense/index.html');
+    }catch{}
     defenseActions.hidden=!isDefense;
     rankingBtn.hidden=isDefense||!materialRankingAppId(frame.src);
   };
