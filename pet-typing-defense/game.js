@@ -1,4 +1,5 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.67';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.68';
+import {openMaterialRanking} from '../material-ranking-ui.js?v=2.3.68';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
@@ -164,11 +165,11 @@ function rewardDescription(mode,stage,phase){
 }
 async function rewardApi(){
  try{
-  if(parent!==window&&parent.location.origin===location.origin&&typeof parent.EnglishPlayroomCoins?.awardOncePerDay==='function'){
+  if(parent!==window&&parent.location.origin===location.origin&&typeof parent.EnglishPlayroomCoins?.recordTypingDefenseStage==='function'){
    return parent.EnglishPlayroomCoins;
   }
  }catch{}
- await import('../coin-reward.js?v=2.3.66');
+ await import('../coin-reward.js?v=2.3.68');
  return window.EnglishPlayroomCoins||null;
 }
 async function payPhaseReward(stage,phase,id){
@@ -190,12 +191,19 @@ async function payPhaseReward(stage,phase,id){
    else if(result?.reason==='signed-out')throw Error('ログインが必要です。');
    else throw Error('コイン付与を確認できませんでした。');
   }
+  let rankingRecord=null;
+  if(phase===PHASES_PER_STAGE-1){
+   if(typeof api.recordTypingDefenseStage!=='function')throw Error('ランキング処理を読み込めませんでした。');
+   rankingRecord=await api.recordTypingDefenseStage(run.mode,stage+1);
+   if(!rankingRecord?.recorded&&!rankingRecord?.duplicate)throw Error('本日のランキング記録を確認できませんでした。');
+  }
   if(id!==rewardRunId)return;
   run.rewardPaid.add(id);
-  receipt.textContent=gained?'🪙 +'+gained+'コインを獲得！'+(duplicate?'（残りは本日獲得済み）':''):'🪙 本日の報酬は獲得済みです。';
+  const rewardMessage=gained?'🪙 +'+gained+'コインを獲得！'+(duplicate?'（残りは本日獲得済み）':''):'🪙 本日の報酬は獲得済みです。';
+  receipt.textContent=rewardMessage+(rankingRecord?' ／ 🏆 '+(rankingRecord.duplicate?'本日の順位記録済み':'本日のランキングに記録しました'):'');
  }catch(error){
   if(id!==rewardRunId)return;
-  receipt.textContent='コイン付与を確認できませんでした。再試行できます。';
+  receipt.textContent='コイン・ランキングの保存を確認できませんでした。再試行できます。';
   retry.hidden=false;
   retry.onclick=()=>{void payPhaseReward(stage,phase,id)};
   console.warn('Typing defense reward error',error);
@@ -315,6 +323,8 @@ function start(){
  choosePet();openPhase();
 }
 $('begin').addEventListener('click',start);
+$('normalRanking').addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-normal')});
+$('hardRanking').addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-hard')});
 $('nextPhase').addEventListener('click',()=>{});
 $('restart').addEventListener('click',()=>{
  if(!run?.active||confirm('最初からやり直しますか？'))start();
