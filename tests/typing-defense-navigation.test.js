@@ -27,7 +27,8 @@ test('PLAY dialog has the fourth game tile linking to typing defense',()=>{
 });
 
 test('homepage loads updated PLAY menu and sidebar module',()=>{
- assert.match(loader,/import '\.\/pet-play-menu-v164\.js\?v=2\.3\.69';/);
- assert.match(home,/app-shell\.js\?v=2\.3\.69/);
- assert.match(home,/version-badge-v176\.js\?v=2\.3\.69/);
+ assert.match(loader,/import '\.\/pet-play-menu-v164\.js\?v=2\.4\.1';/);
+ assert.match(home,/app-shell\.js\?v=2\.4\.1/);
+ assert.match(home,/<script type="module" src="\.\/pet-play-menu-v164\.js\?v=2\.4\.1"><\/script>/);
+ assert.match(home,/version-badge-v176\.js\?v=2\.4\.1/);
 });
