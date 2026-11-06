@@ -9,10 +9,10 @@
 <link rel="stylesheet" href="./dungeons-actions.css?v=1.10.24">
 <link rel="stylesheet" href="./guard.css?v=2.3.14">
 <link rel="stylesheet" href="./final.css?v=2.3.22">
-<link rel="stylesheet" href="./online-battle.css?v=2.3.53">
+<link rel="stylesheet" href="./online-battle.css?v=2.3.54">
 <script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.14"></script>
 <script src="../shell-bridge.js?v=2.1.1"></script>
-<script type="module" src="./online-battle.js?v=2.3.55"></script>
+<script type="module" src="./online-battle.js?v=2.3.56"></script>
 </head>
 <body>
 <main class="app-shell">
@@ -87,7 +87,7 @@
 
     <section class="loading-card" id="waitingCard"><div class="spinner" aria-hidden="true"></div><strong id="waitingTitle">対戦相手を待っています…</strong><span id="waitingText">同じルームに2人そろうと準備できます</span><span id="readyFeedback" class="online-battle-feedback" role="status" hidden></span></section>
 
-    <section class="result-card" id="resultCard" hidden><div class="result-icon" id="resultIcon">🏁</div><span class="kicker">BATTLE COMPLETE</span><h2 id="resultTitle">BATTLE END</h2><p id="resultText"></p><p id="resultFeedback" class="online-battle-feedback" role="status" hidden></p><div class="result-actions"><button class="primary-btn" id="retryBtn" type="button">もう一度対戦</button><button class="secondary-btn" id="leaveBtn" type="button">対戦を終了する</button></div></section>
+    <section class="result-card" id="resultCard" hidden><div class="result-icon" id="resultIcon">🏁</div><span class="kicker">BATTLE COMPLETE</span><h2 id="resultTitle">BATTLE END</h2><p id="resultText"></p><p id="resultFeedback" class="online-battle-feedback" role="status" hidden></p><p class="online-exit-note">部屋を空けると、次のプレイヤーも利用できます。</p><div class="result-actions"><button class="primary-btn" id="leaveBtn" type="button">部屋を空けてロビーへ</button><button class="secondary-btn" id="retryBtn" type="button">もう一度対戦</button></div></section>
 
     <section id="onlineControls" class="online-controls" aria-live="polite">
       <div id="readyCount" class="online-ready-count"></div>
