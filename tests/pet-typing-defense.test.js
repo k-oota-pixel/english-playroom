@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {
  createCampaign,normalizedTyping,normalizedDefenseTyping,revealedWord,enemySpawnInterval,
  characterCount,hasApostrophe,POTATO_MEAN_CHARACTER_COUNT,potatoGap,grammarGap,
@@ -104,4 +105,20 @@ test('Case and punctuation remain optional but letter sequence must match',()=>{
  assert.equal(normalizedTyping("  Could I have a menu, please?  "),"could i have a menu please");
  assert.equal(normalizedTyping("I’m happy."),"i'm happy");
  assert.notEqual(normalizedTyping('was'),normalizedTyping('were'));
+});
+
+test('game launcher has two large direct mode buttons and no old setup text',()=>{
+ const page=readFileSync(new URL('../pet-typing-defense/index.html',import.meta.url),'utf8');
+ const game=readFileSync(new URL('../pet-typing-defense/game.js',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../pet-typing-defense/style.css',import.meta.url),'utf8');
+ const opening=page.split('<div id="opening"')[1]?.split('<section class="card game"')[0]||'';
+ assert.match(opening,/<button type="button" id="normalStart"[^>]*>ノーマルモード<\/button>/);
+ assert.match(opening,/<button type="button" id="hardStart"[^>]*>ハードモード<\/button>/);
+ assert.equal((opening.match(/<button /g)||[]).length,2);
+ assert.doesNotMatch(opening,/<select|stage-list|reward-note|description|本日のランキング/);
+ assert.match(game,/normalStart'\)\.addEventListener\('click',\(\)=>start\('normal'\)\)/);
+ assert.match(game,/hardStart'\)\.addEventListener\('click',\(\)=>start\('hard'\)\)/);
+ assert.match(game,/function start\(mode=run\?\.mode\|\|'normal'\)/);
+ assert.match(css,/\.opening\.mode-chooser\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.match(page,/<section class="card game"[\s\S]*id="normalRanking"[\s\S]*id="hardRanking"/);
 });
