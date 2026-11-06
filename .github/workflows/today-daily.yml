@@ -16,6 +16,7 @@ on:
     paths:
       - '.github/workflows/today-daily.yml'
       - 'today/update-daily-news.mjs'
+      - 'today/update-online-rankings.mjs'
       - 'tests/today-daily-update.test.js'
 
 permissions:
@@ -54,3 +55,15 @@ jobs:
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
+
+  # Separate job: a failure to generate TODAY news must never block rankings.
+  rankings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Publish previous-day online battle rankings
+        run: node today/update-online-rankings.mjs
