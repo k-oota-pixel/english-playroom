@@ -3,6 +3,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet} from './pet-model.js?v=2.1.25';
+import {NEW_YEAR_PET_SCENES} from './new-year-backgrounds.js?v=2.3.58';
 
 const EXTRA_ITEMS=Object.freeze([
   {id:'chef-hat',name:'コック帽',price:12,slot:'head',icon:'👨‍🍳'},
@@ -41,7 +42,9 @@ const EXTRA_ITEMS=Object.freeze([
   {id:'candy-bg',name:'お菓子の国の背景',price:30,slot:'backgrounds',icon:'🍭'},
   {id:'christmas-night-bg',name:'聖夜のきらめき',price:30,slot:'backgrounds',icon:'🌟'},
   {id:'christmas-home-bg',name:'クリスマスのお部屋',price:30,slot:'backgrounds',icon:'🎄'},
-  {id:'christmas-workshop-bg',name:'サンタの工房',price:35,slot:'backgrounds',icon:'🎁'}
+  {id:'christmas-workshop-bg',name:'サンタの工房',price:35,slot:'backgrounds',icon:'🎁'},
+  {id:'newyear-sunrise-bg',name:'初日の出のお正月広場',price:30,slot:'backgrounds',icon:'🌅'},
+  {id:'newyear-tatami-bg',name:'お正月の和室',price:30,slot:'backgrounds',icon:'🎍'}
 ]);
 
 const ITEM_MAP=Object.freeze(Object.fromEntries(EXTRA_ITEMS.map(item=>[item.id,item])));
@@ -77,6 +80,7 @@ const EFFECT_LAYERS=Object.freeze({
 });
 
 const BACKGROUND_LAYERS=Object.freeze({
+  ...NEW_YEAR_PET_SCENES,
   'beach-bg':'<g><rect width="240" height="240" rx="32" fill="#dff4ff"/><circle cx="191" cy="49" r="25" fill="#ffd66f"/><path d="M0 126 Q35 113 70 126 T140 126 T210 126 T240 126 V240 H0Z" fill="#77c8e6"/><path d="M0 161 Q52 150 104 162 T206 160 T240 160 V240 H0Z" fill="#f1d29b"/><path d="M24 112 Q36 82 51 67" stroke="#8a6a45" stroke-width="8"/><path d="M50 66 q-27 0-34 14 q22 3 34-8 q18-10 31 1 q-8-17-31-7Z" fill="#65a76e"/></g>',
   'library-bg':'<g><rect width="240" height="240" rx="32" fill="#efe6d8"/><g fill="#9a6f4b"><rect x="8" y="25" width="56" height="160" rx="5"/><rect x="176" y="25" width="56" height="160" rx="5"/></g><g fill="#d46f68"><rect x="15" y="39" width="10" height="35"/><rect x="184" y="39" width="10" height="35"/></g><g fill="#6f91bf"><rect x="28" y="39" width="11" height="35"/><rect x="198" y="39" width="11" height="35"/></g><g fill="#7aaa72"><rect x="42" y="39" width="12" height="35"/><rect x="213" y="39" width="10" height="35"/></g><path d="M0 197 H240 V240 H0Z" fill="#d7b891"/></g>',
   'night-city-bg':'<g><rect width="240" height="240" rx="32" fill="#232c52"/><circle cx="187" cy="48" r="22" fill="#ffe89a"/><g fill="#35406f"><rect x="0" y="92" width="48" height="148"/><rect x="44" y="70" width="48" height="170"/><rect x="170" y="82" width="70" height="158"/></g><g fill="#ffd56a"><rect x="13" y="108" width="8" height="12"/><rect x="30" y="130" width="8" height="12"/><rect x="58" y="89" width="8" height="12"/><rect x="77" y="118" width="8" height="12"/><rect x="186" y="101" width="9" height="12"/><rect x="210" y="130" width="9" height="12"/></g><path d="M0 199 H240 V240 H0Z" fill="#22283f"/></g>',
