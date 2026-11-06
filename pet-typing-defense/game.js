@@ -1,4 +1,4 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.66';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.67';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
@@ -127,7 +127,7 @@ function openPhase(){
  const stage=Math.floor(phaseIndex/PHASES_PER_STAGE),phase=phaseIndex%PHASES_PER_STAGE;
  const questions=campaign[stage][phase];
  $('enemyLayer').replaceChildren();$('effects').replaceChildren();
- run.enemies=questions.map((q,i)=>({q,x:970,spawnAt:i*enemySpawnInterval(stage),spawned:false,resolved:false,node:null}));
+ run.enemies=questions.map((q,i)=>({q,x:970,spawnAt:i*enemySpawnInterval(stage,run.mode),spawned:false,resolved:false,node:null}));
  run.enemies.forEach((e,i)=>makeEnemy(e,i,stage));
  run.elapsed=0;run.active=true;shownQuestion=null;shownQuestionAt=0;wordReveal=null;lastTypedAt=-1e9;
  $('typing').value='';$('typing').disabled=true;$('typing').classList.remove('wrong');
