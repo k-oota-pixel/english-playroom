@@ -7,9 +7,9 @@
 <meta name="theme-color" content="#f4f7ed">
 <title>もんすたディフェンス | もんすたでぃ</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./style.css?v=1">
+<link rel="stylesheet" href="./style.css?v=2">
 <script src="../shell-bridge.js?v=2.3.41"></script>
-<script type="module" src="./game.js?v=1"></script>
+<script type="module" src="./game.js?v=2"></script>
 </head>
 <body>
 <main class="wrap">
@@ -25,12 +25,12 @@
  <div id="opening" class="card opening">
   <h2>4つのステージを攻略しよう！</h2>
   <div class="stage-list">
-   <div><span>01</span><strong>単語の森</strong><small>中1 → 中2 → 中3 → 高1 → 高2</small></div>
+   <div><span>01</span><strong>単語の森</strong><small>中1 → 中2 → 中3 → 高1 → 高2 の単語をタイピング</small></div>
    <div><span>02</span><strong>タスク別英会話</strong><small>模範英文を全文タイプ</small></div>
-   <div><span>03</span><strong>ポテトマンの畑</strong><small>和訳をヒントに穴埋め</small></div>
-   <div><span>04</span><strong>文法の砦</strong><small>並べ替え由来の文法穴埋め</small></div>
+   <div><span>03</span><strong>ポテトマンの畑</strong><small>完成した英文をそのまま全文タイプ</small></div>
+   <div><span>04</span><strong>文法の砦</strong><small>基本文法の完成文をそのまま全文タイプ</small></div>
   </div>
-  <p class="description">各ステージは5フェーズ、各フェーズ5問。全100問をクリアすると勝利です。魔物が城に到着すると耐久力が1減ります。正解の入力が完成すると自動で攻撃します。句読点・大文字小文字は判定に影響しません。</p>
+  <p class="description">表示された英単語・英文を見ながら、そのままタイプしよう。日本語からの英訳や穴埋めの推測は不要です。各ステージは5フェーズ、各フェーズ5問。全100問をクリアすると勝利です。魔物が城に到着すると耐久力が1減ります。正解の入力が完成すると自動で攻撃します。句読点・大文字小文字は判定に影響しません。</p>
   <div class="setup"><label for="speed">敵の進む速さ</label><select id="speed"><option value="gentle">やさしい（入力中は減速）</option><option value="normal">ふつう</option><option value="fast">はやい</option></select><button type="button" class="primary" id="begin">防衛を開始！</button></div>
   <p class="notice">試作版のため、コイン・称号・ランキングには反映されません。Firebaseの追加read/writeはありません。</p>
  </div>
@@ -57,10 +57,8 @@
   </div>
   <div class="question-panel" aria-live="polite">
     <div class="question-label"><span id="questionType">中学1年</span><span>タイプして魔法を発射！</span></div>
-    <div class="japanese" id="questionHint">—</div>
-    <div class="context" id="questionSubHint"></div>
     <div class="sentence" id="questionTemplate">—</div>
-    <label for="typing" class="typing-label">ANSWER / 英語を入力</label>
+    <label for="typing" class="typing-label">表示された英語をそのままタイプ</label>
     <input id="typing" type="text" lang="en" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" inputmode="text" placeholder="ここに英語をタイプ" maxlength="200">
     <div class="answer-progress"><div id="answerBar"></div></div>
     <p class="feedback" id="feedback" aria-live="polite">先頭の敵をねらってタイプしよう！</p>
