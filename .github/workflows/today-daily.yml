@@ -28,7 +28,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check TODAY updater and daily ranking publisher
+        run: |
+          node --check today/update-online-rankings.mjs
+          node --test tests/today-daily-update.test.js
   update:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -58,6 +71,7 @@ jobs:
 
   # Separate job: a failure to generate TODAY news must never block rankings.
   rankings:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
