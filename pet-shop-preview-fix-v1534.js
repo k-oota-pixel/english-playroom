@@ -3,14 +3,14 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {getFirestore,doc,onSnapshot} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet} from './pet-model.js?v=2.1.25';
-import {renderPetSVG} from './pet-art.js?v=2.3.56';
+import {renderPetSVG} from './pet-art.js?v=2.3.58';
 
 const EXTRA_SLOTS=Object.freeze({
   'chef-hat':'head','cowboy-hat':'head','party-hat':'head','detective-hat':'head','bunny-headband':'head','top-hat':'head',
   'heart-glasses':'face','monocle':'face','pixel-glasses':'face','flower-glasses':'face','hero-mask':'face','rosy-cheeks':'face',
   'green-scarf':'neck','gold-medal':'neck','star-pendant':'neck','striped-bowtie':'neck','flower-necklace':'neck','bandana':'head',
   'bubble-effect':'effects','snowflake-effect':'effects','leaf-effect':'effects','lightning-effect':'effects','flower-effect':'effects','candy-effect':'effects',
-  'beach-bg':'backgrounds','library-bg':'backgrounds','night-city-bg':'backgrounds','park-bg':'backgrounds','festival-bg':'backgrounds','candy-bg':'backgrounds','christmas-night-bg':'backgrounds','christmas-home-bg':'backgrounds','christmas-workshop-bg':'backgrounds'
+  'beach-bg':'backgrounds','library-bg':'backgrounds','night-city-bg':'backgrounds','park-bg':'backgrounds','festival-bg':'backgrounds','candy-bg':'backgrounds','christmas-night-bg':'backgrounds','christmas-home-bg':'backgrounds','christmas-workshop-bg':'backgrounds','newyear-sunrise-bg':'backgrounds','newyear-tatami-bg':'backgrounds'
 });
 
 const BASE_ITEMS=Object.freeze({
