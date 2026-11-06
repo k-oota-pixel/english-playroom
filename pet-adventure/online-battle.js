@@ -424,6 +424,64 @@ battleView.querySelector('header.topbar a.back')?.addEventListener('click',event
  if(activeRoom)void act('leave').catch(()=>{});
  else{enterLobbyLayout();if(selectedGrade)void refreshLobby();else showGradePicker();}
 });
+// Rankings are read on demand only, never from the active battle/lobby polling loop.
+const rankingDialog=$('onlineRankingDialog'),rankingTitle=$('onlineRankingTitle'),rankingDate=$('onlineRankingDate'),rankingStatus=$('onlineRankingStatus'),rankingRows=$('onlineRankingRows');
+let rankingRequest=0;
+function previousJapanDate(){
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(Date.now()-86400000));
+ const fields=Object.fromEntries(parts.map(part=>[part.type,part.value]));
+ return fields.year+'-'+fields.month+'-'+fields.day;
+}
+function renderDailyRanking(data){
+ rankingRows.replaceChildren();
+ for(const entry of (Array.isArray(data.leaders)?data.leaders:[]).slice(0,10)){
+  const tr=document.createElement('tr');
+  const rank=document.createElement('td');rank.textContent=(Number(entry.rank)||'—')+'位';
+  const name=document.createElement('td'),nickname=document.createElement('span'),pet=document.createElement('small');
+  nickname.className='online-ranking-name';nickname.textContent=String(entry.nickname||'なまえ未設定');
+  pet.className='online-ranking-pet';pet.textContent='ペット：'+String(entry.petName||'ペット');
+  name.append(nickname,pet);
+  const record=document.createElement('td');record.textContent=(Number(entry.games)||0)+'戦 '+(Number(entry.wins)||0)+'勝';
+  const rate=document.createElement('td');rate.textContent=(Number(entry.winRate)||0).toFixed(1)+'%';
+  tr.append(rank,name,record,rate);rankingRows.append(tr);
+ }
+}
+async function openDailyRanking(){
+ if(!selectedGrade||!user)return;
+ const grade=selectedGrade,requestId=++rankingRequest,expectedDate=previousJapanDate();
+ rankingTitle.textContent='🏆 '+gradeLabel(grade)+' 対戦ランキング';
+ rankingDate.textContent='昨日（'+expectedDate+'）までの通算成績';
+ rankingStatus.textContent='ランキングを読み込んでいます…';
+ rankingStatus.classList.remove('error');rankingRows.replaceChildren();
+ if(!rankingDialog.open)rankingDialog.showModal();
+ const cacheKey='monstudy-online-standings-v1:'+grade+':'+expectedDate;
+ try{
+  let data=null;
+  try{const saved=sessionStorage.getItem(cacheKey);if(saved)data=JSON.parse(saved);}catch{}
+  if(!data){
+   data=await api('/rankings/'+grade);
+   if(data?.asOfDate===expectedDate){try{sessionStorage.setItem(cacheKey,JSON.stringify(data));}catch{}}
+  }
+  if(requestId!==rankingRequest||!rankingDialog.open)return;
+  renderDailyRanking(data);
+  if(data.asOfDate)rankingDate.textContent='通算成績：'+data.asOfDate+' 終了時点';
+  if(data.asOfDate!==expectedDate){
+   rankingStatus.textContent='前日の集計はまだ完了していません。最新の確定結果を表示しています。';
+  }else if(!data.leaders?.length){
+   rankingStatus.textContent='まだランキング対象の勝利記録がありません。';
+  }else{
+   rankingStatus.textContent='上位'+data.leaders.length+'名を表示しています。';
+  }
+ }catch(error){
+  if(requestId!==rankingRequest||!rankingDialog.open)return;
+  rankingStatus.textContent=error.message||'ランキングを取得できませんでした。';
+  rankingStatus.classList.add('error');
+ }
+}
+$('rankingBtn').addEventListener('click',()=>void openDailyRanking());
+$('onlineRankingClose').addEventListener('click',()=>rankingDialog.close());
+rankingDialog.addEventListener('close',()=>{rankingRequest++;});
+
 $('refreshBtn').addEventListener('click',()=>void refreshLobby());
 $('backToGradesBtn').addEventListener('click',()=>showGradePicker());
 gradePicker.querySelectorAll('[data-grade]').forEach(button=>button.addEventListener('click',()=>void selectGrade(button.dataset.grade)));
