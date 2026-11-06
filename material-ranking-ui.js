@@ -1,6 +1,6 @@
 /* Per-material daily top-three, shared by the shell and standalone exercises. */
 const ENDPOINT='https://task-quest.onrender.com/api/learning/material-rankings';
-const supported=new Set(['word-breaker','ateru','basic-quest','basic-grammar','grammar','eiken-retry','eiken-cloze','eiken-title','reading-training','listening-training','task-quest','talk-quest','pre2-interview-questions','eiken-pre2-interview-a','pet-catch','pet-fishing','today','word-tower','eiken-dungeon','case-talk','pet-chat','pet-instructions']);
+const supported=new Set(['word-breaker','ateru','basic-quest','basic-grammar','grammar','eiken-retry','eiken-cloze','eiken-title','reading-training','listening-training','task-quest','talk-quest','pre2-interview-questions','eiken-pre2-interview-a','pet-catch','pet-fishing','today','word-tower','eiken-dungeon','case-talk','pet-chat','pet-instructions','pet-typing-defense-normal','pet-typing-defense-hard']);
 const styleId='monstudyMaterialRankStyle';
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 export function materialRankingAppId(url=location.href){
@@ -47,7 +47,8 @@ export async function openMaterialRanking(appId){
  dialog?.remove();
  dialog=make('dialog','ms-material-rank-dialog');
  const head=make('header','ms-material-rank-head');
- head.append(make('h2','','🏆 本日の取り組みランキング'));
+ const defenseMode=appId==='pet-typing-defense-normal'?'ノーマル':appId==='pet-typing-defense-hard'?'ハード':'';
+ head.append(make('h2','','🏆 本日の'+(defenseMode?' '+defenseMode+' ランキング':'取り組みランキング')));
  const close=make('button','','閉じる');close.type='button';close.addEventListener('click',()=>dialog.close());head.append(close);
  dialog.append(head);
  const status=make('p','','ランキングを読み込んでいます…');status.setAttribute('role','status');dialog.append(status);
@@ -62,16 +63,16 @@ export async function openMaterialRanking(appId){
   const data=await response.json();if(!response.ok)throw Error(data.error||'取得に失敗しました。');
   if(!status.isConnected)return;
   const list=Array.isArray(data.leaders)?data.leaders:[];
-  status.textContent='学習完了として保存された取り組み数のランキング（日本時間）';
+  status.textContent=defenseMode?'本日クリアした異なるステージの数（日本時間）。同じステージは1日1回だけ集計します。':'学習完了として保存された取り組み数のランキング（日本時間）';
   if(!list.length){dialog.append(make('p','','まだ本日の学習記録はありません。'));return;}
   const ol=make('ol','ms-material-rank-list');
   for(const [i,item] of list.entries()){
    const li=make('li');
-   li.append(make('span','',['🥇','🥈','🥉'][i]||String(i+1)),make('span','',item.petName||'ふしぎなたまご'),make('strong','',Math.max(0,Math.floor(Number(item.count)||0))+'回'));
+   li.append(make('span','',['🥇','🥈','🥉'][i]||String(i+1)),make('span','',item.petName||'ふしぎなたまご'),make('strong','',Math.max(0,Math.floor(Number(item.count)||0))+(defenseMode?'ステージ':'回')));
    ol.append(li);
   }
   dialog.append(ol);
-  dialog.append(make('p','','週間称号は、1週間で4日以上、この教材の最終1位を獲得すると解放されます。'));
+  dialog.append(make('p','','週間称号は、1週間で4日以上、この教材の最終1位を獲得すると解放されます。'+(defenseMode?' モード別に判定されます。':'')));
  }catch(error){if(status.isConnected)status.textContent=error.message||'ランキングを読み込めませんでした。'}
 }
 function inShellFrame(){
