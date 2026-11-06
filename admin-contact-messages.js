@@ -5,6 +5,7 @@ const config={apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",authDomain:"eiken
 const app=getApps()[0]||initializeApp(config),auth=getAuth(app),db=getFirestore(app),API="https://task-quest.onrender.com";
 const style=document.createElement("style");
 style.textContent=".admin-tab-message-count{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:4px;padding:0 5px;border-radius:999px;background:#c84638;color:white;font-size:10px;line-height:1;font-weight:900}.contact-admin-panel{display:grid;gap:12px;margin-top:14px}.contact-admin-panel[hidden]{display:none}.contact-admin-list{display:grid;gap:10px}.contact-admin-card{border:1px solid #e5ebe7;border-radius:10px;padding:12px;background:white}.contact-admin-card p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}.contact-admin-meta{font-size:11px;color:#6f7d77}.contact-admin-status{padding:14px;border:1px solid #dfe7e2;border-radius:12px;background:white;color:#6f7d77}.contact-admin-more{justify-self:start}";
+style.textContent+=".contact-admin-identity{display:flex;flex-wrap:wrap;gap:5px 18px;padding:9px 0 6px;border-top:1px solid #edf1ee;font-size:12px;color:#2e584c}.contact-admin-identity strong{margin-right:5px;color:#6f7d77;font-size:11px}";
 document.head.append(style);
 const adminPanel=document.getElementById("panel");
 function tabsReady(){const existing=adminPanel?.querySelector(".admin-tabs");if(existing)return Promise.resolve(existing);return new Promise(resolve=>{const observer=new MutationObserver(()=>{const tabs=adminPanel?.querySelector(".admin-tabs");if(tabs){observer.disconnect();resolve(tabs);}});observer.observe(adminPanel||document.body,{childList:true,subtree:true});});}
@@ -19,7 +20,21 @@ const status=messagePanel.querySelector("[data-status]"),list=messagePanel.query
 let unsubscribe=null,nextToken=null,loading=false,adminUid="",opened=false;
 function setCount(value){const n=Math.max(0,Math.floor(Number(value)||0));messageTab.replaceChildren(document.createTextNode("✉ メッセージ"));if(n){const badge=document.createElement("span");badge.className="admin-tab-message-count";badge.textContent=String(n);messageTab.append(badge);}messageTab.setAttribute("aria-label",n?("開発者へのメッセージ、新着"+n+"件"):"開発者へのメッセージ");}
 function date(value){if(!value)return "日時不明";const d=new Date(value);return Number.isNaN(d.getTime())?value:d.toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});}
-function card(item){const el=document.createElement("article");el.className="contact-admin-card";const meta=document.createElement("div");meta.className="contact-admin-meta";meta.textContent=date(item.createdAt||item.sentAt)+" ・ "+(item.page||"ページ不明");const msg=document.createElement("p");msg.textContent=item.message||"（本文なし）";const uid=document.createElement("div");uid.className="contact-admin-meta";uid.textContent="ユーザーID: "+(item.uid||"不明");el.append(meta,msg,uid);return el;}
+function card(item){
+ const el=document.createElement("article");el.className="contact-admin-card";
+ const meta=document.createElement("div");meta.className="contact-admin-meta";
+ meta.textContent=date(item.createdAt||item.sentAt)+" ・ "+(item.page||"ページ不明");
+ const msg=document.createElement("p");msg.textContent=item.message||"（本文なし）";
+ const identity=document.createElement("div");identity.className="contact-admin-identity";
+ const sender=item.sender;
+ const fields=sender?[["コード名",sender.codeName||"未登録"],["ニックネーム",sender.nickname||"未設定"],["ペット名",sender.petName||"未設定"]]:[["コード名","照合できません"],["ニックネーム","照合できません"],["ペット名","照合できません"]];
+ for(const [title,value] of fields){
+  const item=document.createElement("span"),label=document.createElement("strong");
+  label.textContent=title+"：";item.append(label,document.createTextNode(value));identity.append(item);
+ }
+ const uid=document.createElement("div");uid.className="contact-admin-meta";uid.textContent="ユーザーID: "+(item.uid||"不明");
+ el.append(meta,msg,identity,uid);return el;
+}
 async function loadPage(token=""){if(loading)return;loading=true;more.disabled=true;status.textContent="読み込み中…";try{const user=auth.currentUser;if(!user)throw Error("管理者としてログインしてください。");const idToken=await user.getIdToken();const url=new URL(API+"/api/admin/contact-messages");if(token)url.searchParams.set("pageToken",token);const response=await fetch(url,{headers:{Authorization:"Bearer "+idToken},signal:AbortSignal.timeout(20000)});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"メッセージを取得できませんでした。");if(!token)list.replaceChildren();for(const item of data.messages||[])list.append(card(item));nextToken=data.nextPageToken||null;more.hidden=!nextToken;status.textContent=list.childElementCount?list.childElementCount+"件を表示中":"メッセージはまだありません。";}catch(error){status.textContent=error.message||"読み込みに失敗しました。";}finally{loading=false;more.disabled=false;}}
 async function showMessages(){messagePanel.hidden=false;opened=true;for(const child of adminPanel.children){if(child!==tabs&&child!==messagePanel)child.hidden=true;}for(const tab of tabs.querySelectorAll(".admin-tab"))tab.classList.remove("active");messageTab.classList.add("active");await loadPage("");}
 function leaveMessages(){messagePanel.hidden=true;messageTab.classList.remove("active");opened=false;}
