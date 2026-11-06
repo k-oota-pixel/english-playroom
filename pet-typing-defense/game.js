@@ -1,4 +1,4 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.63';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.64';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
@@ -121,7 +121,7 @@ function openPhase(){
  $('wordMeaning').hidden=true;
  $('answerBar').style.width='0%';
  $('questionTemplate').textContent='タイピングの準備！';
- setFeedback(stage===0?'まず日本語訳を見て入力！ 2秒後に頭文字、4秒後に英単語を表示します。':stage===3?'英文をタイプしよう！ スペースは入力不要です。':'魔物が現れたら英文を入力しよう！');
+ setFeedback(stage===0?'まず日本語訳を見て入力！ 2秒後に頭文字、4秒後に英単語を表示します。':'魔物が現れたら英文をタイプしよう！ スペース入力は不要です。');
  hud();
  if(frame)cancelAnimationFrame(frame);
  lastFrame=performance.now();
