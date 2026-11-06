@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCampaign, normalizedTyping, normalizedDefenseTyping, revealedWord, potatoGap, grammarGap, STAGE_NAMES} from '../pet-typing-defense/data.js';
+import {createCampaign, normalizedTyping, normalizedDefenseTyping, revealedWord, enemySpawnInterval, potatoGap, grammarGap, STAGE_NAMES} from '../pet-typing-defense/data.js';
 import {TASK_SAMPLES} from '../pet-typing-defense/task-samples.js';
 import {WORD_POOLS} from '../pet-typing-defense/words.js';
 import {QUESTION_GROUPS} from '../potato-harvest/questions.js';
@@ -80,6 +80,15 @@ test('Stage four ignores typed spaces but still rejects incorrect letter sequenc
  assert.notEqual(normalizedDefenseTyping(target,3),normalizedDefenseTyping('IhasbeentoHawaii',3));
  assert.notEqual(normalizedDefenseTyping(target,2),normalizedDefenseTyping('IhavebeentoHawaii',2));
  assert.equal(normalizedDefenseTyping("I  have been",3),'ihavebeen');
+});
+
+test('Enemy spawn cadence stays fast for single words and becomes five seconds for sentences',()=>{
+ assert.equal(enemySpawnInterval(0),1.65);
+ for(let stage=1;stage<4;stage++){
+  assert.equal(enemySpawnInterval(stage),5);
+  const times=Array.from({length:5},(_,i)=>i*enemySpawnInterval(stage));
+  assert.deepEqual(times,[0,5,10,15,20]);
+ }
 });
 
 test('Case and punctuation forgiving typing; word form remains meaningful',()=>{
