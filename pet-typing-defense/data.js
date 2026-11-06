@@ -17,6 +17,18 @@ function shuffle(list, random=Math.random){const arr=[...list];for(let i=arr.len
 export function normalizedTyping(input){
  return String(input||'').normalize('NFKC').replace(/[\u2018\u2019\u02bc]/g,"'").toLowerCase().replace(/[.,!?;:。！？]/g,'').replace(/\s+/g,' ').trim();
 }
+// In the word-order (stage 4) course, spaces are optional, including spaces typed accidentally.
+export function normalizedDefenseTyping(input,stageIndex){
+ const value=normalizedTyping(input);
+ return stageIndex===3?value.replace(/\s/g,''):value;
+}
+// A new word starts with its Japanese meaning, then reveals one letter and finally the full spelling.
+export function revealedWord(word,elapsedMs){
+ const answer=String(word||'');
+ if(elapsedMs<2000)return '';
+ if(elapsedMs<4000)return answer.slice(0,1);
+ return answer;
+}
 function unique(pool,limit){
  const seen=new Set();
  return pool.filter(item=>{
@@ -46,7 +58,7 @@ export function grammarGap(row){
 export function createCampaign(random=Math.random){
  const stage1=VOCAB_KEYS.map((level,i)=>{
   const pool=WORD_POOLS[level].filter(w=>normalizedTyping(w.word)&&w.ja);
-  return unique(shuffle(pool,random).map(w=>({id:w.id,topic:PHASE_NAMES[0][i],hint:w.word,template:w.word,answer:w.word})),5);
+  return unique(shuffle(pool,random).map(w=>({id:w.id,topic:PHASE_NAMES[0][i],hint:w.ja,template:w.word,answer:w.word})),5);
  });
  const conversation=unique(shuffle(TASK_SAMPLES.filter(q=>q.answer&&q.mission),random)
   .map(q=>({id:q.id,topic:q.title,hint:q.answer,template:q.answer,answer:q.answer})),25);
