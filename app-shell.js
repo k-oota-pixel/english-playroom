@@ -184,10 +184,12 @@ function install() {
       const color=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.color||'')?sharedScreenTheme.color:'#f6f5ef';
       const foreground=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.textColor||'')?sharedScreenTheme.textColor:'#193d38';
       const pattern=typeof sharedScreenTheme.pattern==='string'&&/^url\("data:image\/svg\+xml,[^"\n]+"\)$/.test(sharedScreenTheme.pattern)?sharedScreenTheme.pattern:'none';
-      const patternSize=sharedScreenTheme.patternSize==='224px 224px'?'224px 224px':'auto';
+      const patternSize=/^(?:[1-9][0-9]{1,2}px [1-9][0-9]{1,2}px|cover)$/.test(sharedScreenTheme.patternSize||'')?sharedScreenTheme.patternSize:'auto';
+      const patternRepeat=sharedScreenTheme.patternRepeat==='no-repeat'?'no-repeat':'repeat';
+      const patternPosition=sharedScreenTheme.patternPosition==='center bottom'?'center bottom':'center center';
       // The equipped SHOP palette is the single source of truth; child materials use this attribute for matched surfaces and text.
       doc.documentElement.setAttribute('data-monstudy-screen-theme',sharedScreenTheme.theme==='dark'?'dark':'light');
-      style.textContent=`html,body{--screen-background:${color};--screen-foreground:${foreground};background-color:${color}!important;background-image:${pattern}!important;background-size:${patternSize}!important;background-repeat:repeat!important;color:${foreground}!important;transition:background-color .2s,color .2s}input::placeholder,textarea::placeholder{color:color-mix(in srgb,${foreground} 62%,${color} 38%)!important}option{background-color:${color};color:${foreground}}`;
+      style.textContent=`html,body{--screen-background:${color};--screen-foreground:${foreground};background-color:${color}!important;background-image:${pattern}!important;background-size:${patternSize}!important;background-repeat:${patternRepeat}!important;background-position:${patternPosition}!important;background-attachment:fixed!important;color:${foreground}!important;transition:background-color .2s,color .2s}input::placeholder,textarea::placeholder{color:color-mix(in srgb,${foreground} 62%,${color} 38%)!important}option{background-color:${color};color:${foreground}}`;
       scanThemedSurfaces(doc,color,foreground);
       if(!themedSurfaceObserver||themedSurfaceDoc!==doc){
         themedSurfaceObserver=new doc.defaultView.MutationObserver(()=>{
@@ -309,7 +311,7 @@ function install() {
     show(u);
     document.querySelectorAll('dialog[open]').forEach(d=>d.close());
   });
-  window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,updateScreenTheme(theme){sharedScreenTheme=theme&&theme.color?{theme:theme.theme,color:theme.color,textColor:theme.textColor,pattern:theme.pattern||null,patternSize:theme.patternSize||null}:null;updateMaterialPresentation();},materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;updateMaterialPresentation();syncPause();}};
+  window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,updateScreenTheme(theme){sharedScreenTheme=theme&&theme.color?{theme:theme.theme,color:theme.color,textColor:theme.textColor,pattern:theme.pattern||null,patternSize:theme.patternSize||null,patternRepeat:theme.patternRepeat||null,patternPosition:theme.patternPosition||null}:null;updateMaterialPresentation();},materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;updateMaterialPresentation();syncPause();}};
   document.addEventListener('click',e=>{
     if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
     const a=e.target.closest('a[href]');if(!a||a.hasAttribute('download'))return;
