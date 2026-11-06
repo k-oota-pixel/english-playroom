@@ -3,7 +3,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {getFirestore,doc,onSnapshot} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet} from './pet-model.js?v=2.1.25';
-import {renderPetSVG} from './pet-art.js?v=2.3.55';
+import {renderPetSVG} from './pet-art.js?v=2.3.56';
 
 const EXTRA_SLOTS=Object.freeze({
   'chef-hat':'head','cowboy-hat':'head','party-hat':'head','detective-hat':'head','bunny-headband':'head','top-hat':'head',
