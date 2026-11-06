@@ -127,7 +127,7 @@ test('game launcher has two large direct mode buttons and no old setup text',()=
  const topbar=readFileSync(new URL('../material-return.js',import.meta.url),'utf8');
  assert.match(topbar,/className='ms-defense-rank-actions'/);
  assert.match(topbar,/openMaterialRanking\('pet-typing-defense-'\+mode\)/);
- assert.match(topbar,/rankBtn.hidden=isDefense\|\|!materialRankingAppId\(frame.src\)/);
+ assert.match(topbar,/rankingBtn.hidden=isDefense\|\|!materialRankingAppId\(frame.src\)/);
  assert.match(css,/body\.typing-in-progress \.game\{display:grid;grid-template-columns:/);
  assert.match(css,/body\.typing-in-progress \.question-panel\{grid-column:2;grid-row:3;/);
  assert.doesNotMatch(game, /textContent='魔物 '\+\(i\+1\)/);
