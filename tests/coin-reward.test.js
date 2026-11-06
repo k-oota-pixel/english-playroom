@@ -2,17 +2,27 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-async function rewards({trackActivity=false}={}){
+async function rewards({trackActivity=false,trackTypingDefense=false}={}){
  let wallet={coins:10,petName:'ふわ',petShop:{ownedItems:['crown']}};
- let clock=Date.now(),activityCalls=0;
+ let clock=Date.now(),activityCalls=0;const defenseEvents=[];
  const source=readFileSync(new URL('../coin-reward.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/^export .*;\r?\n/gm,'');
  const user={uid:'tester',getIdToken:async()=>'token'};
- const context=vm.createContext({window:{addEventListener(){}},announceTitles(){},console,queueMicrotask,Date:class extends Date{static now(){return clock;}},...(trackActivity?{fetch:async url=>{if(url.endsWith('/api/learning/activity'))activityCalls++;return {ok:true,json:async()=>({freshTitles:[]})};}}:{}),location:{pathname:'/',href:'https://home.test/'},document:{readyState:'loading',addEventListener(){}},
+ const context=vm.createContext({window:{addEventListener(){}},announceTitles(){},console,queueMicrotask,Date:class extends Date{static now(){return clock;}},...(trackActivity||trackTypingDefense?{fetch:async (url,options={})=>{
+  if(url.endsWith('/api/learning/activity')){
+   if(trackTypingDefense){
+    const body=JSON.parse(options.body),duplicate=defenseEvents.some(x=>x.batchId===body.batchId);
+    defenseEvents.push(body);
+    return {ok:true,json:async()=>({ok:true,duplicate,freshTitles:[]})};
+   }
+   activityCalls++;
+  }
+  return {ok:true,json:async()=>({freshTitles:[]})};
+ }}:{}),location:{pathname:'/',href:'https://home.test/'},document:{readyState:'loading',addEventListener(){}},
  enableAppCheck:()=>null,initializeApp:()=>({}),getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:user}),getFirestore:()=>({}),doc:()=>({}),serverTimestamp:()=>0,
  onAuthStateChanged:(_,fn)=>queueMicrotask(()=>fn(user)),interviewAttemptPatch:()=>({attempted:true}),
  runTransaction:async(_,fn)=>fn({get:async()=>({exists:()=>true,data:()=>structuredClone(wallet)}),set:(_,patch)=>Object.assign(wallet,patch)})});
  vm.runInContext(source+'\n toast=()=>{};window.signOutForTest=()=>{currentUser=null;};',context);
- return {api:context.window.EnglishPlayroomCoins,wallet:()=>wallet,signOut:context.window.signOutForTest,activityCalls:()=>activityCalls,advance:()=>clock+=2000,pendingRetries:()=>vm.runInContext("readRetryOutbox(RETRY_OUTBOX_PREFIX+'tester').length",context)};
+ return {api:context.window.EnglishPlayroomCoins,wallet:()=>wallet,signOut:context.window.signOutForTest,activityCalls:()=>activityCalls,defenseEvents:()=>defenseEvents,advance:()=>clock+=2000,pendingRetries:()=>vm.runInContext("readRetryOutbox(RETRY_OUTBOX_PREFIX+'tester').length",context)};
 }
 test('daily rewards remain per stage, topic and question, without collisions between apps',async()=>{
  const {api,wallet}=await rewards();
@@ -55,4 +65,22 @@ test('retry activity and rewards are processed as five-question batches',async()
  assert.equal(f.pendingRetries(),4);
  await f.api.recordRetryAttempt('q5');await new Promise(r=>setTimeout(r,0));
  assert.equal(f.activityCalls(),1);assert.equal(f.wallet().coins,11);assert.equal(f.pendingRetries(),0);
+});
+
+test('typing defense stage activity has deterministic daily and per-mode receipts, with no wallet writes',async()=>{
+ const f=await rewards({trackTypingDefense:true});
+ const normal=await f.api.recordTypingDefenseStage('normal',2);
+ const again=await f.api.recordTypingDefenseStage('normal',2);
+ const hard=await f.api.recordTypingDefenseStage('hard',2);
+ assert.equal(normal.recorded,true);
+ assert.equal(again.duplicate,true);
+ assert.equal(hard.recorded,true);
+ assert.equal(f.wallet().coins,10);
+ assert.equal(f.defenseEvents().length,3);
+ const [n,n2,h]=f.defenseEvents();
+ assert.equal(n.batchId,n2.batchId);
+ assert.notEqual(n.batchId,h.batchId);
+ assert.deepEqual(n.events.map(e=>e.appId),['pet-typing-defense-normal']);
+ assert.deepEqual(h.events.map(e=>e.appId),['pet-typing-defense-hard']);
+ assert.equal((await f.api.recordTypingDefenseStage('hard',6)).reason,'invalid-stage');
 });
