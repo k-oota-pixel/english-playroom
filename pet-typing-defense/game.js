@@ -1,9 +1,9 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.65';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.66';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
-const TOTAL=STAGE_COUNT*PHASES_PER_STAGE*QUESTIONS_PER_PHASE;
-let campaign=null,run=null,frame=0,lastFrame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='',lastTypedAt=-1e9;
+const TOTAL=TOTAL_QUESTIONS;
+let campaign=null,run=null,frame=0,lastFrame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='',lastTypedAt=-1e9,rewardRunId=0;
 const MAX_HP=6;
 function setFeedback(message,type=''){
  $('feedback').textContent=message;
@@ -66,6 +66,8 @@ function showQuestion(){
    shownQuestion=null;$('typing').value='';$('typing').disabled=true;
    $('answerBar').style.width='0%';
    $('wordMeaning').hidden=true;
+   $('wordChoices').hidden=true;
+   $('questionTemplate').hidden=false;
    $('questionTemplate').textContent='次の敵を待とう';
    $('questionType').textContent='待機中';
   }
@@ -79,10 +81,21 @@ function showQuestion(){
  shownQuestionAt=performance.now();
  wordReveal=null;
  $('typing').value='';$('typing').disabled=false;$('typing').classList.remove('wrong');
- const isWordStage=stageIndex()===0;
- $('wordMeaning').hidden=!isWordStage;
- $('wordMeaning').textContent=isWordStage?enemy.q.hint:'';
- $('questionTemplate').textContent=isWordStage?'':enemy.q.answer||'';
+ const isWordStage=stageIndex()===0,hardSentence=run.mode==='hard'&&!isWordStage;
+ $('wordMeaning').hidden=false;
+ $('wordMeaning').textContent=isWordStage?enemy.q.hint:enemy.q.ja;
+ $('questionTemplate').hidden=hardSentence;
+ $('questionTemplate').textContent=isWordStage?'':hardSentence?'':enemy.q.answer||'';
+ $('wordChoices').hidden=!hardSentence;
+ $('wordChoices').replaceChildren();
+ if(hardSentence){
+  const caption=document.createElement('strong');caption.textContent='並べ替えて入力する単語';
+  $('wordChoices').append(caption);
+  for(const token of scrambledTokens(enemy.q.answer)){
+   const chip=document.createElement('span');chip.className='word-chip';chip.textContent=token;
+   $('wordChoices').append(chip);
+  }
+ }
  $('questionType').textContent=enemy.q.topic||'';
  if(isWordStage)refreshWordReveal(enemy);
  $('answerBar').style.width='0%';
@@ -119,9 +132,11 @@ function openPhase(){
  run.elapsed=0;run.active=true;shownQuestion=null;shownQuestionAt=0;wordReveal=null;lastTypedAt=-1e9;
  $('typing').value='';$('typing').disabled=true;$('typing').classList.remove('wrong');
  $('wordMeaning').hidden=true;
+ $('wordChoices').hidden=true;
+ $('questionTemplate').hidden=false;
  $('answerBar').style.width='0%';
  $('questionTemplate').textContent='タイピングの準備！';
- setFeedback(stage===0?'まず日本語訳を見て入力！ 2秒後に頭文字、4秒後に英単語を表示します。':'魔物が現れたら英文をタイプしよう！ スペース入力は不要です。');
+ setFeedback(stage===0?'日本語訳から単語を入力！ 2秒で頭文字、4秒で全体表示。':run.mode==='hard'?'和訳とバラバラの単語を見て、正しい順番でタイプしよう！':'和訳と英文を確認してタイプしよう！ スペースは入力不要です。');
  hud();
  if(frame)cancelAnimationFrame(frame);
  lastFrame=performance.now();
@@ -134,9 +149,58 @@ function showOverlay(eyebrow,heading,body,buttonLabel,fn){
  $('overlayBody').textContent=body;
  const button=$('nextPhase');
  button.textContent=buttonLabel;button.onclick=fn;
+ $('rewardStatus').textContent='';
+ $('retryReward').hidden=true;
  over.hidden=false;
  button.focus({preventScroll:true});
 }
+function rewardDescription(mode,stage,phase){
+ if(mode==='normal'&&phase!==4)return null;
+ const amount=mode==='normal'?1:stage===0?1:2;
+ const stageNo=stage+1,phaseNo=phase+1;
+ const claims=mode==='normal'?[ 'normal-stage-'+stageNo ]:
+  Array.from({length:amount},(_,i)=>'hard-stage-'+stageNo+'-phase-'+phaseNo+'-coin-'+(i+1));
+ return {amount,claims,label:mode==='normal'?'ステージ '+stageNo+' クリア！':'ステージ '+stageNo+'・フェーズ '+phaseNo+' クリア！'};
+}
+async function rewardApi(){
+ try{
+  if(parent!==window&&parent.location.origin===location.origin&&typeof parent.EnglishPlayroomCoins?.awardOncePerDay==='function'){
+   return parent.EnglishPlayroomCoins;
+  }
+ }catch{}
+ await import('../coin-reward.js?v=2.3.66');
+ return window.EnglishPlayroomCoins||null;
+}
+async function payPhaseReward(stage,phase,id){
+ const description=rewardDescription(run.mode,stage,phase);
+ const receipt=$('rewardStatus'),retry=$('retryReward');
+ if(!description)return;
+ if(run.rewardPaid.has(id))return;
+ receipt.textContent='🪙 コイン報酬を確認中…';
+ retry.hidden=true;
+ try{
+  const api=await rewardApi();
+  if(!api?.awardOncePerDay)throw Error('コイン処理を読み込めませんでした。');
+  let gained=0,duplicate=0;
+  for(const claim of description.claims){
+   const result=await api.awardOncePerDay('pet-typing-defense',claim,description.label);
+   if(result?.awarded)gained++;
+   else if(['already-today','already-counted'].includes(result?.reason))duplicate++;
+   else if(result?.reason==='signed-out')throw Error('ログインが必要です。');
+   else throw Error('コイン付与を確認できませんでした。');
+  }
+  if(id!==rewardRunId)return;
+  run.rewardPaid.add(id);
+  receipt.textContent=gained?'🪙 +'+gained+'コインを獲得！'+(duplicate?'（残りは本日獲得済み）':''):'🪙 本日の報酬は獲得済みです。';
+ }catch(error){
+  if(id!==rewardRunId)return;
+  receipt.textContent='コイン付与を確認できませんでした。再試行できます。';
+  retry.hidden=false;
+  retry.onclick=()=>{void payPhaseReward(stage,phase,id)};
+  console.warn('Typing defense reward error',error);
+ }
+}
+
 function waveComplete(){
  if(!run?.active)return;
  run.active=false;
@@ -145,20 +209,23 @@ function waveComplete(){
  const phase=run.phaseIndex%PHASES_PER_STAGE;
  const stage=Math.floor(run.phaseIndex/PHASES_PER_STAGE);
  const next=()=>{run.phaseIndex++;openPhase()};
- if(phase===4&&stage===3){finish(true);return}
+ const rewardId=++rewardRunId;
+ if(phase===4&&stage===STAGE_COUNT-1){finish(true,stage,phase,rewardId);return}
  if(phase===4){
   showOverlay('STAGE CLEAR','ステージ '+(stage+1)+' クリア！','残りのお城の耐久力：'+run.hp+'。次は「'+STAGE_NAMES[stage+1]+'」！','次のステージへ',next);
  }else{
   showOverlay('PHASE CLEAR','フェーズ '+(phase+1)+' クリア！','魔物5体の波をしのいだ！ あと'+(4-phase)+'フェーズ。','次のフェーズへ',next);
  }
+ void payPhaseReward(stage,phase,rewardId);
 }
-function finish(success){
+function finish(success,finalStage=null,finalPhase=null,finalId=null){
  if(!run)return;
  run.active=false;if(frame)cancelAnimationFrame(frame);frame=0;
  $('typing').disabled=true;
  const summary='撃退：'+run.kills+'体 ／ 城への侵入：'+run.misses+'体 ／ 耐久力：'+run.hp;
  if(success){
-  showOverlay('ALL STAGES COMPLETE','🏆 お城を守り切った！',summary+'。4ステージ・20フェーズを突破！','もう一度遊ぶ',start);
+  showOverlay('ALL STAGES COMPLETE','🏆 お城を守り切った！',summary+'。5ステージ・25フェーズを突破！','もう一度遊ぶ',start);
+  if(finalStage!==null)void payPhaseReward(finalStage,finalPhase,finalId);
  }else{
   showOverlay('GAME OVER','お城が落とされた…',summary+'。もう一度挑戦しよう！','リトライ',start);
  }
@@ -204,8 +271,8 @@ function tick(now){
  const delta=Math.min(.06,Math.max(0,(now-lastFrame)/1000));
  lastFrame=now;
  run.elapsed+=delta;
- const speed={'gentle':33,'normal':43,'fast':61}[run.speed]||33;
- const typing=run.speed==='gentle' && now-lastTypedAt<1600;
+ const speed=run.mode==='hard'?61:43;
+ const typing=false;
  for(const e of run.enemies){
   if(e.resolved)continue;
   if(!e.spawned){
@@ -234,12 +301,14 @@ function onType(){
  else setFeedback('その調子！ 最後まで入力すると魔法が発動するよ。');
 }
 function start(){
- try{campaign=createCampaign()}catch(error){
+ const mode=$('mode').value==='hard'?'hard':'normal';
+ try{campaign=createCampaign(Math.random,mode)}catch(error){
   alert('問題データの準備に失敗しました。'+(error?.message||''));return;
  }
  if(frame)cancelAnimationFrame(frame);frame=0;
  $('opening').hidden=true;$('game').hidden=false;
- run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,speed:$('speed').value,enemies:[],elapsed:0,active:false};
+ rewardRunId++;
+ run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,rewardPaid:new Set(),enemies:[],elapsed:0,active:false};
  choosePet();openPhase();
 }
 $('begin').addEventListener('click',start);
