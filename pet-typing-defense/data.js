@@ -11,6 +11,7 @@ export const PHASE_NAMES=[
  ['be動詞','一般動詞','完了形・不定詞','分詞・関係詞','総合文法']
 ];
 export const STAGE_COUNT=4, PHASES_PER_STAGE=5, QUESTIONS_PER_PHASE=5;
+export function enemySpawnInterval(stageIndex){ return stageIndex===0?1.65:5; }
 const GRAMMAR_UNITS=[['be'],['general','mixed'],['perfect','infinitive'],['participle','relative'],['question','svoo','svoc','indirect','conjunction']];
 const VOCAB_KEYS=['junior1','junior2','junior3','high1','high2'];
 function shuffle(list, random=Math.random){const arr=[...list];for(let i=arr.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr;}
