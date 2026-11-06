@@ -15,12 +15,12 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}button:fo
 .castle{position:absolute;z-index:3;left:3%;bottom:17%;width:155px;height:152px;background:#d5e1e3;border:5px solid #849dab;border-radius:7px;box-shadow:inset 0 12px 0 #e7f5f3,5px 6px 0 #496b6a22;transform:scale(.91);transform-origin:bottom left}
 .castle:before{content:"";position:absolute;left:-9px;right:-9px;top:-25px;height:27px;background:repeating-linear-gradient(90deg,#a9bfca 0 25px,transparent 25px 36px);border-bottom:8px solid #889eae}.tower{position:absolute;bottom:-5px;width:34px;height:182px;background:#c0d2dc;border:5px solid #819baa;border-radius:4px}.tower-a{left:-16px}.tower-b{right:-16px}.castle-roof{position:absolute;left:55px;top:-60px;width:0;height:0;border-left:19px solid transparent;border-right:19px solid transparent;border-bottom:45px solid #6279a0}.castle-door{position:absolute;left:53px;bottom:-5px;width:41px;height:64px;border-radius:26px 26px 0 0;background:#80614d;border:5px solid #63483c}.banner{position:absolute;left:51px;top:14px;color:#c95f71;font-size:27px;font-weight:1000}
 .pet{position:absolute;z-index:7;left:14%;bottom:12%;width:110px;height:110px;display:grid;place-items:center;font-size:75px;filter:drop-shadow(0 7px 4px #1b4a3328);transform-origin:center bottom;animation:petBreathe 1.8s ease-in-out infinite;pointer-events:none}.pet svg{width:100%;height:100%;display:block;background:transparent!important}.pet.attack{animation:petAttack .34s ease-out}
-.enemy-layer,.effects{position:absolute;inset:0;pointer-events:none}.enemy-layer{z-index:5}.effects{z-index:10}.foe{position:absolute;bottom:15%;width:70px;height:74px;margin-left:-35px;display:flex;align-items:center;justify-content:center;flex-direction:column;transform:translateY(0);filter:drop-shadow(0 5px 3px #224e3838);will-change:left}.foe .monster{font-size:46px;line-height:1;animation:enemyStep .62s ease-in-out infinite alternate}.foe .number{background:#21473e;color:#fff;font-size:10px;border-radius:99px;padding:3px 8px;font-weight:950;margin-bottom:3px}.foe.active .number{background:#f6b72d;color:#362d19}.foe.active{filter:drop-shadow(0 0 7px #faff9a)}.foe.active .monster{font-size:53px}.foe .shadow{width:49px;height:10px;background:#486c4d33;border-radius:50%;margin-top:1px}.orb{position:absolute;width:22px;height:22px;left:20%;bottom:34%;border-radius:50%;background:#ffef79;border:4px solid #fff;box-shadow:0 0 18px 5px #ffeb70}
+.enemy-layer,.effects{position:absolute;inset:0;pointer-events:none}.enemy-layer{z-index:5}.effects{z-index:10}.foe{position:absolute;bottom:15%;width:70px;height:74px;margin-left:-35px;display:flex;align-items:center;justify-content:center;flex-direction:column;transform:translateY(0);filter:drop-shadow(0 5px 3px #224e3838);will-change:left}.foe .monster{font-size:46px;line-height:1;animation:enemyStep .62s ease-in-out infinite alternate}.foe.active{filter:drop-shadow(0 0 7px #faff9a)}.foe.active .monster{font-size:53px}.foe .shadow{width:49px;height:10px;background:#486c4d33;border-radius:50%;margin-top:1px}.orb{position:absolute;width:22px;height:22px;left:20%;bottom:34%;border-radius:50%;background:#ffef79;border:4px solid #fff;box-shadow:0 0 18px 5px #ffeb70}
 .overlay{position:absolute;z-index:20;inset:0;background:#102c2677;display:grid;place-items:center;backdrop-filter:blur(2px);padding:12px}.overlay-card{width:min(440px,96%);background:#fffefa;border:2px solid #fff7d7;border-radius:21px;padding:22px;text-align:center;box-shadow:0 12px 40px #1a403c4a}.overlay-card h2{margin:6px 0;font-size:25px}.overlay-card p{font-size:13px;color:#648070;line-height:1.7}.overlay-card .primary{margin-top:8px}
 .question-panel{padding-top:13px}.question-label{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#718a77;font-weight:900}.japanese[hidden]{display:none}.sentence:empty{display:none}.japanese{font-size:clamp(17px,3.1vw,23px);font-weight:950;line-height:1.5;margin:9px 0 5px}.context{font-size:11px;color:#698170;line-height:1.6}.context:empty{display:none}.sentence{font-size:clamp(16px,2.8vw,21px);line-height:1.5;color:#2b6555;overflow-wrap:anywhere;font-family:Georgia,serif;font-weight:800;margin:9px 0 14px}.typing-label{font-size:10px;color:#688377;font-weight:900;letter-spacing:.09em;display:block;margin-bottom:6px}#typing{width:100%;border:2px solid #a3c9ae;border-radius:13px;background:#fff;color:#183e30;padding:13px 15px;font:750 18px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;caret-color:#1c9156}#typing.wrong{border-color:#cb6666;background:#fff7f4}#typing:disabled{background:#f3f6ef;color:#6c7c75}.answer-progress{height:6px;background:#e2e9df;border-radius:99px;overflow:hidden;margin-top:7px}.answer-progress>div{height:100%;width:0%;background:#55a66a;transition:width .1s}.feedback{font-size:12px;font-weight:700;min-height:20px;color:#567864;margin:10px 0 0}.feedback.error{color:#ac514b}.feedback.ok{color:#27764f}.game-actions{display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-top:10px}.game-actions button,.game-actions a{border:1px solid #d6e4d5;border-radius:10px;background:#fff;color:#4a6b56;font-size:11px;font-weight:800;padding:8px 10px;text-decoration:none}
 @keyframes enemyStep{to{transform:translateY(-7px) rotate(-5deg)}}@keyframes petBreathe{50%{transform:translateY(-5px)}}@keyframes petAttack{50%{transform:translate(9px,-10px) rotate(-8deg)}}
-@media(max-width:650px){.wrap{padding:10px 10px 28px}.card{padding:12px}.stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}.hud{grid-template-columns:repeat(2,minmax(0,1fr))}.arena{height:265px;border-width:4px}.castle{transform:scale(.65)}.pet{width:75px;height:75px;font-size:52px;left:16%;bottom:15%}.foe{width:54px;margin-left:-27px}.foe .monster{font-size:35px}.foe.active .monster{font-size:41px}.foe .number{font-size:9px}.health strong{font-size:14px}.hero p{font-size:11px}}
-@media(max-width:420px){.stage-list strong{font-size:12px}.arena{height:225px}.castle{transform:scale(.49)}.pet{width:60px;height:60px;left:19%}.foe .monster{font-size:31px}.foe.active .monster{font-size:35px}.foe .number{font-size:8px}#typing{font-size:16px}}
+@media(max-width:650px){.wrap{padding:10px 10px 28px}.card{padding:12px}.stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}.hud{grid-template-columns:repeat(2,minmax(0,1fr))}.arena{height:265px;border-width:4px}.castle{transform:scale(.65)}.pet{width:75px;height:75px;font-size:52px;left:16%;bottom:15%}.foe{width:54px;margin-left:-27px}.foe .monster{font-size:35px}.foe.active .monster{font-size:41px}.health strong{font-size:14px}.hero p{font-size:11px}}
+@media(max-width:420px){.stage-list strong{font-size:12px}.arena{height:225px}.castle{transform:scale(.49)}.pet{width:60px;height:60px;left:19%}.foe .monster{font-size:31px}.foe.active .monster{font-size:35px}#typing{font-size:16px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition:none!important}}
 
 .reward-note{font-size:12px;line-height:1.7;color:#23634b;background:#eaf6e8;border:1px solid #cee6d2;border-radius:12px;padding:9px 12px}
@@ -52,3 +52,46 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}button:fo
 .game .today-ranking-bar{margin:14px 0 0}
 @media(max-width:650px){.opening.mode-chooser{grid-template-columns:1fr;gap:16px;padding:17px}.mode-choice{min-height:125px;font-size:clamp(26px,7vw,36px)}}
 @media(prefers-reduced-motion:reduce){.mode-choice{transition:none}}
+
+/* Compact desktop game board: use the full width instead of stacking the prompt under the arena. */
+body.typing-in-progress .wrap{max-width:1450px;padding:8px 14px 18px}
+body.typing-in-progress .hero{margin:1px 0 9px}
+body.typing-in-progress .hero h1{font-size:clamp(19px,2.3vw,27px);margin:0}
+body.typing-in-progress .hero p{display:none}
+body.typing-in-progress .game{padding:12px 14px;border-radius:16px}
+body.typing-in-progress .meter{padding:6px 10px;border-radius:10px}
+body.typing-in-progress .meter strong{font-size:18px;margin-top:2px}
+body.typing-in-progress .health strong{font-size:15px}
+body.typing-in-progress .course-label{margin-bottom:6px}
+body.typing-in-progress .game-actions{margin-top:2px}
+body.typing-in-progress .arena{border-width:5px;border-radius:16px}
+body.typing-in-progress .overlay-card{padding:15px 18px;border-radius:16px}
+body.typing-in-progress .overlay-card h2{font-size:21px}
+body.typing-in-progress .overlay-card p{font-size:12px;line-height:1.5}
+@media(min-width:860px){
+ body.typing-in-progress .game{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(315px,.84fr);column-gap:14px;row-gap:8px;align-items:start}
+ body.typing-in-progress .hud{grid-column:1/-1;grid-row:1;margin:0;gap:8px}
+ body.typing-in-progress .course-label{grid-column:1/-1;grid-row:2;margin:0}
+ body.typing-in-progress .arena{grid-column:1;grid-row:3;height:clamp(260px,51dvh,390px);min-width:0}
+ body.typing-in-progress .question-panel{grid-column:2;grid-row:3;height:clamp(260px,51dvh,390px);min-width:0;display:flex;flex-direction:column;
+  overflow:hidden;gap:4px;padding:13px 14px;background:#f6faf4;border:1px solid #dae8dc;border-radius:16px}
+ body.typing-in-progress .question-label{flex:none}
+ body.typing-in-progress .japanese{font-size:clamp(16px,1.6vw,20px);margin:4px 0;flex:none}
+ body.typing-in-progress .sentence{font-size:clamp(15px,1.5vw,19px);line-height:1.4;margin:5px 0 7px;flex:none}
+ body.typing-in-progress .word-choices{flex:1 1 auto;min-height:0;overflow-y:auto;align-content:flex-start;margin:4px 0 8px;padding:9px;gap:5px}
+ body.typing-in-progress .word-choices .word-chip{font-size:clamp(12px,1.3vw,15px);padding:5px 7px}
+ body.typing-in-progress .typing-label{margin-top:auto;margin-bottom:4px;flex:none}
+ body.typing-in-progress #typing{padding:10px 12px;font-size:16px;flex:none}
+ body.typing-in-progress .answer-progress{margin:2px 0 0;flex:none}
+ body.typing-in-progress .feedback{font-size:11px;min-height:30px;margin:4px 0 0;flex:none;line-height:1.4}
+ body.typing-in-progress .game-actions{grid-column:1/-1;grid-row:4;margin:0}
+}
+@media(min-width:860px) and (max-height:690px){
+ body.typing-in-progress .arena,body.typing-in-progress .question-panel{height:clamp(245px,47dvh,330px)}
+ body.typing-in-progress .game{row-gap:5px;padding:9px 12px}
+ body.typing-in-progress .meter{padding:4px 9px}
+}
+@media(max-width:859px){
+ body.typing-in-progress .arena{height:clamp(220px,35dvh,300px)}
+ body.typing-in-progress .question-panel{padding-top:9px}
+}
