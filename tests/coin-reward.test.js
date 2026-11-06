@@ -76,9 +76,9 @@ test('typing defense stage activity has deterministic daily and per-mode receipt
  assert.equal(again.duplicate,true);
  assert.equal(hard.recorded,true);
  assert.equal(f.wallet().coins,10);
- assert.equal(f.defenseEvents().length,3);
- const [n,n2,h]=f.defenseEvents();
- assert.equal(n.batchId,n2.batchId);
+ assert.equal(f.defenseEvents().length,2,'replaying a cleared stage uses the local receipt cache');
+ assert.equal(again.cached,true);
+ const [n,h]=f.defenseEvents();
  assert.notEqual(n.batchId,h.batchId);
  assert.deepEqual(n.events.map(e=>e.appId),['pet-typing-defense-normal']);
  assert.deepEqual(h.events.map(e=>e.appId),['pet-typing-defense-hard']);
