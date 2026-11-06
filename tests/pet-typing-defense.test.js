@@ -92,8 +92,8 @@ test('Normal mode keeps 1.65 / 3 / 4 / 5 / 7 second intervals',()=>{
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i)),[1.65,3,4,5,7]);
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'normal')),[1.65,3,4,5,7]);
 });
-test('Hard mode spawns enemies at 3 / 10 / 12 / 14 / 16 second intervals',()=>{
- const expected=[3,10,12,14,16];
+test('Hard mode spawns enemies at 3 / 5 / 7 / 9 / 11 second intervals',()=>{
+ const expected=[3,5,7,9,11];
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'hard')),expected);
  for(let stage=0;stage<5;stage++){
   const times=Array.from({length:5},(_,i)=>i*enemySpawnInterval(stage,'hard'));
