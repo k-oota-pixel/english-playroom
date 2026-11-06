@@ -343,6 +343,7 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
 // One authenticated daily milestone per typing-defense mode and cleared stage.
 // The deterministic batch receipt prevents repeat plays (and other devices) from
 // inflating daily leaderboards. Reuse the existing activity endpoint and weekly titles.
+const typingDefenseRankingCache=new Set();
 async function recordTypingDefenseStage(mode,stageNumber){
   const stage=Number(stageNumber);
   if(!['normal','hard'].includes(mode)||!Number.isInteger(stage)||stage<1||stage>5)return {recorded:false,reason:'invalid-stage'};
@@ -350,6 +351,11 @@ async function recordTypingDefenseStage(mode,stageNumber){
   const user=currentUser;
   if(!user)return {recorded:false,reason:'signed-out'};
   const today=todayKey(),appId='pet-typing-defense-'+mode,stem='ptd-'+mode+'-'+today+'-stage-'+stage;
+  const memoryKey=user.uid+':'+stem,localKey='monstudy-typing-ranking:'+user.uid+':'+today;
+  if(typingDefenseRankingCache.has(memoryKey))return {recorded:false,duplicate:true,reason:'already-today',cached:true};
+  let cached=[];
+  try{const value=JSON.parse(localStorage.getItem(localKey)||'[]');if(Array.isArray(value))cached=value.filter(x=>typeof x==='string');}catch{}
+  if(cached.includes(stem)){typingDefenseRankingCache.add(memoryKey);return {recorded:false,duplicate:true,reason:'already-today',cached:true};}
   try{
     const token=await user.getIdToken();
     const response=await fetch('https://task-quest.onrender.com/api/learning/activity',{
@@ -359,6 +365,8 @@ async function recordTypingDefenseStage(mode,stageNumber){
     });
     const result=await response.json().catch(()=>({}));
     if(!response.ok||!result.ok)throw Error(result.error||'ランキング記録の送信に失敗しました。');
+    typingDefenseRankingCache.add(memoryKey);
+    try{localStorage.setItem(localKey,JSON.stringify([...new Set([...cached,stem])].slice(-20)));}catch{}
     if(currentUser?.uid===user.uid)announceTitles(result.freshTitles);
     return {recorded:!result.duplicate,duplicate:!!result.duplicate,reason:result.duplicate?'already-today':'recorded'};
   }catch(error){
