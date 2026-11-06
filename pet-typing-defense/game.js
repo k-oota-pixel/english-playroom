@@ -311,8 +311,8 @@ function onType(){
  if(input&&!isPrefix)setFeedback('赤い文字のところを直して、正しい英語にしよう。','error');
  else setFeedback('その調子！ 最後まで入力すると魔法が発動するよ。');
 }
-function start(){
- const mode=$('mode').value==='hard'?'hard':'normal';
+function start(mode=run?.mode||'normal'){
+ mode=mode==='hard'?'hard':'normal';
  try{campaign=createCampaign(Math.random,mode)}catch(error){
   alert('問題データの準備に失敗しました。'+(error?.message||''));return;
  }
@@ -322,7 +322,8 @@ function start(){
  run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,rewardPaid:new Set(),enemies:[],elapsed:0,active:false};
  choosePet();openPhase();
 }
-$('begin').addEventListener('click',start);
+$('normalStart').addEventListener('click',()=>start('normal'));
+$('hardStart').addEventListener('click',()=>start('hard'));
 $('normalRanking').addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-normal')});
 $('hardRanking').addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-hard')});
 $('nextPhase').addEventListener('click',()=>{});
