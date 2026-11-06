@@ -39,10 +39,24 @@ test('Task Quest stage uses original sample answers from 50 missions',()=>{
  assert.equal(questions.length,25);
  for(const q of questions)assert.equal(q.answer,all.get(q.id));
 });
-test('Potato and PET FISHING phases have genuine answer gaps',()=>{
+test('All stages display the complete English text they ask the player to type',()=>{
+ for(let i=0;i<30;i++){
+  const campaign=createCampaign();
+  for(const q of campaign.flat(2)){
+   assert.equal(q.template,q.answer,'The visible sentence must match the typing target');
+   assert.equal(q.hint,q.answer,'The English prompt must be the answer, not Japanese');
+   assert.match(q.answer,/[A-Za-z]/);
+   assert.doesNotMatch(q.answer,/____|\\(\s*\)/);
+  }
+ }
+});
+test('Potato and PET FISHING sources yield completed English sentences rather than missing words',()=>{
  const campaign=createCampaign();
  const p=campaign[2].flat(),g=campaign[3].flat();
- for(const q of [...p,...g])assert.equal(q.template.match(/_____/g)?.length,1);
+ for(const q of [...p,...g]){
+  assert.ok(q.answer.includes(' '));
+  assert.doesNotMatch(q.answer,/____/);
+ }
  for(const q of p)assert.ok(QUESTION_GROUPS.some(group=>group.questions.some((raw,i)=>potatoGap(raw,group.id+'-'+i)?.id===q.id)));
  for(const q of g)assert.ok(GRAMMAR_BANK.some(row=>grammarGap(row)?.id===q.id));
 });
