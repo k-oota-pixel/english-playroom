@@ -46,8 +46,6 @@ function showQuestion(){
   if(shownQuestion!==null){
    shownQuestion=null;$('typing').value='';$('typing').disabled=true;
    $('answerBar').style.width='0%';
-   $('questionHint').textContent='魔物がやってくる…';
-   $('questionSubHint').textContent='';
    $('questionTemplate').textContent='次の敵を待とう';
    $('questionType').textContent='待機中';
   }
@@ -56,9 +54,7 @@ function showQuestion(){
  if(shownQuestion===enemy.q.id)return;
  shownQuestion=enemy.q.id;
  $('typing').value='';$('typing').disabled=false;$('typing').classList.remove('wrong');
- $('questionHint').textContent=enemy.q.hint||'';
- $('questionSubHint').textContent=enemy.q.subhint||'';
- $('questionTemplate').textContent=enemy.q.template||'';
+ $('questionTemplate').textContent=enemy.q.answer||'';
  $('questionType').textContent=enemy.q.topic||'';
  $('answerBar').style.width='0%';
  setFeedback('先頭の魔物を撃退しよう！');
@@ -94,8 +90,6 @@ function openPhase(){
  run.elapsed=0;run.active=true;shownQuestion=null;lastTypedAt=-1e9;
  $('typing').value='';$('typing').disabled=true;$('typing').classList.remove('wrong');
  $('answerBar').style.width='0%';
- $('questionHint').textContent='まもなく魔物が出現…';
- $('questionSubHint').textContent='';
  $('questionTemplate').textContent='タイピングの準備！';
  setFeedback('魔物が現れたら英文を入力しよう！');
  hud();
