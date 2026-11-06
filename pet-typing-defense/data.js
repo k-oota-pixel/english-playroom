@@ -31,23 +31,25 @@ export function potatoGap(q,id){
  if(!filled)return null;
  const answer=filled[1].trim();
  if(!/^[A-Za-z][A-Za-z'\-]*(?:\s+[A-Za-z][A-Za-z'\-]*)*$/.test(answer))return null;
- const template=String(q.answer).replace(filled[0],'_____').replace(/\s+([.,!?])/g,'$1').replace(/\.\.$/,'.').trim();
- if(!template.includes('_____')||!q.japanese||!normalizedTyping(answer))return null;
- return {id,topic:'空欄を推測',hint:q.japanese,template,answer};
+ const sentence=String(q.answer).replace(filled[0],answer).replace(/\s+([.,!?])/g,'$1').replace(/\.\.+$/g,'.').replace(/\s+/g,' ').trim();
+ if(!sentence||sentence.includes('_____')||!normalizedTyping(sentence))return null;
+ return {id,topic:'英文タイピング',hint:sentence,template:sentence,answer:sentence};
 }
 export function grammarGap(row){
  if(!Array.isArray(row)||!String(row[2]).includes('____'))return null;
  const [id,unit,text,answer,ja]=row;
  if(!normalizedTyping(answer)||!/^[A-Za-z][A-Za-z'\-]*(?:\s+[A-Za-z][A-Za-z'\-]*)*$/.test(answer))return null;
- return {id:'grammar-'+id,topic:unit,hint:ja,template:text.replace(/____+/g,'_____'),answer};
+ const sentence=text.replace(/____+/g,answer).replace(/\s+([.,!?])/g,'$1').trim();
+ if(!sentence||sentence.includes('_____'))return null;
+ return {id:'grammar-'+id,topic:unit,hint:sentence,template:sentence,answer:sentence};
 }
 export function createCampaign(random=Math.random){
  const stage1=VOCAB_KEYS.map((level,i)=>{
   const pool=WORD_POOLS[level].filter(w=>normalizedTyping(w.word)&&w.ja);
-  return unique(shuffle(pool,random).map(w=>({id:w.id,topic:PHASE_NAMES[0][i],hint:w.ja,template:'スペルを入力',answer:w.word})),5);
+  return unique(shuffle(pool,random).map(w=>({id:w.id,topic:PHASE_NAMES[0][i],hint:w.word,template:w.word,answer:w.word})),5);
  });
  const conversation=unique(shuffle(TASK_SAMPLES.filter(q=>q.answer&&q.mission),random)
-  .map(q=>({id:q.id,topic:q.title,hint:q.mission,subhint:q.situation,template:'英文をすべて入力',answer:q.answer})),25);
+  .map(q=>({id:q.id,topic:q.title,hint:q.answer,template:q.answer,answer:q.answer})),25);
  const stage2=Array.from({length:5},(_,i)=>conversation.slice(i*5,(i+1)*5));
  const potato=QUESTION_GROUPS.flatMap(group=>(group.questions||[]).map((q,i)=>({...q,group:group.id,key:group.id+'-'+i})));
  const usedPotato=new Set(), stage3=[];
