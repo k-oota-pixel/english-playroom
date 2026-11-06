@@ -7,9 +7,9 @@
 <meta name="theme-color" content="#f4f7ed">
 <title>もんすたディフェンス | もんすたでぃ</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./style.css?v=3">
+<link rel="stylesheet" href="./style.css?v=4">
 <script src="../shell-bridge.js?v=2.3.41"></script>
-<script type="module" src="./game.js?v=6"></script>
+<script type="module" src="./game.js?v=7"></script>
 </head>
 <body>
 <main class="wrap">
@@ -23,22 +23,24 @@
   <p>英語をタイプするとペットが魔法で攻撃！ 迫ってくる魔物からお城を守ろう。</p>
  </section>
  <div id="opening" class="card opening">
-  <h2>4つのステージを攻略しよう！</h2>
+  <h2>5つのステージを攻略しよう！</h2>
   <div class="stage-list">
    <div><span>01</span><strong>単語の森</strong><small>中1 → 中2 → 中3 → 高1 → 高2／日本語→頭文字→英単語</small></div>
    <div><span>02</span><strong>ポテトマンの畑</strong><small>平均より短い英文（28文字以下）を全文タイプ</small></div>
    <div><span>03</span><strong>文法の砦</strong><small>基本文法の完成文を全文タイプ</small></div>
-   <div><span>04</span><strong>タスク別英会話</strong><small>模範英文を全文タイプ</small></div>
+   <div><span>04</span><strong>タスク別英会話</strong><small>日本語訳と英文で会話を学ぼう</small></div>
+   <div><span>05</span><strong>文法別の試練</strong><small>並べ替え（文法別）をタイピング／7秒間隔</small></div>
   </div>
-  <p class="description">単語は日本語訳からスタート。2秒後に頭文字、4秒後に英単語全体を表示します。ステージ2〜4では、表示された英文をタイプし、スペースは入力不要です。ポテトマンはアポストロフィを含まない問題の平均文字数より短い、空白込み28文字以下の英文のみ出題します。全ステージでアポストロフィを含む英文は出題しません。敵の出現間隔はステージ2から順に3秒・4秒・5秒です。各ステージは5フェーズ、各フェーズ5問。全100問をクリアすると勝利です。魔物が城に到着すると耐久力が1減ります。正解の入力が完成すると自動で攻撃します。句読点・大文字小文字は判定に影響しません。</p>
-  <div class="setup"><label for="speed">敵の進む速さ</label><select id="speed"><option value="gentle">やさしい（入力中は減速）</option><option value="normal">ふつう</option><option value="fast">はやい</option></select><button type="button" class="primary" id="begin">防衛を開始！</button></div>
-  <p class="notice">試作版のため、コイン・称号・ランキングには反映されません。Firebaseの追加read/writeはありません。</p>
+  <p class="description">ノーマルは英文と日本語訳を見ながらタイプ。ハードは日本語訳とシャッフルした単語だけを見て英文を組み立てます。ステージ1は日本語→2秒後に頭文字→4秒後に単語を表示し、ハードでは英検2級の単語に変更します。ステージ2〜5はスペース入力不要です。ポテトマンは28文字以下の短文のみ。すべての問題でアポストロフィを含む英文を除外しています。各ステージ5フェーズ×5問、合計125問でクリアです。敵が城に到着すると耐久力が減ります。</p>
+  <div class="setup"><label for="mode">ゲームモード</label><select id="mode"><option value="normal">ノーマル｜英文を見てタイピング</option><option value="hard">ハード｜和訳＋並べ替え単語でタイピング</option></select><button type="button" class="primary" id="begin">防衛を開始！</button></div>
+  <p class="reward-note">🪙 ノーマル：各ステージクリアで1コイン ／ ハード：ステージ1は各フェーズ1コイン、ステージ2〜5は各フェーズ2コイン。どちらも同じ達成の報酬は1日1回まで。</p>
+  <p class="notice">コイン報酬はクリア時にFirebaseへ保存します。称号・ランキングには本ゲーム専用の追加項目はありません。</p>
  </div>
  <section class="card game" id="game" hidden>
   <div class="hud">
-   <div class="meter"><small>STAGE</small><strong id="stageMeter">1 / 4</strong></div>
+   <div class="meter"><small>STAGE</small><strong id="stageMeter">1 / 5</strong></div>
    <div class="meter"><small>PHASE</small><strong id="phaseMeter">1 / 5</strong></div>
-   <div class="meter"><small>防衛成功</small><strong id="killMeter">0 / 100</strong></div>
+   <div class="meter"><small>防衛成功</small><strong id="killMeter">0 / 125</strong></div>
    <div class="meter health"><small>お城の耐久力</small><strong id="hpMeter">♥ ♥ ♥ ♥ ♥ ♥</strong></div>
   </div>
   <div class="course-label"><span id="courseName">単語の森</span><span id="phaseName">中学1年</span><span id="waveMeter">0 / 5</span></div>
@@ -52,14 +54,17 @@
     <div class="eyebrow" id="overlayEyebrow">PHASE CLEAR</div>
     <h2 id="overlayHeading">フェーズクリア！</h2>
     <p id="overlayBody">お城を守り切った！</p>
+    <p class="reward-status" id="rewardStatus" aria-live="polite"></p>
     <button class="primary" type="button" id="nextPhase">次のフェーズへ</button>
+    <button class="retry-reward" type="button" id="retryReward" hidden>コイン獲得を再試行</button>
    </div></div>
   </div>
   <div class="question-panel" aria-live="polite">
     <div class="question-label"><span id="questionType">中学1年</span><span>タイプして魔法を発射！</span></div>
     <div class="japanese" id="wordMeaning" hidden></div>
     <div class="sentence" id="questionTemplate">—</div>
-    <label for="typing" class="typing-label">表示された英語をそのままタイプ</label>
+    <div class="word-choices" id="wordChoices" hidden></div>
+    <label for="typing" class="typing-label">英文をタイプ（ステージ2以降はスペース不要）</label>
     <input id="typing" type="text" lang="en" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" inputmode="text" placeholder="ここに英語をタイプ" maxlength="200">
     <div class="answer-progress"><div id="answerBar"></div></div>
     <p class="feedback" id="feedback" aria-live="polite">先頭の敵をねらってタイプしよう！</p>
