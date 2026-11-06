@@ -36,7 +36,7 @@ function install() {
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
     {name:'オンライン対戦',url:new URL('pet-adventure/online-battle.html',root)}
   ]});
-  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)}];
+  const hiddenMaterials=[{name:'ペットのおへや',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)},{name:'もんすたディフェンス（テスト）',url:new URL('pet-typing-defense/',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
   const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
