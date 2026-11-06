@@ -21,17 +21,27 @@ const els={
  readyBtn:$('readyBtn'),readyCount:$('readyCount'),readyFeedback:$('readyFeedback'),resultFeedback:$('resultFeedback'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
-let user=null,activeRoom='',selectedGrade='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
+let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsTimer=0,roomRefreshInFlight='',coins=0,questionPool=[],ownData={};
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 
 function stopAutoRefresh(){
  if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
+ pollIntervalMs=0;
  if(roomsTimer){clearInterval(roomsTimer);roomsTimer=0;}
 }
 function startAutoRefresh(){
  if(document.hidden||!user||autoPausedForIdle)return;
- if(!pollTimer)pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},2500);
+ // Only active matches need 1-second sync; waiting rooms retain 2.5 seconds.
+ const interval=activeRoom&&currentRoom?.roomId===activeRoom&&currentRoom.status==='playing'?1000:2500;
+ if(!activeRoom){
+  if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
+  pollIntervalMs=0;
+ }else if(!pollTimer||pollIntervalMs!==interval){
+  if(pollTimer)clearInterval(pollTimer);
+  pollIntervalMs=interval;
+  pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},interval);
+ }
  if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},15000);
 }
 function armIdlePause(){
@@ -250,19 +260,28 @@ function renderRoom(room){
  if(lastStatus!==room.status){if(room.status==='playing'){resetTurn();seenQuestionIds.clear();lastQuestionId='';}lastStatus=room.status;}
  const playable=room.status==='playing'&&!busy;els.magicBtn.disabled=!playable||room.noItems;els.itemBtn.disabled=!playable||room.noItems;els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
  if(room.status==='waiting')renderWaiting(room,mine,other);else if(room.status==='playing')renderPlaying(room);else if(room.status==='finished')renderFinished(room,mine);
+ startAutoRefresh();
 }
 
 async function refreshRoom(){
  if(!activeRoom)return;
+ const roomId=activeRoom;
+ // A slow request must not cause overlapping polls every second.
+ if(roomRefreshInFlight===roomId)return;
+ roomRefreshInFlight=roomId;
  try{
-  const roomId=activeRoom,data=await api('/room/'+roomId),room=data.room;
+  const data=await api('/room/'+roomId),room=data.room;
   if(roomId!==activeRoom)return;
   // A slow polling response must not roll back a freshly confirmed ready/start state.
   if(currentRoom?.roomId===roomId&&Number(room.seq)<Number(currentRoom.seq))return;
-  if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';clearBattleEffects();resetTurn();enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return;}
+  if(!(room.players||[]).some(p=>p.uid===user.uid)){
+   activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';
+   clearBattleEffects();resetTurn();enterLobbyLayout();startAutoRefresh();
+   if(selectedGrade)await refreshLobby();else showGradePicker();return;
+  }
   renderRoom(room);
- }
- catch(e){say(e.message,true);}
+ }catch(e){if(roomId===activeRoom)say(e.message,true);}
+ finally{if(roomRefreshInFlight===roomId)roomRefreshInFlight='';}
 }
 async function enterRoom(id){
  try{
@@ -286,7 +305,7 @@ async function act(action,{render=true,body=null}={}){
   if(action==='leave'){
    activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;
    lastEventKey='';lastEventRoomId='';lastStatus='';busy=false;readyPending=false;
-   clearBattleEffects();resetTurn();await updateCoins();enterLobbyLayout();
+   clearBattleEffects();resetTurn();startAutoRefresh();await updateCoins();enterLobbyLayout();
    if(selectedGrade)await refreshLobby();else showGradePicker();return null;
   }
   currentRoom=data.room;if(render)renderRoom(data.room);await updateCoins();return data.room;
