@@ -56,7 +56,7 @@ function install() {
   topbar.remove(); shell.querySelector('.ms-home-content').append(home);
   const frame=shell.querySelector('iframe'), title=shell.querySelector('.ms-current'), status=shell.querySelector('.ms-status');
   const shade=shell.querySelector('.ms-shade'), menu=shell.querySelector('.ms-menu');
-  let current='', historyIndex=0, restoring=false, pendingFeature=null, opener=null;
+  let current='', historyIndex=0, restoring=false, pendingFeature=null, opener=null, departingVersion=0;
   function mobileMenu(open) {
     shell.classList.toggle('ms-menu-open',open); shade.hidden=!open;
     menu.setAttribute('aria-expanded',String(open));
@@ -259,13 +259,22 @@ function install() {
       if(logout)logout.style.display='none';
     }catch{}
   }
-  function show(u){
+  function show(u,afterDeparture=false){
     const next=isHome(u)?'':key(u);
-    if(current&&current!==next){
-      // Give the outgoing material a chance to release live server resources
-      // before its iframe is replaced by another material or the home view.
-      try{child()?.onNavigateAway?.();}catch(error){console.warn('material navigation cleanup failed',error);}
+    if(!afterDeparture&&current&&current!==next){
+      // Wait briefly for the online room release before removing its iframe.
+      // Continue navigation even if the network is unavailable.
+      let departure=null;
+      try{departure=child()?.onNavigateAway?.();}catch(error){console.warn('material navigation cleanup failed',error);}
+      if(departure&&typeof departure.then==='function'){
+        const version=++departingVersion;
+        status.textContent='対戦ルームを退出しています…';status.hidden=false;
+        Promise.race([departure,new Promise(resolve=>setTimeout(resolve,2000))])
+          .catch(()=>{}).then(()=>{if(version===departingVersion)show(u,true);});
+        return;
+      }
     }
+    departingVersion++;
     current=next;
     shell.classList.toggle('ms-showing-material',!!current);
     shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
