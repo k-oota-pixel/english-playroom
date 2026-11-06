@@ -120,5 +120,16 @@ test('game launcher has two large direct mode buttons and no old setup text',()=
  assert.match(game,/hardStart'\)\.addEventListener\('click',\(\)=>start\('hard'\)\)/);
  assert.match(game,/function start\(mode=run\?\.mode\|\|'normal'\)/);
  assert.match(css,/\.opening\.mode-chooser\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.match(page,/<section class="card game"[\s\S]*id="normalRanking"[\s\S]*id="hardRanking"/);
+ assert.doesNotMatch(page,/id="normalRanking"|id="hardRanking"/);
+ assert.match(page,/<title>タイピングディフェンス \| もんすたでぃ<\/title>/);
+ assert.match(page,/<h1>タイピングディフェンス<\/h1>/);
+ assert.doesNotMatch(page,/TEST VERSION|<a class="back"/);
+ const topbar=readFileSync(new URL('../material-return.js',import.meta.url),'utf8');
+ assert.match(topbar,/className='ms-defense-rank-actions'/);
+ assert.match(topbar,/openMaterialRanking\('pet-typing-defense-'\+mode\)/);
+ assert.match(topbar,/rankBtn.hidden=isDefense\|\|!materialRankingAppId\(frame.src\)/);
+ assert.match(css,/body\.typing-in-progress \.game\{display:grid;grid-template-columns:/);
+ assert.match(css,/body\.typing-in-progress \.question-panel\{grid-column:2;grid-row:3;/);
+ assert.doesNotMatch(game, /textContent='魔物 '\+\(i\+1\)/);
+ assert.match(game,/node.append\(monster,shadow\)/);
 });
