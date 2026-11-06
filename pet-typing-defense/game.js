@@ -1,9 +1,9 @@
-import {createCampaign,normalizedTyping,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js';
+import {createCampaign,normalizedDefenseTyping,revealedWord,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
 const TOTAL=STAGE_COUNT*PHASES_PER_STAGE*QUESTIONS_PER_PHASE;
-let campaign=null,run=null,frame=0,lastFrame=0,shownQuestion=null,lastTypedAt=-1e9;
+let campaign=null,run=null,frame=0,lastFrame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='',lastTypedAt=-1e9;
 const MAX_HP=6;
 function setFeedback(message,type=''){
  $('feedback').textContent=message;
@@ -16,7 +16,17 @@ function choosePet(){
    const homePet=parent.document.getElementById('petVisual');
    if(homePet){
     const svg=homePet.querySelector('svg');
-    if(svg){target.replaceChildren(svg.cloneNode(true));target.setAttribute('aria-label',homePet.getAttribute('aria-label')||'あなたのペット');return}
+    if(svg){
+     const clean=svg.cloneNode(true);
+     // The parent's pet SVG has scenery before its character; strip the scenery only.
+     const shadow=clean.querySelector('.pet-shadow');
+     if(shadow){
+      while(clean.firstElementChild&&clean.firstElementChild!==shadow)clean.firstElementChild.remove();
+     }
+     target.replaceChildren(clean);
+     target.setAttribute('aria-label',homePet.getAttribute('aria-label')||'あなたのペット');
+     return;
+    }
     if(homePet.textContent.includes('🥚')){target.textContent='🥚';target.setAttribute('aria-label','ふしぎなたまご');return}
    }
   }
@@ -39,6 +49,15 @@ function currentEnemy(){
  if(!run)return null;
  return run.enemies.find(e=>e.spawned&&!e.resolved)||null;
 }
+function stageIndex(){
+ return Math.floor(run.phaseIndex/PHASES_PER_STAGE);
+}
+function refreshWordReveal(enemy){
+ const revealed=revealedWord(enemy.q.answer,performance.now()-shownQuestionAt);
+ if(revealed===wordReveal)return;
+ wordReveal=revealed;
+ $('questionTemplate').textContent=revealed;
+}
 function showQuestion(){
  if(!run?.active)return;
  const enemy=currentEnemy();
@@ -46,16 +65,26 @@ function showQuestion(){
   if(shownQuestion!==null){
    shownQuestion=null;$('typing').value='';$('typing').disabled=true;
    $('answerBar').style.width='0%';
+   $('wordMeaning').hidden=true;
    $('questionTemplate').textContent='次の敵を待とう';
    $('questionType').textContent='待機中';
   }
   return;
  }
- if(shownQuestion===enemy.q.id)return;
+ if(shownQuestion===enemy.q.id){
+  if(stageIndex()===0)refreshWordReveal(enemy);
+  return;
+ }
  shownQuestion=enemy.q.id;
+ shownQuestionAt=performance.now();
+ wordReveal=null;
  $('typing').value='';$('typing').disabled=false;$('typing').classList.remove('wrong');
- $('questionTemplate').textContent=enemy.q.answer||'';
+ const isWordStage=stageIndex()===0;
+ $('wordMeaning').hidden=!isWordStage;
+ $('wordMeaning').textContent=isWordStage?enemy.q.hint:'';
+ $('questionTemplate').textContent=isWordStage?'':enemy.q.answer||'';
  $('questionType').textContent=enemy.q.topic||'';
+ if(isWordStage)refreshWordReveal(enemy);
  $('answerBar').style.width='0%';
  setFeedback('先頭の魔物を撃退しよう！');
  $('typing').focus({preventScroll:true});
@@ -87,11 +116,12 @@ function openPhase(){
  $('enemyLayer').replaceChildren();$('effects').replaceChildren();
  run.enemies=questions.map((q,i)=>({q,x:970,spawnAt:i*1.65,spawned:false,resolved:false,node:null}));
  run.enemies.forEach((e,i)=>makeEnemy(e,i,stage));
- run.elapsed=0;run.active=true;shownQuestion=null;lastTypedAt=-1e9;
+ run.elapsed=0;run.active=true;shownQuestion=null;shownQuestionAt=0;wordReveal=null;lastTypedAt=-1e9;
  $('typing').value='';$('typing').disabled=true;$('typing').classList.remove('wrong');
+ $('wordMeaning').hidden=true;
  $('answerBar').style.width='0%';
  $('questionTemplate').textContent='タイピングの準備！';
- setFeedback('魔物が現れたら英文を入力しよう！');
+ setFeedback(stage===0?'まず日本語訳を見て入力！ 2秒後に頭文字、4秒後に英単語を表示します。':stage===3?'英文をタイプしよう！ スペースは入力不要です。':'魔物が現れたら英文を入力しよう！');
  hud();
  if(frame)cancelAnimationFrame(frame);
  lastFrame=performance.now();
@@ -194,8 +224,8 @@ function onType(){
  if(!run?.active)return;
  const target=currentEnemy();if(!target)return;
  lastTypedAt=performance.now();
- const input=normalizedTyping($('typing').value);
- const expected=normalizedTyping(target.q.answer);
+ const input=normalizedDefenseTyping($('typing').value,stageIndex());
+ const expected=normalizedDefenseTyping(target.q.answer,stageIndex());
  const isPrefix=expected.startsWith(input);
  $('typing').classList.toggle('wrong',!!input&&!isPrefix);
  $('answerBar').style.width=Math.min(100,Math.round(input.length/Math.max(1,expected.length)*100))+'%';
@@ -222,7 +252,7 @@ $('typing').addEventListener('keydown',event=>{
  if(event.key==='Enter'){
   event.preventDefault();
   if(!run?.active)return;
-  if(normalizedTyping($('typing').value)===normalizedTyping(currentEnemy()?.q.answer))strike();
+  if(currentEnemy()&&normalizedDefenseTyping($('typing').value,stageIndex())===normalizedDefenseTyping(currentEnemy().q.answer,stageIndex()))strike();
  }
 });
 window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame)});
