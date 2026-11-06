@@ -16,7 +16,10 @@ export const PHASE_NAMES=[
 ];
 export const STAGE_COUNT=5, PHASES_PER_STAGE=5, QUESTIONS_PER_PHASE=5;
 export const TOTAL_QUESTIONS=STAGE_COUNT*PHASES_PER_STAGE*QUESTIONS_PER_PHASE;
-export function enemySpawnInterval(stageIndex){return [1.65,3,4,5,7][stageIndex]??7;}
+export function enemySpawnInterval(stageIndex,mode='normal'){
+ const intervals=mode==='hard'?[3,10,12,14,16]:[1.65,3,4,5,7];
+ return intervals[stageIndex]??intervals[intervals.length-1];
+}
 const GRAMMAR_UNITS=[['be'],['general','mixed'],['perfect','infinitive'],['participle','relative'],['question','svoo','svoc','indirect','conjunction']];
 const VOCAB_KEYS=['junior1','junior2','junior3','high1','high2'];
 function shuffle(list,random=Math.random){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
