@@ -22,7 +22,7 @@ const els={
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,roomsTimer=0,coins=0,questionPool=[],ownData={};
-let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventSeq=-1,lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
+let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 
 function stopAutoRefresh(){
@@ -119,6 +119,18 @@ async function refreshLobby(){
 function enterBattleLayout(){lobbyView.hidden=true;battleView.hidden=false;document.body.classList.add('battle-mode');}
 function enterLobbyLayout(){battleView.hidden=true;lobbyView.hidden=false;document.body.classList.remove('battle-mode');}
 function resetTurn(){turnCards=[];selectedAttack=null;currentQuestion=null;els.answerGrid.replaceChildren();els.answerFeedback.textContent='';els.quizPanel.hidden=true;}
+function clearBattleEffects(){
+ els.battleFlash.classList.remove('show');
+ els.battleFlash.textContent='';
+ els.petVisual.classList.remove('attack','hurt');
+ els.enemyVisual.classList.remove('attack','hurt');
+}
+// Room revisions also advance when users join or mark themselves ready. Only a NEW
+// combat event (not a changed room seq) may play an animation.
+function eventFingerprint(ev){
+ if(!ev)return '';
+ return [ev.type,ev.at,ev.from,ev.to,ev.spellId,ev.itemId,ev.kind,ev.damage,ev.heal,ev.amount].map(value=>String(value??'')).join('|');
+}
 
 function updateFighters(room){
  const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
@@ -138,7 +150,16 @@ function updateFighters(room){
 
 function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.remove('show');void els.battleFlash.offsetWidth;els.battleFlash.classList.add('show');}
 function animateEvent(room){
- if(room.seq===lastEventSeq||!room.lastEvent)return;lastEventSeq=room.seq;
+ const fingerprint=eventFingerprint(room.lastEvent);
+ if(lastEventRoomId!==room.roomId){
+  lastEventRoomId=room.roomId;
+  lastEventKey=fingerprint; // Do not replay an event recorded before joining this room.
+  return;
+ }
+ if(!fingerprint||fingerprint===lastEventKey)return;
+ lastEventKey=fingerprint;
+ // A stale lastEvent must never fire an animation while waiting for both players.
+ if(room.status!=='playing'&&room.status!=='finished')return;
  const ev=room.lastEvent,mine=ev.from===user.uid;
  if(ev.type==='attack'){
   const target=ev.to===user.uid?els.petVisual:els.enemyVisual;target.classList.remove('hurt');void target.offsetWidth;target.classList.add('hurt');
@@ -222,6 +243,7 @@ function renderPlaying(room){
  else{els.attackPanel.hidden=false;els.quizPanel.hidden=true;}
 }
 function renderRoom(room){
+ if(!room||room.roomId!==activeRoom)return;
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+(room.roomNo||String(room.roomId||'').split('-').pop());els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent='MAGIC / ITEM';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
  updateFighters(room);animateEvent(room);
@@ -237,21 +259,38 @@ async function refreshRoom(){
   if(roomId!==activeRoom)return;
   // A slow polling response must not roll back a freshly confirmed ready/start state.
   if(currentRoom?.roomId===roomId&&Number(room.seq)<Number(currentRoom.seq))return;
-  if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return;}
+  if(!(room.players||[]).some(p=>p.uid===user.uid)){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';clearBattleEffects();resetTurn();enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return;}
   renderRoom(room);
  }
  catch(e){say(e.message,true);}
 }
 async function enterRoom(id){
- try{say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;const data=await api('/room/'+id+'/join','POST');activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);lastEventSeq=data.room.seq;lastStatus='';readyPending=false;clearBattleFeedback();resetTurn();renderRoom(data.room);say('');}
- catch(e){await refreshLobby();say(e.message,true);}
+ try{
+  say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;
+  const data=await api('/room/'+id+'/join','POST');
+  activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);
+  currentRoom=null;lastEventRoomId=id;lastEventKey=eventFingerprint(data.room?.lastEvent);
+  lastStatus='';readyPending=false;busy=false;seenQuestionIds.clear();lastQuestionId='';
+  clearBattleEffects();clearBattleFeedback();resetTurn();
+  if(els.magicDialog.open)els.magicDialog.close();
+  if(els.itemDialog.open)els.itemDialog.close();
+  renderRoom(data.room);say('');
+ }catch(e){await refreshLobby();say(e.message,true);}
 }
 async function act(action,{render=true,body=null}={}){
+ const roomId=activeRoom;
  try{
-  const data=await api('/room/'+activeRoom+'/'+action,'POST',body);
-  if(action==='leave'){activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;resetTurn();await updateCoins();enterLobbyLayout();if(selectedGrade)await refreshLobby();else showGradePicker();return null;}
+  const data=await api('/room/'+roomId+'/'+action,'POST',body);
+  // An earlier room's delayed response cannot change the room now on screen.
+  if(roomId!==activeRoom)return null;
+  if(action==='leave'){
+   activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;
+   lastEventKey='';lastEventRoomId='';lastStatus='';busy=false;readyPending=false;
+   clearBattleEffects();resetTurn();await updateCoins();enterLobbyLayout();
+   if(selectedGrade)await refreshLobby();else showGradePicker();return null;
+  }
   currentRoom=data.room;if(render)renderRoom(data.room);await updateCoins();return data.room;
- }catch(e){await refreshRoom();say(e.message,true);throw e;}
+ }catch(e){if(roomId===activeRoom){await refreshRoom();say(e.message,true);}throw e;}
 }
 
 function renderMagic(message='',error=false){
