@@ -7,9 +7,9 @@
 <meta name="theme-color" content="#f4f7ed">
 <title>もんすたディフェンス | もんすたでぃ</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./style.css?v=5">
+<link rel="stylesheet" href="./style.css?v=6">
 <script src="../shell-bridge.js?v=2.3.41"></script>
-<script type="module" src="./game.js?v=11"></script>
+<script type="module" src="./game.js?v=12"></script>
 </head>
 <body>
 <main class="wrap">
@@ -20,28 +20,11 @@
  <section class="hero">
   <div class="eyebrow">CASTLE DEFENSE × ENGLISH TYPING</div>
   <h1>もんすたディフェンス</h1>
-  <p>英語をタイプするとペットが魔法で攻撃！ 迫ってくる魔物からお城を守ろう。</p>
+  <p>モードを選んで、お城を守ろう！</p>
  </section>
- <div class="today-ranking-bar" aria-label="本日のモード別ランキング">
-  <strong>🏆 本日のランキング</strong>
-  <button type="button" id="normalRanking">ノーマル TOP3</button>
-  <button type="button" id="hardRanking">ハード TOP3</button>
-  <small>ステージクリア数で集計／日本時間・同一ステージは1日1回まで</small>
- </div>
- <div id="opening" class="card opening">
-  <h2>5つのステージを攻略しよう！</h2>
-  <div class="stage-list">
-   <div><span>01</span><strong>単語の森</strong><small>中1 → 中2 → 中3 → 高1 → 高2／日本語→頭文字→英単語</small></div>
-   <div><span>02</span><strong>ポテトマンの畑</strong><small>平均より短い英文（28文字以下）を全文タイプ</small></div>
-   <div><span>03</span><strong>文法の砦</strong><small>基本文法の完成文を全文タイプ</small></div>
-   <div><span>04</span><strong>タスク別英会話</strong><small>日本語訳と英文で会話を学ぼう</small></div>
-   <div><span>05</span><strong>文法別の試練</strong><small>並べ替え（文法別）をタイピング</small></div>
-  </div>
-  <p class="description">ノーマルは英文と日本語訳を見ながらタイプ。ハードは日本語訳とシャッフルした単語だけを見て英文を組み立てます。ステージ1は日本語→2秒後に頭文字→4秒後に単語を表示し、ハードでは英検2級の単語に変更します。ステージ2〜5はスペース入力不要です。ポテトマンは28文字以下の短文のみ。すべての問題でアポストロフィを含む英文を除外しています。各ステージ5フェーズ×5問、合計125問でクリアです。敵が城に到着すると耐久力が減ります。</p>
-  <div class="setup"><label for="mode">ゲームモード</label><select id="mode"><option value="normal">ノーマル｜英文を見てタイピング</option><option value="hard">ハード｜和訳＋並べ替え単語でタイピング</option></select><button type="button" class="primary" id="begin">防衛を開始！</button></div>
-  <p class="reward-note">敵の出現間隔：ノーマル＝1.65／3／4／5／7秒、ハード＝3／5／7／9／11秒（ステージ1〜5の順）。</p>
-  <p class="reward-note">🪙 ノーマル：各ステージクリアで1コイン ／ ハード：ステージ1は各フェーズ1コイン、ステージ2〜5は各フェーズ2コイン。どちらも同じ達成の報酬は1日1回まで。</p>
-  <p class="notice">コイン報酬はクリア時にFirebaseへ保存します。称号・ランキングには本ゲーム専用の追加項目はありません。</p>
+ <div id="opening" class="card opening mode-chooser">
+  <button type="button" id="normalStart" class="mode-choice mode-normal">ノーマルモード</button>
+  <button type="button" id="hardStart" class="mode-choice mode-hard">ハードモード</button>
  </div>
  <section class="card game" id="game" hidden>
   <div class="hud">
@@ -77,6 +60,11 @@
     <p class="feedback" id="feedback" aria-live="polite">先頭の敵をねらってタイプしよう！</p>
   </div>
   <div class="game-actions"><button id="restart" type="button">最初からやり直す</button><a href="../">ゲームを終了する</a></div>
+  <div class="today-ranking-bar" aria-label="本日のモード別ランキング">
+    <strong>🏆 本日のランキング</strong>
+    <button type="button" id="normalRanking">ノーマル TOP3</button>
+    <button type="button" id="hardRanking">ハード TOP3</button>
+  </div>
  </section>
 </main>
 </body>
