@@ -9,7 +9,7 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./style.css?v=4">
 <script src="../shell-bridge.js?v=2.3.41"></script>
-<script type="module" src="./game.js?v=8"></script>
+<script type="module" src="./game.js?v=9"></script>
 </head>
 <body>
 <main class="wrap">
@@ -22,6 +22,12 @@
   <h1>もんすたディフェンス</h1>
   <p>英語をタイプするとペットが魔法で攻撃！ 迫ってくる魔物からお城を守ろう。</p>
  </section>
+ <div class="today-ranking-bar" aria-label="本日のモード別ランキング">
+  <strong>🏆 本日のランキング</strong>
+  <button type="button" id="normalRanking">ノーマル TOP3</button>
+  <button type="button" id="hardRanking">ハード TOP3</button>
+  <small>ステージクリア数で集計／日本時間・同一ステージは1日1回まで</small>
+ </div>
  <div id="opening" class="card opening">
   <h2>5つのステージを攻略しよう！</h2>
   <div class="stage-list">
@@ -33,7 +39,7 @@
   </div>
   <p class="description">ノーマルは英文と日本語訳を見ながらタイプ。ハードは日本語訳とシャッフルした単語だけを見て英文を組み立てます。ステージ1は日本語→2秒後に頭文字→4秒後に単語を表示し、ハードでは英検2級の単語に変更します。ステージ2〜5はスペース入力不要です。ポテトマンは28文字以下の短文のみ。すべての問題でアポストロフィを含む英文を除外しています。各ステージ5フェーズ×5問、合計125問でクリアです。敵が城に到着すると耐久力が減ります。</p>
   <div class="setup"><label for="mode">ゲームモード</label><select id="mode"><option value="normal">ノーマル｜英文を見てタイピング</option><option value="hard">ハード｜和訳＋並べ替え単語でタイピング</option></select><button type="button" class="primary" id="begin">防衛を開始！</button></div>
-  <p class="reward-note">敵の出現間隔：ノーマル＝1.65／3／4／5／7秒、ハード＝3／10／12／14／16秒（ステージ1〜5の順）。</p>
+  <p class="reward-note">敵の出現間隔：ノーマル＝1.65／3／4／5／7秒、ハード＝3／5／7／9／11秒（ステージ1〜5の順）。</p>
   <p class="reward-note">🪙 ノーマル：各ステージクリアで1コイン ／ ハード：ステージ1は各フェーズ1コイン、ステージ2〜5は各フェーズ2コイン。どちらも同じ達成の報酬は1日1回まで。</p>
   <p class="notice">コイン報酬はクリア時にFirebaseへ保存します。称号・ランキングには本ゲーム専用の追加項目はありません。</p>
  </div>
