@@ -24,6 +24,7 @@ const els={
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsTimer=0,roomRefreshInFlight='',coins=0,questionPool=[],ownData={};
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
+let navigationToken='',navigationExitInFlight=null;
 
 function stopAutoRefresh(){
  if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
@@ -89,6 +90,7 @@ function petArt(player){
 }
 async function api(path,method='GET',body=null){
  const token=await user.getIdToken();
+ navigationToken=token;
  let response;
  try{
   response=await fetch(API+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store',signal:AbortSignal.timeout(30000)});
@@ -100,6 +102,26 @@ async function api(path,method='GET',body=null){
  if(!response.ok)throw new Error(data.error||'通信に失敗しました。');
  return data;
 }
+// Best-effort leave while the page is being replaced: the normal request may
+// be cancelled when the shell removes this iframe. A keepalive request survives
+// same-tab navigation where the browser supports it.
+function leaveOnNavigate(){
+ if(!activeRoom||navigationExitInFlight)return navigationExitInFlight;
+ const roomId=activeRoom,token=navigationToken;
+ activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);
+ stopAutoRefresh();clearTimeout(idleTimer);
+ const send=authToken=>fetch(API+'/room/'+encodeURIComponent(roomId)+'/leave',{
+  method:'POST',headers:{Authorization:'Bearer '+authToken,'Content-Type':'application/json'},
+  body:'{}',cache:'no-store',keepalive:true
+ }).then(response=>{
+  if(!response.ok)console.warn('online battle auto-leave failed',response.status);
+ }).catch(error=>console.warn('online battle auto-leave could not be delivered',error));
+ navigationExitInFlight=token?send(token):user?.getIdToken().then(send).catch(error=>{
+  console.warn('online battle auto-leave authentication failed',error);
+ });
+ return navigationExitInFlight;
+}
+
 async function refreshOwnData(){
  const snap=await getDoc(walletRef(user));ownData=snap.exists()?(snap.data()||{}):{};coins=Math.max(0,Math.floor(Number(ownData.coins)||0));els.coinCount.textContent=coins;return ownData;
 }
@@ -287,6 +309,7 @@ async function enterRoom(id){
  try{
   say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;
   const data=await api('/room/'+id+'/join','POST');
+  navigationExitInFlight=null;
   activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);
   currentRoom=null;lastEventRoomId=id;lastEventKey=eventFingerprint(data.room?.lastEvent);
   lastStatus='';readyPending=false;busy=false;seenQuestionIds.clear();lastQuestionId='';
@@ -393,6 +416,14 @@ async function handleReadyClick(){
  finally{readyPending=false;if(activeRoom&&currentRoom)renderRoom(currentRoom);}
 }
 
+// The in-game back arrow returns to the room list rather than reloading the
+// same URL (which the parent shell treats as a no-op).
+battleView.querySelector('header.topbar a.back')?.addEventListener('click',event=>{
+ event.preventDefault();
+ event.stopPropagation();
+ if(activeRoom)void act('leave').catch(()=>{});
+ else{enterLobbyLayout();if(selectedGrade)void refreshLobby();else showGradePicker();}
+});
 $('refreshBtn').addEventListener('click',()=>void refreshLobby());
 $('backToGradesBtn').addEventListener('click',()=>showGradePicker());
 gradePicker.querySelectorAll('[data-grade]').forEach(button=>button.addEventListener('click',()=>void selectGrade(button.dataset.grade)));
@@ -411,5 +442,7 @@ window.addEventListener('touchstart',registerActivity,{capture:true,passive:true
 window.addEventListener('keydown',registerActivity,true);
 document.addEventListener('visibilitychange',handleVisibility);
 window.addEventListener('focus',handleVisibility);
-window.addEventListener('pagehide',()=>{stopAutoRefresh();clearTimeout(idleTimer);});
+// Parent shell navigation removes the iframe without reloading the top-level page.
+if(window.MonstudyMaterial)window.MonstudyMaterial.onNavigateAway=leaveOnNavigate;
+window.addEventListener('pagehide',()=>{void leaveOnNavigate();stopAutoRefresh();clearTimeout(idleTimer);});
 init();
