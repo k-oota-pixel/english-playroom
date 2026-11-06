@@ -9,7 +9,7 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./style.css?v=3">
 <script src="../shell-bridge.js?v=2.3.41"></script>
-<script type="module" src="./game.js?v=5"></script>
+<script type="module" src="./game.js?v=6"></script>
 </head>
 <body>
 <main class="wrap">
@@ -26,11 +26,11 @@
   <h2>4つのステージを攻略しよう！</h2>
   <div class="stage-list">
    <div><span>01</span><strong>単語の森</strong><small>中1 → 中2 → 中3 → 高1 → 高2／日本語→頭文字→英単語</small></div>
-   <div><span>02</span><strong>ポテトマンの畑</strong><small>平均より短い英文（5語以下）を全文タイプ</small></div>
+   <div><span>02</span><strong>ポテトマンの畑</strong><small>平均より短い英文（28文字以下）を全文タイプ</small></div>
    <div><span>03</span><strong>文法の砦</strong><small>基本文法の完成文を全文タイプ</small></div>
    <div><span>04</span><strong>タスク別英会話</strong><small>模範英文を全文タイプ</small></div>
   </div>
-  <p class="description">単語は日本語訳からスタート。2秒後に頭文字、4秒後に英単語全体を表示します。ステージ2〜4では、表示された英文をタイプし、スペースは入力不要です。ポテトマンは平均より短い5語以下の英文のみ出題します。各ステージは5フェーズ、各フェーズ5問。全100問をクリアすると勝利です。魔物が城に到着すると耐久力が1減ります。正解の入力が完成すると自動で攻撃します。句読点・大文字小文字は判定に影響しません。</p>
+  <p class="description">単語は日本語訳からスタート。2秒後に頭文字、4秒後に英単語全体を表示します。ステージ2〜4では、表示された英文をタイプし、スペースは入力不要です。ポテトマンはアポストロフィを含まない問題の平均文字数より短い、空白込み28文字以下の英文のみ出題します。全ステージでアポストロフィを含む英文は出題しません。敵の出現間隔はステージ2から順に3秒・4秒・5秒です。各ステージは5フェーズ、各フェーズ5問。全100問をクリアすると勝利です。魔物が城に到着すると耐久力が1減ります。正解の入力が完成すると自動で攻撃します。句読点・大文字小文字は判定に影響しません。</p>
   <div class="setup"><label for="speed">敵の進む速さ</label><select id="speed"><option value="gentle">やさしい（入力中は減速）</option><option value="normal">ふつう</option><option value="fast">はやい</option></select><button type="button" class="primary" id="begin">防衛を開始！</button></div>
   <p class="notice">試作版のため、コイン・称号・ランキングには反映されません。Firebaseの追加read/writeはありません。</p>
  </div>
