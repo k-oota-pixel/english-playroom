@@ -1,5 +1,4 @@
 import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.68';
-import {openMaterialRanking} from '../material-ranking-ui.js?v=2.3.68';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
@@ -113,10 +112,9 @@ function makeEnemy(e,i,stage){
  const node=document.createElement('div');
  node.className='foe';
  node.style.left='101%';
- const number=document.createElement('span');number.className='number';number.textContent='魔物 '+(i+1);
  const monster=document.createElement('span');monster.className='monster';monster.textContent=FACES[(stage+i)%FACES.length];
  const shadow=document.createElement('span');shadow.className='shadow';
- node.append(number,monster,shadow);
+ node.append(monster,shadow);
  $('enemyLayer').appendChild(node);
  e.node=node;
 }
@@ -318,14 +316,13 @@ function start(mode=run?.mode||'normal'){
  }
  if(frame)cancelAnimationFrame(frame);frame=0;
  $('opening').hidden=true;$('game').hidden=false;
+ document.body.classList.add('typing-in-progress');
  rewardRunId++;
  run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,rewardPaid:new Set(),enemies:[],elapsed:0,active:false};
  choosePet();openPhase();
 }
 $('normalStart').addEventListener('click',()=>start('normal'));
 $('hardStart').addEventListener('click',()=>start('hard'));
-$('normalRanking').addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-normal')});
-$('hardRanking').addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-hard')});
 $('nextPhase').addEventListener('click',()=>{});
 $('restart').addEventListener('click',()=>{
  if(!run?.active||confirm('最初からやり直しますか？'))start();
