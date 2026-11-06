@@ -27,8 +27,10 @@ test('PLAY dialog has the fourth game tile linking to typing defense',()=>{
 });
 
 test('homepage loads updated PLAY menu and sidebar module',()=>{
- assert.match(loader,/import '\.\/pet-play-menu-v164\.js\?v=2\.4\.1';/);
- assert.match(home,/app-shell\.js\?v=2\.4\.1/);
- assert.match(home,/<script type="module" src="\.\/pet-play-menu-v164\.js\?v=2\.4\.1"><\/script>/);
- assert.match(home,/version-badge-v176\.js\?v=2\.4\.1/);
+ const version=loader.match(/const APP_VERSION='([^']+)'/)?.[1];
+ assert.ok(version,'release version must exist');
+ assert.ok(loader.includes("import './pet-play-menu-v164.js?v="+version+"';"));
+ assert.ok(home.includes('app-shell.js?v='+version));
+ assert.ok(home.includes('<script type="module" src="./pet-play-menu-v164.js?v='+version+'"></script>'));
+ assert.ok(home.includes('version-badge-v176.js?v='+version));
 });
