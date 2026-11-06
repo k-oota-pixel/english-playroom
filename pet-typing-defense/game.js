@@ -169,7 +169,7 @@ async function rewardApi(){
    return parent.EnglishPlayroomCoins;
   }
  }catch{}
- await import('../coin-reward.js?v=2.3.68');
+ await import('../coin-reward.js?v=2.3.68.1');
  return window.EnglishPlayroomCoins||null;
 }
 async function payPhaseReward(stage,phase,id){
