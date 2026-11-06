@@ -10,7 +10,7 @@ const EXTRA_SLOTS=Object.freeze({
   'heart-glasses':'face','monocle':'face','pixel-glasses':'face','flower-glasses':'face','hero-mask':'face','rosy-cheeks':'face',
   'green-scarf':'neck','gold-medal':'neck','star-pendant':'neck','striped-bowtie':'neck','flower-necklace':'neck','bandana':'head',
   'bubble-effect':'effects','snowflake-effect':'effects','leaf-effect':'effects','lightning-effect':'effects','flower-effect':'effects','candy-effect':'effects',
-  'beach-bg':'backgrounds','library-bg':'backgrounds','night-city-bg':'backgrounds','park-bg':'backgrounds','festival-bg':'backgrounds','candy-bg':'backgrounds'
+  'beach-bg':'backgrounds','library-bg':'backgrounds','night-city-bg':'backgrounds','park-bg':'backgrounds','festival-bg':'backgrounds','candy-bg':'backgrounds','christmas-night-bg':'backgrounds','christmas-home-bg':'backgrounds','christmas-workshop-bg':'backgrounds'
 });
 
 const BASE_ITEMS=Object.freeze({
