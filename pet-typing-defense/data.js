@@ -11,7 +11,7 @@ export const PHASE_NAMES=[
  ['会話 1','会話 2','会話 3','会話 4','会話 5']
 ];
 export const STAGE_COUNT=4, PHASES_PER_STAGE=5, QUESTIONS_PER_PHASE=5;
-export function enemySpawnInterval(stageIndex){ return stageIndex===0?1.65:5; }
+export function enemySpawnInterval(stageIndex){ return [1.65,3,4,5][stageIndex]??5; }
 const GRAMMAR_UNITS=[['be'],['general','mixed'],['perfect','infinitive'],['participle','relative'],['question','svoo','svoc','indirect','conjunction']];
 const VOCAB_KEYS=['junior1','junior2','junior3','high1','high2'];
 function shuffle(list, random=Math.random){const arr=[...list];for(let i=arr.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr;}
@@ -30,8 +30,12 @@ export function revealedWord(word,elapsedMs){
  if(elapsedMs<4000)return answer.slice(0,1);
  return answer;
 }
-export function wordCount(sentence){
- return String(sentence||'').trim().split(/\s+/).filter(Boolean).length;
+export function characterCount(sentence){
+ return [...String(sentence||'')].length;
+}
+// Apostrophe contractions (both straight and typographic) are excluded from every game stage.
+export function hasApostrophe(sentence){
+ return /['\u2018\u2019\u02bc\uff07\u2032]/u.test(String(sentence||''));
 }
 function unique(pool,limit){
  const seen=new Set();
@@ -63,14 +67,14 @@ export function grammarGap(row){
 // Restricting each group after this calculation preserves all five grammar phases.
 const POTATO_POOL=QUESTION_GROUPS.flatMap(group=>(group.questions||[])
  .map((q,i)=>potatoGap(q,group.id+'-'+i))
- .filter(Boolean)
+ .filter(q=>q&&!hasApostrophe(q.answer))
  .map(q=>({...q,group:group.id})));
-export const POTATO_MEAN_WORD_COUNT=POTATO_POOL.reduce((total,q)=>total+wordCount(q.answer),0)/POTATO_POOL.length;
-const POTATO_SHORT_POOL=POTATO_POOL.filter(q=>wordCount(q.answer)<POTATO_MEAN_WORD_COUNT);
+export const POTATO_MEAN_CHARACTER_COUNT=POTATO_POOL.reduce((total,q)=>total+characterCount(q.answer),0)/POTATO_POOL.length;
+const POTATO_SHORT_POOL=POTATO_POOL.filter(q=>characterCount(q.answer)<POTATO_MEAN_CHARACTER_COUNT);
 
 export function createCampaign(random=Math.random){
  const words=VOCAB_KEYS.map((level,i)=>{
-  const pool=WORD_POOLS[level].filter(w=>normalizedTyping(w.word)&&w.ja);
+  const pool=WORD_POOLS[level].filter(w=>normalizedTyping(w.word)&&w.ja&&!hasApostrophe(w.word));
   return unique(shuffle(pool,random).map(w=>({id:w.id,topic:PHASE_NAMES[0][i],hint:w.ja,template:w.word,answer:w.word})),5);
  });
  const usedPotato=new Set(),potato=[];
@@ -85,12 +89,12 @@ export function createCampaign(random=Math.random){
  const usedGrammar=new Set(),grammar=[];
  for(let phase=0;phase<5;phase++){
   const candidates=shuffle(GRAMMAR_BANK.filter(row=>GRAMMAR_UNITS[phase].includes(row[1])),random)
-   .map(grammarGap).filter(Boolean).filter(q=>!usedGrammar.has(q.id));
+   .map(grammarGap).filter(q=>q&&!hasApostrophe(q.answer)).filter(q=>!usedGrammar.has(q.id));
   const selected=unique(candidates,5);
   selected.forEach(q=>usedGrammar.add(q.id));
   grammar.push(selected);
  }
- const conversation=unique(shuffle(TASK_SAMPLES.filter(q=>q.answer&&q.mission),random)
+ const conversation=unique(shuffle(TASK_SAMPLES.filter(q=>q.answer&&q.mission&&!hasApostrophe(q.answer)),random)
   .map(q=>({id:q.id,topic:q.title,hint:q.answer,template:q.answer,answer:q.answer})),25);
  const task=Array.from({length:5},(_,i)=>conversation.slice(i*5,(i+1)*5));
  const campaign=[words,potato,grammar,task];
