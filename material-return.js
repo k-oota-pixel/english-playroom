@@ -1,4 +1,4 @@
-import {materialRankingAppId,openMaterialRanking} from './material-ranking-ui.js?v=2.3.51';
+import {materialRankingAppId,openMaterialRanking} from './material-ranking-ui.js?v=2.4.3';
 const HOME=new URL('./',import.meta.url);
 
 function install(){
@@ -17,6 +17,10 @@ function install(){
     #monstudyMaterialReturn button:hover{background:#edf5ef}
     #monstudyMaterialReturn button[hidden]{display:none!important}
     #monstudyMaterialReturn .ms-material-rank-open{margin-left:auto;background:#eff8f1;color:#236145;border-color:#bdd3c4}
+    #monstudyMaterialReturn .ms-defense-rank-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
+    #monstudyMaterialReturn .ms-defense-rank-actions[hidden]{display:none!important}
+    #monstudyMaterialReturn .ms-defense-rank-actions button{background:#eff8f1;color:#236145;border-color:#bdd3c4;font-weight:900}
+    @media(max-width:480px){#monstudyMaterialReturn .ms-defense-rank-actions{gap:4px}#monstudyMaterialReturn .ms-defense-rank-actions button{font-size:10px;padding:6px 7px}}
     body[data-screen-theme="dark"] #monstudyMaterialReturn{background:#1d3026;border-color:#416450}
     body[data-screen-theme="dark"] #monstudyMaterialReturn button{background:#2f4638;color:#ebf6ec;border-color:#719382}
     #monstudyMaterialReturn button:focus-visible{outline:3px solid #dfb54d;outline-offset:2px}
@@ -37,9 +41,26 @@ function install(){
   const rankingBtn=document.createElement('button');rankingBtn.type='button';rankingBtn.className='ms-material-rank-open';rankingBtn.textContent='🏆 本日のランキング';
   rankingBtn.addEventListener('click',()=>{const id=materialRankingAppId(frame.src);if(id)void openMaterialRanking(id);});
   bar.append(rankingBtn);
+  const defenseActions=document.createElement('div');
+  defenseActions.className='ms-defense-rank-actions';
+  defenseActions.hidden=true;
+  for(const [mode,label] of [['normal','🏆 ノーマル'],['hard','🏆 ハード']]){
+    const button=document.createElement('button');
+    button.type='button';button.textContent=label;
+    button.setAttribute('aria-label',(mode==='normal'?'ノーマル':'ハード')+'モードの本日のランキング');
+    button.addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-'+mode);});
+    defenseActions.append(button);
+  }
+  bar.append(defenseActions);
   workspace.prepend(bar);
 
-  const sync=()=>{bar.hidden=!shell.classList.contains('ms-showing-material');rankingBtn.hidden=!materialRankingAppId(frame.src);};
+  const sync=()=>{
+    bar.hidden=!shell.classList.contains('ms-showing-material');
+    let isDefense=false;
+    try{isDefense=/\\/pet-typing-defense\\/(?:index\\.html)?$/.test(new URL(frame.src,HOME).pathname);}catch{}
+    defenseActions.hidden=!isDefense;
+    rankingBtn.hidden=isDefense||!materialRankingAppId(frame.src);
+  };
   new MutationObserver(sync).observe(shell,{attributes:true,attributeFilter:['class']});
   frame.addEventListener('load',sync);
   sync();
