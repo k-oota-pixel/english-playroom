@@ -340,6 +340,33 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   }catch(error){console.error('Coin reward failed',error);return {awarded:false,reason:'error',error};}
 }
 
+// One authenticated daily milestone per typing-defense mode and cleared stage.
+// The deterministic batch receipt prevents repeat plays (and other devices) from
+// inflating daily leaderboards. Reuse the existing activity endpoint and weekly titles.
+async function recordTypingDefenseStage(mode,stageNumber){
+  const stage=Number(stageNumber);
+  if(!['normal','hard'].includes(mode)||!Number.isInteger(stage)||stage<1||stage>5)return {recorded:false,reason:'invalid-stage'};
+  await authReady;
+  const user=currentUser;
+  if(!user)return {recorded:false,reason:'signed-out'};
+  const today=todayKey(),appId='pet-typing-defense-'+mode,stem='ptd-'+mode+'-'+today+'-stage-'+stage;
+  try{
+    const token=await user.getIdToken();
+    const response=await fetch('https://task-quest.onrender.com/api/learning/activity',{
+      method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({batchId:stem,events:[{eventId:stem+'-clear',appId}]}),
+      cache:'no-store',keepalive:true
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok||!result.ok)throw Error(result.error||'ランキング記録の送信に失敗しました。');
+    if(currentUser?.uid===user.uid)announceTitles(result.freshTitles);
+    return {recorded:!result.duplicate,duplicate:!!result.duplicate,reason:result.duplicate?'already-today':'recorded'};
+  }catch(error){
+    console.warn('Typing defense ranking record failed',error);
+    return {recorded:false,reason:'error'};
+  }
+}
+
 async function recordRetrySession({sessionId='',attempts=[]}={}){
  await authReady;
  const user=currentUser;if(!user)return {ok:false,reason:'signed-out'};
@@ -391,6 +418,7 @@ window.EnglishPlayroomCoins=Object.freeze({
   recordTitleEvents,
   recordLearningActivity,
   awardOncePerDay,
+  recordTypingDefenseStage,
   recordRetryAttempt,
   recordRetrySession,
   awardAteru:roundId=>awardOncePerDay('ateru',`round-${cleanPart(roundId)}`,'アテル3問以上正解！'),
