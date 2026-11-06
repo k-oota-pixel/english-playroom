@@ -46,7 +46,7 @@ test('All stages display the complete English text they ask the player to type',
    assert.equal(q.template,q.answer,'The visible sentence must match the typing target');
    assert.equal(q.hint,q.answer,'The English prompt must be the answer, not Japanese');
    assert.match(q.answer,/[A-Za-z]/);
-   assert.doesNotMatch(q.answer,/____|\\(\s*\)/);
+   assert.doesNotMatch(q.answer,/____|\(\s*\)/);
   }
  }
 });
