@@ -1,8 +1,8 @@
 import './pet-jump-fix.js?v=1.5.7';
 import './pet-enhancements.js?v=1.5.31';
 import './pet-shop-appearance-lock.js?v=1.5.32';
-import './pet-shop-expansion-v1533.js?v=2.3.10';
-import './pet-shop-preview-fix-v1534.js?v=2.1.25';
+import './pet-shop-expansion-v1533.js?v=2.3.54';
+import './pet-shop-preview-fix-v1534.js?v=2.3.54';
 import './pet-dungeons-shop.js?v=2.1.25';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.9.6';
@@ -23,7 +23,7 @@ import './today-home-card.js?v=2.3.52';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.3.8').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.3.53';
+const APP_VERSION='2.3.54';
 const APP_ROOT=new URL('./',import.meta.url);
 let forceRefreshBusy=false;
 
