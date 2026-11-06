@@ -88,8 +88,17 @@ test('Normal shows a complete English answer while hard may scramble English tok
  assert.notDeepEqual(tokens,['We','should','drink','clean','water','every','day']);
  assert.deepEqual(tokens.slice().sort(),['We','should','drink','clean','water','every','day'].sort());
 });
-test('Stage delays are 1.65 / 3 / 4 / 5 / 7 seconds',()=>{
+test('Normal mode keeps 1.65 / 3 / 4 / 5 / 7 second intervals',()=>{
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i)),[1.65,3,4,5,7]);
+ assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'normal')),[1.65,3,4,5,7]);
+});
+test('Hard mode spawns enemies at 3 / 10 / 12 / 14 / 16 second intervals',()=>{
+ const expected=[3,10,12,14,16];
+ assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'hard')),expected);
+ for(let stage=0;stage<5;stage++){
+  const times=Array.from({length:5},(_,i)=>i*enemySpawnInterval(stage,'hard'));
+  assert.deepEqual(times,[0,expected[stage],2*expected[stage],3*expected[stage],4*expected[stage]]);
+ }
 });
 test('Case and punctuation remain optional but letter sequence must match',()=>{
  assert.equal(normalizedTyping("  Could I have a menu, please?  "),"could i have a menu please");
