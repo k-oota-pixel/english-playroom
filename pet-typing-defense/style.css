@@ -38,3 +38,17 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}button:fo
 .today-ranking-bar button:hover{background:#e2f4e8}
 .today-ranking-bar small{font-size:10px;color:#63816d;line-height:1.5}
 @media(max-width:650px){.today-ranking-bar small{flex-basis:100%}}
+
+/* The landing page is a two-choice launcher, not an instruction sheet. */
+.opening.mode-chooser{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:28px}
+.mode-choice{display:grid;place-items:center;min-height:184px;width:100%;padding:24px 18px;border:0;border-radius:21px;
+ color:#fff;font-size:clamp(25px,3.4vw,42px);font-weight:950;letter-spacing:.025em;text-align:center;
+ line-height:1.35;box-shadow:0 8px 0 #193c2b24,0 16px 28px #172e2820;transition:transform .15s,box-shadow .15s}
+.mode-normal{background:linear-gradient(145deg,#258052,#145a3e)}
+.mode-hard{background:linear-gradient(145deg,#6a49ac,#3e2875)}
+.mode-choice:hover{transform:translateY(-3px);filter:brightness(1.06);box-shadow:0 11px 0 #193c2b24,0 18px 32px #172e2828}
+.mode-choice:active{transform:translateY(3px);box-shadow:0 4px 0 #193c2b24}
+.mode-choice:focus-visible{outline:4px solid #ffce4a;outline-offset:4px}
+.game .today-ranking-bar{margin:14px 0 0}
+@media(max-width:650px){.opening.mode-chooser{grid-template-columns:1fr;gap:16px;padding:17px}.mode-choice{min-height:125px;font-size:clamp(26px,7vw,36px)}}
+@media(prefers-reduced-motion:reduce){.mode-choice{transition:none}}
