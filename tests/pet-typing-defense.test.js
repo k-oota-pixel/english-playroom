@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCampaign, normalizedTyping, normalizedDefenseTyping, revealedWord, enemySpawnInterval, wordCount, POTATO_MEAN_WORD_COUNT, potatoGap, grammarGap, STAGE_NAMES, PHASE_NAMES} from '../pet-typing-defense/data.js';
+import {createCampaign, normalizedTyping, normalizedDefenseTyping, revealedWord, enemySpawnInterval, characterCount, hasApostrophe, POTATO_MEAN_CHARACTER_COUNT, potatoGap, grammarGap, STAGE_NAMES, PHASE_NAMES} from '../pet-typing-defense/data.js';
 import {TASK_SAMPLES} from '../pet-typing-defense/task-samples.js';
 import {WORD_POOLS} from '../pet-typing-defense/words.js';
 import {QUESTION_GROUPS} from '../potato-harvest/questions.js';
@@ -47,18 +47,19 @@ test('Stage order is word, potato, grammar and task conversation',()=>{
 });
 test('Potato Man stage draws only sentences strictly shorter than its source average',()=>{
  const all=QUESTION_GROUPS.flatMap(group=>group.questions.map((q,i)=>potatoGap(q,group.id+'-'+i)).filter(Boolean));
- const mean=all.reduce((sum,q)=>sum+wordCount(q.answer),0)/all.length;
- assert.equal(POTATO_MEAN_WORD_COUNT,mean);
- const eligible=all.filter(q=>wordCount(q.answer)<mean);
+ const apostropheFree=all.filter(q=>!hasApostrophe(q.answer));
+ const mean=apostropheFree.reduce((sum,q)=>sum+characterCount(q.answer),0)/apostropheFree.length;
+ assert.equal(POTATO_MEAN_CHARACTER_COUNT,mean);
+ const eligible=apostropheFree.filter(q=>characterCount(q.answer)<mean);
  assert.ok(eligible.length>=25);
  const groups=['be','general','modal','mixed'];
  for(let i=0;i<4;i++){
   const eligibleGroup=QUESTION_GROUPS.find(g=>g.id===groups[i]);
-  assert.ok(eligibleGroup.questions.filter((q,j)=>wordCount(potatoGap(q,groups[i]+'-'+j)?.answer||'')<mean&&potatoGap(q,groups[i]+'-'+j)).length>=5);
+  assert.ok(eligibleGroup.questions.filter((q,j)=>characterCount(potatoGap(q,groups[i]+'-'+j)?.answer||'')<mean&&potatoGap(q,groups[i]+'-'+j)&&!hasApostrophe(potatoGap(q,groups[i]+'-'+j).answer)).length>=5);
  }
  for(let i=0;i<100;i++){
   const stage=createCampaign()[1];
-  for(const q of stage.flat())assert.ok(wordCount(q.answer)<mean,'Long potato prompt: '+q.answer);
+  for(const q of stage.flat())assert.ok(characterCount(q.answer)<mean,'Long potato prompt: '+q.answer);
  }
 });
 
@@ -107,12 +108,27 @@ test('All three sentence stages ignore typed spaces but reject wrong letters',()
  assert.equal(normalizedDefenseTyping("I  have been",3),'ihavebeen');
 });
 
-test('Enemy spawn cadence stays fast for single words and becomes five seconds for sentences',()=>{
- assert.equal(enemySpawnInterval(0),1.65);
- for(let stage=1;stage<4;stage++){
-  assert.equal(enemySpawnInterval(stage),5);
+test('Enemy spawns are 1.65, 3, 4 and 5 seconds apart by stage',()=>{
+ const intervals=[1.65,3,4,5];
+ for(let stage=0;stage<4;stage++){
+  assert.equal(enemySpawnInterval(stage),intervals[stage]);
   const times=Array.from({length:5},(_,i)=>i*enemySpawnInterval(stage));
-  assert.deepEqual(times,[0,5,10,15,20]);
+  for(let i=0;i<5;i++)assert.ok(Math.abs(times[i]-i*intervals[stage])<1e-9);
+ }
+});
+test('Apostrophe questions are never present in any stage or campaign',()=>{
+ for(const sample of ["I'd like a ticket.","don't","it’s","mother’s","＇quote","'quote","ʼquote"]){
+  assert.ok(hasApostrophe(sample),'must recognize '+sample);
+ }
+ assert.equal(hasApostrophe('I would like a ticket.'),false);
+ const allSources=[
+  ...TASK_SAMPLES.map(q=>q.answer),
+  ...GRAMMAR_BANK.map(row=>grammarGap(row)?.answer).filter(Boolean),
+  ...QUESTION_GROUPS.flatMap(g=>g.questions.map((q,i)=>potatoGap(q,g.id+'-'+i)?.answer).filter(Boolean))
+ ];
+ assert.ok(allSources.some(hasApostrophe),'ensure source content actually contains contractions');
+ for(let i=0;i<200;i++){
+  for(const q of createCampaign().flat(2))assert.equal(hasApostrophe(q.answer),false,'apostrophe in '+q.answer);
  }
 });
 
