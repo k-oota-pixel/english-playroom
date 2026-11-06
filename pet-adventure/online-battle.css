@@ -69,3 +69,9 @@ html[data-monstudy-screen-theme="dark"] .online-battle-feedback.error:not([hidde
 
 
 @media(max-width:760px){.online-rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.online-grade-picker{gap:10px}.online-grade-picker button{min-height:88px}.online-room-heading{grid-template-columns:1fr auto}.online-room-heading h2{grid-column:1/-1;grid-row:1}.online-grade-back{grid-column:1;grid-row:2;justify-self:start}.online-room-heading .secondary-btn{grid-column:2;grid-row:2}}
+
+/* After a battle, make the room-freeing action the effortless primary choice. */
+#resultCard .online-exit-note{margin:10px 0 0;font-size:11px;line-height:1.5;color:#536d60}
+#resultCard .result-actions{grid-template-columns:minmax(0,1fr);margin-top:11px}
+#resultCard #leaveBtn{min-height:50px}
+#resultCard #retryBtn{min-height:40px}
