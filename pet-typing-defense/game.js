@@ -1,4 +1,4 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.64';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.65';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
