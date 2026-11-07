@@ -1,13 +1,440 @@
 {
-  "generatedAt": "2026-11-06T15:00:28.965Z",
-  "editionDate": "2026-11-06",
+  "generatedAt": "2026-11-07T00:55:32.696Z",
+  "editionDate": "2026-11-07",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-06"
+    "lastSuccessfulEdition": "2026-11-07"
   },
   "articles": [
+    {
+      "id": "2026-11-07-inujima-population-decline-seto-inland-sea",
+      "date": "2026-11-07",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Inujima",
+        "depopulation",
+        "Seto Inland Sea",
+        "vacant houses"
+      ],
+      "titleJa": "瀬戸内海の小島で人口減少が…",
+      "title": "Population Decline on a Small Island in the Seto Inland Sea",
+      "summaryJa": "瀬戸内海の犬島では、かつて約5000人だった人口が現在32人まで減少し、多くの空き家や廃墟が存在しています。一方で空き家を活用したアートによる取り組みも行われています。",
+      "sourcePublishedAt": "2026-11-07T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "過疎化が進む離島の現状やアート活用の取り組みについて、記事から情報を探し出しましょう。",
+        "followUpJa": "過疎化が進む地域で暮らす人々のために、どのような工夫ができると思いますか？話し合ってみましょう。",
+        "questions": {
+          "5級": "Inujima has a population of how many people now?",
+          "4級": "How many people lived on Inujima during its peak time?",
+          "3級": "What can be seen in large numbers while walking around Inujima today?",
+          "準2級": "Besides abandoned houses, what kind of projects use empty buildings on Inujima?",
+          "2級": "How do the remaining residents continue their daily lives despite the visible ruins and depopulation on the island?",
+          "準1級": "What specific historical contrast and modern efforts highlight the ongoing struggle of population decline on Inujima according to the report?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Inujima Today",
+          "text": "Inujima is a small island. It is in the Seto Inland Sea. The island has only thirty-two people now. Long ago, many people lived there. But now, it has many empty houses. Some houses are old ruins. Visitors can see them on the island. People still live and work there today.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "Small Island Population",
+          "text": "Inujima is an island in the Seto Inland Sea. In the past, about five thousand people lived there. Today, the population is only thirty-two people. When you walk around the island, you can see many empty houses and ruins. However, some residents still live there and keep their daily lives going. Art projects also use some empty houses on the island.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Life on Inujima Island in the Seto Inland Sea",
+          "text": "Inujima is a small island located in the Seto Inland Sea. During its past peak period, about five thousand people lived on the island. Today, however, the population has decreased significantly to just thirty-two people. When visitors walk around the island, they can see many empty houses and ruined buildings. Even though these abandoned structures stand out, there are still local residents who maintain their daily lives and routines on the island. Additionally, some empty houses have been used for art projects, showing how the island attempts creative efforts despite severe population decline.",
+          "wordCount": 93
+        },
+        "準2級": {
+          "title": "Visiting Inujima Island and Its Population Decline",
+          "text": "Inujima is a small island situated in the Seto Inland Sea that currently faces serious depopulation challenges. At its historical peak, approximately five thousand people lived on the island. Today, however, the local population has fallen to a mere thirty-two residents. Walking through the island reveals numerous abandoned houses, vacant properties, and collapsing ruins. Despite this severe demographic decrease, local residents continue to live and maintain their daily lives on the island. Furthermore, some empty houses have been transformed into art projects, reflecting how the island attempts to address its situation through creative community efforts while managing the visible ruins and depopulation.",
+          "wordCount": 102
+        },
+        "2級": {
+          "title": "Exploring Depopulation and Art on Inujima in the Seto Inland Sea",
+          "text": "Inujima is a small island located in the Seto Inland Sea that faces serious depopulation challenges today. During its prosperous peak period, around five thousand people lived on the island, but the local population has now fallen to just thirty-two people. When walking through the island, visitors easily notice many vacant houses, abandoned properties, and ruined buildings. Even though these abandoned structures stand out across the landscape, there are still residents who maintain their livelihoods and daily routines there. Interestingly, some of these empty properties have been utilized for various art projects, creating a unique atmosphere on the island. This combination of declining population, visible ruins, and creative art initiatives offers a distinct look at the current realities of rural islands in Japan, prompting many visitors and writers to explore the deep reasons behind why people continue leaving the island over time.",
+          "wordCount": 142
+        },
+        "準1級": {
+          "title": "The Changing Landscape of Inujima in the Seto Inland Sea",
+          "text": "Inujima, a small island nestled in the Seto Inland Sea, offers a stark and compelling look at rural depopulation and demographic change in modern Japan. During its industrial and historical peak, roughly five thousand people inhabited the island, but that number has now plummeted to a mere thirty-two residents. Visitors walking along the island paths are immediately struck by the abundance of vacant properties, abandoned houses, and collapsing ruins standing side by side. Yet, amidst this challenging landscape of decline and decaying structures, a dedicated group of locals continues to sustain their daily lives, maintain their homes, and preserve their community spirit. The island also features unique spaces where empty houses have been creatively repurposed into art projects, reflecting an ongoing effort to blend cultural initiatives with the complex realities of severe population decrease. Through interviews and careful observation, writers and travelers continue to examine the underlying circumstances that drive people away from rural regions while deeply appreciating the resilient spirit of those who remain on the island to keep local life alive against the odds.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/963251"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-07-ireland-rugby-argentina-win-2026",
+      "date": "2026-11-07",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "rugby",
+        "ireland",
+        "argentina",
+        "andy-farrell"
+      ],
+      "titleJa": "アイルランドが大勝",
+      "title": "Ireland Beats Argentina",
+      "summaryJa": "アイルランドはアルゼンチンに6トライを奪い大勝したが、監督らはより冷徹にプレーできたはずだと認めた。",
+      "sourcePublishedAt": "2026-11-06T23:57:05.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "アイルランド代表の試合内容からチームの課題を考え、さらなる勝利のためのアドバイスを導き出す。",
+        "followUpJa": "あなたはアイルランドのコーチなら、次の試合に向けて選手たちにどのような改善を求めますか？",
+        "questions": {
+          "5級": "アイルランドはどの国に勝ちましたか？",
+          "4級": "アイルランドは何トライ取りましたか？",
+          "3級": "試合後にアンディ・ファレル監督は何が足りなかったと言いましたか？",
+          "準2級": "試合でハットトリックを達成した選手は誰ですか？",
+          "2級": "ファレル監督が試合後に懸念材料として挙げた主な問題は何ですか？",
+          "準1級": "アイルランドのバックスリーの活躍と今後の課題について、どのように評価されていますか？"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Ireland Wins",
+          "text": "Ireland plays rugby against Argentina. Ireland has a big win. They score six tries. Coach Andy Farrell is happy. But he wants more. Ireland can play better. They want to win the World Cup next year.",
+          "wordCount": 36
+        },
+        "4級": {
+          "title": "Ireland Beats Argentina in Dublin",
+          "text": "Ireland plays a rugby game against Argentina in Dublin on Friday night. Ireland wins the match with a strong score of 42-12. Hugo Keenan scores three tries for his team during the game. The head coach, Andy Farrell, is happy with the big victory. However, he says the team can still play much better. They missed chances to be truly ruthless on the field.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Ireland Starts Campaign with Big Win",
+          "text": "Ireland started their November rugby campaign with a strong 42-12 victory over Argentina in Dublin on Friday night. Hugo Keenan scored a brilliant hat-trick, while Dan Sheehan, Sam Prendergast, and Ronan Kelleher also added tries. Although Ireland achieved a thirty-point margin and dominated territory throughout the match, head coach Andy Farrell admitted his team missed a chance to be truly ruthless. Furthermore, the team faces several injury concerns.",
+          "wordCount": 67
+        },
+        "準2級": {
+          "title": "Farrell Wants More After Argentina Win",
+          "text": "Ireland kicked off their November campaign with an impressive 42-12 victory over Argentina under the Friday night lights in Dublin. Hugo Keenan stole the show with a stunning hat-trick, while Dan Sheehan, Sam Prendergast, and Ronan Kelleher also crossed the try line. Despite securing a six-try and thirty-point win, head coach Andy Farrell admitted that the team could have been more ruthless. Farrell noted that although they showed great clinical moments, they failed to score after the fifty-fifth minute. Additionally, a growing injury list, including captain Sheehan and winger Robert Baloucoune, presents a challenge for the squad as they build toward next year's World Cup.",
+          "wordCount": 104
+        },
+        "2級": {
+          "title": "Ireland Triumphs Over Argentina But Seeks Greater Ruthlessness",
+          "text": "Ireland commenced their November rugby campaign with a dominant 42-12 victory against Argentina in Dublin, yet head coach Andy Farrell insisted that his squad must become more ruthless as they build toward the World Cup in Australia next year. Hugo Keenan delivered an outstanding performance, securing a brilliant hat-trick, while Dan Sheehan, Sam Prendergast, and Ronan Kelleher also contributed tries during the match. Despite enjoying significant territory and building a comfortable thirty-point margin, Ireland notably failed to score after the fifty-fifth minute when Kelleher completed a rolling maul. Farrell praised the team's clinical phases and outstanding moments, but felt they left clear opportunities on the field against a dangerous Pumas side. Compounding matters for the coaching staff is a lengthy injury list, with captain Dan Sheehan forced off in the first half after failing a head injury assessment, alongside knocks sustained by Robert Baloucoune, Sean Jansen, Josh van der Flier, and Mack Hansen. These injuries could test squad depth significantly as the team looks ahead to future challenges on the road to the tournament.",
+          "wordCount": 173
+        },
+        "準1級": {
+          "title": "Farrell Demands Greater Ruthlessness Despite Convincing Win Over Argentina",
+          "text": "Kicking off their November campaign in Dublin, Ireland delivered a commanding performance to defeat Argentina 42-12 under the Friday night lights, less than a year out from the upcoming World Cup in Australia. Hugo Keenan headlined the six-try victory with a sensational hat-trick in his first home match since the 2025 Six Nations, supported by tries from Dan Sheehan, Sam Prendergast, and Ronan Kelleher. Nevertheless, head coach Andy Farrell and lock Tadhg Beirne struck a cautious tone after the final whistle, admitting that the team fell short of being fully ruthless despite the impressive scoreline. Although Ireland dominated territory with fifty-nine percent possession and established a comfortable thirty-point cushion, they failed to register any further points after the fifty-fifth minute when Kelleher finished off a rolling maul. Compounding the analytical assessment of their performance is an escalating and concerning injury crisis. Captain Dan Sheehan failed a head injury assessment in the first half, while Robert Baloucoune departed with a knock, Sean Jansen sustained a blow to his knee, and both Josh van der Flier and Mack Hansen picked up ankle concerns. The rare and exciting alignment of the back three offered a tantalizing glimpse of Ireland's true attacking ceiling, provided that the players can successfully maintain their fitness on the road to next year's global tournament.",
+          "wordCount": 214
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/rugby-union/articles/cmde88ppx39go?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-07-lithium-battery-fire-hokkaido",
+      "date": "2026-11-07",
+      "scope": "japan",
+      "category": "life",
+      "categories": [
+        "environment"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "lithium-ion-batteries",
+        "fire",
+        "hokkaido",
+        "recycling",
+        "waste-disposal"
+      ],
+      "titleJa": "電池が原因の火災",
+      "title": "Lithium-Ion Batteries Cause Massive Fire at Hokkaido Waste Facility",
+      "summaryJa": "北海道北斗市のごみ処理施設でリチウムイオン電池が原因とみられる火災が発生し、総額約127億円の損害や住民生活への大きな影響が出ています。",
+      "sourcePublishedAt": "2026-11-07T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "ごみ処理場の火災を防ぐため、リチウムイオン電池を正しく捨てる方法を判断しましょう。",
+        "followUpJa": "身近な小型充電式電池の適切な処分方法について話し合ってみましょう。",
+        "questions": {
+          "5級": "Can lithium-ion batteries start fires in garbage trucks?",
+          "4級": "How many days did it take to put out the fire at the plant?",
+          "3級": "What total cost is expected for facility repairs and waste transport?",
+          "準2級": "Why did the waste treatment plant have to send garbage to other cities?",
+          "2級": "What specific damage did the explosion cause inside the facility called Clean Oshima?",
+          "準1級": "How did the improper disposal of lithium-ion batteries impact local municipalities financially and logistically?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Basic Fire Risk",
+          "text": "Smartphones have small batteries inside. They are lithium-ion batteries. Sometimes, people throw them away with normal trash. These batteries can cause big fires in garbage trucks and plants. A fire happened in Hokkaido. It was very dangerous. We must be careful with our old phones and batteries.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Fires in Waste Plants",
+          "text": "Many people use mobile batteries and smartphones every day. When people throw them into regular garbage, they can break and start fires. A big fire happened at a waste treatment plant in Hokkaido. It took six days to stop the fire. The building was badly damaged by smoke and heat from the accident.",
+          "wordCount": 53
+        },
+        "3級": {
+          "title": "Hokkaido Plant Fire",
+          "text": "A serious fire broke out at the Clean Oshima waste facility in Hokkaido. Officials believe that lithium-ion batteries hidden in the regular trash caused the dangerous blaze. The thick smoke filled the building, and it took six days to put out the fire completely. Everyone survived the accident, but the facility could no longer accept burnable waste from the local towns. Residents must be very careful when throwing away old batteries.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "Massive Costs and Facility Damage in Hokkaido",
+          "text": "A massive fire at the Clean Oshima waste treatment facility in Hokkaido caused severe damage and operational halts. Triggered by a lithium-ion battery mixed into regular garbage, the fire burned for six days and reached the upper floors of the building. Because the facility could not burn waste, local towns had to transport thousands of tons of garbage to other cities by truck and train. The total cost for repairs and waste outsourcing is estimated to reach approximately 12.7 billion yen, creating a heavy financial burden for local residents. The regional association must pay about 2.9 billion yen for transportation and outsourcing, and about 9.8 billion yen for facility restoration work.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "The Danger of Improper Battery Disposal",
+          "text": "Lithium-ion batteries found in smartphones and mobile chargers have become a major hazard for municipal waste management facilities across Japan. In April 2026, a powerful explosion and subsequent fire occurred at the Clean Oshima waste disposal facility in Hokkaido, an incident officials attribute to a discarded battery mixed into the regular garbage. The violent blast shattered windows, blackened the white interior walls, and stopped a clock permanently at 5:55. The dangerous fire took six days to extinguish completely. With the main facility entirely out of operation, about 2,000 tons of burnable garbage piled up temporarily. The regional association had to outsource waste processing to ten other facilities across Hokkaido, using trucks and trains to transport the refuse. Official estimates project that the total financial burden will reach roughly 12.7 billion yen, combining about 2.9 billion yen for transportation and outsourced incineration fees with 9.8 billion yen for facility restoration work. Local administrators and residents now face heavy logistical and financial challenges due to this improper waste disposal accident.",
+          "wordCount": 162
+        },
+        "準1級": {
+          "title": "Lithium-Ion Battery Crisis at Hokkaido Waste Facility",
+          "text": "The increasing reliance on portable electronic devices has introduced a severe safety hazard to municipal waste management systems. This danger was vividly demonstrated when a discarded lithium-ion battery sparked a catastrophic fire inside the Clean Oshima waste treatment facility in northern Hokkaido. The resulting explosion shattered reinforced glass, charred interior walls, and halted a clock permanently at the exact moment of ignition. Due to the immense volume of combustible waste and structural damage, firefighters required six full days to extinguish the blaze. Although staff members escaped injury, the facility's suspension of operations triggered a severe logistical crisis for surrounding municipalities. Approximately two thousand tons of burnable refuse accumulated rapidly, forcing administrators to transport waste via trucks and trains to ten distant facilities, including Sapporo and Ishikari. Despite these emergency measures, local capacity remains strained. The financial ramifications are staggering; regional officials estimate that waste outsourcing and transport through March 2027 will cost 2.9 billion yen, while facility reconstruction will demand an additional 9.8 billion yen, culminating in a total economic impact of roughly 12.7 billion yen and threatening local public services.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63433"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-07-pickup-news-summary-20261107",
+      "date": "2026-11-07",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "news",
+        "summary",
+        "video"
+      ],
+      "titleJa": "本日のニュース速報",
+      "title": "NHK News Pickup: Summary of the Latest Headlines",
+      "summaryJa": "NHKのニュース番組が、最新の国内および世界の重要ニュースを1分間の動画と深掘りコンテンツでまとめて伝えます。",
+      "sourcePublishedAt": "2026-11-06T21:44:51.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "最新のニュースや深掘りコンテンツの中から、自分にとって最も関心のあるテーマを見つけ出すために情報を探します。",
+        "followUpJa": "今日紹介された話題の中で、あなたが一番詳しく知りたいと思ったニュースは何ですか？",
+        "questions": {
+          "5級": "What can you watch on NHK?",
+          "4級": "How long is the news video?",
+          "3級": "What kind of content does the update include besides news?",
+          "準2級": "What topics are mentioned in the deep-dive contents?",
+          "2級": "Why are orchestras facing a crisis according to the deep-dive content?",
+          "準1級": "How do deep-dive contents help viewers understand complex social and political issues better?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "1-Minute News",
+          "text": "NHK shares a one-minute video with the news. You can watch it on TV. It gives you the newest reports. There are also deep-dive stories. You can read about many topics. Please check the latest updates every day to know what happens in the world.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "NHK News Summary",
+          "text": "NHK delivers the latest news in a one-minute video format for viewers. Please note that you cannot watch this video on data broadcasting. The update also features interesting deep-dive content about computers, international politics, and regional cultures. You can check the website easily to see all new reports, weather forecasts, and regional news every day.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Catching Up with NHK News",
+          "text": "NHK brings you the latest news summaries in a quick one-minute video format. Please note that data broadcasting does not support these videos. In addition to daily news, the platform offers special deep-dive content. Readers can explore various topics, including cybersecurity, orchestra funding, international trade, and environmental issues. You can also check weather forecasts and regional news anytime on the website.",
+          "wordCount": 61
+        },
+        "準2級": {
+          "title": "Overview of NHK News and Deep-Dive Reports",
+          "text": "NHK News provides a concise one-minute video summarizing the most recent domestic and international news updates for viewers. While these videos are unavailable on data broadcasting, the official website offers extensive deep-dive content covering crucial social and political issues. Recent featured topics include cyber security challenges, the financial struggles of professional orchestras, international trade talks, political developments, and environmental concerns. Furthermore, audiences can easily access regional news, weather forecasts, and disaster prevention information through the digital platform every day. We hope you will check the latest stories and find the topics that interest you most.",
+          "wordCount": 95
+        },
+        "2級": {
+          "title": "Exploring NHK News and Special Deep-Dive Features",
+          "text": "NHK offers a comprehensive look at current events through a one-minute news summary video, though this particular feature is not supported on data broadcasting. Beyond the daily headlines, the digital platform provides rich deep-dive articles that examine complex social and political topics in detailed reports. Readers can explore diverse subjects such as unauthorized network access and information protection, public funding for regional professional arts and culture, artificial intelligence investment trends, international trade friction, and environmental topics involving wildlife movements. Additionally, citizens can utilize the service to stay fully informed about weather forecasts, regional developments, and new reports across Japan. By reviewing these updates, you can easily discover the subjects that matter most to your daily life. NHK News provides a concise one-minute video summarizing the most recent domestic and international news updates for viewers. While these videos are unavailable on data broadcasting, the official website offers extensive deep-dive content covering crucial social and political issues. Recent featured topics include cyber security challenges, the financial struggles of professional orchestras, international trade talks, political developments, and environmental concerns. Furthermore, audiences can easily access regional news, weather forecasts, and disaster prevention information through the digital platform every day.",
+          "wordCount": 195
+        },
+        "準1級": {
+          "title": "Navigating NHK's Comprehensive News and Deep-Dive Analysis",
+          "text": "NHK delivers a streamlined one-minute video summary encompassing the most critical recent developments, though this visual format remains inaccessible via standard data broadcasting. Complementing these essential headlines, the media outlet features extensive deep-dive journalism designed to illuminate complex contemporary issues and societal challenges across Japan and the broader world. These specialized reports tackle pressing domestic and international themes, ranging from cybersecurity vulnerabilities and information protection to the financial viability of regional professional orchestras sustained by public funds. Other analytical features examine broader economic and political landscapes, including artificial intelligence investments, trade friction between global powers, political shifts in Washington, and environmental topics such as tracking wildlife movements. By integrating prompt daily news updates with thorough explanatory journalism alongside weather forecasts and regional disaster prevention information, the platform equips audiences with the essential context required to understand our increasingly interconnected world and identify the specific subjects they wish to explore further. Audiences can easily access regional news, weather forecasts, and disaster prevention information through the digital platform every day. We hope you will check the latest stories and find the topics that interest you most, exploring the vast collection of reports available on the official website.",
+          "wordCount": 195
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261106de71846"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-07-vivant-episode-23-review",
+      "date": "2026-11-07",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "VIVANT",
+        "TBS",
+        "JapaneseDrama",
+        "MasatoSakai"
+      ],
+      "titleJa": "VIVANT第23話の振り…",
+      "title": "Reviewing Episode 23 of the TV Drama VIVANT",
+      "summaryJa": "TBSの日曜劇場「VIVANT」第23話では、乃木が薫に正体を告白し、ベキとの再会や5千億円をめぐる取引が描かれました。",
+      "sourcePublishedAt": "2026-11-07T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "ドラマの展開において、登場人物たちがどのような行動をとったか正確に把握するため。",
+        "followUpJa": "乃木がアゼルバイジャンでの取引で行った具体的な行動は何でしたか？",
+        "questions": {
+          "5級": "Who is Kaoru?",
+          "4級": "What secret does Yusuke tell Kaoru?",
+          "3級": "Why do Yusuke and his friends visit Shimane?",
+          "準2級": "How does Yusuke manage to get the nuclear fusion information without actually paying five hundred billion yen?",
+          "2級": "What role do AI Hayato and Riho Ota play during the financial transaction in Azerbaijan?",
+          "準1級": "Explain the connection between Jameen and the nuclear fusion researcher Elisha Mammadov as revealed in this episode."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "Yusuke has five minutes to save his friends. He wears a bomb. He moves very fast. He tells Kaoru his secret. He is in the secret spy group. Kaoru is very surprised. Yusuke wants to protect her and Jameen. They go to a safe place. Yusuke feels very sad.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Elementary Level",
+          "text": "With only five minutes left, Yusuke rushes to save Kaoru, Jameen, Nokor, and Chingis. Using a plastic bomb as a clever trick, he quickly controls the area. Finally, he tells Kaoru his true identity as a member of the secret intelligence unit known as Beppan. Later, Yusuke travels to Shimane with his friends to meet his father, Beqi, who is the former leader of the terrorist group Tent.",
+          "wordCount": 68
+        },
+        "3級": {
+          "title": "Intermediate Level",
+          "text": "In the dramatic twenty-third episode of the TV drama VIVANT, Yusuke faces a critical countdown to rescue his loved ones. He uses a clever trick with explosives to control the situation and finally confesses his secret identity as a Beppan agent to Kaoru. Afterward, Yusuke travels to Shimane with Nokor and Chingis to reunite with his father, Beqi, who was the former leader of Tent. Chingis persuades Beqi to choose life for the future of the children, leading everyone toward a massive nuclear fusion information deal in Azerbaijan.",
+          "wordCount": 88
+        },
+        "準2級": {
+          "title": "Upper-Intermediate Level",
+          "text": "The twenty-third episode of the popular TBS Sunday drama VIVANT delivers intense moments as Yusuke Yusuke races against a five-minute countdown to rescue Kaoru, Jameen, Nokor, and Chingis. Using a plastic explosive as a decoy, he quickly neutralizes the threat and confesses to Kaoru that he belongs to the elite intelligence unit Beppan. Following this emotional confrontation, Yusuke travels to Shimane to meet his father, Beqi, the former leader of the international terrorist group Tent. There, Chingis passionately urges Beqi to live for the children, setting the stage for a high-stakes mission in Azerbaijan. Backed by the supercomputer AI Hayato and hacker Riho Ota, Yusuke successfully executes a complex financial transaction involving five hundred billion yen to secure vital nuclear fusion information without spending any actual money.",
+          "wordCount": 127
+        },
+        "2級": {
+          "title": "Advanced Level",
+          "text": "As the broadcast of the hit TBS Sunday drama VIVANT approaches its climax, episode twenty-three presents a dense narrative filled with crucial revelations and high-stakes operations. Yusuke faces a strict five-minute deadline to rescue Kaoru, Jameen, Nokor, and Chingis from a dangerous situation. By utilizing a plastic explosive as a tactical distraction, he rapidly regains control and finally reveals his classified identity as a member of the secret self-defense force intelligence unit, Beppan, to a stunned Kaoru. Following this emotional encounter, Yusuke travels with Nokor and Chingis to Shimane to reunite with his living father, Beqi, the former leader of the dismantled terrorist organization Tent. In a deeply moving scene, Chingis successfully persuades Beqi to embrace a peaceful future for the children. Meanwhile, the narrative uncovers the true background of Jameen, revealing her identity as Prisha, the daughter of nuclear fusion researcher Elisha Mammadov. Moving to Azerbaijan, Yusuke orchestrates a complex financial operation with the assistance of the supercomputer AI Hayato and hacker Riho Ota, successfully recovering five hundred billion yen immediately after transfer to acquire essential nuclear fusion clues from Elisha.",
+          "wordCount": 182
+        },
+        "準1級": {
+          "title": "Near-Native Level",
+          "text": "As the acclaimed TBS Sunday drama VIVANT nears its dramatic conclusion, the twenty-third episode delivers a relentless cascade of revelations, emotional confrontations, and intricate intelligence operations. Facing a strict five-minute countdown, Yusuke deploys a plastic explosive as a tactical decoy, swiftly neutralizing the surrounding threat and finally confessing his classified identity as a Beppan operative to an astonished Kaoru. This emotional disclosure is followed by an unexpected journey to Shimane Prefecture, where Yusuke, accompanied by Nokor and Chingis, reunites with his father, Beqi, the former leader of the dismantled terrorist organization Tent, whom Yusuke had deliberately spared. A deeply emotional plea by Chingis convinces Beqi to choose life for the sake of the children and the future of Balka, paving the way for the next phase of their mission. Parallel to these familial developments, the narrative unravels the profound mystery surrounding Jameen, confirming her true identity as Prisha, the daughter of nuclear fusion researcher Elisha Mammadov. Traveling to Azerbaijan, Yusuke orchestrates a high-stakes financial operation alongside elite hacker Riho Ota and the supercomputer AI Hayato. By cleverly manipulating the transfer of five hundred billion yen in coordination with cyber authorities, Yusuke successfully acquires vital information from Elisha without suffering financial loss, ultimately setting the stage for an extraordinary new adventure as the series marches toward its finale.",
+          "wordCount": 217
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261107-5268983/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-07-workman-recovery-wear",
+      "date": "2026-11-07",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Workman",
+        "recovery wear",
+        "sleep"
+      ],
+      "titleJa": "ワークマン新衣料",
+      "title": "Trying Workman's New Recovery Wear",
+      "summaryJa": "ワークマンの新しいリカバリーウェア「メディヒールコスモス」を秋のパジャマとして試したところ、温度調節機能が快適で、睡眠計測でも良い結果が出たと報じられています。",
+      "sourcePublishedAt": "2026-11-07T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "この記事を読んで、ワークマンの新しいリカバリーウェアが自分や家族に向いているかを判断するための情報を集めましょう。",
+        "followUpJa": "友達にこのパジャマをすすめるかどうか、理由を考えてみてください。",
+        "questions": {
+          "5級": "What is the name of Workman's new wear?",
+          "4級": "How much does one piece of the new wear cost?",
+          "3級": "What special technology is used in the new recovery wear?",
+          "準2級": "What material is used for the surface of the clothing according to the article?",
+          "2級": "How did the writer check the effectiveness of the recovery wear on his sleep?",
+          "準1級": "What specific change did the writer notice in his sleep data after starting to use the new wear?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Clothes from Workman",
+          "text": "Workman has new clothes. They are recovery wear. The name is Mediheal Cosmos. They are for sleep. A set costs 5,800 yen. The writer bought them in Tokyo. He wears them as pajamas. They are very comfortable. They keep a good temperature at night. The writer likes them a very lot.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Trying Workman Recovery Wear",
+          "text": "Workman is famous for cheap recovery wear. The writer tried a new product called Mediheal Cosmos. He bought a set for 5,800 yen at a store in Tokyo. These clothes help blood circulation and reduce tiredness. They also use special temperature technology from NASA. The writer wears them as autumn pajamas. He feels very comfortable at night and sleeps well.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Testing Mediheal Cosmos Pajamas",
+          "text": "Workman released a new recovery wear called Mediheal Cosmos as an upgraded product. Each piece costs 2,900 yen, and a set costs 5,800 yen. Besides helping recovery through far-infrared rays, it uses NASA-developed Outlast temperature control technology. The writer bought a set at a Tokyo store and started wearing them as autumn pajamas. He noticed that the clothes successfully keep a comfortable temperature during seasonal changes when mornings are cold. Furthermore, using his smart ring, he found that his deep sleep time increased slightly after he started using these comfortable pajamas.",
+          "wordCount": 89
+        },
+        "準2級": {
+          "title": "Experience with Workman's New Recovery Wear",
+          "text": "Workman's new recovery wear, Mediheal Cosmos, has become a popular choice for autumn pajamas after being released as an upgraded version. Costing 2,900 yen per piece, this clothing features far-infrared technology to support recovery and NASA-developed Outlast temperature control technology. The writer bought a set in Tokyo after finding it out of stock online. The fabric feels like a thin jersey, offering great comfort and stretch. Since wearing them, the writer noticed that the clothes keep him warm when mornings are chilly. Checking his sleep data with a smart ring, he found that his initial deep sleep tended to last longer, making it easier to fall asleep.",
+          "wordCount": 106
+        },
+        "2級": {
+          "title": "Reviewing Workman's Mediheal Cosmos Recovery Wear",
+          "text": "Workman recently introduced an upgraded recovery wear line called Mediheal Cosmos, priced at 2,900 yen per item or 5,800 yen for a complete set. Building on the success of their previous affordable recovery wear, this new version incorporates far-infrared functions to support fatigue recovery alongside NASA-developed Outlast temperature control technology. The writer purchased a set in Tokyo after finding it unavailable online and began wearing them as pajamas during the seasonal transition. He observed that the clothing effectively regulates internal temperature, preventing discomfort during chilly mornings or mild nights. To evaluate the recovery claims objectively, he reviewed data from his smart ring. The metrics showed an encouraging trend: the duration of his initial deep sleep increased after he started using the new pajamas, leading him to consider purchasing another set for the colder months.",
+          "wordCount": 132
+        },
+        "準1級": {
+          "title": "Evaluating Workman's Mediheal Cosmos Temperature-Regulating Recovery Wear",
+          "text": "Following the surprising market success of their initial budget-friendly recovery garments, Workman released an upgraded iteration titled Mediheal Cosmos as the second generation of their recovery wear line. Retailing at 2,900 yen per individual piece and 5,800 yen for a complete set, these garments integrate far-infrared properties designed to foster a conducive environment for physical recovery, paired with NASA-developed Outlast temperature-regulation technology to manage internal clothing temperatures. Intrigued by these features, the author secured a set from a physical retail store in Suginami, Tokyo, after discovering it was unavailable online, and adopted them as nightly autumn sleepwear. The fabric surface consists of cotton, while the main body comprises sixty percent cotton and forty percent polyester, providing notable elasticity and a texture resembling a thin jersey. The design incorporates raglan sleeves for smooth shoulder mobility and straight cuffs to minimize restriction during sleep. Operating through seasonal temperature fluctuations and autumn weather changes, the author observed that the attire adeptly mitigates morning chills and midnight warmth. Seeking quantitative validation, he monitored his sleep metrics consistently via a smart ring. The recorded data revealed a favorable correlation: the duration of his initial deep sleep stage extended visibly following the adoption of the Mediheal Cosmos. Consequently, the author finds the temperature control remarkably effective and intends to acquire an additional set for the upcoming winter season in his household.",
+          "wordCount": 223
+        }
+      },
+      "sources": [
+        {
+          "name": "Impress Watch",
+          "url": "https://www.watch.impress.co.jp/docs/series/itsmo/2153603.html"
+        }
+      ]
+    },
     {
       "id": "2026-11-06-free-open-source-app-hob-local-ai",
       "date": "2026-11-06",
