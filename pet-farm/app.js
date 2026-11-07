@@ -17,7 +17,7 @@ let actionChoice=null,chosenPurchase=null,chosenProduce=null;
 function walletRef(){return doc(db,'users',user.uid,'apps','english-playroom');}
 function farmRef(){return doc(db,'users',user.uid,'apps','pet-farm');}
 const coords=(x,y)=>({left:(x*tile)+'px',top:(y*tile)+'px'});
-function status(message,kind=''){const el=$('status');el.textContent=message;el.className='notice'+(kind?' '+kind:'');}
+function status(message,kind=''){const el=$('status');el.textContent=message;el.className='game-status'+(kind?' '+kind:'');}
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2600);}
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 function updateCoin(){ $('coins').textContent=Number(balance).toLocaleString('ja-JP'); }
