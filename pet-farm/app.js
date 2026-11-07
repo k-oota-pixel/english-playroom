@@ -499,11 +499,33 @@ async function walkTo(x,y,{leisurely=false}={}){
  }
 }
 async function showWork(kind,x,y){
- const pet=$('petWalker');pet.classList.add('working');
- const bubble=node('span','effect-bubble',({plant:'🌰 ✨',water:'💧💧',fertilize:'🌿✨',harvest:'🧺✨',feed:'💚😋'}[kind])||'✨');
- Object.assign(bubble.style,coords(x,y-1));
- $('effect').appendChild(bubble);
- await sleep(750);pet.classList.remove('working');setTimeout(()=>bubble.remove(),850);
+ // Show a brief in-world particle effect, not an emoji or speech bubble.
+ // Planting uses soft soil puffs, a faint expanding ring and a few glints.
+ const pet=$('petWalker');
+ pet.classList.add('working');
+ const effect=node('div','work-effect work-effect--'+kind);
+ effect.setAttribute('aria-hidden','true');
+ Object.assign(effect.style,coords(x,y));
+ effect.appendChild(node('span','work-effect__ring'));
+ const directions=[[-26,-15],[-14,-29],[15,-27],[28,-12],[-7,-22],[11,-9]];
+ for(let i=0;i<directions.length;i++){
+  const [dx,dy]=directions[i];
+  const particle=node('span','work-effect__particle');
+  particle.style.setProperty('--dx',dx+'px');
+  particle.style.setProperty('--dy',dy+'px');
+  particle.style.setProperty('--delay',(i%3*35)+'ms');
+  effect.appendChild(particle);
+ }
+ for(let i=0;i<3;i++){
+  const spark=node('span','work-effect__spark');
+  spark.style.setProperty('--dx',[-19,18,0][i]+'px');
+  spark.style.setProperty('--dy',[-25,-21,-34][i]+'px');
+  spark.style.setProperty('--delay',(i*75+80)+'ms');
+  effect.appendChild(spark);
+ }
+ $('effect').appendChild(effect);
+ try{await sleep(700);}
+ finally{pet.classList.remove('working');setTimeout(()=>effect.remove(),260);}
 }
 async function actPlot(type,extra={}){
  if(busy||!ready||!selected)return;
@@ -515,7 +537,7 @@ async function actPlot(type,extra={}){
  const spot=locateField(farm,params.area,params.index);
  try{
   await walkTo(spot.x+.5,spot.y+.77);
-  await showWork(type,spot.x+.5,spot.y+1);
+  await showWork(type,spot.x+.5,spot.y+.5);
   farm=result.farm;queueSave();toast(result.message);
  }catch(e){toast(e.message||'作業に失敗しました。');}
  finally{busy=false;refresh();}
