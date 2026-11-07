@@ -269,40 +269,177 @@ function renderShop(){
 }
 function renderInventory(){
  const container=$('inventory');container.replaceChildren();
- const addTitle=label=>container.appendChild(node('div','inv-title',label));
- const addChips=(entries,kind)=>{
-  const wrap=node('div','inv-row');
-  for(const [id,n] of entries){
-   if(!n)continue;
-   const chip=node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+n);
-   if(kind==='produce'){
-    for(const [key,label] of [['pack','贈り物に']]){
-     const btn=node('button','',label);btn.disabled=busy||!ready;
-     btn.addEventListener('click',()=>{chosenProduce={kind:key,id};storageConfirmation();});
-     chip.appendChild(btn);
-    }
-   }else if(kind==='gift'){
-    const btn=node('button','','取り出す');btn.disabled=busy||!ready;
-    btn.addEventListener('click',()=>{chosenProduce={kind:'unpack',id};storageConfirmation();});
-    chip.appendChild(btn);
-   }
-   wrap.appendChild(chip);
-  }
-  if(!wrap.childNodes.length)wrap.appendChild(node('span','tiny','まだありません'));
-  container.appendChild(wrap);
- };
- addTitle('🌰 タネの袋');
- addChips(allCropIds.map(id=>[id,farm.inventory.seeds[id]]),'seed');
- const supply=node('div','inv-row');
- supply.append(node('span','inv-chip','💧 水 ×'+farm.inventory.water),node('span','inv-chip','🌿 肥料 ×'+farm.inventory.fertilizer));
- container.appendChild(supply);
- addTitle('🧺 収穫した野菜');
- addChips(allCropIds.map(id=>[id,farm.inventory.produce[id]]),'produce');
- addTitle('🎁 プレゼント箱（送信準備中）');
- addChips(allCropIds.map(id=>[id,farm.inventory.giftBox[id]]),'gift');
+ const heading=label=>container.appendChild(node('div','inv-title',label));
+ const row=()=>{const e=node('div','inv-row');container.appendChild(e);return e;};
+ heading('🌾 圃場の持ち物・配置する');
+ let wrap=row();
+ for(const size of FIELD_SIZES){
+  const count=farm.inventory.fields[size]||0;
+  const btn=node('button','inv-chip inv-action',FIELD_TYPES[size].name+' ×'+count+'　配置');
+  btn.type='button';btn.disabled=!ready||busy||!count;
+  btn.addEventListener('click',()=>beginPlacement('field',size));wrap.appendChild(btn);
+ }
+ heading('🛠 配置済みの圃場・移動や名前変更');
+ wrap=row();
+ if(!farm.fields.length)wrap.appendChild(node('span','tiny','まだ圃場を置いていません'));
+ for(const field of farm.fields){
+  const btn=node('button','inv-chip inv-action',field.name+'（'+field.size+'マス）⚙️');
+  btn.type='button';btn.addEventListener('click',()=>openManage(field.id));wrap.appendChild(btn);
+ }
+ heading('🟫 道路');
+ wrap=row();
+ const roadButton=node('button','inv-chip inv-action','道路の持ち物 ×'+farm.inventory.roads+'マス　敷く');
+ roadButton.type='button';roadButton.disabled=!ready||busy||!farm.inventory.roads;
+ roadButton.addEventListener('click',()=>beginPlacement('road','dirt'));wrap.appendChild(roadButton);
+ const erase=node('button','inv-chip inv-action','道路を取り除く');
+ erase.type='button';erase.disabled=!ready||busy||!farm.roads.length;
+ erase.addEventListener('click',()=>beginPlacement('erase-road',''));wrap.appendChild(erase);
+ heading('🌰 タネの持ち物');
+ wrap=row();
+ for(const id of allCropIds)if(farm.inventory.seeds[id])wrap.appendChild(node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+farm.inventory.seeds[id]));
+ if(!wrap.childNodes.length)wrap.appendChild(node('span','tiny','まだありません'));
+ heading('💧 水と肥料');
+ wrap=row();wrap.append(node('span','inv-chip','💧 水 ×'+farm.inventory.water),node('span','inv-chip','🌿 肥料 ×'+farm.inventory.fertilizer));
+ heading('🧺 収穫した野菜');
+ wrap=row();
+ for(const id of allCropIds){
+  const n=farm.inventory.produce[id]||0;
+  if(!n)continue;
+  const chip=node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+n);
+  const btn=node('button','','贈り物に');btn.disabled=busy||!ready;
+  btn.addEventListener('click',()=>{chosenProduce={kind:'pack',id};storageConfirmation();});
+  chip.appendChild(btn);wrap.appendChild(chip);
+ }
+ if(!wrap.childNodes.length)wrap.appendChild(node('span','tiny','まだありません'));
+ heading('🎁 プレゼント箱（送信は今後公開）');
+ wrap=row();
+ for(const id of allCropIds){
+  const n=farm.inventory.giftBox[id]||0;
+  if(!n)continue;
+  const chip=node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+n);
+  const btn=node('button','','取り出す');btn.disabled=busy||!ready;
+  btn.addEventListener('click',()=>{chosenProduce={kind:'unpack',id};storageConfirmation();});
+  chip.appendChild(btn);wrap.appendChild(chip);
+ }
+ if(!wrap.childNodes.length)wrap.appendChild(node('span','tiny','まだありません'));
  storageConfirmation();
 }
-
+function beginPlacement(type,value){
+ if(!ready||busy)return;
+ if(type==='field'&&!(farm.inventory.fields[value]>0)){toast('圃場の持ち物がありません。');return;}
+ if(type==='road'&&!farm.inventory.roads){toast('道路の持ち物がありません。');return;}
+ if(type==='move'&&!farm.fields.some(f=>f.id===value)){toast('圃場が見つかりません。');return;}
+ placement={type,value};
+ hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');
+ renderPlacement();
+ toast('好きな場所をタップして配置してください。');
+}
+function stopPlacement(){
+ placement=null;pendingNamePlacement=null;
+ renderPlacement();
+}
+function placementAllowed(x,y){
+ if(!placement)return false;
+ if(placement.type==='field')return (farm.inventory.fields[placement.value]||0)>0&&canPlace(farm,placement.value,x,y);
+ if(placement.type==='move'){
+  const field=farm.fields.find(f=>f.id===placement.value);
+  return !!field&&canPlace(farm,field.size,x,y,field.id);
+ }
+ if(placement.type==='road')return farm.inventory.roads>0&&canPlaceRoad(farm,x,y);
+ return placement.type==='erase-road'&&farm.roads.includes(x+','+y);
+}
+function previewPlacement(x,y){
+ const p=$('placementPreview');if(!placement||!placementAllowed(x,y)){p.hidden=true;return;}
+ const field=placement.type==='move'?farm.fields.find(f=>f.id===placement.value):null;
+ const type=field?.size||(placement.type==='field'?placement.value:null);
+ const shape=FIELD_TYPES[type]||{w:1,h:1};
+ Object.assign(p.style,{left:x*tile+'px',top:y*tile+'px',width:shape.w*tile+'px',height:shape.h*tile+'px'});
+ p.hidden=false;
+}
+function renderPlacement(){
+ const grid=$('placementLayer'),bar=$('placementBar');
+ grid.hidden=!placement;bar.hidden=!placement;
+ $('placementPreview').hidden=true;
+ if(!placement)return;
+ const type=placement.type;
+ const size=type==='move'?farm.fields.find(f=>f.id===placement.value)?.size:placement.value;
+ $('placementHint').textContent=type==='field'?FIELD_TYPES[size].name+'の左上をタップ（所持 '+farm.inventory.fields[size]+'個）':
+  type==='move'?'移動先の左上をタップ':type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':'取り除く道路をタップ';
+ for(const btn of grid.querySelectorAll('button.placement-cell')){
+  const x=Number(btn.dataset.x),y=Number(btn.dataset.y),allowed=placementAllowed(x,y);
+  btn.disabled=!allowed;btn.classList.toggle('eligible',allowed);
+ }
+}
+function applyLayout(action){
+ try{
+  const result=applyLayoutAction(farm,action);
+  farm=result.farm;queueSave();toast(result.message);refresh();
+  return true;
+ }catch(e){toast(e.message||'その場所には配置できません。');return false;}
+}
+function choosePlacement(x,y){
+ if(!ready||busy||!placement||!placementAllowed(x,y))return;
+ if(placement.type==='field'){
+  pendingNamePlacement={type:'place-field',size:placement.value,x,y};
+  $('fieldNameTitle').textContent='圃場の名前をつける';
+  $('fieldNameInput').value='マイ農園'+(farm.fields.length+1);
+  showDialog('fieldNameDialog');
+  $('fieldNameInput').focus();
+  return;
+ }
+ if(placement.type==='move'){
+  if(applyLayout({type:'move-field',id:placement.value,x,y}))stopPlacement();
+  return;
+ }
+ if(placement.type==='road'){
+  if(applyLayout({type:'place-road',x,y})&&!farm.inventory.roads)stopPlacement();
+  return;
+ }
+ if(placement.type==='erase-road')applyLayout({type:'remove-road',x,y});
+}
+function confirmFieldName(){
+ const name=$('fieldNameInput').value.trim();
+ if(!name){toast('圃場の名前を入力してください。');return;}
+ if(!pendingNamePlacement)return;
+ const action=pendingNamePlacement;
+ const success=applyLayout(action.type==='rename-field'?{type:'rename-field',id:action.id,name}:
+  {type:'place-field',size:action.size,x:action.x,y:action.y,name});
+ if(!success)return;
+ pendingNamePlacement=null;hideDialog('fieldNameDialog');
+ if(placement?.type==='field'&&!(farm.inventory.fields[placement.value]>0))stopPlacement();
+}
+function openManage(id){
+ if(!ready||busy||placement)return;
+ const field=farm.fields.find(f=>f.id===String(id));if(!field)return;
+ managedFieldId=field.id;hideDialog('itemsDialog');renderManage();showDialog('manageDialog');
+}
+function renderManage(){
+ const controls=$('manageControls');controls.replaceChildren();
+ const field=farm.fields.find(f=>f.id===managedFieldId);
+ if(!field)return;
+ $('manageTitle').textContent='⚙️ '+field.name;
+ const hasCrops=Object.keys(farm.plots).some(key=>key.startsWith(field.id+'-'));
+ controls.appendChild(node('p','modal-hint',field.size+'マス・位置 '+(field.x+1)+'列 '+(field.y+1)+'行' +(hasCrops?'／栽培中の作物あり':'')));
+ const row=node('div','modal-actions');
+ row.append(
+  actionButton('✏️ 名前を変える','secondary',()=>{
+   pendingNamePlacement={type:'rename-field',id:field.id};
+   $('fieldNameTitle').textContent='圃場の名前を変更';$('fieldNameInput').value=field.name;
+   hideDialog('manageDialog');showDialog('fieldNameDialog');$('fieldNameInput').focus();
+  }),
+  actionButton('↗️ 移動する','gold',()=>beginPlacement('move',field.id)),
+  actionButton('📦 撤去する','secondary',()=>{
+   if(hasCrops){toast('作物をすべて収穫してから撤去してください。');return;}
+   const check=node('div','modal-confirm');check.appendChild(node('p','confirm-label','圃場を持ち物に戻しますか？'));
+   const confirmRow=node('div','modal-actions');
+   confirmRow.append(actionButton('撤去を確定','gold',()=>{
+    if(applyLayout({type:'remove-field',id:field.id})){hideDialog('manageDialog');managedFieldId=null;selected=null;}
+   }),actionButton('やめる','secondary',()=>renderManage()));
+   check.appendChild(confirmRow);controls.replaceChildren(check);
+  })
+ );
+ controls.appendChild(row);
+}
 function setPetPosition(x,y,duration=0){
  const pet=$('petWalker');
  pet.style.transition=duration?'left '+duration+'ms linear,top '+duration+'ms linear':'none';
