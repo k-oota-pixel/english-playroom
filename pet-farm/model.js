@@ -93,7 +93,7 @@ export function applyFarmAction(current,action,now=Date.now()){
   if(!f.inventory.water)fail('水がありません。SHOPで購入してください。');
   f.inventory.water--;
   p.wateredAt=now;
-  p.readyAt=now+CROPS[p.crop].minutes*60000*(p.boosted?.5:1);
+  p.readyAt=now+CROPS[p.crop].minutes*60000*(p.boosted ? 0.5 : 1);
   return {farm:f,action:'water',message:'じょうろで水やりしました！'};
  case 'fertilize':
   if(!p)fail('先にタネをまいてください。');
