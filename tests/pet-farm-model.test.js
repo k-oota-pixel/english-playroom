@@ -163,3 +163,24 @@ test('farm shop popup exposes quantity buttons, stock counts, and a single trans
  assert.match(css,/\.shop-qty-btn/);
  assert.match(css,/\.shop-order-total/);
 });
+
+test('pet idling is slower than intentional farm movement and uses gentle short steps',()=>{
+ const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ assert.match(js,/async function movePoint\(x,y,leisurely=false\)/);
+ assert.match(js,/Math\.min\(3800,Math\.max\(450,dist\*480\)\)/);
+ assert.match(js,/Math\.min\(1900,Math\.max\(160,dist\*120\)\)/);
+ assert.match(js,/await walkTo\(target,6\.5,\{leisurely:true\}\)/);
+ assert.match(js,/const drift=\(Math\.random\(\)-\.5\)\*3\.4/);
+ assert.match(css,/#petWalker\.walking\.strolling svg\{animation:walkBob \.85s/);
+});
+
+test('farm pet artwork removes only the decorative frame, retaining effects and equipment',()=>{
+ const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ const art=readFileSync(new URL('../pet-art.js',import.meta.url),'utf8');
+ assert.match(art,/petFrameLayer\(shop\)/);
+ assert.match(js,/const equipped=\{\.\.\.\(shop\.equipped\|\|\{\}\)\}/);
+ assert.match(js,/delete equipped\['pet-frame'\]/);
+ assert.match(js,/renderPetSVG\(petData\.petAppearance,\{\.\.\.shop,equipped\},'',\{background:false\}\)/);
+ assert.doesNotMatch(js,/delete shop\.equipped\['pet-frame'\]/);
+});
