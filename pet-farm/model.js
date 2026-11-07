@@ -150,7 +150,7 @@ export function applyFarmAction(current,action,now=Date.now()){
  }
 }
 // Quantity is validated again inside the wallet+farm Firestore transaction.
-// Maximum 99 units per order, never beyond the existing 99,999-unit inventory cap.
+// Maximum 99 bundles/items per order; each seed bundle adds its specified quantity.
 export function applyPurchase(current,kind,id,coins,quantity=1){
  const f=copy(current),balance=integer(coins,999999999);
  if(!Number.isSafeInteger(quantity)||quantity<1||quantity>99)fail('購入数は1〜99個で指定してください。');
