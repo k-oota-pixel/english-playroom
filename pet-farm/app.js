@@ -51,11 +51,54 @@ function initWorld(){
  setPetPosition(petX,petY,0);
  requestAnimationFrame(()=>fitScene());
 }
+// Road tiles share one soil surface. Only exposed edges are shaded; connected
+// sides have no tile borders, including through corners and intersections.
+function roadConnections(keys,x,y){
+ return {
+  n:keys.has(x+','+(y-1)),
+  e:keys.has((x+1)+','+y),
+  s:keys.has(x+','+(y+1)),
+  w:keys.has((x-1)+','+y)
+ };
+}
+function drawRoadGrain(road,x,y){
+ // Stable, tiny soil scratches: no circular marks, planks or repeating stripes.
+ let seed=(Math.imul(x+11,73856093)^Math.imul(y+17,19349663))>>>0;
+ for(let i=0;i<13;i++){
+  seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+  const left=5+seed%45;
+  seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+  const top=5+seed%45;
+  seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+  const width=3+seed%9,rotation=(seed%45)-22;
+  const grain=node('span','road-grain '+(i%3===0?'road-grain--light':'road-grain--dark'));
+  grain.style.cssText='left:'+left+'px;top:'+top+'px;width:'+width+'px;transform:rotate('+rotation+'deg)';
+  road.appendChild(grain);
+ }
+}
+let roadRenderKey=null;
 function renderRoads(){
- const layer=$('roadsLayer');layer.replaceChildren();
- for(const key of farm.roads){
-  const [x,y]=key.split(',').map(Number),road=node('div','road-tile');
+ const roads=new Set(farm.roads);
+ const signature=[...roads].sort().join('|');
+ if(signature===roadRenderKey)return;
+ roadRenderKey=signature;
+ const layer=$('roadsLayer');
+ layer.replaceChildren();
+ for(const key of roads){
+  const [x,y]=key.split(',').map(Number),connection=roadConnections(roads,x,y);
+  const road=node('div','road-tile');
   Object.assign(road.style,coords(x,y));
+  // Round only exposed exterior corners, not the seams between neighbors.
+  road.style.borderRadius=[
+   !connection.n&&!connection.w?'10px':'0',
+   !connection.n&&!connection.e?'10px':'0',
+   !connection.s&&!connection.e?'10px':'0',
+   !connection.s&&!connection.w?'10px':'0'
+  ].join(' ');
+  for(const side of ['n','e','s','w']){
+   if(!connection[side])road.appendChild(node('span','road-edge road-edge--'+side));
+  }
+  drawRoadGrain(road,x,y);
   layer.appendChild(road);
  }
 }
