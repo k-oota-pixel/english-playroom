@@ -152,7 +152,7 @@ function drawItem(item){
  if(!item.placed)return;
  const d=dims(item),x=TX+(item.x+d.w/2)*TILE,y=TY+(item.y+d.h)*TILE;
  // Sprite art uses a bottom/feet anchor; collision remains a plain rectangular grid.
- const width=TILE*d.w*item.scaleX,height=TILE*d.w*item.scaleY;
+ const width=TILE*d.w*item.scaleX,height=TILE*item.w*item.scaleY;
  el.style.left=(x/SIZE*100)+'%';el.style.top=(y/SIZE*100)+'%';
  el.style.width=(width/SIZE*100)+'%';el.style.height=(height/SIZE*100)+'%';
  el.style.zIndex=item.id==='rug'?'3':String(20+Math.floor((item.y+d.h)*20));
