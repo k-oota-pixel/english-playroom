@@ -3,8 +3,8 @@ import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0
 import {getAuth} from '../auth-session.js?v=2.3.15';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
-import {roomBackground} from './room-v4-art.js?v=1';
-import {facingFurnitureSVG,ROOM_FOOTPRINTS} from './room-v4-directions.js?v=1';
+import {roomBackground} from './room-v4-art.js?v=2';
+import {facingFurnitureSVG,ROOM_FOOTPRINTS} from './room-v4-directions.js?v=2';
 
 const $=id=>document.getElementById(id);
 const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
