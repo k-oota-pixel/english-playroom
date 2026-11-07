@@ -31,6 +31,7 @@ test('new farmers start on a blank 32x16 canvas with a free starter available in
 
 test('free 4-cell field is claimed only once and paid plots may be bought repeatedly',()=>{
  const base=freshFarm();
+ assert.throws(()=>applyPurchase(base,'field','4',50),/先に無料/);
  let f=applyPurchase(base,'field','free',0).farm;
  assert.equal(f.inventory.fields['4'],1);
  assert.equal(f.starterClaimed,true);
