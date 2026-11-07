@@ -3,22 +3,23 @@ import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0
 import {getAuth} from '../auth-session.js?v=2.3.15';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
-import {furnitureSVG,roomBackground} from './room-v4-art.js?v=1';
+import {roomBackground} from './room-v4-art.js?v=1';
+import {facingFurnitureSVG,ROOM_FOOTPRINTS} from './room-v4-directions.js?v=1';
 
 const $=id=>document.getElementById(id);
 const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
 const specs=[
- {id:'shelf',name:'本だな',icon:'📚',w:1,h:2,x:0,y:0,scaleX:1.25,scaleY:1.78},
- {id:'cabinet',name:'キャビネット',icon:'🗄️',w:2,h:1,x:4,y:0,scaleX:.96,scaleY:.92},
- {id:'bed',name:'ベッド',icon:'🛏️',w:2,h:2,x:0,y:2,scaleX:1.05,scaleY:1.06},
- {id:'rug',name:'ラグ',icon:'🟢',w:2,h:2,x:2,y:3,scaleX:1.03,scaleY:.85,blocking:false},
- {id:'table',name:'テーブル',icon:'☕',w:2,h:1,x:0,y:5,scaleX:.89,scaleY:.88},
- {id:'sofa',name:'ソファ',icon:'🛋️',w:2,h:1,x:4,y:4,scaleX:1.02,scaleY:.91},
- {id:'plant',name:'観葉植物',icon:'🪴',w:1,h:1,x:5,y:2,scaleX:1.15,scaleY:1.40}
-];
+ {id:'shelf',name:'本だな',icon:'📚',x:0,y:0,scaleX:1.18,scaleY:1.65},
+ {id:'cabinet',name:'キャビネット',icon:'🗄️',x:4,y:0,scaleX:1.16,scaleY:1.30},
+ {id:'bed',name:'ベッド',icon:'🛏️',x:0,y:2,scaleX:1.04,scaleY:1.05},
+ {id:'rug',name:'ラグ',icon:'🟢',x:2,y:3,scaleX:1.06,scaleY:.96,blocking:false},
+ {id:'table',name:'テーブル',icon:'☕',x:0,y:5,scaleX:1.10,scaleY:1.24},
+ {id:'sofa',name:'ソファ',icon:'🛋️',x:4,y:4,scaleX:1.03,scaleY:1.50},
+ {id:'plant',name:'観葉植物',icon:'🪴',x:5,y:2,scaleX:1.14,scaleY:1.45}
+].map(spec=>({...spec,...ROOM_FOOTPRINTS[spec.id]}));
 const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:true,element:null,blocking:s.blocking!==false}]));
 let user=null,petData={},petCell={x:3,y:2},mode='view',activeId=null,snapshot=null;
-let petMove=0,playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-v4:guest',hasPet=false;
+let playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-v4:guest',hasPet=false,dragState=null,suppressClickUntil=0;
 const board=$('roomBoard'),layer=$('objectLayer'),grid=$('gridOverlay'),tiles=$('placementTiles');
 const actor=$('petActor'),egg=$('petEgg'),panel=$('editingPanel');
 const backdrop=$('roomArt');
@@ -74,7 +75,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={};
+ const data={__version:2};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}
@@ -89,13 +90,14 @@ function furnitureHTML(item){
  el.type='button';el.className='object'+(item.id==='rug'?' rug-object':'');
  el.setAttribute('aria-label',item.name+'を動かす');
  el.dataset.itemId=item.id;
- el.innerHTML=furnitureSVG(item.id,item.rotation);
- el.addEventListener('click',event=>{if(dragState?.dragged){event.preventDefault();return}onItemSelect(item)});
+ el.innerHTML=facingFurnitureSVG(item.id,item.rotation);el.dataset.facing=String(item.rotation);
+ el.addEventListener('click',event=>{if(performance.now()<suppressClickUntil){event.preventDefault();return}onItemSelect(item)});
  el.addEventListener('pointerdown',event=>{
   if(event.button!==0||mode==='store')return;
   beginEdit(item);
   const rect=board.getBoundingClientRect();
-  dragState={id:item.id,pointer:event.pointerId,originX:event.clientX,originY:event.clientY,rect,dragged:false};
+  const pt=pointAt(event.clientX,event.clientY),d=dims(item);
+  dragState={id:item.id,pointer:event.pointerId,originX:event.clientX,originY:event.clientY,rect,dragged:false,offsetX:pt.x-(item.x+d.w/2),offsetY:pt.y-(item.y+d.h/2)};
   try{el.setPointerCapture(event.pointerId)}catch{}
  });
  el.addEventListener('pointermove',event=>{
@@ -104,15 +106,14 @@ function furnitureHTML(item){
   dragState.dragged=true;el.classList.add('dragging');
   const pt=pointAt(event.clientX,event.clientY);
   const d=dims(item);
-  item.x=clamp(Math.round(pt.x-d.w/2),0,GRID-d.w);
-  item.y=clamp(Math.round(pt.y-d.h/2),0,GRID-d.h);
+  item.x=clamp(Math.round(pt.x-dragState.offsetX-d.w/2),0,GRID-d.w);
+  item.y=clamp(Math.round(pt.y-dragState.offsetY-d.h/2),0,GRID-d.h);
   render();event.preventDefault();
  });
- const release=()=>{if(!dragState||dragState.id!==item.id)return;el.classList.remove('dragging');const wasDragging=dragState.dragged;dragState=null;if(wasDragging)notice(legal(item)?'位置を決めたら「✓ 決定」を押してください。':'家具が重なっています。別のマスを選んでください。')};
+ const release=()=>{if(!dragState||dragState.id!==item.id)return;el.classList.remove('dragging');const wasDragging=dragState.dragged;dragState=null;if(wasDragging){suppressClickUntil=performance.now()+250;notice(legal(item)?'位置を決めたら「✓ 決定」を押してください。':'家具が重なっています。別のマスを選んでください。')}};
  el.addEventListener('pointerup',release);el.addEventListener('pointercancel',release);
  item.element=el;layer.appendChild(el);
 }
-let dragState=null;
 function onItemSelect(item){
  if(mode==='store'){if(!item.placed)return;item.placed=false;saveLayout();render();toast(item.name+'をしまいました');return}
  beginEdit(item);
@@ -145,18 +146,20 @@ function moveActive(direction){
  if(direction==='up')item.y--;if(direction==='down')item.y++;
  fit(item);render();
 }
-function rotateActive(){const item=items.get(activeId);if(!item)return;item.rotation=(item.rotation+1)%4;fit(item);render()}
+function rotateActive(){const item=items.get(activeId);if(!item)return;const previous=dims(item),cx=item.x+previous.w/2,cy=item.y+previous.h/2;item.rotation=(item.rotation+1)%4;const next=dims(item);item.x=Math.round(cx-next.w/2);item.y=Math.round(cy-next.h/2);fit(item);render();notice(legal(item)?item.name+'を'+['正面','右向き','背面','左向き'][item.rotation]+'にしました。':'回転後に家具が重なっています。移動してから決定してください。')}
 function drawItem(item){
  const el=item.element;if(!el)return;
  el.hidden=!item.placed;el.classList.toggle('selected',activeId===item.id);
  if(!item.placed)return;
- const d=dims(item),x=TX+(item.x+d.w/2)*TILE,y=TY+(item.y+d.h)*TILE;
- // Sprite art uses a bottom/feet anchor; collision remains a plain rectangular grid.
- const width=TILE*d.w*item.scaleX,height=TILE*item.w*item.scaleY;
+ const d=dims(item),isRug=item.id==='rug';
+ const x=TX+(item.x+d.w/2)*TILE,y=TY+(item.y+(isRug?d.h/2:d.h))*TILE;
+ // The four sprites share a bottom/feet anchor; only the rug is floor-centred.
+ const width=TILE*d.w*item.scaleX,height=TILE*d.h*item.scaleY;
  el.style.left=(x/SIZE*100)+'%';el.style.top=(y/SIZE*100)+'%';
  el.style.width=(width/SIZE*100)+'%';el.style.height=(height/SIZE*100)+'%';
- el.style.zIndex=item.id==='rug'?'3':String(20+Math.floor((item.y+d.h)*20));
- el.innerHTML=furnitureSVG(item.id,item.rotation);
+ el.style.transform=isRug?'translate(-50%,-66%)':'translate(-50%,-92%)';
+ el.style.zIndex=isRug?'3':String(20+Math.floor((item.y+d.h)*20));
+ if(el.dataset.facing!==String(item.rotation)){el.innerHTML=facingFurnitureSVG(item.id,item.rotation);el.dataset.facing=String(item.rotation)};
 }
 function drawTiles(){
  const active=activeId?items.get(activeId):null;
