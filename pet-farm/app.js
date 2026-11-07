@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FARMS,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=6';
+import {MAP,FARMS,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=7';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=4';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
@@ -11,7 +11,7 @@ const app=getApps().find(a=>a.name==='[DEFAULT]')||initializeApp(cfg);enableAppC
 const auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const tile=MAP.tile;
-let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='carrot',shopTab='seed';
+let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='lettuce',shopTab='seed';
 let busy=false,dirty=false,saving=null,saveTimer=0,toastTimer=0,zoom=1,baseZoom=1,petX=8.0,petY=6.5,walking=false,ready=false,authSequence=0;
 let actionChoice=null,chosenPurchase=null,chosenProduce=null;
 function walletRef(){return doc(db,'users',user.uid,'apps','english-playroom');}
@@ -264,14 +264,14 @@ function renderShop(){
   const title=node('span','shop-quantity-label',p.kind==='seed'?'購入する袋数':'一度に買う数');
   const decrement=node('button','shop-qty-btn','−');
   decrement.type='button';
-  decrement.setAttribute('aria-label','購入数を1個減らす');
+  decrement.setAttribute('aria-label',p.kind==='seed'?'購入する袋数を1袋減らす':'購入数を1個減らす');
   decrement.disabled=busy||p.quantity<=1;
   decrement.addEventListener('click',()=>{p.quantity=Math.max(1,p.quantity-1);renderShop();});
   const count=node('output','shop-qty-value',p.quantity+(p.kind==='seed'?'袋':'個'));
   count.setAttribute('aria-label','購入数');
   const increment=node('button','shop-qty-btn','＋');
   increment.type='button';
-  increment.setAttribute('aria-label','購入数を1個増やす');
+  increment.setAttribute('aria-label',p.kind==='seed'?'購入する袋数を1袋増やす':'購入数を1個増やす');
   increment.disabled=busy||p.quantity>=limit;
   increment.addEventListener('click',()=>{p.quantity=Math.min(limit,p.quantity+1);renderShop();});
   countRow.append(title,decrement,count,increment);
