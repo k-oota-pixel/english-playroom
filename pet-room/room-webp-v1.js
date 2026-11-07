@@ -361,7 +361,7 @@ for(const item of items.values())furnitureHTML(item);
 bindUI();loadLayout('guest');// No SVG or Canvas furniture fallback: report a missing source asset instead.
 Promise.all(WEBP_BED_ASSETS.map((src,i)=>new Promise((ok,fail)=>{
  const image=new Image();image.onload=()=>{
-  if(image.naturalWidth!==((i%2)?348:232)||image.naturalHeight!==((i%2)?232:348))fail(new Error('画像の寸法が仕様と違います: '+src));
+  if(image.naturalWidth!==((i%2)?696:464)||image.naturalHeight!==((i%2)?464:696))fail(new Error('画像の寸法が仕様と違います: '+src));
   else ok(src);
  };image.onerror=()=>fail(new Error('WebPの読み込みに失敗しました: '+src));image.src=src;
 }))).catch(error=>{console.error(error);notice(error.message)});
