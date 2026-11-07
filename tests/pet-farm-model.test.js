@@ -184,3 +184,15 @@ test('farm pet artwork removes only the decorative frame, retaining effects and 
  assert.match(js,/renderPetSVG\(petData\.petAppearance,\{\.\.\.shop,equipped\},'',\{background:false\}\)/);
  assert.doesNotMatch(js,/delete shop\.equipped\['pet-frame'\]/);
 });
+
+test('shop modal does not shift when selecting items or changing quantity',()=>{
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ assert.match(css,/#shopDialog\[open\]\s*\{[\s\S]*?display:flex;[\s\S]*?height:min\(680px,calc\(100dvh - 24px\)\)/);
+ assert.match(css,/#shopDialog #shopList\s*\{[\s\S]*?flex:1 1 auto;[\s\S]*?overflow-y:auto;/);
+ assert.match(css,/#shopDialog #shopConfirmation\s*\{[\s\S]*?flex:0 0 224px;[\s\S]*?min-height:224px;/);
+ assert.match(app,/const scrollBeforeUpdate=list.scrollTop/);
+ assert.match(app,/list.scrollTop=scrollBeforeUpdate/);
+ assert.match(app,/shop-selection-hint/);
+ assert.match(app,/shopTab=tab.dataset.shop;chosenPurchase=null;\$\('shopList'\).scrollTop=0/);
+});
