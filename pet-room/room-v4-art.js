@@ -16,8 +16,8 @@ sofa:shadows+
 bed:shadows+
 '<rect x="46" y="54" width="147" height="155" rx="17" fill="#b9834d" stroke="#795238" stroke-width="7"/>'+
 '<rect x="54" y="68" width="131" height="125" rx="10" fill="#f6e6be" stroke="#a0764e" stroke-width="5"/>'+
-'<rect x="57" y="120" width="125" height="66" rx="8" fill="#9ebe80" stroke="#6d956d" stroke-width="4"/>'+
-'<path d="M64 139h110M63 160h110M81 122v61M108 121v62M135 121v62M160 122v61" stroke="#d2dfa0" stroke-width="7" opacity=".7"/>'+
+'<rect x="57" y="120" width="125" height="66" rx="8" fill="#edb0c4" stroke="#c47e99" stroke-width="4"/>'+
+'<path d="M64 139h110M63 160h110M81 122v61M108 121v62M135 121v62M160 122v61" stroke="#ffdee7" stroke-width="7" opacity=".7"/>'+
 '<rect x="61" y="74" width="119" height="54" rx="21" fill="#fff6d9" stroke="#d1b992" stroke-width="4"/>'+
 '<path d="M108 96q9-15 19 0q9-7 15 3q2 12-16 18q-18-5-19-14Z" fill="#e0b87d"/>'+
 '<path d="M51 184Q119 204 188 185v17Q122 223 51 203Z" fill="#a56e47" stroke="#795238" stroke-width="5"/>'+
