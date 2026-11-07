@@ -222,18 +222,21 @@ function renderShop(){
   b.setAttribute('aria-pressed',String(isChosen));
   const stock=item.kind==='area'?null:shopStock(item.kind,item.id);
   const unitText=item.kind==='seed'?item.units+'個 / '+item.price+'C':item.kind==='area'?item.price+'C':item.price+'C / 1個';
-  b.append(
-   node('span','emoji',item.icon),
+  // Keep price, unlock progress and owned stock in one natural-height column.
+  // The previous button grid could place the owned-stock line outside its card.
+  const details=node('span','shop-item-details');
+  details.append(
    node('strong','',item.label),
    node('small','',unitText+' · '+item.sub)
   );
   if(item.kind==='seed'){
    const info=cropUnlockProgress(farm,item.id);
    if(!info.unlocked){
-    b.appendChild(node('span','shop-owned','🔒 '+CROPS[info.previous].name+'をあと'+info.remaining+'個収穫'));
+    details.appendChild(node('span','shop-unlock','🔒 '+CROPS[info.previous].name+'をあと'+info.remaining+'個収穫'));
    }
   }
-  if(stock!==null)b.appendChild(node('span','shop-owned','所持数：'+stock.toLocaleString('ja-JP')+'個'));
+  if(stock!==null)details.appendChild(node('span','shop-owned','所持数：'+stock.toLocaleString('ja-JP')+'個'));
+  b.append(node('span','emoji',item.icon),details);
   const cannotUnlock=item.kind==='area'&&(farm.unlocked[Number(item.id)]||!farm.unlocked[Number(item.id)-1]);
   const cropLocked=item.kind==='seed'&&!isCropUnlocked(farm,item.id);
   const packTooLarge=stock!==null&&stock+(item.units||1)>99999;
