@@ -203,6 +203,19 @@ function maxPurchaseQuantity(item){
  const room=item.id==='free'?(farm.starterClaimed?0:1):Math.floor((99999-stock)/per);
  return Math.max(0,Math.min(99,room,item.price===0?1:Math.floor(balance/item.price)));
 }
+// Hide locked crops as mysteries. Only reveal the next unlock milestone;
+// more distant crops reveal neither their identity nor their prerequisites.
+function shopSeedReveal(state,id){
+ const info=cropUnlockProgress(state,id);
+ if(info.unlocked)return null;
+ const previousKnown=isCropUnlocked(state,info.previous);
+ const prerequisite=previousKnown?CROPS[info.previous].name:'？？？';
+ return {
+  icon:'❔',
+  label:'？？？のタネ',
+  requirement:'🔒 '+prerequisite+'をあと'+(previousKnown?info.remaining:10)+'個収穫'
+ };
+}
 function shopItems(){
  if(shopTab==='seed')return cropIds.map(id=>({kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,price:CROPS[id].seed,units:CROPS[id].pack,sub:'成長 '+CROPS[id].minutes/60+'時間'}));
  if(shopTab==='supply')return Object.entries(SUPPLIES).map(([id,t])=>({kind:'supply',id,label:t.name,icon:t.icon,price:t.price,sub:id==='water'?'残り時間を2/3に短縮':'残り時間を1/3に短縮'}));
@@ -220,17 +233,15 @@ function renderShop(){
   const b=node('button','shop-item'+(active?' selected':''));b.type='button';
   b.setAttribute('aria-pressed',String(active));
   const details=node('span','shop-item-details');
+  const secret=item.kind==='seed'?shopSeedReveal(farm,item.id):null;
   const unit=item.kind==='seed'?item.units+'個 / '+item.price+'C':item.price===0?'無料':item.price+'C / 1個';
-  details.append(node('strong','',item.label),node('small','',unit+' · '+item.sub));
-  if(item.kind==='seed'){
-   const info=cropUnlockProgress(farm,item.id);
-   if(!info.unlocked)details.appendChild(node('span','shop-unlock','🔒 '+CROPS[info.previous].name+'をあと'+info.remaining+'個収穫'));
-  }
+  details.append(node('strong','',secret?.label||item.label),node('small','',unit+' · '+item.sub));
+  if(secret)details.appendChild(node('span','shop-unlock',secret.requirement));
   if(item.id==='free'&&farm.starterClaimed)details.appendChild(node('span','shop-unlock','✓ 無料分は受け取り済み'));
   else if(item.id!=='free')details.appendChild(node('span','shop-owned','所持数：'+shopStock(item.kind,item.id).toLocaleString('ja-JP')+(item.kind==='road'?'マス':'個')));
   if(item.kind==='field'&&item.id!=='free'&&!farm.starterClaimed)
    details.appendChild(node('span','shop-unlock','🔒 まず無料の圃場を受け取ってね'));
-  b.append(node('span','emoji',item.icon),details);
+  b.append(node('span','emoji',secret?.icon||item.icon),details);
   b.disabled=busy||!ready||maxPurchaseQuantity(item)<1||(item.kind==='seed'&&!isCropUnlocked(farm,item.id))||
    (item.kind==='field'&&item.id!=='free'&&!farm.starterClaimed);
   b.addEventListener('click',()=>{if(!b.disabled){chosenPurchase={...item,quantity:1};renderShop();}});
