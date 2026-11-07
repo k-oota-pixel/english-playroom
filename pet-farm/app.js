@@ -510,7 +510,7 @@ async function produce(kind,id){
  if(busy||!ready)return;
  let result;
  try{result=useProduce(farm,kind,id);}catch(e){toast(e.message);return;}
- if(kind==='feed')hideDialog('storageDialog');
+ if(kind==='feed')hideDialog('itemsDialog');
  busy=true;refresh();
  try{
   if(kind==='feed'){await walkTo(5.4,6.5);await showWork('feed',5.4,6.3);}
@@ -535,11 +535,11 @@ async function buy(kind,id,quantity=1){
    const c=Math.max(0,Math.floor(Number(wallet.data().coins)||0));
    purchased=applyPurchase(fdoc.exists()?fdoc.data():freshFarm(),kind,id,c,quantity);
    latestBalance=c-purchased.cost;
-   tx.update(walletRef(),{coins:latestBalance});
+   if(purchased.cost)tx.update(walletRef(),{coins:latestBalance});
    tx.set(farmRef(),{...purchased.farm,updatedAt:Date.now()});
   });
   balance=latestBalance;farm=purchased.farm;dirty=false;toast(purchased.message);
-  if(kind==='area')selected={area:Number(id),index:0};
+  // A purchased field/road remains in inventory until the player places it.
   status('購入を保存しました。','ok');
   return true;
  }catch(e){console.error('pet farm purchase failed',e);status('購入できませんでした：'+(e.message||'通信エラー'),'error');toast('購入は反映されていません。');return false;}
@@ -610,7 +610,7 @@ async function initialize(current){
   farm=normalizeFarm(snapshot.exists()?snapshot.data():freshFarm());
   $('previewGate').hidden=true;petVisual();selected=null;ready=true;busy=false;refresh();
   if($('viewport').clientWidth<760)focusAt(12.7,7.7);
-  status('農園にようこそ！ 畑をタップして始めましょう。','ok');
+  status('SHOPで圃場を入手し、好きな場所へ配置しましょう！','ok');
  }catch(e){
   if(sequence!==authSequence)return;
   busy=false;ready=false;
@@ -620,17 +620,24 @@ async function initialize(current){
  }
 }
 async function visitBuilding(kind){
- if(!ready||busy)return;
+ if(!ready||busy||kind!=='shop')return;
  busy=true;refresh();
  try{
-  if(kind==='shop')await walkTo(12.7,6.35);
-  else await walkTo(20.1,6.35);
-  if(kind==='shop'){shopTab='seed';chosenPurchase=null;$('shopList').scrollTop=0;renderShop();showDialog('shopDialog');}
-  else{chosenProduce=null;renderInventory();showDialog('storageDialog');}
+  await walkTo(27.3,6.5);
+  shopTab='field';chosenPurchase=null;$('shopList').scrollTop=0;
+  renderShop();showDialog('shopDialog');
  }finally{busy=false;refresh();}
 }
 $('shopBuilding').addEventListener('click',()=>{void visitBuilding('shop');});
-$('storageBuilding').addEventListener('click',()=>{void visitBuilding('storage');});
+$('itemsBtn').addEventListener('click',()=>{
+ if(!ready||busy)return;
+ chosenProduce=null;renderInventory();showDialog('itemsDialog');
+});
+$('placementCancel').addEventListener('click',stopPlacement);
+$('confirmFieldName').addEventListener('click',confirmFieldName);
+$('fieldNameInput').addEventListener('keydown',event=>{
+ if(event.key==='Enter'){event.preventDefault();confirmFieldName();}
+});
 for(const tab of document.querySelectorAll('[data-shop]'))tab.addEventListener('click',()=>{
  shopTab=tab.dataset.shop;chosenPurchase=null;$('shopList').scrollTop=0;renderShop();
 });
