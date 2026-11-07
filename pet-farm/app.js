@@ -191,116 +191,81 @@ function renderSelection(){
 }
 
 function shopStock(kind,id){
- if(kind==='seed')return Math.max(0,Number(farm.inventory.seeds[id])||0);
- if(kind==='supply')return Math.max(0,Number(farm.inventory[id])||0);
+ if(kind==='seed')return farm.inventory.seeds[id]||0;
+ if(kind==='supply')return farm.inventory[id]||0;
+ if(kind==='field')return id==='free'?Number(farm.starterClaimed):farm.inventory.fields[id]||0;
+ if(kind==='road')return farm.inventory.roads||0;
  return 0;
 }
 function maxPurchaseQuantity(item){
- const available=Math.floor(balance/item.price);
- const storageSpace=99999-shopStock(item.kind,item.id);
- const unitsPerPack=item.kind==='seed'?(CROPS[item.id].pack||1):1;
- return Math.max(0,Math.min(99,available,item.kind==='area'?1:Math.floor(storageSpace/unitsPerPack)));
+ const stock=shopStock(item.kind,item.id);
+ const per=item.kind==='seed'?CROPS[item.id].pack||1:1;
+ const room=item.id==='free'?(farm.starterClaimed?0:1):Math.floor((99999-stock)/per);
+ return Math.max(0,Math.min(99,room,item.price===0?1:Math.floor(balance/item.price)));
+}
+function shopItems(){
+ if(shopTab==='seed')return cropIds.map(id=>({kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,price:CROPS[id].seed,units:CROPS[id].pack,sub:'成長 '+CROPS[id].minutes/60+'時間'}));
+ if(shopTab==='supply')return Object.entries(SUPPLIES).map(([id,t])=>({kind:'supply',id,label:t.name,icon:t.icon,price:t.price,sub:id==='water'?'残り時間を2/3に短縮':'残り時間を1/3に短縮'}));
+ if(shopTab==='field')return [{kind:'field',id:'free',label:'初回限定・4マス圃場',icon:'🌱',price:0,sub:'1つ目は無料'},
+  ...FIELD_SIZES.map(id=>({kind:'field',id,label:FIELD_TYPES[id].name,icon:'🌾',price:FIELD_TYPES[id].price,sub:'好きな場所へ置けます'}))];
+ return [{kind:'road',id:'dirt',label:'土の道',icon:'🟫',price:1,sub:'1マス1C・自由な配置'}];
 }
 function renderShop(){
- const list=$('shopList');
- // Rebuilding product cards must not scroll the customer's eyes back to the top.
- const scrollBeforeUpdate=list.scrollTop;
+ const list=$('shopList'),scroll=list.scrollTop,items=shopItems();
  list.replaceChildren();
  $('shopBalance').textContent=Number(balance).toLocaleString('ja-JP');
  for(const tab of document.querySelectorAll('[data-shop]'))tab.classList.toggle('active',tab.dataset.shop===shopTab);
- const items=shopTab==='seed'?cropIds.map(id=>({
-   kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,
-   price:CROPS[id].seed,units:CROPS[id].pack,sub:'成長 '+Math.round(CROPS[id].minutes/60)+'時間'
-  }))
-  :shopTab==='supply'?Object.entries(SUPPLIES).map(([id,t])=>({
-   kind:'supply',id,label:t.name,icon:t.icon,price:t.price,
-   sub:id==='water'?'残り時間を2/3に短縮':'残り時間を1/3に短縮'
-  }))
-  :FARMS.slice(1).map((a,i)=>({
-   kind:'area',id:String(i+1),label:a.name,icon:'🌾',price:a.price,
-   sub:(a.w*a.h)+'マス・'+(farm.unlocked[i+1]?'解放済み':'未解放')
-  }));
  for(const item of items){
-  const isChosen=chosenPurchase?.id===item.id&&chosenPurchase?.kind===item.kind;
-  const b=node('button','shop-item'+(isChosen?' selected':''));
-  b.type='button';
-  b.setAttribute('aria-pressed',String(isChosen));
-  const stock=item.kind==='area'?null:shopStock(item.kind,item.id);
-  const unitText=item.kind==='seed'?item.units+'個 / '+item.price+'C':item.kind==='area'?item.price+'C':item.price+'C / 1個';
-  // Keep price, unlock progress and owned stock in one natural-height column.
-  // The previous button grid could place the owned-stock line outside its card.
+  const active=chosenPurchase?.kind===item.kind&&chosenPurchase.id===item.id;
+  const b=node('button','shop-item'+(active?' selected':''));b.type='button';
+  b.setAttribute('aria-pressed',String(active));
   const details=node('span','shop-item-details');
-  details.append(
-   node('strong','',item.label),
-   node('small','',unitText+' · '+item.sub)
-  );
+  const unit=item.kind==='seed'?item.units+'個 / '+item.price+'C':item.price===0?'無料':item.price+'C / 1個';
+  details.append(node('strong','',item.label),node('small','',unit+' · '+item.sub));
   if(item.kind==='seed'){
    const info=cropUnlockProgress(farm,item.id);
-   if(!info.unlocked){
-    details.appendChild(node('span','shop-unlock','🔒 '+CROPS[info.previous].name+'をあと'+info.remaining+'個収穫'));
-   }
+   if(!info.unlocked)details.appendChild(node('span','shop-unlock','🔒 '+CROPS[info.previous].name+'をあと'+info.remaining+'個収穫'));
   }
-  if(stock!==null)details.appendChild(node('span','shop-owned','所持数：'+stock.toLocaleString('ja-JP')+'個'));
+  if(item.id==='free'&&farm.starterClaimed)details.appendChild(node('span','shop-unlock','✓ 無料分は受け取り済み'));
+  else if(item.id!=='free')details.appendChild(node('span','shop-owned','所持数：'+shopStock(item.kind,item.id).toLocaleString('ja-JP')+(item.kind==='road'?'マス':'個')));
   b.append(node('span','emoji',item.icon),details);
-  const cannotUnlock=item.kind==='area'&&(farm.unlocked[Number(item.id)]||!farm.unlocked[Number(item.id)-1]);
-  const cropLocked=item.kind==='seed'&&!isCropUnlocked(farm,item.id);
-  const packTooLarge=stock!==null&&stock+(item.units||1)>99999;
-  b.disabled=busy||!ready||balance<item.price||cannotUnlock||cropLocked||packTooLarge;
-  b.addEventListener('click',()=>{
-   if(b.disabled)return;
-   chosenPurchase={...item,quantity:1};
-   renderShop();
-  });
+  b.disabled=busy||!ready||maxPurchaseQuantity(item)<1||(item.kind==='seed'&&!isCropUnlocked(farm,item.id));
+  b.addEventListener('click',()=>{if(!b.disabled){chosenPurchase={...item,quantity:1};renderShop();}});
   list.appendChild(b);
  }
- list.scrollTop=scrollBeforeUpdate;
- const confirmation=$('shopConfirmation');confirmation.replaceChildren();
- if(!chosenPurchase){
-  confirmation.appendChild(node('p','shop-selection-hint',shopTab==='area'?'解放したい農園を選んでください。':'商品をタップすると、ここで数量と合計金額を確認できます。'));
-  return;
+ list.scrollTop=scroll;
+ const confirm=$('shopConfirmation');confirm.replaceChildren();
+ if(!chosenPurchase){confirm.appendChild(node('p','shop-selection-hint','商品を選んで購入数と合計金額を確認できます。'));return;}
+ const p=chosenPurchase,current=items.find(i=>i.kind===p.kind&&i.id===p.id);
+ if(!current||maxPurchaseQuantity(current)<1){chosenPurchase=null;renderShop();return;}
+ p.quantity=Math.min(maxPurchaseQuantity(current),Math.max(1,p.quantity||1));
+ confirm.appendChild(node('p','confirm-label',p.icon+' '+p.label));
+ if(p.id!=='free'){
+  const row=node('div','shop-quantity');
+  const suffix=p.kind==='seed'?'袋':p.kind==='road'?'マス':'個';
+  row.appendChild(node('span','shop-quantity-label',p.kind==='seed'?'購入する袋数':'一度に買う数'));
+  const minus=node('button','shop-qty-btn','−'),plus=node('button','shop-qty-btn','＋');
+  minus.type='button';plus.type='button';minus.disabled=p.quantity<=1;plus.disabled=p.quantity>=maxPurchaseQuantity(current);
+  minus.setAttribute('aria-label','購入数を1個減らす');plus.setAttribute('aria-label','購入数を1個増やす');
+  minus.addEventListener('click',()=>{p.quantity=Math.max(1,p.quantity-1);renderShop();});
+  plus.addEventListener('click',()=>{p.quantity=Math.min(maxPurchaseQuantity(current),p.quantity+1);renderShop();});
+  row.append(minus,node('output','shop-qty-value',p.quantity+suffix),plus);confirm.appendChild(row);
  }
- const p=chosenPurchase;
- const current=items.find(i=>i.kind===p.kind&&i.id===p.id);
- if(!current){chosenPurchase=null;renderShop();return;}
- const limit=maxPurchaseQuantity(current);
- if(limit<1){chosenPurchase=null;renderShop();return;}
- p.quantity=Math.min(limit,Math.max(1,Math.floor(Number(p.quantity)||1)));
- const selected= current.kind==='area'?current.label:current.label+'（所持 '+shopStock(p.kind,p.id).toLocaleString('ja-JP')+'個）';
- confirmation.appendChild(node('p','confirm-label',p.icon+' '+selected));
- if(p.kind!=='area'){
-  const countRow=node('div','shop-quantity');
-  const title=node('span','shop-quantity-label',p.kind==='seed'?'購入する袋数':'一度に買う数');
-  const decrement=node('button','shop-qty-btn','−');
-  decrement.type='button';
-  decrement.setAttribute('aria-label',p.kind==='seed'?'購入する袋数を1袋減らす':'購入数を1個減らす');
-  decrement.disabled=busy||p.quantity<=1;
-  decrement.addEventListener('click',()=>{p.quantity=Math.max(1,p.quantity-1);renderShop();});
-  const count=node('output','shop-qty-value',p.quantity+(p.kind==='seed'?'袋':'個'));
-  count.setAttribute('aria-label','購入数');
-  const increment=node('button','shop-qty-btn','＋');
-  increment.type='button';
-  increment.setAttribute('aria-label',p.kind==='seed'?'購入する袋数を1袋増やす':'購入数を1個増やす');
-  increment.disabled=busy||p.quantity>=limit;
-  increment.addEventListener('click',()=>{p.quantity=Math.min(limit,p.quantity+1);renderShop();});
-  countRow.append(title,decrement,count,increment);
-  confirmation.appendChild(countRow);
- }
- const total=current.price*p.quantity;
- const totalCount=p.kind==='seed'?p.quantity+'袋（タネ'+(p.quantity*p.units)+'個）':p.quantity+'個';
- const totalRow=node('div','shop-order-total');
- totalRow.append(node('span','', '合計 '+totalCount),node('strong','',total.toLocaleString('ja-JP')+' C'));
- confirmation.appendChild(totalRow);
+ const total=node('div','shop-order-total');
+ total.append(node('span','','合計 '+(p.kind==='seed'?p.quantity+'袋（タネ'+p.quantity*p.units+'個）':p.quantity+(p.kind==='road'?'マス':'個'))),node('strong','',p.price*p.quantity+' C'));
+ confirm.appendChild(total);
  const row=node('div','modal-actions');
- row.append(
-  actionButton('🪙 '+(p.kind==='seed'?p.quantity+'袋':p.quantity+'個')+'購入する','gold',async()=>{
-   const quantity=p.quantity;
-   const success=await buy(p.kind,p.id,quantity);
-   if(success)chosenPurchase=null;
-   renderShop();
+ row.append(actionButton(p.price===0?'無料で受け取る':'🪙 購入する','gold',async()=>{
+   const success=await buy(p.kind,p.id,p.quantity);
+   if(!success)return;
+   chosenPurchase=null;
+   if(p.kind==='field'||p.kind==='road'){
+    hideDialog('shopDialog');
+    beginPlacement(p.kind==='field'?'field':'road',p.id==='free'?'4':p.id);
+   }else renderShop();
   }),
-  actionButton('やめる','secondary',()=>{chosenPurchase=null;renderShop();})
- );
- confirmation.appendChild(row);
+  actionButton('やめる','secondary',()=>{chosenPurchase=null;renderShop();}));
+ confirm.appendChild(row);
 }
 function renderInventory(){
  const container=$('inventory');container.replaceChildren();
