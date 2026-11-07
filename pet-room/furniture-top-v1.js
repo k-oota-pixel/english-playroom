@@ -1,11 +1,11 @@
 (()=>{
 "use strict";
 if(window.__monstudyTopFurnitureV1)return;
-window.__monstudyFlatFurnitureV1=true;
+window.__monstudyTopFurnitureV1=true;
 const api=window.MonStudyRoomGrid,room=api&&api.room,grid=api&&api.grid,point=api&&api.point,GRID=api&&api.GRID||6,occupied=window.MonStudyRoomOccupied,pet=document.getElementById("petActor"),note=document.getElementById("roomNote");
 const sofa=document.getElementById("sofaActor"),sofaButton=document.getElementById("sofaButton");
 if(!room||!grid||!point||!occupied||!sofa||!sofaButton)return;
-const CELL_X=1000/15,CELL_Y=1000/30;
+// Perspective is calculated in place() from the shared room projection.
 const SPRITES=Object.freeze({
  sofa:{x:38,y:264,w:242,h:214},
  bed:{x:283,y:267,w:255,h:221},
@@ -71,7 +71,16 @@ function makeSvg(item){
  plant:'<ellipse cx="50" cy="55" rx="34" ry="34" fill="#75543c"/><circle cx="50" cy="48" r="30" fill="#a97751"/><circle cx="50" cy="48" r="23" fill="#54432e"/><g fill="#56985c" stroke="#397342" stroke-width="2"><ellipse cx="50" cy="24" rx="12" ry="28"/><ellipse cx="50" cy="24" rx="12" ry="28" transform="rotate(72 50 48)"/><ellipse cx="50" cy="24" rx="12" ry="28" transform="rotate(144 50 48)"/><ellipse cx="50" cy="24" rx="12" ry="28" transform="rotate(216 50 48)"/><ellipse cx="50" cy="24" rx="12" ry="28" transform="rotate(288 50 48)"/></g><circle cx="50" cy="48" r="9" fill="#9ccc73"/>',
  cabinet:'<rect x="7" y="9" width="86" height="86" rx="9" fill="#745238"/><rect x="12" y="8" width="76" height="78" rx="6" fill="#ba9064" stroke="#e2b383" stroke-width="3"/><path d="M22 22H78M22 74H78" stroke="#895f40" stroke-width="3"/><rect x="28" y="29" width="44" height="40" rx="5" fill="#d7ad7d"/><circle cx="50" cy="48" r="10" fill="#e8d5b7"/><circle cx="50" cy="48" r="5" fill="#80a9ad"/>'
  };
- return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+(d.w*100)+' '+(d.h*100)+'" aria-hidden="true" focusable="false"><g transform="translate('+(d.w*50)+' '+(d.h*50)+') rotate('+(item.rotation*90)+') translate('+(-W/2)+' '+(-H/2)+')">'+shapes[item.id]+'</g></svg>';
+ const edge={
+  sofa:'<rect x="12" y="81" width="176" height="12" rx="6" fill="#467969" opacity=".95"/><path d="M20 85H180" stroke="#9fd7b3" stroke-width="2" opacity=".58"/>',
+  bed:'<rect x="12" y="83" width="176" height="8" rx="4" fill="#8f6b48" opacity=".95"/>',
+  table:'<path d="M17 65Q100 101 183 65L183 71Q100 107 17 71Z" fill="#94613b" opacity=".85"/>',
+  shelf:'<path d="M87 11L95 16V188L87 190Z" fill="#795132" opacity=".88"/>',
+  plant:'<path d="M22 56Q50 76 78 56L76 65Q50 86 24 65Z" fill="#905d41" opacity=".8"/>',
+  cabinet:'<rect x="12" y="80" width="76" height="9" rx="4" fill="#855b3d" opacity=".9"/>'
+ };
+ const shadow=item.id==="rug"?"":'<ellipse cx="'+(d.w*50)+'" cy="'+(d.h*50+7)+'" rx="'+(d.w*43)+'" ry="'+(d.h*37)+'" fill="#614d35" opacity=".17"/>';
+ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+(d.w*100)+' '+(d.h*100)+'" aria-hidden="true" focusable="false">'+shadow+'<g transform="translate('+(d.w*50)+' '+(d.h*50)+') rotate('+(item.rotation*90)+') translate('+(-W/2)+' '+(-H/2)+')">'+shapes[item.id]+(edge[item.id]||'')+'</g></svg>';
 }
 function footprint(item){const d=dims(item),cells=[];for(let yy=0;yy<d.h;yy++)for(let xx=0;xx<d.w;xx++)cells.push({x:item.state.x+xx,y:item.state.y+yy});return cells}
 function inBounds(c){return c.x>=0&&c.y>=0&&c.x<GRID&&c.y<GRID}
@@ -82,8 +91,9 @@ function valid(item){return footprint(item).every(c=>inBounds(c)&&(!item.blockin
 function save(item){localStorage.setItem(item.store,JSON.stringify({x:item.state.x,y:item.state.y,placed:item.state.placed,rotation:item.rotation}))}
 function place(item){
  const d=dims(item),p=point((item.state.x+d.w/2)/GRID,(item.state.y+d.h/2)/GRID);
- item.actor.style.width=(d.w*768/GRID/10)+"%";
- item.actor.style.height=(d.h*768/GRID/10)+"%";
+ const rowDepth=(item.state.y+d.h/2)/GRID;
+ item.actor.style.width=(d.w*(690+100*rowDepth)/GRID/10)+"%";
+ item.actor.style.height=(d.h*640/GRID/10)+"%";
  item.actor.style.left=(p.x/10)+"%";
  item.actor.style.top=(p.y/10)+"%";
  item.actor.style.transform="translate(-50%,-50%)";
