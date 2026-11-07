@@ -390,3 +390,51 @@ test('admin preview loading is always bounded, with visible retry for auth and f
  assert.match(css,/#previewGate \.preview-back/);
  assert.doesNotMatch(init,/\\$\\('previewGate'\\)\.textContent=e\.message/);
 });
+
+
+test('farm shop cold-start renderer has working stock and purchase-limit helpers for every tab',()=>{
+ const app=source('pet-farm/app.js');
+ const start=app.indexOf('function shopStock(kind,id){');
+ const end=app.indexOf('function renderInventory(){',start);
+ assert.ok(start>=0&&end>start,'shop helper definitions must precede renderShop');
+ const shopSection=app.slice(start,end);
+ const createNode=(tag,cls='',value='')=>({
+  tag,className:cls,textContent:value,children:[],scrollTop:0,
+  classList:{toggle(){}},
+  append(...children){this.children.push(...children);},
+  appendChild(child){this.children.push(child);return child;},
+  replaceChildren(...children){this.children=children;},
+  setAttribute(){},addEventListener(){}
+ });
+ const elements={
+  shopList:createNode('div'),shopBalance:createNode('span'),shopConfirmation:createNode('div')
+ };
+ const $=id=>elements[id];
+ const tabs=['field','road','seed','supply'].map(shop=>({dataset:{shop},classList:{toggle(){}}}));
+ const shopFactory=new Function('farm','balance','CROPS','SUPPLIES','FIELD_TYPES','FIELD_SIZES',
+  'cropIds','cropUnlockProgress','isCropUnlocked','node','$','document','actionButton','busy','ready',
+  'shopTab','chosenPurchase',shopSection+';return {shopStock,maxPurchaseQuantity,renderShop};');
+ const build=(farm,balance,tab,chosen=null)=>shopFactory(
+  farm,balance,CROPS,SUPPLIES,FIELD_TYPES,FIELD_SIZES,
+  ['lettuce','carrot','pumpkin','strawberry','melon'],cropUnlockProgress,
+  (state,id)=>cropUnlockProgress(state,id).unlocked,createNode,$,
+  {querySelectorAll(){return tabs;}},()=>createNode('button'),false,true,tab,chosen
+ );
+ const f=freshFarm();
+ for(const tab of ['field','road','seed','supply']){
+  const shop=build(f,0,tab);
+  assert.doesNotThrow(()=>shop.renderShop(),'the '+tab+' catalogue must render for a logged-in player');
+  assert.ok(elements.shopList.children.length>0);
+ }
+ const field=build(f,0,'field');
+ assert.equal(field.shopStock('field','4'),0);
+ assert.equal(field.maxPurchaseQuantity({kind:'field',id:'free',price:0}),1);
+ assert.equal(field.maxPurchaseQuantity({kind:'field',id:'4',price:50}),0);
+ const stocked=applyPurchase(f,'field','free',0).farm;
+ const supply=build(stocked,100,'supply');
+ assert.equal(supply.shopStock('supply','water'),3);
+ assert.equal(supply.maxPurchaseQuantity({kind:'supply',id:'water',price:1}),99);
+ const seed=build(stocked,100,'seed',{kind:'seed',id:'lettuce',label:'レタスのタネ',icon:'🥬',price:1,units:3,quantity:2});
+ assert.doesNotThrow(()=>seed.renderShop(),'selected seed confirmation must render too');
+ assert.equal(seed.shopStock('seed','lettuce'),3);
+});
