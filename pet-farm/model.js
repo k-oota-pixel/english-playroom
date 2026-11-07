@@ -167,8 +167,6 @@ export function remaining(plot,now=Date.now()){
 
 function copy(state){return normalizeFarm(state);}
 function fail(message){throw new Error(message);}
-function copy(state){return normalizeFarm(state);}
-function fail(message){throw new Error(message);}
 export function applyFarmAction(current,action,now=Date.now()){
  const f=copy(current),id=String(action?.area??''),index=action?.index;
  if(!locateField(f,id,index))fail('畑の選択が正しくありません。');
