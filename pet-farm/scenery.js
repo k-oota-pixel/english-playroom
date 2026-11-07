@@ -1,4 +1,4 @@
-import {MAP} from './model.js?v=8';
+import {MAP} from './model.js?v=9';
 const W=MAP.w*MAP.tile,H=MAP.h*MAP.tile,T=MAP.tile;
 function rng(seed){return ()=>((seed=Math.imul(seed,1664525)+1013904223|0)>>>0)/4294967296;}
 function flower(x,y,t=1,color='#fff6e0'){
