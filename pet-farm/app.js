@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FARMS,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=7';
+import {MAP,FIELD_TYPES,FIELD_SIZES,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,canPlace,canPlaceRoad,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,useProduce} from './model.js?v=8';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=4';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
@@ -11,9 +11,9 @@ const app=getApps().find(a=>a.name==='[DEFAULT]')||initializeApp(cfg);enableAppC
 const auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const tile=MAP.tile;
-let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='lettuce',shopTab='seed';
+let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='lettuce',shopTab='field';
 let busy=false,dirty=false,saving=null,saveTimer=0,toastTimer=0,zoom=1,baseZoom=1,petX=8.0,petY=6.5,walking=false,ready=false,authSequence=0;
-let actionChoice=null,chosenPurchase=null,chosenProduce=null;
+let actionChoice=null,chosenPurchase=null,chosenProduce=null,placement=null,pendingNamePlacement=null,managedFieldId=null;
 function walletRef(){return doc(db,'users',user.uid,'apps','english-playroom');}
 function farmRef(){return doc(db,'users',user.uid,'apps','pet-farm');}
 const coords=(x,y)=>({left:(x*tile)+'px',top:(y*tile)+'px'});
@@ -22,7 +22,7 @@ function toast(message){const el=$('toast');el.textContent=message;el.classList.
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 function updateCoin(){ $('coins').textContent=Number(balance).toLocaleString('ja-JP'); }
 function refresh(){
- updateCoin();renderPlots();renderSelection();renderShop();renderInventory();
+ updateCoin();renderRoads();renderPlots();renderPlacement();renderSelection();renderShop();renderInventory();renderManage();
  $('saveBtn').disabled=!user||busy||!dirty;
 }
 function node(tag,cls,txt){
@@ -35,49 +35,64 @@ function initWorld(){
  const world=$('world'),size=FARM_SCENE_SIZE;
  world.style.width=size.width+'px';world.style.height=size.height+'px';
  installScenery($('scenery'));
- for(let area=0;area<FARMS.length;area++){
-  const a=FARMS[area];
-  const wrapper=node('div','farm-area');wrapper.id='area-'+area;
-  Object.assign(wrapper.style,{left:(a.x*tile)+'px',top:(a.y*tile)+'px',width:(a.w*tile)+'px',height:(a.h*tile)+'px'});
-  const label=node('button','farm-label',a.name);label.type='button';
-  label.addEventListener('click',()=>selectPlot(area,0));wrapper.appendChild(label);
-  $('plotLayer').appendChild(wrapper);
-  for(let i=0;i<a.w*a.h;i++){
-   const pos=locate(area,i),b=node('button','plot');
-   b.type='button';b.id='plot-'+plotKey(area,i);
-   b.setAttribute('aria-label',a.name+' '+(i+1)+'番の畑');
-   Object.assign(b.style,coords(pos.x+.03,pos.y+.03));
-   b.addEventListener('click',()=>selectPlot(area,i));
-   $('plotLayer').appendChild(b);
+ const grid=$('placementLayer');
+ for(let y=1;y<MAP.h-1;y++){
+  for(let x=1;x<MAP.w-1;x++){
+   const tileButton=node('button','placement-cell');
+   tileButton.type='button';tileButton.dataset.x=String(x);tileButton.dataset.y=String(y);
+   tileButton.setAttribute('aria-label',x+'列 '+y+'行に配置');
+   Object.assign(tileButton.style,coords(x,y));
+   tileButton.addEventListener('click',()=>choosePlacement(x,y));
+   tileButton.addEventListener('pointerenter',()=>previewPlacement(x,y));
+   grid.appendChild(tileButton);
   }
  }
+ const preview=node('div','placement-preview');preview.id='placementPreview';grid.appendChild(preview);
  setPetPosition(petX,petY,0);
  requestAnimationFrame(()=>fitScene());
 }
+function renderRoads(){
+ const layer=$('roadsLayer');layer.replaceChildren();
+ for(const key of farm.roads){
+  const [x,y]=key.split(',').map(Number),road=node('div','road-tile');
+  Object.assign(road.style,coords(x,y));
+  layer.appendChild(road);
+ }
+}
 function renderPlots(){
+ const layer=$('plotLayer');layer.replaceChildren();
  const now=Date.now();
- for(let area=0;area<FARMS.length;area++){
-  const a=FARMS[area],unlocked=!!farm.unlocked[area];
-  $('area-'+area).classList.toggle('locked',!unlocked);
-  const label=$('area-'+area).querySelector('.farm-label');
-  label.textContent=a.name+(unlocked?'':' · '+a.price+'C');
-  for(let index=0;index<a.w*a.h;index++){
-   const b=$('plot-'+plotKey(area,index)),p=farm.plots[plotKey(area,index)];
-   const phase=unlocked?growthPhase(p,now):'locked';
-   b.className='plot'+(!unlocked?' locked':'')+(selected?.area===area&&selected.index===index?' active':'');
-   if(!unlocked){b.innerHTML='<span class="seed-art">🔒</span>';continue;}
-   if(phase==='empty'){b.innerHTML='<span class="seed-art">＋</span>';continue;}
-   const artwork=phase==='sprout'?'🌱':phase==='growing'?'🌿':CROPS[p.crop].icon;
-   const size=phase==='sprout'||phase==='growing'?phase:'';
-   b.replaceChildren(node('span','crop-art '+size,artwork));
-   if(p.wateredAt)b.appendChild(node('span','plot-water','💧'));
-   if(phase==='ready')b.appendChild(node('span','ready-spark','✨'));
+ for(const field of farm.fields){
+  const shape=FIELD_TYPES[field.size];
+  if(!shape)continue;
+  const wrapper=node('div','farm-area');
+  Object.assign(wrapper.style,{left:((field.x-.08)*tile)+'px',top:((field.y-.08)*tile)+'px',
+    width:((shape.w+.16)*tile)+'px',height:((shape.h+.16)*tile)+'px'});
+  const label=node('button','farm-label',field.name);label.type='button';
+  label.setAttribute('aria-label',field.name+' の配置と名前を変更する');
+  label.addEventListener('click',()=>openManage(field.id));
+  wrapper.appendChild(label);layer.appendChild(wrapper);
+  for(let index=0;index<shape.w*shape.h;index++){
+   const x=field.x+index%shape.w,y=field.y+Math.floor(index/shape.w);
+   const p=farm.plots[plotKey(field.id,index)],phase=growthPhase(p,now);
+   const btn=node('button','plot'+(selected?.area===field.id&&selected.index===index?' active':''));
+   btn.type='button';btn.setAttribute('aria-label',field.name+' '+(index+1)+'番の畑');
+   Object.assign(btn.style,coords(x+.03,y+.03));
+   btn.addEventListener('click',()=>selectPlot(field.id,index));
+   if(!p)btn.appendChild(node('span','seed-art','＋'));
+   else{
+    const artwork=phase==='sprout'?'🌱':phase==='growing'?'🌿':CROPS[p.crop].icon;
+    btn.appendChild(node('span','crop-art '+(phase==='sprout'||phase==='growing'?phase:''),artwork));
+    if(p.wateredAt)btn.appendChild(node('span','plot-water','💧'));
+    if(phase==='ready')btn.appendChild(node('span','ready-spark','✨'));
+   }
+   layer.appendChild(btn);
   }
  }
 }
 function selectPlot(area,index){
  if(!ready||busy)return;
- selected={area,index};actionChoice=null;
+ selected={area:String(area),index};actionChoice=null;
  refresh();showDialog('actionDialog');
 }
 function actionButton(text,cls,fn,disabled=false){
@@ -127,22 +142,12 @@ function renderSelection(){
  const title=$('selectionTitle'),desc=$('selectionDetail'),ctrl=$('actionControls');
  ctrl.replaceChildren();
  if(!selected){title.textContent='畑を選んでください';desc.textContent='好きなマスをタップしてください。';return;}
- const area=selected.area,index=selected.index,a=FARMS[area],p=farm.plots[plotKey(area,index)];
+ const area=selected.area,index=selected.index,a=farm.fields.find(item=>item.id===area);
+ if(!a){selected=null;title.textContent='畑を選んでください';desc.textContent='圃場を置いてください。';return;}
+ const p=farm.plots[plotKey(area,index)];
  title.textContent=a.name+' · '+(index+1)+'番の畑';
  const items=node('div','item-options');
  const select=(key,icon,label,quantity,action)=>items.appendChild(selectedItem(label,'持ち物 ×'+quantity,{key,icon,...action}));
- if(!farm.unlocked[area]){
-  desc.textContent='🔒 まだ入れない農園です。解放すると '+(a.w*a.h)+'マスの畑が使えます。';
-  if(farm.unlocked[area-1]){
-   ctrl.appendChild(node('p','modal-hint','解放には '+a.price+'コインが必要です。'));
-   const row=node('div','modal-actions');
-   row.append(
-    actionButton(a.price+'Cで解放する','gold',async()=>{hideDialog('actionDialog');await buy('area',String(area));}),
-    actionButton('やめる','secondary',()=>hideDialog('actionDialog')));
-   ctrl.appendChild(row);
-  }else ctrl.appendChild(node('p','modal-hint','ひとつ前の農園を先に解放してください。'));
-  return;
- }
  if(!p){
   desc.textContent='🌰 手持ちのタネから1種類選んでください。';
   for(const id of allCropIds){
@@ -391,7 +396,7 @@ async function actPlot(type,extra={}){
  try{result=applyFarmAction(farm,params);}catch(e){toast(e.message);return;}
  hideDialog('actionDialog');actionChoice=null;
  busy=true;refresh();
- const spot=locate(params.area,params.index);
+ const spot=locateField(farm,params.area,params.index);
  try{
   await walkTo(spot.x+.5,spot.y+.77);
   await showWork(type,spot.x+.5,spot.y+1);
