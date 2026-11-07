@@ -291,3 +291,20 @@ test('seed shop hides locked crop icons and names, revealing only the next miles
  assert.match(app,/node\('span','emoji',secret\?\.icon\|\|item\.icon\)/);
  assert.match(app,/node\('span','shop-unlock',secret\.requirement\)/);
 });
+
+test('planting plays soft tile-centered particles instead of seed emoji bubbles',()=>{
+ const app=source('pet-farm/app.js'),css=source('pet-farm/style.css');
+ assert.match(app,/const effect=node\('div','work-effect work-effect--'\+kind\)/);
+ assert.match(app,/effect\.appendChild\(node\('span','work-effect__ring'\)\)/);
+ assert.match(app,/node\('span','work-effect__particle'\)/);
+ assert.match(app,/node\('span','work-effect__spark'\)/);
+ assert.match(app,/await showWork\(type,spot\.x\+\.5,spot\.y\+\.5\)/);
+ assert.doesNotMatch(app,/effect-bubble|plant:'🌰/);
+ assert.doesNotMatch(css,/\.effect-bubble\{/);
+ assert.match(css,/@keyframes workDust/);
+ assert.match(css,/@keyframes workRing/);
+ assert.match(css,/@keyframes workSpark/);
+ assert.match(css,/\.work-effect--water\{/);
+ assert.match(css,/\.work-effect--fertilize\{/);
+ assert.match(css,/\.work-effect--harvest\{/);
+});
