@@ -96,10 +96,11 @@ export function remaining(plot,now=Date.now()){
  if(!plot)return '何も植えていません';
  const ms=Math.max(0,plot.readyAt-now);
  if(!ms)return '収穫できます';
- const mins=Math.ceil(ms/60000);
- if(ms<60000)return 'あと'+Math.ceil(ms/1000)+'秒';
- if(mins>=60)return 'あと'+Math.floor(mins/60)+'時間'+String(mins%60).padStart(2,'0')+'分';
- return 'あと'+mins+'分';
+ const secs=Math.ceil(ms/1000),hours=Math.floor(secs/3600);
+ const mins=Math.floor((secs%3600)/60),seconds=secs%60;
+ if(hours)return 'あと'+hours+'時間'+String(mins).padStart(2,'0')+'分';
+ if(mins)return 'あと'+mins+'分'+(seconds?seconds+'秒':'');
+ return 'あと'+seconds+'秒';
 }
 
 function copy(state){return normalizeFarm(state);}
