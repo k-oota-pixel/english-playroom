@@ -1,5 +1,5 @@
 import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged} from '../auth-session.js?v=2.3.15';
+import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.3.15';
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
@@ -211,7 +211,7 @@ async function movePoint(x,y){
  setPetPosition(x,y,duration);await sleep(duration+30);
 }
 async function walkTo(x,y){
- if(walking)return;
+ while(walking)await sleep(60);
  walking=true;const el=$('petWalker');el.classList.add('walking');
  try{
   if(Math.abs(petY-9.5)>1)await movePoint(petX,9.5);
@@ -260,6 +260,7 @@ async function buy(kind,id){
  busy=true;refresh();status('コイン残高と購入情報を確認しています…');
  try{
   await flushSave();
+  if(dirty)throw Error('先ほどの作業の保存に失敗しました。もう一度保存してください。');
   let purchased,latestBalance;
   // Wallet and farm are committed atomically: two devices cannot spend the same coins twice.
   await runTransaction(db,async tx=>{
@@ -322,6 +323,8 @@ async function initialize(current){
  if(!user){ready=false;status('もんすたでぃでログインしてください。','error');return;}
  busy=true;ready=false;refresh();
  try{
+  const session=await accountSession(current);
+  if(!session?.admin || session.resetRequired)throw Error('この先行プレビューは管理者アカウントだけが利用できます。');
   const [wallet,snapshot]=await Promise.all([getDoc(walletRef()),getDoc(farmRef())]);
   if(sequence!==authSequence)return;
   if(!wallet.exists())throw Error('ペットのデータが見つかりません。');
