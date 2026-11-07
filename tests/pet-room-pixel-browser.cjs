@@ -1,6 +1,7 @@
 const {chromium}=require('playwright'),http=require('node:http'),fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),types={'.js':'text/javascript','.html':'text/html','.css':'text/css','.png':'image/png'};
 const server=http.createServer(async(req,res)=>{try{const f=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!f.startsWith(root+path.sep))throw Error('bad path');res.writeHead(200,{'content-type':types[path.extname(f)]||'application/octet-stream'});res.end(await fs.readFile(f))}catch{res.writeHead(404);res.end('Not found')}});
+(async()=>{
 const port=await new Promise(ok=>server.listen(0,'127.0.0.1',()=>ok(server.address().port)));
 const browser=await chromium.launch({args:['--no-sandbox']}),page=await browser.newPage({viewport:{width:1200,height:920}});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -31,3 +32,4 @@ try{
  assert.deepEqual(errors,[]);
  console.log('PASS: pixel room render / placement / rotation / mobile browser');
 }finally{await browser.close();server.close();}
+})().catch(err=>{console.error(err);server.close();process.exitCode=1;});
