@@ -250,6 +250,25 @@ function renderSelection(){
 
 // Hide locked crops as mysteries. Only reveal the next unlock milestone;
 // more distant crops reveal neither their identity nor their prerequisites.
+// Stock and purchase-limit helpers are used on every initial SHOP render.
+// Keep these declarations with the SHOP renderer so the admin preview can load.
+function shopStock(kind,id){
+ if(kind==='seed')return Math.max(0,Number(farm.inventory.seeds[id])||0);
+ if(kind==='supply')return Math.max(0,Number(farm.inventory[id])||0);
+ if(kind==='field')return id==='free'?Number(farm.starterClaimed):Math.max(0,Number(farm.inventory.fields[id])||0);
+ if(kind==='road')return Math.max(0,Number(farm.inventory.roads)||0);
+ return 0;
+}
+function maxPurchaseQuantity(item){
+ if(!item)return 0;
+ const stock=shopStock(item.kind,item.id);
+ const units=item.kind==='seed'?(CROPS[item.id]?.pack||1):1;
+ const availableStock=item.id==='free'
+  ?(farm.starterClaimed?0:1)
+  :Math.max(0,Math.floor((99999-stock)/units));
+ const coins=item.price===0?1:Math.floor(balance/item.price);
+ return Math.max(0,Math.min(99,availableStock,coins));
+}
 function shopSeedReveal(state,id){
  const info=cropUnlockProgress(state,id);
  if(info.unlocked)return null;
