@@ -70,5 +70,5 @@ test('pixel room is allowed through the homepage shell after a direct-link redir
  assert.match(play,/href="\.\/pet-room\/room-pixel\.html"/,'PLAY menu links to the new room');
  const version=badge.match(/const APP_VERSION='([^']+)'/)?.[1];
  assert.equal(version,'2.4.22');
- assert.match(home,new RegExp('app-shell\\\\.js\\\\?v='+version.replace(/\./g,'\\\\.')));
+ assert.ok(home.includes('app-shell.js?v='+version),'Homepage must load the shell with the updated cache version');
 });
