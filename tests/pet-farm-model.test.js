@@ -263,5 +263,5 @@ test('farm UI shows crop unlocks, seed packs and no farm feed button',()=>{
  assert.match(app,/p.quantity\*p.units/);
  assert.match(app,/isCropUnlocked\(farm,id\)/);
  assert.doesNotMatch(app,/\[\['feed','食べる'\]/);
- assert.match(app,/model.js\?v=6/);
+ assert.match(app,/model.js\?v=7/);
 });
