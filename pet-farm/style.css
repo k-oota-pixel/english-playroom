@@ -292,6 +292,15 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 #previewGate{position:fixed;inset:0;display:grid;place-items:center;z-index:2147483640;
  background:linear-gradient(135deg,#e9f4dd,#d4e9d2);color:#396944;font:900 18px/1.6 system-ui;padding:25px;text-align:center}
 #previewGate[hidden]{display:none!important}
+#previewGate .preview-gate-label{max-width:min(500px,90vw);text-align:center;overflow-wrap:anywhere}
+#previewGate .preview-gate-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+#previewGate .preview-retry,#previewGate .preview-back{display:inline-flex;align-items:center;justify-content:center;
+ min-height:46px;min-width:155px;padding:9px 14px;border:2px solid #7ea480;border-radius:12px;
+ background:#fffdf1;color:#375c42;font-size:14px;font-weight:900;text-decoration:none;
+ box-shadow:0 4px 8px #40684a20}
+#previewGate .preview-retry{background:#56885f;color:#fff}
+#previewGate .preview-retry:hover{background:#46774f}
+#previewGate .preview-back:hover{background:#e9f4e2}
 .toast{position:fixed;z-index:9999;left:50%;bottom:52px;transform:translate(-50%,15px);opacity:0;pointer-events:none;
  background:#385a41;color:#fff8e4;border:2px solid #a7bb8b;border-radius:15px;padding:12px 18px;
  font-weight:850;font-size:13px;max-width:min(520px,92vw);box-shadow:0 8px 25px #203d2f60;transition:.2s}
