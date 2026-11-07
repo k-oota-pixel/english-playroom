@@ -45,6 +45,7 @@ test('water and fertilizer commute when applied at same moment, not at later mom
  const fert=applyFarmAction(base,{area:0,index:1,type:'fertilize'},start).farm;
  const fertThenWet=applyFarmAction(fert,{area:0,index:1,type:'water'},start).farm;
  assert.equal(wetThenFert.plots['0-1'].readyAt,start+26*60000+40000);
+ assert.equal(remaining(wetThenFert.plots['0-1'],start),'あと26分40秒');
  assert.equal(fertThenWet.plots['0-1'].readyAt,start+26*60000+40000);
  const later=applyFarmAction(base,{area:0,index:1,type:'water'},start+60*60000).farm;
  assert.equal(later.plots['0-1'].readyAt,start+100*60000);
