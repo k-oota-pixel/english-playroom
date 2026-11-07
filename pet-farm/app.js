@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FIELD_TYPES,FIELD_SIZES,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,canPlace,canPlaceRoad,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,useProduce} from './model.js?v=9';
+import {MAP,FIELD_TYPES,FIELD_SIZES,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,useProduce} from './model.js?v=9';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=5';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
@@ -599,8 +599,10 @@ async function actPlot(type,extra={}){
  hideDialog('actionDialog');actionChoice=null;
  busy=true;refresh();
  const spot=locateField(farm,params.area,params.index);
+ const stand=findWorkStand(farm,params.area,params.index,petX,petY);
  try{
-  await walkTo(spot.x+.5,spot.y+.77);
+  // The pet acts from a nearby clearing; the crop tile stays visible throughout.
+  if(stand)await walkTo(stand.x,stand.y);
   await showWork(type,spot.x+.5,spot.y+.5);
   farm=result.farm;queueSave();toast(result.message);
  }catch(e){toast(e.message||'作業に失敗しました。');}
