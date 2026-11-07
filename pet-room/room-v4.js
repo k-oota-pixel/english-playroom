@@ -198,7 +198,15 @@ function moveActive(direction){
  if(direction==='up')item.y--;if(direction==='down')item.y++;
  fit(item);render();
 }
-function rotateActive(){const item=items.get(activeId);if(!item)return;const previous=dims(item),cx=item.x+previous.w/2,cy=item.y+previous.h/2;item.rotation=(item.rotation+1)%4;const next=dims(item);item.x=Math.round(cx-next.w/2);item.y=Math.round(cy-next.h/2);fit(item);render();notice(legal(item)?item.name+'を'+['正面','右向き','背面','左向き'][item.rotation]+'にしました。':'回転後に家具が重なっています。移動してから決定してください。')}
+function rotateActive(){
+ const item=items.get(activeId);if(!item)return;
+ const previous=dims(item),cx=item.x+previous.w/2,cy=item.y+previous.h/2;
+ item.rotation=(item.rotation+1)%4;
+ const next=dims(item);item.x=Math.round(cx-next.w/2);item.y=Math.round(cy-next.h/2);fit(item);
+ render();
+ const name=item.wallOnly?['0°','90°','180°','270°'][item.rotation]:['正面','右向き','背面','左向き'][item.rotation];
+ notice(legal(item)?item.name+'を'+name+'にしました。':'回転後に家具が重なっています。移動してから決定してください。')
+}
 function drawItem(item){
  const el=item.element;if(!el)return;
  el.hidden=!item.placed;el.classList.toggle('selected',activeId===item.id);
@@ -217,8 +225,14 @@ function drawItem(item){
  if(el.dataset.facing!==String(item.rotation)){el.innerHTML=artFor(item);el.dataset.facing=String(item.rotation)};
 }
 function drawTiles(){
- const active=activeId?items.get(activeId):null;
- grid.hidden=!active;if(!active)return;
+ const active=activeId?items.get(activeId):null,wallOnly=!!active?.wallOnly;
+ grid.hidden=!active||wallOnly;
+ wallSlots.hidden=!wallOnly;
+ if(!active)return;
+ if(wallOnly){
+  for(const slot of wallSlotButtons)slot.classList.toggle('preview',Number(slot.dataset.x)===active.x);
+  return;
+ }
  const good=legal(active),foot=new Set(itemCells(active).map(c=>key(c.x,c.y)));
  for(const tile of tileButtons){
   const current=foot.has(key(Number(tile.dataset.x),Number(tile.dataset.y)));
@@ -232,7 +246,10 @@ function setButtons(){
  }
  const has=!!activeId;panel.hidden=!has;
  if(!has)return;
- const it=items.get(activeId),d=dims(it);$('selectedName').textContent=it.name+' ｜ '+d.w+'×'+d.h+'マス ｜ '+['正面','右向き','背面','左向き'][it.rotation]+' ｜ '+(it.x+1)+'列 '+(it.y+1)+'行';
+ const it=items.get(activeId),d=dims(it);
+ $('selectedName').textContent=it.wallOnly?it.name+'｜上の壁・'+(it.x+1)+'番目｜'+['正面','90°','180°','270°'][it.rotation]
+ :it.name+' ｜ '+d.w+'×'+d.h+'マス ｜ '+['正面','右向き','背面','左向き'][it.rotation]+' ｜ '+(it.x+1)+'列 '+(it.y+1)+'行';
+ for(const b of panel.querySelectorAll('[data-move="up"],[data-move="down"]'))b.disabled=!!it.wallOnly;
  $('confirmItem').disabled=!legal(it);
 }
 function render(){
@@ -248,9 +265,12 @@ function renderCatalog(){
  for(const spec of specs){
   const item=items.get(spec.id),b=document.createElement('button');
   b.type='button';
-  const icon=document.createElement('span');icon.className='item-icon';icon.textContent=spec.icon;
+  const icon=document.createElement('span');icon.className='item-icon';
+   if(EXTRA_FURNITURE[spec.id]){icon.classList.add('preview-art');icon.innerHTML=extraFurnitureSVG(spec.id,item.rotation)}
+   else icon.textContent=spec.icon;
   const info=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
-  strong.textContent=spec.name;const d=dims(item);small.textContent=(d.w+'×'+d.h+'マス｜'+['正面','右向き','背面','左向き'][item.rotation])+'｜'+(item.placed?'配置中':'手元');
+  strong.textContent=spec.name;const d=dims(item);
+   small.textContent=(item.wallOnly?'上の壁専用':d.w+'×'+d.h+'マス')+'｜'+['正面','右向き','背面','左向き'][item.rotation]+'｜'+(item.placed?'配置中':'手元');
   info.append(strong,small);b.append(icon,info);
   b.addEventListener('click',()=>{
    $('inventoryDialog').close();
