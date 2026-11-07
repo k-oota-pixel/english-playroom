@@ -15,7 +15,7 @@ export const CROPS = Object.freeze({
  strawberry:{name:'いちご',icon:'🍓',seed:7,minutes:5,reply:'ハートがふわっと浮かんだ！'},
  pepper:{name:'とうがらし',icon:'🌶️',seed:5,minutes:4,reply:'からくてびっくり、走り回った！'}
 });
-export const SUPPLIES = Object.freeze({water:{name:'水×3',icon:'💧',price:2,count:3},fertilizer:{name:'肥料×2',icon:'🌱',price:4,count:2}});
+export const SUPPLIES = Object.freeze({water:{name:'水',icon:'💧',price:1,count:1},fertilizer:{name:'肥料',icon:'🌱',price:2,count:1}});
 export const cropIds=Object.keys(CROPS);
 export const plotKey=(area,index)=>String(area)+'-'+String(index);
 export function locate(area,index) {
@@ -112,27 +112,37 @@ export function applyFarmAction(current,action,now=Date.now()){
  default:fail('この操作はできません。');
  }
 }
-export function applyPurchase(current,kind,id,coins){
+// Quantity is validated again inside the wallet+farm Firestore transaction.
+// Maximum 99 units per order, never beyond the existing 99,999-unit inventory cap.
+export function applyPurchase(current,kind,id,coins,quantity=1){
  const f=copy(current),balance=integer(coins,999999999);
- let price=0,message='';
+ if(!Number.isSafeInteger(quantity)||quantity<1||quantity>99)fail('購入数は1〜99個で指定してください。');
+ if(kind==='area'&&quantity!==1)fail('敷地は1回ずつ解放してください。');
+ let unitPrice=0,message='';
  if(kind==='seed'){
   if(!Object.hasOwn(CROPS,id))fail('商品が見つかりません。');
-  price=CROPS[id].seed;f.inventory.seeds[id]=(f.inventory.seeds[id]||0)+1;
-  message=CROPS[id].name+'のタネを買いました。';
+  unitPrice=CROPS[id].seed;
+  if(f.inventory.seeds[id]+quantity>99999)fail('タネの所持上限を超えています。');
+  f.inventory.seeds[id]+=quantity;
+  message=CROPS[id].name+'のタネを'+quantity+'個購入しました。';
  }else if(kind==='supply'){
   if(!Object.hasOwn(SUPPLIES,id))fail('商品が見つかりません。');
-  const item=SUPPLIES[id];price=item.price;
-  f.inventory[id]+=item.count;message=item.name+'を購入しました。';
+  const item=SUPPLIES[id];
+  unitPrice=item.price;
+  if(f.inventory[id]+quantity>99999)fail(item.name+'の所持上限を超えています。');
+  f.inventory[id]+=quantity;
+  message=item.name+'を'+quantity+'個購入しました。';
  }else if(kind==='area'){
   const i=Number(id),a=FARMS[i];
   if(!a||i===0)fail('農園が見つかりません。');
   if(f.unlocked[i])fail('すでに解放しています。');
   if(!f.unlocked[i-1])fail('前の農園から順番に解放してください。');
-  price=a.price;f.unlocked[i]=true;
+  unitPrice=a.price;f.unlocked[i]=true;
   message=a.name+'が解放されました！';
  }else fail('商品が見つかりません。');
+ const price=unitPrice*quantity;
  if(balance<price)fail('コインが足りません（必要 '+price+'C）。');
- return {farm:f,cost:price,message};
+ return {farm:f,cost:price,quantity,message};
 }
 export function useProduce(current,kind,crop){
  const f=copy(current);
