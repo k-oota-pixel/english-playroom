@@ -249,3 +249,45 @@ test('invalid field names and removal of occupied field are rejected without los
  assert.throws(()=>applyLayoutAction(f,{type:'move-field',id,x:1,y:1}),/移動できません/);
  assert.throws(()=>applyLayoutAction(f,{type:'place-road',x:12,y:8}),/道路がありません/);
 });
+
+test('seed shop hides locked crop icons and names, revealing only the next milestone',()=>{
+ const app=source('pet-farm/app.js');
+ const start=app.indexOf('function shopSeedReveal(state,id){');
+ const end=app.indexOf('\nfunction shopItems(){',start);
+ assert.ok(start>=0&&end>start,'shop mystery display helper must exist');
+ const helper=app.slice(start,end);
+ const reveal=new Function('CROPS','cropUnlockProgress','isCropUnlocked',
+  helper+';return shopSeedReveal;')(CROPS,cropUnlockProgress,
+   (farm,id)=>cropUnlockProgress(farm,id).unlocked);
+ const farm=freshFarm();
+ assert.equal(reveal(farm,'lettuce'),null);
+ assert.deepEqual(reveal(farm,'carrot'),{
+  icon:'❔',label:'？？？のタネ',requirement:'🔒 レタスをあと10個収穫'
+ });
+ for(const id of ['pumpkin','strawberry','melon']){
+  assert.deepEqual(reveal(farm,id),{
+   icon:'❔',label:'？？？のタネ',requirement:'🔒 ？？？をあと10個収穫'
+  });
+ }
+ farm.harvestCounts.lettuce=7;
+ assert.equal(reveal(farm,'carrot').requirement,'🔒 レタスをあと3個収穫');
+ farm.harvestCounts.lettuce=10;
+ assert.equal(reveal(farm,'carrot'),null);
+ assert.deepEqual(reveal(farm,'pumpkin'),{
+  icon:'❔',label:'？？？のタネ',requirement:'🔒 にんじんをあと10個収穫'
+ });
+ assert.equal(reveal(farm,'strawberry').requirement,'🔒 ？？？をあと10個収穫');
+ farm.harvestCounts.carrot=4;
+ assert.equal(reveal(farm,'pumpkin').requirement,'🔒 にんじんをあと6個収穫');
+ farm.harvestCounts.carrot=10;
+ assert.equal(reveal(farm,'pumpkin'),null);
+ assert.equal(reveal(farm,'strawberry').requirement,'🔒 かぼちゃをあと10個収穫');
+ farm.harvestCounts.pumpkin=10;
+ assert.equal(reveal(farm,'strawberry'),null);
+ assert.equal(reveal(farm,'melon').requirement,'🔒 いちごをあと10個収穫');
+ farm.harvestCounts.strawberry=10;
+ assert.equal(reveal(farm,'melon'),null);
+ assert.match(app,/node\('strong','',secret\?\.label\|\|item\.label\)/);
+ assert.match(app,/node\('span','emoji',secret\?\.icon\|\|item\.icon\)/);
+ assert.match(app,/node\('span','shop-unlock',secret\.requirement\)/);
+});
