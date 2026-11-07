@@ -188,3 +188,6 @@ footer{font-size:9px;padding:7px 0}
  .modal-head h2{font-size:19px}
  .item-options{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+#previewGate{position:fixed;inset:0;display:grid;place-items:center;z-index:2147483640;background:linear-gradient(135deg,#edf7e6,#d7eed5);color:#316e4d;font:900 17px/1.6 system-ui;padding:25px;text-align:center}
+#previewGate[hidden]{display:none!important}
