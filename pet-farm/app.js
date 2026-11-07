@@ -228,8 +228,11 @@ function renderShop(){
   }
   if(item.id==='free'&&farm.starterClaimed)details.appendChild(node('span','shop-unlock','✓ 無料分は受け取り済み'));
   else if(item.id!=='free')details.appendChild(node('span','shop-owned','所持数：'+shopStock(item.kind,item.id).toLocaleString('ja-JP')+(item.kind==='road'?'マス':'個')));
+  if(item.kind==='field'&&item.id!=='free'&&!farm.starterClaimed)
+   details.appendChild(node('span','shop-unlock','🔒 まず無料の圃場を受け取ってね'));
   b.append(node('span','emoji',item.icon),details);
-  b.disabled=busy||!ready||maxPurchaseQuantity(item)<1||(item.kind==='seed'&&!isCropUnlocked(farm,item.id));
+  b.disabled=busy||!ready||maxPurchaseQuantity(item)<1||(item.kind==='seed'&&!isCropUnlocked(farm,item.id))||
+   (item.kind==='field'&&item.id!=='free'&&!farm.starterClaimed);
   b.addEventListener('click',()=>{if(!b.disabled){chosenPurchase={...item,quantity:1};renderShop();}});
   list.appendChild(b);
  }
@@ -610,7 +613,9 @@ async function initialize(current){
   farm=normalizeFarm(snapshot.exists()?snapshot.data():freshFarm());
   $('previewGate').hidden=true;petVisual();selected=null;ready=true;busy=false;refresh();
   if($('viewport').clientWidth<760)focusAt(12.7,7.7);
-  status('SHOPで圃場を入手し、好きな場所へ配置しましょう！','ok');
+  status(farm.fields.length?'圃場をタップして栽培。「アイテム」から移動や配置もできます。':
+   farm.inventory.fields['4']?'「アイテム」に4マス圃場があります。好きな場所へ配置しましょう！':
+   'SHOPで無料の4マス圃場を受け取り、好きな場所へ配置しましょう！','ok');
  }catch(e){
   if(sequence!==authSequence)return;
   busy=false;ready=false;
