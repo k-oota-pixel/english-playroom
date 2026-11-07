@@ -79,3 +79,75 @@ dialog::backdrop{background:#253d30a6}
 @media(max-width:740px){.room-page{padding:6px 7px 24px}.layout{grid-template-columns:minmax(0,1fr);gap:6px}.toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding-top:0}.control{min-height:60px;font-size:10px;padding:7px 2px;border-radius:13px}.control .symbol{font-size:20px}.info-column{padding:0}.info-card{padding:9px 12px;border-width:2px;border-radius:13px}.info-card h2{font-size:13px;margin:0 0 4px}.info-card p{font-size:11px;line-height:1.5}.info-card .meta{display:none}.room-board{border-radius:14px}.topbar{gap:5px;margin-bottom:6px}.title-plaque{padding:7px 10px;border-width:2px;border-radius:14px}.title-plaque h1{font-size:17px}.title-plaque .paw{font-size:20px}.hud-chip{min-height:34px;padding:5px 9px;border-width:2px;font-size:10px}.hud-chip strong{font-size:12px}.hud-chip .coin{font-size:15px}.room-status{font-size:10px}.bottom-bar{margin-top:8px}.action-home,.primary-play{min-height:41px;padding:8px 13px;font-size:13px}.editing-panel{padding:6px;gap:3px}.editing-panel button{padding:6px 8px;min-height:34px;font-size:11px}}
 @media(max-width:420px){.title-plaque h1{font-size:15px}.hud-chip:first-child{display:none}.catalog{grid-template-columns:1fr}.pet-actor{width:15%}}
 @media(prefers-reduced-motion:reduce){.object,.pet-actor,.toast{transition:none!important}.pet-actor.walking svg,.pet-actor.playing{animation:none!important}}
+
+
+/* v4.2: room and edit controls fit in the actual iframe viewport at 100% browser zoom. */
+@media (min-width:741px){
+ .room-page{padding:8px 12px 10px;max-width:1450px}
+ .topbar{margin-bottom:8px}
+ .layout{grid-template-columns:135px minmax(0,1fr) minmax(215px,245px);gap:10px}
+ .room-board{width:min(100%,760px,calc(100dvh - 188px));max-width:760px}
+ .room-status{min-height:25px;margin:3px auto 0;padding:3px 8px;line-height:1.45}
+ .bottom-bar{margin-top:7px}
+ .action-home,.primary-play{min-height:43px;padding:8px 15px}
+}
+.info-column{display:flex;flex-direction:column;gap:10px;min-width:0}
+.editing-panel{
+ width:100%;max-width:none;margin:0;padding:11px;
+ border-radius:18px;background:linear-gradient(#fff7da,#f9e5be);
+ display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:7px;
+ color:#674d35
+}
+.editing-panel .active-name{
+ display:block;flex:initial;width:100%;padding:1px 2px;
+ text-align:center;line-height:1.55;font-size:12px;overflow-wrap:anywhere
+}
+.editing-panel .panel-hint{font-size:10px;line-height:1.35;text-align:center;margin:0;color:#8c7354}
+.editing-panel .movement-pad{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,36px);
+ justify-content:center;gap:3px;max-width:174px;width:100%;margin:auto;align-items:stretch
+}
+.editing-panel .movement-pad button{min-height:0;padding:0;font-size:19px;line-height:1;background:#fffaf0}
+.editing-panel .movement-pad [data-move="up"]{grid-column:2;grid-row:1}
+.editing-panel .movement-pad [data-move="left"]{grid-column:1;grid-row:2}
+.editing-panel .movement-pad [data-move="right"]{grid-column:3;grid-row:2}
+.editing-panel .movement-pad [data-move="down"]{grid-column:2;grid-row:3}
+.editing-panel .pad-center{
+ grid-column:2;grid-row:2;display:grid;place-items:center;border-radius:10px;
+ background:#e3d3ae;color:#9b7951;font-size:18px
+}
+.editing-panel .edit-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%}
+.editing-panel .edit-actions button{min-width:0;min-height:38px;padding:7px 4px;font-size:11px}
+.editing-panel #rotateItem,.editing-panel #confirmItem{grid-column:1/-1}
+.editing-panel #rotateItem{background:#f7e9c7}
+.editing-panel #confirmItem{font-size:14px;min-height:42px}
+@media (min-width:741px) and (max-width:1100px){
+ .layout{grid-template-columns:100px minmax(0,1fr) minmax(175px,205px);gap:8px}
+ .editing-panel{padding:9px;gap:6px}
+ .control{min-height:80px}
+ .info-card{padding:11px}
+}
+@media (min-width:741px) and (max-height:660px){
+ .room-board{width:min(100%,760px,calc(100dvh - 170px))}
+ .title-plaque{padding:6px 13px}
+ .topbar{margin-bottom:5px}
+ .room-status{font-size:10px}
+ .info-card .meta{display:none}
+ .editing-panel .movement-pad{grid-template-rows:repeat(3,31px)}
+ .editing-panel .panel-hint{display:none}
+}
+@media (max-width:740px){
+ .room-board{width:min(100%,760px)}
+ .editing-panel{
+   width:100%;max-width:760px;margin:8px auto 0;padding:8px;
+   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+   align-items:center;gap:5px
+ }
+ .editing-panel .active-name,.editing-panel .panel-hint{grid-column:1/-1}
+ .editing-panel .movement-pad{grid-column:1;grid-row:3;max-width:156px;grid-template-rows:repeat(3,37px)}
+ .editing-panel .edit-actions{grid-column:2;grid-row:3}
+ .editing-panel .edit-actions button{min-height:34px;padding:5px 3px;font-size:10px}
+ .editing-panel #confirmItem{min-height:39px;font-size:12px}
+ .info-column{gap:6px}
+ .info-card{margin-top:3px}
+}
