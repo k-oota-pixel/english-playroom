@@ -46,7 +46,7 @@ function home(){
 }
 function store(){
  let stripes='';for(let i=0;i<10;i++)stripes+=`<path d="M${32+i*26} 130L${58+i*26} 130L${54+i*26} 176L${30+i*26} 176Z" fill="${i%2?'#fff1cd':'#b95f4c'}"/>`;
- return `<g transform="translate(520 67) scale(.9)"><ellipse cx="170" cy="268" rx="157" ry="24" fill="#264b2b" opacity=".25"/>
+ return `<g transform="translate(1340 76) scale(.88)"><ellipse cx="170" cy="268" rx="157" ry="24" fill="#264b2b" opacity=".25"/>
  <rect x="43" y="82" width="265" height="170" rx="5" fill="#b98250" stroke="#7d4b35" stroke-width="8"/>
  <path d="M32 111L63 32H277L312 112Z" fill="#aa5943" stroke="#6e4033" stroke-width="7"/>
  <rect x="110" y="27" width="132" height="55" rx="9" fill="#76503a" stroke="#c59b61" stroke-width="8"/>
@@ -90,34 +90,34 @@ function paths(){
  return '<g>'+stroke('M115 352H1523',60)+stroke('M840 355V748',59)+stroke('M840 565H1420',53)+stroke('M455 564H840',53)+stroke('M214 297V355',36)+stroke('M682 301V355',36)+stroke('M1088 310V353',36)+stroke('M706 364V391',32)+stroke('M1082 364V396',32)+stroke('M574 565V548',30)+stroke('M1120 568V543',32)+'</g>';
 }
 function scenery(){
- let grass='',edge='',little='',fences='';const r=rng(912342);
- for(let i=0;i<3100;i++){
-  const x=r()*W,y=r()*H;
-  if((x>450&&x<1290&&y>385)||(x>85&&x<1190&&y<340)||(y>324&&y<385))continue;
-  const w=2+r()*4,h=2+r()*5;
-  grass+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${r()>.5?'#417f38':'#b3d37b'}" opacity="${(.25+r()*.4).toFixed(2)}"/>`;
+ // A calm blank canvas: gardens and paths are user-placed, never painted here.
+ const rand=rng(724180),width=W,height=H;
+ let leaves='',wildflowers='',edge='';
+ for(let i=0;i<1850;i++){
+  const x=rand()*width,y=rand()*height;
+  const shade=rand()>.5?'#3e803b':'#b3d47a';
+  leaves+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="3" height="3" fill="'+shade+'" opacity=".28"/>';
  }
- const borderTrees=[[24,32,.9],[160,18,.8],[356,2,1.1],[455,15,.75],[853,1,.8],[1220,11,.9],[1617,27,1.0],[1710,151,.8],
- [1717,320,.8],[1710,490,.9],[1717,805,1.1],[1545,860,.9],[1377,864,.8],[863,870,1.1],[669,862,.8],[330,864,.95],[35,848,1],[15,546,.9]];
- for(const [x,y,s] of borderTrees)edge+=foliage(x,y,s);
- const decorations=[[129,490,'#f7bad0'],[256,535,'#ffcf9a'],[325,478,'#fff7e8'],[396,603,'#ffcad4'],[724,594,'#f4c0ca'],
- [1488,475,'#fff7e6'],[1521,586,'#f8b4c6'],[1471,695,'#f7c0d0'],[760,690,'#fff4d6'],[317,270,'#f2bcc8'],[1221,283,'#fff6d7'],
- [1366,369,'#f9cae0'],[430,322,'#ffe1dd'],[1208,747,'#fff7d9']];
- for(const [x,y,c] of decorations)little+=flower(x,y,1.15,c);
- for(const [x,y,s] of [[135,461,.65],[292,697,.66],[1454,474,.64],[1499,622,.68],[1289,731,.62],[397,270,.62],[1260,278,.56]])little+=foliage(x,y,s,r()>.7);
- for(const [x,y] of [[115,412],[383,401],[1353,411],[1518,431],[290,614],[732,733],[1264,612]]){
-  little+=`<g transform="translate(${x} ${y})"><ellipse cx="0" cy="6" rx="33" ry="12" fill="#437942"/><circle cx="-19" cy="-5" r="22" fill="#548b43"/><circle cx="9" cy="-10" r="25" fill="#48833e"/><circle cx="25" cy="-1" r="17" fill="#659948"/></g>`;
+ for(let i=0;i<65;i++){
+  const x=rand()*width,y=rand()*height;
+  if(y<340&&(x<410||x>1310))continue;
+  wildflowers+=flower(x.toFixed(1),y.toFixed(1),.6,['#f5d6e4','#fff4cf','#d6e2fd'][i%3]);
  }
- fences+=fence(65,839,398,839,9)+fence(1392,839,1655,839,8);
- fences+=fence(66,52,450,52,10)+fence(1203,53,1641,53,11);
- return `<svg xmlns="http://www.w3.org/2000/svg" id="scenerySvg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="木々や花に囲まれた農園、ペットのおうち、ショップ、倉庫、池">
+ for(const [x,y,z] of [[7,17,.65],[1718,12,.6],[12,842,.7],[1710,842,.74]]){
+  edge+=foliage(x,y,z);
+ }
+ return `<svg xmlns="http://www.w3.org/2000/svg" id="scenerySvg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="ペットのおうちとショップのある自由にアレンジできる農園">
  <defs>
-  <pattern id="grassTile" width="36" height="36" patternUnits="userSpaceOnUse"><rect width="36" height="36" fill="#75ae53"/><path d="M0 11L5 7L9 11M19 22L23 17L27 22" fill="none" stroke="#a7ca71" stroke-width="2" opacity=".6"/><rect x="9" y="27" width="4" height="3" fill="#528e42" opacity=".6"/></pattern>
-  <pattern id="dirt" width="48" height="48" patternUnits="userSpaceOnUse"><rect width="48" height="48" fill="#e1b07d"/><g fill="#ca9064"><circle cx="8" cy="9" r="2"/><circle cx="37" cy="23" r="3"/><circle cx="22" cy="36" r="2"/><rect x="4" y="34" width="8" height="2"/></g><g fill="#f3ce98"><circle cx="15" cy="24" r="2"/><circle cx="34" cy="9" r="2"/></g></pattern>
-  <pattern id="tilled" width="27" height="27" patternUnits="userSpaceOnUse"><rect width="27" height="27" fill="#8b5d3d"/><path d="M0 7H27M0 19H27" stroke="#9d7049" stroke-width="5"/><circle cx="12" cy="12" r="2" fill="#bd9165"/></pattern>
- </defs><rect width="${W}" height="${H}" fill="url(#grassTile)"/>
- <g opacity=".8">${grass}</g>${paths()}${fences}${edge}<g>${little}</g>${pond()}
- ${FARMS.map(bed).join('')}${home()}${store()}${storage()}</svg>`;
+  <pattern id="grassTile" width="38" height="38" patternUnits="userSpaceOnUse">
+   <rect width="38" height="38" fill="#82b763"/>
+   <path d="M0 12L5 8L10 12M21 24L25 20L30 24" fill="none" stroke="#bed98d" stroke-width="2" opacity=".36"/>
+   <rect x="9" y="29" width="4" height="3" fill="#488b47" opacity=".32"/>
+  </pattern>
+ </defs>
+ <rect width="${width}" height="${height}" fill="url(#grassTile)"/>
+ <g>${leaves}</g><g opacity=".75">${wildflowers}</g>${edge}
+ ${home()}${store()}
+ </svg>`;
 }
 export function installScenery(target){target.innerHTML=scenery();}
 export const FARM_SCENE_SIZE=Object.freeze({width:W,height:H});
