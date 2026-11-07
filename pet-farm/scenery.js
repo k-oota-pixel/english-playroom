@@ -1,4 +1,4 @@
-import {MAP,FARMS} from './model.js?v=4';
+import {MAP} from './model.js?v=8';
 const W=MAP.w*MAP.tile,H=MAP.h*MAP.tile,T=MAP.tile;
 function rng(seed){return ()=>((seed=Math.imul(seed,1664525)+1013904223|0)>>>0)/4294967296;}
 function flower(x,y,t=1,color='#fff6e0'){
@@ -11,24 +11,6 @@ function foliage(x,y,s=1,fruit=false){
  <g stroke="#235437" stroke-width="3"><circle cx="-37" cy="-25" r="32" fill="#437b42"/><circle cx="-7" cy="-48" r="37" fill="#4d984b"/><circle cx="30" cy="-31" r="35" fill="#397b42"/><circle cx="6" cy="-10" r="40" fill="#5a9c4d"/></g>
  <g fill="#81b65d" opacity=".88"><ellipse cx="-23" cy="-44" rx="18" ry="8" transform="rotate(-35 -23 -44)"/><ellipse cx="19" cy="-49" rx="17" ry="8" transform="rotate(35 19 -49)"/><ellipse cx="-4" cy="-22" rx="22" ry="10"/></g>
  ${fruit?'<g fill="#e46f47" stroke="#8f4c36" stroke-width="1.2"><circle cx="-21" cy="-10" r="8"/><circle cx="22" cy="-20" r="8"/><circle cx="4" cy="12" r="8"/></g>':''}</g>`;
-}
-function fence(x1,y1,x2,y2,posts=8){
- let s=`<g><path d="M${x1} ${y1}L${x2} ${y2}" stroke="#6f422c" stroke-width="15" stroke-linecap="round"/>
- <path d="M${x1} ${y1-7}L${x2} ${y2-7}" stroke="#be8250" stroke-width="10" stroke-linecap="round"/>`;
- for(let i=0;i<=posts;i++){
-  const x=x1+(x2-x1)*i/posts,y=y1+(y2-y1)*i/posts;
-  s+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><rect x="-8" y="-20" width="16" height="32" rx="3" fill="#77412e" stroke="#593421" stroke-width="2"/><rect x="-6" y="-20" width="12" height="27" rx="2" fill="#ad6840"/>
- <path d="M-6-17L0-21L6-17V-12H-6Z" fill="#eeaa63"/><path d="M-3-2V6" stroke="#d9a26d" stroke-width="2"/></g>`;
- }
- return s+'</g>';
-}
-function bed(a){
- const x=a.x*T,y=a.y*T,w=a.w*T,h=a.h*T;
- return `<g><rect x="${x-16}" y="${y-17}" width="${w+32}" height="${h+34}" rx="20" fill="#285e38" opacity=".23"/>
- <rect x="${x-10}" y="${y-12}" width="${w+20}" height="${h+24}" rx="11" fill="#7baf59" stroke="#bbd58a" stroke-width="4"/>
- <rect x="${x-4}" y="${y-5}" width="${w+8}" height="${h+11}" rx="7" fill="url(#tilled)" stroke="#b48a57" stroke-width="3"/>
- ${fence(x-19,y+h+15,x+w+20,y+h+15,a.w+1)}
- ${fence(x-17,y-17,x+w+18,y-17,a.w+1)}</g>`;
 }
 function home(){
  return `<g transform="translate(70 83)"><ellipse cx="168" cy="257" rx="150" ry="25" fill="#22472b" opacity=".25"/>
@@ -58,36 +40,6 @@ function store(){
  <g fill="#fff8dd" opacity=".7"><path d="M78 202V219M128 201V220M180 201V220M234 201V220" stroke="#fff9dc" stroke-width="5"/></g>
  <rect x="83" y="251" width="190" height="31" rx="8" fill="#805034" stroke="#d2a064" stroke-width="4"/>
  <text x="178" y="273" text-anchor="middle" fill="#fff6d6" font-size="22" font-weight="900">🛒 ショップ</text></g>`;
-}
-function storage(){
- return `<g transform="translate(934 72) scale(.9)"><ellipse cx="151" cy="255" rx="140" ry="22" fill="#264b2b" opacity=".24"/>
- <rect x="23" y="106" width="255" height="139" rx="8" fill="#b98b60" stroke="#795238" stroke-width="8"/>
- <g stroke="#9e714c" stroke-width="4"><path d="M45 113V239M90 113V239M142 113V239M198 113V239M254 113V239"/></g>
- <path d="M12 113L148 19L287 113L273 132L149 53L28 131Z" fill="#815043" stroke="#53382f" stroke-width="8"/>
- <path d="M46 111L151 43L256 111" fill="none" stroke="#bb7960" stroke-width="17"/>
- <rect x="75" y="133" width="150" height="112" fill="#563b2b" stroke="#9b7048" stroke-width="10"/>
- <rect x="91" y="178" width="56" height="63" fill="#a9784b" stroke="#754a32" stroke-width="5"/>
- <path d="M91 178L147 241M147 178L91 241" stroke="#d2a36b" stroke-width="6"/>
- <rect x="155" y="155" width="51" height="86" fill="#926340" stroke="#69472d" stroke-width="5"/>
- <path d="M155 155L206 241M206 155L155 241" stroke="#b88a59" stroke-width="5"/>
- <g><ellipse cx="32" cy="236" rx="20" ry="11" fill="#9a643b"/><rect x="12" y="215" width="40" height="23" fill="#a96d45" stroke="#825032" stroke-width="4"/><ellipse cx="32" cy="215" rx="20" ry="10" fill="#cf9568"/></g>
- <rect x="83" y="249" width="150" height="32" rx="7" fill="#815039" stroke="#c79a63" stroke-width="4"/>
- <text x="158" y="271" text-anchor="middle" fill="#fff5cf" font-size="22" font-weight="900">📦 倉庫</text></g>`;
-}
-function pond(){
- let stones='';const r=rng(515);
- for(let i=0;i<26;i++){const a=2*Math.PI*i/26,xx=151+150*Math.cos(a),yy=100+103*Math.sin(a);stones+=`<ellipse cx="${xx.toFixed(1)}" cy="${yy.toFixed(1)}" rx="${11+Math.floor(r()*9)}" ry="${7+Math.floor(r()*6)}" fill="${i%3===0?'#d8d5ad':i%3===1?'#a9b8a0':'#b5b4a1'}" stroke="#8b9e87" stroke-width="2"/>`;}
- return `<g transform="translate(1345 92)"><path d="M151 4Q254-1 296 80Q324 152 244 193Q184 228 101 196Q13 195 0 115Q-2 37 86 13Z" fill="#4f9b76"/>
- <path d="M151 14Q258 8 279 88Q304 144 231 184Q170 214 103 185Q19 176 18 107Q20 43 99 23Z" fill="#5cb3c6" stroke="#8ecfd1" stroke-width="11"/>
- <path d="M55 76Q128 40 203 73M70 138Q165 118 223 149" fill="none" stroke="#a9ebde" stroke-width="8" opacity=".55"/>
- ${stones}<g fill="#4d9c62" stroke="#35754b" stroke-width="2"><ellipse cx="92" cy="110" rx="23" ry="11"/><ellipse cx="207" cy="128" rx="23" ry="11"/></g>
- ${flower(92,96,1,'#ffbdcf')}${flower(207,114,.9,'#ffe4ed')}
- <path d="M224 0L237 34L261 11L280 44" fill="none" stroke="#cbd0ac" stroke-width="29" stroke-linecap="round"/>
- <path d="M239 7Q238 32 245 52" fill="none" stroke="#d9f8f8" stroke-width="13" stroke-linecap="round"/></g>`;
-}
-function paths(){
- const stroke=(d,w)=>`<path d="${d}" fill="none" stroke="#6c8f53" stroke-width="${w+18}" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/><path d="${d}" fill="none" stroke="#e2ac73" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="url(#dirt)" stroke-width="${w-10}" stroke-linecap="round" stroke-linejoin="round" opacity=".64"/>`;
- return '<g>'+stroke('M115 352H1523',60)+stroke('M840 355V748',59)+stroke('M840 565H1420',53)+stroke('M455 564H840',53)+stroke('M214 297V355',36)+stroke('M682 301V355',36)+stroke('M1088 310V353',36)+stroke('M706 364V391',32)+stroke('M1082 364V396',32)+stroke('M574 565V548',30)+stroke('M1120 568V543',32)+'</g>';
 }
 function scenery(){
  // A calm blank canvas: gardens and paths are user-placed, never painted here.
