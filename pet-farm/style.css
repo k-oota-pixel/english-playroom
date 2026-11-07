@@ -110,6 +110,56 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  border:4px solid #ad8a57;border-radius:23px;padding:19px;background:linear-gradient(160deg,#fffdf2,#f8f3da);
  color:#514b3e;box-shadow:0 20px 85px #0d261f92}
 .farm-dialog::backdrop{background:rgba(22,39,30,.68);backdrop-filter:blur(3px)}
+
+/* Keep the farm-action dialog in exactly the same place before/after selection.
+   The item list scrolls, while the confirmation area and close button remain fixed. */
+#actionDialog[open]{
+ position:fixed;inset:0;margin:auto;transform:none;
+ display:flex;flex-direction:column;
+ height:min(530px,calc(100dvh - 24px));
+ max-height:calc(100dvh - 24px);
+ overflow:hidden;
+}
+#actionDialog>.modal-head{flex:0 0 auto}
+#actionDialog #selectionDetail{
+ flex:0 0 46px;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+ margin:0 0 7px;
+}
+#actionDialog #actionControls{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+#actionDialog .farm-action-choices{
+ flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+ scrollbar-width:thin;scrollbar-gutter:stable;padding:3px 5px 10px 2px;
+}
+#actionDialog .farm-action-choices .item-options{margin-top:0}
+#actionDialog .farm-action-confirm{
+ flex:0 0 116px;min-height:116px;max-height:116px;
+ border-top:2px dashed #ddc69c;
+ padding:10px 3px 3px;margin-top:4px;
+ overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+}
+#actionDialog .farm-action-confirm .confirm-label{margin:0 0 8px}
+#actionDialog .farm-action-confirm .modal-actions{margin-top:9px}
+#actionDialog .farm-action-prompt{
+ margin:0;padding:24px 9px;text-align:center;font-size:12px;
+ font-weight:750;line-height:1.6;color:#a28a62;
+}
+#actionDialog .farm-action-footer{
+ flex:0 0 57px;min-height:57px;display:flex;align-items:flex-end;
+ padding:5px 3px 0;
+}
+#actionDialog .farm-action-footer .action-btn{flex:1}
+@media(max-height:510px){
+ #actionDialog[open]{padding:11px 14px}
+ #actionDialog #selectionDetail{flex-basis:35px;font-size:11px}
+ #actionDialog .farm-action-confirm{
+  flex-basis:95px;min-height:95px;max-height:95px;padding-top:6px;
+ }
+ #actionDialog .farm-action-confirm .confirm-label{margin-bottom:4px}
+ #actionDialog .farm-action-confirm .modal-actions{margin-top:4px}
+ #actionDialog .farm-action-footer{flex-basis:47px;min-height:47px}
+ #actionDialog .farm-action-prompt{padding:9px}
+}
+
 .farm-dialog .modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
  border-bottom:2px solid #e4d3ae;padding-bottom:11px;margin-bottom:12px}
 .panel-kicker{font-size:10px;font-weight:950;letter-spacing:.16em;color:#ad8950}
