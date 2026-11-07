@@ -127,6 +127,21 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 .shop-item .emoji{font-size:27px;grid-row:span 2}
 .shop-item strong{font-size:12px;line-height:1.3}
 .shop-item small{font-size:11px;color:#977143}
+
+.shop-item .shop-owned{grid-column:2;font-size:11px;color:#3c7851;font-weight:900;line-height:1.3;margin-top:5px}
+.shop-quantity{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap;
+ background:#fff9e9;border:1px solid #e6d2ad;border-radius:12px;padding:10px 12px;margin:10px 0}
+.shop-quantity-label{flex:1;white-space:nowrap;font-weight:900;font-size:13px;color:#725633}
+.shop-qty-btn{display:grid;place-items:center;flex:0 0 43px;width:43px;height:43px;border:2px solid #bd9b69;border-radius:11px;background:#fffdf4;
+ color:#685039;font-size:25px;font-weight:900;line-height:1;touch-action:manipulation;box-shadow:0 3px 0 #a27d474a}
+.shop-qty-btn:hover:not(:disabled){background:#fff0c5;border-color:#bd873d}
+.shop-qty-btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #a27d474a}
+.shop-qty-btn:disabled{opacity:.34}
+.shop-qty-value{font-size:20px;font-variant-numeric:tabular-nums;font-weight:950;text-align:center;min-width:55px;color:#473d2e}
+.shop-order-total{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 5px;
+ background:#f3e7cb;border-radius:10px;padding:10px 13px;color:#694d2c;font-size:13px;font-weight:850}
+.shop-order-total strong{font-size:19px;color:#986021;font-variant-numeric:tabular-nums}
+
 .inventory{display:grid;gap:8px}
 .inv-title{font-size:12px;font-weight:950;color:#6b7149;border-bottom:1px solid #e8d9bc;padding:7px 0 5px}
 .inv-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
