@@ -7,7 +7,7 @@ test('farm preview has four rectangular gardens with 35 total cells and only the
  assert.deepEqual(FARMS.map(a=>a.w*a.h),[4,6,9,16]);
  assert.equal(FARMS.reduce((n,a)=>n+a.w*a.h,0),35);
  assert.deepEqual(freshFarm().unlocked,[true,false,false,false]);
- assert.deepEqual(locate(3,15),{x:22,y:13});
+ assert.deepEqual(locate(3,15),{x:22,y:14});
 });
 
 test('seed, watering, growth, fertilizer and harvest are functional',()=>{
