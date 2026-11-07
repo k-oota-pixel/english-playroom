@@ -49,6 +49,7 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  will-change:left,top}
 #petWalker svg{width:90px;height:90px;max-height:90px;overflow:visible;transform:scaleX(var(--face,1));animation:petIdle 2s ease-in-out infinite}
 #petWalker.walking svg{animation:walkBob .34s ease-in-out infinite alternate}
+#petWalker.walking.strolling svg{animation:walkBob .85s ease-in-out infinite alternate}
 #petWalker.working svg{animation:workBob .4s ease-in-out 5 alternate}
 @keyframes petIdle{50%{transform:translateY(-4px) scaleX(var(--face,1))}}
 @keyframes walkBob{to{transform:translateY(-9px) scaleX(var(--face,1)) rotate(3deg)}}
