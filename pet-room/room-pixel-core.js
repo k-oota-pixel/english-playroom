@@ -7,7 +7,7 @@ import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 const config={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().length?getApp():initializeApp(config);enableAppCheck(app);const auth=getAuth(app),db=getFirestore(app);
 const GRID=10,room=document.getElementById('room'),roomBackdrop=document.getElementById('roomBackdrop'),tileLayer=document.getElementById('tileLayer'),furnitureLayer=document.getElementById('furnitureLayer'),pet=document.getElementById('petInRoom'),catalogEl=document.getElementById('catalog'),storageList=document.getElementById('storageList'),selectedName=document.getElementById('selectedName'),moveBtn=document.getElementById('moveBtn'),rotateBtn=document.getElementById('rotateBtn'),storeBtn=document.getElementById('storeBtn'),cancelBtn=document.getElementById('cancelBtn'),saveBtn=document.getElementById('saveBtn'),statusEl=document.getElementById('status'),modeBanner=document.getElementById('modeBanner');
-let user=null,state=freshRoom(),selectedId='',placing=null,dirty=false,toastTimer=0,nextInstance=1;
+let user=null,state=null,selectedId='',placing=null,dirty=false,toastTimer=0,nextInstance=1;
 const DEFAULTS=[
  {id:'p-bed',type:'bed',x:1,y:0,dir:0},
  {id:'p-cabinet',type:'cabinet',x:4,y:0,dir:0},
@@ -19,6 +19,7 @@ const DEFAULTS=[
  {id:'p-plant',type:'plant',x:9,y:7,dir:0}
 ];
 const freshRoom=()=>({schemaVersion:6,wall:'wall-pink',floor:'floor-cream',furniture:DEFAULTS.map(i=>({...i}))});
+state=freshRoom();
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 function roomRef(u){return doc(db,'users',u.uid,'apps','pet-room-pixel-v1');}
 function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1600);}
