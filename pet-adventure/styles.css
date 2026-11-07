@@ -110,3 +110,15 @@
 #battleView .boss-battle #enemyName{color:#ffd080}
 #battleView .boss-battle #battleStatus{color:#efd3ab}
 #battleView .boss-battle .enemy-visual{filter:drop-shadow(0 5px 8px #ba4b8d50)}
+
+/* Three adventure destinations: wide desktop grid, then tablet and mobile layouts. */
+body:not(.battle-mode) .app-shell{width:min(1100px,100%)}
+.adventure-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.adventure-card{display:flex;flex-direction:column;min-width:0}
+.adventure-copy{display:flex;flex-direction:column;flex:1;padding:19px}
+.adventure-copy h2{font-size:clamp(19px,2.6vw,26px);line-height:1.3;overflow-wrap:anywhere}
+.adventure-copy p{flex:1}
+.adventure-copy .adventure-cta{margin-top:18px}
+.defense-card .adventure-cta{background:#886146}
+@media(max-width:849px){.adventure-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.defense-card{grid-column:1/-1;width:calc((100% - 18px)/2);justify-self:center}}
+@media(max-width:619px){.adventure-cards{grid-template-columns:minmax(0,1fr);gap:16px}.defense-card{grid-column:auto;width:auto}.adventure-copy{padding:20px}.adventure-copy h2{font-size:26px}}
