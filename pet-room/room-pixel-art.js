@@ -55,6 +55,8 @@ function pixelRoom(wall='wall-pink',floor='floor-cream'){
   R(g,0,0,300,225,'#f7f2e8');
   for(let y=0;y<225;y+=6)for(let x=0;x<300;x+=6)
     if(h(x,y)%9===0)R(g,x,y,2,2,'#f2e8de');
+  // Center all world geometry inside the 300-pixel canvas; the SVG tile grid shares this origin.
+  g.save();g.translate(25,0);
   // Two inner walls and deep timber joints: these are scenery, not movable furniture.
   P(g,[[25,67],[125,18],[125,75],[25,124]],p[0]);
   P(g,[[125,18],[225,67],[225,124],[125,75]],p[1]);
@@ -113,7 +115,7 @@ function pixelRoom(wall='wall-pink',floor='floor-cream'){
   // Tiny hanging vines.
   for(let i=0;i<8;i++){const x=143+i%3*2,y=55+i*3;R(g,x,y,3,3,i%2?'#5d9169':'#80ae69')}
   // Cozy rugs are independent furniture; do not bake one into the floor.
-  return cv.toDataURL('image/png');
+  g.restore();return cv.toDataURL('image/png');
 }
 export function roomWebP(wall='wall-pink',floor='floor-cream'){
  const k=wall+'|'+floor;if(!rooms.has(k))rooms.set(k,pixelRoom(wall,floor));return rooms.get(k);
