@@ -676,15 +676,55 @@ function focusAt(x,y){
  const v=$('viewport');
  v.scrollTo({left:Math.max(0,(x*tile)*zoom-v.clientWidth/2),top:Math.max(0,(y*tile)*zoom-v.clientHeight/2),behavior:'smooth'});
 }
+function gateStatus(message,error=false){
+ const gate=$('previewGate');
+ if(!gate)return;
+ gate.hidden=false;
+ gate.replaceChildren();
+ const label=node('div','preview-gate-label',message);
+ gate.appendChild(label);
+ if(error){
+  const actions=node('div','preview-gate-actions');
+  const retry=node('button','preview-retry','もう一度読み込む');
+  retry.type='button';
+  retry.addEventListener('click',()=>{void initialize(auth.currentUser);});
+  const home=node('a','preview-back','もんすたでぃへ戻る');
+  home.href='../index.html';
+  actions.append(retry,home);
+  gate.appendChild(actions);
+ }
+}
+function withLoadTimeout(promise,ms,stage){
+ let timer;
+ return Promise.race([
+  Promise.resolve(promise),
+  new Promise((_,reject)=>{
+   timer=setTimeout(()=>reject(new Error(stage+'がタイムアウトしました。通信状態を確認して再試行してください。')),ms);
+  })
+ ]).finally(()=>clearTimeout(timer));
+}
 async function initialize(current){
  const sequence=++authSequence;
  user=current;
- if(!user){ready=false;$('previewGate').hidden=false;$('previewGate').textContent='もんすたでぃでログインしてください。';status('もんすたでぃでログインしてください。','error');return;}
- busy=true;ready=false;$('previewGate').hidden=false;$('previewGate').textContent='管理者確認中…';refresh();
+ if(!user){
+  ready=false;busy=false;
+  gateStatus('もんすたでぃでログインしてください。',true);
+  status('もんすたでぃでログインしてください。','error');
+  return;
+ }
+ busy=true;ready=false;
+ gateStatus('管理者確認中…');
  try{
-  const session=await accountSession(current);
+  // The first refresh used to run *outside* the try block. Any exception there
+  // stranded the user on the permanently covering "管理者確認中…" screen.
+  refresh();
+  const session=await withLoadTimeout(accountSession(current),18000,'管理者確認');
+  if(sequence!==authSequence)return;
   if(!session?.admin || session.resetRequired)throw Error('この先行プレビューは管理者アカウントだけが利用できます。');
-  const [wallet,snapshot]=await Promise.all([getDoc(walletRef()),getDoc(farmRef())]);
+  gateStatus('農園データを読み込んでいます…');
+  const [wallet,snapshot]=await withLoadTimeout(
+   Promise.all([getDoc(walletRef()),getDoc(farmRef())]),20000,'農園データの取得'
+  );
   if(sequence!==authSequence)return;
   if(!wallet.exists())throw Error('ペットのデータが見つかりません。');
   petData=wallet.data();balance=Math.max(0,Math.floor(Number(petData.coins)||0));
@@ -697,8 +737,9 @@ async function initialize(current){
  }catch(e){
   if(sequence!==authSequence)return;
   busy=false;ready=false;
-  $('previewGate').textContent=e.message||'先行プレビューへのアクセスを確認できませんでした。';
-  status('農園を読み込めませんでした：'+(e.message||'不明なエラー'),'error');
+  const msg=e?.message||'先行プレビューへのアクセスを確認できませんでした。';
+  gateStatus('農園を開けませんでした：'+msg,true);
+  status('農園を読み込めませんでした：'+msg,'error');
   console.error('pet farm load failed',e);
  }
 }
@@ -746,5 +787,14 @@ setInterval(async()=>{
  if(Math.abs(target-petX)<.3)return;
  await walkTo(target,6.5,{leisurely:true});
 },8500);
-initWorld();
-onAuthStateChanged(auth,u=>{void initialize(u);},e=>status('認証エラー：'+e.message,'error'));
+try{
+ initWorld();
+ onAuthStateChanged(auth,u=>{void initialize(u);},e=>{
+  const msg=e?.message||'認証に失敗しました。';
+  gateStatus('認証エラー：'+msg,true);
+  status('認証エラー：'+msg,'error');
+ });
+}catch(e){
+ gateStatus('画面の初期化に失敗しました：'+(e?.message||'不明なエラー'),true);
+ console.error('pet farm bootstrap failed',e);
+}
