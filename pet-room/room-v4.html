@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#93ba76">
+<title>ぺっとのおへや｜もんすたでぃ</title>
+<style id="monstudy-access-lock">html:before{content:"ログイン情報を確認しています…";position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style>
+<script type="module">if(window.top===window){await import('../access-gate.js?v=2.3.15')}else{document.getElementById('monstudy-access-lock')?.remove()}</script>
+<script src="../shell-bridge.js?v=6.0.13"></script>
+<link rel="stylesheet" href="./room-v4.css?v=1">
+</head>
+<body>
+<main class="room-page">
+ <header class="topbar">
+  <div class="title-plaque"><span class="paw">🐾</span><h1>ぺっとのおへや</h1></div>
+  <div class="topbar-chips">
+   <div class="hud-chip" title="いまのおへや"><span>🏡</span><strong>マイルーム</strong></div>
+   <div class="hud-chip"><span class="coin">🪙</span><strong id="coinCount">—</strong><span>C</span></div>
+  </div>
+ </header>
+ <section class="layout">
+  <nav class="toolbar" aria-label="家具操作">
+   <button class="control selected" id="modeEdit" type="button" aria-pressed="true"><span class="symbol">🛋️</span>もようがえ</button>
+   <button class="control" id="modePlace" type="button"><span class="symbol">▦</span>家具をおく</button>
+   <button class="control" id="modeMove" type="button" aria-pressed="false"><span class="symbol">✥</span>うごかす</button>
+   <button class="control" id="modeStore" type="button" aria-pressed="false"><span class="symbol">📦</span>しまう</button>
+  </nav>
+  <div class="main-column">
+   <section class="room-board" id="roomBoard" aria-label="6×6マスのぺっとのおへや">
+    <div id="roomArt" class="room-art"></div>
+    <div id="objectLayer" class="object-layer"></div>
+    <div id="petActor" class="pet-actor" hidden></div>
+    <div id="petEgg" class="pet-egg" hidden aria-label="ペットのたまご">🥚</div>
+    <div class="grid-overlay" id="gridOverlay" hidden>
+     <div class="placement-tiles" id="placementTiles" aria-label="家具の設置先"></div>
+    </div>
+   </section>
+   <p id="roomStatus" class="room-status" role="status">家具やペットを読み込んでいます…</p>
+   <div class="editing-panel" id="editingPanel" hidden>
+    <span class="active-name" id="selectedName"></span>
+    <button type="button" data-move="up" title="上">↑</button>
+    <button type="button" data-move="left" title="左">←</button>
+    <button type="button" data-move="right" title="右">→</button>
+    <button type="button" data-move="down" title="下">↓</button>
+    <button type="button" id="rotateItem">↻ 回転</button>
+    <button type="button" id="cancelItem">戻す</button>
+    <button type="button" id="storeItem" class="danger">しまう</button>
+    <button type="button" id="confirmItem" class="primary">✓ 決定</button>
+   </div>
+   <div class="bottom-bar">
+    <button id="backHome" class="action-home" type="button">← もどる</button>
+    <button id="playPet" class="primary-play" type="button">🐾 あそぶ</button>
+   </div>
+  </div>
+  <aside class="info-column">
+   <section class="info-card">
+    <h2>📝 おへやのメモ</h2>
+    <p><strong id="petName">ペット</strong> のすきな家具をおいて、すてきなおへやにしてあげよう！</p>
+    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br><span>おへや v4.0.0</span></div>
+   </section>
+  </aside>
+ </section>
+</main>
+<dialog id="inventoryDialog" aria-labelledby="inventoryTitle">
+ <div class="dialog-panel">
+  <header><h2 id="inventoryTitle">🪑 家具をおく</h2><button type="button" id="closeInventory" aria-label="閉じる">✕</button></header>
+  <p>家具を選んで、おへやの好きな場所に置いてください。</p>
+  <div id="catalog" class="catalog"></div>
+  <div class="dialog-actions"><button type="button" id="doneInventory">閉じる</button></div>
+ </div>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="./room-v4.js?v=1"></script>
+</body>
+</html>
