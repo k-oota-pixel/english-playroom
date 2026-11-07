@@ -78,6 +78,41 @@
  </dialog>
  </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+/* Independent watchdog: a failed module import would otherwise leave the static
+   "管理者確認中…" overlay on screen forever, before app.js could run. */
+(function(){
+ const gate=document.getElementById('previewGate');
+ if(!gate)return;
+ function recovery(message){
+  if(gate.hidden||gate.querySelector('.preview-gate-actions'))return;
+  gate.replaceChildren();
+  const label=document.createElement('div');
+  label.className='preview-gate-label';
+  label.textContent=message;
+  const actions=document.createElement('div');
+  actions.className='preview-gate-actions';
+  const retry=document.createElement('button');
+  retry.type='button';retry.className='preview-retry';
+  retry.textContent='もう一度読み込む';
+  retry.addEventListener('click',()=>location.reload());
+  const home=document.createElement('a');
+  home.className='preview-back';home.href='../index.html';
+  home.textContent='もんすたでぃへ戻る';
+  actions.append(retry,home);gate.append(label,actions);
+ }
+ window.addEventListener('error',event=>{
+  if(gate.hidden)return;
+  const isModule=event.target?.tagName==='SCRIPT';
+  const description=event.message||'通信エラーが発生しました。';
+  if(isModule||event.error)recovery('農園の読み込みに失敗しました。'+(isModule?'更新して再試行してください。':description));
+ },true);
+ window.addEventListener('unhandledrejection',event=>{
+  if(!gate.hidden)recovery('農園の読み込みに失敗しました。'+(event.reason?.message||'再試行してください。'));
+ });
+ setTimeout(()=>recovery('読み込みに時間がかかっています。再試行するか、もんすたでぃへ戻ってください。'),16000);
+})();
+</script>
 <script type="module" src="./app.js?v=14"></script>
 </body>
 </html>
