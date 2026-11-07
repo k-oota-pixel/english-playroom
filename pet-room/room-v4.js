@@ -24,6 +24,17 @@ const board=$('roomBoard'),layer=$('objectLayer'),grid=$('gridOverlay'),tiles=$(
 const actor=$('petActor'),egg=$('petEgg'),panel=$('editingPanel');
 const backdrop=$('roomArt');
 backdrop.innerHTML=roomBackground();
+// Create 36 reusable placement controls once; do not rebuild them on each drag frame.
+const tileButtons=[];
+for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){
+ const tile=document.createElement('button');tile.type='button';tile.className='placement-tile';tile.dataset.x=String(x);tile.dataset.y=String(y);
+ tile.setAttribute('aria-label',String(x+1)+'列'+String(y+1)+'行');
+ tile.addEventListener('click',()=>{
+  const item=activeId?items.get(activeId):null;if(!item)return;
+  const d=dims(item);item.x=clamp(x-Math.floor(d.w/2),0,GRID-d.w);item.y=clamp(y-Math.floor(d.h/2),0,GRID-d.h);render();
+ });
+ tiles.appendChild(tile);tileButtons.push(tile);
+}
 const pos=(x,y)=>({x:TX+x*TILE,y:TY+y*TILE});
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const key=(x,y)=>x+','+y;
@@ -158,19 +169,17 @@ function drawItem(item){
  el.style.left=(x/SIZE*100)+'%';el.style.top=(y/SIZE*100)+'%';
  el.style.width=(width/SIZE*100)+'%';el.style.height=(height/SIZE*100)+'%';
  el.style.transform=isRug?'translate(-50%,-66%)':'translate(-50%,-92%)';
- el.style.zIndex=isRug?'3':String(20+Math.floor((item.y+d.h)*20));
+ el.style.zIndex=activeId===item.id?'950':isRug?'3':String(20+Math.floor((item.y+d.h)*20));
  if(el.dataset.facing!==String(item.rotation)){el.innerHTML=facingFurnitureSVG(item.id,item.rotation);el.dataset.facing=String(item.rotation)};
 }
 function drawTiles(){
  const active=activeId?items.get(activeId):null;
- grid.hidden=!active;tiles.replaceChildren();if(!active)return;
+ grid.hidden=!active;if(!active)return;
  const good=legal(active),foot=new Set(itemCells(active).map(c=>key(c.x,c.y)));
- for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){
-  const t=document.createElement('button');t.type='button';t.className='placement-tile';
-  t.setAttribute('aria-label',String(x+1)+'列'+String(y+1)+'行');
-  if(foot.has(key(x,y)))t.classList.add(good?'preview':'blocked');
-  t.addEventListener('click',()=>{const d=dims(active);active.x=clamp(x-Math.floor(d.w/2),0,GRID-d.w);active.y=clamp(y-Math.floor(d.h/2),0,GRID-d.h);render()});
-  tiles.appendChild(t);
+ for(const tile of tileButtons){
+  const current=foot.has(key(Number(tile.dataset.x),Number(tile.dataset.y)));
+  tile.classList.toggle('preview',current&&good);
+  tile.classList.toggle('blocked',current&&!good);
  }
 }
 function setButtons(){
@@ -197,7 +206,7 @@ function renderCatalog(){
   b.type='button';
   const icon=document.createElement('span');icon.className='item-icon';icon.textContent=spec.icon;
   const info=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
-  strong.textContent=spec.name;small.textContent=item.placed?'配置中（移動できます）':'手元にあります';
+  strong.textContent=spec.name;const d=dims(item);small.textContent=(d.w+'×'+d.h+'マス｜'+['正面','右向き','背面','左向き'][item.rotation])+'｜'+(item.placed?'配置中':'手元');
   info.append(strong,small);b.append(icon,info);
   b.addEventListener('click',()=>{
    $('inventoryDialog').close();
