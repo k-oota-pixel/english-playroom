@@ -7,7 +7,7 @@ test('farm preview has four rectangular gardens with 35 total cells and only the
  assert.deepEqual(FARMS.map(a=>a.w*a.h),[4,6,9,16]);
  assert.equal(FARMS.reduce((n,a)=>n+a.w*a.h,0),35);
  assert.deepEqual(freshFarm().unlocked,[true,false,false,false]);
- assert.deepEqual(locate(3,15),{x:24,y:20});
+ assert.deepEqual(locate(3,15),{x:22,y:13});
 });
 
 test('seed, watering, growth, fertilizer and harvest are functional',()=>{
@@ -88,11 +88,32 @@ test('farm preview uses building and popup interactions rather than fixed side p
  }
  assert.doesNotMatch(html,/id="bond"|class="sidebar"/,'no persistent mood or sidebar panels');
  assert.match(app,/showDialog\('actionDialog'\)/);
- assert.match(app,/await walkTo\(12,8\.8\)/);
+ assert.match(app,/await walkTo\(12\.7,6\.35\)/);
  assert.match(app,/showDialog\('shopDialog'\)/);
  assert.match(app,/actionConfirmation\(confirm,label,verb,/);
  assert.match(app,/actionButton\('やめる'/);
  assert.doesNotMatch(app,/confirm\(item\+/,'avoid native confirmation in the shop');
  assert.match(css,/#previewGate\[hidden\]\{display:none!important\}/);
+ assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
+});
+
+test('illustrated farm stage fills screen with responsive fit and interactive hotspots',()=>{
+ const html=readFileSync(new URL('../pet-farm/index.html',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ const scene=readFileSync(new URL('../pet-farm/scenery.js',import.meta.url),'utf8');
+ assert.match(html,/id="scenery"/);
+ for(const target of ['house','shopBuilding','storageBuilding','plotLayer','petWalker'])
+  assert.match(html,new RegExp('id="'+target+'"'));
+ assert.match(js,/installScenery\(\$\('scenery'\)\)/);
+ assert.match(js,/function fitScene\(\)/);
+ assert.match(js,/Math\.max\(view\.clientWidth\/scene\.width,view\.clientHeight\/scene\.height\)/);
+ assert.match(css,/\.game-shell,\.farm-stage\{height:100%/);
+ assert.match(css,/#scenery\{z-index:1;pointer-events:none\}/);
+ assert.match(scene,/function store\(/);
+ assert.match(scene,/function pond\(/);
+ assert.match(scene,/function foliage\(/);
+ assert.match(scene,/FARMS\.map\(bed\)/);
+ assert.doesNotMatch(html,/id="grass"|id="paths"|id="deco"/);
  assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
 });
