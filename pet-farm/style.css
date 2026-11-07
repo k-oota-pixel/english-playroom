@@ -54,9 +54,30 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 @keyframes walkBob{to{transform:translateY(-9px) scaleX(var(--face,1)) rotate(3deg)}}
 @keyframes workBob{to{transform:translateY(-7px) rotate(-10deg) scaleX(var(--face,1))}}
 #effect{z-index:8;pointer-events:none}
-.effect-bubble{position:absolute;padding:8px 12px;border:3px solid #b6dd9f;border-radius:25px;
- background:#fffdf0;font-size:26px;box-shadow:0 5px 0 #4c6c4566;animation:floatUp 1.4s ease-out forwards}
-@keyframes floatUp{to{transform:translateY(-70px);opacity:0}}
+.work-effect{position:absolute;width:90px;height:90px;transform:translate(-50%,-50%);
+ pointer-events:none;--work-main:#c6925d;--work-light:#f1c994;--work-glint:#fff1c6}
+.work-effect--water{--work-main:#6fc4de;--work-light:#b4eff9;--work-glint:#e4fcff}
+.work-effect--fertilize{--work-main:#78b86b;--work-light:#b7e99e;--work-glint:#efffd7}
+.work-effect--harvest{--work-main:#e7b45c;--work-light:#ffe1a1;--work-glint:#fffce5}
+.work-effect--feed{--work-main:#e7a1b5;--work-light:#ffd0df;--work-glint:#fff1f6}
+.work-effect__ring{position:absolute;inset:25px;border:3px solid var(--work-light);border-radius:50%;
+ box-shadow:0 0 8px var(--work-light);animation:workRing .75s ease-out both}
+.work-effect__particle{position:absolute;left:50%;top:50%;width:10px;height:8px;
+ margin-left:-5px;margin-top:-4px;border-radius:45% 55% 50% 40%;background:var(--work-main);
+ box-shadow:inset -2px -2px 0 #704c2525,0 0 4px var(--work-light);
+ animation:workDust .72s ease-out both;animation-delay:var(--delay,0ms)}
+.work-effect--water .work-effect__particle{width:7px;height:11px;border-radius:65% 65% 70% 70%}
+.work-effect--fertilize .work-effect__particle{width:7px;height:10px;border-radius:2px 70% 2px 70%}
+.work-effect__spark{position:absolute;top:50%;left:50%;width:7px;height:7px;
+ margin:-4px 0 0 -4px;background:var(--work-glint);transform:rotate(45deg) scale(0);
+ box-shadow:0 0 7px var(--work-glint);animation:workSpark .57s ease-out both;
+ animation-delay:var(--delay,0ms)}
+@keyframes workRing{0%{transform:scale(.25);opacity:.8}68%{opacity:.55}100%{transform:scale(1.65);opacity:0}}
+@keyframes workDust{0%{transform:translate(0,0) scale(.45);opacity:0}
+ 18%{opacity:.92}100%{transform:translate(var(--dx),var(--dy)) scale(1.15);opacity:0}}
+@keyframes workSpark{0%{transform:translate(0,0) rotate(45deg) scale(0);opacity:0}
+ 40%{opacity:.95}80%{opacity:.5}
+ 100%{transform:translate(var(--dx),var(--dy)) rotate(45deg) scale(1.1);opacity:0}}
 .game-hud{position:absolute;top:13px;left:15px;right:15px;z-index:20;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;pointer-events:none}
 .hud-title,.coin-chip,.hud-btn{pointer-events:auto;border:3px solid #c49a5e;background:linear-gradient(180deg,#fffbe7,#f2e6ca);
  border-radius:99px;color:#573820;box-shadow:0 4px 0 #68482c55,0 6px 16px #1c462f45;font-weight:900}
