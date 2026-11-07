@@ -85,8 +85,8 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  font-weight:850;font-size:11px;padding:9px 14px;box-shadow:0 2px 10px #25422b40}
 .farm-hint span{color:#ba8847}
 /* All work and shopping actions use accessible, responsive pop-up menus. */
-.farm-dialog{position:fixed;left:0;right:0;top:50%;margin:auto;transform:translateY(-50%);
- width:min(550px,calc(100vw - 24px));max-height:min(85dvh,790px);overflow:auto;
+.farm-dialog{position:fixed;inset:0;margin:auto;transform:none;
+ width:min(550px,calc(100vw - 24px));max-height:min(calc(100dvh - 24px),790px);overflow:auto;
  border:4px solid #ad8a57;border-radius:23px;padding:19px;background:linear-gradient(160deg,#fffdf2,#f8f3da);
  color:#514b3e;box-shadow:0 20px 85px #0d261f92}
 .farm-dialog::backdrop{background:rgba(22,39,30,.68);backdrop-filter:blur(3px)}
@@ -120,16 +120,19 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  background:#fffdf4;color:#765e3a;font-weight:850;font-size:12px}
 .tab.active{background:#6e9469;color:#fff;border-color:#5c805b}
 .shop-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.shop-item{border:2px solid #e1d1b6;border-radius:13px;padding:10px 8px;
- min-height:71px;display:grid;grid-template-columns:auto 1fr;align-items:center;
- column-gap:8px;background:#fffdf6;color:#5d553d;text-align:left}
+.shop-item{border:2px solid #e1d1b6;border-radius:13px;padding:11px 10px;
+ min-height:86px;height:auto;display:flex;align-items:flex-start;gap:9px;
+ background:#fffdf6;color:#5d553d;text-align:left;overflow:visible}
 .shop-item:hover:not(:disabled){background:#fef3d5}
 .shop-item.selected{background:#fff1c2;border-color:#dca34f}
-.shop-item .emoji{font-size:27px;grid-row:span 2}
-.shop-item strong{font-size:12px;line-height:1.3}
-.shop-item small{font-size:11px;color:#977143}
-
-.shop-item .shop-owned{grid-column:2;font-size:11px;color:#3c7851;font-weight:900;line-height:1.3;margin-top:5px}
+.shop-item .emoji{flex:0 0 30px;font-size:27px;line-height:1.4;text-align:center}
+.shop-item .shop-item-details{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;gap:4px}
+.shop-item strong{font-size:12px;line-height:1.35}
+.shop-item small{font-size:11px;color:#977143;line-height:1.35}
+.shop-item .shop-unlock{font-size:10px;color:#9b7151;font-weight:850;line-height:1.4;overflow-wrap:anywhere}
+.shop-item .shop-owned{font-size:11px;color:#3c7851;font-weight:900;line-height:1.4}
+#shopDialog .shop-item:disabled{opacity:1;background:#f8f4e9;border-color:#ddd4c0}
+#shopDialog .shop-item:disabled strong{color:#807467}
 .shop-quantity{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap;
  background:#fff9e9;border:1px solid #e6d2ad;border-radius:12px;padding:10px 12px;margin:10px 0}
 .shop-quantity-label{flex:1;white-space:nowrap;font-weight:900;font-size:13px;color:#725633}
@@ -146,6 +149,10 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 /* Shop layout: its frame must not change size when a product is selected.
    Only the catalogue scrolls; the checkout stays at a stable screen position. */
 #shopDialog[open]{
+ position:fixed;
+ inset:0;
+ margin:auto;
+ transform:none;
  display:flex;
  flex-direction:column;
  height:min(680px,calc(100dvh - 24px));
@@ -190,12 +197,18 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  color:#97805c;
 }
 @media(max-height:590px){
+ #shopDialog[open]{padding:10px 12px}
+ #shopDialog #shopList{min-height:0}
  #shopDialog #shopConfirmation{
-  flex-basis:177px;
-  min-height:177px;
-  max-height:177px;
+  flex-basis:155px;
+  min-height:155px;
+  max-height:155px;
  }
- #shopDialog .shop-selection-hint{min-height:140px}
+ #shopDialog .shop-selection-hint{min-height:115px}
+ #shopDialog .shop-quantity{padding:5px 8px;margin:5px 0}
+ #shopDialog .shop-qty-btn{width:34px;height:34px;flex-basis:34px}
+ #shopDialog .shop-order-total{padding:6px 8px;margin:6px 0 2px}
+ #shopDialog .modal-actions{margin-top:6px}
 }
 
 
