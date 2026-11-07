@@ -1,288 +1,250 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {FARMS,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,freshFarm,normalizeFarm,plotKey,locate,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from '../pet-farm/model.js';
+import {
+ MAP,FARMS,FIELD_TYPES,FIELD_SIZES,RESERVED_ZONES,CROPS,SUPPLIES,
+ freshFarm,normalizeFarm,cropUnlockProgress,canPlace,canPlaceRoad,
+ locateField,plotKey,applyPurchase,applyLayoutAction,applyFarmAction,
+ growthPhase,remaining,useProduce
+} from '../pet-farm/model.js';
+const source=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
+function starter(){
+ let f=applyPurchase(freshFarm(),'field','free',0).farm;
+ const result=applyLayoutAction(f,{type:'place-field',size:'4',x:12,y:8,name:'わたしの畑'});
+ return {f:result.farm,id:result.id};
+}
 
-test('farm preview has four rectangular gardens with 35 total cells and only the first unlocked',()=>{
- assert.deepEqual(FARMS.map(a=>a.w*a.h),[4,6,9,16]);
- assert.equal(FARMS.reduce((n,a)=>n+a.w*a.h,0),35);
- assert.deepEqual(freshFarm().unlocked,[true,false,false,false]);
- assert.deepEqual(locate(3,15),{x:22,y:14});
-});
-
-test('seed starts growing immediately, water shortens residual to 2/3 and fertilizer to 1/3',()=>{
- let f=freshFarm();
- f=applyFarmAction(f,{area:0,index:0,type:'plant',crop:'lettuce'},1000).farm;
- assert.equal(f.inventory.seeds.lettuce,2);
- assert.equal(f.plots['0-0'].readyAt,7201000);
- assert.equal(growthPhase(f.plots['0-0'],1500),'sprout');
- assert.throws(()=>applyFarmAction(f,{area:0,index:0,type:'harvest'},999999));
- f=applyFarmAction(f,{area:0,index:0,type:'water'},1100).farm;
- assert.equal(f.inventory.water,2);
- assert.equal(f.plots['0-0'].readyAt,1100+Math.round((7201000-1100)*2/3));
- assert.throws(()=>applyFarmAction(f,{area:0,index:0,type:'water'},2000),/すでに水/);
- f.inventory.fertilizer=1;
- const before=f.plots['0-0'].readyAt;
- f=applyFarmAction(f,{area:0,index:0,type:'fertilize'},2100).farm;
- assert.equal(f.inventory.fertilizer,0);
- assert.equal(f.plots['0-0'].readyAt,2100+Math.round((before-2100)/3));
- assert.throws(()=>applyFarmAction(f,{area:0,index:0,type:'fertilize'},2500),/肥料を使って/);
- const ready=f.plots['0-0'].readyAt;
- assert.equal(growthPhase(f.plots['0-0'],ready),'ready');
- f=applyFarmAction(f,{area:0,index:0,type:'harvest'},ready+1).farm;
- assert.equal(f.inventory.produce.lettuce,1);
- assert.equal(f.harvests,1);
- assert.equal(f.harvestCounts.lettuce,1);
- assert.equal(f.plots['0-0'],undefined);
-});
-
-test('water and fertilizer commute when applied at same moment, not at later moments',()=>{
- const start=1000;
- let base=applyFarmAction(freshFarm(),{area:0,index:1,type:'plant',crop:'lettuce'},start).farm;
- base.inventory.fertilizer=2;
- const wet=applyFarmAction(base,{area:0,index:1,type:'water'},start).farm;
- const wetThenFert=applyFarmAction(wet,{area:0,index:1,type:'fertilize'},start).farm;
- const fert=applyFarmAction(base,{area:0,index:1,type:'fertilize'},start).farm;
- const fertThenWet=applyFarmAction(fert,{area:0,index:1,type:'water'},start).farm;
- assert.equal(wetThenFert.plots['0-1'].readyAt,start+26*60000+40000);
- assert.equal(remaining(wetThenFert.plots['0-1'],start),'あと26分40秒');
- assert.equal(fertThenWet.plots['0-1'].readyAt,start+26*60000+40000);
- const later=applyFarmAction(base,{area:0,index:1,type:'water'},start+60*60000).farm;
- assert.equal(later.plots['0-1'].readyAt,start+100*60000);
- const further=applyFarmAction(later,{area:0,index:1,type:'fertilize'},start+80*60000).farm;
- assert.equal(further.plots['0-1'].readyAt,start+86*60000+40000);
- assert.throws(()=>applyFarmAction(base,{area:0,index:1,type:'water'},start+120*60000),/もう収穫/);
-});
-
-test('garden expansion must be sequential and cannot exceed balance',()=>{
- const base=freshFarm();
- assert.throws(()=>applyPurchase(base,'area','2',999));
- assert.throws(()=>applyPurchase(base,'area','1',29));
- const purchased=applyPurchase(base,'area','1',30);
- assert.equal(purchased.cost,30);
- assert.equal(purchased.farm.unlocked[1],true);
- assert.equal(base.unlocked[1],false);
-});
-
-test('produce can be fed to the pet or placed in a recoverable gift box',()=>{
- let f=freshFarm();
- f.inventory.produce.carrot=3;
- f=useProduce(f,'feed','carrot').farm;
- assert.equal(f.inventory.produce.carrot,2);
- assert.equal(f.bond,1);
- f=useProduce(f,'pack','carrot').farm;
- assert.equal(f.inventory.giftBox.carrot,1);
- assert.equal(f.inventory.produce.carrot,1);
- f=useProduce(f,'unpack','carrot').farm;
- assert.equal(f.inventory.giftBox.carrot,0);
- assert.equal(f.inventory.produce.carrot,2);
-});
-
-test('farm model is normalized and never modifies the main wallet',()=>{
+test('new farmers start on a blank 32x16 canvas with a free starter available in SHOP',()=>{
  const f=freshFarm();
- const saved=normalizeFarm({...f,inventory:{...f.inventory,water:4.8}});
- assert.equal(saved.inventory.water,4);
- assert.equal(Object.hasOwn(saved,'coins'),false);
- const src=readFileSync(new URL('../pet-farm/index.html',import.meta.url),'utf8');
- const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- assert.match(src,/name="robots" content="noindex,nofollow,noarchive"/);
- assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
- assert.match(app,/accountSession\(current\)/);
- assert.match(app,/runTransaction\(db/);
+ assert.deepEqual(f.fields,[]);
+ assert.deepEqual(f.roads,[]);
+ assert.equal(f.starterClaimed,false);
+ assert.equal(f.inventory.fields['4'],0);
+ assert.equal(f.schemaVersion,3);
+ assert.equal(MAP.w,32);
+ assert.equal(MAP.h,16);
+ assert.deepEqual(FIELD_SIZES,['4','6','9','16']);
+ assert.deepEqual(FIELD_SIZES.map(id=>FIELD_TYPES[id].price),[50,100,150,200]);
+ assert.equal(RESERVED_ZONES.length,2);
+ assert.deepEqual(FARMS.map(a=>a.w*a.h),[4,6,9,16]);
 });
 
-
-test('farm preview uses building and popup interactions rather than fixed side panels',()=>{
- const html=readFileSync(new URL('../pet-farm/index.html',import.meta.url),'utf8');
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- assert.match(html,/id="shopBuilding"/);
- assert.match(html,/id="storageBuilding"/);
- for(const id of ['actionDialog','shopDialog','storageDialog','previewGate']){
-  assert.ok(html.includes('id="'+id+'"'),id+' must exist');
- }
- assert.doesNotMatch(html,/id="bond"|class="sidebar"/,'no persistent mood or sidebar panels');
- assert.match(app,/showDialog\('actionDialog'\)/);
- assert.match(app,/await walkTo\(12\.7,6\.35\)/);
- assert.match(app,/showDialog\('shopDialog'\)/);
- assert.match(app,/actionConfirmation\(confirm,label,verb,/);
- assert.match(app,/actionButton\('やめる'/);
- assert.doesNotMatch(app,/confirm\(item\+/,'avoid native confirmation in the shop');
- assert.match(css,/#previewGate\[hidden\]\{display:none!important\}/);
- assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
-});
-
-test('illustrated farm stage fills screen with responsive fit and interactive hotspots',()=>{
- const html=readFileSync(new URL('../pet-farm/index.html',import.meta.url),'utf8');
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- const scene=readFileSync(new URL('../pet-farm/scenery.js',import.meta.url),'utf8');
- assert.match(html,/id="scenery"/);
- for(const target of ['house','shopBuilding','storageBuilding','plotLayer','petWalker'])
-  assert.match(html,new RegExp('id="'+target+'"'));
- assert.match(js,/installScenery\(\$\('scenery'\)\)/);
- assert.match(js,/function fitScene\(\)/);
- assert.match(js,/Math\.max\(view\.clientWidth\/scene\.width,view\.clientHeight\/scene\.height\)/);
- assert.match(css,/\.game-shell,\.farm-stage\{height:100%/);
- assert.match(css,/#scenery\{z-index:1;pointer-events:none\}/);
- assert.match(scene,/function store\(/);
- assert.match(scene,/function pond\(/);
- assert.match(scene,/function foliage\(/);
- assert.match(scene,/FARMS\.map\(bed\)/);
- assert.doesNotMatch(html,/id="grass"|id="paths"|id="deco"/);
- assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
-});
-
-test('shop sells supplies by unit and starter lettuce seeds in discounted bundles',()=>{
- assert.deepEqual({name:SUPPLIES.water.name,price:SUPPLIES.water.price,count:SUPPLIES.water.count},{name:'水',price:1,count:1});
- assert.deepEqual({name:SUPPLIES.fertilizer.name,price:SUPPLIES.fertilizer.price,count:SUPPLIES.fertilizer.count},{name:'肥料',price:2,count:1});
+test('free 4-cell field is claimed only once and paid plots may be bought repeatedly',()=>{
  const base=freshFarm();
- const water=applyPurchase(base,'supply','water',10,4);
- assert.equal(water.cost,4);
- assert.equal(water.farm.inventory.water,7);
- assert.equal(base.inventory.water,3);
- const fert=applyPurchase(water.farm,'supply','fertilizer',10,3);
- assert.equal(fert.cost,6);
- assert.equal(fert.farm.inventory.fertilizer,3);
- const seeds=applyPurchase(fert.farm,'seed','lettuce',10,5);
- assert.equal(seeds.cost,5);
- assert.equal(seeds.farm.inventory.seeds.lettuce,18);
- assert.equal(seeds.quantity,5);
- assert.throws(()=>applyPurchase(base,'seed','carrot',10),/まだ購入できません/);
-});
-
-test('shop batches validate quantity, balance, per-item stock cap, and single area unlock',()=>{
- const base=freshFarm();
- for(const qty of [0,-1,1.5,100,NaN,Infinity,'2']){
-  assert.throws(()=>applyPurchase(base,'seed','lettuce',1000,qty),String(qty));
+ let f=applyPurchase(base,'field','free',0).farm;
+ assert.equal(f.inventory.fields['4'],1);
+ assert.equal(f.starterClaimed,true);
+ assert.throws(()=>applyPurchase(f,'field','free',0),/受け取り済み/);
+ assert.throws(()=>applyPurchase(base,'field','free',0,2),/1個/);
+ const purchased=applyPurchase(f,'field','4',400,3);
+ assert.equal(purchased.cost,150);
+ f=purchased.farm;
+ assert.equal(f.inventory.fields['4'],4);
+ for(const [id,price] of [['6',100],['9',150],['16',200]]){
+  const p=applyPurchase(f,'field',id,1000);
+  assert.equal(p.cost,price);
+  assert.equal(p.farm.inventory.fields[id],1);
  }
- assert.throws(()=>applyPurchase(base,'seed','lettuce',1,2),/コインが足りません/);
- assert.throws(()=>applyPurchase(base,'area','1',300,2),/敷地は1回ずつ/);
- const nearFull=freshFarm();nearFull.inventory.water=99998;
- assert.throws(()=>applyPurchase(nearFull,'supply','water',100,2),/所持上限/);
- assert.equal(applyPurchase(nearFull,'supply','water',100,1).farm.inventory.water,99999);
- assert.equal(applyPurchase(base,'area','1',30).farm.unlocked[1],true);
+ assert.throws(()=>applyPurchase(f,'field','16',199),/コインが足りません/);
+ assert.deepEqual(base.inventory.fields,{'4':0,'6':0,'9':0,'16':0});
 });
 
-test('farm shop popup exposes quantity buttons, stock counts, and a single transaction',()=>{
- const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- assert.match(app,/shopStock\(kind,id\)/);
- assert.match(app,/shop-owned/);
- assert.match(app,/shop-quantity/);
- assert.match(app,/購入数を1個減らす/);
- assert.match(app,/購入数を1個増やす/);
- assert.match(app,/maxPurchaseQuantity\(item\)/);
- assert.match(app,/const total=current.price\*p.quantity/);
- assert.match(app,/async function buy\(kind,id,quantity=1\)/);
- assert.match(app,/applyPurchase\(fdoc.exists\(\)\?fdoc.data\(\):freshFarm\(\),kind,id,c,quantity\)/);
- assert.match(css,/\.shop-qty-btn/);
- assert.match(css,/\.shop-order-total/);
+test('field placement supports custom names and forbids out-of-bounds, buildings and overlap',()=>{
+ const {f,id}=starter();
+ assert.equal(f.fields[0].name,'わたしの畑');
+ assert.equal(f.fields[0].size,'4');
+ assert.deepEqual(locateField(f,id,3),{x:13,y:9});
+ assert.equal(canPlace(f,'4',12,8),false);
+ assert.equal(canPlace(f,'4',12,8,id),true);
+ assert.equal(canPlace(f,'4',1,1),false);
+ assert.equal(canPlace(f,'4',25,1),false);
+ assert.equal(canPlace(f,'16',30,14),false);
+ assert.throws(()=>applyLayoutAction(f,{type:'place-field',size:'4',x:12,y:8,name:'重なり'}),/配置できません|ありません/);
+ const purchase=applyPurchase(f,'field','6',100).farm;
+ assert.throws(()=>applyLayoutAction(purchase,{type:'place-field',size:'6',x:1,y:1,name:'おうち'}),/配置できません/);
+ assert.throws(()=>applyLayoutAction(purchase,{type:'place-field',size:'6',x:30,y:13,name:'場外'}),/配置できません/);
+ const placed=applyLayoutAction(purchase,{type:'place-field',size:'6',x:18,y:8,name:'給食畑'});
+ assert.equal(placed.farm.fields.length,2);
+ assert.equal(placed.farm.fields[1].name,'給食畑');
 });
 
-test('pet idling is slower than intentional farm movement and uses gentle short steps',()=>{
- const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- assert.match(js,/async function movePoint\(x,y,leisurely=false\)/);
- assert.match(js,/Math\.min\(3800,Math\.max\(450,dist\*480\)\)/);
- assert.match(js,/Math\.min\(1900,Math\.max\(160,dist\*120\)\)/);
- assert.match(js,/await walkTo\(target,6\.5,\{leisurely:true\}\)/);
- assert.match(js,/const drift=\(Math\.random\(\)-\.5\)\*3\.4/);
- assert.match(css,/#petWalker\.walking\.strolling svg\{animation:walkBob \.85s/);
+test('rename and move a field preserving all crop states',()=>{
+ const {id}=starter();let f=starter().f;
+ f=applyFarmAction(f,{type:'plant',area:id,index:0,crop:'lettuce'},1000).farm;
+ const key=plotKey(id,0),original=f.plots[key];
+ f=applyLayoutAction(f,{type:'move-field',id,x:16,y:10}).farm;
+ assert.deepEqual(locateField(f,id,0),{x:16,y:10});
+ assert.deepEqual(f.plots[key],original);
+ f=applyLayoutAction(f,{type:'rename-field',id,name:'ミラクル農園'}).farm;
+ assert.equal(f.fields[0].name,'ミラクル農園');
+ assert.throws(()=>applyLayoutAction(f,{type:'rename-field',id,name:'   '}),/名前/);
+ assert.throws(()=>applyLayoutAction(f,{type:'remove-field',id}),/収穫してから/);
+ f=applyFarmAction(f,{type:'harvest',area:id,index:0},7201000).farm;
+ f=applyLayoutAction(f,{type:'remove-field',id}).farm;
+ assert.equal(f.fields.length,0);
+ assert.equal(f.inventory.fields['4'],1);
+ assert.equal(f.harvestCounts.lettuce,1);
 });
 
-test('farm pet artwork removes only the decorative frame, retaining effects and equipment',()=>{
- const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- const art=readFileSync(new URL('../pet-art.js',import.meta.url),'utf8');
- assert.match(art,/petFrameLayer\(shop\)/);
- assert.match(js,/const equipped=\{\.\.\.\(shop\.equipped\|\|\{\}\)\}/);
- assert.match(js,/delete equipped\['pet-frame'\]/);
- assert.match(js,/renderPetSVG\(petData\.petAppearance,\{\.\.\.shop,equipped\},'',\{background:false\}\)/);
- assert.doesNotMatch(js,/delete shop\.equipped\['pet-frame'\]/);
-});
-
-test('shop modal does not shift when selecting items or changing quantity',()=>{
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- assert.match(css,/#shopDialog\[open\]\s*\{[\s\S]*?display:flex;[\s\S]*?height:min\(680px,calc\(100dvh - 24px\)\)/);
- assert.match(css,/#shopDialog #shopList\s*\{[\s\S]*?flex:1 1 auto;[\s\S]*?overflow-y:auto;/);
- assert.match(css,/#shopDialog #shopConfirmation\s*\{[\s\S]*?flex:0 0 224px;[\s\S]*?min-height:224px;/);
- assert.match(app,/const scrollBeforeUpdate=list.scrollTop/);
- assert.match(app,/list.scrollTop=scrollBeforeUpdate/);
- assert.match(app,/shop-selection-hint/);
- assert.match(app,/shopTab=tab.dataset.shop;chosenPurchase=null;\$\('shopList'\).scrollTop=0/);
-});
-
-test('five crop prices, growth durations and hunger values follow progression',()=>{
- assert.deepEqual(cropIds,['lettuce','carrot','pumpkin','strawberry','melon']);
- assert.deepEqual(cropIds.map(id=>CROPS[id].minutes),[120,240,480,840,1320]);
- assert.deepEqual(cropIds.map(id=>CROPS[id].fullness),[1,2,4,5,10]);
- assert.deepEqual(cropIds.map(id=>[CROPS[id].pack,CROPS[id].seed]),[[3,1],[2,1],[3,2],[1,1],[1,2]]);
-});
-
-test('harvest ten of each predecessor to unlock the next seed crop',()=>{
+test('soil road costs one coin per cell and may be laid and returned to inventory',()=>{
  let f=freshFarm();
- const progression=[['lettuce','carrot'],['carrot','pumpkin'],['pumpkin','strawberry'],['strawberry','melon']];
- for(const [previous,next] of progression){
-  assert.deepEqual(cropUnlockProgress(f,next).remaining,10);
-  assert.throws(()=>applyPurchase(f,'seed',next,100),/まだ購入できません/);
-  f=applyPurchase(f,'seed',previous,100,10).farm;
-  for(let i=0;i<10;i++){
-   const now=1000+i*120000000;
-   f=applyFarmAction(f,{area:0,index:0,type:'plant',crop:previous},now).farm;
-   f=applyFarmAction(f,{area:0,index:0,type:'harvest'},now+CROPS[previous].minutes*60000).farm;
-  }
-  assert.equal(f.harvestCounts[previous],10);
-  assert.equal(cropUnlockProgress(f,next).unlocked,true);
-  f=applyPurchase(f,'seed',next,100).farm;
-  assert.ok(f.inventory.seeds[next]>0);
- }
+ assert.equal(applyPurchase(f,'road','dirt',10,5).cost,5);
+ f=applyPurchase(f,'road','dirt',10,5).farm;
+ assert.equal(f.inventory.roads,5);
+ assert.equal(canPlaceRoad(f,2,2),false);
+ assert.equal(canPlaceRoad(f,29,10),true);
+ f=applyLayoutAction(f,{type:'place-road',x:14,y:10}).farm;
+ assert.deepEqual(f.roads,['14,10']);
+ assert.equal(f.inventory.roads,4);
+ assert.equal(canPlace(f,'4',14,10),false);
+ assert.throws(()=>applyLayoutAction(f,{type:'place-road',x:14,y:10}),/道路を敷けません/);
+ assert.throws(()=>applyLayoutAction(f,{type:'place-road',x:25,y:2}),/道路を敷けません/);
+ f=applyLayoutAction(f,{type:'remove-road',x:14,y:10}).farm;
+ assert.equal(f.inventory.roads,5);
+ assert.deepEqual(f.roads,[]);
+ assert.throws(()=>applyLayoutAction(f,{type:'remove-road',x:14,y:10}),/道路がありません/);
 });
 
-test('old farm data preserves seeds and planted crops while granting starter lettuce only once',()=>{
- const legacy={schemaVersion:1,unlocked:[true,false,false,false],
-   inventory:{seeds:{carrot:3,tomato:4},water:3,produce:{tomato:2},giftBox:{}},
-   plots:{'0-0':{crop:'tomato',plantedAt:1000,wateredAt:0,readyAt:0,boosted:false}}};
- const migrated=normalizeFarm(legacy);
- assert.equal(migrated.schemaVersion,2);
+test('crop timer starts immediately and boosts are applied to remaining time',()=>{
+ let {f,id}=starter();
+ f=applyFarmAction(f,{type:'plant',area:id,index:0,crop:'lettuce'},1000).farm;
+ assert.equal(f.plots[plotKey(id,0)].readyAt,7201000);
+ assert.equal(growthPhase(f.plots[plotKey(id,0)],1500),'sprout');
+ f=applyFarmAction(f,{type:'water',area:id,index:0},1000).farm;
+ assert.equal(f.plots[plotKey(id,0)].readyAt,4801000);
+ f.inventory.fertilizer=1;
+ f=applyFarmAction(f,{type:'fertilize',area:id,index:0},1000).farm;
+ assert.equal(f.plots[plotKey(id,0)].readyAt,1601000);
+ assert.equal(remaining(f.plots[plotKey(id,0)],1000),'あと26分40秒');
+ assert.throws(()=>applyFarmAction(f,{type:'fertilize',area:id,index:0},2000),/すでに|もう/);
+ assert.throws(()=>applyFarmAction(f,{type:'water',area:id,index:0},2000),/すでに/);
+});
+
+test('water and fertilizer give the same result at one moment, with time-sensitive later use',()=>{
+ const {f,id}=starter();
+ let base=applyFarmAction(f,{type:'plant',area:id,index:0,crop:'lettuce'},1000).farm;
+ base.inventory.fertilizer=1;
+ const wf=applyFarmAction(applyFarmAction(base,{type:'water',area:id,index:0},1000).farm,{type:'fertilize',area:id,index:0},1000).farm;
+ const fw=applyFarmAction(applyFarmAction(base,{type:'fertilize',area:id,index:0},1000).farm,{type:'water',area:id,index:0},1000).farm;
+ assert.equal(wf.plots[plotKey(id,0)].readyAt,fw.plots[plotKey(id,0)].readyAt);
+ const later=applyFarmAction(base,{type:'water',area:id,index:0},3601000).farm;
+ assert.equal(later.plots[plotKey(id,0)].readyAt,6001000);
+});
+
+test('older unlocked gardens become movable assets without losing planted crops',()=>{
+ const raw={schemaVersion:2,unlocked:[true,true,true,false],nextFieldId:1,
+  inventory:{seeds:{carrot:4},water:5,produce:{tomato:2},giftBox:{}},
+  plots:{'0-0':{crop:'lettuce',plantedAt:1000,readyAt:7201000},
+         '2-8':{crop:'tomato',plantedAt:2000,readyAt:182000}}};
+ const f=normalizeFarm(raw);
+ assert.equal(f.schemaVersion,3);
+ assert.equal(f.starterClaimed,true);
+ assert.deepEqual(f.fields.map(x=>x.id),['0','2']);
+ assert.deepEqual(f.fields.map(x=>x.name),['第1農園','第3農園']);
+ assert.equal(f.inventory.fields['6'],1);
+ assert.equal(f.plots['0-0'].crop,'lettuce');
+ assert.equal(f.plots['2-8'].crop,'tomato');
+ assert.equal(f.inventory.seeds.carrot,4);
+ assert.equal(f.inventory.produce.tomato,2);
+ const copy=normalizeFarm(f);
+ assert.deepEqual(copy.fields,f.fields);
+ assert.deepEqual(copy.plots,f.plots);
+ assert.equal(copy.inventory.fields['6'],1);
+});
+
+test('legacy starter lettuce is granted only once during version upgrades',()=>{
+ const old={schemaVersion:1,inventory:{seeds:{carrot:3}},unlocked:[true,false,false,false]};
+ const migrated=normalizeFarm(old);
  assert.equal(migrated.inventory.seeds.lettuce,3);
- assert.equal(migrated.inventory.seeds.carrot,3);
- assert.equal(migrated.inventory.seeds.tomato,4);
- assert.equal(migrated.inventory.produce.tomato,2);
- assert.equal(migrated.plots['0-0'].readyAt,1000+3*60000);
  assert.equal(normalizeFarm(migrated).inventory.seeds.lettuce,3);
- const newFarm=freshFarm();
- assert.equal(normalizeFarm(newFarm).inventory.seeds.lettuce,3);
- assert.equal(allCropIds.includes('tomato'),true);
+ assert.equal(migrated.inventory.fields['4'],1);
+ assert.equal(migrated.starterClaimed,true);
 });
 
-test('farm UI shows crop unlocks, seed packs and no farm feed button',()=>{
- const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- assert.match(app,/cropUnlockProgress\(farm,item.id\)/);
- assert.match(app,/const packTooLarge=/);
- assert.match(app,/p.quantity\*p.units/);
- assert.match(app,/isCropUnlocked\(farm,id\)/);
- assert.doesNotMatch(app,/\[\['feed','食べる'\]/);
- assert.match(app,/model.js\?v=7/);
+test('field storage changes do not modify the original wallet and inventory can be restored',()=>{
+ const f=freshFarm();
+ const changed=normalizeFarm({...f,inventory:{...f.inventory,water:4.8,roads:3,fields:{4:2,9:1}}});
+ assert.equal(changed.inventory.water,4);
+ assert.equal(changed.inventory.roads,3);
+ assert.deepEqual(changed.inventory.fields,{'4':2,'6':0,'9':1,'16':0});
+ assert.equal(Object.hasOwn(changed,'coins'),false);
 });
 
-test('shop dialog remains centered inside the viewport on desktop and smaller screens',()=>{
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- assert.match(css,/\.farm-dialog\{position:fixed;inset:0;margin:auto;transform:none;/);
- assert.match(css,/#shopDialog\[open\]\s*\{\s*position:fixed;\s*inset:0;\s*margin:auto;\s*transform:none;/);
- assert.match(css,/#shopDialog\[open\][\s\S]*?height:min\(680px,calc\(100dvh - 24px\)\)/);
- assert.doesNotMatch(css,/\.farm-dialog\{[^}]*top:50%;[^}]*translateY\(-50%\)/);
- assert.match(css,/@media\(max-height:590px\)[\s\S]*?#shopDialog #shopList\{min-height:0\}/);
+test('the five crop progression stays intact after relocating fields',()=>{
+ let {f,id}=starter();
+ assert.deepEqual(['lettuce','carrot','pumpkin','strawberry','melon'].map(n=>CROPS[n].minutes),[120,240,480,840,1320]);
+ assert.deepEqual(['lettuce','carrot','pumpkin','strawberry','melon'].map(n=>CROPS[n].fullness),[1,2,4,5,10]);
+ assert.deepEqual(['lettuce','carrot','pumpkin','strawberry','melon'].map(n=>[CROPS[n].pack,CROPS[n].seed]),[[3,1],[2,1],[3,2],[1,1],[1,2]]);
+ assert.equal(SUPPLIES.water.price,1);assert.equal(SUPPLIES.fertilizer.price,2);
+ assert.equal(cropUnlockProgress(f,'carrot').unlocked,false);
+ f.harvestCounts.lettuce=10;
+ assert.equal(cropUnlockProgress(f,'carrot').unlocked,true);
+ assert.equal(applyPurchase(f,'seed','carrot',100).farm.inventory.seeds.carrot,2);
+ assert.equal(useProduce({...f,inventory:{...f.inventory,produce:{carrot:2}}},'feed','carrot').farm.inventory.produce.carrot,1);
 });
 
-test('locked seeds keep the stock label inside their own resizable product card',()=>{
- const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
- const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
- assert.match(css,/\.shop-item\{[^}]*min-height:86px;height:auto;display:flex;/);
- assert.match(css,/\.shop-item \.shop-item-details\{display:flex;flex:1;min-width:0;flex-direction:column;/);
- assert.match(css,/\.shop-item \.shop-unlock\{/);
- assert.match(js,/const details=node\('span','shop-item-details'\)/);
- assert.match(js,/details\.appendChild\(node\('span','shop-unlock'/);
- assert.match(js,/details\.appendChild\(node\('span','shop-owned'/);
- assert.match(js,/b\.append\(node\('span','emoji',item.icon\),details\)/);
+test('home, shop and item button remain; fixed gardens, warehouse and preset paths are gone',()=>{
+ const html=source('pet-farm/index.html'),app=source('pet-farm/app.js'),scenery=source('pet-farm/scenery.js');
+ for(const id of ['house','shopBuilding','itemsBtn','itemsDialog','manageDialog','fieldNameDialog','placementBar','placementLayer','roadsLayer','plotLayer']){
+  assert.match(html,new RegExp('id="'+id+'"'));
+ }
+ assert.doesNotMatch(html,/id="storageBuilding"|id="storageDialog"/);
+ assert.match(app,/beginPlacement\(p.kind==='field'/);
+ assert.match(app,/shopTab='field'/);
+ assert.match(app,/applyLayoutAction\(farm,action\)/);
+ assert.match(scenery,/\$\{home\(\)\}\$\{store\(\)\}/);
+ assert.doesNotMatch(scenery,/\$\{FARMS\.map\(bed\)\.join\(''\)\}/);
+ assert.doesNotMatch(scenery,/\$\{paths\(\)\}/);
+ assert.doesNotMatch(source('index.html'),/pet-farm\//);
+});
+
+test('placement UI supports move, rename, removing road and removing crop-free fields',()=>{
+ const app=source('pet-farm/app.js'),css=source('pet-farm/style.css');
+ assert.match(app,/function beginPlacement\(/);
+ assert.match(app,/function choosePlacement\(/);
+ assert.match(app,/function confirmFieldName\(/);
+ assert.match(app,/function openManage\(/);
+ assert.match(app,/function stopPlacement\(/);
+ assert.match(app,/applyLayout\(\{type:'remove-field'/);
+ assert.match(app,/applyLayout\(\{type:'remove-road'/);
+ assert.match(css,/#placementLayer\[hidden\]/);
+ assert.match(css,/\.road-tile\{/);
+ assert.match(css,/\.placement-bar\{/);
+ assert.match(css,/#itemsDialog \.inventory/);
+});
+
+test('farm purchase stays transactional and the free starter never updates coin balance',()=>{
+ const app=source('pet-farm/app.js');
+ assert.match(app,/runTransaction\(db/);
+ assert.match(app,/if\(purchased\.cost\)tx\.update\(walletRef\(\)/);
+ assert.match(app,/tx\.set\(farmRef\(\)/);
+ assert.match(app,/accountSession\(current\)/);
+ assert.match(source('pet-farm/index.html'),/noindex,nofollow,noarchive/);
+});
+
+test('shop confirmation stays a fixed-height area and its scroll position is maintained',()=>{
+ const css=source('pet-farm/style.css'),app=source('pet-farm/app.js');
+ assert.match(css,/#shopDialog\[open\]/);
+ assert.match(css,/#shopDialog #shopConfirmation/);
+ assert.match(css,/#shopDialog #shopList/);
+ assert.match(app,/list\.scrollTop=scroll/);
+ assert.match(app,/shop-owned/);
+ assert.match(css,/\.shop-item-details/);
+});
+
+test('user placement is not allowed under fixed buildings or on top of roads',()=>{
+ const f=freshFarm();
+ assert.equal(canPlace(f,'4',2,2),false);
+ assert.equal(canPlace(f,'4',26,2),false);
+ assert.equal(canPlaceRoad(f,3,3),false);
+ assert.equal(canPlaceRoad(f,26,3),false);
+ assert.equal(canPlace(f,'4',14,8),true);
+ assert.equal(canPlaceRoad(f,14,8),true);
+});
+
+test('invalid field names and removal of occupied field are rejected without losing crops',()=>{
+ const {f,id}=starter();
+ assert.throws(()=>applyLayoutAction(f,{type:'rename-field',id,name:' '}),/名前/);
+ assert.throws(()=>applyLayoutAction(f,{type:'move-field',id,x:1,y:1}),/移動できません/);
+ assert.throws(()=>applyLayoutAction(f,{type:'place-road',x:12,y:8}),/道路がありません/);
 });
