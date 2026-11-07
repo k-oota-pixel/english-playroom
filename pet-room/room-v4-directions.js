@@ -4,7 +4,7 @@
  * 2=back (away from viewer), 3=faces screen left.
  * All views use the same bottom-centre anchor, independent of the footprint.
  */
-import {furnitureSVG as frontArt} from './room-v4-art.js?v=1';
+import {furnitureSVG as frontArt} from './room-v4-art.js?v=2';
 const outline='#795238';
 const shadow='<ellipse cx="120" cy="218" rx="82" ry="12" fill="#533a29" opacity=".19"/>';
 const bg=(markup,d)=>'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-facing="'+d+'" aria-hidden="true" focusable="false">'+markup+'</svg>';
