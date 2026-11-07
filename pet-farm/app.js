@@ -193,7 +193,10 @@ function maxPurchaseQuantity(item){
  return Math.max(0,Math.min(99,available,item.kind==='area'?1:storageSpace));
 }
 function renderShop(){
- const list=$('shopList');list.replaceChildren();
+ const list=$('shopList');
+ // Rebuilding product cards must not scroll the customer's eyes back to the top.
+ const scrollBeforeUpdate=list.scrollTop;
+ list.replaceChildren();
  $('shopBalance').textContent=Number(balance).toLocaleString('ja-JP');
  for(const tab of document.querySelectorAll('[data-shop]'))tab.classList.toggle('active',tab.dataset.shop===shopTab);
  const items=shopTab==='seed'?cropIds.map(id=>({
@@ -229,13 +232,17 @@ function renderShop(){
   });
   list.appendChild(b);
  }
+ list.scrollTop=scrollBeforeUpdate;
  const confirmation=$('shopConfirmation');confirmation.replaceChildren();
- if(!chosenPurchase)return;
+ if(!chosenPurchase){
+  confirmation.appendChild(node('p','shop-selection-hint',shopTab==='area'?'解放したい農園を選んでください。':'商品をタップすると、ここで数量と合計金額を確認できます。'));
+  return;
+ }
  const p=chosenPurchase;
  const current=items.find(i=>i.kind===p.kind&&i.id===p.id);
- if(!current){chosenPurchase=null;return;}
+ if(!current){chosenPurchase=null;renderShop();return;}
  const limit=maxPurchaseQuantity(current);
- if(limit<1){chosenPurchase=null;return;}
+ if(limit<1){chosenPurchase=null;renderShop();return;}
  p.quantity=Math.min(limit,Math.max(1,Math.floor(Number(p.quantity)||1)));
  const selected= current.kind==='area'?current.label:current.label+'（所持 '+shopStock(p.kind,p.id).toLocaleString('ja-JP')+'個）';
  confirmation.appendChild(node('p','confirm-label',p.icon+' '+selected));
@@ -494,14 +501,14 @@ async function visitBuilding(kind){
  try{
   if(kind==='shop')await walkTo(12.7,6.35);
   else await walkTo(20.1,6.35);
-  if(kind==='shop'){shopTab='seed';chosenPurchase=null;showDialog('shopDialog');}
+  if(kind==='shop'){shopTab='seed';chosenPurchase=null;$('shopList').scrollTop=0;renderShop();showDialog('shopDialog');}
   else{chosenProduce=null;renderInventory();showDialog('storageDialog');}
  }finally{busy=false;refresh();}
 }
 $('shopBuilding').addEventListener('click',()=>{void visitBuilding('shop');});
 $('storageBuilding').addEventListener('click',()=>{void visitBuilding('storage');});
 for(const tab of document.querySelectorAll('[data-shop]'))tab.addEventListener('click',()=>{
- shopTab=tab.dataset.shop;chosenPurchase=null;renderShop();
+ shopTab=tab.dataset.shop;chosenPurchase=null;$('shopList').scrollTop=0;renderShop();
 });
 for(const close of document.querySelectorAll('[data-close-dialog]'))close.addEventListener('click',()=>hideDialog(close.dataset.closeDialog));
 for(const modal of document.querySelectorAll('dialog.farm-dialog')){
