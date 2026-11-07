@@ -140,16 +140,32 @@ function storageConfirmation(){
 
 function renderSelection(){
  const title=$('selectionTitle'),desc=$('selectionDetail'),ctrl=$('actionControls');
+ const previousScroll=ctrl.querySelector('.farm-action-choices')?.scrollTop||0;
  ctrl.replaceChildren();
- if(!selected){title.textContent='畑を選んでください';desc.textContent='好きなマスをタップしてください。';return;}
+ // Always reserve the same three regions so selecting a seed cannot enlarge
+ // or re-center the modal. Only the item list scrolls; the controls stay put.
+ const choices=node('div','farm-action-choices');
+ const confirm=node('div','farm-action-confirm');
+ const footer=node('div','farm-action-footer');
+ footer.appendChild(actionButton('閉じる','secondary',()=>hideDialog('actionDialog')));
+ ctrl.append(choices,confirm,footer);
+ if(!selected){
+  title.textContent='畑を選んでください';
+  desc.textContent='好きなマスをタップしてください。';
+  return;
+ }
  const area=selected.area,index=selected.index,a=farm.fields.find(item=>item.id===area);
- if(!a){selected=null;title.textContent='畑を選んでください';desc.textContent='圃場を置いてください。';return;}
+ if(!a){
+  selected=null;title.textContent='畑を選んでください';
+  desc.textContent='圃場を置いてください。';
+  return;
+ }
  const p=farm.plots[plotKey(area,index)];
  title.textContent=a.name+' · '+(index+1)+'番の畑';
  const items=node('div','item-options');
  const select=(key,icon,label,quantity,action)=>items.appendChild(selectedItem(label,'持ち物 ×'+quantity,{key,icon,...action}));
  if(!p){
-  desc.textContent='🌰 手持ちのタネから1種類選んでください。';
+  desc.textContent='🌱 手持ちのタネから1種類選んでください。';
   for(const id of allCropIds){
    if(farm.inventory.seeds[id]>0&&isCropUnlocked(farm,id))
     select('plant:'+id,CROPS[id].icon,CROPS[id].name+'のタネ',farm.inventory.seeds[id],{type:'plant',crop:id});
@@ -158,51 +174,37 @@ function renderSelection(){
   const phase=growthPhase(p);
   desc.textContent=CROPS[p.crop].icon+' '+CROPS[p.crop].name+'　｜　'+remaining(p)+'　'+(p.wateredAt?'💧使用済み':'💧未使用')+' / '+(p.boosted?'🌱使用済み':'🌱未使用');
   if(phase==='ready'){
-   ctrl.appendChild(node('p','modal-hint','✨ 収穫の時期です！'));
+   choices.appendChild(node('p','modal-hint','✨ 収穫の時期です！'));
+   confirm.appendChild(node('p','confirm-label','育った'+CROPS[p.crop].name+'を収穫しますか？'));
    const row=node('div','modal-actions');
    row.append(actionButton('🧺 収穫する','gold',()=>actPlot('harvest')),actionButton('やめる','secondary',()=>hideDialog('actionDialog')));
-   ctrl.appendChild(row);
+   confirm.appendChild(row);
    return;
   }
   if(!p.wateredAt&&farm.inventory.water>0)select('water','💧','水',farm.inventory.water,{type:'water'});
   if(!p.boosted&&farm.inventory.fertilizer>0)select('fertilize','🌿','肥料',farm.inventory.fertilizer,{type:'fertilize'});
  }
  if(!items.childNodes.length){
-  ctrl.appendChild(node('p','modal-hint','使える持ち物がありません。おみせで購入できます。'));
+  choices.appendChild(node('p','modal-hint','使える持ち物がありません。おみせで購入できます。'));
   const row=node('div','modal-actions');
   row.append(actionButton('🏪 おみせへ','gold',async()=>{hideDialog('actionDialog');await visitBuilding('shop');}),actionButton('やめる','secondary',()=>hideDialog('actionDialog')));
-  ctrl.appendChild(row);return;
+  confirm.appendChild(row);
+  return;
  }
- ctrl.appendChild(items);
+ choices.appendChild(items);
+ choices.scrollTop=previousScroll;
  if(actionChoice){
   const found=[...items.children].some(el=>el.classList.contains('selected'));
   if(found){
-   const confirm=node('div','modal-confirm');
    const chosen=actionChoice;
    const label=chosen.type==='plant'?CROPS[chosen.crop].name+'のタネをまきますか？':chosen.type==='water'?'水をあげますか？':'肥料をあげますか？';
    const verb=chosen.type==='plant'?'🌱 まく':chosen.type==='water'?'💧 水をやる':'🌿 肥料を使う';
    actionConfirmation(confirm,label,verb,()=>actPlot(chosen.type,chosen.crop?{crop:chosen.crop}:{}));
-   ctrl.appendChild(confirm);
   }else actionChoice=null;
  }
- const row=node('div','modal-actions');
- row.appendChild(actionButton('閉じる','secondary',()=>hideDialog('actionDialog')));
- ctrl.appendChild(row);
+ if(!confirm.childNodes.length)confirm.appendChild(node('p','farm-action-prompt','持ち物を選ぶと、ここに確認ボタンが表示されます。'));
 }
 
-function shopStock(kind,id){
- if(kind==='seed')return farm.inventory.seeds[id]||0;
- if(kind==='supply')return farm.inventory[id]||0;
- if(kind==='field')return id==='free'?Number(farm.starterClaimed):farm.inventory.fields[id]||0;
- if(kind==='road')return farm.inventory.roads||0;
- return 0;
-}
-function maxPurchaseQuantity(item){
- const stock=shopStock(item.kind,item.id);
- const per=item.kind==='seed'?CROPS[item.id].pack||1:1;
- const room=item.id==='free'?(farm.starterClaimed?0:1):Math.floor((99999-stock)/per);
- return Math.max(0,Math.min(99,room,item.price===0?1:Math.floor(balance/item.price)));
-}
 // Hide locked crops as mysteries. Only reveal the next unlock milestone;
 // more distant crops reveal neither their identity nor their prerequisites.
 function shopSeedReveal(state,id){
