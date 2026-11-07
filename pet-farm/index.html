@@ -7,34 +7,44 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>もんすたふぁーむ｜開発中プレビュー</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./style.css?v=2">
+<link rel="stylesheet" href="./style.css?v=3">
 <style id="monstudy-access-lock">html:before{content:"ログインを確認しています…";position:fixed;inset:0;z-index:99999;display:grid;place-content:center;background:#edf6ed;color:#315f4d;font:16px system-ui}body{visibility:hidden!important}</style>
 <script type="module" src="../access-gate.js?v=2.3.15"></script>
 </head>
 <body>
 <div id="previewGate" role="status" aria-live="polite">管理者確認中…</div>
-<div class="shell">
- <header class="top">
-  <div class="brand"><div class="eyebrow">MONSTUDY · FARM PREVIEW 1.1</div><h1>🌿 もんすたふぁーむ</h1><p>ちいさな畑から、ペットと暮らす大きな農園へ。</p></div>
-  <div class="header-actions"><div class="coin-chip">🪙 <strong id="coins">—</strong> C</div><button id="saveBtn" class="btn alt" type="button" disabled>保存</button><a class="btn alt" href="../index.html">もんすたでぃに戻る</a></div>
- </header>
- <div class="notice" id="status" role="status" aria-live="polite">ログインと農園データを確認しています…</div>
- <main class="field-card farm-screen">
-  <div class="field-head">
-   <strong>MY FARM <small>畑や建物をタップして遊ぼう</small></strong>
-   <div class="field-tools"><button class="mini" id="homeBtn" type="button">🏡 おうち</button><button class="mini" id="centerBtn" type="button">🌱 畑へ</button><button class="mini" id="zoomOut" type="button" aria-label="縮小">−</button><strong id="zoomLabel">80%</strong><button class="mini" id="zoomIn" type="button" aria-label="拡大">＋</button></div>
+<div class="game-shell">
+ <main class="farm-stage" aria-label="もんすたふぁーむ">
+  <div class="viewport" id="viewport" tabindex="0" aria-label="画面をドラッグして見渡せる農園">
+   <div id="sceneSize"><div id="world">
+    <div id="scenery" aria-hidden="true"></div>
+    <div id="plotLayer"></div>
+    <button id="house" class="building-hit home-hit" type="button" aria-label="ペットのおうち。おへやモードは準備中"></button>
+    <button id="shopBuilding" class="building-hit shop-hit" type="button" aria-label="ショップへ行く"></button>
+    <button id="storageBuilding" class="building-hit storage-hit" type="button" aria-label="倉庫へ行く"></button>
+    <div id="petWalker" aria-label="あなたのペット"><span>🥚</span></div>
+    <div id="effect" aria-hidden="true"></div>
+   </div></div>
   </div>
-  <div class="viewport" id="viewport" tabindex="0" aria-label="スクロールできる農園マップ">
-    <div id="sceneSize"><div id="world">
-      <div id="grass" aria-hidden="true"></div><div id="paths" aria-hidden="true"></div><div id="deco" aria-hidden="true"></div><div id="plotLayer"></div>
-      <div id="house" class="house" role="img" aria-label="ペットのおうち。お部屋への出入りは今後実装します"><div class="roof"></div><div class="house-face"><span class="window">✦</span><span class="door">🚪</span><span class="window">✦</span></div><span class="house-sign">PET HOME</span></div>
-      <button id="shopBuilding" class="farm-building shop-building" type="button" aria-label="農園のおみせを開く"><span class="building-roof">🏪</span><span class="building-name">タネと道具のおみせ</span><span class="building-foot">SHOP · タップ</span></button>
-      <button id="storageBuilding" class="farm-building storage-building" type="button" aria-label="倉庫とプレゼント箱を開く"><span class="building-roof">🛖</span><span class="building-name">倉庫と贈り物</span><span class="building-foot">STORAGE · タップ</span></button>
-      <div id="petWalker" aria-label="あなたのペット"><span>🥚</span></div><div id="effect" aria-hidden="true"></div>
-    </div></div>
+  <header class="game-hud">
+   <div class="hud-title"><span class="sprig" aria-hidden="true">🌱</span><span>もんすたふぁーむ</span></div>
+   <div class="hud-actions">
+    <div class="coin-chip">🪙 <strong id="coins">—</strong> C</div>
+    <button id="saveBtn" class="hud-btn" type="button" disabled>💾 保存</button>
+    <a class="hud-btn hud-home" href="../index.html">← もんすたでぃに戻る</a>
+   </div>
+  </header>
+  <div class="game-status" id="status" role="status" aria-live="polite">ログインと農園データを確認しています…</div>
+  <div class="game-tools">
+   <button id="homeBtn" type="button" title="おうちに移動">🏡 おうち</button>
+   <button id="centerBtn" type="button" title="第1農園に移動">🌱 畑</button>
+   <button id="zoomOut" type="button" aria-label="縮小">−</button>
+   <span id="zoomLabel">100%</span>
+   <button id="zoomIn" type="button" aria-label="拡大">＋</button>
   </div>
-  <div class="field-foot"><span>🌱 畑 → タップでお仕事</span><span>🏪 おみせ → ペットが歩いてお買い物</span><span>🛖 倉庫 → 食事・贈り物</span></div>
+  <div class="farm-hint">畑・ショップ・倉庫をタップして遊ぼう <span aria-hidden="true">✦</span> ドラッグで移動</div>
  </main>
+</div>
  <dialog id="actionDialog" class="farm-dialog" aria-labelledby="selectionTitle">
    <div class="modal-head"><div><div class="panel-kicker">FARM ACTION</div><h2 id="selectionTitle">畑を選んでください</h2></div><button type="button" class="modal-close" data-close-dialog="actionDialog" aria-label="閉じる">✕</button></div>
    <div id="selectionDetail" class="subtext"></div><div id="actionControls"></div>
@@ -50,9 +60,8 @@
   <div id="inventory" class="inventory"></div><div id="storageConfirmation" class="modal-confirm"></div>
   <p class="tiny">作物はペットに食べさせたりプレゼント箱に保管できます。友達への送信は今後実装予定です。</p>
  </dialog>
- <footer>開発中のURL限定プレビュー · メインページへの入口はありません · 作業中の農園データは既存の教材とは別に保存します</footer>
-</div>
+ </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="./app.js?v=2"></script>
+<script type="module" src="./app.js?v=3"></script>
 </body>
 </html>
