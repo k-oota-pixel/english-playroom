@@ -289,6 +289,7 @@ export function applyPurchase(current,kind,id,coins,quantity=1){
   }else{
    const item=FIELD_TYPES[id];
    if(!item)fail('圃場が見つかりません。');
+   if(!f.starterClaimed)fail('先に無料の4マス圃場を受け取ってください。');
    unitPrice=item.price;
    if(f.inventory.fields[id]+quantity>99999)fail('圃場の所持上限を超えています。');
    f.inventory.fields[id]+=quantity;
