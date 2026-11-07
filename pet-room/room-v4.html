@@ -37,27 +37,33 @@
     </div>
    </section>
    <p id="roomStatus" class="room-status" role="status">家具やペットを読み込んでいます…</p>
-   <div class="editing-panel" id="editingPanel" hidden>
-    <span class="active-name" id="selectedName"></span>
-    <button type="button" data-move="up" title="上">↑</button>
-    <button type="button" data-move="left" title="左">←</button>
-    <button type="button" data-move="right" title="右">→</button>
-    <button type="button" data-move="down" title="下">↓</button>
-    <button type="button" id="rotateItem">↻ 回転</button>
-    <button type="button" id="cancelItem">戻す</button>
-    <button type="button" id="storeItem" class="danger">しまう</button>
-    <button type="button" id="confirmItem" class="primary">✓ 決定</button>
-   </div>
    <div class="bottom-bar">
     <button id="backHome" class="action-home" type="button">← もどる</button>
     <button id="playPet" class="primary-play" type="button">🐾 あそぶ</button>
    </div>
   </div>
   <aside class="info-column">
+   <section class="editing-panel" id="editingPanel" aria-label="家具の位置と向きを調整する操作パネル" hidden>
+    <strong class="active-name" id="selectedName"></strong>
+    <p class="panel-hint">上下左右に動かすか、回転して向きを調整</p>
+    <div class="movement-pad" role="group" aria-label="家具を移動">
+     <button type="button" data-move="up" aria-label="上へ移動">↑</button>
+     <button type="button" data-move="left" aria-label="左へ移動">←</button>
+     <span class="pad-center" aria-hidden="true">✥</span>
+     <button type="button" data-move="right" aria-label="右へ移動">→</button>
+     <button type="button" data-move="down" aria-label="下へ移動">↓</button>
+    </div>
+    <div class="edit-actions">
+     <button type="button" id="rotateItem">↻ 90°回転</button>
+     <button type="button" id="cancelItem">戻す</button>
+     <button type="button" id="storeItem" class="danger">しまう</button>
+     <button type="button" id="confirmItem" class="primary">✓ 決定</button>
+    </div>
+   </section>
    <section class="info-card">
     <h2>📝 おへやのメモ</h2>
     <p><strong id="petName">ペット</strong> のすきな家具をおいて、すてきなおへやにしてあげよう！</p>
-    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br>家具はそれぞれ４方向に回転できます。<br><span>おへや v4.1.0</span></div>
+    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br>家具はそれぞれ４方向に回転できます。<br><span>おへや v4.2.0</span></div>
    </section>
   </aside>
  </section>
