@@ -330,3 +330,38 @@ test('farm action dialog stays the same height and keeps confirmation in place b
  assert.match(css,/#actionDialog \.farm-action-footer\{[\s\S]*?flex:0 0 57px/);
  assert.match(css,/@media\(max-height:510px\)/);
 });
+
+
+test('dirt paths connect as horizontal, vertical, corner, T junction and crossings',()=>{
+ const js=source('pet-farm/app.js');
+ const start=js.indexOf('function roadConnections(keys,x,y){');
+ const end=js.indexOf('\nfunction drawRoadGrain(',start);
+ assert.ok(start>=0&&end>start,'roadConnections helper must be present');
+ const connection=new Function(js.slice(start,end)+';return roadConnections;')();
+ const at=(points,x=10,y=10)=>connection(new Set(points.map(([a,b])=>a+','+b)),x,y);
+ assert.deepEqual(at([[9,10],[11,10]]),{n:false,e:true,s:false,w:true});
+ assert.deepEqual(at([[10,9],[10,11]]),{n:true,e:false,s:true,w:false});
+ assert.deepEqual(at([[10,9],[11,10]]),{n:true,e:true,s:false,w:false});
+ assert.deepEqual(at([[10,9],[9,10],[11,10]]),{n:true,e:true,s:false,w:true});
+ assert.deepEqual(at([[10,9],[11,10],[10,11],[9,10]]),{n:true,e:true,s:true,w:true});
+ assert.deepEqual(at([]),{n:false,e:false,s:false,w:false});
+});
+
+test('soil path texture has no circle studs, plastic stripes or per-cell plank seams',()=>{
+ const js=source('pet-farm/app.js'),css=source('pet-farm/style.css');
+ const start=css.indexOf('.road-tile{'),end=css.indexOf('#plotLayer .farm-area{',start);
+ const styles=css.slice(start,end);
+ assert.ok(start>=0&&end>start);
+ assert.match(js,/const roads=new Set\(farm\.roads\)/);
+ assert.match(js,/const signature=\[\.\.\.roads\]\.sort\(\)\.join\('\|'\)/);
+ assert.match(js,/const connection=roadConnections\(roads,x,y\)/);
+ assert.match(js,/if\(!connection\[side\]\)road\.appendChild\(node\('span','road-edge road-edge--'\+side\)\)/);
+ assert.match(js,/drawRoadGrain\(road,x,y\)/);
+ assert.match(js,/road\.style\.borderRadius=/);
+ assert.match(styles,/border:0;overflow:hidden/);
+ assert.match(styles,/box-shadow:none/);
+ for(const side of ['n','e','s','w'])assert.match(styles,new RegExp('\\\\.road-edge--'+side+'\\\\{'));
+ assert.match(styles,/\.road-grain/);
+ assert.doesNotMatch(styles,/radial-gradient|repeating-linear-gradient|border:2px solid/);
+ assert.doesNotMatch(styles,/\\.road-tile\\{[^}]*box-shadow:inset/);
+});
