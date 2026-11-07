@@ -5,6 +5,7 @@ import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {roomBackground} from './room-v4-art.js?v=2';
 import {facingFurnitureSVG,ROOM_FOOTPRINTS} from './room-v4-directions.js?v=2';
+import {extraFurnitureSVG,EXTRA_FURNITURE} from './room-v4-extras.js?v=1';
 
 const $=id=>document.getElementById(id);
 const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
@@ -15,12 +16,19 @@ const specs=[
  {id:'rug',name:'ラグ',icon:'🟢',x:2,y:3,scaleX:1.06,scaleY:.96,blocking:false},
  {id:'table',name:'テーブル',icon:'☕',x:0,y:5,scaleX:1.34,scaleY:1.36},
  {id:'sofa',name:'ソファ',icon:'🛋️',x:4,y:4,scaleX:1.03,scaleY:1.50},
- {id:'plant',name:'観葉植物',icon:'🪴',x:5,y:2,scaleX:1.14,scaleY:1.45}
-].map(spec=>({...spec,...ROOM_FOOTPRINTS[spec.id]}));
-const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:true,element:null,blocking:s.blocking!==false}]));
+ {id:'plant',name:'観葉植物',icon:'🪴',x:5,y:2,scaleX:1.14,scaleY:1.45},
+ {id:'roomLight',name:'ルームライト',icon:'💡',x:3,y:1,scaleX:1.03,scaleY:1.72,initialPlaced:false},
+ {id:'tvStand',name:'テレビ（テレビ台付き）',icon:'📺',x:3,y:0,scaleX:1.12,scaleY:1.42,sideScaleY:.93,initialPlaced:false},
+ {id:'studyDesk',name:'勉強机',icon:'✏️',x:2,y:2,scaleX:1.08,scaleY:1.43,sideScaleY:.96,initialPlaced:false},
+ {id:'fullMirror',name:'姿見の鏡',icon:'🪞',x:0,y:1,scaleX:1.02,scaleY:1.70,initialPlaced:false},
+ {id:'wallClock',name:'壁掛け時計',icon:'🕒',x:3,y:0,scaleX:.93,scaleY:1.04,initialPlaced:false,blocking:false,wallOnly:true},
+ {id:'squareTable',name:'四角いテーブル',icon:'▱',x:2,y:4,scaleX:1.1,scaleY:1.38,sideScaleY:.95,initialPlaced:false},
+ {id:'kotatsu',name:'こたつ',icon:'🍊',x:3,y:3,scaleX:1.04,scaleY:1.08,initialPlaced:false}
+].map(spec=>({...spec,...ROOM_FOOTPRINTS[spec.id],...EXTRA_FURNITURE[spec.id]}));
+const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:s.initialPlaced!==false,element:null,blocking:s.blocking!==false&&!s.wallOnly}]));
 let user=null,petData={},petCell={x:3,y:2},mode='view',activeId=null,snapshot=null;
 let playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-v4:guest',hasPet=false,dragState=null,suppressClickUntil=0;
-const board=$('roomBoard'),layer=$('objectLayer'),grid=$('gridOverlay'),tiles=$('placementTiles');
+const board=$('roomBoard'),layer=$('objectLayer'),grid=$('gridOverlay'),tiles=$('placementTiles'),wallSlots=$('wallSlots');
 const actor=$('petActor'),egg=$('petEgg'),panel=$('editingPanel');
 const editorHome=document.querySelector('.info-column'),roomStatus=$('roomStatus');
 const phoneLayout=matchMedia('(max-width:740px)');
@@ -58,22 +66,30 @@ for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){
  });
  tiles.appendChild(tile);tileButtons.push(tile);
 }
+const wallSlotButtons=[];
+for(let x=0;x<GRID;x++){
+ const slot=document.createElement('button');slot.type='button';slot.className='wall-slot';
+ slot.setAttribute('aria-label','上の壁の'+(x+1)+'番目に時計を設置');slot.dataset.x=String(x);
+ slot.addEventListener('click',()=>{const item=activeId?items.get(activeId):null;if(!item?.wallOnly)return;item.x=x;item.y=0;render()});
+ wallSlots.appendChild(slot);wallSlotButtons.push(slot);
+}
 const pos=(x,y)=>({x:TX+x*TILE,y:TY+y*TILE});
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const key=(x,y)=>x+','+y;
 const dims=item=>item.rotation%2===0?{w:item.w,h:item.h}:{w:item.h,h:item.w};
 const itemCells=item=>{const d=dims(item),a=[];for(let j=0;j<d.h;j++)for(let i=0;i<d.w;i++)a.push({x:item.x+i,y:item.y+j});return a};
-const blockedCells=(skip)=>{const result=new Set();for(const it of items.values()){if(!it.placed||!it.blocking||it.id===skip)continue;for(const c of itemCells(it))result.add(key(c.x,c.y))}return result};
+const blockedCells=(skip)=>{const result=new Set();for(const it of items.values()){if(!it.placed||!it.blocking||it.wallOnly||it.id===skip)continue;for(const c of itemCells(it))result.add(key(c.x,c.y))}return result};
 const legal=item=>{
  const d=dims(item),others=blockedCells(item.id);
  return item.x>=0&&item.y>=0&&item.x+d.w<=GRID&&item.y+d.h<=GRID
+ &&(!item.wallOnly||item.y===0)
  &&(!item.blocking||itemCells(item).every(c=>!others.has(key(c.x,c.y))));
 };
-function fit(item){const d=dims(item);item.x=clamp(Math.round(item.x),0,GRID-d.w);item.y=clamp(Math.round(item.y),0,GRID-d.h)}
+function fit(item){const d=dims(item);item.x=clamp(Math.round(item.x),0,GRID-d.w);item.y=item.wallOnly?0:clamp(Math.round(item.y),0,GRID-d.h)}
 function freeLocation(item){
  const old={x:item.x,y:item.y},candidates=[];
  const d=dims(item);
- for(let y=0;y<=GRID-d.h;y++)for(let x=0;x<=GRID-d.w;x++)candidates.push({x,y,cost:Math.abs(old.x-x)+Math.abs(old.y-y)});
+ for(let y=0;y<=(item.wallOnly?0:GRID-d.h);y++)for(let x=0;x<=GRID-d.w;x++)candidates.push({x,y,cost:Math.abs(old.x-x)+Math.abs(old.y-y)});
  candidates.sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x);
  for(const c of candidates){item.x=c.x;item.y=c.y;if(legal(item))return true}
  item.x=old.x;item.y=old.y;return false;
@@ -92,7 +108,7 @@ function loadLayout(uid){
   it.rotation=Number.isInteger(saved?.rotation)?((saved.rotation%4)+4)%4:0;
   it.x=Number.isInteger(saved?.x)?saved.x:spec.x;
   it.y=Number.isInteger(saved?.y)?saved.y:spec.y;
-  it.placed=saved?!!saved.placed:true;
+  it.placed=saved?!!saved.placed:spec.initialPlaced!==false;
   fit(it);
  }
  // Preserve the original records; resolve overlap only in this new room's working layout.
@@ -109,7 +125,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={__version:2};
+ const data={__version:3};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}
@@ -119,12 +135,13 @@ function toast(message){
  const el=$('toast');el.textContent=message;el.classList.add('show');
  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2300);
 }
+function artFor(item){return EXTRA_FURNITURE[item.id]?extraFurnitureSVG(item.id,item.rotation):facingFurnitureSVG(item.id,item.rotation)}
 function furnitureHTML(item){
  const el=document.createElement('button');
  el.type='button';el.className='object'+(item.id==='rug'?' rug-object':'');
  el.setAttribute('aria-label',item.name+'を動かす');
  el.dataset.itemId=item.id;
- el.innerHTML=facingFurnitureSVG(item.id,item.rotation);el.dataset.facing=String(item.rotation);
+ el.innerHTML=artFor(item);el.dataset.facing=String(item.rotation);
  el.addEventListener('click',event=>{if(performance.now()<suppressClickUntil){event.preventDefault();return}onItemSelect(item)});
  el.addEventListener('pointerdown',event=>{
   if(event.button!==0||mode==='store')return;
@@ -159,7 +176,7 @@ function beginEdit(item){
  mode='move';item.placed=true;
  if(!legal(item))freeLocation(item);
  render();
- notice(item.name+'を動かせます。マスをタップするか、家具をドラッグしてください。');
+ notice(item.wallOnly?'時計は上側の壁だけに取り付けられます。設置場所を選んでください。':item.name+'を動かせます。マスをタップするか、家具をドラッグしてください。');
 }
 function endEdit(save){
  const item=items.get(activeId);if(!item)return;
@@ -176,6 +193,7 @@ function storeActive(){
 }
 function moveActive(direction){
  const item=items.get(activeId);if(!item)return;
+ if(item.wallOnly&&(direction==='up'||direction==='down'))return;
  if(direction==='left')item.x--;if(direction==='right')item.x++;
  if(direction==='up')item.y--;if(direction==='down')item.y++;
  fit(item);render();
@@ -186,16 +204,17 @@ function drawItem(item){
  el.hidden=!item.placed;el.classList.toggle('selected',activeId===item.id);
  if(!item.placed)return;
  const d=dims(item),isRug=item.id==='rug';
- const x=TX+(item.x+d.w/2)*TILE,y=TY+(item.y+(isRug?d.h/2:d.h))*TILE;
+ const x=TX+(item.x+d.w/2)*TILE;
+ const y=item.wallOnly?199:TY+(item.y+(isRug?d.h/2:d.h))*TILE+(item.id==='bed'?-TILE*.5:0);
  // The four sprites share a bottom/feet anchor; only the rug is floor-centred.
  const width=TILE*d.w*item.scaleX;
- const spriteHeightScale=item.id==='sofa'&&item.rotation%2===1?1.12:item.scaleY;
+ const spriteHeightScale=item.id==='sofa'&&item.rotation%2===1?1.12:item.rotation%2===1&&item.sideScaleY?item.sideScaleY:item.scaleY;
  const height=TILE*d.h*spriteHeightScale;
  el.style.left=(x/SIZE*100)+'%';el.style.top=(y/SIZE*100)+'%';
  el.style.width=(width/SIZE*100)+'%';el.style.height=(height/SIZE*100)+'%';
  el.style.transform=isRug?'translate(-50%,-66%)':'translate(-50%,-92%)';
- el.style.zIndex=activeId===item.id?'950':isRug?'3':String(20+Math.floor((item.y+d.h)*20));
- if(el.dataset.facing!==String(item.rotation)){el.innerHTML=facingFurnitureSVG(item.id,item.rotation);el.dataset.facing=String(item.rotation)};
+ el.style.zIndex=activeId===item.id?'950':item.wallOnly?'8':isRug?'3':String(20+Math.floor((item.y+d.h)*20));
+ if(el.dataset.facing!==String(item.rotation)){el.innerHTML=artFor(item);el.dataset.facing=String(item.rotation)};
 }
 function drawTiles(){
  const active=activeId?items.get(activeId):null;
