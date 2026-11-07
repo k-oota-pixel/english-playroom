@@ -1,0 +1,37 @@
+
+.pixel-page{max-width:1140px}
+.pixel-page .intro{align-items:center}
+.pixel-label{display:inline-block;vertical-align:middle;background:#f0d3a2;color:#74492f;border:1px solid #bb8855;border-radius:7px;padding:5px 9px;font:800 12px system-ui}
+.pixel-page .room-shell{background:#f6e2c5;border:3px solid #8e613e;box-shadow:0 8px 0 #7a5136,0 15px 25px #64412d28;padding:8px}
+.pixel-page .room{border-radius:4px;background:#f3ecdb;min-height:280px}
+.pixel-page .backdrop{image-rendering:pixelated;object-fit:fill}
+.pixel-page .furniture img{image-rendering:pixelated}
+.pixel-page .furniture img.flip{transform:none}
+.pixel-page .furniture{filter:drop-shadow(0 5px 1px #4d342855)}
+.pixel-page .furniture.selected{filter:drop-shadow(0 0 5px #ffe55c)}
+.pixel-page .pet-in-room{width:8.5%;min-width:45px;max-width:104px}
+.pixel-page .pet-in-room img{width:100%;height:auto;display:block;image-rendering:pixelated;transform:scaleX(var(--pet-face,1));transform-origin:50% 80%}
+.pixel-page .pet-in-room svg{image-rendering:pixelated}
+.pixel-page .tile{stroke:#e8bc7a}
+.pixel-page .room.is-placing .tile{fill-opacity:.1;stroke-opacity:.8}
+.pixel-page .room.is-placing .tile.anchor{fill:#ffe277;fill-opacity:.5}
+.pixel-page .room-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px}
+.pixel-page .help-text,.pixel-page .hint,.pixel-page .disclaimer{font-size:11px;color:#816a59;line-height:1.7}
+.pixel-page .bottom{margin-top:15px}
+.pixel-page .panel{border:2px solid #d7ab83;background:#fff9eb}
+.pixel-page .panel h2{margin:0 0 9px;font-size:16px}
+.pixel-page .small-heading{font-weight:800;font-size:12px;margin:12px 0 6px}
+.pixel-page .selected-panel{padding:9px 0 13px;border-bottom:1px solid #ead7c6}
+.pixel-page .selected-actions{display:flex;flex-wrap:wrap;gap:7px;margin:7px 0}
+.pixel-page .swatches{display:flex;gap:5px;flex-wrap:wrap}
+.pixel-page .swatch{padding:7px 12px}
+.pixel-page .swatch[aria-pressed="true"]{background:#a1c49b;border-color:#618565}
+.pixel-page .clear-button{margin-top:13px}
+.pixel-page .disclaimer{border-top:1px solid #ead7c6;padding-top:9px}
+.pixel-page .catalog-item .icon{font-size:20px}
+.pixel-page .mode-banner{background:#fff1b4eb;border:2px solid #c78b42;color:#754c27}
+@media(max-width:740px){.pixel-page .intro{display:block}.pixel-page .save-area{justify-content:flex-start;margin-top:9px}.pixel-page .room{min-height:220px}.pixel-page .pet-in-room{width:12%}}
+
+/* Shared depth layer: interleave pet and furnishings by their floor Y, not by entire layer. */
+.pixel-page .furniture-layer{z-index:auto}
+.pixel-page .pet-in-room{z-index:auto}
