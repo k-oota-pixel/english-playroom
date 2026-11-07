@@ -265,3 +265,24 @@ test('farm UI shows crop unlocks, seed packs and no farm feed button',()=>{
  assert.doesNotMatch(app,/\[\['feed','食べる'\]/);
  assert.match(app,/model.js\?v=7/);
 });
+
+test('shop dialog remains centered inside the viewport on desktop and smaller screens',()=>{
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ assert.match(css,/\.farm-dialog\{position:fixed;inset:0;margin:auto;transform:none;/);
+ assert.match(css,/#shopDialog\[open\]\s*\{\s*position:fixed;\s*inset:0;\s*margin:auto;\s*transform:none;/);
+ assert.match(css,/#shopDialog\[open\][\s\S]*?height:min\(680px,calc\(100dvh - 24px\)\)/);
+ assert.doesNotMatch(css,/\.farm-dialog\{[^}]*top:50%;[^}]*translateY\(-50%\)/);
+ assert.match(css,/@media\(max-height:590px\)[\s\S]*?#shopDialog #shopList\{min-height:0\}/);
+});
+
+test('locked seeds keep the stock label inside their own resizable product card',()=>{
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ const js=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ assert.match(css,/\.shop-item\{[^}]*min-height:86px;height:auto;display:flex;/);
+ assert.match(css,/\.shop-item \.shop-item-details\{display:flex;flex:1;min-width:0;flex-direction:column;/);
+ assert.match(css,/\.shop-item \.shop-unlock\{/);
+ assert.match(js,/const details=node\('span','shop-item-details'\)/);
+ assert.match(js,/details\.appendChild\(node\('span','shop-unlock'/);
+ assert.match(js,/details\.appendChild\(node\('span','shop-owned'/);
+ assert.match(js,/b\.append\(node\('span','emoji',item.icon\),details\)/);
+});
