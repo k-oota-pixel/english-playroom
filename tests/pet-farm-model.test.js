@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {
  MAP,FARMS,FIELD_TYPES,FIELD_SIZES,RESERVED_ZONES,CROPS,SUPPLIES,
  freshFarm,normalizeFarm,cropUnlockProgress,canPlace,canPlaceRoad,
- locateField,plotKey,applyPurchase,applyLayoutAction,applyFarmAction,
+ locateField,findWorkStand,plotKey,applyPurchase,applyLayoutAction,applyFarmAction,
  growthPhase,remaining,useProduce
 } from '../pet-farm/model.js';
 const source=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
@@ -437,4 +437,64 @@ test('farm shop cold-start renderer has working stock and purchase-limit helpers
  const seed=build(stocked,100,'seed',{kind:'seed',id:'lettuce',label:'レタスのタネ',icon:'🥬',price:1,units:3,quantity:2});
  assert.doesNotThrow(()=>seed.renderShop(),'selected seed confirmation must render too');
  assert.equal(seed.shopStock('seed','lettuce'),3);
+});
+
+
+test('pet stands completely off the crop and outside every field during farm work',()=>{
+ const {f,id}=starter();
+ const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+ const body=(pos)=>({x:pos.x-.9,y:pos.y-1.45,w:1.8,h:1.75});
+ for(let i=0;i<4;i++){
+  const stand=findWorkStand(f,id,i,12.5,7.5);
+  const tile=locateField(f,id,i);
+  assert.ok(stand,'a stand should be found for plot '+i);
+  assert.equal(overlaps(body(stand),{...tile,w:1,h:1}),false);
+  assert.equal(overlaps(body(stand),{x:12,y:8,w:2,h:2}),false);
+  assert.ok(body(stand).x>=0&&body(stand).y>=0);
+  assert.ok(body(stand).x+body(stand).w<=MAP.w);
+  assert.ok(body(stand).y+body(stand).h<=MAP.h);
+ }
+});
+
+test('pet work stand avoids neighbouring plots, buildings and field edges',()=>{
+ let {f,id}=starter();
+ f=applyPurchase(f,'field','4',200,3).farm;
+ f=applyLayoutAction(f,{type:'place-field',size:'4',x:14,y:8,name:'おとなり'}).farm;
+ f=applyLayoutAction(f,{type:'place-field',size:'4',x:12,y:6,name:'うえ'}).farm;
+ const body=({x,y})=>({x:x-.9,y:y-1.45,w:1.8,h:1.75});
+ const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+ for(let i=0;i<4;i++){
+  const stand=findWorkStand(f,id,i,12.5,9);
+  assert.ok(stand,'found a nearby free position');
+  const area=body(stand);
+  for(const field of f.fields){
+   const shape=FIELD_TYPES[field.size];
+   assert.equal(overlaps(area,{x:field.x,y:field.y,w:shape.w,h:shape.h}),false);
+  }
+  for(const zone of RESERVED_ZONES)assert.equal(overlaps(area,zone),false);
+ }
+ let edge=freshFarm();
+ edge=applyPurchase(edge,'field','free',0).farm;
+ const placed=applyLayoutAction(edge,{type:'place-field',size:'4',x:28,y:12,name:'すみっこ'});
+ edge=placed.farm;
+ for(let i=0;i<4;i++){
+  const stand=findWorkStand(edge,placed.id,i,29,13);
+  assert.ok(stand);
+  const area=body(stand);
+  const plot=locateField(edge,placed.id,i);
+  assert.equal(overlaps(area,{...plot,w:1,h:1}),false);
+  assert.ok(area.x>=0&&area.y>=0&&area.x+area.w<=MAP.w&&area.y+area.h<=MAP.h);
+ }
+});
+
+test('all crop actions move pet to the safe work spot while effects stay on the target tile',()=>{
+ const js=source('pet-farm/app.js');
+ const start=js.indexOf('async function actPlot(type,extra={}){');
+ const end=js.indexOf('\nasync function produce(',start);
+ assert.ok(start>=0&&end>start);
+ const action=js.slice(start,end);
+ assert.match(action,/findWorkStand\(farm,params\.area,params\.index,petX,petY\)/);
+ assert.match(action,/if\(stand\)await walkTo\(stand\.x,stand\.y\)/);
+ assert.match(action,/await showWork\(type,spot\.x\+\.5,spot\.y\+\.5\)/);
+ assert.doesNotMatch(action,/walkTo\(spot\.x\+\.5,spot\.y\+\.77\)/);
 });
