@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {FARMS,CROPS,SUPPLIES,freshFarm,normalizeFarm,plotKey,locate,growthPhase,applyFarmAction,applyPurchase,useProduce} from '../pet-farm/model.js';
+import {FARMS,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,freshFarm,normalizeFarm,plotKey,locate,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from '../pet-farm/model.js';
 
 test('farm preview has four rectangular gardens with 35 total cells and only the first unlocked',()=>{
  assert.deepEqual(FARMS.map(a=>a.w*a.h),[4,6,9,16]);
@@ -10,33 +10,47 @@ test('farm preview has four rectangular gardens with 35 total cells and only the
  assert.deepEqual(locate(3,15),{x:22,y:14});
 });
 
-test('seed, watering, growth, fertilizer and harvest are functional',()=>{
+test('seed starts growing immediately, water shortens residual to 2/3 and fertilizer to 1/3',()=>{
  let f=freshFarm();
- f=applyFarmAction(f,{area:0,index:0,type:'plant',crop:'carrot'},1000).farm;
- assert.equal(f.inventory.seeds.carrot,2);
- assert.equal(growthPhase(f.plots['0-0'],1500),'dry');
+ f=applyFarmAction(f,{area:0,index:0,type:'plant',crop:'lettuce'},1000).farm;
+ assert.equal(f.inventory.seeds.lettuce,2);
+ assert.equal(f.plots['0-0'].readyAt,7201000);
+ assert.equal(growthPhase(f.plots['0-0'],1500),'sprout');
  assert.throws(()=>applyFarmAction(f,{area:0,index:0,type:'harvest'},999999));
  f=applyFarmAction(f,{area:0,index:0,type:'water'},1100).farm;
  assert.equal(f.inventory.water,2);
- assert.equal(f.plots['0-0'].readyAt,61100);
+ assert.equal(f.plots['0-0'].readyAt,1100+Math.round((7201000-1100)*2/3));
+ assert.throws(()=>applyFarmAction(f,{area:0,index:0,type:'water'},2000),/すでに水/);
  f.inventory.fertilizer=1;
+ const before=f.plots['0-0'].readyAt;
  f=applyFarmAction(f,{area:0,index:0,type:'fertilize'},2100).farm;
  assert.equal(f.inventory.fertilizer,0);
- assert.equal(f.plots['0-0'].readyAt,31600);
- assert.equal(growthPhase(f.plots['0-0'],31600),'ready');
- f=applyFarmAction(f,{area:0,index:0,type:'harvest'},31601).farm;
- assert.equal(f.inventory.produce.carrot,1);
+ assert.equal(f.plots['0-0'].readyAt,2100+Math.round((before-2100)/3));
+ assert.throws(()=>applyFarmAction(f,{area:0,index:0,type:'fertilize'},2500),/肥料を使って/);
+ const ready=f.plots['0-0'].readyAt;
+ assert.equal(growthPhase(f.plots['0-0'],ready),'ready');
+ f=applyFarmAction(f,{area:0,index:0,type:'harvest'},ready+1).farm;
+ assert.equal(f.inventory.produce.lettuce,1);
  assert.equal(f.harvests,1);
+ assert.equal(f.harvestCounts.lettuce,1);
  assert.equal(f.plots['0-0'],undefined);
 });
 
-test('fertilizer also works before first watering',()=>{
- let f=freshFarm();
- f.inventory.fertilizer=1;
- f=applyFarmAction(f,{area:0,index:1,type:'plant',crop:'carrot'},1000).farm;
- f=applyFarmAction(f,{area:0,index:1,type:'fertilize'},1100).farm;
- f=applyFarmAction(f,{area:0,index:1,type:'water'},1200).farm;
- assert.equal(f.plots['0-1'].readyAt,31200);
+test('water and fertilizer commute when applied at same moment, not at later moments',()=>{
+ const start=1000;
+ let base=applyFarmAction(freshFarm(),{area:0,index:1,type:'plant',crop:'lettuce'},start).farm;
+ base.inventory.fertilizer=2;
+ const wet=applyFarmAction(base,{area:0,index:1,type:'water'},start).farm;
+ const wetThenFert=applyFarmAction(wet,{area:0,index:1,type:'fertilize'},start).farm;
+ const fert=applyFarmAction(base,{area:0,index:1,type:'fertilize'},start).farm;
+ const fertThenWet=applyFarmAction(fert,{area:0,index:1,type:'water'},start).farm;
+ assert.equal(wetThenFert.plots['0-1'].readyAt,start+26*60000+40000);
+ assert.equal(fertThenWet.plots['0-1'].readyAt,start+26*60000+40000);
+ const later=applyFarmAction(base,{area:0,index:1,type:'water'},start+60*60000).farm;
+ assert.equal(later.plots['0-1'].readyAt,start+100*60000);
+ const further=applyFarmAction(later,{area:0,index:1,type:'fertilize'},start+80*60000).farm;
+ assert.equal(further.plots['0-1'].readyAt,start+86*60000+40000);
+ assert.throws(()=>applyFarmAction(base,{area:0,index:1,type:'water'},start+120*60000),/もう収穫/);
 });
 
 test('garden expansion must be sequential and cannot exceed balance',()=>{
@@ -118,7 +132,7 @@ test('illustrated farm stage fills screen with responsive fit and interactive ho
  assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
 });
 
-test('shop sells water and fertilizer individually with owned inventory counts',()=>{
+test('shop sells supplies by unit and starter lettuce seeds in discounted bundles',()=>{
  assert.deepEqual({name:SUPPLIES.water.name,price:SUPPLIES.water.price,count:SUPPLIES.water.count},{name:'水',price:1,count:1});
  assert.deepEqual({name:SUPPLIES.fertilizer.name,price:SUPPLIES.fertilizer.price,count:SUPPLIES.fertilizer.count},{name:'肥料',price:2,count:1});
  const base=freshFarm();
@@ -129,18 +143,19 @@ test('shop sells water and fertilizer individually with owned inventory counts',
  const fert=applyPurchase(water.farm,'supply','fertilizer',10,3);
  assert.equal(fert.cost,6);
  assert.equal(fert.farm.inventory.fertilizer,3);
- const seeds=applyPurchase(fert.farm,'seed','carrot',10,5);
- assert.equal(seeds.cost,10);
- assert.equal(seeds.farm.inventory.seeds.carrot,8);
+ const seeds=applyPurchase(fert.farm,'seed','lettuce',10,5);
+ assert.equal(seeds.cost,5);
+ assert.equal(seeds.farm.inventory.seeds.lettuce,18);
  assert.equal(seeds.quantity,5);
+ assert.throws(()=>applyPurchase(base,'seed','carrot',10),/まだ購入できません/);
 });
 
 test('shop batches validate quantity, balance, per-item stock cap, and single area unlock',()=>{
  const base=freshFarm();
  for(const qty of [0,-1,1.5,100,NaN,Infinity,'2']){
-  assert.throws(()=>applyPurchase(base,'seed','carrot',1000,qty),String(qty));
+  assert.throws(()=>applyPurchase(base,'seed','lettuce',1000,qty),String(qty));
  }
- assert.throws(()=>applyPurchase(base,'seed','carrot',3,2),/コインが足りません/);
+ assert.throws(()=>applyPurchase(base,'seed','lettuce',1,2),/コインが足りません/);
  assert.throws(()=>applyPurchase(base,'area','1',300,2),/敷地は1回ずつ/);
  const nearFull=freshFarm();nearFull.inventory.water=99998;
  assert.throws(()=>applyPurchase(nearFull,'supply','water',100,2),/所持上限/);
@@ -195,4 +210,57 @@ test('shop modal does not shift when selecting items or changing quantity',()=>{
  assert.match(app,/list.scrollTop=scrollBeforeUpdate/);
  assert.match(app,/shop-selection-hint/);
  assert.match(app,/shopTab=tab.dataset.shop;chosenPurchase=null;\$\('shopList'\).scrollTop=0/);
+});
+
+test('five crop prices, growth durations and hunger values follow progression',()=>{
+ assert.deepEqual(cropIds,['lettuce','carrot','pumpkin','strawberry','melon']);
+ assert.deepEqual(cropIds.map(id=>CROPS[id].minutes),[120,240,480,840,1320]);
+ assert.deepEqual(cropIds.map(id=>CROPS[id].fullness),[1,2,4,5,10]);
+ assert.deepEqual(cropIds.map(id=>[CROPS[id].pack,CROPS[id].seed]),[[3,1],[2,1],[3,2],[1,1],[1,2]]);
+});
+
+test('harvest ten of each predecessor to unlock the next seed crop',()=>{
+ let f=freshFarm();
+ const progression=[['lettuce','carrot'],['carrot','pumpkin'],['pumpkin','strawberry'],['strawberry','melon']];
+ for(const [previous,next] of progression){
+  assert.deepEqual(cropUnlockProgress(f,next).remaining,10);
+  assert.throws(()=>applyPurchase(f,'seed',next,100),/まだ購入できません/);
+  f=applyPurchase(f,'seed',previous,100,10).farm;
+  for(let i=0;i<10;i++){
+   const now=1000+i*120000000;
+   f=applyFarmAction(f,{area:0,index:0,type:'plant',crop:previous},now).farm;
+   f=applyFarmAction(f,{area:0,index:0,type:'harvest'},now+CROPS[previous].minutes*60000).farm;
+  }
+  assert.equal(f.harvestCounts[previous],10);
+  assert.equal(cropUnlockProgress(f,next).unlocked,true);
+  f=applyPurchase(f,'seed',next,100).farm;
+  assert.ok(f.inventory.seeds[next]>0);
+ }
+});
+
+test('old farm data preserves seeds and planted crops while granting starter lettuce only once',()=>{
+ const legacy={schemaVersion:1,unlocked:[true,false,false,false],
+   inventory:{seeds:{carrot:3,tomato:4},water:3,produce:{tomato:2},giftBox:{}},
+   plots:{'0-0':{crop:'tomato',plantedAt:1000,wateredAt:0,readyAt:0,boosted:false}}};
+ const migrated=normalizeFarm(legacy);
+ assert.equal(migrated.schemaVersion,2);
+ assert.equal(migrated.inventory.seeds.lettuce,3);
+ assert.equal(migrated.inventory.seeds.carrot,3);
+ assert.equal(migrated.inventory.seeds.tomato,4);
+ assert.equal(migrated.inventory.produce.tomato,2);
+ assert.equal(migrated.plots['0-0'].readyAt,1000+3*60000);
+ assert.equal(normalizeFarm(migrated).inventory.seeds.lettuce,3);
+ const newFarm=freshFarm();
+ assert.equal(normalizeFarm(newFarm).inventory.seeds.lettuce,3);
+ assert.equal(allCropIds.includes('tomato'),true);
+});
+
+test('farm UI shows crop unlocks, seed packs and no farm feed button',()=>{
+ const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ assert.match(app,/cropUnlockProgress\(farm,item.id\)/);
+ assert.match(app,/const packTooLarge=/);
+ assert.match(app,/p.quantity\*p.units/);
+ assert.match(app,/isCropUnlocked\(farm,id\)/);
+ assert.doesNotMatch(app,/\[\['feed','食べる'\]/);
+ assert.match(app,/model.js\?v=6/);
 });
