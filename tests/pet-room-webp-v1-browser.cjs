@@ -40,7 +40,8 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
        const pixels=data.getImageData(0,0,c.width,c.height).data;
        let zeros=0,trace=0,fully=0;
        for(let p=3;p<pixels.length;p+=4){const alpha=pixels[p];if(alpha===0)zeros++;if(alpha>0&&alpha<=10)trace++;if(alpha>=250)fully++;}
-       alphas.push({zeros,trace,fully,corner:pixels[3],size:[c.width,c.height]});
+       const probes=[[388,82],[550,90],[112,118],[98,48]]; const [px,py]=probes[i]; const matteProbe=pixels[(py*c.width+px)*4+3];
+       alphas.push({zeros,trace,fully,matteProbe,corner:pixels[3],size:[c.width,c.height]});
      }
      return alphas;
    });
@@ -49,6 +50,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      assert.ok(coverage[i].zeros>=minimumClear[i],'Transparent background must be fully cleared: bed_'+i);
      assert.equal(coverage[i].trace,0,'No 1-10 alpha haze must be left around bed_'+i);
      assert.equal(coverage[i].corner,0,'Top-left must be transparent: bed_'+i);
+     assert.equal(coverage[i].matteProbe,0,'Old nearly-opaque background speck must be fully transparent: bed_'+i);
      assert.ok(coverage[i].fully>150000,'Furniture body should remain opaque: bed_'+i);
    }
    await page.locator('#roomBoard').evaluate(el=>el.style.background='#523b31');
