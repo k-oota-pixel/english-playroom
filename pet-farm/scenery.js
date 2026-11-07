@@ -1,4 +1,4 @@
-import {MAP,FARMS} from './model.js?v=3';
+import {MAP,FARMS} from './model.js?v=4';
 const W=MAP.w*MAP.tile,H=MAP.h*MAP.tile,T=MAP.tile;
 function rng(seed){return ()=>((seed=Math.imul(seed,1664525)+1013904223|0)>>>0)/4294967296;}
 function flower(x,y,t=1,color='#fff6e0'){
@@ -46,7 +46,7 @@ function home(){
 }
 function store(){
  let stripes='';for(let i=0;i<10;i++)stripes+=`<path d="M${32+i*26} 130L${58+i*26} 130L${54+i*26} 176L${30+i*26} 176Z" fill="${i%2?'#fff1cd':'#b95f4c'}"/>`;
- return `<g transform="translate(520 77)"><ellipse cx="170" cy="268" rx="157" ry="24" fill="#264b2b" opacity=".25"/>
+ return `<g transform="translate(520 67) scale(.9)"><ellipse cx="170" cy="268" rx="157" ry="24" fill="#264b2b" opacity=".25"/>
  <rect x="43" y="82" width="265" height="170" rx="5" fill="#b98250" stroke="#7d4b35" stroke-width="8"/>
  <path d="M32 111L63 32H277L312 112Z" fill="#aa5943" stroke="#6e4033" stroke-width="7"/>
  <rect x="110" y="27" width="132" height="55" rx="9" fill="#76503a" stroke="#c59b61" stroke-width="8"/>
@@ -60,7 +60,7 @@ function store(){
  <text x="178" y="273" text-anchor="middle" fill="#fff6d6" font-size="22" font-weight="900">🛒 ショップ</text></g>`;
 }
 function storage(){
- return `<g transform="translate(934 84)"><ellipse cx="151" cy="255" rx="140" ry="22" fill="#264b2b" opacity=".24"/>
+ return `<g transform="translate(934 72) scale(.9)"><ellipse cx="151" cy="255" rx="140" ry="22" fill="#264b2b" opacity=".24"/>
  <rect x="23" y="106" width="255" height="139" rx="8" fill="#b98b60" stroke="#795238" stroke-width="8"/>
  <g stroke="#9e714c" stroke-width="4"><path d="M45 113V239M90 113V239M142 113V239M198 113V239M254 113V239"/></g>
  <path d="M12 113L148 19L287 113L273 132L149 53L28 131Z" fill="#815043" stroke="#53382f" stroke-width="8"/>
@@ -98,7 +98,7 @@ function scenery(){
   grass+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${r()>.5?'#417f38':'#b3d37b'}" opacity="${(.25+r()*.4).toFixed(2)}"/>`;
  }
  const borderTrees=[[24,32,.9],[160,18,.8],[356,2,1.1],[455,15,.75],[853,1,.8],[1220,11,.9],[1617,27,1.0],[1710,151,.8],
- [1717,320,.8],[1710,490,.9],[1717,734,1.1],[1545,803,.9],[1377,814,.8],[863,824,1.1],[669,813,.8],[330,804,.95],[35,794,1],[15,546,.9]];
+ [1717,320,.8],[1710,490,.9],[1717,805,1.1],[1545,860,.9],[1377,864,.8],[863,870,1.1],[669,862,.8],[330,864,.95],[35,848,1],[15,546,.9]];
  for(const [x,y,s] of borderTrees)edge+=foliage(x,y,s);
  const decorations=[[129,490,'#f7bad0'],[256,535,'#ffcf9a'],[325,478,'#fff7e8'],[396,603,'#ffcad4'],[724,594,'#f4c0ca'],
  [1488,475,'#fff7e6'],[1521,586,'#f8b4c6'],[1471,695,'#f7c0d0'],[760,690,'#fff4d6'],[317,270,'#f2bcc8'],[1221,283,'#fff6d7'],
@@ -108,7 +108,7 @@ function scenery(){
  for(const [x,y] of [[115,412],[383,401],[1353,411],[1518,431],[290,614],[732,733],[1264,612]]){
   little+=`<g transform="translate(${x} ${y})"><ellipse cx="0" cy="6" rx="33" ry="12" fill="#437942"/><circle cx="-19" cy="-5" r="22" fill="#548b43"/><circle cx="9" cy="-10" r="25" fill="#48833e"/><circle cx="25" cy="-1" r="17" fill="#659948"/></g>`;
  }
- fences+=fence(65,759,398,759,9)+fence(1392,759,1655,759,8);
+ fences+=fence(65,839,398,839,9)+fence(1392,839,1655,839,8);
  fences+=fence(66,52,450,52,10)+fence(1203,53,1641,53,11);
  return `<svg xmlns="http://www.w3.org/2000/svg" id="scenerySvg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="木々や花に囲まれた農園、ペットのおうち、ショップ、倉庫、池">
  <defs>
