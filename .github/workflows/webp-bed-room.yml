@@ -1,0 +1,40 @@
+name: WebP bed room integration
+on:
+  pull_request:
+    paths:
+      - 'pet-room/room-webp-v1*'
+      - 'pet-room/assets/webp-v1/**'
+      - 'tests/pet-room-webp-v1*'
+      - '.github/workflows/webp-bed-room.yml'
+      - 'app-shell.js'
+      - 'pet-play-menu-v164.js'
+      - 'index.html'
+  push:
+    branches: [main]
+    paths:
+      - 'pet-room/room-webp-v1*'
+      - 'pet-room/assets/webp-v1/**'
+      - 'tests/pet-room-webp-v1*'
+      - '.github/workflows/webp-bed-room.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  webp-bed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: node --test tests/pet-room-webp-v1.test.js
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/pet-room-webp-v1-browser.cjs
+      - name: Upload visual test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webp-bed-room-browser-review
+          path: webp-room-phase4-*.png
+          if-no-files-found: ignore
