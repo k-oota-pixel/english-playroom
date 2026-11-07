@@ -25,7 +25,7 @@ function lamp(d){
  '<path d="M65 124Q121 143 175 124" fill="none" stroke="#c99d67" stroke-width="6"/>'+
  '<ellipse cx="120" cy="122" rx="29" ry="7" fill="#fff2bc" opacity=".9"/>'+
  '<path d="M84 82Q99 71 108 81" fill="none" stroke="#fff8d7" stroke-width="4" opacity=".75"/>';
- const switchX=side?d===1?174:67:back?99:148;
+ const switchX=side?174:back?99:148;
  const cord='<path d="M'+switchX+' 125v36" stroke="#8f724d" stroke-width="3"/><circle cx="'+switchX+'" cy="166" r="5" fill="#a78456" stroke="#76533d" stroke-width="2"/>';
  const detail=back?'<path d="M109 40h22" stroke="#91734e" stroke-width="5"/><path d="M120 58v48" stroke="#d0a96d" stroke-width="4" opacity=".8"/>'
  :side?'<path d="M87 80Q122 62 158 85" fill="none" stroke="#fff4d0" stroke-width="5"/>'
