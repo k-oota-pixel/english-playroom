@@ -31,6 +31,20 @@ function positionEditor(){
 positionEditor();
 if(phoneLayout.addEventListener)phoneLayout.addEventListener('change',positionEditor);
 else window.addEventListener('resize',positionEditor);
+
+// Size the whole square board to the iframe's *actual* visible height.
+// This also accommodates the common MonStudy header and browser zoom at 100%.
+function fitBoardToViewport(){
+ if(phoneLayout.matches){board.style.removeProperty('width');return}
+ const footer=document.querySelector('.bottom-bar');
+ const boardTop=board.getBoundingClientRect().top+window.scrollY;
+ const roomWidth=board.parentElement?.clientWidth||760;
+ const reserved=(footer?.offsetHeight||48)+(roomStatus.offsetHeight||26)+35;
+ const available=Math.floor(window.innerHeight-boardTop-reserved);
+ if(Number.isFinite(available))board.style.width=Math.max(170,Math.min(760,roomWidth,available))+'px';
+}
+requestAnimationFrame(fitBoardToViewport);
+window.addEventListener('resize',()=>requestAnimationFrame(fitBoardToViewport),{passive:true});
 const backdrop=$('roomArt');
 backdrop.innerHTML=roomBackground();
 // Create 36 reusable placement controls once; do not rebuild them on each drag frame.
