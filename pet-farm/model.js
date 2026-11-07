@@ -1,11 +1,11 @@
 // もんすたふぁーむ — state rules (no English quiz or coin rewards).
 // Coordinates use a rectangular 3/4 top-down tile map, not an isometric diamond grid.
-export const MAP = {w:32,h:15,tile:54};
+export const MAP = {w:32,h:16,tile:54};
 export const FARMS = Object.freeze([
   {name:'第1農園',x:12,y:7,w:2,h:2,price:0},
   {name:'第2農園',x:19,y:7,w:2,h:3,price:30},
-  {name:'第3農園',x:9,y:10,w:3,h:3,price:80},
-  {name:'第4農園',x:19,y:10,w:4,h:4,price:160}
+  {name:'第3農園',x:9,y:11,w:3,h:3,price:80},
+  {name:'第4農園',x:19,y:11,w:4,h:4,price:160}
 ]);
 export const CROPS = Object.freeze({
  carrot:{name:'にんじん',icon:'🥕',seed:2,minutes:1,reply:'ぴょんぴょん跳ねた！'},
