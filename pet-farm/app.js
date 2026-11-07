@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FARMS,CROPS,SUPPLIES,cropIds,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=5';
+import {MAP,FARMS,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=6';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=4';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
@@ -67,7 +67,7 @@ function renderPlots(){
    b.className='plot'+(!unlocked?' locked':'')+(selected?.area===area&&selected.index===index?' active':'');
    if(!unlocked){b.innerHTML='<span class="seed-art">🔒</span>';continue;}
    if(phase==='empty'){b.innerHTML='<span class="seed-art">＋</span>';continue;}
-   const artwork=phase==='dry'?'·':phase==='sprout'?'🌱':phase==='growing'?'🌿':CROPS[p.crop].icon;
+   const artwork=phase==='sprout'?'🌱':phase==='growing'?'🌿':CROPS[p.crop].icon;
    const size=phase==='sprout'||phase==='growing'?phase:'';
    b.replaceChildren(node('span','crop-art '+size,artwork));
    if(p.wateredAt)b.appendChild(node('span','plot-water','💧'));
@@ -145,10 +145,13 @@ function renderSelection(){
  }
  if(!p){
   desc.textContent='🌰 手持ちのタネから1種類選んでください。';
-  for(const id of cropIds)if(farm.inventory.seeds[id]>0)select('plant:'+id,CROPS[id].icon,CROPS[id].name+'のタネ',farm.inventory.seeds[id],{type:'plant',crop:id});
+  for(const id of allCropIds){
+   if(farm.inventory.seeds[id]>0&&isCropUnlocked(farm,id))
+    select('plant:'+id,CROPS[id].icon,CROPS[id].name+'のタネ',farm.inventory.seeds[id],{type:'plant',crop:id});
+  }
  }else{
   const phase=growthPhase(p);
-  desc.textContent=CROPS[p.crop].icon+' '+CROPS[p.crop].name+'　｜　'+remaining(p);
+  desc.textContent=CROPS[p.crop].icon+' '+CROPS[p.crop].name+'　｜　'+remaining(p)+'　'+(p.wateredAt?'💧使用済み':'💧未使用')+' / '+(p.boosted?'🌱使用済み':'🌱未使用');
   if(phase==='ready'){
    ctrl.appendChild(node('p','modal-hint','✨ 収穫の時期です！'));
    const row=node('div','modal-actions');
@@ -190,7 +193,8 @@ function shopStock(kind,id){
 function maxPurchaseQuantity(item){
  const available=Math.floor(balance/item.price);
  const storageSpace=99999-shopStock(item.kind,item.id);
- return Math.max(0,Math.min(99,available,item.kind==='area'?1:storageSpace));
+ const unitsPerPack=item.kind==='seed'?(CROPS[item.id].pack||1):1;
+ return Math.max(0,Math.min(99,available,item.kind==='area'?1:Math.floor(storageSpace/unitsPerPack)));
 }
 function renderShop(){
  const list=$('shopList');
@@ -201,11 +205,11 @@ function renderShop(){
  for(const tab of document.querySelectorAll('[data-shop]'))tab.classList.toggle('active',tab.dataset.shop===shopTab);
  const items=shopTab==='seed'?cropIds.map(id=>({
    kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,
-   price:CROPS[id].seed,sub:'育成 '+CROPS[id].minutes+'分'
+   price:CROPS[id].seed,units:CROPS[id].pack,sub:'成長 '+Math.round(CROPS[id].minutes/60)+'時間'
   }))
   :shopTab==='supply'?Object.entries(SUPPLIES).map(([id,t])=>({
    kind:'supply',id,label:t.name,icon:t.icon,price:t.price,
-   sub:id==='water'?'水やり1回で1個使用':'成長時間を短縮'
+   sub:id==='water'?'残り時間を2/3に短縮':'残り時間を1/3に短縮'
   }))
   :FARMS.slice(1).map((a,i)=>({
    kind:'area',id:String(i+1),label:a.name,icon:'🌾',price:a.price,
@@ -217,14 +221,23 @@ function renderShop(){
   b.type='button';
   b.setAttribute('aria-pressed',String(isChosen));
   const stock=item.kind==='area'?null:shopStock(item.kind,item.id);
+  const unitText=item.kind==='seed'?item.units+'個 / '+item.price+'C':item.kind==='area'?item.price+'C':item.price+'C / 1個';
   b.append(
    node('span','emoji',item.icon),
    node('strong','',item.label),
-   node('small','',item.price+'C / 1個 · '+item.sub)
+   node('small','',unitText+' · '+item.sub)
   );
+  if(item.kind==='seed'){
+   const info=cropUnlockProgress(farm,item.id);
+   if(!info.unlocked){
+    b.appendChild(node('span','shop-owned','🔒 '+CROPS[info.previous].name+'をあと'+info.remaining+'個収穫'));
+   }
+  }
   if(stock!==null)b.appendChild(node('span','shop-owned','所持数：'+stock.toLocaleString('ja-JP')+'個'));
   const cannotUnlock=item.kind==='area'&&(farm.unlocked[Number(item.id)]||!farm.unlocked[Number(item.id)-1]);
-  b.disabled=busy||!ready||balance<item.price||cannotUnlock||(stock!==null&&stock>=99999);
+  const cropLocked=item.kind==='seed'&&!isCropUnlocked(farm,item.id);
+  const packTooLarge=stock!==null&&stock+(item.units||1)>99999;
+  b.disabled=busy||!ready||balance<item.price||cannotUnlock||cropLocked||packTooLarge;
   b.addEventListener('click',()=>{
    if(b.disabled)return;
    chosenPurchase={...item,quantity:1};
@@ -248,13 +261,13 @@ function renderShop(){
  confirmation.appendChild(node('p','confirm-label',p.icon+' '+selected));
  if(p.kind!=='area'){
   const countRow=node('div','shop-quantity');
-  const title=node('span','shop-quantity-label','一度に買う数');
+  const title=node('span','shop-quantity-label',p.kind==='seed'?'購入する袋数':'一度に買う数');
   const decrement=node('button','shop-qty-btn','−');
   decrement.type='button';
   decrement.setAttribute('aria-label','購入数を1個減らす');
   decrement.disabled=busy||p.quantity<=1;
   decrement.addEventListener('click',()=>{p.quantity=Math.max(1,p.quantity-1);renderShop();});
-  const count=node('output','shop-qty-value',p.quantity+'個');
+  const count=node('output','shop-qty-value',p.quantity+(p.kind==='seed'?'袋':'個'));
   count.setAttribute('aria-label','購入数');
   const increment=node('button','shop-qty-btn','＋');
   increment.type='button';
@@ -265,12 +278,13 @@ function renderShop(){
   confirmation.appendChild(countRow);
  }
  const total=current.price*p.quantity;
+ const totalCount=p.kind==='seed'?p.quantity+'袋（タネ'+(p.quantity*p.units)+'個）':p.quantity+'個';
  const totalRow=node('div','shop-order-total');
- totalRow.append(node('span','', '合計 '+p.quantity+'個'),node('strong','',total.toLocaleString('ja-JP')+' C'));
+ totalRow.append(node('span','', '合計 '+totalCount),node('strong','',total.toLocaleString('ja-JP')+' C'));
  confirmation.appendChild(totalRow);
  const row=node('div','modal-actions');
  row.append(
-  actionButton('🪙 '+p.quantity+'個購入する','gold',async()=>{
+  actionButton('🪙 '+(p.kind==='seed'?p.quantity+'袋':p.quantity+'個')+'購入する','gold',async()=>{
    const quantity=p.quantity;
    const success=await buy(p.kind,p.id,quantity);
    if(success)chosenPurchase=null;
@@ -289,7 +303,7 @@ function renderInventory(){
    if(!n)continue;
    const chip=node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+n);
    if(kind==='produce'){
-    for(const [key,label] of [['feed','食べる'],['pack','贈り物に']]){
+    for(const [key,label] of [['pack','贈り物に']]){
      const btn=node('button','',label);btn.disabled=busy||!ready;
      btn.addEventListener('click',()=>{chosenProduce={kind:key,id};storageConfirmation();});
      chip.appendChild(btn);
@@ -305,14 +319,14 @@ function renderInventory(){
   container.appendChild(wrap);
  };
  addTitle('🌰 タネの袋');
- addChips(cropIds.map(id=>[id,farm.inventory.seeds[id]]),'seed');
+ addChips(allCropIds.map(id=>[id,farm.inventory.seeds[id]]),'seed');
  const supply=node('div','inv-row');
  supply.append(node('span','inv-chip','💧 水 ×'+farm.inventory.water),node('span','inv-chip','🌿 肥料 ×'+farm.inventory.fertilizer));
  container.appendChild(supply);
  addTitle('🧺 収穫した野菜');
- addChips(cropIds.map(id=>[id,farm.inventory.produce[id]]),'produce');
+ addChips(allCropIds.map(id=>[id,farm.inventory.produce[id]]),'produce');
  addTitle('🎁 プレゼント箱（送信準備中）');
- addChips(cropIds.map(id=>[id,farm.inventory.giftBox[id]]),'gift');
+ addChips(allCropIds.map(id=>[id,farm.inventory.giftBox[id]]),'gift');
  storageConfirmation();
 }
 
