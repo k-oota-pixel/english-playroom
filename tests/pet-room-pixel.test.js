@@ -61,14 +61,14 @@ test('pixel room is allowed through the homepage shell after a direct-link redir
  const context={URL,root:new URL('https://k-oota-pixel.github.io/english-playroom/'),groups:[]};
  vm.runInNewContext(appShell.slice(start,end)+'\nglobalThis.canOpenFromTest=canOpen;',context);
  const room='https://k-oota-pixel.github.io/english-playroom/pet-room/room-pixel.html';
- assert.equal(context.canOpenFromTest(room),true,'Direct pixel room URL must be accepted');
+ assert.equal(context.canOpenFromTest(room),false,'Retired pixel room must not replace the original room');
  assert.equal(context.canOpenFromTest('/english-playroom/pet-room/room-v4.html'),true,'Existing room stays accepted');
  assert.equal(context.canOpenFromTest('/english-playroom/pet-room/room-cozy.html'),true,'Cozy room stays accepted');
  assert.equal(context.canOpenFromTest('/english-playroom/pet-room/unknown.html'),false,'Unlisted pages stay blocked');
  assert.match(bridge,/target\.searchParams\.set\('material', material\)/,'Standalone URLs route via the shell');
  assert.match(appShell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/,'Shell restores a deep-linked material');
- assert.match(play,/href="\.\/pet-room\/room-pixel\.html"/,'PLAY menu links to the new room');
+ assert.doesNotMatch(play,/href="\.\/pet-room\/room-pixel\.html"/,'PLAY menu returns to the original room');
  const version=badge.match(/const APP_VERSION='([^']+)'/)?.[1];
- assert.equal(version,'2.4.22');
+ assert.equal(version,'2.4.23');
  assert.ok(home.includes('app-shell.js?v='+version),'Homepage must load the shell with the updated cache version');
 });
