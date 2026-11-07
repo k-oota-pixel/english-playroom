@@ -407,8 +407,8 @@ function focusAt(x,y){
 async function initialize(current){
  const sequence=++authSequence;
  user=current;
- if(!user){ready=false;status('もんすたでぃでログインしてください。','error');return;}
- busy=true;ready=false;refresh();
+ if(!user){ready=false;$('previewGate').hidden=false;$('previewGate').textContent='もんすたでぃでログインしてください。';status('もんすたでぃでログインしてください。','error');return;}
+ busy=true;ready=false;$('previewGate').hidden=false;$('previewGate').textContent='管理者確認中…';refresh();
  try{
   const session=await accountSession(current);
   if(!session?.admin || session.resetRequired)throw Error('この先行プレビューは管理者アカウントだけが利用できます。');
@@ -417,12 +417,13 @@ async function initialize(current){
   if(!wallet.exists())throw Error('ペットのデータが見つかりません。');
   petData=wallet.data();balance=Math.max(0,Math.floor(Number(petData.coins)||0));
   farm=normalizeFarm(snapshot.exists()?snapshot.data():freshFarm());
-  petVisual();selected=null;ready=true;busy=false;refresh();
+  $('previewGate').hidden=true;petVisual();selected=null;ready=true;busy=false;refresh();
   focusAt(16,12);
   status('農園にようこそ！ 畑をタップして始めましょう。','ok');
  }catch(e){
   if(sequence!==authSequence)return;
   busy=false;ready=false;
+  $('previewGate').textContent=e.message||'先行プレビューへのアクセスを確認できませんでした。';
   status('農園を読み込めませんでした：'+(e.message||'不明なエラー'),'error');
   console.error('pet farm load failed',e);
  }
