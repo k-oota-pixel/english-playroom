@@ -354,7 +354,7 @@ test('soil path texture has no circle studs, plastic stripes or per-cell plank s
  assert.ok(start>=0&&end>start);
  assert.match(js,/const roads=new Set\(farm\.roads\)/);
  assert.match(js,/const signature=\[\.\.\.roads\]\.sort\(\)\.join\('\|'\)/);
- assert.match(js,/const connection=roadConnections\(roads,x,y\)/);
+ assert.match(js,/connection=roadConnections\(roads,x,y\)/);
  assert.match(js,/if\(!connection\[side\]\)road\.appendChild\(node\('span','road-edge road-edge--'\+side\)\)/);
  assert.match(js,/drawRoadGrain\(road,x,y\)/);
  assert.match(js,/road\.style\.borderRadius=/);
