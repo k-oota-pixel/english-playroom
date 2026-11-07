@@ -30,7 +30,7 @@ test('new room uses its own Firestore doc, never the current regular room docume
  assert.match(core,/'apps','pet-room-pixel-v1'/);
  assert.doesNotMatch(core,/'apps','pet-room'\s*\)/);
  assert.match(core,/const GRID=10/);
- assert.match(core,/600\+\(x-y\)\*40/);
+ assert.match(core,/600\+\(x-y\)\*48/);
  assert.match(core,/Math\.round\(c\.Y\)/);
  assert.match(core,/function bfs\(/);
  assert.match(core,/const freshRoom=/);
