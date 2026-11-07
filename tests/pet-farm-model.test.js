@@ -116,7 +116,7 @@ test('crop timer starts immediately and boosts are applied to remaining time',()
  f=applyFarmAction(f,{type:'fertilize',area:id,index:0},1000).farm;
  assert.equal(f.plots[plotKey(id,0)].readyAt,1601000);
  assert.equal(remaining(f.plots[plotKey(id,0)],1000),'あと26分40秒');
- assert.throws(()=>applyFarmAction(f,{type:'fertilize',area:id,index:0},2000),/すでに|もう/);
+ assert.throws(()=>applyFarmAction(f,{type:'fertilize',area:id,index:0},2000),/すでに|もう|肥料を使って/);
  assert.throws(()=>applyFarmAction(f,{type:'water',area:id,index:0},2000),/すでに/);
 });
 
