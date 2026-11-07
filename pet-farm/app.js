@@ -12,6 +12,7 @@ const $=id=>document.getElementById(id);
 const tile=MAP.tile;
 let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='carrot',shopTab='seed';
 let busy=false,dirty=false,saving=null,saveTimer=0,toastTimer=0,zoom=.8,petX=7.5,petY=9.5,walking=false,ready=false,authSequence=0;
+let actionChoice=null,chosenPurchase=null,chosenProduce=null;
 function walletRef(){return doc(db,'users',user.uid,'apps','english-playroom');}
 function farmRef(){return doc(db,'users',user.uid,'apps','pet-farm');}
 const coords=(x,y)=>({left:(x*tile)+'px',top:(y*tile)+'px'});
@@ -21,7 +22,6 @@ function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 function updateCoin(){ $('coins').textContent=Number(balance).toLocaleString('ja-JP'); }
 function refresh(){
  updateCoin();renderPlots();renderSelection();renderShop();renderInventory();
- $('bond').textContent='💚 なかよし度 '+farm.bond+'　｜　収穫 '+farm.harvests+'回';
  $('saveBtn').disabled=!user||busy||!dirty;
 }
 function node(tag,cls,txt){
@@ -106,75 +106,160 @@ function renderPlots(){
  }
 }
 function selectPlot(area,index){
- selected={area,index};refresh();
- const point=locate(area,index);
- if(point){$('viewport').scrollTo({left:Math.max(0,point.x*tile*zoom-$('viewport').clientWidth/2),top:Math.max(0,point.y*tile*zoom-$('viewport').clientHeight/2),behavior:'smooth'});}
+ if(!ready||busy)return;
+ selected={area,index};actionChoice=null;
+ refresh();showDialog('actionDialog');
 }
 function actionButton(text,cls,fn,disabled=false){
  const b=node('button','action-btn'+(cls?' '+cls:''),text);b.type='button';b.disabled=busy||!ready||disabled;b.addEventListener('click',fn);return b;
 }
+
+function showDialog(id){
+ const dialog=$(id);
+ if(!dialog?.open)dialog?.showModal();
+}
+function hideDialog(id){const dialog=$(id);if(dialog?.open)dialog.close();}
+function selectedItem(label,subtitle,action){
+ const btn=node('button','item-choice'+(actionChoice?.key===action.key?' selected':''));
+ btn.type='button';
+ btn.append(node('span','emoji',action.icon),node('span','',label));
+ const text=btn.lastChild;
+ text.appendChild(node('small','',subtitle));
+ btn.addEventListener('click',()=>{actionChoice=action;renderSelection();});
+ return btn;
+}
+function actionConfirmation(container,label,verb,callback){
+ const summary=node('p','confirm-label',label);
+ const row=node('div','modal-actions');
+ row.append(
+  actionButton(verb,'gold',callback),
+  actionButton('やめる','secondary',()=>{actionChoice=null;renderSelection();})
+ );
+ container.append(summary,row);
+}
+function storageConfirmation(){
+ const box=$('storageConfirmation');box.replaceChildren();
+ if(!chosenProduce)return;
+ const crop=CROPS[chosenProduce.id];
+ if(!crop)return;
+ const verbs={feed:'ペットに食べさせる',pack:'プレゼント箱に入れる',unpack:'倉庫に戻す'};
+ const action=chosenProduce;
+ box.appendChild(node('p','confirm-label',crop.icon+' '+crop.name+'を'+verbs[action.kind]+'？'));
+ const row=node('div','modal-actions');
+ row.append(
+  actionButton(verbs[action.kind],'gold',async()=>{chosenProduce=null;await produce(action.kind,action.id);}),
+  actionButton('やめる','secondary',()=>{chosenProduce=null;renderInventory();})
+ );
+ box.appendChild(row);
+}
+
 function renderSelection(){
  const title=$('selectionTitle'),desc=$('selectionDetail'),ctrl=$('actionControls');
  ctrl.replaceChildren();
- if(!selected){title.textContent='畑を選んでください';desc.textContent='好きなマスをタップすると、種まきや水やりができます。';return;}
- const a=FARMS[selected.area],p=farm.plots[plotKey(selected.area,selected.index)];
- title.textContent=a.name+' · '+(selected.index+1)+'番の畑';
- const row=node('div','action-row'),box=node('div','action-box');
- if(!farm.unlocked[selected.area]){
-  desc.textContent='まだ入れない土地です。第'+selected.area+'農園の解放費用 '+a.price+'C。';
-  if(farm.unlocked[selected.area-1])row.appendChild(actionButton('🔓 '+a.price+'Cで農園を解放','gold',()=>buy('area',String(selected.area))));
-  else desc.textContent+=' ひとつ前の農園を先に解放してください。';
- }else if(!p){
-  desc.textContent='ふかふかの土。何を育てようかな？';
-  const choice=node('select');choice.setAttribute('aria-label','植えるタネ');
-  for(const id of cropIds){
-   const opt=node('option','',CROPS[id].icon+' '+CROPS[id].name+'（残り'+farm.inventory.seeds[id]+'）');
-   opt.value=id;choice.appendChild(opt);
-  }
-  if(!cropIds.includes(chosenSeed))chosenSeed='carrot';
-  choice.value=chosenSeed;choice.addEventListener('change',()=>{chosenSeed=choice.value;renderSelection();});
-  box.appendChild(choice);
-  row.appendChild(actionButton('🌱 タネをまく','',()=>actPlot('plant',{crop:chosenSeed}),!farm.inventory.seeds[chosenSeed]));
+ if(!selected){title.textContent='畑を選んでください';desc.textContent='好きなマスをタップしてください。';return;}
+ const area=selected.area,index=selected.index,a=FARMS[area],p=farm.plots[plotKey(area,index)];
+ title.textContent=a.name+' · '+(index+1)+'番の畑';
+ const items=node('div','item-options');
+ const select=(key,icon,label,quantity,action)=>items.appendChild(selectedItem(label,'持ち物 ×'+quantity,{key,icon,...action}));
+ if(!farm.unlocked[area]){
+  desc.textContent='🔒 まだ入れない農園です。解放すると '+(a.w*a.h)+'マスの畑が使えます。';
+  if(farm.unlocked[area-1]){
+   ctrl.appendChild(node('p','modal-hint','解放には '+a.price+'コインが必要です。'));
+   const row=node('div','modal-actions');
+   row.append(
+    actionButton(a.price+'Cで解放する','gold',async()=>{hideDialog('actionDialog');await buy('area',String(area));}),
+    actionButton('やめる','secondary',()=>hideDialog('actionDialog')));
+   ctrl.appendChild(row);
+  }else ctrl.appendChild(node('p','modal-hint','ひとつ前の農園を先に解放してください。'));
+  return;
+ }
+ if(!p){
+  desc.textContent='🌰 手持ちのタネから1種類選んでください。';
+  for(const id of cropIds)if(farm.inventory.seeds[id]>0)select('plant:'+id,CROPS[id].icon,CROPS[id].name+'のタネ',farm.inventory.seeds[id],{type:'plant',crop:id});
  }else{
   const phase=growthPhase(p);
   desc.textContent=CROPS[p.crop].icon+' '+CROPS[p.crop].name+'　｜　'+remaining(p);
-  if(phase==='ready')row.appendChild(actionButton('🧺 収穫する','gold',()=>actPlot('harvest')));
-  else{
-   if(!p.wateredAt)row.appendChild(actionButton('💧 水やり','',()=>actPlot('water'),!farm.inventory.water));
-   if(!p.boosted)row.appendChild(actionButton('🌿 肥料を使う','secondary',()=>actPlot('fertilize'),!farm.inventory.fertilizer));
+  if(phase==='ready'){
+   ctrl.appendChild(node('p','modal-hint','✨ 収穫の時期です！'));
+   const row=node('div','modal-actions');
+   row.append(actionButton('🧺 収穫する','gold',()=>actPlot('harvest')),actionButton('やめる','secondary',()=>hideDialog('actionDialog')));
+   ctrl.appendChild(row);
+   return;
   }
+  if(!p.wateredAt&&farm.inventory.water>0)select('water','💧','水',farm.inventory.water,{type:'water'});
+  if(!p.boosted&&farm.inventory.fertilizer>0)select('fertilize','🌿','肥料',farm.inventory.fertilizer,{type:'fertilize'});
  }
- if(row.children.length){box.appendChild(row);ctrl.appendChild(box);}
+ if(!items.childNodes.length){
+  ctrl.appendChild(node('p','modal-hint','使える持ち物がありません。おみせで購入できます。'));
+  const row=node('div','modal-actions');
+  row.append(actionButton('🏪 おみせへ','gold',async()=>{hideDialog('actionDialog');await visitBuilding('shop');}),actionButton('やめる','secondary',()=>hideDialog('actionDialog')));
+  ctrl.appendChild(row);return;
+ }
+ ctrl.appendChild(items);
+ if(actionChoice){
+  const found=[...items.children].some(el=>el.classList.contains('selected'));
+  if(found){
+   const confirm=node('div','modal-confirm');
+   const chosen=actionChoice;
+   const label=chosen.type==='plant'?CROPS[chosen.crop].name+'のタネをまきますか？':chosen.type==='water'?'水をあげますか？':'肥料をあげますか？';
+   const verb=chosen.type==='plant'?'🌱 まく':chosen.type==='water'?'💧 水をやる':'🌿 肥料を使う';
+   actionConfirmation(confirm,label,verb,()=>actPlot(chosen.type,chosen.crop?{crop:chosen.crop}:{}));
+   ctrl.appendChild(confirm);
+  }else actionChoice=null;
+ }
+ const row=node('div','modal-actions');
+ row.appendChild(actionButton('閉じる','secondary',()=>hideDialog('actionDialog')));
+ ctrl.appendChild(row);
 }
+
 function renderShop(){
  const list=$('shopList');list.replaceChildren();
+ $('shopBalance').textContent=String(balance);
  for(const tab of document.querySelectorAll('[data-shop]'))tab.classList.toggle('active',tab.dataset.shop===shopTab);
  const items=shopTab==='seed'?cropIds.map(id=>({kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,price:CROPS[id].seed,sub:'育成 '+CROPS[id].minutes+'分'}))
-  :shopTab==='supply'?Object.entries(SUPPLIES).map(([id,s])=>({kind:'supply',id,label:s.name,icon:s.icon,price:s.price,sub:id==='water'?'水やり1回で消費':'成長時間が短くなる'}))
+  :shopTab==='supply'?Object.entries(SUPPLIES).map(([id,t])=>({kind:'supply',id,label:t.name,icon:t.icon,price:t.price,sub:id==='water'?'水やり1回で消費':'成長時間が短くなる'}))
   :FARMS.slice(1).map((a,i)=>({kind:'area',id:String(i+1),label:a.name,icon:'🌾',price:a.price,sub:(a.w*a.h)+'マス・'+(farm.unlocked[i+1]?'解放済み':'未解放')}));
  for(const item of items){
-  const b=node('button','shop-item');b.type='button';
+  const b=node('button','shop-item'+(chosenPurchase?.id===item.id&&chosenPurchase?.kind===item.kind?' selected':''));
+  b.type='button';
   b.append(node('span','emoji',item.icon),node('strong','',item.label),node('small','',item.price+'C · '+item.sub));
-  if(item.kind==='area'&&(farm.unlocked[Number(item.id)]||!farm.unlocked[Number(item.id)-1]))b.disabled=true;
-  else b.disabled=busy||!ready||balance<item.price;
-  b.addEventListener('click',()=>buy(item.kind,item.id));
+  b.disabled=busy||!ready||balance<item.price||(item.kind==='area'&&(farm.unlocked[Number(item.id)]||!farm.unlocked[Number(item.id)-1]));
+  b.addEventListener('click',()=>{chosenPurchase=item;renderShop();});
   list.appendChild(b);
  }
+ const confirmation=$('shopConfirmation');confirmation.replaceChildren();
+ if(chosenPurchase){
+  const p=chosenPurchase;
+  const current=items.find(i=>i.kind===p.kind&&i.id===p.id);
+  if(!current||balance<p.price){chosenPurchase=null;return;}
+  confirmation.appendChild(node('p','confirm-label',p.icon+' '+p.label+'を '+p.price+'コインで購入しますか？'));
+  const row=node('div','modal-actions');
+  row.append(
+   actionButton('🪙 購入する','gold',async()=>{await buy(p.kind,p.id);chosenPurchase=null;renderShop();}),
+   actionButton('やめる','secondary',()=>{chosenPurchase=null;renderShop();})
+  );
+  confirmation.appendChild(row);
+ }
 }
+
 function renderInventory(){
  const container=$('inventory');container.replaceChildren();
- const addTitle=(label)=>container.appendChild(node('div','inv-title',label));
+ const addTitle=label=>container.appendChild(node('div','inv-title',label));
  const addChips=(entries,kind)=>{
   const wrap=node('div','inv-row');
   for(const [id,n] of entries){
    if(!n)continue;
    const chip=node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+n);
    if(kind==='produce'){
-    const feed=node('button','','食べる');feed.disabled=busy||!ready;feed.addEventListener('click',()=>produce('feed',id));
-    const pack=node('button','','贈り物に');pack.disabled=busy||!ready;pack.addEventListener('click',()=>produce('pack',id));
-    chip.append(feed,pack);
+    for(const [key,label] of [['feed','食べる'],['pack','贈り物に']]){
+     const btn=node('button','',label);btn.disabled=busy||!ready;
+     btn.addEventListener('click',()=>{chosenProduce={kind:key,id};storageConfirmation();});
+     chip.appendChild(btn);
+    }
    }else if(kind==='gift'){
-    const undo=node('button','','取り出す');undo.disabled=busy||!ready;undo.addEventListener('click',()=>produce('unpack',id));chip.appendChild(undo);
+    const btn=node('button','','取り出す');btn.disabled=busy||!ready;
+    btn.addEventListener('click',()=>{chosenProduce={kind:'unpack',id};storageConfirmation();});
+    chip.appendChild(btn);
    }
    wrap.appendChild(chip);
   }
@@ -183,14 +268,16 @@ function renderInventory(){
  };
  addTitle('🌰 タネの袋');
  addChips(cropIds.map(id=>[id,farm.inventory.seeds[id]]),'seed');
- const sup=node('div','inv-row');
- sup.append(node('span','inv-chip','💧 水 ×'+farm.inventory.water),node('span','inv-chip','🌿 肥料 ×'+farm.inventory.fertilizer));
- container.appendChild(sup);
+ const supply=node('div','inv-row');
+ supply.append(node('span','inv-chip','💧 水 ×'+farm.inventory.water),node('span','inv-chip','🌿 肥料 ×'+farm.inventory.fertilizer));
+ container.appendChild(supply);
  addTitle('🧺 収穫した野菜');
  addChips(cropIds.map(id=>[id,farm.inventory.produce[id]]),'produce');
  addTitle('🎁 プレゼント箱（送信準備中）');
  addChips(cropIds.map(id=>[id,farm.inventory.giftBox[id]]),'gift');
+ storageConfirmation();
 }
+
 function setPetPosition(x,y,duration=0){
  const pet=$('petWalker');
  pet.style.transition=duration?'left '+duration+'ms linear,top '+duration+'ms linear':'none';
@@ -231,6 +318,7 @@ async function actPlot(type,extra={}){
  const params={type,area:selected.area,index:selected.index,...extra};
  let result;
  try{result=applyFarmAction(farm,params);}catch(e){toast(e.message);return;}
+ hideDialog('actionDialog');actionChoice=null;
  busy=true;refresh();
  const spot=locate(params.area,params.index);
  try{
@@ -244,6 +332,7 @@ async function produce(kind,id){
  if(busy||!ready)return;
  let result;
  try{result=useProduce(farm,kind,id);}catch(e){toast(e.message);return;}
+ if(kind==='feed')hideDialog('storageDialog');
  busy=true;refresh();
  try{
   if(kind==='feed'){await walkTo(6.5,7.9);await showWork('feed',6.5,7.8);}
@@ -255,8 +344,6 @@ async function buy(kind,id){
  if(busy||!ready||!user)return;
  const preview=applyPurchase.bind(null,farm,kind,id,balance);
  try{preview();}catch(e){toast(e.message);return;}
- const item=kind==='area'?FARMS[Number(id)].name:kind==='seed'?CROPS[id].name+'のタネ':SUPPLIES[id].name;
- if(!confirm(item+'を '+preview().cost+'コインで購入しますか？'))return;
  busy=true;refresh();status('コイン残高と購入情報を確認しています…');
  try{
   await flushSave();
@@ -330,7 +417,7 @@ async function initialize(current){
   if(!wallet.exists())throw Error('ペットのデータが見つかりません。');
   petData=wallet.data();balance=Math.max(0,Math.floor(Number(petData.coins)||0));
   farm=normalizeFarm(snapshot.exists()?snapshot.data():freshFarm());
-  petVisual();selected={area:0,index:0};ready=true;busy=false;refresh();
+  petVisual();selected=null;ready=true;busy=false;refresh();
   focusAt(16,12);
   status('農園にようこそ！ 畑をタップして始めましょう。','ok');
  }catch(e){
@@ -340,9 +427,25 @@ async function initialize(current){
   console.error('pet farm load failed',e);
  }
 }
+async function visitBuilding(kind){
+ if(!ready||busy)return;
+ busy=true;refresh();
+ try{
+  if(kind==='shop')await walkTo(12,8.8);
+  else await walkTo(18.9,8.8);
+  if(kind==='shop'){shopTab='seed';chosenPurchase=null;showDialog('shopDialog');}
+  else{chosenProduce=null;renderInventory();showDialog('storageDialog');}
+ }finally{busy=false;refresh();}
+}
+$('shopBuilding').addEventListener('click',()=>{void visitBuilding('shop');});
+$('storageBuilding').addEventListener('click',()=>{void visitBuilding('storage');});
 for(const tab of document.querySelectorAll('[data-shop]'))tab.addEventListener('click',()=>{
- shopTab=tab.dataset.shop;renderShop();
+ shopTab=tab.dataset.shop;chosenPurchase=null;renderShop();
 });
+for(const close of document.querySelectorAll('[data-close-dialog]'))close.addEventListener('click',()=>hideDialog(close.dataset.closeDialog));
+for(const modal of document.querySelectorAll('dialog.farm-dialog')){
+ modal.addEventListener('click',event=>{if(event.target===modal)modal.close();});
+}
 $('saveBtn').addEventListener('click',()=>{void flushSave();});
 $('homeBtn').addEventListener('click',()=>focusAt(5,5));
 $('centerBtn').addEventListener('click',()=>focusAt(16,12));
@@ -351,7 +454,7 @@ $('zoomIn').addEventListener('click',()=>setZoom(zoom+.1));
 window.addEventListener('pagehide',()=>{if(dirty)void flushSave();});
 setInterval(()=>{if(ready){renderPlots();renderSelection();}},10000);
 setInterval(async()=>{
- if(!ready||busy||walking||document.hidden)return;
+ if(!ready||busy||walking||document.hidden||document.querySelector('dialog[open]'))return;
  const choices=[7.5,9.5,15.5,18,21.5,25.5];
  const target=choices[Math.floor(Math.random()*choices.length)];
  await walkTo(target,9.5);
