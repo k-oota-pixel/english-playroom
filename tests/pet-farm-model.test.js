@@ -75,3 +75,24 @@ test('farm model is normalized and never modifies the main wallet',()=>{
  assert.match(app,/accountSession\(current\)/);
  assert.match(app,/runTransaction\(db/);
 });
+
+
+test('farm preview uses building and popup interactions rather than fixed side panels',()=>{
+ const html=readFileSync(new URL('../pet-farm/index.html',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ assert.match(html,/id="shopBuilding"/);
+ assert.match(html,/id="storageBuilding"/);
+ for(const id of ['actionDialog','shopDialog','storageDialog','previewGate']){
+  assert.ok(html.includes('id="'+id+'"'),id+' must exist');
+ }
+ assert.doesNotMatch(html,/id="bond"|class="sidebar"/,'no persistent mood or sidebar panels');
+ assert.match(app,/showDialog\('actionDialog'\)/);
+ assert.match(app,/await walkTo\(12,8\.8\)/);
+ assert.match(app,/showDialog\('shopDialog'\)/);
+ assert.match(app,/actionConfirmation\(confirm,label,verb,/);
+ assert.match(app,/actionButton\('やめる'/);
+ assert.doesNotMatch(app,/confirm\(item\+/,'avoid native confirmation in the shop');
+ assert.match(css,/#previewGate\[hidden\]\{display:none!important\}/);
+ assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
+});
