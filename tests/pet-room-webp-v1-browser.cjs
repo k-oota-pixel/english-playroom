@@ -24,11 +24,38 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
  try{
    await page.goto('http://127.0.0.1:'+port+'/pet-room/room-webp-v1.html',{waitUntil:'domcontentloaded'});
    await page.locator('#objectLayer .object').waitFor({timeout:15000});
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===232,{timeout:15000});
+   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===464,{timeout:15000});
    await page.waitForFunction(()=>!document.querySelector('#petActor').hidden,{timeout:15000});
    assert.equal(await page.locator('.object').count(),1,'Only the approved WebP bed should be added');
-   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_0.webp');
-   assert.equal(await page.locator('.object img').evaluate(el=>el.naturalHeight),348);
+   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_0.webp?v=2.4.25');
+   assert.equal(await page.locator('.object img').evaluate(el=>el.naturalHeight),696);
+   // Inspect raw alpha pixels in Chromium, not just file extensions or existence.
+   const coverage=await page.evaluate(async()=>{
+     const alphas=[];
+     for(let i=0;i<4;i++){
+       const sprite=new Image();sprite.src='./assets/webp-v1/bed/bed_'+i+'.webp?v=2.4.25';
+       await sprite.decode();
+       const c=document.createElement('canvas');c.width=sprite.naturalWidth;c.height=sprite.naturalHeight;
+       const data=c.getContext('2d',{willReadFrequently:true});data.drawImage(sprite,0,0);
+       const pixels=data.getImageData(0,0,c.width,c.height).data;
+       let zeros=0,trace=0,fully=0;
+       for(let p=3;p<pixels.length;p+=4){const alpha=pixels[p];if(alpha===0)zeros++;if(alpha>0&&alpha<=10)trace++;if(alpha>=250)fully++;}
+       const probes=[[388,82],[550,90],[112,118],[98,48]]; const [px,py]=probes[i]; const matteProbe=pixels[(py*c.width+px)*4+3];
+       alphas.push({zeros,trace,fully,matteProbe,corner:pixels[3],size:[c.width,c.height]});
+     }
+     return alphas;
+   });
+   const minimumClear=[120000,125000,116000,130000];
+   for(let i=0;i<4;i++){
+     assert.ok(coverage[i].zeros>=minimumClear[i],'Transparent background must be fully cleared: bed_'+i);
+     assert.equal(coverage[i].trace,0,'No 1-10 alpha haze must be left around bed_'+i);
+     assert.equal(coverage[i].corner,0,'Top-left must be transparent: bed_'+i);
+     assert.equal(coverage[i].matteProbe,0,'Old nearly-opaque background speck must be fully transparent: bed_'+i);
+     assert.ok(coverage[i].fully>150000,'Furniture body should remain opaque: bed_'+i);
+   }
+   await page.locator('#roomBoard').evaluate(el=>el.style.background='#523b31');
+   await page.screenshot({path:'webp-room-alpha-on-dark.png',fullPage:true});
+
    assert.equal(await page.locator('#petActor svg').count(),1,'Original pet display remains active');
    assert.deepEqual(errors,[],'No startup exceptions');
    const initial=await page.locator('.object').evaluate(el=>({left:parseFloat(el.style.left),top:parseFloat(el.style.top),width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
@@ -37,8 +64,8 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    await page.locator('.object').click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bed opens normal editing panel');
    await page.locator('#rotateItem').click();
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===348);
-   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp');
+   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696);
+   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25');
    const rotated=await page.locator('.object').evaluate(el=>({width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
    assert.ok(Math.abs(rotated.width-348/960*100)<.1);
    assert.ok(Math.abs(rotated.height-232/960*100)<.1);
@@ -49,8 +76,8 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.equal(await page.evaluate(()=>localStorage.getItem('monstudy-pet-room-v4:webp-phase4-test')),null,'Existing room save untouched');
    await page.screenshot({path:'webp-room-phase4-desktop.png',fullPage:true});
    await page.reload();
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===348,{timeout:15000});
-   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp','Direction restored after refresh');
+   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696,{timeout:15000});
+   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25','Direction restored after refresh');
    await page.setViewportSize({width:390,height:844});await page.waitForTimeout(250);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2),true,'Mobile has no accidental horizontal overflow');
    await page.screenshot({path:'webp-room-phase4-mobile.png',fullPage:true});

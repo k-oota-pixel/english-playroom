@@ -9,7 +9,7 @@ const $=id=>document.getElementById(id);
 const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
 // Phase 4: BED ONLY. Other furniture intentionally absent until their WebP assets pass review.
 const specs=[{id:'bed',name:'WebPベッド',icon:'🛏️',x:2,y:1,w:2,h:3,scaleX:1,scaleY:1}];
-const WEBP_BED_ASSETS=['bed_0.webp','bed_1.webp','bed_2.webp','bed_3.webp'].map(name=>'./assets/webp-v1/bed/'+name);
+const WEBP_BED_ASSETS=['bed_0.webp','bed_1.webp','bed_2.webp','bed_3.webp'].map(name=>'./assets/webp-v1/bed/'+name+'?v=2.4.25');
 const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:s.initialPlaced!==false,element:null,blocking:s.blocking!==false&&!s.wallOnly}]));
 let user=null,petData={},petCell={x:4,y:4},mode='view',activeId=null,snapshot=null;
 let playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-webp-v1:guest',hasPet=false,dragState=null,suppressClickUntil=0;
@@ -361,7 +361,7 @@ for(const item of items.values())furnitureHTML(item);
 bindUI();loadLayout('guest');// No SVG or Canvas furniture fallback: report a missing source asset instead.
 Promise.all(WEBP_BED_ASSETS.map((src,i)=>new Promise((ok,fail)=>{
  const image=new Image();image.onload=()=>{
-  if(image.naturalWidth!==((i%2)?348:232)||image.naturalHeight!==((i%2)?232:348))fail(new Error('画像の寸法が仕様と違います: '+src));
+  if(image.naturalWidth!==((i%2)?696:464)||image.naturalHeight!==((i%2)?464:696))fail(new Error('画像の寸法が仕様と違います: '+src));
   else ok(src);
  };image.onerror=()=>fail(new Error('WebPの読み込みに失敗しました: '+src));image.src=src;
 }))).catch(error=>{console.error(error);notice(error.message)});

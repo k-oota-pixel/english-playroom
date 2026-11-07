@@ -53,9 +53,9 @@ test('A standalone WebP bed URL is authorized in the Monstudy shell and PLAY',()
  for(const name of ['room-v4.html','room-cozy.html','room-webp-v1.html'])
   assert.equal(ctx.check('https://k-oota-pixel.github.io/english-playroom/pet-room/'+name),true,name+' should open');
  assert.equal(ctx.check('https://k-oota-pixel.github.io/english-playroom/pet-room/fake.html'),false);
- assert.match(play,/href="\.\/pet-room\/room-webp-v1\.html"/);
+ assert.match(play,/href="\.\/pet-room\/room-webp-v1\.html\?v=2\.4\.25"/);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.24'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.24/);
+ assert.match(version,/const APP_VERSION='2\.4\.25'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.25/);
 });
