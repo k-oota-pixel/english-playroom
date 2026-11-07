@@ -3,7 +3,8 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FARMS,CROPS,SUPPLIES,cropIds,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=1';
+import {MAP,FARMS,CROPS,SUPPLIES,cropIds,plotKey,locate,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyPurchase,useProduce} from './model.js?v=3';
+import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=3';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(a=>a.name==='[DEFAULT]')||initializeApp(cfg);enableAppCheck(app);
@@ -11,7 +12,7 @@ const auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const tile=MAP.tile;
 let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='carrot',shopTab='seed';
-let busy=false,dirty=false,saving=null,saveTimer=0,toastTimer=0,zoom=.8,petX=7.5,petY=9.5,walking=false,ready=false,authSequence=0;
+let busy=false,dirty=false,saving=null,saveTimer=0,toastTimer=0,zoom=1,baseZoom=1,petX=8.0,petY=6.5,walking=false,ready=false,authSequence=0;
 let actionChoice=null,chosenPurchase=null,chosenProduce=null;
 function walletRef(){return doc(db,'users',user.uid,'apps','english-playroom');}
 function farmRef(){return doc(db,'users',user.uid,'apps','pet-farm');}
@@ -31,44 +32,13 @@ function node(tag,cls,txt){
  return el;
 }
 function initWorld(){
- const world=$('world');
- world.style.width=(MAP.w*tile)+'px';world.style.height=(MAP.h*tile)+'px';
- const paths=[
-  {x:4.5,y:7.5,w:2,h:3.5,v:true},
-  {x:5,y:9.5,w:23,h:1.05},
-  {x:15.5,y:9.5,w:1,h:2.3,v:true},
-  {x:21.5,y:9.5,w:1,h:2.3,v:true},
-  {x:12,y:9.5,w:1,h:8,v:true},
-  {x:22,y:13.6,w:1,h:4.3,v:true},
-  {x:16.5,y:12.9,w:1,h:4,v:true},
-  {x:13.8,y:17.6,w:7.8,h:1}
- ];
- for(const path of paths){
-  const el=node('div','path'+(path.v?' vertical':''));
-  Object.assign(el.style,{left:(path.x*tile)+'px',top:(path.y*tile)+'px',width:(path.w*tile)+'px',height:(path.h*tile)+'px'});
-  $('paths').appendChild(el);
- }
- const p=node('div','pond');$('deco').appendChild(p);
- let seed=12477;
- const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
- const skip=(x,y)=> (x<9&&y<9)||(x>9&&x<28&&y>8&&y<23)||(x>25&&y<9);
- for(let n=0;n<160;n++){
-  const x=1+Math.floor(random()*32),y=1+Math.floor(random()*23);
-  if(skip(x,y))continue;
-  const e=node('span',n%9===0?'flower':'grass-clump',n%9===0?['🌼','🌺','🌸'][n%3]:'❧');
-  Object.assign(e.style,{left:(x*tile+random()*22)+'px',top:(y*tile+random()*20)+'px'});
-  $('grass').appendChild(e);
- }
- for(const pt of [[1,2],[1,7],[2,17],[5,18],[7,22],[28,13],[29,20],[31,22],[28,3],[10,2],[13,3],[18,3],[24,3],[31,11]]){
-  const e=node('span','tree','🌳');
-  Object.assign(e.style,coords(pt[0],pt[1]));$('deco').appendChild(e);
- }
- const flowerbed=[[6.1,5.4],[6.7,6],[8,5.8],[3,5.2],[9,14],[26,17]];
- for(const xy of flowerbed){const e=node('span','flower','🌷');Object.assign(e.style,coords(...xy));$('deco').appendChild(e);}
+ const world=$('world'),size=FARM_SCENE_SIZE;
+ world.style.width=size.width+'px';world.style.height=size.height+'px';
+ installScenery($('scenery'));
  for(let area=0;area<FARMS.length;area++){
   const a=FARMS[area];
   const wrapper=node('div','farm-area');wrapper.id='area-'+area;
-  Object.assign(wrapper.style,{left:((a.x-.14)*tile)+'px',top:((a.y-.14)*tile)+'px',width:((a.w+.28)*tile)+'px',height:((a.h+.28)*tile)+'px'});
+  Object.assign(wrapper.style,{left:(a.x*tile)+'px',top:(a.y*tile)+'px',width:(a.w*tile)+'px',height:(a.h*tile)+'px'});
   const label=node('button','farm-label',a.name);label.type='button';
   label.addEventListener('click',()=>selectPlot(area,0));wrapper.appendChild(label);
   $('plotLayer').appendChild(wrapper);
@@ -82,7 +52,7 @@ function initWorld(){
   }
  }
  setPetPosition(petX,petY,0);
- setZoom(.8,false);
+ requestAnimationFrame(()=>fitScene());
 }
 function renderPlots(){
  const now=Date.now();
@@ -301,8 +271,8 @@ async function walkTo(x,y){
  while(walking)await sleep(60);
  walking=true;const el=$('petWalker');el.classList.add('walking');
  try{
-  if(Math.abs(petY-9.5)>1)await movePoint(petX,9.5);
-  await movePoint(x,9.5);
+  if(Math.abs(petY-6.5)>1)await movePoint(petX,6.5);
+  await movePoint(x,6.5);
   await movePoint(x,y);
  }finally{walking=false;el.classList.remove('walking');}
 }
@@ -322,7 +292,7 @@ async function actPlot(type,extra={}){
  busy=true;refresh();
  const spot=locate(params.area,params.index);
  try{
-  await walkTo(spot.x+.5,spot.y+1.55);
+  await walkTo(spot.x+.5,spot.y+.77);
   await showWork(type,spot.x+.5,spot.y+1);
   farm=result.farm;queueSave();toast(result.message);
  }catch(e){toast(e.message||'作業に失敗しました。');}
@@ -335,7 +305,7 @@ async function produce(kind,id){
  if(kind==='feed')hideDialog('storageDialog');
  busy=true;refresh();
  try{
-  if(kind==='feed'){await walkTo(6.5,7.9);await showWork('feed',6.5,7.8);}
+  if(kind==='feed'){await walkTo(5.4,6.5);await showWork('feed',5.4,6.3);}
   farm=result.farm;queueSave();toast(result.message);
  }catch(e){toast('操作が完了しませんでした。');}
  finally{busy=false;refresh();}
@@ -390,15 +360,27 @@ async function flushSave(){
   saving=null;$('saveBtn').disabled=!dirty||busy;
  }
 }
+function fitScene(){
+ const view=$('viewport'),scene=FARM_SCENE_SIZE;
+ if(!view.clientWidth||!view.clientHeight)return;
+ const fit=Math.max(view.clientWidth/scene.width,view.clientHeight/scene.height);
+ baseZoom=fit;
+ setZoom(fit,false);
+ const x=scene.width*zoom-view.clientWidth,y=scene.height*zoom-view.clientHeight;
+ view.scrollLeft=Math.max(0,x/2);
+ view.scrollTop=Math.max(0,y/2);
+}
 function setZoom(next,center=true){
- zoom=clamp(next,.55,1.25);
+ zoom=clamp(next,baseZoom*.72,baseZoom*2.1);
  const size=$('sceneSize'),world=$('world'),view=$('viewport');
- const oldX=(view.scrollLeft+view.clientWidth/2)/Math.max(.01,Number(world.dataset.zoom)||.8);
- const oldY=(view.scrollTop+view.clientHeight/2)/Math.max(.01,Number(world.dataset.zoom)||.8);
- size.style.width=(MAP.w*tile*zoom)+'px';size.style.height=(MAP.h*tile*zoom)+'px';
+ const oldZoom=Math.max(.01,Number(world.dataset.zoom)||zoom);
+ const oldX=(view.scrollLeft+view.clientWidth/2)/oldZoom;
+ const oldY=(view.scrollTop+view.clientHeight/2)/oldZoom;
+ size.style.width=(FARM_SCENE_SIZE.width*zoom)+'px';
+ size.style.height=(FARM_SCENE_SIZE.height*zoom)+'px';
  world.style.transform='scale('+zoom+')';world.dataset.zoom=zoom;
- $('zoomLabel').textContent=Math.round(zoom*100)+'%';
- if(center)view.scrollTo({left:oldX*zoom-view.clientWidth/2,top:oldY*zoom-view.clientHeight/2,behavior:'instant'});
+ $('zoomLabel').textContent=Math.round(zoom/baseZoom*100)+'%';
+ if(center)view.scrollTo({left:Math.max(0,oldX*zoom-view.clientWidth/2),top:Math.max(0,oldY*zoom-view.clientHeight/2),behavior:'instant'});
 }
 function focusAt(x,y){
  const v=$('viewport');
@@ -418,7 +400,7 @@ async function initialize(current){
   petData=wallet.data();balance=Math.max(0,Math.floor(Number(petData.coins)||0));
   farm=normalizeFarm(snapshot.exists()?snapshot.data():freshFarm());
   $('previewGate').hidden=true;petVisual();selected=null;ready=true;busy=false;refresh();
-  focusAt(16,12);
+  if($('viewport').clientWidth<760)focusAt(12.7,7.7);
   status('農園にようこそ！ 畑をタップして始めましょう。','ok');
  }catch(e){
   if(sequence!==authSequence)return;
@@ -432,8 +414,8 @@ async function visitBuilding(kind){
  if(!ready||busy)return;
  busy=true;refresh();
  try{
-  if(kind==='shop')await walkTo(12,8.8);
-  else await walkTo(18.9,8.8);
+  if(kind==='shop')await walkTo(12.7,6.35);
+  else await walkTo(20.1,6.35);
   if(kind==='shop'){shopTab='seed';chosenPurchase=null;showDialog('shopDialog');}
   else{chosenProduce=null;renderInventory();showDialog('storageDialog');}
  }finally{busy=false;refresh();}
@@ -448,17 +430,19 @@ for(const modal of document.querySelectorAll('dialog.farm-dialog')){
  modal.addEventListener('click',event=>{if(event.target===modal)modal.close();});
 }
 $('saveBtn').addEventListener('click',()=>{void flushSave();});
-$('homeBtn').addEventListener('click',()=>focusAt(5,5));
-$('centerBtn').addEventListener('click',()=>focusAt(16,12));
-$('zoomOut').addEventListener('click',()=>setZoom(zoom-.1));
-$('zoomIn').addEventListener('click',()=>setZoom(zoom+.1));
+$('homeBtn').addEventListener('click',()=>focusAt(4.2,3.4));
+$('centerBtn').addEventListener('click',()=>focusAt(13.5,8.1));
+$('house').addEventListener('click',()=>toast('ペットのおへやは準備中です。'));
+$('zoomOut').addEventListener('click',()=>setZoom(zoom-baseZoom*.12));
+$('zoomIn').addEventListener('click',()=>setZoom(zoom+baseZoom*.12));
+window.addEventListener('resize',()=>fitScene());
 window.addEventListener('pagehide',()=>{if(dirty)void flushSave();});
 setInterval(()=>{if(ready){renderPlots();renderSelection();}},10000);
 setInterval(async()=>{
  if(!ready||busy||walking||document.hidden||document.querySelector('dialog[open]'))return;
- const choices=[7.5,9.5,15.5,18,21.5,25.5];
+ const choices=[4.2,6.4,8.2,12.7,15.5,20.1,25.5];
  const target=choices[Math.floor(Math.random()*choices.length)];
- await walkTo(target,9.5);
+ await walkTo(target,6.5);
 },8500);
 initWorld();
 onAuthStateChanged(auth,u=>{void initialize(u);},e=>status('認証エラー：'+e.message,'error'));
