@@ -308,3 +308,25 @@ test('planting plays soft tile-centered particles instead of seed emoji bubbles'
  assert.match(css,/\.work-effect--fertilize\{/);
  assert.match(css,/\.work-effect--harvest\{/);
 });
+
+test('farm action dialog stays the same height and keeps confirmation in place before and after selecting a seed',()=>{
+ const app=source('pet-farm/app.js'),css=source('pet-farm/style.css');
+ const start=app.indexOf('function renderSelection(){');
+ const end=app.indexOf('\n// Hide locked crops',start);
+ assert.ok(start>=0&&end>start);
+ const selection=app.slice(start,end);
+ assert.match(selection,/const previousScroll=ctrl\.querySelector\('\.farm-action-choices'\)\?\.scrollTop\|\|0/);
+ assert.match(selection,/const choices=node\('div','farm-action-choices'\)/);
+ assert.match(selection,/const confirm=node\('div','farm-action-confirm'\)/);
+ assert.match(selection,/const footer=node\('div','farm-action-footer'\)/);
+ assert.match(selection,/ctrl\.append\(choices,confirm,footer\)/);
+ assert.match(selection,/actionConfirmation\(confirm,label,verb,/);
+ assert.match(selection,/choices\.scrollTop=previousScroll/);
+ assert.match(selection,/farm-action-prompt/);
+ assert.doesNotMatch(selection,/ctrl\.appendChild\(confirm\)/);
+ assert.match(css,/#actionDialog\[open\]\{[\s\S]*?height:min\(530px,calc\(100dvh - 24px\)\)/);
+ assert.match(css,/#actionDialog \.farm-action-choices\{[\s\S]*?overflow-y:auto/);
+ assert.match(css,/#actionDialog \.farm-action-confirm\{[\s\S]*?flex:0 0 116px/);
+ assert.match(css,/#actionDialog \.farm-action-footer\{[\s\S]*?flex:0 0 57px/);
+ assert.match(css,/@media\(max-height:510px\)/);
+});
