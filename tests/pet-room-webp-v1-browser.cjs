@@ -24,11 +24,11 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
  try{
    await page.goto('http://127.0.0.1:'+port+'/pet-room/room-webp-v1.html',{waitUntil:'domcontentloaded'});
    await page.locator('#objectLayer .object').waitFor({timeout:15000});
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===232,{timeout:15000});
+   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===464,{timeout:15000});
    await page.waitForFunction(()=>!document.querySelector('#petActor').hidden,{timeout:15000});
    assert.equal(await page.locator('.object').count(),1,'Only the approved WebP bed should be added');
    assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_0.webp?v=2.4.25');
-   assert.equal(await page.locator('.object img').evaluate(el=>el.naturalHeight),348);
+   assert.equal(await page.locator('.object img').evaluate(el=>el.naturalHeight),696);
    // Inspect raw alpha pixels in Chromium, not just file extensions or existence.
    const coverage=await page.evaluate(async()=>{
      const alphas=[];
@@ -62,7 +62,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    await page.locator('.object').click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bed opens normal editing panel');
    await page.locator('#rotateItem').click();
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===348);
+   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696);
    assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25');
    const rotated=await page.locator('.object').evaluate(el=>({width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
    assert.ok(Math.abs(rotated.width-348/960*100)<.1);
@@ -74,7 +74,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.equal(await page.evaluate(()=>localStorage.getItem('monstudy-pet-room-v4:webp-phase4-test')),null,'Existing room save untouched');
    await page.screenshot({path:'webp-room-phase4-desktop.png',fullPage:true});
    await page.reload();
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===348,{timeout:15000});
+   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696,{timeout:15000});
    assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25','Direction restored after refresh');
    await page.setViewportSize({width:390,height:844});await page.waitForTimeout(250);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2),true,'Mobile has no accidental horizontal overflow');
