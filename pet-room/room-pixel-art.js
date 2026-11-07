@@ -56,7 +56,7 @@ function pixelRoom(wall='wall-pink',floor='floor-cream'){
   for(let y=0;y<225;y+=6)for(let x=0;x<300;x+=6)
     if(h(x,y)%9===0)R(g,x,y,2,2,'#f2e8de');
   // Center all world geometry inside the 300-pixel canvas; the SVG tile grid shares this origin.
-  g.save();g.translate(25,0);
+  g.save();g.translate(25,0);g.translate(125,112);g.scale(1.2,1.1);g.translate(-125,-112);
   // Two inner walls and deep timber joints: these are scenery, not movable furniture.
   P(g,[[25,67],[125,18],[125,75],[25,124]],p[0]);
   P(g,[[125,18],[225,67],[225,124],[125,75]],p[1]);
