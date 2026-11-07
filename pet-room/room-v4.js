@@ -18,11 +18,11 @@ const specs=[
  {id:'sofa',name:'ソファ',icon:'🛋️',x:4,y:4,scaleX:1.03,scaleY:1.50},
  {id:'plant',name:'観葉植物',icon:'🪴',x:5,y:2,scaleX:1.14,scaleY:1.45},
  {id:'roomLight',name:'ルームライト',icon:'💡',x:3,y:1,scaleX:1.03,scaleY:1.72,initialPlaced:false},
- {id:'tvStand',name:'テレビ（テレビ台付き）',icon:'📺',x:3,y:0,scaleX:1.12,scaleY:1.42,sideScaleY:.93,initialPlaced:false},
- {id:'studyDesk',name:'勉強机',icon:'✏️',x:2,y:2,scaleX:1.08,scaleY:1.43,sideScaleY:.96,initialPlaced:false},
+ {id:'tvStand',name:'テレビ（テレビ台付き）',icon:'📺',x:3,y:0,scaleX:1.12,scaleY:1.42,sideScaleY:1.25,initialPlaced:false},
+ {id:'studyDesk',name:'勉強机',icon:'✏️',x:2,y:2,scaleX:1.08,scaleY:1.43,sideScaleY:1.22,initialPlaced:false},
  {id:'fullMirror',name:'姿見の鏡',icon:'🪞',x:0,y:1,scaleX:1.02,scaleY:1.70,initialPlaced:false},
  {id:'wallClock',name:'壁掛け時計',icon:'🕒',x:3,y:0,scaleX:.93,scaleY:1.04,initialPlaced:false,blocking:false,wallOnly:true},
- {id:'squareTable',name:'四角いテーブル',icon:'▱',x:2,y:4,scaleX:1.1,scaleY:1.38,sideScaleY:.95,initialPlaced:false},
+ {id:'squareTable',name:'四角いテーブル',icon:'▱',x:2,y:4,scaleX:1.1,scaleY:1.38,sideScaleY:1.29,initialPlaced:false},
  {id:'kotatsu',name:'こたつ',icon:'🍊',x:3,y:3,scaleX:1.04,scaleY:1.08,initialPlaced:false}
 ].map(spec=>({...spec,...ROOM_FOOTPRINTS[spec.id],...EXTRA_FURNITURE[spec.id]}));
 const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:s.initialPlaced!==false,element:null,blocking:s.blocking!==false&&!s.wallOnly}]));
@@ -213,7 +213,7 @@ function drawItem(item){
  if(!item.placed)return;
  const d=dims(item),isRug=item.id==='rug';
  const x=TX+(item.x+d.w/2)*TILE;
- const y=item.wallOnly?199:TY+(item.y+(isRug?d.h/2:d.h))*TILE+(item.id==='bed'?-TILE*.5:0);
+ const y=item.wallOnly?199:TY+(item.y+(isRug?d.h/2:d.h))*TILE+(item.id==='bed'?-TILE*.5:item.id==='kotatsu'?-TILE*.34:0);
  // The four sprites share a bottom/feet anchor; only the rug is floor-centred.
  const width=TILE*d.w*item.scaleX;
  const spriteHeightScale=item.id==='sofa'&&item.rotation%2===1?1.12:item.rotation%2===1&&item.sideScaleY?item.sideScaleY:item.scaleY;
