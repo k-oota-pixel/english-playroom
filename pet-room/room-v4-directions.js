@@ -20,8 +20,8 @@ const back={
  bed:shadow+
  '<rect x="45" y="53" width="151" height="155" rx="15" fill="#b98451" stroke="#795139" stroke-width="6"/>'+
  '<rect x="53" y="60" width="135" height="135" rx="9" fill="#eee1bd" stroke="#a37956" stroke-width="4"/>'+
- '<path d="M56 78h129v84H56Z" fill="#a4c388" stroke="#709873" stroke-width="4"/>'+
- '<path d="M58 99h124M58 124h124M79 81v79M107 81v79M139 81v79M168 81v79" stroke="#d9e1a8" stroke-width="6" opacity=".7"/>'+
+ '<path d="M56 78h129v84H56Z" fill="#ecafc1" stroke="#c47f97" stroke-width="4"/>'+
+ '<path d="M58 99h124M58 124h124M79 81v79M107 81v79M139 81v79M168 81v79" stroke="#ffe0e7" stroke-width="6" opacity=".7"/>'+
  '<rect x="60" y="149" width="123" height="46" rx="16" fill="#fff4db" stroke="#d0b998" stroke-width="4"/>'+
  '<path d="M43 55h156v26q-79 18-156 0Z" fill="#946442" stroke="#78513b" stroke-width="5"/>'+
  '<path d="M41 59v145m158-145v145" stroke="#8a5d3c" stroke-width="11" stroke-linecap="round"/>'+
@@ -44,19 +44,23 @@ const back={
 };
 const side={
  sofa:shadow+
- '<path d="M54 177v30h17v-28m99-2v29h19v-28" fill="#8b6142" stroke="#604b35" stroke-width="5"/>'+
- '<path d="M42 118q5-29 29-34h93q33 3 43 35v63q-72 12-166 0Z" fill="#437e69" stroke="#3d624f" stroke-width="6"/>'+
- '<path d="M59 106q-7-32 20-40h96q21 4 17 35v45H59Z" fill="#77b79c" stroke="#436e59" stroke-width="6"/>'+
- '<path d="M67 97q35-16 92 0" stroke="#b0dbb7" stroke-width="6" fill="none"/>'+
- '<path d="M58 129q38-19 113-7l19 30-15 24H65Z" fill="#8fc7a9" stroke="#4b8a70" stroke-width="5"/>'+
- '<path d="M160 122q7-18 26-14l15 10q15 9 11 36l-9 22q-6 12-20 11h-19Z" fill="#528f79" stroke="#3f6d59" stroke-width="5"/>'+
- '<path d="M71 165q57 12 111 0v20q-55 17-111 0Z" fill="#397d67" stroke="#38644f" stroke-width="5"/>'+
- '<path d="M96 129l36-15 19 34-36 13Z" fill="#e9ab98" stroke="#b37770" stroke-width="4"/>',
+ '<path d="M62 68v132l14 8V68M162 69v133l17 3V68" fill="#996b46" stroke="#76523b" stroke-width="5"/>'+
+ '<path d="M63 45Q65 35 83 35H164Q182 36 190 55V190Q187 205 168 206H84Q65 205 63 187Z" fill="#3c765f" stroke="#3a624f" stroke-width="6"/>'+
+ '<path d="M65 53Q66 42 80 43H102Q110 49 109 65V182Q105 194 91 196H75Q62 188 64 177Z" fill="#73b298" stroke="#416f5b" stroke-width="5"/>'+
+ '<path d="M90 68Q124 56 173 68L177 173Q123 184 90 169Z" fill="#8dc6a8" stroke="#4c886d" stroke-width="5"/>'+
+ '<path d="M98 76Q121 70 165 77L167 117Q137 124 99 117Z" fill="#a5d9b8" stroke="#679f84" stroke-width="3"/>'+
+ '<path d="M99 124Q132 118 167 126L168 165Q132 173 100 165Z" fill="#8ac3a7" stroke="#659a7f" stroke-width="3"/>'+
+ '<path d="M75 58Q85 53 95 57L99 180Q87 192 75 182Z" fill="#5fa78b" stroke="#3e775f" stroke-width="4"/>'+
+ '<path d="M170 65Q189 66 194 83V172Q191 189 170 192Z" fill="#447f68" stroke="#386c56" stroke-width="5"/>'+
+ '<path d="M83 45H173Q193 47 194 60L191 81Q146 76 91 81L64 69Q62 55 83 45Z" fill="#65a98f" stroke="#39735c" stroke-width="5"/>'+
+ '<path d="M84 173Q138 179 191 173V192Q141 209 85 193Z" fill="#4c9277" stroke="#3a6d59" stroke-width="5"/>'+
+ '<path d="M112 81Q128 75 147 83L146 107Q130 116 114 105Z" fill="#e8aa97" stroke="#bd7769" stroke-width="3"/>'+
+ '<path d="M114 134Q132 130 150 135L150 155Q131 163 114 156Z" fill="#fff0d7" stroke="#cfb794" stroke-width="3"/>',
  bed:shadow+
  '<path d="M34 97H212V203H34Z" fill="#af7949" stroke="'+outline+'" stroke-width="6"/>'+
  '<path d="M43 106h161v84H43Z" fill="#f7e9c7" stroke="#bd986f" stroke-width="4"/>'+
- '<path d="M52 115h112v69H52Z" fill="#a0bf81" stroke="#73926a" stroke-width="4"/>'+
- '<path d="M72 118v63m28-64v63m28-63v64M54 134h107m-108 24h108" stroke="#d7e1a6" stroke-width="8" opacity=".7"/>'+
+ '<path d="M52 115h112v69H52Z" fill="#ecafc1" stroke="#c47f97" stroke-width="4"/>'+
+ '<path d="M72 118v63m28-64v63m28-63v64M54 134h107m-108 24h108" stroke="#f9d5df" stroke-width="8" opacity=".7"/>'+
  '<path d="M156 112h36v73h-36Z" fill="#fff6dc" stroke="#d5bb90" stroke-width="4"/>'+
  '<path d="M196 88v120" stroke="#966743" stroke-width="17" stroke-linecap="round"/>'+
  '<path d="M38 94v112" stroke="#996f49" stroke-width="10" stroke-linecap="round"/>'+
@@ -77,6 +81,20 @@ const side={
  '<path d="M92 123v73m62-73v73" stroke="#dbaa79" stroke-width="4" opacity=".7"/>'+
  '<path d="M84 155h86" stroke="#986e48" stroke-width="4"/>'
 };
+// Decorations are drawn above the cabinet in every direction. Mirroring the
+// whole right-side view gives a matching left-side view without losing either.
+const cabinetTopDecorations=
+ '<ellipse cx="161" cy="82" rx="28" ry="9" fill="#ffde9a" opacity=".30"/>'+
+ '<rect x="84" y="39" width="43" height="49" rx="5" fill="#9b6a43" stroke="#704b35" stroke-width="4"/>'+
+ '<rect x="90" y="45" width="31" height="36" rx="2" fill="#c9e2dc"/>'+
+ '<path d="M91 78L102 65L110 71L120 61V81H91Z" fill="#87b77b"/>'+
+ '<path d="M94 48H116" stroke="#ffffff" stroke-width="2" opacity=".65"/>'+
+ '<path d="M146 55Q144 67 145 83Q161 97 182 83V57Z" fill="#e5aa58" stroke="#9b7142" stroke-width="4"/>'+
+ '<path d="M151 50Q145 61 150 77Q164 91 178 76Q182 60 175 50Z" fill="#ffde88" stroke="#b78343" stroke-width="4"/>'+
+ '<ellipse cx="163" cy="65" rx="8" ry="12" fill="#fff6bb" opacity=".88"/>'+
+ '<path d="M148 49Q146 41 155 37H171Q179 40 178 49Z" fill="#795d46" stroke="#6e513d" stroke-width="3"/>'+
+ '<path d="M146 87H181" stroke="#795b41" stroke-width="6" stroke-linecap="round"/>';
+
 const tableBase=shadow+
 '<path d="M58 151v53l18 9 11-53m75-4 7 55 17-7v-51" fill="#9a653d" stroke="'+outline+'" stroke-width="5"/>'+
 '<ellipse cx="120" cy="154" rx="86" ry="48" fill="#905e39" stroke="'+outline+'" stroke-width="6"/>'+
@@ -116,7 +134,8 @@ export function facingFurnitureSVG(id,rotation=0){
  if(id==='table')return bg(tableBase+'<g transform="rotate('+(d*90)+' 120 139)">'+tableDetails+'</g>',d);
  if(id==='plant')return bg(plantBase+'<g transform="rotate('+(d*90)+' 123 116)">'+plantDetails+'</g>',d);
  if(d===0)return frontArt(id,0).replace('<svg ','<svg data-facing="0" ');
- if(d===2)return bg(back[id]||frontArt(id,0),d);
- if(d===1)return bg(side[id]||frontArt(id,0),d);
- return bg(faceToLeft(side[id]||frontArt(id,0)),d);
+ const decorations=id==='cabinet'?cabinetTopDecorations:'';
+ if(d===2)return bg((back[id]||frontArt(id,0))+decorations,d);
+ if(d===1)return bg((side[id]||frontArt(id,0))+decorations,d);
+ return bg(faceToLeft((side[id]||frontArt(id,0))+decorations),d);
 }
