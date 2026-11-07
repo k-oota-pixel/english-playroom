@@ -271,7 +271,7 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  touch-action:manipulation}
 .placement-cell.eligible:hover,.placement-cell.eligible:focus-visible{
  background:#e5ec7580;border:2px solid #fff7d0;outline:none}
-.placement-cell:disabled{opacity:1;background:#394b392b;pointer-events:none}
+.placement-cell:disabled{opacity:1;background:#394b392b;pointer-events:auto;cursor:default}
 .placement-preview{position:absolute;z-index:1;pointer-events:none;
  border:3px solid #fff7c8;background:#f0d56a7a;box-shadow:0 0 0 3px #7a95424d}
 .placement-preview[hidden]{display:none!important}
@@ -291,7 +291,7 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 .field-name-label{display:block;margin:12px 0 7px;font-size:13px;font-weight:900;color:#70583b}
 #fieldNameInput{display:block;width:100%;height:48px;border:2px solid #b69a6d;
  border-radius:11px;background:#fffdf5;color:#3c3e2d;padding:9px 12px;
- font:800 17px/1.4 inherit}
+ font-size:17px;font-weight:800;font-family:inherit;line-height:1.4}
 #manageControls{min-height:95px}
 @media(max-width:740px){
  .placement-bar{width:calc(100vw - 16px);font-size:12px;gap:6px}
