@@ -319,23 +319,39 @@ function setPetPosition(x,y,duration=0){
 function petVisual(){
  const root=$('petWalker');
  if(!petData.petHatched){root.innerHTML='<span role="img" aria-label="たまご" style="font-size:47px">🥚</span>';return;}
- try{root.innerHTML=renderPetSVG(petData.petAppearance,petData.petShop||{},'',{background:false});}
- catch{root.textContent='🐾';}
+ try{
+  // The farm shows the pet and its equipped effects, but never the decorative pet frame.
+  // Clone the shop equipment so other pages retain the user's chosen frame unchanged.
+  const shop=petData.petShop||{};
+  const equipped={...(shop.equipped||{})};
+  delete equipped['pet-frame'];
+  root.innerHTML=renderPetSVG(petData.petAppearance,{...shop,equipped},'',{background:false});
+ }catch{root.textContent='🐾';}
 }
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function movePoint(x,y){
- const dist=Math.hypot(x-petX,y-petY),duration=Math.min(1900,Math.max(160,dist*120));
+async function movePoint(x,y,leisurely=false){
+ const dist=Math.hypot(x-petX,y-petY);
+ // Task movement stays exactly as before; idle strolls move approximately 4x slower.
+ const duration=leisurely
+  ? Math.min(3800,Math.max(450,dist*480))
+  : Math.min(1900,Math.max(160,dist*120));
  if(dist<.12)return;
  setPetPosition(x,y,duration);await sleep(duration+30);
 }
-async function walkTo(x,y){
+async function walkTo(x,y,{leisurely=false}={}){
  while(walking)await sleep(60);
- walking=true;const el=$('petWalker');el.classList.add('walking');
+ walking=true;
+ const el=$('petWalker');
+ el.classList.add('walking');
+ el.classList.toggle('strolling',leisurely);
  try{
-  if(Math.abs(petY-6.5)>1)await movePoint(petX,6.5);
-  await movePoint(x,6.5);
-  await movePoint(x,y);
- }finally{walking=false;el.classList.remove('walking');}
+  if(Math.abs(petY-6.5)>1)await movePoint(petX,6.5,leisurely);
+  await movePoint(x,6.5,leisurely);
+  await movePoint(x,y,leisurely);
+ }finally{
+  walking=false;
+  el.classList.remove('walking','strolling');
+ }
 }
 async function showWork(kind,x,y){
  const pet=$('petWalker');pet.classList.add('working');
@@ -502,9 +518,12 @@ window.addEventListener('pagehide',()=>{if(dirty)void flushSave();});
 setInterval(()=>{if(ready){renderPlots();renderSelection();}},10000);
 setInterval(async()=>{
  if(!ready||busy||walking||document.hidden||document.querySelector('dialog[open]'))return;
- const choices=[4.2,6.4,8.2,12.7,15.5,20.1,25.5];
- const target=choices[Math.floor(Math.random()*choices.length)];
- await walkTo(target,6.5);
+ // Small, gentle wandering steps rather than a fast walk across the whole map.
+ // Keep each stroll short so a tap to work/shop is not delayed for long.
+ const drift=(Math.random()-.5)*3.4;
+ const target=Math.max(4.2,Math.min(25.5,petX+drift));
+ if(Math.abs(target-petX)<.3)return;
+ await walkTo(target,6.5,{leisurely:true});
 },8500);
 initWorld();
 onAuthStateChanged(auth,u=>{void initialize(u);},e=>status('認証エラー：'+e.message,'error'));
