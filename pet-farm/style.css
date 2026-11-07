@@ -143,6 +143,62 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
  background:#f3e7cb;border-radius:10px;padding:10px 13px;color:#694d2c;font-size:13px;font-weight:850}
 .shop-order-total strong{font-size:19px;color:#986021;font-variant-numeric:tabular-nums}
 
+/* Shop layout: its frame must not change size when a product is selected.
+   Only the catalogue scrolls; the checkout stays at a stable screen position. */
+#shopDialog[open]{
+ display:flex;
+ flex-direction:column;
+ height:min(680px,calc(100dvh - 24px));
+ max-height:calc(100dvh - 24px);
+ overflow:hidden;
+}
+#shopDialog>.modal-head,
+#shopDialog>.subtext,
+#shopDialog>.shop-tabs{flex:0 0 auto}
+#shopDialog #shopList{
+ flex:1 1 auto;
+ min-height:62px;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ align-content:start;
+ scrollbar-width:thin;
+ scrollbar-gutter:stable;
+ padding:3px 5px 10px 3px;
+}
+#shopDialog #shopConfirmation{
+ flex:0 0 224px;
+ min-height:224px;
+ max-height:224px;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ display:block;
+ margin-top:10px;
+ padding:10px 4px 3px;
+ border-top:2px dashed #ddc69c;
+ scrollbar-width:thin;
+}
+#shopDialog .shop-selection-hint{
+ display:grid;
+ place-items:center;
+ min-height:185px;
+ margin:0;
+ padding:12px;
+ text-align:center;
+ font-size:13px;
+ font-weight:800;
+ line-height:1.75;
+ color:#97805c;
+}
+@media(max-height:590px){
+ #shopDialog #shopConfirmation{
+  flex-basis:177px;
+  min-height:177px;
+  max-height:177px;
+ }
+ #shopDialog .shop-selection-hint{min-height:140px}
+}
+
+
 .inventory{display:grid;gap:8px}
 .inv-title{font-size:12px;font-weight:950;color:#6b7149;border-bottom:1px solid #e8d9bc;padding:7px 0 5px}
 .inv-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
