@@ -30,6 +30,20 @@ try{
  await page.screenshot({path:'pixel-room-desktop.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'pixel-room-mobile.png',fullPage:true});
  assert.deepEqual(errors,[]);
- console.log('PASS: pixel room render / placement / rotation / mobile browser');
+ // A second load covers an authenticated pet and its separate saved room document.
+ await page.unroute('**/auth-session.js?*');
+ await page.route('**/auth-session.js?*',r=>mock(r,"const user={uid:'pixel-test'};export const getAuth=()=>({currentUser:user});export const onAuthStateChanged=(a,cb)=>{queueMicrotask(()=>cb(user));return()=>{}};"));
+ await page.unroute('**/firebase-firestore.js');
+ await page.route('**/firebase-firestore.js',r=>mock(r,"export const getFirestore=()=>({});export const doc=(...args)=>({path:args.join('/')});export const getDoc=async(ref)=>({exists:()=>ref.path.endsWith('/english-playroom'),data:()=>({petHatched:true,petAdult:true,petAppearance:{species:'cat',bodyColor:'cream',eyes:'round',baseBackground:'ivory'},petShop:{}})});export const setDoc=async()=>{};export const serverTimestamp=()=>null;"));
+ await page.setViewportSize({width:1200,height:920});
+ await page.reload();
+ await page.locator('#petInRoom img').waitFor({timeout:10000});
+ assert.equal(await page.locator('#petInRoom img').evaluate(e=>e.naturalWidth>0),true,'Logged-in pet sprite should rasterize');
+ await page.locator('#saveBtn').click();
+ await page.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('保存しました'));
+ await page.screenshot({path:'pixel-room-authenticated.png',fullPage:true});
+ assert.deepEqual(errors,[],'No script errors for the logged-in pet');
+ console.log('PASS: pixel room render / placement / rotation / mobile / authenticated pet / isolated save');
+
 }finally{await browser.close();server.close();}
 })().catch(err=>{console.error(err);server.close();process.exitCode=1;});
