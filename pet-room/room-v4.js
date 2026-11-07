@@ -22,6 +22,15 @@ let user=null,petData={},petCell={x:3,y:2},mode='view',activeId=null,snapshot=nu
 let playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-v4:guest',hasPet=false,dragState=null,suppressClickUntil=0;
 const board=$('roomBoard'),layer=$('objectLayer'),grid=$('gridOverlay'),tiles=$('placementTiles');
 const actor=$('petActor'),egg=$('petEgg'),panel=$('editingPanel');
+const editorHome=document.querySelector('.info-column'),roomStatus=$('roomStatus');
+const phoneLayout=matchMedia('(max-width:740px)');
+function positionEditor(){
+ if(phoneLayout.matches)roomStatus.insertAdjacentElement('afterend',panel);
+ else editorHome.insertBefore(panel,editorHome.firstElementChild);
+}
+positionEditor();
+if(phoneLayout.addEventListener)phoneLayout.addEventListener('change',positionEditor);
+else window.addEventListener('resize',positionEditor);
 const backdrop=$('roomArt');
 backdrop.innerHTML=roomBackground();
 // Create 36 reusable placement controls once; do not rebuild them on each drag frame.
@@ -165,7 +174,9 @@ function drawItem(item){
  const d=dims(item),isRug=item.id==='rug';
  const x=TX+(item.x+d.w/2)*TILE,y=TY+(item.y+(isRug?d.h/2:d.h))*TILE;
  // The four sprites share a bottom/feet anchor; only the rug is floor-centred.
- const width=TILE*d.w*item.scaleX,height=TILE*d.h*item.scaleY;
+ const width=TILE*d.w*item.scaleX;
+ const spriteHeightScale=item.id==='sofa'&&item.rotation%2===1?1.12:item.scaleY;
+ const height=TILE*d.h*spriteHeightScale;
  el.style.left=(x/SIZE*100)+'%';el.style.top=(y/SIZE*100)+'%';
  el.style.width=(width/SIZE*100)+'%';el.style.height=(height/SIZE*100)+'%';
  el.style.transform=isRug?'translate(-50%,-66%)':'translate(-50%,-92%)';
