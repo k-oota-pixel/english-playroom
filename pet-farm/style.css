@@ -323,12 +323,33 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 
 /* The farm is a blank, editable canvas. Roads and gardens are user-placed. */
 #roadsLayer{position:absolute;inset:0;z-index:2;pointer-events:none}
-.road-tile{position:absolute;width:54px;height:54px;border:2px solid #b6895d;
- background:
- radial-gradient(circle at 15px 12px,#c58c5c 0 3px,transparent 4px),
- radial-gradient(circle at 39px 37px,#d6a26a 0 4px,transparent 5px),
- repeating-linear-gradient(35deg,#dfb37e 0 10px,#d3a06b 11px 18px);
- box-shadow:inset 0 1px #f0ce97,0 2px 2px #355e3640}
+/* Continuous, well-trodden soil: adjacent cells have no separating lines.
+   The exposed sides alone get a feathered earthen rim. */
+.road-tile{
+ position:absolute;width:54px;height:54px;box-sizing:border-box;
+ border:0;overflow:hidden;isolation:isolate;
+ background:#b98e61;
+ background-image:
+  linear-gradient(166deg,rgba(238,216,171,.15),transparent 46%,rgba(99,72,43,.10)),
+  linear-gradient(80deg,transparent 30%,rgba(111,79,46,.025) 52%,transparent 76%);
+ box-shadow:none;
+}
+.road-grain{position:absolute;z-index:1;height:1.5px;border-radius:1px;
+ pointer-events:none;opacity:.35;background:#80633f}
+.road-grain--light{background:#f0d2a1;opacity:.53}
+.road-edge{position:absolute;z-index:2;pointer-events:none}
+.road-edge--n{left:0;top:0;width:100%;height:8px;
+ background:linear-gradient(to bottom,rgba(99,75,44,.33),transparent);
+ clip-path:polygon(0 0,100% 0,100% 62%,83% 51%,64% 73%,43% 55%,21% 70%,0 57%)}
+.road-edge--s{left:0;bottom:0;width:100%;height:8px;
+ background:linear-gradient(to top,rgba(99,75,44,.33),transparent);
+ clip-path:polygon(0 43%,20% 28%,42% 45%,63% 27%,82% 49%,100% 38%,100% 100%,0 100%)}
+.road-edge--w{top:0;left:0;width:8px;height:100%;
+ background:linear-gradient(to right,rgba(99,75,44,.33),transparent);
+ clip-path:polygon(0 0,56% 0,72% 21%,50% 42%,75% 65%,54% 83%,62% 100%,0 100%)}
+.road-edge--e{top:0;right:0;width:8px;height:100%;
+ background:linear-gradient(to left,rgba(99,75,44,.33),transparent);
+ clip-path:polygon(44% 0,100% 0,100% 100%,38% 100%,46% 83%,25% 65%,50% 42%,28% 21%)}
 #plotLayer .farm-area{border:4px ridge #a98457;border-radius:7px;
  background:repeating-linear-gradient(0deg,#78934d 0 10px,#8a9c57 11px 21px);
  box-shadow:inset 0 0 0 5px #b7bd75,0 4px 6px #21432e66;
