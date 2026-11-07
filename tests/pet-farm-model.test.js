@@ -360,7 +360,7 @@ test('soil path texture has no circle studs, plastic stripes or per-cell plank s
  assert.match(js,/road\.style\.borderRadius=/);
  assert.match(styles,/border:0;overflow:hidden/);
  assert.match(styles,/box-shadow:none/);
- for(const side of ['n','e','s','w'])assert.match(styles,new RegExp('\\\\.road-edge--'+side+'\\\\{'));
+ for(const side of ['n','e','s','w'])assert.match(styles,new RegExp('\\.road-edge--'+side+'\\{'));
  assert.match(styles,/\.road-grain/);
  assert.doesNotMatch(styles,/radial-gradient|repeating-linear-gradient|border:2px solid/);
  assert.doesNotMatch(styles,/\\.road-tile\\{[^}]*box-shadow:inset/);
