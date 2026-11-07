@@ -13,7 +13,7 @@ const specs=[
  {id:'cabinet',name:'キャビネット',icon:'🗄️',x:4,y:0,scaleX:1.16,scaleY:1.30},
  {id:'bed',name:'ベッド',icon:'🛏️',x:0,y:2,scaleX:1.04,scaleY:1.05},
  {id:'rug',name:'ラグ',icon:'🟢',x:2,y:3,scaleX:1.06,scaleY:.96,blocking:false},
- {id:'table',name:'テーブル',icon:'☕',x:0,y:5,scaleX:1.10,scaleY:1.24},
+ {id:'table',name:'テーブル',icon:'☕',x:0,y:5,scaleX:1.34,scaleY:1.36},
  {id:'sofa',name:'ソファ',icon:'🛋️',x:4,y:4,scaleX:1.03,scaleY:1.50},
  {id:'plant',name:'観葉植物',icon:'🪴',x:5,y:2,scaleX:1.14,scaleY:1.45}
 ].map(spec=>({...spec,...ROOM_FOOTPRINTS[spec.id]}));
@@ -188,7 +188,7 @@ function setButtons(){
  }
  const has=!!activeId;panel.hidden=!has;
  if(!has)return;
- const it=items.get(activeId);$('selectedName').textContent=it.name+' ｜ '+(it.x+1)+'列 '+(it.y+1)+'行';
+ const it=items.get(activeId),d=dims(it);$('selectedName').textContent=it.name+' ｜ '+d.w+'×'+d.h+'マス ｜ '+['正面','右向き','背面','左向き'][it.rotation]+' ｜ '+(it.x+1)+'列 '+(it.y+1)+'行';
  $('confirmItem').disabled=!legal(it);
 }
 function render(){
