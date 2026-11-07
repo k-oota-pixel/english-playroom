@@ -365,3 +365,28 @@ test('soil path texture has no circle studs, plastic stripes or per-cell plank s
  assert.doesNotMatch(styles,/radial-gradient|repeating-linear-gradient|border:2px solid/);
  assert.doesNotMatch(styles,/\\.road-tile\\{[^}]*box-shadow:inset/);
 });
+
+
+test('admin preview loading is always bounded, with visible retry for auth and farm-data failures',()=>{
+ const app=source('pet-farm/app.js');
+ const html=source('pet-farm/index.html');
+ const css=source('pet-farm/style.css');
+ assert.match(app,/function gateStatus\(message,error=false\)/);
+ assert.match(app,/function withLoadTimeout\(promise,ms,stage\)/);
+ assert.match(app,/withLoadTimeout\(accountSession\(current\),18000,'管理者確認'\)/);
+ assert.match(app,/withLoadTimeout\([\s\S]*?Promise\.all\(\[getDoc\(walletRef\(\)\),getDoc\(farmRef\(\)\)\]\),20000,'農園データの取得'/);
+ const init=app.slice(app.indexOf('async function initialize(current){'),app.indexOf('async function visitBuilding('));
+ const tryAt=init.indexOf('try{');
+ const refreshAt=init.indexOf('refresh();');
+ assert.ok(tryAt>=0&&refreshAt>tryAt,'first refresh must be protected by the try block');
+ assert.match(app,/gateStatus\('農園を開けませんでした：'\+msg,true\)/);
+ assert.match(app,/gateStatus\('認証エラー：'\+msg,true\)/);
+ assert.match(html,/const gate=document\.getElementById\('previewGate'\)/);
+ assert.match(html,/window\.addEventListener\('error'/);
+ assert.match(html,/window\.addEventListener\('unhandledrejection'/);
+ assert.match(html,/setTimeout\(\(\)=>recovery\('読み込みに時間がかかっています/);
+ assert.match(html,/preview-retry/);
+ assert.match(css,/#previewGate \.preview-retry/);
+ assert.match(css,/#previewGate \.preview-back/);
+ assert.doesNotMatch(init,/\\$\\('previewGate'\\)\.textContent=e\.message/);
+});
