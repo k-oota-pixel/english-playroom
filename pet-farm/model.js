@@ -79,6 +79,56 @@ export const locateField=(farm,id,index)=>{
  if(!shape||!Number.isInteger(index)||index<0||index>=shape.w*shape.h)return null;
  return {x:field.x+index%shape.w,y:field.y+Math.floor(index/shape.w)};
 };
+// Pick a place where the 90px pet sprite cannot cover the selected 54px plot.
+// The sprite is anchored near its feet (CSS translate(-50%,-84%)), so the
+// occupied region extends much farther above its position than below.
+export function findWorkStand(farm,area,index,fromX=16,fromY=8){
+ const field=farm?.fields?.find(f=>f.id===String(area));
+ const spot=locateField(farm,area,index);
+ const shape=field&&FIELD_TYPES[field.size];
+ if(!field||!shape||!spot)return null;
+ const occupied=[
+  ...RESERVED_ZONES,
+  ...(farm.fields||[]).flatMap(f=>{
+   const size=FIELD_TYPES[f.size];
+   return size?[{x:f.x,y:f.y,w:size.w,h:size.h}]:[];
+  })
+ ];
+ const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+ const petBody=(x,y)=>({x:x-.9,y:y-1.45,w:1.8,h:1.75});
+ const inside=(box)=>box.x>=0&&box.y>=0&&box.x+box.w<=MAP.w&&box.y+box.h<=MAP.h;
+ const free=(x,y)=>{
+  const body=petBody(x,y);
+  return inside(body)&&!occupied.some(zone=>overlaps(body,zone));
+ };
+ const clearOfTarget=(x,y)=>{
+  const body=petBody(x,y);
+  return inside(body)&&!overlaps(body,{x:spot.x,y:spot.y,w:1,h:1});
+ };
+ // Start with nearby positions outside the whole field rather than a position
+ // next to a cell that could still cover another cell in the same field.
+ const candidates=[
+  {x:field.x-1,y:spot.y+1},
+  {x:field.x+shape.w+1,y:spot.y+1},
+  {x:spot.x+.5,y:field.y-.55},
+  {x:spot.x+.5,y:field.y+shape.h+1.55}
+ ];
+ const walkable=[];
+ for(const candidate of candidates)if(free(candidate.x,candidate.y))walkable.push(candidate);
+ // If surrounding gardens are tightly packed, look for a nearby open tile
+ // anywhere on the map instead of standing on top of another crop.
+ if(!walkable.length){
+  for(let y=2;y<MAP.h;y++)for(let x=1;x<MAP.w-1;x++){
+   const candidate={x:x+.5,y:y+.5};
+   if(free(candidate.x,candidate.y))walkable.push(candidate);
+  }
+ }
+ const ranking=p=>Math.hypot(p.x-spot.x-.5,p.y-spot.y-.5)*3+
+   Math.hypot(p.x-fromX,p.y-fromY)*.35;
+ if(walkable.length)return walkable.sort((a,b)=>ranking(a)-ranking(b))[0];
+ // Even a fully occupied farm must not let the pet cover the active crop.
+ return candidates.filter(p=>clearOfTarget(p.x,p.y)).sort((a,b)=>ranking(a)-ranking(b))[0]||null;
+}
 export function normalizeFarm(raw){
  const f=freshFarm(),v=raw&&typeof raw==='object'?raw:{};
  const version=Math.floor(Number(v.schemaVersion)||0);
