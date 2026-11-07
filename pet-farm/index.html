@@ -18,10 +18,11 @@
   <div class="viewport" id="viewport" tabindex="0" aria-label="画面をドラッグして見渡せる農園">
    <div id="sceneSize"><div id="world">
     <div id="scenery" aria-hidden="true"></div>
+    <div id="roadsLayer" aria-label="配置した道路"></div>
     <div id="plotLayer"></div>
+    <div id="placementLayer" hidden aria-label="農園の配置マスを選択"></div>
     <button id="house" class="building-hit home-hit" type="button" aria-label="ペットのおうち。おへやモードは準備中"></button>
     <button id="shopBuilding" class="building-hit shop-hit" type="button" aria-label="ショップへ行く"></button>
-    <button id="storageBuilding" class="building-hit storage-hit" type="button" aria-label="倉庫へ行く"></button>
     <div id="petWalker" aria-label="あなたのペット"><span>🥚</span></div>
     <div id="effect" aria-hidden="true"></div>
    </div></div>
@@ -30,6 +31,7 @@
    <div class="hud-title"><span class="sprig" aria-hidden="true">🌱</span><span>もんすたふぁーむ</span></div>
    <div class="hud-actions">
     <div class="coin-chip">🪙 <strong id="coins">—</strong> C</div>
+    <button id="itemsBtn" class="hud-btn" type="button">🎒 アイテム</button>
     <button id="saveBtn" class="hud-btn" type="button" disabled>💾 保存</button>
     <a class="hud-btn hud-home" href="../index.html">← もんすたでぃに戻る</a>
    </div>
@@ -42,7 +44,11 @@
    <span id="zoomLabel">100%</span>
    <button id="zoomIn" type="button" aria-label="拡大">＋</button>
   </div>
-  <div class="farm-hint">畑・ショップ・倉庫をタップして遊ぼう <span aria-hidden="true">✦</span> ドラッグで移動</div>
+  <div class="farm-hint">ショップで圃場・道路を手に入れて、好きな場所に配置しよう</div>
+  <div class="placement-bar" id="placementBar" hidden>
+   <span id="placementHint">配置する場所をタップしてください</span>
+   <button type="button" id="placementCancel">配置を終了</button>
+  </div>
  </main>
 </div>
  <dialog id="actionDialog" class="farm-dialog" aria-labelledby="selectionTitle">
@@ -52,13 +58,23 @@
  <dialog id="shopDialog" class="farm-dialog" aria-labelledby="shopTitle">
   <div class="modal-head"><div><div class="panel-kicker">FARM SHOP</div><h2 id="shopTitle">🏪 タネと道具のおみせ</h2></div><button type="button" class="modal-close" data-close-dialog="shopDialog" aria-label="閉じる">✕</button></div>
   <p class="subtext">欲しいものをタップして、購入を確定しよう。<strong>🪙 <span id="shopBalance">—</span>C</strong></p>
-  <div class="shop-tabs"><button type="button" class="tab active" data-shop="seed">タネ</button><button type="button" class="tab" data-shop="supply">水・肥料</button><button type="button" class="tab" data-shop="area">敷地</button></div>
+  <div class="shop-tabs"><button type="button" class="tab active" data-shop="field">圃場</button><button type="button" class="tab" data-shop="road">道路</button><button type="button" class="tab" data-shop="seed">タネ</button><button type="button" class="tab" data-shop="supply">水・肥料</button></div>
   <div id="shopList" class="shop-list"></div><div id="shopConfirmation" class="modal-confirm"></div>
  </dialog>
- <dialog id="storageDialog" class="farm-dialog" aria-labelledby="storageTitle">
-  <div class="modal-head"><div><div class="panel-kicker">STORAGE</div><h2 id="storageTitle">🛖 倉庫とプレゼント箱</h2></div><button type="button" class="modal-close" data-close-dialog="storageDialog" aria-label="閉じる">✕</button></div>
+ <dialog id="itemsDialog" class="farm-dialog" aria-labelledby="itemsTitle">
+  <div class="modal-head"><div><div class="panel-kicker">MY ITEMS</div><h2 id="itemsTitle">🎒 アイテム</h2></div><button type="button" class="modal-close" data-close-dialog="itemsDialog" aria-label="閉じる">✕</button></div>
   <div id="inventory" class="inventory"></div><div id="storageConfirmation" class="modal-confirm"></div>
-  <p class="tiny">作物は倉庫に保管できます。食事は将来メインページのFEEDに統合予定です。プレゼント送信も今後実装します。</p>
+  <p class="tiny">圃場・道路はここから配置できます。作物は将来メインページのFEEDで使える予定です。</p>
+ </dialog>
+ <dialog id="manageDialog" class="farm-dialog" aria-labelledby="manageTitle">
+  <div class="modal-head"><div><div class="panel-kicker">FIELD SETTINGS</div><h2 id="manageTitle">圃場の管理</h2></div><button type="button" class="modal-close" data-close-dialog="manageDialog" aria-label="閉じる">✕</button></div>
+  <div id="manageControls"></div>
+ </dialog>
+ <dialog id="fieldNameDialog" class="farm-dialog" aria-labelledby="fieldNameTitle">
+  <div class="modal-head"><div><div class="panel-kicker">NAME YOUR FIELD</div><h2 id="fieldNameTitle">圃場の名前をつける</h2></div><button type="button" class="modal-close" data-close-dialog="fieldNameDialog" aria-label="閉じる">✕</button></div>
+  <label for="fieldNameInput" class="field-name-label">圃場の名前（16文字以内）</label>
+  <input id="fieldNameInput" type="text" maxlength="16" placeholder="例：わたしの畑" autocomplete="off">
+  <div class="modal-actions"><button id="confirmFieldName" class="action-btn gold" type="button">決定する</button><button class="action-btn secondary" type="button" data-close-dialog="fieldNameDialog">やめる</button></div>
  </dialog>
  </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
