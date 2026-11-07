@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {FARMS,CROPS,freshFarm,normalizeFarm,plotKey,locate,growthPhase,applyFarmAction,applyPurchase,useProduce} from '../pet-farm/model.js';
+import {FARMS,CROPS,SUPPLIES,freshFarm,normalizeFarm,plotKey,locate,growthPhase,applyFarmAction,applyPurchase,useProduce} from '../pet-farm/model.js';
 
 test('farm preview has four rectangular gardens with 35 total cells and only the first unlocked',()=>{
  assert.deepEqual(FARMS.map(a=>a.w*a.h),[4,6,9,16]);
@@ -116,4 +116,50 @@ test('illustrated farm stage fills screen with responsive fit and interactive ho
  assert.match(scene,/FARMS\.map\(bed\)/);
  assert.doesNotMatch(html,/id="grass"|id="paths"|id="deco"/);
  assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/pet-farm\//);
+});
+
+test('shop sells water and fertilizer individually with owned inventory counts',()=>{
+ assert.deepEqual({name:SUPPLIES.water.name,price:SUPPLIES.water.price,count:SUPPLIES.water.count},{name:'水',price:1,count:1});
+ assert.deepEqual({name:SUPPLIES.fertilizer.name,price:SUPPLIES.fertilizer.price,count:SUPPLIES.fertilizer.count},{name:'肥料',price:2,count:1});
+ const base=freshFarm();
+ const water=applyPurchase(base,'supply','water',10,4);
+ assert.equal(water.cost,4);
+ assert.equal(water.farm.inventory.water,7);
+ assert.equal(base.inventory.water,3);
+ const fert=applyPurchase(water.farm,'supply','fertilizer',10,3);
+ assert.equal(fert.cost,6);
+ assert.equal(fert.farm.inventory.fertilizer,3);
+ const seeds=applyPurchase(fert.farm,'seed','carrot',10,5);
+ assert.equal(seeds.cost,10);
+ assert.equal(seeds.farm.inventory.seeds.carrot,8);
+ assert.equal(seeds.quantity,5);
+});
+
+test('shop batches validate quantity, balance, per-item stock cap, and single area unlock',()=>{
+ const base=freshFarm();
+ for(const qty of [0,-1,1.5,100,NaN,Infinity,'2']){
+  assert.throws(()=>applyPurchase(base,'seed','carrot',1000,qty),String(qty));
+ }
+ assert.throws(()=>applyPurchase(base,'seed','carrot',3,2),/コインが足りません/);
+ assert.throws(()=>applyPurchase(base,'area','1',300,2),/敷地は1回ずつ/);
+ const nearFull=freshFarm();nearFull.inventory.water=99998;
+ assert.throws(()=>applyPurchase(nearFull,'supply','water',100,2),/所持上限/);
+ assert.equal(applyPurchase(nearFull,'supply','water',100,1).farm.inventory.water,99999);
+ assert.equal(applyPurchase(base,'area','1',30).farm.unlocked[1],true);
+});
+
+test('farm shop popup exposes quantity buttons, stock counts, and a single transaction',()=>{
+ const app=readFileSync(new URL('../pet-farm/app.js',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../pet-farm/style.css',import.meta.url),'utf8');
+ assert.match(app,/shopStock\(kind,id\)/);
+ assert.match(app,/shop-owned/);
+ assert.match(app,/shop-quantity/);
+ assert.match(app,/購入数を1個減らす/);
+ assert.match(app,/購入数を1個増やす/);
+ assert.match(app,/maxPurchaseQuantity\(item\)/);
+ assert.match(app,/const total=current.price\*p.quantity/);
+ assert.match(app,/async function buy\(kind,id,quantity=1\)/);
+ assert.match(app,/applyPurchase\(fdoc.exists\(\)\?fdoc.data\(\):freshFarm\(\),kind,id,c,quantity\)/);
+ assert.match(css,/\.shop-qty-btn/);
+ assert.match(css,/\.shop-order-total/);
 });
