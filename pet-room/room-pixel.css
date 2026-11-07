@@ -31,3 +31,7 @@
 .pixel-page .catalog-item .icon{font-size:20px}
 .pixel-page .mode-banner{background:#fff1b4eb;border:2px solid #c78b42;color:#754c27}
 @media(max-width:740px){.pixel-page .intro{display:block}.pixel-page .save-area{justify-content:flex-start;margin-top:9px}.pixel-page .room{min-height:220px}.pixel-page .pet-in-room{width:12%}}
+
+/* Shared depth layer: interleave pet and furnishings by their floor Y, not by entire layer. */
+.pixel-page .furniture-layer{z-index:auto}
+.pixel-page .pet-in-room{z-index:auto}
