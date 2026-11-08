@@ -7,7 +7,7 @@ html:before{content:"";position:fixed;z-index:2147483645;left:50%;top:50%;width:
 html:after{content:"ログイン情報を確認中…";position:fixed;z-index:2147483645;left:50%;top:calc(50% + min(34vw,150px));transform:translateX(-50%);width:max-content;max-width:90vw;color:#2d4965;font:850 clamp(17px,4.5vw,23px)/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.025em;text-align:center;text-shadow:0 2px 12px #fff;}
 body{visibility:hidden!important}
 @media(max-width:420px){html:before{width:min(68vw,225px)}html:after{top:calc(50% + 135px)}}
-</style><script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.15"></script>
+</style><script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.4.36"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>もんすたでぃ</title>
@@ -148,13 +148,13 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.3.24"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.4.35"></script>
-<script type="module" src="./pet-play-menu-v164.js?v=2.4.35"></script>
+<script type="module" src="./app-shell.js?v=2.4.36"></script>
+<script type="module" src="./pet-play-menu-v164.js?v=2.4.36"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.35">ver2.4.35</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.36">ver2.4.36</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -435,7 +435,7 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.0.
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut,
   onAuthStateChanged, setPersistence, browserLocalPersistence
-} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.15";
+} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36";
 import {
   getFirestore, doc, serverTimestamp, runTransaction
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -956,10 +956,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.3.8"></script>
 <script type="module" src="./monster-fortune.js?v=2.3.48"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.35'></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.36'></script>
 <script>
 (() => {
-  const version = '2.4.35';
+  const version = '2.4.36';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
