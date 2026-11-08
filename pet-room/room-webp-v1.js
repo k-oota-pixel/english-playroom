@@ -52,7 +52,7 @@ function windowlessRoomBackground(){
  const artwork=roomBackground();
  // The window, its view and both curtains form one contiguous SVG sequence.
  const windowStart='<rect x="361" y="105" width="235" height="87"';
- const lastWindowPart='<path d="339 175h35m211 0h34"';
+ const lastWindowPart='<path d="M339 175h35m211 0h34"';
  const first=artwork.indexOf(windowStart);
  const finalPart=artwork.indexOf(lastWindowPart,first);
  const close=finalPart<0?-1:artwork.indexOf('/>',finalPart);
