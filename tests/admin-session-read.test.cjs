@@ -2,26 +2,71 @@ const test=require('node:test'),assert=require('node:assert/strict'),vm=require(
 const root=path.resolve(__dirname,'..'),authSource=fs.readFileSync(path.join(root,'auth-session.js'),'utf8'),panelSource=fs.readFileSync(path.join(root,'pet-admin-panel.js'),'utf8');
 const sessionCode=authSource.slice(authSource.indexOf("const API="),authSource.indexOf('export function onAuthStateChanged')).replaceAll('export ','');
 const panelCode=panelSource.slice(panelSource.indexOf('async function verifyAdmin(user)'),panelSource.indexOf('function ensureDialog()'));
-function fixture(data={admin:false,resetRequired:false}){
- let calls=0,clock=1000,response=data,fail=false;const user={uid:'student',getIdToken:async()=> 'test-token'};
- const c=vm.createContext({Date:class extends Date{static now(){return clock;}},AbortSignal,fetch:async url=>{assert.ok(url.endsWith('/api/account/session'));calls++;if(fail)throw Error('offline');return {ok:true,json:async()=>response};}});
- const create=()=>vm.runInContext('(()=>{'+sessionCode+';return accountSession;})()',c);c.accountSession=create();vm.runInContext(panelCode,c);
- return {user,c,create,get calls(){return calls;},advance:()=>clock+=6000,setData:data=>response=data,setFailure:value=>fail=value};
+function storage(){
+ const m=new Map();
+ return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),count:()=>m.size};
 }
-test('the home login check and administrator UI share one request for a student',async()=>{
- const f=fixture();await f.c.accountSession(f.user);for(let i=0;i<10;i++)assert.equal(await f.c.verifyAdmin(f.user),false);assert.equal(f.calls,1);
+function fixture(data={admin:false,resetRequired:false}){
+ let calls=0,health=0,clock=1000,response=data,fail=false;
+ const store=storage(),user={uid:'student',metadata:{lastSignInTime:'first'},getIdToken:async()=> 'test-token'};
+ const ctx=vm.createContext({
+  Date:class extends Date{static now(){return clock;}},AbortSignal,localStorage:store,sessionStorage:storage(),
+  setTimeout:fn=>fn(),console:{warn:()=>{}},firebaseSignOut:async()=>{},
+  fetch:async url=>{
+   if(url.endsWith('/api/status')){health++;return {ok:true};}
+   assert.ok(url.endsWith('/api/account/session'));calls++;
+   if(fail)throw Error('offline');
+   return {ok:true,json:async()=>response};
+  }
+ });
+ const create=()=>vm.runInContext('(()=>{'+sessionCode+';return {accountSession,signOut,ensureRenderReady};})()',ctx);
+ const api=create();ctx.accountSession=api.accountSession;
+ vm.runInContext(panelCode,ctx);
+ return {user,ctx,api,store,create,get calls(){return calls;},get health(){return health;},
+  advance:ms=>clock+=ms,setData:data=>response=data,setFailure:value=>fail=value};
+}
+test('home and administrator panel share one admission check',async()=>{
+ const f=fixture();await f.api.accountSession(f.user);
+ for(let i=0;i<10;i++)assert.equal(await f.ctx.verifyAdmin(f.user),false);
+ assert.equal(f.calls,1);assert.equal(f.health,1);
 });
-test('the administrator hint is available without a separate administrator request',async()=>{
- const f=fixture({admin:true,resetRequired:false});await f.c.accountSession(f.user);assert.equal(await f.c.verifyAdmin(f.user),true);assert.equal(f.calls,1);
+test('administrator hints are reused without extra Firestore checks for seven days',async()=>{
+ const f=fixture({admin:true,resetRequired:false});
+ await f.api.accountSession(f.user);f.advance(6*24*60*60*1000);
+ assert.equal(await f.ctx.verifyAdmin(f.user),true);
+ assert.equal(f.calls,1);
 });
-test('query-string module aliases share the same in-flight session request',async()=>{
- const f=fixture(),other=f.create();await Promise.all([f.c.accountSession(f.user),other(f.user),f.c.verifyAdmin(f.user)]);assert.equal(f.calls,1);
+test('query-string module aliases share the in-flight request',async()=>{
+ const f=fixture(),other=f.create();
+ await Promise.all([f.api.accountSession(f.user),other.accountSession(f.user),f.ctx.verifyAdmin(f.user)]);
+ assert.equal(f.calls,1);assert.equal(f.health,1);
 });
-test('missing hints, required password resets and network failures never enable administrator tools',async()=>{
- for(const data of [{},{admin:'true'},{admin:true,resetRequired:true}]){const f=fixture(data);assert.equal(await f.c.verifyAdmin(f.user),false);}
- const f=fixture();f.setFailure(true);assert.equal(await f.c.verifyAdmin(f.user),false);assert.equal(await f.c.verifyAdmin(null),false);
+test('missing admin hints and required password resets never enable admin UI',async()=>{
+ for(const data of [{},{admin:'true'},{admin:true,resetRequired:true}]){
+  const f=fixture(data);assert.equal(await f.ctx.verifyAdmin(f.user),false);
+ }
 });
-test('a new token and the existing five-second expiry still require a fresh session check',async()=>{
- const f=fixture({admin:true});await f.c.accountSession(f.user);f.advance();f.setData({admin:false});assert.equal(await f.c.verifyAdmin(f.user),false);assert.equal(f.calls,2);
- f.user.getIdToken=async()=> 'new-token';await f.c.accountSession(f.user);assert.equal(f.calls,3);
+test('seven-day expiry and changed Firebase sign-in require a new admission',async()=>{
+ const f=fixture({admin:true});
+ await f.api.accountSession(f.user);assert.equal(f.calls,1);
+ f.advance(6*24*60*60*1000);assert.equal(await f.ctx.verifyAdmin(f.user),true);assert.equal(f.calls,1);
+ f.advance(24*60*60*1000+1);f.setData({admin:false});
+ assert.equal(await f.ctx.verifyAdmin(f.user),false);assert.equal(f.calls,2);
+ f.user.metadata.lastSignInTime='second';await f.api.accountSession(f.user);assert.equal(f.calls,3);
+});
+test('logout deletes durable admission cache',async()=>{
+ const f=fixture({admin:true});await f.api.accountSession(f.user);
+ assert.equal(f.store.count(),1);
+ await f.api.signOut({currentUser:f.user});
+ assert.equal(f.store.count(),0);
+ await f.api.accountSession(f.user);
+ assert.equal(f.calls,2);
+});
+test('temporary network failures cannot grant admin access',async()=>{
+ const f=fixture();f.setFailure(true);
+ assert.equal(await f.ctx.verifyAdmin(f.user),false);
+ assert.equal(await f.ctx.verifyAdmin(null),false);
+ f.setFailure(false);
+ assert.equal(await f.ctx.verifyAdmin(f.user),false);
+ assert.equal(f.calls,3);
 });
