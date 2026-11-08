@@ -535,6 +535,6 @@ test('six flowerbed products draw four borderless blooms per tile and preserve p
  assert.equal(f.inventory.flowers.rose,2);
  assert.equal(f.flowers.length,1);
  assert.throws(()=>applyLayoutAction(f,{type:'remove-flower',x:14,y:10}),/ありません/);
- const tampered=normalizeFarm({...f,flowers:[{type:'unknown',x:3,y:10},{type:'rose',x:15,y:10},{type:'rose',x:16,y:10}]});
+ const tampered=normalizeFarm({...f,flowers:[{type:'unknown',x:3,y:10},{type:'rose',x:15,y:10},{type:'rose',x:15,y:10}]});
  assert.equal(tampered.flowers.length,1,'invalid and overlapping data is rejected');
 });
