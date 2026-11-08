@@ -184,6 +184,9 @@ dialog::backdrop{background:#253d30a6}
 
 /* WebP beta edition – floor still uses original background, but every newly authored furniture sprite is WebP. */
 .webp-room-label{display:inline-block;vertical-align:middle;margin-left:8px;padding:4px 9px;border-radius:10px;background:#edc898;color:#634427;font-size:12px;font-weight:800}
-.object .webp-bed-sprite{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;user-select:none;-webkit-user-drag:none}
+/* Four original transparent WebP sprites retain their own aspect ratios.
+   Use a fixed 2 x 2 tile hitbox for all directions and fit the visible long edge
+   within two tiles (no stretched bedding, SVG, or canvas re-drawing). */
+.object .webp-bed-sprite{display:block;width:100%;height:100%;object-fit:contain;object-position:center center;pointer-events:none;user-select:none;-webkit-user-drag:none}
 .catalog-webp-img{width:54px;height:72px;object-fit:contain;display:block}
 @media(max-width:740px){.webp-room-label{font-size:10px;padding:3px 6px}}
