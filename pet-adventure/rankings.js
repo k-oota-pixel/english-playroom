@@ -1,4 +1,5 @@
 import {auth,authReady} from '../coin-reward.js?v=2.3.6';
+import {openMaterialRanking} from '../material-ranking-ui.js?v=2.3.51';
 
 const dialog=document.getElementById('rankingDialog'),heading=document.getElementById('rankingTitle'),status=document.getElementById('rankingStatus'),list=document.getElementById('rankingList'),reload=document.getElementById('rankingReload');
 let mode='tower',sequence=0,controller=null;
@@ -33,3 +34,15 @@ async function load(){
 for(const button of document.querySelectorAll('[data-ranking]'))button.addEventListener('click',()=>{mode=button.dataset.ranking;heading.textContent=(mode==='tower'?'魔王の塔':'魔物の巣窟')+'ランキング';dialog.showModal();load();});
 document.getElementById('rankingClose').addEventListener('click',()=>dialog.close());reload.addEventListener('click',load);dialog.addEventListener('close',()=>{sequence++;controller?.abort();reload.disabled=false;});
 
+
+// Use the existing daily material leaderboard for each defense mode.
+const defenseDialog=document.getElementById('defenseRankingDialog');
+document.getElementById('defenseRankingOpen').addEventListener('click',()=>defenseDialog.showModal());
+document.getElementById('defenseRankingClose').addEventListener('click',()=>defenseDialog.close());
+for(const button of document.querySelectorAll('[data-defense-ranking]')){
+ button.addEventListener('click',()=>{
+  const selectedMode=button.dataset.defenseRanking;
+  defenseDialog.close();
+  if(selectedMode==='normal'||selectedMode==='hard')void openMaterialRanking('pet-typing-defense-'+selectedMode);
+ });
+}

@@ -35,7 +35,7 @@ function install() {
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
     {name:'オンライン対戦',url:new URL('pet-adventure/online-battle.html',root)},
-    {name:'タイピングディフェンス',url:new URL('pet-typing-defense/',root)}
+    {name:'もんすた城の防衛',url:new URL('pet-typing-defense/',root)}
   ]});
   const hiddenMaterials=[{name:'ぺっとのおへや',url:new URL('pet-room/room-v4.html',root)},{name:'WebPベッド試験版',url:new URL('pet-room/room-webp-v1.html',root)},{name:'ぺっとのおへや・ほっこり版',url:new URL('pet-room/room-cozy.html',root)},{name:'ペットのおへや（旧トップビュー版）',url:new URL('pet-room/topview.html',root)},{name:'ペットのおへや（旧アイソメ版）',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)}];
   const canonical = path => path.replace(/index\.html$/, '');

@@ -121,8 +121,8 @@ test('game launcher has two large direct mode buttons and no old setup text',()=
  assert.match(game,/function start\(mode=run\?\.mode\|\|'normal'\)/);
  assert.match(css,/\.opening\.mode-chooser\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
  assert.doesNotMatch(page,/id="normalRanking"|id="hardRanking"/);
- assert.match(page,/<title>タイピングディフェンス \| もんすたでぃ<\/title>/);
- assert.match(page,/<h1>タイピングディフェンス<\/h1>/);
+ assert.match(page,/<title>もんすた城の防衛 \| もんすたでぃ<\/title>/);
+ assert.match(page,/<h1>もんすた城の防衛<\/h1>/);
  assert.doesNotMatch(page,/TEST VERSION|<a class="back"/);
  const topbar=readFileSync(new URL('../material-return.js',import.meta.url),'utf8');
  assert.match(topbar,/className='ms-defense-rank-actions'/);
