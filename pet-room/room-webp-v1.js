@@ -11,12 +11,14 @@ const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
 const specs=[
  {id:'bed',name:'WebPベッド',icon:'🛏️',x:2,y:1,w:1,h:2,scaleX:1,scaleY:1},
  {id:'sofa',name:'WebPソファ',icon:'🛋️',x:0,y:2,w:2,h:1,scaleX:1,scaleY:1},
- {id:'bookshelf',name:'WebP本棚',icon:'📚',x:4,y:0,w:2,h:1,scaleX:1,scaleY:1}
+ {id:'bookshelf',name:'WebP本棚',icon:'📚',x:4,y:0,w:2,h:1,scaleX:1,scaleY:1},
+ {id:'desk',name:'WebP勉強机',icon:'✏️',x:2,y:4,w:2,h:1,scaleX:1,scaleY:1}
 ];
 const WEBP_BED_ASSETS=['bed_0.webp','bed_1.webp','bed_2.webp','bed_3.webp'].map(name=>'./assets/webp-v1/bed/'+name+'?v=2.4.25');
 const WEBP_SOFA_ASSETS=['sofa_0.webp','sofa_1.webp','sofa_2.webp','sofa_3.webp'].map(name=>'./assets/webp-v1/sofa/'+name+'?v=2.4.34');
 const WEBP_BOOKSHELF_ASSETS=['bookshelf_0.webp','bookshelf_1.webp','bookshelf_2.webp','bookshelf_3.webp'].map(name=>'./assets/webp-v1/bookshelf/'+name+'?v=2.4.37');
-const WEBP_FURNITURE_ASSETS={bed:WEBP_BED_ASSETS,sofa:WEBP_SOFA_ASSETS,bookshelf:WEBP_BOOKSHELF_ASSETS};
+const WEBP_DESK_ASSETS=['desk_0.webp','desk_1.webp','desk_2.webp','desk_3.webp'].map(name=>'./assets/webp-v1/desk/'+name+'?v=2.4.42');
+const WEBP_FURNITURE_ASSETS={bed:WEBP_BED_ASSETS,sofa:WEBP_SOFA_ASSETS,bookshelf:WEBP_BOOKSHELF_ASSETS,desk:WEBP_DESK_ASSETS};
 const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:s.initialPlaced!==false,element:null,blocking:s.blocking!==false&&!s.wallOnly}]));
 let user=null,petData={},petCell={x:4,y:4},mode='view',activeId=null,snapshot=null;
 let playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-webp-v1:guest',hasPet=false,dragState=null,suppressClickUntil=0;
@@ -127,7 +129,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={__version:5,assetSet:'webp-bed-sofa-bookshelf-v1',footprint:'bed1x2-sofa2x1-bookshelf2x1'};
+ const data={__version:6,assetSet:'webp-bed-sofa-bookshelf-desk-v1',footprint:'bed1x2-sofa2x1-bookshelf2x1-desk2x1'};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}
@@ -397,7 +399,8 @@ bindUI();loadLayout('guest');
 const checks=[
  ...WEBP_BED_ASSETS.map((src,i)=>({src,w:(i%2)?696:464,h:(i%2)?464:696})),
  ...WEBP_SOFA_ASSETS.map((src,i)=>({src,w:(i%2)?330:530,h:(i%2)?530:330})),
- ...WEBP_BOOKSHELF_ASSETS.map((src,i)=>({src,w:[550,228,549,229][i],h:[456,483,457,485][i]}))
+ ...WEBP_BOOKSHELF_ASSETS.map((src,i)=>({src,w:[550,228,549,229][i],h:[456,483,457,485][i]})),
+ ...WEBP_DESK_ASSETS.map((src,i)=>({src,w:[549,464,565,448][i],h:[421,671,433,662][i]}))
 ];
 Promise.all(checks.map(({src,w,h})=>new Promise((ok,fail)=>{
  const image=new Image();image.onload=()=>{
