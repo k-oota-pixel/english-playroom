@@ -170,6 +170,11 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    // Bookshelf has four truly distinct WebP images: face, right side, back, left side.
    const bookshelfEl='.object[data-item-id="bookshelf"]';
    const shelfAnchor=await page.locator(bookshelfEl).evaluate(el=>({left:el.style.left,top:el.style.top}));
+   // Front-facing bookshelf, bed and sofa keep their original 100% scale.
+   for(const itemId of ['bed','sofa','bookshelf']){
+     const scale=await page.locator('.object[data-item-id="'+itemId+'"] img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
+     assert.ok(Math.abs(scale-1)<.01,itemId+' must retain its original scale');
+   }
    await page.locator(bookshelfEl).click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bookshelf opens the common furniture editor');
    for(const i of [1,2,3,0,1]){
@@ -180,6 +185,8 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      assert.ok(Math.abs(rect.h-((i%2)?232:116)/960*100)<.1,'Bookshelf occupies correct tile depth '+i);
      assert.deepEqual({left:rect.left,top:rect.top},shelfAnchor,'Bookshelf cannot drift on rotation '+i);
      assert.equal(await page.locator(bookshelfEl+' img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+     const scale=await page.locator(bookshelfEl+' img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
+     assert.ok(Math.abs(scale-(i%2===1?0.6:1))<0.01,'Only side views 1/3 are 60% size (bookshelf_'+i+'); scale='+scale);
    }
    for(let n=0;n<12;n++){
      await page.locator('#rotateItem').click();
