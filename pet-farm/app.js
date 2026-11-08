@@ -3,7 +3,8 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FIELD_TYPES,FIELD_SIZES,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,useProduce} from './model.js?v=10';
+import {MAP,FIELD_TYPES,FIELD_SIZES,FLOWERS,flowerIds,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,canPlaceFlower,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,useProduce} from './model.js?v=11';
+import {flowerTileSVG} from './flower-art.js?v=1';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=6';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
@@ -22,7 +23,7 @@ function toast(message){const el=$('toast');el.textContent=message;el.classList.
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 function updateCoin(){ $('coins').textContent=Number(balance).toLocaleString('ja-JP'); }
 function refresh(){
- updateCoin();renderRoads();renderPlots();renderPlacement();renderSelection();renderShop();renderInventory();renderManage();
+ updateCoin();renderRoads();renderFlowers();renderPlots();renderPlacement();renderSelection();renderShop();renderInventory();renderManage();
  $('saveBtn').disabled=!user||busy||!dirty;
 }
 function node(tag,cls,txt){
@@ -100,6 +101,19 @@ function renderRoads(){
   }
   drawRoadGrain(road,x,y);
   layer.appendChild(road);
+ }
+}
+let flowerRenderKey=null;
+function renderFlowers(){
+ const signature=farm.flowers.map(f=>f.type+':'+f.x+','+f.y).sort().join('|');
+ if(signature===flowerRenderKey)return;
+ flowerRenderKey=signature;
+ const layer=$('flowersLayer');layer.replaceChildren();
+ for(const flower of farm.flowers){
+  const tileEl=node('div','flower-tile');
+  Object.assign(tileEl.style,coords(flower.x,flower.y));
+  tileEl.innerHTML=flowerTileSVG(flower.type);
+  layer.appendChild(tileEl);
  }
 }
 function renderPlots(){
@@ -257,6 +271,7 @@ function shopStock(kind,id){
  if(kind==='supply')return Math.max(0,Number(farm.inventory[id])||0);
  if(kind==='field')return id==='free'?Number(farm.starterClaimed):Math.max(0,Number(farm.inventory.fields[id])||0);
  if(kind==='road')return Math.max(0,Number(farm.inventory.roads)||0);
+ if(kind==='flower')return Math.max(0,Number(farm.inventory.flowers[id])||0);
  return 0;
 }
 function maxPurchaseQuantity(item){
@@ -283,6 +298,7 @@ function shopSeedReveal(state,id){
 function shopItems(){
  if(shopTab==='seed')return cropIds.map(id=>({kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,price:CROPS[id].seed,units:CROPS[id].pack,sub:'成長 '+CROPS[id].minutes/60+'時間'}));
  if(shopTab==='supply')return Object.entries(SUPPLIES).map(([id,t])=>({kind:'supply',id,label:t.name,icon:t.icon,price:t.price,sub:id==='water'?'残り時間を2/3に短縮':'残り時間を1/3に短縮'}));
+ if(shopTab==='flower')return flowerIds.map(id=>({kind:'flower',id,label:FLOWERS[id].name+'の花畑',icon:FLOWERS[id].icon,price:FLOWERS[id].price,sub:'1マスに花が4つ・枠なし'}));
  if(shopTab==='field')return [{kind:'field',id:'free',label:'初回限定・4マス圃場',icon:'🌱',price:0,sub:'1つ目は無料'},
   ...FIELD_SIZES.map(id=>({kind:'field',id,label:FIELD_TYPES[id].name,icon:'🌾',price:FIELD_TYPES[id].price,sub:'好きな場所へ置けます'}))];
  return [{kind:'road',id:'dirt',label:'土の道',icon:'🟫',price:1,sub:'1マス1C・自由な配置'}];
@@ -302,10 +318,14 @@ function renderShop(){
   details.append(node('strong','',secret?.label||item.label),node('small','',unit+' · '+item.sub));
   if(secret)details.appendChild(node('span','shop-unlock',secret.requirement));
   if(item.id==='free'&&farm.starterClaimed)details.appendChild(node('span','shop-unlock','✓ 無料分は受け取り済み'));
-  else if(item.id!=='free')details.appendChild(node('span','shop-owned','所持数：'+shopStock(item.kind,item.id).toLocaleString('ja-JP')+(item.kind==='road'?'マス':'個')));
+  else if(item.id!=='free')details.appendChild(node('span','shop-owned','所持数：'+shopStock(item.kind,item.id).toLocaleString('ja-JP')+(['road','flower'].includes(item.kind)?'マス':'個')));
   if(item.kind==='field'&&item.id!=='free'&&!farm.starterClaimed)
    details.appendChild(node('span','shop-unlock','🔒 まず無料の圃場を受け取ってね'));
-  b.append(node('span','emoji',secret?.icon||item.icon),details);
+  if(item.kind==='flower'){
+    const artwork=node('span','flower-shop-art');
+    artwork.innerHTML=flowerTileSVG(item.id);
+    b.append(artwork,details);
+   }else b.append(node('span','emoji',secret?.icon||item.icon),details);
   b.disabled=busy||!ready||maxPurchaseQuantity(item)<1||(item.kind==='seed'&&!isCropUnlocked(farm,item.id))||
    (item.kind==='field'&&item.id!=='free'&&!farm.starterClaimed);
   b.addEventListener('click',()=>{if(!b.disabled){chosenPurchase={...item,quantity:1};renderShop();}});
@@ -320,7 +340,7 @@ function renderShop(){
  confirm.appendChild(node('p','confirm-label',p.icon+' '+p.label));
  if(p.id!=='free'){
   const row=node('div','shop-quantity');
-  const suffix=p.kind==='seed'?'袋':p.kind==='road'?'マス':'個';
+  const suffix=p.kind==='seed'?'袋':['road','flower'].includes(p.kind)?'マス':'個';
   row.appendChild(node('span','shop-quantity-label',p.kind==='seed'?'購入する袋数':'一度に買う数'));
   const minus=node('button','shop-qty-btn','−'),plus=node('button','shop-qty-btn','＋');
   minus.type='button';plus.type='button';minus.disabled=p.quantity<=1;plus.disabled=p.quantity>=maxPurchaseQuantity(current);
@@ -330,16 +350,16 @@ function renderShop(){
   row.append(minus,node('output','shop-qty-value',p.quantity+suffix),plus);confirm.appendChild(row);
  }
  const total=node('div','shop-order-total');
- total.append(node('span','','合計 '+(p.kind==='seed'?p.quantity+'袋（タネ'+p.quantity*p.units+'個）':p.quantity+(p.kind==='road'?'マス':'個'))),node('strong','',p.price*p.quantity+' C'));
+ total.append(node('span','','合計 '+(p.kind==='seed'?p.quantity+'袋（タネ'+p.quantity*p.units+'個）':p.quantity+(['road','flower'].includes(p.kind)?'マス':'個'))),node('strong','',p.price*p.quantity+' C'));
  confirm.appendChild(total);
  const row=node('div','modal-actions');
  row.append(actionButton(p.price===0?'無料で受け取る':'🪙 購入する','gold',async()=>{
    const success=await buy(p.kind,p.id,p.quantity);
    if(!success)return;
    chosenPurchase=null;
-   if(p.kind==='field'||p.kind==='road'){
+   if(['field','road','flower'].includes(p.kind)){
     hideDialog('shopDialog');
-    beginPlacement(p.kind==='field'?'field':'road',p.id==='free'?'4':p.id);
+    beginPlacement(p.kind,p.id==='free'?'4':p.id);
    }else renderShop();
   }),
   actionButton('やめる','secondary',()=>{chosenPurchase=null;renderShop();}));
@@ -372,6 +392,19 @@ function renderInventory(){
  const erase=node('button','inv-chip inv-action','道路を取り除く');
  erase.type='button';erase.disabled=!ready||busy||!farm.roads.length;
  erase.addEventListener('click',()=>beginPlacement('erase-road',''));wrap.appendChild(erase);
+ heading('🌸 花畑の持ち物・配置する');
+ wrap=row();
+ for(const id of flowerIds){
+  const count=farm.inventory.flowers[id]||0;
+  const btn=node('button','inv-chip inv-action');
+  btn.type='button';btn.disabled=!ready||busy||!count;
+  const icon=node('span','flower-inventory-art');icon.innerHTML=flowerTileSVG(id);
+  btn.append(icon,node('span','',FLOWERS[id].name+' ×'+count+'　配置'));
+  btn.addEventListener('click',()=>beginPlacement('flower',id));wrap.appendChild(btn);
+ }
+ const eraseFlower=node('button','inv-chip inv-action','🌸 花畑を取り除く');
+ eraseFlower.type='button';eraseFlower.disabled=!ready||busy||!farm.flowers.length;
+ eraseFlower.addEventListener('click',()=>beginPlacement('erase-flower',''));wrap.appendChild(eraseFlower);
  heading('🌰 タネの持ち物');
  wrap=row();
  for(const id of allCropIds)if(farm.inventory.seeds[id])wrap.appendChild(node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+farm.inventory.seeds[id]));
@@ -406,6 +439,7 @@ function beginPlacement(type,value){
  if(!ready||busy)return;
  if(type==='field'&&!(farm.inventory.fields[value]>0)){toast('圃場の持ち物がありません。');return;}
  if(type==='road'&&!farm.inventory.roads){toast('道路の持ち物がありません。');return;}
+ if(type==='flower'&&!(farm.inventory.flowers[value]>0)){toast('花畑の持ち物がありません。');return;}
  if(type==='move'&&!farm.fields.some(f=>f.id===value)){toast('圃場が見つかりません。');return;}
  placement={type,value};
  hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');
@@ -424,6 +458,8 @@ function placementAllowed(x,y){
   return !!field&&canPlace(farm,field.size,x,y,field.id);
  }
  if(placement.type==='road')return farm.inventory.roads>0&&canPlaceRoad(farm,x,y);
+ if(placement.type==='flower')return farm.inventory.flowers[placement.value]>0&&canPlaceFlower(farm,x,y);
+ if(placement.type==='erase-flower')return farm.flowers.some(f=>f.x===x&&f.y===y);
  return placement.type==='erase-road'&&farm.roads.includes(x+','+y);
 }
 function previewPlacement(x,y){
@@ -442,7 +478,10 @@ function renderPlacement(){
  const type=placement.type;
  const size=type==='move'?farm.fields.find(f=>f.id===placement.value)?.size:placement.value;
  $('placementHint').textContent=type==='field'?FIELD_TYPES[size].name+'の左上をタップ（所持 '+farm.inventory.fields[size]+'個）':
-  type==='move'?'移動先の左上をタップ':type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':'取り除く道路をタップ';
+  type==='move'?'移動先の左上をタップ':
+  type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':
+  type==='flower'?FLOWERS[placement.value].name+'を植えるマスをタップ（残り '+farm.inventory.flowers[placement.value]+'マス）':
+  type==='erase-flower'?'取り除く花畑をタップ':'取り除く道路をタップ';
  for(const btn of grid.querySelectorAll('button.placement-cell')){
   const x=Number(btn.dataset.x),y=Number(btn.dataset.y),allowed=placementAllowed(x,y);
   btn.disabled=!allowed;btn.classList.toggle('eligible',allowed);
@@ -473,6 +512,11 @@ function choosePlacement(x,y){
   if(applyLayout({type:'place-road',x,y})&&!farm.inventory.roads)stopPlacement();
   return;
  }
+ if(placement.type==='flower'){
+  if(applyLayout({type:'place-flower',flower:placement.value,x,y})&&!farm.inventory.flowers[placement.value])stopPlacement();
+  return;
+ }
+ if(placement.type==='erase-flower'){applyLayout({type:'remove-flower',x,y});return;}
  if(placement.type==='erase-road')applyLayout({type:'remove-road',x,y});
 }
 function confirmFieldName(){

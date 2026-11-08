@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>もんすたふぁーむ｜開発中プレビュー</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./style.css?v=13">
+<link rel="stylesheet" href="./style.css?v=14">
 <style id="monstudy-access-lock">html:before{content:"ログインを確認しています…";position:fixed;inset:0;z-index:99999;display:grid;place-content:center;background:#edf6ed;color:#315f4d;font:16px system-ui}body{visibility:hidden!important}</style>
 <script type="module" src="../access-gate.js?v=2.4.37"></script>
 </head>
@@ -19,6 +19,7 @@
    <div id="sceneSize"><div id="world">
     <div id="scenery" aria-hidden="true"></div>
     <div id="roadsLayer" aria-label="配置した道路"></div>
+     <div id="flowersLayer" aria-label="配置した花畑"></div>
     <div id="plotLayer"></div>
     <div id="placementLayer" hidden aria-label="農園の配置マスを選択"></div>
     <button id="house" class="building-hit home-hit" type="button" aria-label="ペットのおうち。おへやモードは準備中"></button>
@@ -44,7 +45,7 @@
    <span id="zoomLabel">100%</span>
    <button id="zoomIn" type="button" aria-label="拡大">＋</button>
   </div>
-  <div class="farm-hint">ショップで圃場・道路を手に入れて、好きな場所に配置しよう</div>
+  <div class="farm-hint">ショップで圃場・道路・花畑を手に入れて、好きな場所に配置しよう</div>
   <div class="placement-bar" id="placementBar" hidden>
    <span id="placementHint">配置する場所をタップしてください</span>
    <button type="button" id="placementCancel">配置を終了</button>
@@ -58,13 +59,13 @@
  <dialog id="shopDialog" class="farm-dialog" aria-labelledby="shopTitle">
   <div class="modal-head"><div><div class="panel-kicker">FARM SHOP</div><h2 id="shopTitle">🏪 タネと道具のおみせ</h2></div><button type="button" class="modal-close" data-close-dialog="shopDialog" aria-label="閉じる">✕</button></div>
   <p class="subtext">欲しいものをタップして、購入を確定しよう。<strong>🪙 <span id="shopBalance">—</span>C</strong></p>
-  <div class="shop-tabs"><button type="button" class="tab active" data-shop="field">圃場</button><button type="button" class="tab" data-shop="road">道路</button><button type="button" class="tab" data-shop="seed">タネ</button><button type="button" class="tab" data-shop="supply">水・肥料</button></div>
+  <div class="shop-tabs"><button type="button" class="tab active" data-shop="field">圃場</button><button type="button" class="tab" data-shop="road">道路</button><button type="button" class="tab" data-shop="flower">花畑</button><button type="button" class="tab" data-shop="seed">タネ</button><button type="button" class="tab" data-shop="supply">水・肥料</button></div>
   <div id="shopList" class="shop-list"></div><div id="shopConfirmation" class="modal-confirm"></div>
  </dialog>
  <dialog id="itemsDialog" class="farm-dialog" aria-labelledby="itemsTitle">
   <div class="modal-head"><div><div class="panel-kicker">MY ITEMS</div><h2 id="itemsTitle">🎒 アイテム</h2></div><button type="button" class="modal-close" data-close-dialog="itemsDialog" aria-label="閉じる">✕</button></div>
   <div id="inventory" class="inventory"></div><div id="storageConfirmation" class="modal-confirm"></div>
-  <p class="tiny">圃場・道路はここから配置できます。作物は将来メインページのFEEDで使える予定です。</p>
+  <p class="tiny">圃場・道路・花畑はここから配置できます。作物は将来メインページのFEEDで使える予定です。</p>
  </dialog>
  <dialog id="manageDialog" class="farm-dialog" aria-labelledby="manageTitle">
   <div class="modal-head"><div><div class="panel-kicker">FIELD SETTINGS</div><h2 id="manageTitle">圃場の管理</h2></div><button type="button" class="modal-close" data-close-dialog="manageDialog" aria-label="閉じる">✕</button></div>
@@ -113,6 +114,6 @@
  setTimeout(()=>recovery('読み込みに時間がかかっています。再試行するか、もんすたでぃへ戻ってください。'),16000);
 })();
 </script>
-<script type="module" src="./app.js?v=17"></script>
+<script type="module" src="./app.js?v=18"></script>
 </body>
 </html>

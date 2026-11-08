@@ -31,6 +31,15 @@ export const CROPS = Object.freeze({
  potato:{name:'じゃがいも',icon:'🥔',seed:3,pack:1,minutes:2,legacy:true,reply:'満足そうにほほえんだ！'},
  pepper:{name:'とうがらし',icon:'🌶️',seed:5,pack:1,minutes:4,legacy:true,reply:'からくてびっくり、走り回った！'}
 });
+export const FLOWERS=Object.freeze({
+ rose:{name:'ばら',icon:'🌹',price:50},
+ sunflower:{name:'ひまわり',icon:'🌻',price:50},
+ lavender:{name:'ラベンダー',icon:'🪻',price:50},
+ hydrangea:{name:'あじさい',icon:'💠',price:50},
+ marigold:{name:'マリーゴールド',icon:'🌼',price:50},
+ tulip:{name:'チューリップ',icon:'🌷',price:50}
+});
+export const flowerIds=Object.keys(FLOWERS);
 export const SUPPLIES = Object.freeze({water:{name:'水',icon:'💧',price:1,count:1},fertilizer:{name:'肥料',icon:'🌱',price:2,count:1}});
 export const cropIds=Object.keys(CROPS).filter(id=>!CROPS[id].legacy);
 export const allCropIds=Object.keys(CROPS);
@@ -52,8 +61,8 @@ const integer=(value,max=99999)=>Math.min(max,Math.max(0,Math.floor(Number(value
 const stock=(v,ids)=>Object.fromEntries(ids.map(id=>[id,integer(v?.[id])]));
 export function freshFarm(){
  return {schemaVersion:3,unlocked:[true,false,false,false],starterClaimed:false,
-  fields:[],roads:[],nextFieldId:1,
-  plots:{},inventory:{seeds:{lettuce:3},water:3,fertilizer:0,produce:{},giftBox:{},fields:{'4':0,'6':0,'9':0,'16':0},roads:0},
+  fields:[],roads:[],flowers:[],nextFieldId:1,
+  plots:{},inventory:{seeds:{lettuce:3},water:3,fertilizer:0,produce:{},giftBox:{},fields:{'4':0,'6':0,'9':0,'16':0},roads:0,flowers:Object.fromEntries(flowerIds.map(id=>[id,0]))},
   harvestCounts:{},bond:0,harvests:0,feedCount:0,giftsPacked:0,updatedAt:0};
 }
 const validPoint=(x,y)=>Number.isInteger(x)&&Number.isInteger(y)&&x>=1&&y>=1&&x<MAP.w-1&&y<MAP.h-1;
@@ -66,13 +75,15 @@ export function canPlace(farm,kind,x,y,ignoreId=''){
  if((farm.fields||[]).some(field=>field.id!==ignoreId&&intersects(rect,{x:field.x,y:field.y,...FIELD_TYPES[field.size]})))return false;
  const roads=new Set(farm.roads||[]);
  for(let dy=0;dy<shape.h;dy++)for(let dx=0;dx<shape.w;dx++)if(roads.has((x+dx)+','+(y+dy)))return false;
+ if((farm.flowers||[]).some(flower=>intersects(rect,{x:flower.x,y:flower.y,w:1,h:1})))return false;
  return true;
 }
 export function canPlaceRoad(farm,x,y){
  if(!validPoint(x,y)||RESERVED_ZONES.some(z=>intersects({x,y,w:1,h:1},z)))return false;
  if((farm.fields||[]).some(f=>intersects({x,y,w:1,h:1},{x:f.x,y:f.y,...FIELD_TYPES[f.size]})))return false;
- return !(farm.roads||[]).includes(x+','+y);
+ return !(farm.roads||[]).includes(x+','+y)&&!(farm.flowers||[]).some(f=>f.x===x&&f.y===y);
 }
+export const canPlaceFlower=(farm,x,y)=>canPlaceRoad(farm,x,y);
 export const locateField=(farm,id,index)=>{
  const field=farm.fields?.find(f=>f.id===String(id));
  const shape=field&&FIELD_TYPES[field.size];
@@ -139,6 +150,7 @@ export function normalizeFarm(raw){
  f.inventory.fertilizer=integer(v.inventory?.fertilizer);
  f.inventory.produce=stock(v.inventory?.produce,allCropIds);
  f.inventory.giftBox=stock(v.inventory?.giftBox,allCropIds);
+ f.inventory.flowers=stock(v.inventory?.flowers,flowerIds);
  f.harvestCounts=stock(v.harvestCounts,allCropIds);
  f.bond=integer(v.bond,999999);
  f.harvests=integer(v.harvests,999999);
@@ -178,6 +190,13 @@ export function normalizeFarm(raw){
    if(typeof key!=='string'||!/^\d{1,2},\d{1,2}$/.test(key))continue;
    const [x,y]=key.split(',').map(Number);
    if(canPlaceRoad(f,x,y))f.roads.push(key);
+  }
+  // Restore flowers after roads and fields to reject corrupt overlapping records.
+  for(const item of (Array.isArray(v.flowers)?v.flowers:[])){
+   const type=String(item?.type||'');
+   const x=Number(item?.x),y=Number(item?.y);
+   if(!Object.hasOwn(FLOWERS,type)||!canPlaceFlower(f,x,y))continue;
+   f.flowers.push({type,x,y});
   }
  }
  const oldMinutes={carrot:1,pumpkin:7,strawberry:5,tomato:3,potato:2,pepper:4};
@@ -293,6 +312,21 @@ export function applyLayoutAction(current,action){
   f.inventory.fields[field.size]++;
   return {farm:f,message:'圃場を持ち物に戻しました。'};
  }
+ if(type==='place-flower'){
+  const flower=String(action.flower||'');
+  if(!Object.hasOwn(FLOWERS,flower))fail('花畑の種類が正しくありません。');
+  if(!f.inventory.flowers[flower])fail('花畑の持ち物がありません。');
+  if(!canPlaceFlower(f,x,y))fail('そこには花畑を置けません。');
+  f.flowers.push({type:flower,x,y});f.inventory.flowers[flower]--;
+  return {farm:f,message:FLOWERS[flower].name+'の花畑を配置しました。'};
+ }
+ if(type==='remove-flower'){
+  const index=f.flowers.findIndex(item=>item.x===x&&item.y===y);
+  if(index<0)fail('花畑がありません。');
+  const flower=f.flowers[index].type;
+  f.flowers.splice(index,1);f.inventory.flowers[flower]++;
+  return {farm:f,message:FLOWERS[flower].name+'の花畑を持ち物に戻しました。'};
+ }
  if(type==='place-road'){
   const key=x+','+y;
   if(!f.inventory.roads)fail('道路がありません。SHOPで購入してください。');
@@ -345,7 +379,14 @@ export function applyPurchase(current,kind,id,coins,quantity=1){
    f.inventory.fields[id]+=quantity;
    message=item.name+'を'+quantity+'個購入しました。';
   }
- }else if(kind==='road'){
+ }else if(kind==='flower'){
+   const item=FLOWERS[id];
+   if(!item)fail('花畑が見つかりません。');
+   unitPrice=item.price;
+   if(f.inventory.flowers[id]+quantity>99999)fail('花畑の所持上限を超えています。');
+   f.inventory.flowers[id]+=quantity;
+   message=item.name+'の花畑を'+quantity+'マス購入しました。';
+  }else if(kind==='road'){
   if(id!=='dirt')fail('道路が見つかりません。');
   unitPrice=1;
   if(f.inventory.roads+quantity>99999)fail('道路の所持上限を超えています。');

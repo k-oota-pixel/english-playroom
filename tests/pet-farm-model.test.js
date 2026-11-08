@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {
- MAP,FARMS,FIELD_TYPES,FIELD_SIZES,RESERVED_ZONES,CROPS,SUPPLIES,
- freshFarm,normalizeFarm,cropUnlockProgress,canPlace,canPlaceRoad,
+ MAP,FARMS,FIELD_TYPES,FIELD_SIZES,RESERVED_ZONES,FLOWERS,flowerIds,CROPS,SUPPLIES,
+ freshFarm,normalizeFarm,cropUnlockProgress,canPlace,canPlaceRoad,canPlaceFlower,
  locateField,findWorkStand,plotKey,applyPurchase,applyLayoutAction,applyFarmAction,
  growthPhase,remaining,useProduce
 } from '../pet-farm/model.js';
+import {flowerTileSVG} from '../pet-farm/flower-art.js';
 const source=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 function starter(){
  let f=applyPurchase(freshFarm(),'field','free',0).farm;
@@ -18,6 +19,7 @@ test('new farmers start on a blank 32x16 canvas with a free starter available in
  const f=freshFarm();
  assert.deepEqual(f.fields,[]);
  assert.deepEqual(f.roads,[]);
+ assert.deepEqual(f.flowers,[]);
  assert.equal(f.starterClaimed,false);
  assert.equal(f.inventory.fields['4'],0);
  assert.equal(f.schemaVersion,3);
@@ -410,18 +412,18 @@ test('farm shop cold-start renderer has working stock and purchase-limit helpers
   shopList:createNode('div'),shopBalance:createNode('span'),shopConfirmation:createNode('div')
  };
  const $=id=>elements[id];
- const tabs=['field','road','seed','supply'].map(shop=>({dataset:{shop},classList:{toggle(){}}}));
- const shopFactory=new Function('farm','balance','CROPS','SUPPLIES','FIELD_TYPES','FIELD_SIZES',
+ const tabs=['field','road','flower','seed','supply'].map(shop=>({dataset:{shop},classList:{toggle(){}}}));
+ const shopFactory=new Function('farm','balance','CROPS','SUPPLIES','FIELD_TYPES','FIELD_SIZES','FLOWERS','flowerIds','flowerTileSVG',
   'cropIds','cropUnlockProgress','isCropUnlocked','node','$','document','actionButton','busy','ready',
   'shopTab','chosenPurchase',shopSection+';return {shopStock,maxPurchaseQuantity,renderShop};');
  const build=(farm,balance,tab,chosen=null)=>shopFactory(
-  farm,balance,CROPS,SUPPLIES,FIELD_TYPES,FIELD_SIZES,
+  farm,balance,CROPS,SUPPLIES,FIELD_TYPES,FIELD_SIZES,FLOWERS,flowerIds,flowerTileSVG,
   ['lettuce','carrot','pumpkin','strawberry','melon'],cropUnlockProgress,
   (state,id)=>cropUnlockProgress(state,id).unlocked,createNode,$,
   {querySelectorAll(){return tabs;}},()=>createNode('button'),false,true,tab,chosen
  );
  const f=freshFarm();
- for(const tab of ['field','road','seed','supply']){
+ for(const tab of ['field','road','flower','seed','supply']){
   const shop=build(f,0,tab);
   assert.doesNotThrow(()=>shop.renderShop(),'the '+tab+' catalogue must render for a logged-in player');
   assert.ok(elements.shopList.children.length>0);
@@ -437,6 +439,9 @@ test('farm shop cold-start renderer has working stock and purchase-limit helpers
  const seed=build(stocked,100,'seed',{kind:'seed',id:'lettuce',label:'レタスのタネ',icon:'🥬',price:1,units:3,quantity:2});
  assert.doesNotThrow(()=>seed.renderShop(),'selected seed confirmation must render too');
  assert.equal(seed.shopStock('seed','lettuce'),3);
+ const flower=build(stocked,100,'flower');
+ assert.equal(flower.shopStock('flower','rose'),0);
+ assert.equal(flower.maxPurchaseQuantity({kind:'flower',id:'rose',price:50}),2);
 });
 
 
@@ -497,4 +502,39 @@ test('all crop actions move pet to the safe work spot while effects stay on the 
  assert.match(action,/if\(stand\)await walkTo\(stand\.x,stand\.y\)/);
  assert.match(action,/await showWork\(type,spot\.x\+\.5,spot\.y\+\.5\)/);
  assert.doesNotMatch(action,/walkTo\(spot\.x\+\.5,spot\.y\+\.77\)/);
+});
+
+test('six flowerbed products draw four borderless blooms per tile and preserve placement and stock',()=>{
+ assert.deepEqual(flowerIds,['rose','sunflower','lavender','hydrangea','marigold','tulip']);
+ let f=freshFarm();
+ for(const id of flowerIds){
+  assert.equal(FLOWERS[id].price,50);
+  const svg=flowerTileSVG(id);
+  assert.equal((svg.match(/data-bloom=/g)||[]).length,4,id+' must show exactly four blooms');
+  assert.doesNotMatch(svg,/<rect|<foreignObject/i,'no painted tile border or planter');
+  assert.match(svg,/viewBox="0 0 54 54"/);
+  f=applyPurchase(f,'flower',id,500,2).farm;
+  assert.equal(f.inventory.flowers[id],2);
+ }
+ assert.equal(applyPurchase(freshFarm(),'flower','rose',100,2).cost,100);
+ assert.throws(()=>applyPurchase(freshFarm(),'flower','rose',49),/コインが足りません/);
+ assert.throws(()=>applyPurchase(freshFarm(),'flower','unknown',100),/見つかりません/);
+ assert.equal(canPlaceFlower(f,2,2),false,'house is reserved');
+ assert.equal(canPlaceFlower(f,14,10),true);
+ f=applyLayoutAction(f,{type:'place-flower',flower:'rose',x:14,y:10}).farm;
+ f=applyLayoutAction(f,{type:'place-flower',flower:'sunflower',x:15,y:10}).farm;
+ assert.equal(f.inventory.flowers.rose,1);
+ assert.deepEqual(f.flowers,[{type:'rose',x:14,y:10},{type:'sunflower',x:15,y:10}]);
+ assert.equal(canPlaceRoad(f,14,10),false);
+ assert.equal(canPlace(f,'4',14,10),false);
+ assert.throws(()=>applyLayoutAction(f,{type:'place-flower',flower:'tulip',x:14,y:10}),/置けません/);
+ const restored=normalizeFarm(JSON.parse(JSON.stringify(f)));
+ assert.deepEqual(restored.flowers,f.flowers);
+ assert.equal(restored.inventory.flowers.rose,1);
+ f=applyLayoutAction(restored,{type:'remove-flower',x:14,y:10}).farm;
+ assert.equal(f.inventory.flowers.rose,2);
+ assert.equal(f.flowers.length,1);
+ assert.throws(()=>applyLayoutAction(f,{type:'remove-flower',x:14,y:10}),/ありません/);
+ const tampered=normalizeFarm({...f,flowers:[{type:'unknown',x:3,y:10},{type:'rose',x:15,y:10},{type:'rose',x:15,y:10}]});
+ assert.equal(tampered.flowers.length,1,'invalid and overlapping data is rejected');
 });
