@@ -26,7 +26,7 @@ test('Eight independently-authored binary WebP assets, no SVG furniture fallback
  assert.match(room,/WEBP_SOFA_ASSETS=/);
  assert.match(room,/WEBP_FURNITURE_ASSETS=/);
  assert.match(room,/const specs=\s*\[\s*\{id:'bed',/);
- assert.match(room,/webp-.*?\+'-sprite'/);
+ assert.match(room,/class="webp-'\+item\.id\+'-sprite"/);
  assert.doesNotMatch(room,/facingFurnitureSVG|extraFurnitureSVG|ROOM_FOOTPRINTS|EXTRA_FURNITURE/);
  assert.doesNotMatch(room,/<svg.*?bed|CanvasRenderingContext2D|createElement\(['"]canvas/);
  assert.match(css,/\.webp-bed-sprite/);
