@@ -26,6 +26,17 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    await page.locator('#objectLayer .object').first().waitFor({timeout:15000});
    await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===464,{timeout:15000});
    await page.waitForFunction(()=>!document.querySelector('#petActor').hidden,{timeout:15000});
+   const betaBackdrop=await page.locator('#roomArt svg').evaluate(svg=>({
+     window:!!svg.querySelector('rect[x="361"][y="105"]'),
+     curtains:[...svg.querySelectorAll('path')].some(p=>p.getAttribute('d')?.startsWith('M351 109')),
+     wall:!!svg.querySelector('rect[x="124"][y="101"]'),
+     floor:!!svg.querySelector('rect[x="132"][y="202"][width="696"]'),
+     outerFrame:!!svg.querySelector('rect[x="93"][y="73"]')
+   }));
+   assert.equal(betaBackdrop.window,false,'WebP beta has no window');
+   assert.equal(betaBackdrop.curtains,false,'WebP beta has no curtains');
+   assert.ok(betaBackdrop.wall&&betaBackdrop.floor&&betaBackdrop.outerFrame,'Keep wall, tiles and wooden frame');
+   await page.screenshot({path:'webp-room-windowless.png',fullPage:true});
    assert.equal(await page.locator('.object').count(),3,'Three furniture items (bed, sofa, bookshelf) should be present');
    assert.equal(await page.locator('.object[data-item-id="bookshelf"] img').getAttribute('src'),'./assets/webp-v1/bookshelf/bookshelf_0.webp?v=2.4.37');
    assert.equal(await page.locator('.object[data-item-id="sofa"] img').getAttribute('src'),'./assets/webp-v1/sofa/sofa_0.webp?v=2.4.34');
