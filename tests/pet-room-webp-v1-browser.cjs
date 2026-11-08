@@ -87,6 +87,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.ok(Math.abs(overhang.ratioX-1.28)<.015,'Allow 14% overhang on each horizontal side');
    assert.ok(Math.abs(overhang.ratioY-1.28)<.015,'Allow centered sprite box while preserving ratio');
    assert.equal(await page.locator('.object[data-item-id="bed"] img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+   const bedAnchor=await page.locator('.object[data-item-id="bed"]').evaluate(el=>({left:el.style.left,top:el.style.top}));
    await page.locator('.object[data-item-id="bed"]').click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bed opens normal editing panel');
    await page.locator('#rotateItem').click();
@@ -95,6 +96,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    const rotated=await page.locator('.object[data-item-id="bed"]').evaluate(el=>({width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
    assert.ok(Math.abs(rotated.width-232/960*100)<.1,'Landscape bed is two tiles wide');
    assert.ok(Math.abs(rotated.height-116/960*100)<.1,'Landscape bed is one tile tall');
+   assert.deepEqual(await page.locator('.object[data-item-id="bed"]').evaluate(el=>({left:el.style.left,top:el.style.top})),bedAnchor,'Bed did not move after first rotation');
    // Check camera-fixed artwork and the correct 1x2 / 2x1 tile footprint for every orientation.
    for(const i of [2,3,0,1]){
      await page.locator('#rotateItem').click();
@@ -103,13 +105,21 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      assert.ok(Math.abs(sizing.w-((i%2)?232:116)/960*100)<.1,'Bed width matches rotation: '+i);
      assert.ok(Math.abs(sizing.h-((i%2)?116:232)/960*100)<.1,'Bed height matches rotation: '+i);
      assert.equal(await page.locator('.object[data-item-id="bed"] img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+     assert.deepEqual(await page.locator('.object[data-item-id="bed"]').evaluate(el=>({left:el.style.left,top:el.style.top})),bedAnchor,'Bed anchor never drifts at direction '+i);
+   }
+   // Repeating three more complete turns must not shift the tile origin.
+   for(let n=0;n<12;n++){
+     await page.locator('#rotateItem').click();
+     assert.deepEqual(await page.locator('.object[data-item-id="bed"]').evaluate(el=>({left:el.style.left,top:el.style.top})),bedAnchor,'Bed location after repeated turn '+n);
    }
    await page.locator('#confirmItem').click();
    const key='monstudy-pet-room-webp-v1:webp-phase4-test';
    const saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
    assert.equal(saved.bed.rotation,1);assert.equal(saved.bed.placed,true);
+   assert.deepEqual([saved.bed.x,saved.bed.y],[2,1],'Bed did not change grid coordinates on rotation');
    assert.equal(await page.evaluate(()=>localStorage.getItem('monstudy-pet-room-v4:webp-phase4-test')),null,'Existing room save untouched');
    // Test 2x1 -> 1x2 -> 2x1 through all four authored views.
+   const sofaAnchor=await page.locator('.object[data-item-id="sofa"]').evaluate(el=>({left:el.style.left,top:el.style.top}));
    await page.locator('.object[data-item-id="sofa"]').click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Sofa can be edited');
    const sofaStart=await page.locator('.object[data-item-id="sofa"]').evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height)}));
@@ -121,10 +131,16 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      assert.ok(Math.abs(d.w-((i%2)?116:232)/960*100)<.1,'Sofa width at view '+i);
      assert.ok(Math.abs(d.h-((i%2)?232:116)/960*100)<.1,'Sofa height at view '+i);
      assert.equal(await page.locator('.object[data-item-id="sofa"] img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+     assert.deepEqual(await page.locator('.object[data-item-id="sofa"]').evaluate(el=>({left:el.style.left,top:el.style.top})),sofaAnchor,'Sofa anchor never drifts at direction '+i);
+   }
+   for(let n=0;n<12;n++){
+     await page.locator('#rotateItem').click();
+     assert.deepEqual(await page.locator('.object[data-item-id="sofa"]').evaluate(el=>({left:el.style.left,top:el.style.top})),sofaAnchor,'Sofa location after repeated turn '+n);
    }
    await page.locator('#confirmItem').click();
    const sofaSaved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
    assert.equal(sofaSaved.sofa.rotation,1);
+   assert.deepEqual([sofaSaved.sofa.x,sofaSaved.sofa.y],[0,2],'Sofa did not change grid coordinates on rotation');
    assert.equal(sofaSaved.sofa.placed,true);
    assert.equal(sofaSaved.bed.rotation,1,'Sofa editing does not affect bed');
    await page.screenshot({path:'webp-room-sofa-four-views-integration.png',fullPage:true});
@@ -136,7 +152,24 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    await page.setViewportSize({width:390,height:844});await page.waitForTimeout(250);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2),true,'Mobile has no accidental horizontal overflow');
    await page.screenshot({path:'webp-room-phase4-mobile.png',fullPage:true});
-   assert.deepEqual(errors,[],'No desktop/mobile page errors');
-   console.log('PASS: bed + sofa 8 actual WebP sprites; 1x2/2x1 and 2x1/1x2 rotations; isolated save/reload; mobile');
+   // At the right wall a 1x2 bed cannot turn into 2x1: refuse the
+   // rotation instead of silently clamping/moving its position.
+   await page.setViewportSize({width:1200,height:900});
+   await page.evaluate(key=>{
+     const data=JSON.parse(localStorage.getItem(key));
+     data.bed={...data.bed,x:5,y:1,rotation:0,placed:true};
+     localStorage.setItem(key,JSON.stringify(data));
+   },key);
+   await page.reload();
+   await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.getAttribute('src')?.includes('bed_0.webp'),{timeout:15000});
+   await page.locator('.object[data-item-id="bed"]').click();
+   await page.locator('#rotateItem').click();
+   assert.ok((await page.locator('.object[data-item-id="bed"] img').getAttribute('src')).includes('bed_0.webp'),'Do not rotate into the wall');
+   assert.ok((await page.locator('#roomStatus').textContent()).includes('壁際'),'Explain why edge rotation was rejected');
+   const boundary=await page.locator('.object[data-item-id="bed"]').evaluate(el=>({left:parseFloat(el.style.left),top:parseFloat(el.style.top)}));
+   assert.ok(Math.abs(boundary.left-(132+5*116)/960*100)<.1,'Rejected turn must not move the furniture');
+   assert.ok(Math.abs(boundary.top-(202+1*116)/960*100)<.1,'Rejected turn must not shift vertically');
+   assert.deepEqual(errors,[],'No desktop/mobile/boundary page errors');
+   console.log('PASS: bed and sofa rotations stay anchored through 4+ full cycles, out-of-bounds turn rejected, isolated save/reload, mobile');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
