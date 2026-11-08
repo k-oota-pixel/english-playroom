@@ -8,7 +8,7 @@
 <style id="monstudy-access-lock">html:before{content:"ログイン情報を確認しています…";position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style>
 <script type="module">if(window.top===window){await import('../access-gate.js?v=2.4.37')}else{document.getElementById('monstudy-access-lock')?.remove()}</script>
 <script src="../shell-bridge.js?v=6.0.13"></script>
-<link rel="stylesheet" href="./room-webp-v1.css?v=2.4.34">
+<link rel="stylesheet" href="./room-webp-v1.css?v=2.4.37">
 </head>
 <body>
 <main class="room-page">
@@ -64,7 +64,7 @@
    <section class="info-card">
     <h2>📝 おへやのメモ</h2>
     <p><strong id="petName">ペット</strong> のすきな家具をおいて、すてきなおへやにしてあげよう！</p>
-    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br>今回は透過WebPのベッド（縦１×２・横２×１）とソファ（横２×１・縦１×２）を検証できます。<br><span>独立保存・開発用 β版</span></div>
+    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br>透過WebPのベッド（縦１×２・横２×１）、ソファ（横２×１・縦１×２）、本棚（正面・背面２×１／左右１×２）を検証できます。<br><span>独立保存・開発用 β版</span></div>
    </section>
   </aside>
  </section>
@@ -72,12 +72,12 @@
 <dialog id="inventoryDialog" aria-labelledby="inventoryTitle">
  <div class="dialog-panel">
   <header><h2 id="inventoryTitle">🪑 家具をおく</h2><button type="button" id="closeInventory" aria-label="閉じる">✕</button></header>
-  <p>ベッドとソファをそれぞれ4方向の透過WebPで配置・回転できます。通常版とは別に保存します。</p>
+  <p>ベッド・ソファ・本棚をそれぞれ4方向の透過WebPで配置・回転できます。通常版とは別に保存します。</p>
   <div id="catalog" class="catalog"></div>
   <div class="dialog-actions"><button type="button" id="doneInventory">閉じる</button></div>
  </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="./room-webp-v1.js?v=2.4.35"></script>
+<script type="module" src="./room-webp-v1.js?v=2.4.37"></script>
 </body>
 </html>
