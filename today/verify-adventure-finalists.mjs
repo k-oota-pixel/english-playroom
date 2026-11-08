@@ -22,3 +22,9 @@ for(const mode of ['tower','dungeon']){
  const row=data[mode]||{};
  console.log(mode+': reached100='+row.reached100+', fullClear='+row.cleared+', stillChallenging='+row.unfinished);
 }
+
+for(const mode of ['normal','hard']){
+ const row=data[mode];
+ if(!row||!Number.isInteger(row.leaders))throw Error(mode+' best-stage board unavailable');
+ console.log('defense '+mode+': ranked='+row.leaders+', finalStageCleared='+row.completed);
+}
