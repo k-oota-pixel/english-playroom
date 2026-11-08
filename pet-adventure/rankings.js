@@ -1,5 +1,4 @@
 import {auth,authReady} from '../coin-reward.js?v=2.3.6';
-import {openMaterialRanking} from '../material-ranking-ui.js?v=2.3.51';
 
 const dialog=document.getElementById('rankingDialog'),heading=document.getElementById('rankingTitle'),status=document.getElementById('rankingStatus'),list=document.getElementById('rankingList'),reload=document.getElementById('rankingReload');
 let mode='tower',sequence=0,controller=null;
@@ -35,14 +34,85 @@ for(const button of document.querySelectorAll('[data-ranking]'))button.addEventL
 document.getElementById('rankingClose').addEventListener('click',()=>dialog.close());reload.addEventListener('click',load);dialog.addEventListener('close',()=>{sequence++;controller?.abort();reload.disabled=false;});
 
 
-// Use the existing daily material leaderboard for each defense mode.
+// Display both existing daily typing-defense boards on demand. The backend shares
+// cached ranking snapshots between users, so GET requests do not repeatedly query Firestore.
 const defenseDialog=document.getElementById('defenseRankingDialog');
-document.getElementById('defenseRankingOpen').addEventListener('click',()=>defenseDialog.showModal());
-document.getElementById('defenseRankingClose').addEventListener('click',()=>defenseDialog.close());
-for(const button of document.querySelectorAll('[data-defense-ranking]')){
- button.addEventListener('click',()=>{
-  const selectedMode=button.dataset.defenseRanking;
-  defenseDialog.close();
-  if(selectedMode==='normal'||selectedMode==='hard')void openMaterialRanking('pet-typing-defense-'+selectedMode);
- });
+const defenseReload=document.getElementById('defenseRankingReload');
+const defenseModes=[
+ {key:'normal',status:document.getElementById('defenseRankingNormalStatus'),list:document.getElementById('defenseRankingNormalList')},
+ {key:'hard',status:document.getElementById('defenseRankingHardStatus'),list:document.getElementById('defenseRankingHardList')}
+];
+const defenseEndpoint='https://task-quest.onrender.com/api/learning/material-rankings?appId=';
+const defenseCache=new Map();
+const defenseCacheMs=3*60*1000;
+const defenseDay=()=>new Date(Date.now()+9*60*60*1000).toISOString().slice(0,10);
+let defenseSequence=0,defenseController=null;
+function renderDefenseBoard(board,data,error=''){
+ board.list.replaceChildren();
+ if(error){board.status.textContent=error;return;}
+ const leaders=data?.leaders||[];
+ board.status.textContent=leaders.length?'本日の上位'+leaders.length+'名':'まだ本日の記録はありません。';
+ for(const [index,entry] of leaders.entries()){
+  const li=document.createElement('li'),rank=document.createElement('b'),name=document.createElement('span'),count=document.createElement('strong');
+  rank.textContent=(Number(entry.rank)||index+1)+'位';
+  name.textContent=entry.petName||'ふしぎなたまご';
+  count.textContent=Math.max(0,Math.floor(Number(entry.count)||0))+'ステージ';
+  li.append(rank,name,count);board.list.append(li);
+ }
 }
+async function loadDefenseRankings(force=false){
+ const requestId=++defenseSequence;
+ defenseController?.abort();defenseController=new AbortController();
+ const signal=defenseController.signal;
+ defenseReload.disabled=true;
+ for(const board of defenseModes){board.status.textContent='ランキングを読み込んでいます…';board.list.replaceChildren();}
+ try{
+  await authReady;
+  if(requestId!==defenseSequence)return;
+  const user=auth.currentUser;
+  if(!user||user.isAnonymous)throw Error('もんすたでぃにログインしてから再表示してください。');
+  const cached=defenseCache.get(user.uid);
+  if(!force&&cached?.day===defenseDay()&&Date.now()-cached.loadedAt<defenseCacheMs){
+   for(const board of defenseModes)renderDefenseBoard(board,cached.boards[board.key]);
+   return;
+  }
+  const token=await user.getIdToken();
+  if(requestId!==defenseSequence)return;
+  const results=await Promise.allSettled(defenseModes.map(async board=>{
+   const response=await fetch(defenseEndpoint+encodeURIComponent('pet-typing-defense-'+board.key),{
+    headers:{Authorization:'Bearer '+token},cache:'no-store',signal
+   });
+   const result=await response.json().catch(()=>({}));
+   if(!response.ok||!Array.isArray(result.leaders))throw Error(result.error||'ランキングを取得できませんでした。');
+   return result;
+  }));
+  if(requestId!==defenseSequence)return;
+  if(auth.currentUser?.uid!==user.uid)throw Error('ログイン状態が変わりました。再表示してください。');
+  const boards={};
+  for(const [index,board] of defenseModes.entries()){
+   const result=results[index];
+   if(result.status==='fulfilled'){
+    boards[board.key]=result.value;
+    renderDefenseBoard(board,result.value);
+   }else{
+    renderDefenseBoard(board,null,result.reason?.message||'取得できませんでした。再表示をお試しください。');
+   }
+  }
+  if(results.every(result=>result.status==='fulfilled')){
+   defenseCache.set(user.uid,{day:defenseDay(),loadedAt:Date.now(),boards});
+  }
+ }catch(error){
+  if(requestId===defenseSequence&&error.name!=='AbortError'){
+   for(const board of defenseModes)renderDefenseBoard(board,null,error.message||'ランキングを取得できませんでした。');
+  }
+ }finally{
+  if(requestId===defenseSequence)defenseReload.disabled=false;
+ }
+}
+document.getElementById('defenseRankingOpen').addEventListener('click',()=>{
+ defenseDialog.showModal();
+ void loadDefenseRankings();
+});
+document.getElementById('defenseRankingClose').addEventListener('click',()=>defenseDialog.close());
+defenseReload.addEventListener('click',()=>void loadDefenseRankings(true));
+defenseDialog.addEventListener('close',()=>{defenseSequence++;defenseController?.abort();defenseReload.disabled=false;});

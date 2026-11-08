@@ -35,11 +35,28 @@ test('homepage loads updated PLAY menu and sidebar module',()=>{
  assert.ok(home.includes('version-badge-v176.js?v='+version));
 });
 
-test('adventure selection offers the defense daily leaderboard for both modes',()=>{
+test('each adventure card has its own ranking button directly underneath',()=>{
+ const page=read('pet-adventure/index.html');
+ const cards=page.split('<div class="adventure-choice">').slice(1);
+ assert.equal(cards.length,3);
+ for(const [index,game] of ['tower','dungeon','defense'].entries()){
+  assert.match(cards[index],new RegExp('class="adventure-card '+game+'-card"'));
+  assert.match(cards[index],/class="secondary-btn adventure-ranking-button"/);
+ }
+ assert.match(cards[0],/data-ranking="tower"/);
+ assert.match(cards[1],/data-ranking="dungeon"/);
+ assert.match(cards[2],/id="defenseRankingOpen"/);
+ assert.match(page,/class="ranking-actions adventure-online-actions"/);
+});
+
+test('defense ranking dialog shows normal and hard together on demand with cached GETs',()=>{
  const page=read('pet-adventure/index.html');
  const rankings=read('pet-adventure/rankings.js');
- assert.match(page,/id="defenseRankingOpen">🏆 もんすた城の防衛ランキング<\/button>/);
- assert.match(page,/data-defense-ranking="normal"/);
- assert.match(page,/data-defense-ranking="hard"/);
- assert.match(rankings,/openMaterialRanking\('pet-typing-defense-'\+selectedMode\)/);
+ assert.match(page,/id="defenseRankingNormalList"/);
+ assert.match(page,/id="defenseRankingHardList"/);
+ assert.doesNotMatch(page,/data-defense-ranking=/);
+ assert.match(rankings,/Promise\.allSettled\(defenseModes\.map/);
+ assert.match(rankings,/'pet-typing-defense-'\+board\.key/);
+ assert.match(rankings,/defenseCacheMs=3\*60\*1000/);
+ assert.match(rankings,/defenseReload\.addEventListener\('click'/);
 });

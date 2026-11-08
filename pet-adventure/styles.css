@@ -124,3 +124,27 @@ body:not(.battle-mode) .app-shell{width:min(1100px,100%)}
 @media(max-width:619px){.adventure-cards{grid-template-columns:minmax(0,1fr);gap:16px}.defense-card{grid-column:auto;width:auto}.adventure-copy{padding:20px}.adventure-copy h2{font-size:26px}}
 
 .defense-ranking-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.defense-ranking-choices button{min-height:48px;font-weight:800}@media(max-width:480px){.defense-ranking-choices{grid-template-columns:1fr}}
+
+/* Keep each leaderboard directly under its corresponding adventure card. */
+.adventure-choice{display:flex;flex-direction:column;gap:14px;min-width:0}
+.adventure-choice>.adventure-card{flex:1}
+.adventure-ranking-button{min-height:48px;white-space:normal;display:flex;align-items:center;justify-content:center}
+.adventure-online-actions{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+.defense-ranking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.defense-ranking-board{min-width:0;padding:12px;border:1px solid #d2e0d8;border-radius:14px;background:#f5f8f4}
+.defense-ranking-board h3{margin:0 0 9px;color:#214d40;font-size:16px}
+.defense-ranking-board p{margin:7px 0;font-size:11px;line-height:1.5;color:#657f74}
+.defense-ranking-list{padding:0;margin:0;list-style:none}
+.defense-ranking-list li{display:grid;grid-template-columns:2em minmax(0,1fr) auto;gap:7px;align-items:center;padding:10px 0;border-top:1px solid #d4e3d9;font-size:12px}
+.defense-ranking-list li span{overflow-wrap:anywhere}
+.defense-ranking-list li strong{white-space:nowrap;font-size:12px}
+@media(max-width:849px){
+ .adventure-choice:last-child{grid-column:1/-1;width:calc((100% - 18px)/2);justify-self:center}
+ .adventure-choice .defense-card{grid-column:auto;width:auto;justify-self:auto}
+ .adventure-online-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:619px){
+ .adventure-choice:last-child{grid-column:auto;width:auto;justify-self:stretch}
+ .adventure-online-actions{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:520px){.defense-ranking-grid{grid-template-columns:minmax(0,1fr)}}
