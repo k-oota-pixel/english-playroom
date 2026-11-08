@@ -81,9 +81,9 @@ test('WebP bed, sofa, bookshelf and desk preserve 90-degree tile footprints',()=
 });
 test('Only sideways desk footprints are 1×1; all other furniture footprints are unchanged',()=>{
  const start=room.indexOf('const dims=item=>');
- const end=room.indexOf('\\nconst itemCells=',start);
+ const end=room.indexOf('\nconst itemCells=',start);
  assert.ok(start>=0&&end>start);
- const calculate=(id,w,h)=>JSON.parse(JSON.stringify(vm.runInNewContext(room.slice(start,end)+`\\n[0,1,2,3].map(rotation=>dims({id,w,h,rotation}))`)));
+ const calculate=(id,w,h)=>JSON.parse(JSON.stringify(vm.runInNewContext(room.slice(start,end)+`\n[0,1,2,3].map(rotation=>dims({id,w,h,rotation}))`)));
  assert.deepEqual(calculate('desk',2,1),[{w:2,h:1},{w:1,h:1},{w:2,h:1},{w:1,h:1}]);
  assert.deepEqual(calculate('bookshelf',2,1),[{w:2,h:1},{w:1,h:2},{w:2,h:1},{w:1,h:2}]);
  assert.deepEqual(calculate('bed',1,2),[{w:1,h:2},{w:2,h:1},{w:1,h:2},{w:2,h:1}]);
