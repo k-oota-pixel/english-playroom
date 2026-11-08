@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import {roomBackground} from '../pet-room/room-v4-art.js';
 const root=new URL('../',import.meta.url);
 const read=x=>fs.readFileSync(new URL(x,root),'utf8');
 const room=read('pet-room/room-webp-v1.js');
@@ -76,6 +77,23 @@ test('Repeated 90 degree rotation never changes the furniture origin tile',()=>{
  assert.match(rot,/item\.rotation=oldRotation/);
  assert.doesNotMatch(rot,/item\.x\s*=|item\.y\s*=|Math\.round|fit\(item\)/);
 });
+test('Only the WebP room removes the window, curtains and outdoor view',()=>{
+ const original=roomBackground();
+ const start=room.indexOf('function windowlessRoomBackground(){');
+ const end=room.indexOf('\nbackdrop.innerHTML=windowlessRoomBackground();',start);
+ assert.ok(start>=0&&end>start,'WebP room must use its isolated background helper');
+ const func=room.slice(start,end);
+ const beta=vm.runInNewContext(func+'\nwindowlessRoomBackground()', {roomBackground});
+ assert.ok(beta.startsWith('<svg')&&beta.endsWith('</svg>'));
+ assert.ok(original.includes('<rect x="361" y="105"'),'Regular room retains its window');
+ assert.ok(original.includes('<path d="339 175h35m211 0h34"'),'Regular room retains curtains');
+ assert.ok(!beta.includes('<rect x="361" y="105"'),'No window in beta');
+ assert.ok(!beta.includes('<rect x="371" y="113"'),'No outdoor view in beta');
+ assert.ok(!beta.includes('<path d="339 175h35m211 0h34"'),'No curtains in beta');
+ assert.ok(beta.includes('<rect x="124" y="101"'),'Original wall remains in beta');
+ assert.ok(beta.includes('<rect x="132" y="202"'),'Original tiled floor remains in beta');
+ assert.ok(beta.length<original.length,'Beta removes artwork rather than hiding it with an overlay');
+});
 test('Existing rooms stay unchanged and WebP beta saves separately',()=>{
  assert.match(room,/monstudy-pet-room-webp-v1:/);
  assert.doesNotMatch(room,/monstudy-pet-room-v4:|monstudy-pet-room-top-v1-|monstudy-pet-room-flat-v2-/);
@@ -100,6 +118,6 @@ test('All pet-room versions remain directly accessible but none are listed in th
  for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.40'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.40/);
+ assert.match(version,/const APP_VERSION='2\.4\.41'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.41/);
 });
