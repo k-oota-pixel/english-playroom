@@ -8,7 +8,7 @@ import {roomBackground} from './room-v4-art.js?v=2';
 const $=id=>document.getElementById(id);
 const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
 // Phase 4: BED ONLY. Other furniture intentionally absent until their WebP assets pass review.
-const specs=[{id:'bed',name:'WebPベッド',icon:'🛏️',x:2,y:1,w:2,h:2,scaleX:1,scaleY:1}];
+const specs=[{id:'bed',name:'WebPベッド',icon:'🛏️',x:2,y:1,w:1,h:2,scaleX:1,scaleY:1}];
 const WEBP_BED_ASSETS=['bed_0.webp','bed_1.webp','bed_2.webp','bed_3.webp'].map(name=>'./assets/webp-v1/bed/'+name+'?v=2.4.25');
 const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:s.initialPlaced!==false,element:null,blocking:s.blocking!==false&&!s.wallOnly}]));
 let user=null,petData={},petCell={x:4,y:4},mode='view',activeId=null,snapshot=null;
@@ -105,7 +105,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={__version:2,assetSet:'webp-bed-v1',footprint:'2x2'};
+ const data={__version:3,assetSet:'webp-bed-v1',footprint:'1x2'};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}
