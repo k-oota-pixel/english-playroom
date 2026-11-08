@@ -1,6 +1,7 @@
 const {chromium}=require('playwright');
 const base='https://k-oota-pixel.github.io/english-playroom/';
 const errors=[];
+// Post-Restart live verification after restarting Render without changing application code.
 const safe=s=>String(s).slice(0,450);
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -26,13 +27,13 @@ const safe=s=>String(s).slice(0,450);
   for(const e of errors.slice(0,55))console.log('DIAGNOSTIC '+e);
   // GET access to API itself (not an authenticated call)
   try{
-   const ac=new AbortController();setTimeout(()=>ac.abort(),25000);
+   const ac=new AbortController();setTimeout(()=>ac.abort(),40000);
    const start=Date.now();
    const r=await fetch('https://task-quest.onrender.com/',{signal:ac.signal});
    console.log('API_GET status='+r.status+' elapsedMs='+(Date.now()-start));
   }catch(e){console.log('API_GET_FAILED '+safe(e.message));}
   try{
-   const ac=new AbortController();setTimeout(()=>ac.abort(),25000);
+   const ac=new AbortController();setTimeout(()=>ac.abort(),40000);
    const start=Date.now();
    const r=await fetch('https://task-quest.onrender.com/api/account/login',{method:'OPTIONS',headers:{Origin:'https://k-oota-pixel.github.io','Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'content-type'},signal:ac.signal});
    console.log('API_CORS_PREFLIGHT status='+r.status+' allowOrigin='+r.headers.get('access-control-allow-origin')+' elapsedMs='+(Date.now()-start));
