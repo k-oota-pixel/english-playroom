@@ -1,5 +1,5 @@
 import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged,signOut} from './auth-session.js?v=2.3.15';
+import {getAuth,onAuthStateChanged,signOut} from './auth-session.js?v=2.4.36';
 
 const LOADER_STYLE_ID='monstudy-access-loader-style';
 const LOADER_ID='monstudy-access-loader';
