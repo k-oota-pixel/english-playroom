@@ -72,6 +72,8 @@ export async function ensureRenderReady(){
  try{return await task;}finally{if(serverState.pending===task)serverState.pending=null;}
 }
 
+export function invalidateRenderReady(){serverState.until=0;}
+
 function signInSignature(user){return String(user?.metadata?.lastSignInTime||user?.metadata?.lastLoginAt||'');}
 function readSessionCache(user){
  if(!user?.uid)return null;
