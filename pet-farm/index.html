@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>もんすたふぁーむ｜開発中プレビュー</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./style.css?v=14">
+<link rel="stylesheet" href="./style.css?v=15">
 <style id="monstudy-access-lock">html:before{content:"ログインを確認しています…";position:fixed;inset:0;z-index:99999;display:grid;place-content:center;background:#edf6ed;color:#315f4d;font:16px system-ui}body{visibility:hidden!important}</style>
 <script type="module" src="../access-gate.js?v=2.4.37"></script>
 </head>
@@ -32,7 +32,8 @@
    <div class="hud-title"><span class="sprig" aria-hidden="true">🌱</span><span>もんすたふぁーむ</span></div>
    <div class="hud-actions">
     <div class="coin-chip">🪙 <strong id="coins">—</strong> C</div>
-    <button id="itemsBtn" class="hud-btn" type="button">🎒 アイテム</button>
+    <button id="tileManageBtn" class="hud-btn" type="button" aria-pressed="false" title="道路や花畑の移動・撤去">↗️ 撤去・移動</button>
+     <button id="itemsBtn" class="hud-btn" type="button">🎒 アイテム</button>
     <button id="saveBtn" class="hud-btn" type="button" disabled>💾 保存</button>
     <a class="hud-btn hud-home" href="../index.html">← もんすたでぃに戻る</a>
    </div>
@@ -70,6 +71,11 @@
  <dialog id="manageDialog" class="farm-dialog" aria-labelledby="manageTitle">
   <div class="modal-head"><div><div class="panel-kicker">FIELD SETTINGS</div><h2 id="manageTitle">圃場の管理</h2></div><button type="button" class="modal-close" data-close-dialog="manageDialog" aria-label="閉じる">✕</button></div>
   <div id="manageControls"></div>
+ </dialog>
+ <dialog id="tileManageDialog" class="farm-dialog" aria-labelledby="tileManageTitle">
+  <div class="modal-head"><div><div class="panel-kicker">LAYOUT EDIT</div><h2 id="tileManageTitle">道路・花畑の管理</h2></div><button type="button" class="modal-close" data-close-dialog="tileManageDialog" aria-label="閉じる">✕</button></div>
+  <p class="subtext" id="tileManageDetail">移動するか、アイテムに戻すかを選んでください。</p>
+  <div id="tileManageControls" class="modal-actions"></div>
  </dialog>
  <dialog id="fieldNameDialog" class="farm-dialog" aria-labelledby="fieldNameTitle">
   <div class="modal-head"><div><div class="panel-kicker">NAME YOUR FIELD</div><h2 id="fieldNameTitle">圃場の名前をつける</h2></div><button type="button" class="modal-close" data-close-dialog="fieldNameDialog" aria-label="閉じる">✕</button></div>
@@ -114,6 +120,6 @@
  setTimeout(()=>recovery('読み込みに時間がかかっています。再試行するか、もんすたでぃへ戻ってください。'),16000);
 })();
 </script>
-<script type="module" src="./app.js?v=18"></script>
+<script type="module" src="./app.js?v=19"></script>
 </body>
 </html>

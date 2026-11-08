@@ -88,6 +88,8 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 .coin-chip strong{font-size:19px;font-variant-numeric:tabular-nums}
 .hud-btn{padding:12px 17px;text-decoration:none;font-size:13px;border-width:2px;white-space:nowrap;line-height:1.2}
 .hud-btn:hover:not(:disabled){background:#fff4d4}
+#tileManageBtn.active{background:linear-gradient(180deg,#ffeebf,#f4d48f);border-color:#a47a38;box-shadow:0 4px 0 #68482c55,0 0 0 3px #f5d77888}
+#tileManageBtn{padding-inline:13px}
 .hud-btn:disabled{opacity:.72}
 .game-status{pointer-events:none;position:absolute;top:85px;left:18px;z-index:15;
  max-width:min(460px,76vw);background:#fffae4e8;border:1px solid #e5d1a4;border-radius:10px;
@@ -377,6 +379,9 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 .placement-cell{position:absolute;width:54px;height:54px;border:1px dashed #f9edbd66;
  border-radius:0;padding:0;background:#edf8b711;pointer-events:auto;
  touch-action:manipulation}
+.placement-cell[hidden]{display:none!important}
+.placement-cell.edit-target{background:#fff5c522;border:2px solid #ffe6a1;box-shadow:inset 0 0 0 2px #97783e55}
+.placement-cell.edit-target:hover,.placement-cell.edit-target:focus-visible{background:#fff5ad77;outline:2px solid #fff3c2;outline-offset:0}
 .placement-cell.eligible:hover,.placement-cell.eligible:focus-visible{
  background:#e5ec7580;border:2px solid #fff7d0;outline:none}
 .placement-cell:disabled{opacity:1;background:#394b392b;pointer-events:auto;cursor:default}

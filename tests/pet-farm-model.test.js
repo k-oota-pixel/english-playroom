@@ -538,3 +538,49 @@ test('six flowerbed products draw four borderless blooms per tile and preserve p
  const tampered=normalizeFarm({...f,flowers:[{type:'unknown',x:3,y:10},{type:'rose',x:15,y:10},{type:'rose',x:15,y:10}]});
  assert.equal(tampered.flowers.length,1,'invalid and overlapping data is rejected');
 });
+
+test('moving placed roads and flowers uses one layout action and never changes inventory',()=>{
+ let f=freshFarm();
+ f=applyPurchase(f,'road','dirt',10,2).farm;
+ f=applyPurchase(f,'flower','rose',100,2).farm;
+ f=applyPurchase(f,'field','free',0).farm;
+ f=applyLayoutAction(f,{type:'place-field',size:'4',x:12,y:8,name:'花壇の横'}).farm;
+ f=applyLayoutAction(f,{type:'place-road',x:14,y:10}).farm;
+ f=applyLayoutAction(f,{type:'place-flower',flower:'rose',x:15,y:10}).farm;
+ const oldRoadStock=f.inventory.roads,oldFlowerStock=f.inventory.flowers.rose;
+ assert.throws(()=>applyLayoutAction(f,{type:'move-road',fromX:14,fromY:10,x:15,y:10}),/移動できません/,'cannot move a road onto a flower');
+ assert.throws(()=>applyLayoutAction(f,{type:'move-flower',fromX:15,fromY:10,x:12,y:8}),/移動できません/,'cannot move a flower onto a field');
+ assert.throws(()=>applyLayoutAction(f,{type:'move-road',fromX:1,fromY:1,x:20,y:10}),/見つかりません/);
+ assert.throws(()=>applyLayoutAction(f,{type:'move-flower',fromX:1,fromY:1,x:20,y:10}),/見つかりません/);
+ assert.deepEqual(f.roads,['14,10'],'failed moves leave the source untouched');
+ assert.deepEqual(f.flowers,[{type:'rose',x:15,y:10}]);
+ f=applyLayoutAction(f,{type:'move-road',fromX:14,fromY:10,x:16,y:10}).farm;
+ assert.deepEqual(f.roads,['16,10']);
+ assert.equal(f.inventory.roads,oldRoadStock);
+ f=applyLayoutAction(f,{type:'move-flower',fromX:15,fromY:10,x:17,y:10}).farm;
+ assert.deepEqual(f.flowers,[{type:'rose',x:17,y:10}]);
+ assert.equal(f.inventory.flowers.rose,oldFlowerStock);
+ assert.equal(canPlaceRoad(f,16,10),false);
+ assert.equal(canPlaceFlower(f,17,10),false);
+ f=normalizeFarm(JSON.parse(JSON.stringify(f)));
+ assert.deepEqual(f.roads,['16,10']);
+ assert.deepEqual(f.flowers,[{type:'rose',x:17,y:10}]);
+ f=applyLayoutAction(f,{type:'remove-road',x:16,y:10}).farm;
+ f=applyLayoutAction(f,{type:'remove-flower',x:17,y:10}).farm;
+ assert.equal(f.inventory.roads,oldRoadStock+1,'removed road returns to inventory');
+ assert.equal(f.inventory.flowers.rose,oldFlowerStock+1,'removed flower returns to inventory');
+ assert.deepEqual(f.roads,[]);assert.deepEqual(f.flowers,[]);
+});
+
+test('farm HUD tile edit mode can pick road or flower and choose move or return to inventory',()=>{
+ const html=source('pet-farm/index.html'),app=source('pet-farm/app.js'),css=source('pet-farm/style.css');
+ assert.ok(html.includes('id="tileManageBtn"'));
+ assert.ok(html.includes('id="tileManageDialog"'));
+ assert.ok(html.indexOf('id="tileManageBtn"')<html.indexOf('id="itemsBtn"'),'tile edit button precedes item box');
+ assert.match(app,/function openTileManage\(x,y\)/);
+ assert.match(app,/beginPlacement\('manage-tile',null\)/);
+ assert.match(app,/beginPlacement\('move-tile',\{kind,fromX:x,fromY:y\}\)/);
+ assert.match(app,/type:kind==='road'\?'move-road':'move-flower'/);
+ assert.match(app,/type:kind==='road'\?'remove-road':'remove-flower'/);
+ assert.match(css,/\.placement-cell\[hidden\]\{display:none!important\}/);
+});
