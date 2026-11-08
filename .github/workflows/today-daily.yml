@@ -17,6 +17,7 @@ on:
       - '.github/workflows/today-daily.yml'
       - 'today/update-daily-news.mjs'
       - 'today/update-online-rankings.mjs'
+      - 'today/verify-adventure-finalists.mjs'
       - 'tests/today-daily-update.test.js'
 
 permissions:
@@ -40,6 +41,8 @@ jobs:
         run: |
           node --check today/update-online-rankings.mjs
           node --test tests/today-daily-update.test.js
+      - name: Verify live 100-floor clear flags using bound GitHub OIDC
+        run: node today/verify-adventure-finalists.mjs
   update:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
