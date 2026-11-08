@@ -22,8 +22,11 @@ test('Four independently-authored, real binary WebP assets, no SVG furniture fal
  assert.doesNotMatch(room,/<svg.*?bed|CanvasRenderingContext2D|createElement\(['"]canvas/);
  assert.match(css,/\.webp-bed-sprite/);
 });
-test('All four WebP bed directions fit in one 2x2 tile footprint',()=>{
- assert.match(room,/w:2,h:2/);
+test('WebP bed occupies 1x2 vertically and 2x1 horizontally',()=>{
+ assert.match(room,/w:1,h:2/);
+ assert.match(room,/footprint:'1x2'/);
+ assert.doesNotMatch(room,/w:2,h:2/);
+ assert.match(css,/width:128%;height:128%/);
  assert.match(css,/object-fit:contain/);
  assert.match(css,/object-position:center center/);
  assert.doesNotMatch(room,/w:2,h:3/);
@@ -61,6 +64,6 @@ test('All pet-room versions remain directly accessible but none are listed in th
  for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.29'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.29/);
+ assert.match(version,/const APP_VERSION='2\.4\.30'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.30/);
 });
