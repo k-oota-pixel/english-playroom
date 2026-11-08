@@ -86,10 +86,10 @@ test('Only the WebP room removes the window, curtains and outdoor view',()=>{
  const beta=vm.runInNewContext(func+'\nwindowlessRoomBackground()', {roomBackground});
  assert.ok(beta.startsWith('<svg')&&beta.endsWith('</svg>'));
  assert.ok(original.includes('<rect x="361" y="105"'),'Regular room retains its window');
- assert.ok(original.includes('<path d="339 175h35m211 0h34"'),'Regular room retains curtains');
+ assert.ok(original.includes('<path d="M339 175h35m211 0h34"'),'Regular room retains curtains');
  assert.ok(!beta.includes('<rect x="361" y="105"'),'No window in beta');
  assert.ok(!beta.includes('<rect x="371" y="113"'),'No outdoor view in beta');
- assert.ok(!beta.includes('<path d="339 175h35m211 0h34"'),'No curtains in beta');
+ assert.ok(!beta.includes('<path d="M339 175h35m211 0h34"'),'No curtains in beta');
  assert.ok(beta.includes('<rect x="124" y="101"'),'Original wall remains in beta');
  assert.ok(beta.includes('<rect x="132" y="202"'),'Original tiled floor remains in beta');
  assert.ok(beta.length<original.length,'Beta removes artwork rather than hiding it with an overlay');
