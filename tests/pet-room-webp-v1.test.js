@@ -7,7 +7,7 @@ const read=x=>fs.readFileSync(new URL(x,root),'utf8');
 const room=read('pet-room/room-webp-v1.js');
 const html=read('pet-room/room-webp-v1.html');
 const css=read('pet-room/room-webp-v1.css');
-test('Eight independently-authored binary WebP assets, no SVG furniture fallback',()=>{
+test('Twelve independently-authored binary WebP assets, no SVG furniture fallback',()=>{
  for(let i=0;i<4;i++){
   const file=new URL('pet-room/assets/webp-v1/bed/bed_'+i+'.webp',root);
   const buf=fs.readFileSync(file);
@@ -22,6 +22,15 @@ test('Eight independently-authored binary WebP assets, no SVG furniture fallback
   assert.equal(buf.toString('ascii',8,12),'WEBP');
   assert.ok(buf.length>25000,'Sofa must be real transparent pixel artwork');
  }
+ for(let i=0;i<4;i++){
+  const file=new URL('pet-room/assets/webp-v1/bookshelf/bookshelf_'+i+'.webp',root);
+  const buf=fs.readFileSync(file);
+  assert.equal(buf.toString('ascii',0,4),'RIFF','Bookshelf sprite has RIFF header');
+  assert.equal(buf.toString('ascii',8,12),'WEBP','Bookshelf sprite is a genuine WebP');
+  assert.ok(buf.length>20000,'Bookshelf must contain real drawn artwork');
+ }
+ assert.match(room,/WEBP_BOOKSHELF_ASSETS=/);
+ assert.match(css,/\.webp-bookshelf-sprite/);
  assert.match(room,/WEBP_BED_ASSETS=/);
  assert.match(room,/WEBP_SOFA_ASSETS=/);
  assert.match(room,/WEBP_FURNITURE_ASSETS=/);
@@ -31,10 +40,11 @@ test('Eight independently-authored binary WebP assets, no SVG furniture fallback
  assert.doesNotMatch(room,/<svg.*?bed|CanvasRenderingContext2D|createElement\(['"]canvas/);
  assert.match(css,/\.webp-bed-sprite/);
 });
-test('WebP bed and sofa use correct 90-degree-rotated tile footprints',()=>{
+test('WebP bed, sofa and bookshelf use correct 90-degree-rotated tile footprints',()=>{
  assert.match(room,/w:1,h:2/);
  assert.match(room,/id:'sofa'.*w:2,h:1/);
- assert.match(room,/footprint:'bed1x2-sofa2x1'/);
+ assert.match(room,/id:'bookshelf'.*w:2,h:1/);
+ assert.match(room,/footprint:'bed1x2-sofa2x1-bookshelf2x1'/);
  assert.doesNotMatch(room,/w:2,h:2/);
  assert.match(css,/width:128%;height:128%/);
  assert.match(css,/object-fit:contain/);
@@ -85,6 +95,6 @@ test('All pet-room versions remain directly accessible but none are listed in th
  for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.35'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.35/);
+ assert.match(version,/const APP_VERSION='2\.4\.37'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.37/);
 });
