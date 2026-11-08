@@ -13,6 +13,7 @@ for(const scenario of ['signed-out','legacy','new-google','reset']){
  const user=scenario==='signed-out'?'null':'{uid:"legacy",getIdToken:async()=>"test-token"}';
  return route.fulfill({contentType:'text/javascript',body:'export const getAuth=()=>({});export const initializeAuth=()=>({});export const browserLocalPersistence={},indexedDBLocalPersistence={},browserSessionPersistence={},browserPopupRedirectResolver={};export const signOut=async()=>{};export const getIdTokenResult=async()=>({claims:{}});export const onAuthStateChanged=(auth,next)=>{queueMicrotask(()=>next('+user+'));return ()=>{};};'});
  }
+ if(url.hostname==='task-quest.onrender.com'&&url.pathname==='/api/status')return route.fulfill({status:200,contentType:'application/json',body:'{"ready":true}'});
  if(url.hostname==='task-quest.onrender.com')return route.fulfill({status:scenario==='new-google'?403:200,contentType:'application/json',body:JSON.stringify(scenario==='new-google'?{error:'新規登録には登録コードが必要です。'}:{registered:false,resetRequired:scenario==='reset'})});
  if(url.pathname.endsWith('/login.html')||url.pathname.endsWith('/account.html'))return route.fulfill({contentType:'text/html; charset=utf-8',body:'<h1>ログイン</h1>'});
  if(url.pathname==='/protected/index.html')return route.fulfill({contentType:'text/html; charset=utf-8',body:'<html><head><style id="monstudy-access-lock">body{visibility:hidden!important}</style><script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.3.1"></script></head><body><h1>教材</h1></body></html>'});
