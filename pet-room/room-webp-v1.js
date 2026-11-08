@@ -86,8 +86,9 @@ const pos=(x,y)=>({x:TX+x*TILE,y:TY+y*TILE});
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const key=(x,y)=>x+','+y;
 const dims=item=>{
- // The study desk side sprites and their occupied floor tiles both fit in 1×1.
- if(item.id==='desk'&&item.rotation%2===1)return {w:1,h:1};
+ // Bookshelf in every direction and side-facing desk occupy 1×1 tile.
+ // Image layout is independent of the logical footprint, preserving its size.
+ if(item.id==='bookshelf'||(item.id==='desk'&&item.rotation%2===1))return {w:1,h:1};
  return item.rotation%2===0?{w:item.w,h:item.h}:{w:item.h,h:item.w};
 };
 const itemCells=item=>{const d=dims(item),a=[];for(let j=0;j<d.h;j++)for(let i=0;i<d.w;i++)a.push({x:item.x+i,y:item.y+j});return a};
@@ -133,7 +134,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={__version:6,assetSet:'webp-bed-sofa-bookshelf-desk-v1',footprint:'bed1x2-sofa2x1-bookshelf2x1-desk2x1-side1x1'};
+ const data={__version:6,assetSet:'webp-bed-sofa-bookshelf-desk-v1',footprint:'bed1x2-sofa2x1-bookshelf1x1-desk2x1-side1x1'};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}

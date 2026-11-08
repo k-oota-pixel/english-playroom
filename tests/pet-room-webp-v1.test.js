@@ -54,6 +54,8 @@ test('Sixteen independently-authored binary WebP assets, no SVG furniture fallba
  assert.match(css,/scale\(0\.42\)/);
  assert.match(css,/scale\(0\.7\)/);
  assert.match(css,/top:42%/);
+ assert.match(css,/left:100%;top:42%;width:256%;height:128%/);
+ assert.match(css,/top:100%;width:128%;height:256%/);
  assert.match(css,/\.webp-bed-sprite,\.object \.webp-sofa-sprite,\.object \.webp-bookshelf-sprite/);
  assert.match(room,/el\.dataset\.facing=String\(item\.rotation\)/);
 });
@@ -62,7 +64,7 @@ test('WebP bed, sofa, bookshelf and desk preserve 90-degree tile footprints',()=
  assert.match(room,/id:'sofa'.*w:2,h:1/);
  assert.match(room,/id:'bookshelf'.*w:2,h:1/);
  assert.match(room,/id:'desk'.*w:2,h:1/);
- assert.match(room,/footprint:'bed1x2-sofa2x1-bookshelf2x1-desk2x1-side1x1'/);
+ assert.match(room,/footprint:'bed1x2-sofa2x1-bookshelf1x1-desk2x1-side1x1'/);
  assert.doesNotMatch(room,/w:2,h:2/);
  assert.match(css,/width:128%;height:128%/);
  assert.match(css,/object-fit:contain/);
@@ -70,7 +72,7 @@ test('WebP bed, sofa, bookshelf and desk preserve 90-degree tile footprints',()=
  assert.doesNotMatch(room,/w:2,h:3/);
  assert.match(room,/const GRID=6,TX=132,TY=202,TILE=116,SIZE=960/);
  assert.match(room,/rotation%2===0\?\{w:item\.w,h:item\.h\}:\{w:item\.h,h:item\.w\}/);
- assert.match(room,/item\.id==='desk'&&item\.rotation%2===1\)return \{w:1,h:1\}/);
+ assert.match(room,/item\.id==='bookshelf'\|\|\(item\.id==='desk'&&item\.rotation%2===1\)\)return \{w:1,h:1\}/);
  assert.match(room,/item\.x\+d\.w<=GRID&&item\.y\+d\.h<=GRID/);
  assert.match(room,/function rotateActive\(/);
  assert.match(room,/function updatePetPosition\(/);
@@ -79,13 +81,13 @@ test('WebP bed, sofa, bookshelf and desk preserve 90-degree tile footprints',()=
  const code=room.replace(/^import .*;\s*$/gm,'');
  assert.doesNotThrow(()=>new vm.Script(code),'Runtime code must parse before browser test');
 });
-test('Only sideways desk footprints are 1×1; all other furniture footprints are unchanged',()=>{
+test('Bookshelf in every direction and side-facing desk have 1×1 footprints',()=>{
  const start=room.indexOf('const dims=item=>');
  const end=room.indexOf('\nconst itemCells=',start);
  assert.ok(start>=0&&end>start);
  const calculate=(id,w,h)=>JSON.parse(JSON.stringify(vm.runInNewContext(room.slice(start,end)+`\n[0,1,2,3].map(rotation=>dims({id,w,h,rotation}))`)));
  assert.deepEqual(calculate('desk',2,1),[{w:2,h:1},{w:1,h:1},{w:2,h:1},{w:1,h:1}]);
- assert.deepEqual(calculate('bookshelf',2,1),[{w:2,h:1},{w:1,h:2},{w:2,h:1},{w:1,h:2}]);
+ assert.deepEqual(calculate('bookshelf',2,1),[{w:1,h:1},{w:1,h:1},{w:1,h:1},{w:1,h:1}]);
  assert.deepEqual(calculate('bed',1,2),[{w:1,h:2},{w:2,h:1},{w:1,h:2},{w:2,h:1}]);
 });
 test('Repeated 90 degree rotation never changes the furniture origin tile',()=>{
@@ -140,6 +142,6 @@ test('All pet-room versions remain directly accessible but none are listed in th
  for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.44'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.44/);
+ assert.match(version,/const APP_VERSION='2\.4\.45'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.45/);
 });

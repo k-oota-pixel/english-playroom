@@ -214,14 +214,18 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      await page.locator('#rotateItem').click();
      await page.waitForFunction(i=>document.querySelector('.object[data-item-id="bookshelf"] img')?.getAttribute('src')?.includes('bookshelf_'+i+'.webp'),i);
      const rect=await page.locator(bookshelfEl).evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height),left:el.style.left,top:el.style.top}));
-     assert.ok(Math.abs(rect.w-((i%2)?116:232)/960*100)<.1,'Bookshelf occupies correct tile width '+i);
-     assert.ok(Math.abs(rect.h-((i%2)?232:116)/960*100)<.1,'Bookshelf occupies correct tile depth '+i);
+     assert.ok(Math.abs(rect.w-116/960*100)<.1,'Bookshelf occupies one tile horizontally '+i);
+     assert.ok(Math.abs(rect.h-116/960*100)<.1,'Bookshelf occupies one tile vertically '+i);
      assert.deepEqual({left:rect.left,top:rect.top},shelfAnchor,'Bookshelf cannot drift on rotation '+i);
      assert.equal(await page.locator(bookshelfEl+' img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
      const scale=await page.locator(bookshelfEl+' img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
      assert.ok(Math.abs(scale-(i%2===1?0.42:0.7))<0.01,'Bookshelf must be 70% of previous size ('+i+'); scale='+scale);
      const topRatio=await page.locator(bookshelfEl+' img').evaluate(el=>parseFloat(getComputedStyle(el).top)/el.parentElement.getBoundingClientRect().height);
-     assert.ok(Math.abs(topRatio-(i%2===1?0.5:0.42))<0.01,'Front/back bookshelf moves deeper into its tile '+i);
+     assert.ok(Math.abs(topRatio-(i%2===1?1:0.42))<0.01,'Shelf keeps its original vertical sprite position '+i);
+     const spriteBox=await page.locator(bookshelfEl+' img').evaluate(el=>({w:parseFloat(getComputedStyle(el).width)/el.parentElement.getBoundingClientRect().width,h:parseFloat(getComputedStyle(el).height)/el.parentElement.getBoundingClientRect().height,left:parseFloat(getComputedStyle(el).left)/el.parentElement.getBoundingClientRect().width}));
+     assert.ok(Math.abs(spriteBox.w-(i%2===1?1.28:2.56))<.01,'Shelf art width remains the old visual size '+i);
+     assert.ok(Math.abs(spriteBox.h-(i%2===1?2.56:1.28))<.01,'Shelf art height remains the old visual size '+i);
+     assert.ok(Math.abs(spriteBox.left-(i%2===1?.5:1))<.01,'Shelf sprite stays anchored to previous visual location '+i);
    }
    for(let n=0;n<12;n++){
      await page.locator('#rotateItem').click();
@@ -249,6 +253,11 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      assert.equal(await page.locator(deskEl+' img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
      const scale=await page.locator(deskEl+' img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
      assert.ok(Math.abs(scale-(i%2===1?0.7:1))<.01,'Desk side sprite keeps its 70% visual scale '+i);
+     if(i%2===1){
+       const art=await page.locator(deskEl+' img').evaluate(el=>({height:parseFloat(getComputedStyle(el).height)/el.parentElement.getBoundingClientRect().height,top:parseFloat(getComputedStyle(el).top)/el.parentElement.getBoundingClientRect().height}));
+       assert.ok(Math.abs(art.height-2.56)<.01,'Desk side artwork retains its former 1×2 visual bounding box');
+       assert.ok(Math.abs(art.top-1)<.01,'Desk side artwork retains its original floor anchor');
+     }
    }
    for(let n=0;n<12;n++){
      await page.locator('#rotateItem').click();
