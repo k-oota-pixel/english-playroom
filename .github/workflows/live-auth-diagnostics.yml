@@ -1,0 +1,25 @@
+name: Temporary live authentication diagnostic
+on:
+  push:
+    branches: [diagnostic/live-auth-20261108]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/live-auth-diagnostics.cjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-login-smoke
+          path: live-login-page.png
+          if-no-files-found: ignore
