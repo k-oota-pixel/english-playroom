@@ -18,12 +18,13 @@ const root=path.resolve(__dirname,'..');
    await page.route('https://www.gstatic.com/firebasejs/**',route=>{
     const url=route.request().url();let body='';
     if(url.endsWith('firebase-app.js'))body='export const getApps=()=>[{}];export const getApp=()=>({});';
-    else if(url.endsWith('firebase-auth.js'))body=`const auth=window.testAuth={currentUser:{uid:'student',getIdToken:async()=> 'test-token'}};export const getAuth=()=>auth;export const initializeAuth=()=>auth;export const browserLocalPersistence={},indexedDBLocalPersistence={},browserSessionPersistence={},browserPopupRedirectResolver={};export const getIdTokenResult=async()=>({claims:{}});export function onAuthStateChanged(auth,next){queueMicrotask(()=>Promise.resolve(next(auth.currentUser)).finally(()=>{window.authCallbackFinished=true;}));return ()=>{};}`;
+    else if(url.endsWith('firebase-auth.js'))body=`const auth=window.testAuth={currentUser:{uid:'student',getIdToken:async()=> 'test-token'}};export const getAuth=()=>auth;export const signOut=async()=>{};export const initializeAuth=()=>auth;export const browserLocalPersistence={},indexedDBLocalPersistence={},browserSessionPersistence={},browserPopupRedirectResolver={};export const getIdTokenResult=async()=>({claims:{}});export function onAuthStateChanged(auth,next){queueMicrotask(()=>Promise.resolve(next(auth.currentUser)).finally(()=>{window.authCallbackFinished=true;}));return ()=>{};}`;
     else if(url.endsWith('firebase-firestore.js'))body="window.firestoreReads=0;export const getFirestore=()=>({});export const doc=()=>({});export const getDoc=async()=>{window.firestoreReads++;throw Error('unexpected document read');};export const runTransaction=async()=>{throw Error('unexpected write');};export const serverTimestamp=()=>0;";
     else throw Error('Unexpected SDK module '+url);
     return route.fulfill({contentType:'text/javascript',body});
    });
    await page.route('https://task-quest.onrender.com/api/**',route=>{
+    if(route.request().url().endsWith('/api/status'))return route.fulfill({json:{ready:true}});
     if(route.request().url().endsWith('/api/admin/session')){adminRequests++;return route.fulfill({status:403,json:{error:'must not probe admin separately'}});}
     assert.ok(route.request().url().endsWith('/api/account/session'));assert.equal(route.request().headers().authorization,'Bearer test-token');sessions++;
     return route.fulfill({json:{registered:true,resetRequired:false,...(admin===undefined?{}:{admin})}});
