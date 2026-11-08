@@ -192,7 +192,7 @@ test('home, shop and item button remain; fixed gardens, warehouse and preset pat
   assert.match(html,new RegExp('id="'+id+'"'));
  }
  assert.doesNotMatch(html,/id="storageBuilding"|id="storageDialog"/);
- assert.match(app,/beginPlacement\(p.kind==='field'/);
+ assert.match(app,/beginPlacement\(p.kind,p.id==='free'\?'4':p.id\)/);
  assert.match(app,/shopTab='field'/);
  assert.match(app,/applyLayoutAction\(farm,action\)/);
  assert.match(scenery,/\$\{home\(\)\}\$\{store\(\)\}/);
