@@ -2,13 +2,15 @@ import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.9';
 import {adminContentRows} from './admin-content-model.js?v=2.1.5';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,ensureRenderReady,timeoutSignal} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
 
 const firebaseConfig={apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",authDomain:"eiken-retry.firebaseapp.com",projectId:"eiken-retry",storageBucket:"eiken-retry.firebasestorage.app",messagingSenderId:"231308672297",appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"};
 const API='https://task-quest.onrender.com';
 const app=initializeApp(firebaseConfig);enableAppCheck(app);const auth=getAuth(app),provider=new GoogleAuthProvider();
 provider.setCustomParameters({prompt:'select_account'});
 await setPersistence(auth,browserLocalPersistence);
+// The free Render service can need time to resume. Public, read-free prewarm never blocks the UI.
+void ensureRenderReady().catch(()=>{});
 const $=id=>document.getElementById(id);
 let allUsers=[],busy=false,expandedUid='',generation=0,viewGeneration=0,currentUid='',pageIndex=0,cursors=[''],nextToken=null,fetchedAt=0;
 let searchResults=null,searchTotal=0,searchTruncated=false,searchTimer=0,searchSerial=0,searchBusy=false,searchFetchedAt=0;
@@ -19,7 +21,20 @@ function setStatus(text,kind=''){const el=$('status');el.textContent=text;el.cla
 function fmtDate(v){if(!v)return '未記録';const d=new Date(Number(v)||v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('ja-JP',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 function mini(data={}){const keys=['lastPlayedDate','submissions','correctAnswers','completedStages','attemptedIds','rounds','clearCount','attempts','correct','petLoginDays','retryCoinProgress'];const lines=[];for(const k of keys){if(!(k in data))continue;const v=data[k];lines.push(`${k}: ${Array.isArray(v)?v.length:typeof v==='object'&&v!==null?Object.keys(v).length:v}`);}if(!lines.length){for(const [k,v] of Object.entries(data).slice(0,3))lines.push(`${k}: ${Array.isArray(v)?v.length:typeof v==='object'&&v!==null?'…':v}`);}return lines.slice(0,4).join('\n')||'記録なし';}
 async function token(){const u=auth.currentUser;if(!u)throw Error('ログインしてください。');return u.getIdToken();}
-async function api(path,opt={}){const idToken=await token();const res=await fetch(API+path,{...opt,signal:AbortSignal.timeout(20000),headers:{...(opt.headers||{}),'Authorization':`Bearer ${idToken}`,'Content-Type':'application/json'}});let body={};try{body=await res.json();}catch{}if(!res.ok)throw Error(body.error||`管理APIエラー (${res.status})`);return body;}
+async function api(path,opt={}){
+ const idToken=await token();
+ try{
+  // First request may have to wake a sleeping Render instance (about 60s).
+  // Do not automatically retry POST actions to avoid duplicate coin grants or resets.
+  const res=await fetch(API+path,{...opt,signal:timeoutSignal(90000),headers:{...(opt.headers||{}),'Authorization':`Bearer ${idToken}`,'Content-Type':'application/json'}});
+  let body={};try{body=await res.json();}catch{}
+  if(!res.ok)throw Error(body.error||`管理APIエラー (${res.status})`);
+  return body;
+ }catch(error){
+  if(error?.name==='TimeoutError'||error?.name==='AbortError')throw Error('管理サーバーからの応答がありませんでした。「このページを更新」で再度お試しください。');
+  throw error;
+ }
+}
 function searchQuery(){return $('search').value.trim();}
 function updateRefresh(){$('refresh').disabled=busy||searchBusy;$('refresh').textContent=searchQuery()?'↻ 検索結果を更新':'↻ このページを更新';}
 function restorePageMeta(){
@@ -28,7 +43,7 @@ function restorePageMeta(){
 }
 async function load(index=pageIndex,force=false){
  if(busy||searchQuery()||!auth.currentUser)return;const own=generation,request=++viewGeneration,key=cursors[index];if(key===undefined)return;
- busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('6人分の一覧を読み込んでいます…');
+ busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('6人分の一覧を読み込んでいます…（サーバー休止時は復帰に時間がかかることがあります）');
  try{
   if(force)pageCache.delete(key);
   let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=6'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
