@@ -22,8 +22,16 @@ function status(message,kind=''){const el=$('status');el.textContent=message;el.
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2600);}
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 function updateCoin(){ $('coins').textContent=Number(balance).toLocaleString('ja-JP'); }
+function updateTileManageButton(){
+ const btn=$('tileManageBtn');if(!btn)return;
+ const active=!!placement&&['manage-tile','move-tile'].includes(placement.type);
+ btn.disabled=!ready||busy||(!farm.roads.length&&!farm.flowers.length&&!active);
+ btn.classList.toggle('active',active);
+ btn.setAttribute('aria-pressed',String(active));
+}
 function refresh(){
  updateCoin();renderRoads();renderFlowers();renderPlots();renderPlacement();renderSelection();renderShop();renderInventory();renderManage();
+ updateTileManageButton();
  $('saveBtn').disabled=!user||busy||!dirty;
 }
 function node(tag,cls,txt){
@@ -442,13 +450,14 @@ function beginPlacement(type,value){
  if(type==='flower'&&!(farm.inventory.flowers[value]>0)){toast('花畑の持ち物がありません。');return;}
  if(type==='move'&&!farm.fields.some(f=>f.id===value)){toast('圃場が見つかりません。');return;}
  placement={type,value};
- hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');
- renderPlacement();
- toast('好きな場所をタップして配置してください。');
+ hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');hideDialog('tileManageDialog');
+ renderPlacement();updateTileManageButton();
+ toast(type==='manage-tile'?'道路または花畑をタップして選んでください。':
+  type==='move-tile'?'移動先のマスをタップしてください。':'好きな場所をタップして配置してください。');
 }
 function stopPlacement(){
  placement=null;pendingNamePlacement=null;
- renderPlacement();
+ renderPlacement();updateTileManageButton();
 }
 function placementAllowed(x,y){
  if(!placement)return false;
@@ -459,11 +468,19 @@ function placementAllowed(x,y){
  }
  if(placement.type==='road')return farm.inventory.roads>0&&canPlaceRoad(farm,x,y);
  if(placement.type==='flower')return farm.inventory.flowers[placement.value]>0&&canPlaceFlower(farm,x,y);
+ if(placement.type==='manage-tile')return farm.roads.includes(x+','+y)||farm.flowers.some(f=>f.x===x&&f.y===y);
+ if(placement.type==='move-tile'){
+  const origin=placement.value;
+  const stillPlaced=origin?.kind==='road'?farm.roads.includes(origin.fromX+','+origin.fromY):
+   origin?.kind==='flower'&&farm.flowers.some(f=>f.x===origin.fromX&&f.y===origin.fromY);
+  return !!stillPlaced&&canPlaceRoad(farm,x,y);
+ }
  if(placement.type==='erase-flower')return farm.flowers.some(f=>f.x===x&&f.y===y);
  return placement.type==='erase-road'&&farm.roads.includes(x+','+y);
 }
 function previewPlacement(x,y){
- const p=$('placementPreview');if(!placement||!placementAllowed(x,y)){p.hidden=true;return;}
+ const p=$('placementPreview');
+ if(!placement||placement.type==='manage-tile'||!placementAllowed(x,y)){p.hidden=true;return;}
  const field=placement.type==='move'?farm.fields.find(f=>f.id===placement.value):null;
  const type=field?.size||(placement.type==='field'?placement.value:null);
  const shape=FIELD_TYPES[type]||{w:1,h:1};
@@ -481,10 +498,18 @@ function renderPlacement(){
   type==='move'?'移動先の左上をタップ':
   type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':
   type==='flower'?FLOWERS[placement.value].name+'を植えるマスをタップ（残り '+farm.inventory.flowers[placement.value]+'マス）':
+  type==='manage-tile'?'移動・撤去する道路または花畑をタップ':
+  type==='move-tile'?'移動先の空いているマスをタップ（コイン不要）':
   type==='erase-flower'?'取り除く花畑をタップ':'取り除く道路をタップ';
  for(const btn of grid.querySelectorAll('button.placement-cell')){
   const x=Number(btn.dataset.x),y=Number(btn.dataset.y),allowed=placementAllowed(x,y);
-  btn.disabled=!allowed;btn.classList.toggle('eligible',allowed);
+  btn.disabled=!allowed;
+  btn.hidden=type==='manage-tile'&&!allowed;
+  btn.classList.toggle('eligible',allowed);
+  btn.classList.toggle('edit-target',type==='manage-tile'&&allowed);
+  btn.setAttribute('aria-label',type==='manage-tile'&&allowed?
+   (farm.roads.includes(x+','+y)?'道路':'花畑')+' '+(x+1)+'列 '+(y+1)+'行を選ぶ':
+   (x+1)+'列 '+(y+1)+'行に配置');
  }
 }
 function applyLayout(action){
@@ -494,8 +519,32 @@ function applyLayout(action){
   return true;
  }catch(e){toast(e.message||'その場所には配置できません。');return false;}
 }
+function openTileManage(x,y){
+ const flower=farm.flowers.find(item=>item.x===x&&item.y===y);
+ const kind=flower?'flower':farm.roads.includes(x+','+y)?'road':null;
+ if(!kind)return;
+ const label=flower?FLOWERS[flower.type].name+'の花畑':'土の道';
+ $('tileManageTitle').textContent='↗️ '+label;
+ $('tileManageDetail').textContent=(x+1)+'列・'+(y+1)+'行の'+label+'をどうしますか？';
+ const controls=$('tileManageControls');controls.replaceChildren();
+ controls.append(
+  actionButton('↗️ 移動する','gold',()=>beginPlacement('move-tile',{kind,fromX:x,fromY:y})),
+  actionButton('📦 撤去してアイテムへ','secondary',()=>{
+   if(!applyLayout({type:kind==='road'?'remove-road':'remove-flower',x,y}))return;
+   hideDialog('tileManageDialog');
+   if(!farm.roads.length&&!farm.flowers.length)stopPlacement();
+  })
+ );
+ showDialog('tileManageDialog');
+}
 function choosePlacement(x,y){
  if(!ready||busy||!placement||!placementAllowed(x,y))return;
+ if(placement.type==='manage-tile'){openTileManage(x,y);return;}
+ if(placement.type==='move-tile'){
+  const {kind,fromX,fromY}=placement.value;
+  if(applyLayout({type:kind==='road'?'move-road':'move-flower',fromX,fromY,x,y}))stopPlacement();
+  return;
+ }
  if(placement.type==='field'){
   pendingNamePlacement={type:'place-field',size:placement.value,x,y};
   $('fieldNameTitle').textContent='圃場の名前をつける';
@@ -818,6 +867,12 @@ async function visitBuilding(kind){
  }finally{busy=false;refresh();}
 }
 $('shopBuilding').addEventListener('click',()=>{void visitBuilding('shop');});
+$('tileManageBtn').addEventListener('click',()=>{
+ if(!ready||busy)return;
+ if(placement&&['manage-tile','move-tile'].includes(placement.type))stopPlacement();
+ else if(farm.roads.length||farm.flowers.length)beginPlacement('manage-tile',null);
+ else toast('まだ道路や花畑は配置されていません。');
+});
 $('itemsBtn').addEventListener('click',()=>{
  if(!ready||busy)return;
  chosenProduce=null;renderInventory();showDialog('itemsDialog');
