@@ -1,4 +1,5 @@
-import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36";
+import {getAuth} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
+import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
 const API='https://task-quest.onrender.com';
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -51,6 +52,6 @@ function render(data){
 async function loadSecurity(force=false){
   if(loading||!auth.currentUser)return;if(!force&&loadedAt&&Date.now()-loadedAt<30000)return;
   loading=true;refresh.disabled=true;body.className='security-loading';body.textContent='セキュリティログを読み込んでいます…';
-  try{const token=await auth.currentUser.getIdToken();const response=await fetch(API+'/api/admin/security',{headers:{Authorization:`Bearer ${token}`},signal:AbortSignal.timeout(20000)});let data={};try{data=await response.json();}catch{}if(!response.ok)throw Error(data.error||`セキュリティAPIエラー (${response.status})`);loadedAt=Date.now();render(data);}catch(error){body.className='status error';body.textContent=error.message||'セキュリティログを取得できませんでした。';}finally{loading=false;refresh.disabled=false;}
+  try{const token=await auth.currentUser.getIdToken();const response=await fetch(API+'/api/admin/security',{headers:{Authorization:`Bearer ${token}`},signal:AbortSignal.timeout(90000)});let data={};try{data=await response.json();}catch{}if(!response.ok)throw Error(data.error||`セキュリティAPIエラー (${response.status})`);loadedAt=Date.now();render(data);}catch(error){body.className='status error';body.textContent=error.message||'セキュリティログを取得できませんでした。';}finally{loading=false;refresh.disabled=false;}
 }
 onAuthStateChanged(auth,user=>{if(!user){loadedAt=0;showUsers();body.className='security-loading';body.textContent='SECURITYを開くと最新ログを読み込みます。';}});
