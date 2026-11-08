@@ -1,6 +1,6 @@
 import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
-import {getAuth} from '../auth-session.js?v=2.3.15';
+import {getAuth} from '../auth-session.js?v=2.4.36';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {roomBackground} from './room-v4-art.js?v=2';

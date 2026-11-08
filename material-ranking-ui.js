@@ -58,7 +58,7 @@ export async function openMaterialRanking(appId){
  dialog.addEventListener('close',()=>{dialog?.remove()},{once:true});
  document.body.append(dialog);dialog.showModal();
  try{
-  const {getAuth}=await import('https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1');
+  const {getAuth}=await import('https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36');
   const user=getAuth().currentUser;
   if(!user)throw Error('ログインするとランキングを確認できます。');
   const token=await user.getIdToken();

@@ -1,5 +1,5 @@
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
+import {getAuth} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36";
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 
 const firebaseConfig={apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",authDomain:"eiken-retry.firebaseapp.com",projectId:"eiken-retry",storageBucket:"eiken-retry.firebasestorage.app",messagingSenderId:"231308672297",appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"};

@@ -1,6 +1,6 @@
 import {MONSTUDY_FORTUNES} from './monster-fortunes.js?v=2.3.48';
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged} from './auth-session.js?v=2.3.1';
+import {getAuth,onAuthStateChanged} from './auth-session.js?v=2.4.36';
 import {getFirestore,doc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 
 const PRICE=2;

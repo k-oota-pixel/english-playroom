@@ -1,4 +1,4 @@
-import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1';
+import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36';
 import {auth} from './coin-reward.js?v=2.1.25';
 let petData={};
 function install(){

@@ -1,5 +1,5 @@
 import {getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth} from './auth-session.js?v=2.3.2';
+import {getAuth} from './auth-session.js?v=2.4.36';
 
 const API='https://task-quest.onrender.com/api/contact-message';
 const MAX_LENGTH=2000;
