@@ -46,7 +46,22 @@ function fitBoardToViewport(){
 requestAnimationFrame(fitBoardToViewport);
 window.addEventListener('resize',()=>requestAnimationFrame(fitBoardToViewport),{passive:true});
 const backdrop=$('roomArt');
-backdrop.innerHTML=roomBackground();
+// Windowless wall ONLY in the private WebP test room. The shared roomBackground()
+// stays unchanged so the regular / cozy rooms retain their original window.
+function windowlessRoomBackground(){
+ const artwork=roomBackground();
+ // The window, its view and both curtains form one contiguous SVG sequence.
+ const windowStart='<rect x="361" y="105" width="235" height="87"';
+ const lastWindowPart='<path d="M339 175h35m211 0h34"';
+ const first=artwork.indexOf(windowStart);
+ const finalPart=artwork.indexOf(lastWindowPart,first);
+ const close=finalPart<0?-1:artwork.indexOf('/>',finalPart);
+ if(first<0||finalPart<first||close<0){
+  throw new Error('窓の描画位置が変更されています。背景を安全に編集できません。');
+ }
+ return artwork.slice(0,first)+artwork.slice(close+2);
+}
+backdrop.innerHTML=windowlessRoomBackground();
 // Create 36 reusable placement controls once; do not rebuild them on each drag frame.
 const tileButtons=[];
 for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){
