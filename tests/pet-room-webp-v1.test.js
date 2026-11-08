@@ -54,8 +54,9 @@ test('Sixteen independently-authored binary WebP assets, no SVG furniture fallba
  assert.match(css,/scale\(0\.42\)/);
  assert.match(css,/scale\(0\.7\)/);
  assert.match(css,/top:42%/);
- assert.match(css,/left:100%;top:42%;width:256%;height:128%/);
- assert.match(css,/top:100%;width:128%;height:256%/);
+ assert.match(css,/left:50%;top:42%;width:256%;height:128%/);
+ assert.match(css,/left:50%;top:50%;width:128%;height:256%/);
+ assert.match(css,/left:50%;top:0%;width:128%;height:256%/);
  assert.match(css,/\.webp-bed-sprite,\.object \.webp-sofa-sprite,\.object \.webp-bookshelf-sprite/);
  assert.match(room,/el\.dataset\.facing=String\(item\.rotation\)/);
 });
@@ -142,6 +143,6 @@ test('All pet-room versions remain directly accessible but none are listed in th
  for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.45'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.45/);
+ assert.match(version,/const APP_VERSION='2\.4\.46'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.46/);
 });

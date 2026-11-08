@@ -188,25 +188,27 @@ dialog::backdrop{background:#253d30a6}
    All four directions of each keep their top-left tile anchor when rotating. */
 .object{overflow:visible}
 .object .webp-bed-sprite,.object .webp-sofa-sprite,.object .webp-bookshelf-sprite,.object .webp-desk-sprite{display:block;position:absolute;left:50%;top:50%;width:128%;height:128%;transform:translate(-50%,-50%);object-fit:contain;object-position:center center;pointer-events:none;user-select:none;-webkit-user-drag:none}
-/* The bookshelf now occupies one tile in every direction; restore the
-   ORIGINAL two-tile sprite box as an overhang so its artwork does not shrink.
-   Previous bookshelf scales (front/back 70%, sides 42%) and the slight
-   front/back offset toward the far side of the floor remain unchanged. */
+/* Keep both the physical WebP artwork sizes and the one-tile collision
+   footprints. Position sprite canvases relative to the selected tile rather
+   than the old 2×1 / 1×2 box so the artwork remains inside its tile. */
 .object[data-item-id="bookshelf"][data-facing="0"] .webp-bookshelf-sprite,
 .object[data-item-id="bookshelf"][data-facing="2"] .webp-bookshelf-sprite{
- left:100%;top:42%;width:256%;height:128%;
+ /* Centre the horizontal shelf on its tile; retain its small rearward offset. */
+ left:50%;top:42%;width:256%;height:128%;
  transform:translate(-50%,-50%) scale(0.7);
 }
 .object[data-item-id="bookshelf"][data-facing="1"] .webp-bookshelf-sprite,
 .object[data-item-id="bookshelf"][data-facing="3"] .webp-bookshelf-sprite{
- top:100%;width:128%;height:256%;
+ /* Centre the vertical shelf on its tile, rather than one tile lower. */
+ left:50%;top:50%;width:128%;height:256%;
  transform:translate(-50%,-50%) scale(0.42);
 }
-/* The side-facing desk also occupies one tile, but keep its original
-   1×2 sprite box, its 70% visual scale, and the original floor anchor. */
+/* Side-facing desks use a two-tile-height sprite canvas to preserve visual
+   size; align its feet with the BOTTOM of the logical one-tile footprint.
+   The front/back views already centre correctly across their 2×1 tiles. */
 .object[data-item-id="desk"][data-facing="1"] .webp-desk-sprite,
 .object[data-item-id="desk"][data-facing="3"] .webp-desk-sprite{
- top:100%;width:128%;height:256%;
+ left:50%;top:0%;width:128%;height:256%;
  transform-origin:center bottom;
  transform:translate(-50%,-50%) scale(0.7);
 }
