@@ -195,5 +195,12 @@ dialog::backdrop{background:#253d30a6}
 .object[data-item-id="bookshelf"][data-facing="3"] .webp-bookshelf-sprite{
  transform:translate(-50%,-50%) scale(0.6);
 }
+/* Right/left-facing desk artwork only: display at 70% of its previous size.
+   Preserve the sprite's bottom floor-contact anchor during scaling. */
+.object[data-item-id="desk"][data-facing="1"] .webp-desk-sprite,
+.object[data-item-id="desk"][data-facing="3"] .webp-desk-sprite{
+ transform-origin:center bottom;
+ transform:translate(-50%,-50%) scale(0.7);
+}
 .catalog-webp-img{width:54px;height:72px;object-fit:contain;display:block}
 @media(max-width:740px){.webp-room-label{font-size:10px;padding:3px 6px}}
