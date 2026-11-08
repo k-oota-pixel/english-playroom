@@ -23,12 +23,31 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
  await page.route('**/shell-bridge.js?*',r=>mock(r,"// Isolated material test: direct-link shell permission checked in Node regression."));
  try{
    await page.goto('http://127.0.0.1:'+port+'/pet-room/room-webp-v1.html',{waitUntil:'domcontentloaded'});
-   await page.locator('#objectLayer .object').waitFor({timeout:15000});
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===464,{timeout:15000});
+   await page.locator('#objectLayer .object').first().waitFor({timeout:15000});
+   await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===464,{timeout:15000});
    await page.waitForFunction(()=>!document.querySelector('#petActor').hidden,{timeout:15000});
-   assert.equal(await page.locator('.object').count(),1,'Only the approved WebP bed should be added');
-   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_0.webp?v=2.4.25');
-   assert.equal(await page.locator('.object img').evaluate(el=>el.naturalHeight),696);
+   assert.equal(await page.locator('.object').count(),2,'Two independently authored WebP furniture items should be present');
+   assert.equal(await page.locator('.object[data-item-id="sofa"] img').getAttribute('src'),'./assets/webp-v1/sofa/sofa_0.webp?v=2.4.34');
+   assert.equal(await page.locator('.object[data-item-id="bed"] img').getAttribute('src'),'./assets/webp-v1/bed/bed_0.webp?v=2.4.25');
+   assert.equal(await page.locator('.object[data-item-id="bed"] img').evaluate(el=>el.naturalHeight),696);
+   // Verify actual transparent sofa WebP images, not screenshots or rotated SVG.
+   const sofaAssets=await page.evaluate(async()=>{
+     const result=[];
+     for(let i=0;i<4;i++){
+       const im=new Image(); im.src='./assets/webp-v1/sofa/sofa_'+i+'.webp?v=2.4.34';await im.decode();
+       const canvas=document.createElement('canvas');canvas.width=im.naturalWidth;canvas.height=im.naturalHeight;
+       const cx=canvas.getContext('2d',{willReadFrequently:true});cx.drawImage(im,0,0);
+       const pixels=cx.getImageData(0,0,canvas.width,canvas.height).data;
+       let transparent=0,opaque=0;for(let k=3;k<pixels.length;k+=4){if(pixels[k]===0)transparent++;if(pixels[k]>245)opaque++;}
+       result.push({w:canvas.width,h:canvas.height,transparent,opaque,corner:pixels[3]});
+     }return result;
+   });
+   sofaAssets.forEach((s,i)=>{
+     assert.deepEqual([s.w,s.h],(i%2)?[330,530]:[530,330],'Sofa artwork is correctly oriented at view '+i);
+     assert.ok(s.transparent>25000,'Sofa has full-alpha transparent background '+i);
+     assert.ok(s.opaque>70000,'Sofa has opaque visible artwork '+i);
+     assert.equal(s.corner,0,'Sofa transparent corners '+i);
+   });
    // Inspect raw alpha pixels in Chromium, not just file extensions or existence.
    const coverage=await page.evaluate(async()=>{
      const alphas=[];
@@ -58,46 +77,66 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
 
    assert.equal(await page.locator('#petActor svg').count(),1,'Original pet display remains active');
    assert.deepEqual(errors,[],'No startup exceptions');
-   const initial=await page.locator('.object').evaluate(el=>({left:parseFloat(el.style.left),top:parseFloat(el.style.top),width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
+   const initial=await page.locator('.object[data-item-id="bed"]').evaluate(el=>({left:parseFloat(el.style.left),top:parseFloat(el.style.top),width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
    assert.ok(Math.abs(initial.width-116/960*100)<.1,'Portrait bed must occupy 1 tile across');
    assert.ok(Math.abs(initial.height-232/960*100)<.1,'Portrait bed must occupy 2 tiles long');
-   const overhang=await page.locator('.object').evaluate(el=>{
+   const overhang=await page.locator('.object[data-item-id="bed"]').evaluate(el=>{
      const art=el.querySelector('.webp-bed-sprite');const e=el.getBoundingClientRect(),i=art.getBoundingClientRect();
      return{ratioX:i.width/e.width,ratioY:i.height/e.height};
    });
    assert.ok(Math.abs(overhang.ratioX-1.28)<.015,'Allow 14% overhang on each horizontal side');
    assert.ok(Math.abs(overhang.ratioY-1.28)<.015,'Allow centered sprite box while preserving ratio');
-   assert.equal(await page.locator('.object img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
-   await page.locator('.object').click();
+   assert.equal(await page.locator('.object[data-item-id="bed"] img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+   await page.locator('.object[data-item-id="bed"]').click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bed opens normal editing panel');
    await page.locator('#rotateItem').click();
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696);
-   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25');
-   const rotated=await page.locator('.object').evaluate(el=>({width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
+   await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===696);
+   assert.equal(await page.locator('.object[data-item-id="bed"] img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25');
+   const rotated=await page.locator('.object[data-item-id="bed"]').evaluate(el=>({width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
    assert.ok(Math.abs(rotated.width-232/960*100)<.1,'Landscape bed is two tiles wide');
    assert.ok(Math.abs(rotated.height-116/960*100)<.1,'Landscape bed is one tile tall');
    // Check camera-fixed artwork and the correct 1x2 / 2x1 tile footprint for every orientation.
    for(const i of [2,3,0,1]){
      await page.locator('#rotateItem').click();
-     await page.waitForFunction(i=>document.querySelector('.object img')?.getAttribute('src')?.includes('bed_'+i+'.webp'),i);
-     const sizing=await page.locator('.object').evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height)}));
+     await page.waitForFunction(i=>document.querySelector('.object[data-item-id="bed"] img')?.getAttribute('src')?.includes('bed_'+i+'.webp'),i);
+     const sizing=await page.locator('.object[data-item-id="bed"]').evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height)}));
      assert.ok(Math.abs(sizing.w-((i%2)?232:116)/960*100)<.1,'Bed width matches rotation: '+i);
      assert.ok(Math.abs(sizing.h-((i%2)?116:232)/960*100)<.1,'Bed height matches rotation: '+i);
-     assert.equal(await page.locator('.object img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+     assert.equal(await page.locator('.object[data-item-id="bed"] img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
    }
    await page.locator('#confirmItem').click();
    const key='monstudy-pet-room-webp-v1:webp-phase4-test';
    const saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
    assert.equal(saved.bed.rotation,1);assert.equal(saved.bed.placed,true);
    assert.equal(await page.evaluate(()=>localStorage.getItem('monstudy-pet-room-v4:webp-phase4-test')),null,'Existing room save untouched');
+   // Test 2x1 -> 1x2 -> 2x1 through all four authored views.
+   await page.locator('.object[data-item-id="sofa"]').click();
+   assert.equal(await page.locator('#editingPanel').isVisible(),true,'Sofa can be edited');
+   const sofaStart=await page.locator('.object[data-item-id="sofa"]').evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height)}));
+   assert.ok(Math.abs(sofaStart.w-232/960*100)<.1&&Math.abs(sofaStart.h-116/960*100)<.1,'Sofa begins 2x1');
+   for(const i of [1,2,3,0,1]){
+     await page.locator('#rotateItem').click();
+     await page.waitForFunction(i=>document.querySelector('.object[data-item-id="sofa"] img')?.getAttribute('src')?.includes('sofa_'+i+'.webp'),i);
+     const d=await page.locator('.object[data-item-id="sofa"]').evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height)}));
+     assert.ok(Math.abs(d.w-((i%2)?116:232)/960*100)<.1,'Sofa width at view '+i);
+     assert.ok(Math.abs(d.h-((i%2)?232:116)/960*100)<.1,'Sofa height at view '+i);
+     assert.equal(await page.locator('.object[data-item-id="sofa"] img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+   }
+   await page.locator('#confirmItem').click();
+   const sofaSaved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+   assert.equal(sofaSaved.sofa.rotation,1);
+   assert.equal(sofaSaved.sofa.placed,true);
+   assert.equal(sofaSaved.bed.rotation,1,'Sofa editing does not affect bed');
+   await page.screenshot({path:'webp-room-sofa-four-views-integration.png',fullPage:true});
    await page.screenshot({path:'webp-room-phase4-desktop.png',fullPage:true});
    await page.reload();
-   await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696,{timeout:15000});
-   assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25','Direction restored after refresh');
+   await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===696,{timeout:15000});
+   assert.equal(await page.locator('.object[data-item-id="bed"] img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25','Direction restored after refresh');
+   assert.equal(await page.locator('.object[data-item-id="sofa"] img').getAttribute('src'),'./assets/webp-v1/sofa/sofa_1.webp?v=2.4.34','Sofa restored after refresh');
    await page.setViewportSize({width:390,height:844});await page.waitForTimeout(250);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2),true,'Mobile has no accidental horizontal overflow');
    await page.screenshot({path:'webp-room-phase4-mobile.png',fullPage:true});
    assert.deepEqual(errors,[],'No desktop/mobile page errors');
-   console.log('PASS: WebP bed 1x2/2x1 all directions, centered image overhang, pet, save/reload, mobile');
+   console.log('PASS: bed + sofa 8 actual WebP sprites; 1x2/2x1 and 2x1/1x2 rotations; isolated save/reload; mobile');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
