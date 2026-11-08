@@ -64,17 +64,11 @@ button,input{font:inherit}.shell{width:min(520px,100%)}.brand{font-size:11px;let
 <script type="module">
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,signInWithCustomToken,accountSession} from './auth-session.js?v=2.3.15';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,signInWithCustomToken,accountSession,ensureRenderReady,invalidateRenderReady,timeoutSignal} from './auth-session.js?v=2.4.36';
 const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
 enableAppCheck(app);const auth=getAuth(app);await setPersistence(auth,browserLocalPersistence);
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search);
 let mode='login',working=false;
-function timeoutSignal(ms){
-  if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')return AbortSignal.timeout(ms);
-  const controller=new AbortController();
-  setTimeout(()=>controller.abort(),ms);
-  return controller.signal;
-}
 function safeReturn(raw){try{const u=new URL(raw||'./',location.href);return u.origin===location.origin&&!u.pathname.endsWith('/login.html')?u.href:new URL('./',location.href).href;}catch{return new URL('./',location.href).href;}}
 const returnUrl=safeReturn(params.get('return'));
 function status(text){$('status').textContent=text;$('status').className='status show';}
@@ -94,8 +88,36 @@ function setMode(value){
  $('status').className='status';
 }
 async function call(action,body){
- const r=await fetch('https://task-quest.onrender.com/api/account/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:timeoutSignal(45000)});
- const data=await r.json();if(!r.ok)throw Error(data.error||'処理に失敗しました。');return data;
+ status('認証サーバーを確認しています…');
+ await ensureRenderReady();
+ const maxAttempts=action==='login'?2:1;
+ for(let attempt=1;attempt<=maxAttempts;attempt++){
+  const started=Date.now();
+  try{
+   status('ログイン情報を確認しています…');
+   const r=await fetch('https://task-quest.onrender.com/api/account/'+action,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body),signal:timeoutSignal(30000)
+   });
+   const data=await r.json();
+   if(!r.ok)throw Object.assign(Error(data.error||'処理に失敗しました。'),{status:r.status});
+   return data;
+  }catch(error){
+   console.warn('[monstudy-auth] login request failed',{
+    action,attempt,elapsedMs:Date.now()-started,status:error?.status||null,kind:error?.name||'unknown'
+   });
+   // Registering or linking an account is a write: never submit twice automatically.
+   const retryable=!Number.isFinite(error?.status)||error.status===429||error.status>=500;
+   if(attempt===maxAttempts||!retryable){
+    if(retryable)throw new Error('認証サーバーとの通信が完了しませんでした。少し待って再度お試しください。');
+    throw error;
+   }
+   status('通信を再確認しています…');
+   invalidateRenderReady();
+   await new Promise(resolve=>setTimeout(resolve,1200));
+   await ensureRenderReady();
+  }
+ }
 }
 async function proceed(){
  const user=auth.currentUser;if(!user||user.isAnonymous)throw Error('ログインしてください。');
@@ -120,7 +142,9 @@ $('googleBtn').onclick=async()=>{
  catch(error){status(error.code==='auth/popup-closed-by-user'?'ログインを中止しました。':error.message);}finally{busy(false);}
 };
 $('resetBtn').onclick=()=>status('ID・パスワードを忘れた場合は先生に申し出てください。先生がIDの確認・仮パスワードの発行を行います。');
-$('loginTab').onclick=()=>setMode('login');$('registerTab').onclick=()=>setMode('register');$('modeSwitch').onclick=()=>setMode(mode==='login'?'register':'login');
+$('loginTab').onclick=()=>setMode('login');
+// Start the free Render instance before the user submits a login form.
+void ensureRenderReady().catch(()=>{});$('registerTab').onclick=()=>setMode('register');$('modeSwitch').onclick=()=>setMode(mode==='login'?'register':'login');
 $('continueBtn').onclick=()=>proceed().catch(error=>status(error.message));$('logoutBtn').onclick=()=>signOut(auth);
 onAuthStateChanged(auth,user=>{$('signed').classList.toggle('show',!!user&&!user.isAnonymous);$('signedEmail').textContent=user?'ログイン済みです':'';});
 setMode('login');
