@@ -184,10 +184,10 @@ dialog::backdrop{background:#253d30a6}
 
 /* WebP beta edition – floor still uses original background, but every newly authored furniture sprite is WebP. */
 .webp-room-label{display:inline-block;vertical-align:middle;margin-left:8px;padding:4px 9px;border-radius:10px;background:#edc898;color:#634427;font-size:12px;font-weight:800}
-/* Three independently rendered WebP furniture items: bed 1x2, sofa 2x1, bookshelf 2x1.
+/* Four independently rendered WebP furniture items: bed 1x2; sofa, bookshelf and desk 2x1.
    All four directions of each keep their top-left tile anchor when rotating. */
 .object{overflow:visible}
-.object .webp-bed-sprite,.object .webp-sofa-sprite,.object .webp-bookshelf-sprite{display:block;position:absolute;left:50%;top:50%;width:128%;height:128%;transform:translate(-50%,-50%);object-fit:contain;object-position:center center;pointer-events:none;user-select:none;-webkit-user-drag:none}
+.object .webp-bed-sprite,.object .webp-sofa-sprite,.object .webp-bookshelf-sprite,.object .webp-desk-sprite{display:block;position:absolute;left:50%;top:50%;width:128%;height:128%;transform:translate(-50%,-50%);object-fit:contain;object-position:center center;pointer-events:none;user-select:none;-webkit-user-drag:none}
 /* Reduce only the visual artwork of the right/left-facing bookshelf to 60%
    of its former size. The logical 1×2 footprint and anchor never change.
    Front (0) and back (2), as well as bed and sofa, retain their own styles. */
