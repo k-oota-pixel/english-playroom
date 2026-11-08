@@ -7,9 +7,14 @@ import {roomBackground} from './room-v4-art.js?v=2';
 
 const $=id=>document.getElementById(id);
 const GRID=6,TX=132,TY=202,TILE=116,SIZE=960;
-// Phase 4: BED ONLY. Other furniture intentionally absent until their WebP assets pass review.
-const specs=[{id:'bed',name:'WebPベッド',icon:'🛏️',x:2,y:1,w:1,h:2,scaleX:1,scaleY:1}];
+// Only approved, independently drawn transparent WebP furniture is used in this beta.
+const specs=[
+ {id:'bed',name:'WebPベッド',icon:'🛏️',x:2,y:1,w:1,h:2,scaleX:1,scaleY:1},
+ {id:'sofa',name:'WebPソファ',icon:'🛋️',x:0,y:2,w:2,h:1,scaleX:1,scaleY:1}
+];
 const WEBP_BED_ASSETS=['bed_0.webp','bed_1.webp','bed_2.webp','bed_3.webp'].map(name=>'./assets/webp-v1/bed/'+name+'?v=2.4.25');
+const WEBP_SOFA_ASSETS=['sofa_0.webp','sofa_1.webp','sofa_2.webp','sofa_3.webp'].map(name=>'./assets/webp-v1/sofa/'+name+'?v=2.4.34');
+const WEBP_FURNITURE_ASSETS={bed:WEBP_BED_ASSETS,sofa:WEBP_SOFA_ASSETS};
 const items=new Map(specs.map(s=>[s.id,{...s,x:s.x,y:s.y,rotation:0,placed:s.initialPlaced!==false,element:null,blocking:s.blocking!==false&&!s.wallOnly}]));
 let user=null,petData={},petCell={x:4,y:4},mode='view',activeId=null,snapshot=null;
 let playCount=0,toastTimer=null,dirtyLayout=false,layoutKey='monstudy-pet-room-webp-v1:guest',hasPet=false,dragState=null,suppressClickUntil=0;
@@ -105,7 +110,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={__version:3,assetSet:'webp-bed-v1',footprint:'1x2'};
+ const data={__version:4,assetSet:'webp-bed-sofa-v1',footprint:'bed1x2-sofa2x1'};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}
@@ -116,9 +121,12 @@ function toast(message){
  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2300);
 }
 function artFor(item){
- // Furniture is an externally authored, transparent WebP image; never SVG or Canvas.
+ // Original transparent WebP sprites: no SVG/Canvas furniture fallback.
  const index=((Number(item.rotation)||0)%4+4)%4;
- return '<img class="webp-bed-sprite" draggable="false" alt="WebPベッド・'+['枕が上','枕が右','枕が下','枕が左'][index]+'" src="'+WEBP_BED_ASSETS[index]+'">';
+ const asset=WEBP_FURNITURE_ASSETS[item.id]?.[index];
+ if(!asset)throw new Error('WebP furniture asset missing: '+item.id+'_'+index);
+ const name=item.id==='bed'?['枕が上','枕が右','枕が下','枕が左'][index]:['正面','右向き','背面','左向き'][index];
+ return '<img class="webp-'+item.id+'-sprite" draggable="false" alt="'+item.name+'・'+name+'" src="'+asset+'">';
 }
 function furnitureHTML(item){
  const el=document.createElement('button');
@@ -247,7 +255,7 @@ function renderCatalog(){
   const item=items.get(spec.id),b=document.createElement('button');
   b.type='button';
   const icon=document.createElement('span');icon.className='item-icon';
-  const img=document.createElement('img');img.src=WEBP_BED_ASSETS[item.rotation];img.alt='ベッドの透過WebP';img.className='catalog-webp-img';icon.append(img);
+  const img=document.createElement('img');img.src=WEBP_FURNITURE_ASSETS[item.id][item.rotation];img.alt=item.name+'の透過WebP';img.className='catalog-webp-img';icon.append(img);
   const info=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
   strong.textContent=spec.name;const d=dims(item);
    small.textContent=(item.wallOnly?'上の壁専用':d.w+'×'+d.h+'マス')+'｜'+['正面','右向き','背面','左向き'][item.rotation]+'｜'+(item.placed?'配置中':'手元');
@@ -358,10 +366,15 @@ async function loadPet(){
  }
 }
 for(const item of items.values())furnitureHTML(item);
-bindUI();loadLayout('guest');// No SVG or Canvas furniture fallback: report a missing source asset instead.
-Promise.all(WEBP_BED_ASSETS.map((src,i)=>new Promise((ok,fail)=>{
+bindUI();loadLayout('guest');
+// Verify every actual WebP sprite loads and has the independently authored dimensions.
+const checks=[
+ ...WEBP_BED_ASSETS.map((src,i)=>({src,w:(i%2)?696:464,h:(i%2)?464:696})),
+ ...WEBP_SOFA_ASSETS.map((src,i)=>({src,w:(i%2)?330:530,h:(i%2)?530:330}))
+];
+Promise.all(checks.map(({src,w,h})=>new Promise((ok,fail)=>{
  const image=new Image();image.onload=()=>{
-  if(image.naturalWidth!==((i%2)?696:464)||image.naturalHeight!==((i%2)?464:696))fail(new Error('画像の寸法が仕様と違います: '+src));
+  if(image.naturalWidth!==w||image.naturalHeight!==h)fail(new Error('画像の寸法が仕様と違います: '+src));
   else ok(src);
  };image.onerror=()=>fail(new Error('WebPの読み込みに失敗しました: '+src));image.src=src;
 }))).catch(error=>{console.error(error);notice(error.message)});
