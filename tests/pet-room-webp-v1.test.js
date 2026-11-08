@@ -50,6 +50,17 @@ test('WebP bed and sofa use correct 90-degree-rotated tile footprints',()=>{
  const code=room.replace(/^import .*;\s*$/gm,'');
  assert.doesNotThrow(()=>new vm.Script(code),'Runtime code must parse before browser test');
 });
+test('Repeated 90 degree rotation never changes the furniture origin tile',()=>{
+ const start=room.indexOf('function rotateActive(){');
+ const end=room.indexOf('\nfunction drawItem(',start);
+ assert.ok(start>=0&&end>start);
+ const rot=room.slice(start,end);
+ assert.match(rot,/const oldRotation=item\.rotation/);
+ assert.match(rot,/item\.rotation=\(oldRotation\+1\)%4/);
+ assert.match(rot,/item\.x\+next\.w>GRID\|\|item\.y\+next\.h>GRID/);
+ assert.match(rot,/item\.rotation=oldRotation/);
+ assert.doesNotMatch(rot,/item\.x\s*=|item\.y\s*=|Math\.round|fit\(item\)/);
+});
 test('Existing rooms stay unchanged and WebP beta saves separately',()=>{
  assert.match(room,/monstudy-pet-room-webp-v1:/);
  assert.doesNotMatch(room,/monstudy-pet-room-v4:|monstudy-pet-room-top-v1-|monstudy-pet-room-flat-v2-/);
@@ -74,6 +85,6 @@ test('All pet-room versions remain directly accessible but none are listed in th
  for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.34'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.34/);
+ assert.match(version,/const APP_VERSION='2\.4\.35'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.35/);
 });
