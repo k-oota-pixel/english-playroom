@@ -392,6 +392,19 @@ function renderInventory(){
  const erase=node('button','inv-chip inv-action','道路を取り除く');
  erase.type='button';erase.disabled=!ready||busy||!farm.roads.length;
  erase.addEventListener('click',()=>beginPlacement('erase-road',''));wrap.appendChild(erase);
+ heading('🌸 花畑の持ち物・配置する');
+ wrap=row();
+ for(const id of flowerIds){
+  const count=farm.inventory.flowers[id]||0;
+  const btn=node('button','inv-chip inv-action');
+  btn.type='button';btn.disabled=!ready||busy||!count;
+  const icon=node('span','flower-inventory-art');icon.innerHTML=flowerTileSVG(id);
+  btn.append(icon,node('span','',FLOWERS[id].name+' ×'+count+'　配置'));
+  btn.addEventListener('click',()=>beginPlacement('flower',id));wrap.appendChild(btn);
+ }
+ const eraseFlower=node('button','inv-chip inv-action','🌸 花畑を取り除く');
+ eraseFlower.type='button';eraseFlower.disabled=!ready||busy||!farm.flowers.length;
+ eraseFlower.addEventListener('click',()=>beginPlacement('erase-flower',''));wrap.appendChild(eraseFlower);
  heading('🌰 タネの持ち物');
  wrap=row();
  for(const id of allCropIds)if(farm.inventory.seeds[id])wrap.appendChild(node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+farm.inventory.seeds[id]));
@@ -426,6 +439,7 @@ function beginPlacement(type,value){
  if(!ready||busy)return;
  if(type==='field'&&!(farm.inventory.fields[value]>0)){toast('圃場の持ち物がありません。');return;}
  if(type==='road'&&!farm.inventory.roads){toast('道路の持ち物がありません。');return;}
+ if(type==='flower'&&!(farm.inventory.flowers[value]>0)){toast('花畑の持ち物がありません。');return;}
  if(type==='move'&&!farm.fields.some(f=>f.id===value)){toast('圃場が見つかりません。');return;}
  placement={type,value};
  hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');
@@ -444,6 +458,8 @@ function placementAllowed(x,y){
   return !!field&&canPlace(farm,field.size,x,y,field.id);
  }
  if(placement.type==='road')return farm.inventory.roads>0&&canPlaceRoad(farm,x,y);
+ if(placement.type==='flower')return farm.inventory.flowers[placement.value]>0&&canPlaceFlower(farm,x,y);
+ if(placement.type==='erase-flower')return farm.flowers.some(f=>f.x===x&&f.y===y);
  return placement.type==='erase-road'&&farm.roads.includes(x+','+y);
 }
 function previewPlacement(x,y){
@@ -462,7 +478,10 @@ function renderPlacement(){
  const type=placement.type;
  const size=type==='move'?farm.fields.find(f=>f.id===placement.value)?.size:placement.value;
  $('placementHint').textContent=type==='field'?FIELD_TYPES[size].name+'の左上をタップ（所持 '+farm.inventory.fields[size]+'個）':
-  type==='move'?'移動先の左上をタップ':type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':'取り除く道路をタップ';
+  type==='move'?'移動先の左上をタップ':
+  type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':
+  type==='flower'?FLOWERS[placement.value].name+'を植えるマスをタップ（残り '+farm.inventory.flowers[placement.value]+'マス）':
+  type==='erase-flower'?'取り除く花畑をタップ':'取り除く道路をタップ';
  for(const btn of grid.querySelectorAll('button.placement-cell')){
   const x=Number(btn.dataset.x),y=Number(btn.dataset.y),allowed=placementAllowed(x,y);
   btn.disabled=!allowed;btn.classList.toggle('eligible',allowed);
@@ -493,6 +512,11 @@ function choosePlacement(x,y){
   if(applyLayout({type:'place-road',x,y})&&!farm.inventory.roads)stopPlacement();
   return;
  }
+ if(placement.type==='flower'){
+  if(applyLayout({type:'place-flower',flower:placement.value,x,y})&&!farm.inventory.flowers[placement.value])stopPlacement();
+  return;
+ }
+ if(placement.type==='erase-flower'){applyLayout({type:'remove-flower',x,y});return;}
  if(placement.type==='erase-road')applyLayout({type:'remove-road',x,y});
 }
 function confirmFieldName(){
