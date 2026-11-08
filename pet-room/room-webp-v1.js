@@ -85,7 +85,11 @@ for(let x=0;x<GRID;x++){
 const pos=(x,y)=>({x:TX+x*TILE,y:TY+y*TILE});
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const key=(x,y)=>x+','+y;
-const dims=item=>item.rotation%2===0?{w:item.w,h:item.h}:{w:item.h,h:item.w};
+const dims=item=>{
+ // The study desk side sprites and their occupied floor tiles both fit in 1×1.
+ if(item.id==='desk'&&item.rotation%2===1)return {w:1,h:1};
+ return item.rotation%2===0?{w:item.w,h:item.h}:{w:item.h,h:item.w};
+};
 const itemCells=item=>{const d=dims(item),a=[];for(let j=0;j<d.h;j++)for(let i=0;i<d.w;i++)a.push({x:item.x+i,y:item.y+j});return a};
 const blockedCells=(skip)=>{const result=new Set();for(const it of items.values()){if(!it.placed||!it.blocking||it.wallOnly||it.id===skip)continue;for(const c of itemCells(it))result.add(key(c.x,c.y))}return result};
 const legal=item=>{
@@ -129,7 +133,7 @@ function loadLayout(uid){
  dirtyLayout=false;render();
 }
 function saveLayout(){
- const data={__version:6,assetSet:'webp-bed-sofa-bookshelf-desk-v1',footprint:'bed1x2-sofa2x1-bookshelf2x1-desk2x1'};
+ const data={__version:6,assetSet:'webp-bed-sofa-bookshelf-desk-v1',footprint:'bed1x2-sofa2x1-bookshelf2x1-desk2x1-side1x1'};
  for(const it of items.values())data[it.id]={x:it.x,y:it.y,rotation:it.rotation,placed:it.placed};
  try{localStorage.setItem(layoutKey,JSON.stringify(data));dirtyLayout=false;return true}
  catch(error){console.error('Room save failed',error);notice('端末への保存に失敗しました。容量や設定を確認してください。');return false}
@@ -211,8 +215,8 @@ function moveActive(direction){
 }
 function rotateActive(){
  const item=items.get(activeId);if(!item)return;
- // A 1x2 object and a 2x1 object cannot have an identical centre on an
- // integer tile grid. Rounding the centre at every turn caused cumulative drift.
+ // Different footprints (including the 1×1 side-facing desk) do not share
+ // the same centre on an integer tile grid. Recentring would cause drift.
  // Keep the TOP-LEFT TILE as the pivot: rotation must never move x or y.
  const oldRotation=item.rotation;
  item.rotation=(oldRotation+1)%4;

@@ -188,12 +188,18 @@ dialog::backdrop{background:#253d30a6}
    All four directions of each keep their top-left tile anchor when rotating. */
 .object{overflow:visible}
 .object .webp-bed-sprite,.object .webp-sofa-sprite,.object .webp-bookshelf-sprite,.object .webp-desk-sprite{display:block;position:absolute;left:50%;top:50%;width:128%;height:128%;transform:translate(-50%,-50%);object-fit:contain;object-position:center center;pointer-events:none;user-select:none;-webkit-user-drag:none}
-/* Reduce only the visual artwork of the right/left-facing bookshelf to 60%
-   of its former size. The logical 1×2 footprint and anchor never change.
-   Front (0) and back (2), as well as bed and sofa, retain their own styles. */
+/* Bookshelf: all four views are 70% of their previous visual size.
+   The two side views were already at 60%, so they now use 0.6 × 0.7 = 0.42.
+   Shift only front/back artwork 8% of one tile toward the room's far edge.
+   Keep the grid footprint, origin tile, and rotation behaviour unchanged. */
+.object[data-item-id="bookshelf"][data-facing="0"] .webp-bookshelf-sprite,
+.object[data-item-id="bookshelf"][data-facing="2"] .webp-bookshelf-sprite{
+ top:42%;
+ transform:translate(-50%,-50%) scale(0.7);
+}
 .object[data-item-id="bookshelf"][data-facing="1"] .webp-bookshelf-sprite,
 .object[data-item-id="bookshelf"][data-facing="3"] .webp-bookshelf-sprite{
- transform:translate(-50%,-50%) scale(0.6);
+ transform:translate(-50%,-50%) scale(0.42);
 }
 /* Right/left-facing desk artwork only: display at 70% of its previous size.
    Preserve the sprite's bottom floor-contact anchor during scaling. */

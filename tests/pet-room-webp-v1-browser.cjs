@@ -203,8 +203,8 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    // Bookshelf has four truly distinct WebP images: face, right side, back, left side.
    const bookshelfEl='.object[data-item-id="bookshelf"]';
    const shelfAnchor=await page.locator(bookshelfEl).evaluate(el=>({left:el.style.left,top:el.style.top}));
-   // Front-facing bookshelf, bed and sofa keep their original 100% scale.
-   for(const itemId of ['bed','sofa','bookshelf']){
+   // Bed and sofa keep their original 100% scale; the bookshelf is reduced in every view.
+   for(const itemId of ['bed','sofa']){
      const scale=await page.locator('.object[data-item-id="'+itemId+'"] img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
      assert.ok(Math.abs(scale-1)<.01,itemId+' must retain its original scale');
    }
@@ -219,7 +219,9 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      assert.deepEqual({left:rect.left,top:rect.top},shelfAnchor,'Bookshelf cannot drift on rotation '+i);
      assert.equal(await page.locator(bookshelfEl+' img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
      const scale=await page.locator(bookshelfEl+' img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
-     assert.ok(Math.abs(scale-(i%2===1?0.6:1))<0.01,'Only side views 1/3 are 60% size (bookshelf_'+i+'); scale='+scale);
+     assert.ok(Math.abs(scale-(i%2===1?0.42:0.7))<0.01,'Bookshelf must be 70% of previous size ('+i+'); scale='+scale);
+     const topRatio=await page.locator(bookshelfEl+' img').evaluate(el=>parseFloat(getComputedStyle(el).top)/el.parentElement.getBoundingClientRect().height);
+     assert.ok(Math.abs(topRatio-(i%2===1?0.5:0.42))<0.01,'Front/back bookshelf moves deeper into its tile '+i);
    }
    for(let n=0;n<12;n++){
      await page.locator('#rotateItem').click();
@@ -231,7 +233,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.deepEqual([shelfSaved.bookshelf.x,shelfSaved.bookshelf.y],[4,0],'Shelf stays on its top-wall tile');
    assert.equal(shelfSaved.bed.rotation,1,'Shelf editing does not change bed');
    assert.equal(shelfSaved.sofa.rotation,1,'Shelf editing does not change sofa');
-   // Desk: 2x1 when front/back, 1x2 when side-on, without progressive drift.
+   // Desk: 2x1 when front/back, 1x1 when side-on, without progressive drift.
    // Original bed/sofa/bookshelf positions and rotations must remain untouched.
    const deskEl='.object[data-item-id="desk"]';
    const deskAnchor=await page.locator(deskEl).evaluate(el=>({left:el.style.left,top:el.style.top}));
@@ -242,9 +244,11 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
      await page.waitForFunction(i=>document.querySelector('.object[data-item-id="desk"] img')?.getAttribute('src')?.includes('desk_'+i+'.webp'),i);
      const d=await page.locator(deskEl).evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height),left:el.style.left,top:el.style.top}));
      assert.ok(Math.abs(d.w-((i%2)?116:232)/960*100)<0.1,'desk width '+i);
-     assert.ok(Math.abs(d.h-((i%2)?232:116)/960*100)<0.1,'desk height '+i);
+     assert.ok(Math.abs(d.h-116/960*100)<0.1,'desk height '+i);
      assert.deepEqual({left:d.left,top:d.top},deskAnchor,'Desk must stay anchored '+i);
      assert.equal(await page.locator(deskEl+' img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+     const scale=await page.locator(deskEl+' img').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a);
+     assert.ok(Math.abs(scale-(i%2===1?0.7:1))<.01,'Desk side sprite keeps its 70% visual scale '+i);
    }
    for(let n=0;n<12;n++){
      await page.locator('#rotateItem').click();
