@@ -192,9 +192,18 @@ function moveActive(direction){
 }
 function rotateActive(){
  const item=items.get(activeId);if(!item)return;
- const previous=dims(item),cx=item.x+previous.w/2,cy=item.y+previous.h/2;
- item.rotation=(item.rotation+1)%4;
- const next=dims(item);item.x=Math.round(cx-next.w/2);item.y=Math.round(cy-next.h/2);fit(item);
+ // A 1x2 object and a 2x1 object cannot have an identical centre on an
+ // integer tile grid. Rounding the centre at every turn caused cumulative drift.
+ // Keep the TOP-LEFT TILE as the pivot: rotation must never move x or y.
+ const oldRotation=item.rotation;
+ item.rotation=(oldRotation+1)%4;
+ const next=dims(item);
+ if(item.x+next.w>GRID||item.y+next.h>GRID){
+  item.rotation=oldRotation;
+  notice('壁際では回転後の家具が収まりません。先に家具を移動してください。');
+  toast('壁際では回転できません');
+  return;
+ }
  render();
  const name=item.wallOnly?['0°','90°','180°','270°'][item.rotation]:['正面','右向き','背面','左向き'][item.rotation];
  notice(legal(item)?item.name+'を'+name+'にしました。':'回転後に家具が重なっています。移動してから決定してください。')
