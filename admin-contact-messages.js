@@ -1,6 +1,7 @@
 import {getApps,initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getFirestore,doc,onSnapshot} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {getAuth,onAuthStateChanged} from "./auth-session.js?v=2.4.36";
+import {getAuth} from "./auth-session.js?v=2.4.37";
+import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 const config={apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",authDomain:"eiken-retry.firebaseapp.com",projectId:"eiken-retry",storageBucket:"eiken-retry.firebasestorage.app",messagingSenderId:"231308672297",appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"};
 const app=getApps()[0]||initializeApp(config),auth=getAuth(app),db=getFirestore(app),API="https://task-quest.onrender.com";
 const style=document.createElement("style");
@@ -35,15 +36,19 @@ function card(item){
  const uid=document.createElement("div");uid.className="contact-admin-meta";uid.textContent="ユーザーID: "+(item.uid||"不明");
  el.append(meta,msg,identity,uid);return el;
 }
-async function loadPage(token=""){if(loading)return;loading=true;more.disabled=true;status.textContent="読み込み中…";try{const user=auth.currentUser;if(!user)throw Error("管理者としてログインしてください。");const idToken=await user.getIdToken();const url=new URL(API+"/api/admin/contact-messages");if(token)url.searchParams.set("pageToken",token);const response=await fetch(url,{headers:{Authorization:"Bearer "+idToken},signal:AbortSignal.timeout(20000)});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"メッセージを取得できませんでした。");if(!token)list.replaceChildren();for(const item of data.messages||[])list.append(card(item));nextToken=data.nextPageToken||null;more.hidden=!nextToken;status.textContent=list.childElementCount?list.childElementCount+"件を表示中":"メッセージはまだありません。";}catch(error){status.textContent=error.message||"読み込みに失敗しました。";}finally{loading=false;more.disabled=false;}}
+async function loadPage(token=""){if(loading)return;loading=true;more.disabled=true;status.textContent="読み込み中…";try{const user=auth.currentUser;if(!user)throw Error("管理者としてログインしてください。");const idToken=await user.getIdToken();const url=new URL(API+"/api/admin/contact-messages");if(token)url.searchParams.set("pageToken",token);const response=await fetch(url,{headers:{Authorization:"Bearer "+idToken},signal:AbortSignal.timeout(90000)});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"メッセージを取得できませんでした。");if(!token)list.replaceChildren();for(const item of data.messages||[])list.append(card(item));nextToken=data.nextPageToken||null;more.hidden=!nextToken;status.textContent=list.childElementCount?list.childElementCount+"件を表示中":"メッセージはまだありません。";}catch(error){status.textContent=error.message||"読み込みに失敗しました。";}finally{loading=false;more.disabled=false;}}
 async function showMessages(){messagePanel.hidden=false;opened=true;for(const child of adminPanel.children){if(child!==tabs&&child!==messagePanel)child.hidden=true;}for(const tab of tabs.querySelectorAll(".admin-tab"))tab.classList.remove("active");messageTab.classList.add("active");await loadPage("");}
 function leaveMessages(){messagePanel.hidden=true;messageTab.classList.remove("active");opened=false;}
 messageTab.onclick=showMessages;usersTab.addEventListener("click",leaveMessages);securityTab.addEventListener("click",leaveMessages);more.onclick=()=>nextToken&&loadPage(nextToken);
-onAuthStateChanged(auth,async user=>{
- if(unsubscribe){unsubscribe();unsubscribe=null;}adminUid="";messagePanel.hidden=true;messageTab.hidden=true;setCount(0);
- if(!user)return;
- try{const token=await user.getIdToken();const response=await fetch(API+"/api/admin/session",{headers:{Authorization:"Bearer "+token},signal:AbortSignal.timeout(10000)});if(!response.ok)return;
+function syncAdminMessageAccess(authorized){
+ if(unsubscribe){unsubscribe();unsubscribe=null;}
+ adminUid='';messagePanel.hidden=true;messageTab.hidden=true;setCount(0);
+ if(!authorized)return;
+ const user=auth.currentUser;if(!user)return;
  adminUid=user.uid;messageTab.hidden=false;
- unsubscribe=onSnapshot(doc(db,"users",adminUid,"developerMessageNotifications","current"),snapshot=>setCount(snapshot.exists()?snapshot.data().unreadCount:0),()=>{messageTab.title="新着通知を接続できません。管理画面を開き直してください。";});
- }catch{}
-});
+ unsubscribe=onSnapshot(doc(db,'users',adminUid,'developerMessageNotifications','current'),
+  snapshot=>setCount(snapshot.exists()?snapshot.data().unreadCount:0),
+  ()=>{messageTab.title='新着通知を接続できません。管理画面を開き直してください。';});
+}
+onAuthStateChanged(auth,()=>syncAdminMessageAccess(document.documentElement.dataset.monstudyAdminAuthorized==='true'));
+window.addEventListener('monstudy-admin-access-change',event=>syncAdminMessageAccess(Boolean(event.detail?.authorized)));
