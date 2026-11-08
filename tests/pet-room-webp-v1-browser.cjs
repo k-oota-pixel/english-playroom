@@ -59,8 +59,14 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.equal(await page.locator('#petActor svg').count(),1,'Original pet display remains active');
    assert.deepEqual(errors,[],'No startup exceptions');
    const initial=await page.locator('.object').evaluate(el=>({left:parseFloat(el.style.left),top:parseFloat(el.style.top),width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
-   assert.ok(Math.abs(initial.width-232/960*100)<.1);
-   assert.ok(Math.abs(initial.height-232/960*100)<.1);
+   assert.ok(Math.abs(initial.width-116/960*100)<.1,'Portrait bed must occupy 1 tile across');
+   assert.ok(Math.abs(initial.height-232/960*100)<.1,'Portrait bed must occupy 2 tiles long');
+   const overhang=await page.locator('.object').evaluate(el=>{
+     const art=el.querySelector('.webp-bed-sprite');const e=el.getBoundingClientRect(),i=art.getBoundingClientRect();
+     return{ratioX:i.width/e.width,ratioY:i.height/e.height};
+   });
+   assert.ok(Math.abs(overhang.ratioX-1.28)<.015,'Allow 14% overhang on each horizontal side');
+   assert.ok(Math.abs(overhang.ratioY-1.28)<.015,'Allow centered sprite box while preserving ratio');
    assert.equal(await page.locator('.object img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
    await page.locator('.object').click();
    assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bed opens normal editing panel');
@@ -68,15 +74,15 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    await page.waitForFunction(()=>document.querySelector('.object img')?.naturalWidth===696);
    assert.equal(await page.locator('.object img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25');
    const rotated=await page.locator('.object').evaluate(el=>({width:parseFloat(el.style.width),height:parseFloat(el.style.height)}));
-   assert.ok(Math.abs(rotated.width-232/960*100)<.1);
-   assert.ok(Math.abs(rotated.height-232/960*100)<.1);
-   // Check camera-fixed four-way artwork and a 2-by-2 tile footprint for every orientation.
+   assert.ok(Math.abs(rotated.width-232/960*100)<.1,'Landscape bed is two tiles wide');
+   assert.ok(Math.abs(rotated.height-116/960*100)<.1,'Landscape bed is one tile tall');
+   // Check camera-fixed artwork and the correct 1x2 / 2x1 tile footprint for every orientation.
    for(const i of [2,3,0,1]){
      await page.locator('#rotateItem').click();
      await page.waitForFunction(i=>document.querySelector('.object img')?.getAttribute('src')?.includes('bed_'+i+'.webp'),i);
      const sizing=await page.locator('.object').evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height)}));
-     assert.ok(Math.abs(sizing.w-232/960*100)<.1,'Bed fits in two horizontal tiles: '+i);
-     assert.ok(Math.abs(sizing.h-232/960*100)<.1,'Bed fits in two vertical tiles: '+i);
+     assert.ok(Math.abs(sizing.w-((i%2)?232:116)/960*100)<.1,'Bed width matches rotation: '+i);
+     assert.ok(Math.abs(sizing.h-((i%2)?116:232)/960*100)<.1,'Bed height matches rotation: '+i);
      assert.equal(await page.locator('.object img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
    }
    await page.locator('#confirmItem').click();
@@ -92,6 +98,6 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2),true,'Mobile has no accidental horizontal overflow');
    await page.screenshot({path:'webp-room-phase4-mobile.png',fullPage:true});
    assert.deepEqual(errors,[],'No desktop/mobile page errors');
-   console.log('PASS: WebP bed / 2x2 on all directions / real pet / isolated local save / reload / mobile');
+   console.log('PASS: WebP bed 1x2/2x1 all directions, centered image overhang, pet, save/reload, mobile');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
