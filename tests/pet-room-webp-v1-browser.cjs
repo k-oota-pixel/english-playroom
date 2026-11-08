@@ -26,10 +26,33 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    await page.locator('#objectLayer .object').first().waitFor({timeout:15000});
    await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===464,{timeout:15000});
    await page.waitForFunction(()=>!document.querySelector('#petActor').hidden,{timeout:15000});
-   assert.equal(await page.locator('.object').count(),2,'Two independently authored WebP furniture items should be present');
+   assert.equal(await page.locator('.object').count(),3,'Three furniture items (bed, sofa, bookshelf) should be present');
+   assert.equal(await page.locator('.object[data-item-id="bookshelf"] img').getAttribute('src'),'./assets/webp-v1/bookshelf/bookshelf_0.webp?v=2.4.37');
    assert.equal(await page.locator('.object[data-item-id="sofa"] img').getAttribute('src'),'./assets/webp-v1/sofa/sofa_0.webp?v=2.4.34');
    assert.equal(await page.locator('.object[data-item-id="bed"] img').getAttribute('src'),'./assets/webp-v1/bed/bed_0.webp?v=2.4.25');
    assert.equal(await page.locator('.object[data-item-id="bed"] img').evaluate(el=>el.naturalHeight),696);
+   // Test genuine per-direction WebP assets and cleaned transparency on a dark background.
+   const shelfImages=await page.evaluate(async()=>{
+     const expected=[[550,456],[228,483],[549,457],[229,485]];
+     const arr=[];
+     for(let i=0;i<4;i++){
+       const im=new Image();im.src='./assets/webp-v1/bookshelf/bookshelf_'+i+'.webp?v=2.4.37';
+       await im.decode();
+       const canvas=document.createElement('canvas');canvas.width=im.naturalWidth;canvas.height=im.naturalHeight;
+       const context=canvas.getContext('2d',{willReadFrequently:true});context.drawImage(im,0,0);
+       const pixels=context.getImageData(0,0,canvas.width,canvas.height).data;
+       let transparent=0,opaque=0;
+       for(let j=3;j<pixels.length;j+=4){if(pixels[j]===0)transparent++;if(pixels[j]===255)opaque++;}
+       arr.push({dims:[im.naturalWidth,im.naturalHeight],transparent,opaque,corner:pixels[3],expected:expected[i]});
+     }
+     return arr;
+   });
+   shelfImages.forEach((im,i)=>{
+     assert.deepEqual(im.dims,im.expected,'All four bookshelf images have correct independent aspect ratios: '+i);
+     assert.ok(im.transparent>10000,'No checkerboard should remain behind shelf '+i);
+     assert.ok(im.opaque>30000,'Visible bookshelf is opaque, not a translucent placeholder: '+i);
+     assert.equal(im.corner,0,'Sprite corner is completely transparent: '+i);
+   });
    // Verify actual transparent sofa WebP images, not screenshots or rotated SVG.
    const sofaAssets=await page.evaluate(async()=>{
      const result=[];
@@ -144,11 +167,37 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.equal(sofaSaved.sofa.placed,true);
    assert.equal(sofaSaved.bed.rotation,1,'Sofa editing does not affect bed');
    await page.screenshot({path:'webp-room-sofa-four-views-integration.png',fullPage:true});
+   // Bookshelf has four truly distinct WebP images: face, right side, back, left side.
+   const bookshelfEl='.object[data-item-id="bookshelf"]';
+   const shelfAnchor=await page.locator(bookshelfEl).evaluate(el=>({left:el.style.left,top:el.style.top}));
+   await page.locator(bookshelfEl).click();
+   assert.equal(await page.locator('#editingPanel').isVisible(),true,'Bookshelf opens the common furniture editor');
+   for(const i of [1,2,3,0,1]){
+     await page.locator('#rotateItem').click();
+     await page.waitForFunction(i=>document.querySelector('.object[data-item-id="bookshelf"] img')?.getAttribute('src')?.includes('bookshelf_'+i+'.webp'),i);
+     const rect=await page.locator(bookshelfEl).evaluate(el=>({w:parseFloat(el.style.width),h:parseFloat(el.style.height),left:el.style.left,top:el.style.top}));
+     assert.ok(Math.abs(rect.w-((i%2)?116:232)/960*100)<.1,'Bookshelf occupies correct tile width '+i);
+     assert.ok(Math.abs(rect.h-((i%2)?232:116)/960*100)<.1,'Bookshelf occupies correct tile depth '+i);
+     assert.deepEqual({left:rect.left,top:rect.top},shelfAnchor,'Bookshelf cannot drift on rotation '+i);
+     assert.equal(await page.locator(bookshelfEl+' img').evaluate(el=>getComputedStyle(el).objectFit),'contain');
+   }
+   for(let n=0;n<12;n++){
+     await page.locator('#rotateItem').click();
+     assert.deepEqual(await page.locator(bookshelfEl).evaluate(el=>({left:el.style.left,top:el.style.top})),shelfAnchor,'Repeated shelf rotation stays anchored '+n);
+   }
+   await page.locator('#confirmItem').click();
+   const shelfSaved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+   assert.equal(shelfSaved.bookshelf.rotation,1);
+   assert.deepEqual([shelfSaved.bookshelf.x,shelfSaved.bookshelf.y],[4,0],'Shelf stays on its top-wall tile');
+   assert.equal(shelfSaved.bed.rotation,1,'Shelf editing does not change bed');
+   assert.equal(shelfSaved.sofa.rotation,1,'Shelf editing does not change sofa');
+   await page.screenshot({path:'webp-room-bookshelf-three-furniture.png',fullPage:true});
    await page.screenshot({path:'webp-room-phase4-desktop.png',fullPage:true});
    await page.reload();
    await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===696,{timeout:15000});
    assert.equal(await page.locator('.object[data-item-id="bed"] img').getAttribute('src'),'./assets/webp-v1/bed/bed_1.webp?v=2.4.25','Direction restored after refresh');
    assert.equal(await page.locator('.object[data-item-id="sofa"] img').getAttribute('src'),'./assets/webp-v1/sofa/sofa_1.webp?v=2.4.34','Sofa restored after refresh');
+   assert.equal(await page.locator('.object[data-item-id="bookshelf"] img').getAttribute('src'),'./assets/webp-v1/bookshelf/bookshelf_1.webp?v=2.4.37','Bookshelf restored after refresh');
    await page.setViewportSize({width:390,height:844});await page.waitForTimeout(250);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2),true,'Mobile has no accidental horizontal overflow');
    await page.screenshot({path:'webp-room-phase4-mobile.png',fullPage:true});
@@ -170,6 +219,6 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
    assert.ok(Math.abs(boundary.left-(132+5*116)/960*100)<.1,'Rejected turn must not move the furniture');
    assert.ok(Math.abs(boundary.top-(202+1*116)/960*100)<.1,'Rejected turn must not shift vertically');
    assert.deepEqual(errors,[],'No desktop/mobile/boundary page errors');
-   console.log('PASS: bed and sofa rotations stay anchored through 4+ full cycles, out-of-bounds turn rejected, isolated save/reload, mobile');
+   console.log('PASS: bed, sofa and bookshelf: 12 genuine transparent WebP views, tile sizes, no rotation drift, independent save/reload, mobile');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
