@@ -44,7 +44,7 @@ test('Existing rooms stay unchanged and WebP beta saves separately',()=>{
  assert.match(html,/room-webp-v1\.css\?v=/);
  assert.match(html,/WebPベッド試験版/);
 });
-test('A standalone WebP bed URL is authorized in the Monstudy shell and PLAY',()=>{
+test('The beta WebP bed URL remains accessible directly but is hidden from the public PLAY menu',()=>{
  const shell=read('app-shell.js'),play=read('pet-play-menu-v164.js'),main=read('index.html'),version=read('version-badge-v176.js');
  const start=shell.indexOf('  const hiddenMaterials='),end=shell.indexOf('  const sidebarIcon =',start);
  assert.ok(start>=0&&end>start);
@@ -53,9 +53,11 @@ test('A standalone WebP bed URL is authorized in the Monstudy shell and PLAY',()
  for(const name of ['room-v4.html','room-cozy.html','room-webp-v1.html'])
   assert.equal(ctx.check('https://k-oota-pixel.github.io/english-playroom/pet-room/'+name),true,name+' should open');
  assert.equal(ctx.check('https://k-oota-pixel.github.io/english-playroom/pet-room/fake.html'),false);
- assert.match(play,/href="\.\/pet-room\/room-webp-v1\.html\?v=2\.4\.25"/);
+ assert.doesNotMatch(play,/href="\.\/pet-room\/room-webp-v1\.html/);
+ assert.match(play,/href="\.\/pet-room\/room-v4\.html"/);
+ assert.match(play,/href="\.\/pet-room\/room-cozy\.html"/);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.25'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.25/);
+ assert.match(version,/const APP_VERSION='2\.4\.26'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.26/);
 });
