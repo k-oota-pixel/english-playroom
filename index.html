@@ -154,7 +154,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.47">ver2.4.47</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.48">ver2.4.48</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -434,7 +434,7 @@ import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.4.37';
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut,
-  onAuthStateChanged, setPersistence, browserLocalPersistence
+  onAuthStateChanged, setPersistence, browserLocalPersistence, ensureRenderReady
 } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
 import {
   getFirestore, doc, serverTimestamp, runTransaction
@@ -853,10 +853,11 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
   const isCurrent=()=>coinBoardRequest===request&&coinBoardUser?.uid===user.uid;
   coinRankRefresh.disabled=true;coinRankRefresh.textContent="取得中…";
   coinRankNote.textContent="本日のランキングを読み込んでいます。";
+  void ensureRenderReady().catch(()=>{});
   try{
     const token=await user.getIdToken();
     const rankingUrl=force?`${COIN_LEADERBOARD_API}?refresh=1`:COIN_LEADERBOARD_API;
-    const response=await fetch(rankingUrl,{headers:{Authorization:`Bearer ${token}`},cache:"no-store",signal:timeoutSignal(45000)});
+    const response=await fetch(rankingUrl,{headers:{Authorization:`Bearer ${token}`},cache:"no-store",signal:timeoutSignal(90000)});
     const result=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(result.error||"ランキングを取得できませんでした。");
     if(!isCurrent())return;
@@ -871,7 +872,7 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
     if(!isCurrent())return;
     console.error("Coin ranking load failed",error);
     coinsToday.textContent="—";coinsTodayCaption.textContent="本日の獲得数を取得できませんでした。";
-    coinRankNote.textContent=error.message||"ランキングを読み込めませんでした。もう一度お試しください。";
+    coinRankNote.textContent=(error?.name==="TimeoutError"||error?.name==="AbortError")?"ランキングサーバーから応答がありませんでした。「表示」で再試行してください。":(error.message||"ランキングを読み込めませんでした。もう一度お試しください。");
   }finally{
     if(isCurrent()){coinBoardRequest=null;coinRankRefresh.disabled=false;coinRankRefresh.textContent="表示";}
   }
@@ -956,7 +957,7 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.4.37"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.47'></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.48'></script>
 <script>
 (() => {
   const version = '2.4.46';
