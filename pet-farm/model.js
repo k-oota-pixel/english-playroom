@@ -320,6 +320,14 @@ export function applyLayoutAction(current,action){
   f.flowers.push({type:flower,x,y});f.inventory.flowers[flower]--;
   return {farm:f,message:FLOWERS[flower].name+'の花畑を配置しました。'};
  }
+ if(type==='move-flower'){
+  const fromX=Number(action?.fromX),fromY=Number(action?.fromY);
+  const original=f.flowers.find(item=>item.x===fromX&&item.y===fromY);
+  if(!original)fail('移動する花畑が見つかりません。');
+  if(!canPlaceFlower(f,x,y))fail('そこには花畑を移動できません。');
+  original.x=x;original.y=y;
+  return {farm:f,message:FLOWERS[original.type].name+'の花畑を移動しました。'};
+ }
  if(type==='remove-flower'){
   const index=f.flowers.findIndex(item=>item.x===x&&item.y===y);
   if(index<0)fail('花畑がありません。');
@@ -333,6 +341,14 @@ export function applyLayoutAction(current,action){
   if(!canPlaceRoad(f,x,y))fail('そこには道路を敷けません。');
   f.roads.push(key);f.inventory.roads--;
   return {farm:f,message:'道路を敷きました。'};
+ }
+ if(type==='move-road'){
+  const fromX=Number(action?.fromX),fromY=Number(action?.fromY);
+  const original=f.roads.indexOf(fromX+','+fromY);
+  if(original<0)fail('移動する道路が見つかりません。');
+  if(!canPlaceRoad(f,x,y))fail('そこには道路を移動できません。');
+  f.roads[original]=x+','+y;
+  return {farm:f,message:'道路を移動しました。'};
  }
  if(type==='remove-road'){
   const key=x+','+y,index=f.roads.indexOf(key);
