@@ -11,7 +11,7 @@
 <button id="save">紐づけて保存する</button></form><p id="status" role="status"></p></main>
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged,signInWithCustomToken,accountSession,timeoutSignal} from './auth-session.js?v=2.4.36';
+import {getAuth,onAuthStateChanged,signInWithCustomToken,accountSession,timeoutSignal} from './auth-session.js?v=2.4.37';
 const app=initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});
 const auth=getAuth(app),$=id=>document.getElementById(id);let passwordMode=false;$('save').disabled=true;
 onAuthStateChanged(auth,async user=>{

@@ -1,4 +1,4 @@
-import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36';
+import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37';
 
 const auth=getAuth();
 onAuthStateChanged(auth,user=>{

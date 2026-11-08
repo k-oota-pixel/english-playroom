@@ -26,8 +26,9 @@ const API='https://task-quest.onrender.com';
 const SESSION_TTL_MS=7*24*60*60*1000;
 const SESSION_STORAGE_PREFIX='monstudy.accountSession.v3.';
 const OLD_SESSION_STORAGE_PREFIX='monstudy.accountSession.v2.';
-const SERVER_WAKE_MAX_MS=120000;
-const SESSION_FETCH_TIMEOUT_MS=20000;
+const SERVER_WAKE_PING_TIMEOUT_MS=15000;
+const SESSION_FETCH_TIMEOUT_MS=90000;
+const SESSION_RETRY_TIMEOUT_MS=20000;
 
 export function timeoutSignal(ms){
  if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')return AbortSignal.timeout(ms);
@@ -43,30 +44,24 @@ const sessionChecks=globalThis[Symbol.for('monstudy.auth.sessionChecks')]||
 
 // A public, read-free status endpoint wakes sleeping free Render services.
 // It never verifies a user, reads Firestore or extends a login session.
+// Best-effort prewarm. A failed status ping must NEVER block login.
 export async function ensureRenderReady(){
  if(Date.now()<serverState.until)return;
  if(serverState.pending)return serverState.pending;
  const task=(async()=>{
-  const started=Date.now(),deadline=started+SERVER_WAKE_MAX_MS;
-  let attempts=0,lastFailure='unavailable';
-  while(Date.now()<deadline){
-   attempts++;
-   try{
-    const remaining=Math.max(1000,Math.min(12000,deadline-Date.now()));
-    const response=await fetch(API+'/api/status',{method:'GET',cache:'no-store',signal:timeoutSignal(remaining)});
-    if(response.ok){serverState.until=Date.now()+30000;return;}
-    lastFailure='HTTP '+response.status;
-    if(response.status>=400&&response.status<500&&response.status!==429)
-     throw Object.assign(new Error('サーバーの起動確認に失敗しました。'),{permanent:true,status:response.status});
-   }catch(error){
-    if(error?.permanent)throw error;
-    lastFailure=error?.name||'network';
-   }
-   const pause=Math.min(5000,1500+attempts*500,Math.max(0,deadline-Date.now()));
-   if(pause>0)await sleep(pause);
+  const started=Date.now();
+  try{
+   const response=await fetch(API+'/api/status',{
+    method:'GET',cache:'no-store',signal:timeoutSignal(SERVER_WAKE_PING_TIMEOUT_MS)
+   });
+   if(!response.ok)throw Object.assign(Error('Render status '+response.status),{status:response.status});
+   serverState.until=Date.now()+30000;
+  }catch(error){
+   console.warn('[monstudy-auth] prewarm did not complete',{
+    elapsedMs:Date.now()-started,kind:error?.name||'unknown',status:error?.status||null
+   });
+   throw error;
   }
-  console.warn('[monstudy-auth] server wake timeout',{attempts,elapsedMs:Date.now()-started,lastFailure});
-  throw new Error('認証サーバーの起動に時間がかかっています。少し待ってから、もう一度お試しください。');
  })();
  serverState.pending=task;
  try{return await task;}finally{if(serverState.pending===task)serverState.pending=null;}
@@ -126,14 +121,15 @@ export async function accountSession(user){
  const entry={until:Infinity,promise:null,signature};
  entry.promise=(async()=>{
   try{
-   await ensureRenderReady();
+   // Authenticate immediately; the public status ping is only a parallel hint.
+   void ensureRenderReady().catch(()=>{});
    const token=await user.getIdToken();
    for(let attempt=1;attempt<=2;attempt++){
     const started=Date.now();
     try{
      const response=await fetch(API+'/api/account/session',{
       method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
-      body:'{}',signal:timeoutSignal(SESSION_FETCH_TIMEOUT_MS)
+      body:'{}',signal:timeoutSignal(attempt===1?SESSION_FETCH_TIMEOUT_MS:SESSION_RETRY_TIMEOUT_MS)
      });
      const data=await response.json();
      if(!response.ok)throw Object.assign(Error(data.error||'ログインを確認できませんでした。'),{status:response.status});
@@ -147,7 +143,6 @@ export async function accountSession(user){
      if(attempt===2||!retryable(error))throw userFacingSessionError(error);
      serverState.until=0;
      await sleep(1200);
-     await ensureRenderReady();
     }
    }
   }catch(error){

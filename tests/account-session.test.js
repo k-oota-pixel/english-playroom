@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 const full=fs.readFileSync(new URL('../auth-session.js',import.meta.url),'utf8');
 const source=full.slice(full.indexOf("const API="),full.indexOf('export function onAuthStateChanged')).replaceAll('export ','');
-function fixture(sessionResponse=async()=>({ok:true,json:async()=>({registered:true,resetRequired:false})})){
+function fixture(sessionResponse=async()=>({ok:true,json:async()=>({registered:true,resetRequired:false})}),options={}){
  let now=1000,health=0,sessions=0;
  const saved=new Map();
  const store={getItem:k=>saved.has(k)?saved.get(k):null,setItem:(k,v)=>saved.set(k,String(v)),removeItem:k=>saved.delete(k)};
@@ -12,7 +12,7 @@ function fixture(sessionResponse=async()=>({ok:true,json:async()=>({registered:t
   Date:class extends Date{static now(){return now;}},AbortSignal,localStorage:store,sessionStorage:{removeItem:()=>{}},
   console:{warn:()=>{}},firebaseSignOut:async()=>{},setTimeout:fn=>fn(),
   fetch:async url=>{
-   if(url.endsWith('/api/status')){health++;return {ok:true};}
+   if(url.endsWith('/api/status')){health++;return options.pendingStatus?new Promise(()=>{}):{ok:true};}
    assert.ok(url.endsWith('/api/account/session'));sessions++;return sessionResponse();
   }
  });
@@ -67,4 +67,15 @@ test('password reset admission is never written to the seven-day cache',async()=
  const f=fixture(async()=>({ok:true,json:async()=>({registered:true,resetRequired:true})}));
  await f.api.accountSession(f.user());
  assert.equal(f.size,0);
+});
+
+test('unresponsive Render status ping never blocks a healthy admission API',async()=>{
+ const f=fixture(undefined,{pendingStatus:true});
+ const result=await Promise.race([
+  f.api.accountSession(f.user()),
+  new Promise((_,reject)=>setTimeout(()=>reject(Error('status ping blocked login')),1000))
+ ]);
+ assert.equal(result.registered,true);
+ assert.equal(f.sessions,1);
+ assert.equal(f.health,1);
 });

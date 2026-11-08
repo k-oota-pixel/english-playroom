@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <style id="monstudy-access-lock">html:before{content:"管理者認証を確認しています…";position:fixed;inset:0;display:grid;place-content:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style>
-<script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.4.36"></script>
+<script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.4.37"></script>
 <script src="../shell-bridge.js?v=2.1.1"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -38,7 +38,7 @@ body{margin:0;min-height:100svh;background:#f5f7f3;color:var(--ink);font-family:
 <dialog id="book" class="book"><div class="book-inner"><div class="book-head"><div><div class="eyebrow">FISHING COLLECTION</div><h2>つり図鑑</h2><p>見つけた生き物は英語名と日本語名で記録されます。</p></div><button id="bookClose" class="book-close" type="button">閉じる</button></div><div id="bookGrid" class="book-grid"></div></div></dialog>
 <script type="module">
 import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
-import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.36';
+import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37';
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';

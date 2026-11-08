@@ -6,7 +6,7 @@ import {createFinalEncounter,finalEnemyActions,FINAL_FLOOR} from './final-encoun
 import {createFinalPresentation} from './final-presentation.js?v=2.3.22';
 import {adminStatsAdjustment} from '../pet-admin-stats-adjustment.js?v=2.3.23';
 import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.23';
-import {accountSession} from '../auth-session.js?v=2.4.36';
+import {accountSession} from '../auth-session.js?v=2.4.37';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
