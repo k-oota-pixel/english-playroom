@@ -1,4 +1,4 @@
-import {materialRankingAppId,openMaterialRanking} from './material-ranking-ui.js?v=2.4.3';
+import {materialRankingAppId,openMaterialRanking} from './material-ranking-ui.js?v=2.4.33';
 const HOME=new URL('./',import.meta.url);
 
 function install(){

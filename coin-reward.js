@@ -1,6 +1,6 @@
 import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.3.51';
 import './material-open.js?v=2.3.1';
-import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.3.51';
+import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.4.33';
 installStandaloneMaterialRanking();
 import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
 import './nickname-profile.js?v=2.2.2';

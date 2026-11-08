@@ -69,3 +69,12 @@ test('both 100th-floor leaderboards show saved full-clear state, not arrival alo
  assert.match(rankings,/entry\.cleared===true\?'★ 完全制覇':'挑戦中'/);
  assert.match(styles,/\.adventure-clear-state\.is-cleared/);
 });
+
+test('in-game typing-defense mode buttons use lifetime best-stage standings',()=>{
+ const ui=read('material-ranking-ui.js');
+ assert.match(ui,/DEFENSE_BEST_ENDPOINT/);
+ assert.match(ui,/defense-rankings/);
+ assert.match(ui,/最高クリアステージ TOP3/);
+ assert.match(ui,/String\(item\.rank\|\|i\+1\)\+'位'/);
+ assert.match(ui,/Number\(item\.floor\)===5/);
+});

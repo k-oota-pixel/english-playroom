@@ -1,5 +1,6 @@
 /* Per-material daily top-three, shared by the shell and standalone exercises. */
 const ENDPOINT='https://task-quest.onrender.com/api/learning/material-rankings';
+const DEFENSE_BEST_ENDPOINT='https://task-quest.onrender.com/api/adventure/defense-rankings';
 const supported=new Set(['word-breaker','ateru','basic-quest','basic-grammar','grammar','eiken-retry','eiken-cloze','eiken-title','reading-training','listening-training','task-quest','talk-quest','pre2-interview-questions','eiken-pre2-interview-a','pet-catch','pet-fishing','today','word-tower','eiken-dungeon','case-talk','pet-chat','pet-instructions','pet-typing-defense-normal','pet-typing-defense-hard']);
 const styleId='monstudyMaterialRankStyle';
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
@@ -30,6 +31,8 @@ function styles(){
  .ms-material-rank-list li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 5px;border-top:1px solid #d4e2d7}
  .ms-material-rank-list li strong{white-space:nowrap;font-variant-numeric:tabular-nums}
  .ms-material-rank-list li span:nth-child(2){overflow-wrap:anywhere}
+ .ms-material-rank-title{display:block;margin-top:3px;font-size:10px;color:#648272}
+ .ms-material-rank-cleared{display:block;margin-top:3px;font-size:10px;color:#836011;white-space:nowrap}
  .ms-material-rank-dialog p{font-size:12px;color:#5d7469;margin:7px 0}
  .ms-material-rank-floating{position:fixed;right:12px;bottom:16px;z-index:900;min-height:40px;border:1px solid #8aaf9a;background:#f4faf3;color:#1f5a40;border-radius:999px;padding:9px 13px;box-shadow:0 4px 15px #0003;font:800 12px system-ui,sans-serif;cursor:pointer}
  body[data-screen-theme="dark"] .ms-material-rank-dialog,body[data-theme="dark"] .ms-material-rank-dialog{background:#1b2c23;color:#ecf4ec;border-color:#557763}
@@ -48,7 +51,7 @@ export async function openMaterialRanking(appId){
  dialog=make('dialog','ms-material-rank-dialog');
  const head=make('header','ms-material-rank-head');
  const defenseMode=appId==='pet-typing-defense-normal'?'ノーマル':appId==='pet-typing-defense-hard'?'ハード':'';
- head.append(make('h2','','🏆 本日の'+(defenseMode?' '+defenseMode+' ランキング':'取り組みランキング')));
+ head.append(make('h2','',defenseMode?'🏆 もんすた城の防衛 '+defenseMode+'ランキング':'🏆 本日の取り組みランキング'));
  const close=make('button','','閉じる');close.type='button';close.addEventListener('click',()=>dialog.close());head.append(close);
  dialog.append(head);
  const status=make('p','','ランキングを読み込んでいます…');status.setAttribute('role','status');dialog.append(status);
@@ -59,20 +62,30 @@ export async function openMaterialRanking(appId){
   const user=getAuth().currentUser;
   if(!user)throw Error('ログインするとランキングを確認できます。');
   const token=await user.getIdToken();
-  const response=await fetch(ENDPOINT+'?appId='+encodeURIComponent(appId),{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function'?AbortSignal.timeout(20000):undefined});
+  const url=defenseMode?DEFENSE_BEST_ENDPOINT+'?mode='+(defenseMode==='ノーマル'?'normal':'hard'):ENDPOINT+'?appId='+encodeURIComponent(appId);
+  const response=await fetch(url,{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function'?AbortSignal.timeout(20000):undefined});
   const data=await response.json();if(!response.ok)throw Error(data.error||'取得に失敗しました。');
   if(!status.isConnected)return;
   const list=Array.isArray(data.leaders)?data.leaders:[];
-  status.textContent=defenseMode?'本日クリアした異なるステージの数（日本時間）。同じステージは1日1回だけ集計します。':'学習完了として保存された取り組み数のランキング（日本時間）';
-  if(!list.length){dialog.append(make('p','','まだ本日の学習記録はありません。'));return;}
+  status.textContent=defenseMode?'最高クリアステージ TOP3・同じ記録は同順位です。':'学習完了として保存された取り組み数のランキング（日本時間）';
+  if(!list.length){dialog.append(make('p','',defenseMode?'まだクリア記録がありません。':'まだ本日の学習記録はありません。'));return;}
   const ol=make('ol','ms-material-rank-list');
   for(const [i,item] of list.entries()){
    const li=make('li');
-   li.append(make('span','',['🥇','🥈','🥉'][i]||String(i+1)),make('span','',item.petName||'ふしぎなたまご'),make('strong','',Math.max(0,Math.floor(Number(item.count)||0))+(defenseMode?'ステージ':'回')));
+   if(defenseMode){
+    const rank=make('span','',String(item.rank||i+1)+'位');
+    const name=make('span','',item.petName||'ふしぎなたまご');
+    name.append(make('small','ms-material-rank-title','ー'+(item.title||'称号なし')+'ー'));
+    const score=make('strong','','第'+Math.max(0,Math.floor(Number(item.floor)||0))+'ステージ');
+    if(Number(item.floor)===5)score.append(make('small','ms-material-rank-cleared','★ 完全制覇'));
+    li.append(rank,name,score);
+   }else{
+    li.append(make('span','',['🥇','🥈','🥉'][i]||String(i+1)),make('span','',item.petName||'ふしぎなたまご'),make('strong','',Math.max(0,Math.floor(Number(item.count)||0))+'回'));
+   }
    ol.append(li);
   }
   dialog.append(ol);
-  dialog.append(make('p','','週間称号は、1週間で4日以上、この教材の最終1位を獲得すると解放されます。'+(defenseMode?' モード別に判定されます。':'')));
+  dialog.append(make('p','',defenseMode?'週間称号は、最高記録とは別に日別の取り組み数から判定されます。':'週間称号は、1週間で4日以上、この教材の最終1位を獲得すると解放されます。'));
  }catch(error){if(status.isConnected)status.textContent=error.message||'ランキングを読み込めませんでした。'}
 }
 function inShellFrame(){
