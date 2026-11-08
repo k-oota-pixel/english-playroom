@@ -44,7 +44,7 @@ test('Existing rooms stay unchanged and WebP beta saves separately',()=>{
  assert.match(html,/room-webp-v1\.css\?v=/);
  assert.match(html,/WebPベッド試験版/);
 });
-test('The beta WebP bed URL remains accessible directly but is hidden from the public PLAY menu',()=>{
+test('All pet-room versions remain directly accessible but none are listed in the PLAY menu',()=>{
  const shell=read('app-shell.js'),play=read('pet-play-menu-v164.js'),main=read('index.html'),version=read('version-badge-v176.js');
  const start=shell.indexOf('  const hiddenMaterials='),end=shell.indexOf('  const sidebarIcon =',start);
  assert.ok(start>=0&&end>start);
@@ -54,10 +54,10 @@ test('The beta WebP bed URL remains accessible directly but is hidden from the p
   assert.equal(ctx.check('https://k-oota-pixel.github.io/english-playroom/pet-room/'+name),true,name+' should open');
  assert.equal(ctx.check('https://k-oota-pixel.github.io/english-playroom/pet-room/fake.html'),false);
  assert.doesNotMatch(play,/href="\.\/pet-room\/room-webp-v1\.html/);
- assert.match(play,/href="\.\/pet-room\/room-v4\.html"/);
- assert.match(play,/href="\.\/pet-room\/room-cozy\.html"/);
+ assert.doesNotMatch(play,/href="\.\/pet-room\//,"All experimental and regular room modes must stay out of PLAY");
+ for(const game of ["pet-adventure/","pet-catch/","pet-fishing/","pet-typing-defense/"]) assert.ok(play.includes(game),"Keep other PLAY games: "+game);
  assert.match(read('shell-bridge.js'),/target\.searchParams\.set\('material', material\)/);
  assert.match(shell,/if\(initial&&canOpen\(initial\)\)u=new URL\(initial,root\)/);
- assert.match(version,/const APP_VERSION='2\.4\.26'/);
- assert.match(main,/app-shell\.js\?v=2\.4\.26/);
+ assert.match(version,/const APP_VERSION='2\.4\.27'/);
+ assert.match(main,/app-shell\.js\?v=2\.4\.27/);
 });
