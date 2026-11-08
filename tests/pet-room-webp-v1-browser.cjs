@@ -23,7 +23,7 @@ const http=require('node:http'),fs=require('node:fs/promises'),path=require('nod
  await page.route('**/shell-bridge.js?*',r=>mock(r,"// Isolated material test: direct-link shell permission checked in Node regression."));
  try{
    await page.goto('http://127.0.0.1:'+port+'/pet-room/room-webp-v1.html',{waitUntil:'domcontentloaded'});
-   await page.locator('#objectLayer .object').waitFor({timeout:15000});
+   await page.locator('#objectLayer .object').first().waitFor({timeout:15000});
    await page.waitForFunction(()=>document.querySelector('.object[data-item-id="bed"] img')?.naturalWidth===464,{timeout:15000});
    await page.waitForFunction(()=>!document.querySelector('#petActor').hidden,{timeout:15000});
    assert.equal(await page.locator('.object').count(),2,'Two independently authored WebP furniture items should be present');
