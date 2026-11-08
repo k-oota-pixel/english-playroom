@@ -56,7 +56,16 @@ test('defense ranking dialog shows normal and hard together on demand with cache
  assert.match(page,/id="defenseRankingHardList"/);
  assert.doesNotMatch(page,/data-defense-ranking=/);
  assert.match(rankings,/Promise\.allSettled\(defenseModes\.map/);
- assert.match(rankings,/'pet-typing-defense-'\+board\.key/);
+ assert.match(rankings,/defense-rankings\?mode=/);
+ assert.match(rankings,/encodeURIComponent\(board\.key\)/);
  assert.match(rankings,/defenseCacheMs=3\*60\*1000/);
  assert.match(rankings,/defenseReload\.addEventListener\('click'/);
+});
+
+test('both 100th-floor leaderboards show saved full-clear state, not arrival alone',()=>{
+ const rankings=read('pet-adventure/rankings.js');
+ const styles=read('pet-adventure/styles.css');
+ assert.match(rankings,/if\(Number\(entry\.floor\)===100\)/);
+ assert.match(rankings,/entry\.cleared===true\?'★ 完全制覇':'挑戦中'/);
+ assert.match(styles,/\.adventure-clear-state\.is-cleared/);
 });

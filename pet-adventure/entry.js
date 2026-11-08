@@ -12,7 +12,7 @@ if(mode==='tower'||mode==='dungeon'){
  await import('./game.js?v=2.3.43');
 }
 else{
- await Promise.all([installTowerSeasonAnnouncement(),import('./rankings.js?v=2.4.31')]);
+ await Promise.all([installTowerSeasonAnnouncement(),import('./rankings.js?v=2.4.32')]);
 }
 
 

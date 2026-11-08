@@ -23,7 +23,7 @@ async function load(){
   for(const entry of data.leaders){
    const row=document.createElement('li'),rank=document.createElement('strong'),identity=document.createElement('span'),name=document.createElement('b'),title=document.createElement('small'),floor=document.createElement('strong');
    rank.textContent=entry.rank+'位';name.textContent=entry.petName;title.textContent='ー'+(entry.title||'称号なし')+'ー';identity.append(name,title);floor.className='ranking-floor';floor.append(document.createTextNode(current==='tower'?entry.floor+'階':'地下'+entry.floor+'層'));
-   if(current==='tower'&&Number(entry.floor)===100){const clearState=document.createElement('small');clearState.className='tower-clear-state '+(entry.cleared===true?'is-cleared':'is-challenging');clearState.textContent=entry.cleared===true?'★ 完全制覇':'挑戦中';floor.append(clearState);}
+   if(Number(entry.floor)===100){const clearState=document.createElement('small');clearState.className='adventure-clear-state '+(entry.cleared===true?'is-cleared':'is-challenging');clearState.textContent=entry.cleared===true?'★ 完全制覇':'挑戦中';floor.append(clearState);}
    row.append(rank,identity,floor);list.append(row);
   }
   status.textContent=data.leaders.length?'自己ベスト更新後にランキングへ反映されます。':'まだ記録がありません。最初の冒険に挑戦しよう！';
@@ -42,7 +42,7 @@ const defenseModes=[
  {key:'normal',status:document.getElementById('defenseRankingNormalStatus'),list:document.getElementById('defenseRankingNormalList')},
  {key:'hard',status:document.getElementById('defenseRankingHardStatus'),list:document.getElementById('defenseRankingHardList')}
 ];
-const defenseEndpoint='https://task-quest.onrender.com/api/learning/material-rankings?appId=';
+const defenseEndpoint='https://task-quest.onrender.com/api/adventure/defense-rankings?mode=';
 const defenseCache=new Map();
 const defenseCacheMs=3*60*1000;
 const defenseDay=()=>new Date(Date.now()+9*60*60*1000).toISOString().slice(0,10);
@@ -51,13 +51,16 @@ function renderDefenseBoard(board,data,error=''){
  board.list.replaceChildren();
  if(error){board.status.textContent=error;return;}
  const leaders=data?.leaders||[];
- board.status.textContent=leaders.length?'本日の上位'+leaders.length+'名':'まだ本日の記録はありません。';
+ board.status.textContent=leaders.length?'最高記録の上位'+leaders.length+'名':'まだクリア記録がありません。';
  for(const [index,entry] of leaders.entries()){
-  const li=document.createElement('li'),rank=document.createElement('b'),name=document.createElement('span'),count=document.createElement('strong');
+  const li=document.createElement('li'),rank=document.createElement('b'),identity=document.createElement('span'),name=document.createElement('b'),title=document.createElement('small'),count=document.createElement('strong');
   rank.textContent=(Number(entry.rank)||index+1)+'位';
   name.textContent=entry.petName||'ふしぎなたまご';
-  count.textContent=Math.max(0,Math.floor(Number(entry.count)||0))+'ステージ';
-  li.append(rank,name,count);board.list.append(li);
+  title.textContent='ー'+(entry.title||'称号なし')+'ー';
+  identity.append(name,title);
+  count.textContent='第'+Math.max(0,Math.floor(Number(entry.floor)||0))+'ステージ';
+  if(Number(entry.floor)===5){const badge=document.createElement('small');badge.className='adventure-clear-state is-cleared';badge.textContent='★ 完全制覇';count.append(badge);}
+  li.append(rank,identity,count);board.list.append(li);
  }
 }
 async function loadDefenseRankings(force=false){
@@ -79,7 +82,7 @@ async function loadDefenseRankings(force=false){
   const token=await user.getIdToken();
   if(requestId!==defenseSequence)return;
   const results=await Promise.allSettled(defenseModes.map(async board=>{
-   const response=await fetch(defenseEndpoint+encodeURIComponent('pet-typing-defense-'+board.key),{
+   const response=await fetch(defenseEndpoint+encodeURIComponent(board.key),{
     headers:{Authorization:'Bearer '+token},cache:'no-store',signal
    });
    const result=await response.json().catch(()=>({}));
