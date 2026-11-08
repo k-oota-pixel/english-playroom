@@ -8,7 +8,7 @@
 <style id="monstudy-access-lock">html:before{content:"ログイン情報を確認しています…";position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#f6f5ef;color:#193d38;font:16px system-ui}body{visibility:hidden!important}</style>
 <script type="module">if(window.top===window){await import('../access-gate.js?v=2.3.15')}else{document.getElementById('monstudy-access-lock')?.remove()}</script>
 <script src="../shell-bridge.js?v=6.0.13"></script>
-<link rel="stylesheet" href="./room-webp-v1.css?v=2.4.29">
+<link rel="stylesheet" href="./room-webp-v1.css?v=2.4.30">
 </head>
 <body>
 <main class="room-page">
@@ -64,7 +64,7 @@
    <section class="info-card">
     <h2>📝 おへやのメモ</h2>
     <p><strong id="petName">ペット</strong> のすきな家具をおいて、すてきなおへやにしてあげよう！</p>
-    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br>今回の家具は透過WebPのベッドのみ（２×２マス）。<br><span>独立保存・開発用 β版</span></div>
+    <div class="meta">家具をタップして置き場所を決められます。<br><strong>グリッド：6×6</strong><br>今回の家具は透過WebPのベッドのみ（縦１×２・横２×１マス）。<br><span>独立保存・開発用 β版</span></div>
    </section>
   </aside>
  </section>
@@ -78,6 +78,6 @@
  </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="./room-webp-v1.js?v=2.4.29"></script>
+<script type="module" src="./room-webp-v1.js?v=2.4.30"></script>
 </body>
 </html>
