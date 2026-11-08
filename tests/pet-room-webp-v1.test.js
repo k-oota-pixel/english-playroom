@@ -112,7 +112,7 @@ test('Existing rooms stay unchanged and WebP beta saves separately',()=>{
  assert.match(read('pet-room/room-v4.js'),/monstudy-pet-room-v4:/);
  assert.match(html,/room-webp-v1\.js\?v=/);
  assert.match(html,/room-webp-v1\.css\?v=/);
- assert.match(html,/WebPベッド試験版/);
+ assert.match(html,/WebP家具試験版/);
 });
 test('All pet-room versions remain directly accessible but none are listed in the PLAY menu',()=>{
  const shell=read('app-shell.js'),play=read('pet-play-menu-v164.js'),main=read('index.html'),version=read('version-badge-v176.js');
