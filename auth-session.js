@@ -120,9 +120,10 @@ function userFacingSessionError(error){
 export async function accountSession(user){
  const cached=readSessionCache(user);
  if(cached)return cached;
+ const signature=signInSignature(user);
  const existing=sessionChecks.get(user);
- if(existing&&existing.until>Date.now())return existing.promise;
- const entry={until:Infinity,promise:null};
+ if(existing&&existing.signature===signature&&existing.until>Date.now())return existing.promise;
+ const entry={until:Infinity,promise:null,signature};
  entry.promise=(async()=>{
   try{
    await ensureRenderReady();
