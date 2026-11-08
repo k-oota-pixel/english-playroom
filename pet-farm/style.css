@@ -332,6 +332,13 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 
 /* The farm is a blank, editable canvas. Roads and gardens are user-placed. */
 #roadsLayer{position:absolute;inset:0;z-index:2;pointer-events:none}
+#flowersLayer{position:absolute;inset:0;z-index:2;pointer-events:none}
+.flower-tile{position:absolute;width:54px;height:54px;border:0;background:none;pointer-events:none}
+.flower-tile svg{display:block;width:54px;height:54px;overflow:visible}
+.flower-shop-art{flex:0 0 45px;width:45px;height:45px;display:block}
+.flower-shop-art svg{width:45px;height:45px;display:block}
+.flower-inventory-art{display:inline-flex;width:30px;height:30px;vertical-align:middle;margin-right:5px}
+.flower-inventory-art svg{width:30px;height:30px;display:block}
 /* Continuous, well-trodden soil: adjacent cells have no separating lines.
    The exposed sides alone get a feathered earthen rim. */
 .road-tile{
