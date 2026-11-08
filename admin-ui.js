@@ -2,7 +2,8 @@ import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.9';
 import {adminContentRows} from './admin-content-model.js?v=2.1.5';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence,ensureRenderReady,timeoutSignal} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,setPersistence,browserLocalPersistence,ensureRenderReady,timeoutSignal} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
+import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
 const firebaseConfig={apiKey:"AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",authDomain:"eiken-retry.firebaseapp.com",projectId:"eiken-retry",storageBucket:"eiken-retry.firebasestorage.app",messagingSenderId:"231308672297",appId:"1:231308672297:web:5e8b8ede3a0246c2318b38"};
 const API='https://task-quest.onrender.com';
@@ -126,9 +127,42 @@ $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.messa
 $('logout').onclick=()=>signOut(auth);
 $('refresh').onclick=()=>searchQuery()?runSearch():load(pageIndex,true);$('search').oninput=onSearchInput;
 $('prev').onclick=()=>load(pageIndex-1);$('next').onclick=()=>load(pageIndex+1);
-onAuthStateChanged(auth,user=>{usagePanel.reset();generation++;viewGeneration++;searchSerial++;clearTimeout(searchTimer);allUsers=[];searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;pageCache.clear();detailCache.clear();expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;fetchedAt=0;searchFetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;$('search').value='';
- if(!user){$('users').replaceChildren();$('who').textContent='';$('login').hidden=false;$('logout').hidden=true;setStatus('管理者ログインをしてください。');return;}
- $('who').textContent=user.email||'';$('login').hidden=true;$('logout').hidden=false;load(0);
+function setAdminAuthorized(authorized){
+ document.documentElement.dataset.monstudyAdminAuthorized=String(Boolean(authorized));
+ window.dispatchEvent(new CustomEvent('monstudy-admin-access-change',{detail:{authorized:Boolean(authorized)}}));
+}
+onAuthStateChanged(auth,user=>{
+ usagePanel.reset();generation++;viewGeneration++;searchSerial++;clearTimeout(searchTimer);
+ allUsers=[];searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;
+ pageCache.clear();detailCache.clear();expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;
+ fetchedAt=0;searchFetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;$('search').value='';
+ setAdminAuthorized(false);
+ $('users').replaceChildren();
+ $('who').textContent=user?.email|| (user?'学習用アカウントでログイン中':'');
+ $('login').hidden=false;$('logout').hidden=!user;
+ if(!user){setStatus('Googleで管理者ログインをしてください。');return;}
+ if(!user.email){
+  setStatus('学習用アカウントでログインしています。Googleで管理者ログインを選択してください。');
+  return;
+ }
+ const own=generation,uid=user.uid;
+ setStatus('管理者権限を確認しています…');
+ void (async()=>{
+  try{
+   await api('/api/admin/session');
+   if(own!==generation||auth.currentUser?.uid!==uid)return;
+   setAdminAuthorized(true);
+   $('login').hidden=true;$('logout').hidden=false;
+   await load(0);
+  }catch(error){
+   if(own!==generation||auth.currentUser?.uid!==uid)return;
+   setAdminAuthorized(false);
+   $('login').hidden=false;
+   setStatus(error.message==='このアカウントには管理権限がありません。'
+    ?'このGoogleアカウントには管理権限がありません。「Googleで管理者ログイン」から正しいアカウントを選択してください。'
+    :error.message||'管理者権限を確認できませんでした。もう一度お試しください。','error');
+  }
+ })();
 });
 
 // No automatic request: the button reads only the displayed users, at most ten.
