@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {
- createCampaign,normalizedTyping,normalizedDefenseTyping,revealedWord,enemySpawnInterval,
+ createCampaign,normalizedTyping,normalizedDefenseTyping,revealedWord,enemyInvasionTime,INVASION_SECONDS,
  characterCount,hasApostrophe,POTATO_MEAN_CHARACTER_COUNT,potatoGap,grammarGap,
  scrambledTokens,TOTAL_QUESTIONS,STAGE_COUNT,STAGE_NAMES,PHASE_NAMES,EASY_WORD_PHASE_NAMES,GRAMMAR_SECTION_COUNT
 } from '../pet-typing-defense/data.js';
@@ -101,20 +101,27 @@ test('Normal shows a complete English answer while hard may scramble English tok
  assert.notDeepEqual(tokens,['We','should','drink','clean','water','every','day']);
  assert.deepEqual(tokens.slice().sort(),['We','should','drink','clean','water','every','day'].sort());
 });
-test('Normal mode keeps 1.65 / 3 / 4 / 5 / 7 second intervals',()=>{
- assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i)),[1.65,3,4,5,7]);
- assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'normal')),[1.65,3,4,5,7]);
+test('Each mode has its own five enemy invasion times, independent of spawn intervals',()=>{
+ const expected={
+  easy:[12,20,22,24,30],
+  normal:[10,15,18,22,28],
+  hard:[8,12,14,16,20]
+ };
+ assert.deepEqual(INVASION_SECONDS,expected);
+ for(const [mode,seconds] of Object.entries(expected))
+  assert.deepEqual(Array.from({length:5},(_,i)=>enemyInvasionTime(i,mode)),seconds);
+ assert.equal(enemyInvasionTime(0),10,'normal is the default');
 });
-test('Easy mode spawns enemies at 2.5 / 5 / 7 / 10 / 12 second intervals',()=>{
- assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'easy')),[2.5,5,7,10,12]);
-});
-test('Hard mode spawns enemies at 3 / 5 / 7 / 9 / 11 second intervals',()=>{
- const expected=[3,5,7,9,11];
- assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'hard')),expected);
- for(let stage=0;stage<5;stage++){
-  const times=Array.from({length:5},(_,i)=>i*enemySpawnInterval(stage,'hard'));
-  assert.deepEqual(times,[0,expected[stage],2*expected[stage],3*expected[stage],4*expected[stage]]);
- }
+test('Each attack wave spawns one enemy at a time and advances on defeat or timeout',()=>{
+ const game=readFileSync(new URL('../pet-typing-defense/game.js',import.meta.url),'utf8');
+ assert.match(game,/function spawnNextEnemy\(\)/);
+ assert.match(game,/function advanceAfterEnemy\(\)/);
+ assert.match(game,/spawnNextEnemy\(\);\s*showQuestion\(\);/);
+ assert.match(game,/advanceAfterEnemy\(\)/);
+ assert.match(game,/progress>=1\)breach\(enemy\)/);
+ assert.match(game,/enemyInvasionTime\(stageIndex\(\),run\.mode\)/);
+ assert.doesNotMatch(game,/enemySpawnInterval|spawnAt:|run\.elapsed\s*\+\=/);
+ assert.match(game,/const MAX_HP=6/);
 });
 test('Case and punctuation remain optional but letter sequence must match',()=>{
  assert.equal(normalizedTyping("  Could I have a menu, please?  "),"could i have a menu please");
