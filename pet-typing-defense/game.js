@@ -106,7 +106,7 @@ function showQuestion(){
 function drawFocus(){
  if(!run)return;
  const active=currentEnemy();
- for(const e of run.enemies)e.node.classList.toggle('active',e===active);
+ for(const e of run.enemies)if(e.node)e.node.classList.toggle('active',e===active);
 }
 function makeEnemy(e,i,stage){
  const node=document.createElement('div');
