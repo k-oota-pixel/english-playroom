@@ -1,13 +1,440 @@
 {
-  "generatedAt": "2026-11-09T00:49:54.978Z",
-  "editionDate": "2026-11-09",
+  "generatedAt": "2026-11-09T17:27:22.217Z",
+  "editionDate": "2026-11-10",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-09"
+    "lastSuccessfulEdition": "2026-11-10"
   },
   "articles": [
+    {
+      "id": "2026-11-10-astronauts-across-generations-share-the-stage",
+      "date": "2026-11-10",
+      "scope": "world",
+      "category": "science",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NASA",
+        "Artemis",
+        "spaceflight",
+        "astronauts"
+      ],
+      "titleJa": "宇宙飛行士が世代を超え集結",
+      "title": "Astronauts Across Generations Share the Stage",
+      "summaryJa": "2026年11月6日、フロリダ州のNASAケネディ宇宙センターでアルテミス・セレブレーション・ガラが開催され、世代を超えた宇宙飛行士たちがステージに集結し、人類の宇宙飛行の新たな時代を祝いました。",
+      "sourcePublishedAt": "2026-11-09T16:56:29.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "イベントが開催された場所と目的について情報を集める",
+        "followUpJa": "もしあなたがイベントに参加するなら、どの世代の宇宙飛行士に一番話を聞きたいですか？",
+        "questions": {
+          "5級": "Where was the gala held?",
+          "4級": "When did Purpose Entertainment host the Artemis Celebration Gala?",
+          "3級": "What mission completion did the event honor?",
+          "準2級": "Which event took place right after the gala at the Kennedy Space Center Visitor Complex?",
+          "2級": "How does the Artemis Celebration Gala connect to the nation's 250th anniversary celebration?",
+          "準1級": "What specific significance did the gathering of astronauts across generations hold for humanity's deep space exploration goals?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Space Gala in Florida",
+          "text": "New space events are exciting. On November 6, 2026, many people came to Florida. They had a big gala. NASA and Purpose Entertainment made it. Astronauts stood on the stage together. They can talk about space. Many brave explorers came. It was a very happy day for space fans. Everyone loves stars.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Astronauts Meet on Stage",
+          "text": "On November 6, 2026, a special gala happened in Florida. Purpose Entertainment hosted the Artemis Celebration Gala at NASA’s Kennedy Space Center. Many astronauts shared the stage together. They are brave explorers and innovators. The event celebrated human spaceflight. It also honored the Artemis II mission. Everyone was very happy to see past and future space heroes talking about deep space exploration.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Generations of Astronauts Celebrate",
+          "text": "On November 6, 2026, Purpose Entertainment hosted a special event in Florida. The Artemis Celebration Gala took place at NASA’s Kennedy Space Center Visitor Complex in Merritt Island. During this gala, astronauts from different generations shared the stage together. The event celebrated the next era of human spaceflight. It also honored the successful completion of the Artemis II mission. This historic milestone marked America’s return to deep space exploration, bringing many great innovators and explorers together.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Artemis Celebration Gala in Florida",
+          "text": "On November 6, 2026, Purpose Entertainment hosted the Artemis Celebration Gala at NASA’s Kennedy Space Center Visitor Complex in Merritt Island, Florida. Held right before NASA’s MAX POWER event, the gala celebrated explorers, innovators, and visionaries who are advancing the next era of human spaceflight. The special event honored the successful completion of the agency’s Artemis II mission, marking a major milestone in America’s return to deep space exploration. Furthermore, it served as a signature conclusion to the nation’s 250th anniversary celebration, looking ahead to humanity's return to the lunar surface through the Artemis campaign.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Generations of Explorers Gather for Artemis Gala at Kennedy Space Center",
+          "text": "On November 6, 2026, Purpose Entertainment hosted the Artemis Celebration Gala at NASA’s Kennedy Space Center Visitor Complex in Merritt Island, Florida. Taking place on the eve of NASA’s MAX POWER event, the high-profile gala united a diverse group of explorers, innovators, and visionaries dedicated to advancing the next exciting era of human spaceflight. The celebration officially honored the successful completion of the agency’s Artemis II mission, which marked a historic milestone in America’s ongoing return to deep space exploration. Serving as one of the signature events concluding the nation’s 250th anniversary celebration, the gathering successfully commemorated the remarkable achievements of Artemis II while looking forward to humanity’s eventual return to the lunar surface through the broader Artemis campaign. Photographers captured NASA astronauts Randy Bresnik, Luca Parmitano, Russell “Rusty” Schweickart, Frank Rubio, and Bob Hines standing together onstage to share this historic moment with colleagues and space enthusiasts alike.",
+          "wordCount": 146
+        },
+        "準1級": {
+          "title": "Astronauts Across Generations Unite at Historic Florida Gala for Artemis Era",
+          "text": "On November 6, 2026, Purpose Entertainment welcomed prominent figures to the Artemis Celebration Gala at NASA’s Kennedy Space Center Visitor Complex in Merritt Island, Florida. Scheduled on the eve of NASA’s prominent MAX POWER event, the gala brought together explorers, innovators, and visionaries whose collective efforts continue to shape the next frontier of human spaceflight. The gathering paid tribute to the successful completion of the agency’s Artemis II mission, marking a pivotal milestone in America’s renewed commitment to deep space exploration. Positioned as a signature event concluding the nation’s 250th anniversary celebration, the evening successfully honored past achievements while anticipating humanity’s eventual return to the lunar surface through the ongoing Artemis campaign, uniting generations of spacefarers onstage to share this remarkable milestone.\n\nAmong those in attendance were NASA astronauts Randy Bresnik, Luca Parmitano, Russell “Rusty” Schweickart, Frank Rubio, and Bob Hines, who appeared onstage together to celebrate the occasion. Their presence underscored the continuous thread of dedication connecting veteran spacefarers with the newer generation of explorers driving modern missions forward. Through such landmark gatherings, the aerospace community reflects upon decades of accumulated knowledge while preparing for humanity's upcoming journeys back to the Moon and beyond.",
+          "wordCount": 192
+        }
+      },
+      "sources": [
+        {
+          "name": "NASA News",
+          "url": "https://www.nasa.gov/image-article/astronauts-across-generations-share-the-stage/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-10-bosaicho-training-prefectures",
+      "date": "2026-11-10",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Bosaicho",
+        "disaster-prevention",
+        "Japan"
+      ],
+      "titleJa": "防災庁が都道府県向けに研修",
+      "title": "New Disaster Agency Trains Local Staff",
+      "summaryJa": "今月新しく発足した防災庁は、被災地の迅速な支援や地域防災力の向上を目指し、9日に都道府県の窓口職員を対象とした研修を実施しました。",
+      "sourcePublishedAt": "2026-11-09T13:19:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "新しく発足した防災庁が都道府県の職員に対して何を行ったかを確認します。",
+        "followUpJa": "自治体との連携が災害時にどう役立つか考えてみましょう。",
+        "questions": {
+          "5級": "What agency started this month in Japan?",
+          "4級": "Who did the new disaster agency train on November 9?",
+          "3級": "What are two main goals of the new disaster agency?",
+          "準2級": "What special title do the prefecture window staff members have after taking the role?",
+          "2級": "How does the disaster agency plan to support local governments after a disaster occurs?",
+          "準1級": "What specific role does the newly established disaster agency serve regarding emergency response operations?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Agency Starts",
+          "text": "A new disaster agency starts this month in Japan. It helps local places. On November 9, the agency has a training. It trains people from prefectures. These workers are an important window for the new agency. They learn how to make local areas safe from big disasters now.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Disaster Agency Training",
+          "text": "A new disaster agency started this month in Japan. It works as a main center for disaster response. The agency wants to help local governments quickly after disasters happen. It also wants to make local disaster prevention stronger. On November 9, the agency held a special training session. The people in this training were staff members from different prefectures who act as the main link to the agency.",
+          "wordCount": 67
+        },
+        "3級": {
+          "title": "New Disaster Agency Holds Training for Local Staff",
+          "text": "The new Disaster Management Agency started this month in Japan. It serves as a command center for all disaster responses. The agency aims to support local governments quickly after disasters happen. It also wants to improve regional disaster prevention power across the country. On November 9, the agency held a special training session for prefectural staff members. These workers act as the main window between local regions and the national agency. They learn important skills to help protect communities and make sure that communication works smoothly when emergencies occur in Japan.",
+          "wordCount": 90
+        },
+        "準2級": {
+          "title": "Disaster Management Agency Conducts Prefecture Training",
+          "text": "The newly established Disaster Management Agency held its first major training session on November 9, targeting regional window staff members from various prefectures. Launched earlier this month, the agency acts as a central command tower for disaster response across Japan. Its primary goals include providing prompt support to local governments after disasters strike and enhancing regional disaster prevention capabilities. During the training, prefectural officials who serve as official contact points learned important coordination skills to ensure smooth communication and effective collaboration between national and local levels when emergencies happen. These workers play a key role in connecting local communities with national support systems.",
+          "wordCount": 102
+        },
+        "2級": {
+          "title": "Japan's Disaster Management Agency Holds First Prefecture Training",
+          "text": "The Disaster Management Agency, which was officially established earlier this month, is taking active steps to strengthen nationwide emergency preparedness and response capabilities. Operating as the central command tower for disaster response across Japan, the agency aims to deliver prompt support to local governments following a disaster while continuously improving regional disaster prevention capabilities. As part of this important mission, the agency conducted a dedicated training session on November 9 to support local operations. The participants in this program were prefectural window staff members, who function as key administrative contacts for the national agency. These officials act as vital connection points between national operations and local governments, ensuring that disaster protocols and communication channels remain strong and efficient across every region. The recent training helps these workers prepare for future challenges and coordinates local responses more effectively.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "Disaster Management Agency Holds Training Session for Prefectural Window Personnel",
+          "text": "The newly established Disaster Management Agency, which was officially launched earlier this month in Japan, functions as a central command tower for national emergency response operations. The core mandate of the Disaster Management Agency centers on facilitating prompt municipal support following natural disasters and systematically elevating regional disaster prevention capabilities throughout Japan. To advance these vital objectives, the Disaster Management Agency convened a targeted training session on November 9, specifically designed for prefectural window personnel who operate as key administrative contact points for the national agency. These designated prefectural officials constitute the critical bridge connecting local communities directly with national response frameworks. By participating in this specialized instruction, the prefectural staff members are thoroughly equipped to streamline post-disaster communication, ensure seamless administrative cooperation, and reinforce grassroots preparedness against potential future calamities across every prefecture. The Disaster Management Agency aims to strengthen overall national resilience in times of crisis while establishing robust operational protocols between national authorities and local governments throughout Japan. The newly inaugurated Disaster Management Agency continues its active operational outreach across the country to ensure that every prefecture remains fully prepared for future emergencies and maintains close coordination with national disaster prevention networks established by the government in Japan.",
+          "wordCount": 200
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261109de73178"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-10-boy-names-became-girl-names",
+      "date": "2026-11-10",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NameDaisy",
+        "baby names",
+        "trends",
+        "US names"
+      ],
+      "titleJa": "名前の性別が逆転",
+      "title": "Boy Names That Became Girl Names",
+      "summaryJa": "名付け支援サイトのNameDaisyが、男の子に多かった名前が女の子に多くつけられるようになった事例とその原因を紹介しています。",
+      "sourcePublishedAt": "2026-11-09T13:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "男の子の名前から女の子の名前へ変わった事例やその主な原因について理解を深めましょう。",
+        "followUpJa": "名付けの流行の変化について、身近な名前の例を挙げて話し合ってみましょう。",
+        "questions": {
+          "5級": "What site talks about baby names?",
+          "4級": "Which names were once for boys?",
+          "3級": "How many names changed from boys to girls?",
+          "準2級": "Why did more boy names become girl names?",
+          "2級": "What role did the decrease of boys play in the name changes?",
+          "準1級": "How does NameDaisy explain the primary driver behind the shifting gender majorities in baby names?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Baby Names",
+          "text": "NameDaisy is a baby name site. It talks about names. Some boy names are now girl names. This change is very interesting. Many babies get new names today. Girls have new name trends now. Boys and girls share some names. People like to choose nice names for babies everywhere.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Boy and Girl Names",
+          "text": "NameDaisy is a website about baby names. It shows that some boy names became girl names now. For example, Leslie and Ashley were mostly boy names long ago. Today, they are mostly girl names in America. This happens because trends for girls change over time. More girls get these names than before. Name trends change across many years in the United States.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "Name Trends in America",
+          "text": "A baby name site called NameDaisy shares interesting news. Some names for boys are now used for girls. Names like Leslie, Kelly, and Ashley were once mostly for boys. Today, they are popular for girls. The site studied American names from 1936 to 2025. It found that 42 names changed from mostly boy names to mostly girl names. Only 12 names changed the other way around. This happens because girl name trends change a lot.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "Shifting Gender Trends in Baby Names",
+          "text": "NameDaisy, a website that tracks baby name popularity, recently reported on an interesting phenomenon. Many names that were once given mostly to boys are now used more frequently for girls. According to data from the United States between 1936 and 2025, forty-two names shifted from being a majority boy name to a majority girl name. In contrast, only twelve names shifted from majority girl to majority boy. Classic examples of names that transitioned from male to female include Leslie, Kelly, Ashley, Aubrey, and Lindsey. Research shows that this trend is primarily driven by changes in how girls are named, as the increase in girls receiving these names outweighed other factors.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "The Changing Landscape of Baby Names",
+          "text": "NameDaisy, a popular baby name website, has explored an intriguing trend in how parents name their children. The site highlights cases where names predominantly given to boys in the past have become more common for girls. Analyzing U.S. baby name data from 1936 through 2025, researchers discovered that fifty-four names experienced a shift in majority gender. Among these, forty-two names changed from being mostly male to mostly female, while only twelve changed from female to male. Well-known names such as Leslie, Kelly, and Ashley once belonged primarily to boys before transitioning into female names. Furthermore, names like Charlie and Blake have evolved into gender-neutral options. When examining the data closely, NameDaisy found that changes in girl name trends had a much larger impact on these shifts than changes in boy names, demonstrating that evolving naming conventions for girls are the primary catalyst.",
+          "wordCount": 141
+        },
+        "準1級": {
+          "title": "Investigating the Shift in Baby Name Genders",
+          "text": "NameDaisy, a comprehensive database tracking global baby name popularity and trends, has recently published findings regarding an intriguing linguistic phenomenon: the rising prevalence of traditionally male names being bestowed upon female infants. By analyzing historical United States naming records spanning from 1936 to 2025, researchers identified fifty-four instances where the majority gender associated with a specific name reversed over time. Crucially, forty-two of these instances involved names transitioning from a male majority to a female majority, whereas only twelve moved in the reverse direction. Familiar monikers such as Leslie, Kelly, Ashley, Aubrey, and Lindsey exemplify this shift, having migrated from predominantly male usage to firmly established female territory. Conversely, names like Jean and Ollie followed the opposite trajectory, while Charlie and Blake evolved into equally shared gender-neutral designations. Delving deeper into the statistical underpinnings of these transitions, NameDaisy revealed that the phenomenon is largely asymmetrical. The transformation is primarily propelled by shifting trends in female naming conventions, where the surge in female infants receiving these names significantly outpaced any decline in male recipients. Consequently, analysts concluded that the dynamic evolution of girls' names exerts a far more profound influence on modern nomenclature than corresponding changes among boys.",
+          "wordCount": 195
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261109-boy-names-became-girl/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-10-hokkaido-solar-power-seven-eleven-co2-reduction",
+      "date": "2026-11-10",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "environment"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "solar-energy",
+        "co2-reduction",
+        "seven-eleven",
+        "hokkaido-electric-power"
+      ],
+      "titleJa": "セブンで太陽光活用",
+      "title": "Hokkaido Solar Power Powers Seven-Eleven Stores for CO2 Reduction",
+      "summaryJa": "北海道電力とセブン‐イレブンなどがオフサイト型PPAを活用し、江別市の太陽光発電所から道内の店舗へ再生可能エネルギーの供給を開始しました。",
+      "sourcePublishedAt": "2026-11-09T02:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "太陽光発電の導入によって店舗の環境負荷がどう変わるかを確認し、企業の脱炭素への取り組み方針を判断する。",
+        "followUpJa": "北海道内のセブン‐イレブン店舗におけるCO2削減量や供給店舗数について話し合ってみましょう。",
+        "questions": {
+          "5級": "What stores can use solar power in Hokkaido?",
+          "4級": "How many Seven-Eleven stores get power from this project?",
+          "3級": "How much CO2 can Seven-Eleven reduce every year with this solar power?",
+          "準2級": "Where is the new solar power plant located, and who owns it?",
+          "2級": "What is the name of the special service used to supply renewable energy from outside the store sites?",
+          "準1級": "Explain how the off-site corporate PPA scheme works between the generator, the electric company, and the retail stores."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Solar Power for Stores",
+          "text": "Hokkaido Electric Power and Seven-Eleven start a new project. They use solar power for stores in Hokkaido. A new solar power plant opens on November 1. It makes clean energy. The energy goes to many Seven-Eleven stores. This helps the environment. People are very happy about this green energy work.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "New Solar Energy in Hokkaido",
+          "text": "Hokkaido Electric Power, Seven-Eleven, and Yuuniji start a new solar power project. A new solar plant begins to work on November 1 in Ebetsu. This plant makes clean energy from the sun. The power goes to Seven-Eleven stores in Hokkaido. This special plan helps to reduce CO2 emissions. The companies want to make Hokkaido a green place.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Solar Power Reduces CO2 in Hokkaido",
+          "text": "Hokkaido Electric Power, Seven-Eleven Japan, and Yuuniji are working together on a new green energy project. They built a solar power plant in Ebetsu, Hokkaido. The plant started operating on November 1. It supplies solar electricity to about 870 Seven-Eleven stores across Hokkaido. This off-site corporate PPA project helps Seven-Eleven reduce its carbon dioxide emissions by about 2,000 tons every year. All three companies want to support the Zero Carbon Hokkaido goal through this long-term teamwork.",
+          "wordCount": 73
+        },
+        "準2級": {
+          "title": "Hokkaido Electric Power and Seven-Eleven Launch Solar PPA Project",
+          "text": "Hokkaido Electric Power, Seven-Eleven Japan, and Yuuniji have started a new renewable energy project in Hokkaido. Using an off-site corporate PPA service, they developed a solar power plant in Ebetsu City. The plant began operating on November 1, supplying solar electricity to about 870 Seven-Eleven stores across Hokkaido. This agreement allows the retail stores to receive about 3.9 million kWh of clean energy annually. As a result, Seven-Eleven expects to reduce its carbon dioxide emissions by approximately 2,000 tons every year. The partners aim to work together for twenty years to support Hokkaido's decarbonization goals and contribute to the realization of a zero-carbon region.",
+          "wordCount": 100
+        },
+        "2級": {
+          "title": "Off-Site Corporate PPA Brings Solar Energy to Seven-Eleven Stores",
+          "text": "Hokkaido Electric Power Company, Seven-Eleven Japan, and Yuuniji have launched a collaborative initiative to reduce carbon dioxide emissions using an off-site corporate PPA service. Following the completion of a solar power plant in Ebetsu City, operations officially began on November 1. The facility, owned by Yuuniji, features 6,000 solar panels with an output of 1,998 kW. Through the power grid, the generated electricity is supplied to approximately 870 Seven-Eleven stores throughout Hokkaido. The agreement guarantees an annual supply of about 3.9 million kWh for a period of twenty years. Consequently, Seven-Eleven anticipates cutting its CO2 emissions by roughly 2,000 tons annually. Through this long-term partnership, the companies demonstrate their commitment to regional decarbonization and actively contribute to the Zero Carbon Hokkaido initiative promoted by the local government, aiming for a sustainable future by working together to protect the environment and expand renewable energy use.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Hokkaido Electric Power and Seven-Eleven Advance Decarbonization with Solar PPA",
+          "text": "In a decisive move to accelerate regional sustainability across Japan, Hokkaido Electric Power, Seven-Eleven Japan, and Yuuniji have successfully initiated a renewable energy project leveraging an off-site corporate PPA framework. The venture centers on a newly operational solar power plant situated in Ebetsu, Hokkaido, which officially commenced electricity delivery on November 1. Yuuniji, a specialized company established by Hokkaido Electric Power, owns the facility, which is equipped with 6,000 solar panels yielding a total output of 1,998 kW. Utilizing the existing electrical grid, the project routes generated solar energy to approximately 870 Seven-Eleven convenience stores across Hokkaido. Over the designated twenty-year supply period, the facility is projected to deliver approximately 3.9 million kWh annually. This substantial influx of clean energy will enable Seven-Eleven to slash its carbon dioxide emissions by an estimated 2,000 tons each year. By forging this long-term alliance, the participating entities reinforce their dedication to environmental stewardship, directly supporting the broader ambitions of the Zero Carbon Hokkaido initiative while ensuring a steady transition toward clean energy for future generations. The collaborative effort demonstrates how modern corporate partnerships can harness regional renewable resources to address global climate challenges effectively through structured agreements.",
+          "wordCount": 188
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253234_2073.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-10-jr-hokkaido-soya-line-talks",
+      "date": "2026-11-10",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "JR Hokkaido",
+        "Soya Line",
+        "local railways",
+        "high school students"
+      ],
+      "titleJa": "宗谷線の存続協議始まる",
+      "title": "Local Talks Begin Over the Future of the JR Soya Line in Hokkaido",
+      "summaryJa": "JR北海道が単独維持困難とする宗谷線について、沿線自治体などの初会合が始まりました。",
+      "sourcePublishedAt": "2026-11-09T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "宗谷線の存続問題について、高校生の通学事情をふまえてどのような判断が求められているかを考えます。",
+        "followUpJa": "ローカル線の存続と地域住民の生活維持のバランスについて話し合ってみましょう。",
+        "questions": {
+          "5級": "Is the Soya Line important for high school students?",
+          "4級": "Why do high school students need the train to go to school?",
+          "3級": "How many students at Nayoro High School use the yellow line section to commute?",
+          "準2級": "What makes it difficult for JR Hokkaido to keep running the yellow line sections alone?",
+          "2級": "How much is the annual deficit for the Nayoro-Wakkanai section of the Soya Line?",
+          "準1級": "What specific factors were highlighted regarding the historical decline and current challenges of maintaining the Soya Line network?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Trains for Students",
+          "text": "The JR Soya Line is in Hokkaido. High school students use this train to go to school every day. They live far away. Without the train, they have big problems. Parents must drive them. It is very hard work. The train is very important for their daily life.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Local Line Talks Begin",
+          "text": "JR Hokkaido has money problems with some local lines. These are yellow line sections that are hard to keep alone. People had the first meeting about the Soya Line. Nayoro High School has about 380 students. Many students take this train to school every day. Teachers and students want to keep the train running because they need it.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "A Vital Railway in Hokkaido",
+          "text": "The JR Soya Line faces serious financial trouble. It is one of the yellow lines that JR Hokkaido cannot keep alone. A new working group meeting started with local governments, the prefecture, and the national government. About forty students use this train from the Bifuuka and Oineppu areas. For them and elderly people going to hospitals, the train is a very important lifeline.",
+          "wordCount": 63
+        },
+        "準2級": {
+          "title": "Discussions Start for the Soya Line",
+          "text": "Local authorities, the prefecture, and JR Hokkaido have started discussions regarding the future of the Soya Line. This route is part of the yellow line sections, which JR Hokkaido states are difficult to maintain independently. The section between Nayoro and Wakkanai has a yearly deficit of 3.12 billion yen, making it the second highest among these troubled routes. Average daily usage per kilometer has dropped significantly since the privatization of the national railways in 1987. During the recent meeting, representatives from twelve local municipalities, Hokkaido prefecture, and the national government gathered. Although promotion measures were presented by the state and Hokkaido, concrete proposals from JR Hokkaido are still awaited before deeper discussions can proceed.",
+          "wordCount": 112
+        },
+        "2級": {
+          "title": "Future of the Soya Line Faces Discussions",
+          "text": "Local stakeholders have initiated formal discussions concerning the future of the JR Soya Line, a regional rail link facing severe financial strain. The route is categorized under yellow line sections, representing eight segments totaling around 900 kilometers that JR Hokkaido struggles to sustain on its own. Combined, these sections accumulate a deficit of approximately 15.6 billion yen. Specifically, the Nayoro-Wakkanai segment records a deficit of 3.12 billion yen, making it the second-largest loss among the group. Daily passenger numbers per kilometer have plummeted by over sixty percent since the privatization of the national railways in 1987. During the inaugural working group meeting on November 9, representatives from twelve municipalities, Hokkaido prefecture, and national transport authorities convened. Although the state and Hokkaido presented railway promotion measures, concrete policy debates await further proposals from JR Hokkaido before discussions can proceed further.",
+          "wordCount": 134
+        },
+        "準1級": {
+          "title": "Local Talks Begin Over the Future of the JR Soya Line in Hokkaido",
+          "text": "Municipal leaders, regional authorities, and railway representatives have convened for the inaugural working group meeting addressing the precarious future of the JR Soya Line. Designated as part of JR Hokkaido's vulnerable yellow line network of eight segments totaling about 900 kilometers, the route struggles with severe financial deficits. The combined deficit across these yellow line sections reaches approximately 15.6 billion yen, with the segment connecting Nayoro and Wakkanai alone incurring a staggering deficit of 3.12 billion yen, ranking as the second-highest loss across the company's troubled sections. Average daily ridership per kilometer has experienced a contraction exceeding sixty percent compared to the metrics recorded following the privatization of the national railway system in 1987. During the November 9 gathering, participants including representatives from twelve local municipalities, Hokkaido prefecture, and national transport authorities discussed the broader context. While transport authorities and Hokkaido presented rail utilization promotion measures, the initial meeting concluded without entering substantive policy negotiations, pending forthcoming concrete proposals from the railway operator to guide future talks. This vital regional railway remains an essential daily lifeline for local communities. For instance, approximately forty students from the Bifuuka and Oineppu areas rely on the yellow line section to commute to Nayoro High School every single morning. School officials and students have emphasized that losing the train service would create severe daily transportation hardships, forcing working parents to provide alternative car rides. Beyond student commuters, elderly residents also depend heavily on the railway network to access necessary medical institutions and healthcare services across the region. Local stakeholders now face the complex task of balancing essential public transportation needs with mounting financial realities.",
+          "wordCount": 265
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63483"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-10-shingo-katori-youtube-smapsmap-comedy",
+      "date": "2026-11-10",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Shingo Katori",
+        "SMAP",
+        "YouTube",
+        "comedy"
+      ],
+      "titleJa": "香取慎吾が語る原点",
+      "title": "Shingo Katori Talks About Comedy Roots on YouTube",
+      "summaryJa": "香取慎吾がYouTubeで『SMAP×SMAP』のコントへの思いや俳優活動への影響を語り、ファンから感動の声が寄せられました。",
+      "sourcePublishedAt": "2026-11-09T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "香取慎吾がコントから何を学び、それが現在の活動にどう活きているのかを理解する。",
+        "followUpJa": "香取さんのように、過去の経験が現在の仕事にどうつながっているかを考えてみましょう。",
+        "questions": {
+          "5級": "What color is Shingo Katori's hair in the YouTube video?",
+          "4級": "What comedy show did Shingo Katori talk about on his YouTube channel?",
+          "3級": "When is the comedy live show with Sissonne planned to take place?",
+          "準2級": "Why does Shingo Katori think comedy is his starting point for acting in dramas and movies?",
+          "2級": "How long did Shingo Katori perform comedy sketches on SMAP×SMAP according to the article?",
+          "準1級": "What specific reasons did fans express in response to Shingo Katori's nostalgic remarks about SMAP×SMAP?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Shingo Katori's YouTube",
+          "text": "Shingo Katori has a YouTube channel. He made a new video. He changed his hair color to blonde. Many fans watch his videos. He talks about his work and plans. Fans are very happy to see him talk about his life and new projects today.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Talking About Comedy",
+          "text": "Shingo Katori talked about comedy on his YouTube channel. He loves comedy very much. He worked on comedy sketches for a long time on TV. He said that this experience is very important to him. Fans watched the video and felt very happy. They remembered the old TV show and wrote many nice comments online.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Shingo Katori Talks About Comedy Roots",
+          "text": "On November 5, Shingo Katori updated his official YouTube channel with a new video. While getting his hair bleached blonde, he talked about his upcoming comedy live show with the comedy duo Sissonne, which is planned to take place at the Nippon Budokan in January 2027. He also shared his thoughts about his past work on the television program SMAP×SMAP. He explained that doing comedy sketches for many years is a very precious treasure. He believes that comedy is the true starting point for his acting in dramas, movies, and stage plays.",
+          "wordCount": 91
+        },
+        "準2級": {
+          "title": "Shingo Katori Discusses Comedy and Acting",
+          "text": "On November 5, entertainer Shingo Katori updated his YouTube channel with a video showing him bleach his hair blonde. During the process, he talked about his upcoming comedy live show titled Shigonne, which will happen at the Nippon Budokan in January 2027 with the comedy duo Sissonne. Katori also shared deep thoughts about comedy on the program. He said that doing sketches on the television show SMAP×SMAP for a long time is a precious treasure. He believes that comedy is the foundation of his acting work in dramas, movies, and stage plays because playing diverse characters helped him develop his craft. Fans left emotional comments online, expressing joy and fond memories of his classic television comedy sketches.",
+          "wordCount": 116
+        },
+        "2級": {
+          "title": "Shingo Katori Reflects on SMAP×SMAP Comedy Roots",
+          "text": "On November 5, entertainer Shingo Katori updated his official YouTube channel, SHINGO KATORI, sharing a video where he bleaches his hair blonde and discusses his career. During the relaxing chat, Katori touched upon his upcoming comedy live show, Shigonne, scheduled for January 2027 at the Nippon Budokan with the comedy duo Sissonne, expressing great excitement about working with them. Furthermore, Katori opened up about his long history with comedy sketches. He stated that his extensive work on the variety program SMAP×SMAP is an irreplaceable treasure. He firmly believes that these comedy experiences form the true origin of his acting career across dramas, movies, and stage productions, noting how playing diverse characters helped him develop his craft. Fans flooded the comment section with emotional reactions, thanking him for the nostalgic memories of the classic show.",
+          "wordCount": 133
+        },
+        "準1級": {
+          "title": "Shingo Katori Explores the Comedy Foundation That Shaped His Acting Career",
+          "text": "In a recent video update on his official YouTube channel, SHINGO KATORI, Japanese entertainer Shingo Katori offered fans a glimpse into his personal grooming process as he bleached his hair blonde, while simultaneously reflecting on his illustrious career. The conversation naturally turned toward his upcoming joint comedy live show, Shigonne, set to take place at the Nippon Budokan in January 2027 alongside the comedy duo Sissonne. Katori shared his enthusiasm for the collaboration, remarking on the surprising physical stature of his comedy partners after meeting them for planning sessions. Beyond upcoming projects, Katori offered poignant insights into his artistic origins, emphasizing that his extensive tenure performing comedy sketches on the long-running variety program SMAP×SMAP remains an invaluable personal treasure. He explained that portraying a vast array of diverse characters over the years—spanning various genders and roles—served as the fundamental bedrock and starting point for his subsequent acting work in television dramas, films, and stage plays. Upon hearing his heartfelt reflections, devoted fans inundated social media and comment sections with emotional praise, expressing deep nostalgia and joy at his affectionate tribute to the classic program.",
+          "wordCount": 186
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261109-5287790/"
+        }
+      ]
+    },
     {
       "id": "2026-11-09-128-shinkin-banks-system-recovery",
       "date": "2026-11-09",
