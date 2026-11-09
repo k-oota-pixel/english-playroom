@@ -359,4 +359,17 @@ $('typing').addEventListener('keydown',event=>{
   if(currentEnemy()&&normalizedDefenseTyping($('typing').value,stageIndex())===normalizedDefenseTyping(currentEnemy().q.answer,stageIndex()))strike();
  }
 });
-window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame);if(run&&!run.ended){run.ended=true;queueProgress(run,true)}});
+window.addEventListener('pagehide',()=>{
+ if(frame)cancelAnimationFrame(frame);
+ if(run&&!run.ended){
+  run.ended=true;run.active=false;
+  queueProgress(run,true);
+  // Best effort: a keepalive request can finish even when the iframe is removed.
+  const api=availableCoinApi();
+  if(api?.settleTypingDefenseRun)
+   void api.settleTypingDefenseRun(run.mode,run.sessionId,run.clearedPhases);
+ }
+});
+window.addEventListener('pageshow',event=>{
+ if(event.persisted&&run?.ended)location.reload();
+});
