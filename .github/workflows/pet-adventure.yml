@@ -19,7 +19,8 @@ jobs:
           node-version: '24'
       - run: npm install --ignore-scripts
       - run: npx playwright install --with-deps chromium
-      - run: node --test tests/pet-realtime.test.js tests/pet-battle-art.test.js tests/pet-adventure.test.js tests/pet-strength.test.js tests/release-version.test.js tests/pet-adventure-eiken.test.js
+      - run: node --test tests/pet-adventure-eiken.test.js
+      - run: node --test tests/pet-realtime.test.js tests/pet-battle-art.test.js tests/pet-adventure.test.js tests/pet-strength.test.js tests/release-version.test.js
       - run: node tests/adventure-selection-browser.cjs
       - run: node tests/adventure-rankings-browser.cjs
       - run: node tests/adventure-checkpoints-browser.cjs
