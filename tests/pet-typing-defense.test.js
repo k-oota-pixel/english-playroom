@@ -160,3 +160,20 @@ test('game launcher has three large direct mode buttons and no old setup text',(
  assert.doesNotMatch(game, /textContent='魔物 '\+\(i\+1\)/);
  assert.match(game,/node.append\(monster,shadow\)/);
 });
+
+test('typing defense queues phase progress locally and settles once when play ends',()=>{
+ const game=readFileSync(new URL('../pet-typing-defense/game.js',import.meta.url),'utf8');
+ const coins=readFileSync(new URL('../coin-reward.js',import.meta.url),'utf8');
+ assert.match(game,/run\.clearedPhases=run\.phaseIndex\+1/);
+ assert.match(game,/queueProgress\(run\)/);
+ assert.match(game,/queueProgress\(run,true\)/);
+ assert.match(game,/api\.settleTypingDefenseRun\(target\.mode,target\.sessionId,target\.clearedPhases\)/);
+ assert.doesNotMatch(game,/payPhaseReward|recordTypingDefenseStage\(|awardTypingDefenseClear\(/);
+ assert.match(game,/window\.addEventListener\('pagehide'/);
+ assert.match(coins,/DEFENSE_PENDING_PREFIX='monstudy-defense-pending:'/);
+ assert.match(coins,/const DEFENSE_SETTLEMENT_API=/);
+ assert.match(coins,/queueTypingDefenseProgress,/);
+ assert.match(coins,/settleTypingDefenseRun,/);
+ assert.match(coins,/flushPendingTypingDefenseRuns,/);
+ assert.match(coins,/void flushPendingTypingDefenseRuns\(\)/);
+});
