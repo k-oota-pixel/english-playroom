@@ -6,7 +6,7 @@ export function buildEikenQuestionBank(rows,{minimumPerGrade=20}={}){
   const banks=Object.fromEntries(EIKEN_GRADES.map(grade=>[grade,[]]));
   const seen=new Set();
   for(const q of rows){
-    if(!q||!Object.hasOwn(banks,q.grade)||!q.id||!String(q.question||'').trim()||!Array.isArray(q.choices)||q.choices.length<4)continue;
+    if(!q||!EIKEN_GRADES.includes(q.grade)||!q.id||!String(q.question||'').trim()||!Array.isArray(q.choices)||q.choices.length<4)continue;
     if(!q.choices.every(choice=>Number.isInteger(Number(choice?.number))&&String(choice?.text||'').trim()))continue;
     if(!q.choices.some(choice=>Number(choice.number)===Number(q.answer_number)))continue;
     const id=String(q.id);
