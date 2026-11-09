@@ -7,6 +7,7 @@ import {GRAMMAR_BANK} from '../pet-fishing/grammar-mode.js';
 import {GRAMMAR_SECTIONS} from './grammar-sections.js';
 
 export const STAGE_NAMES=['単語の森','ポテトマンの畑','文法の砦','タスク別英会話','文法別の試練'];
+export const EASY_WORD_PHASE_NAMES=['中学1年','中学1年','中学2年','中学2年','中学3年'];
 export const PHASE_NAMES=[
  ['中学1年','中学2年','中学3年','高校1年','高校2年'],
  ['be動詞','一般動詞','助動詞','混合文法','総合問題'],
@@ -17,7 +18,7 @@ export const PHASE_NAMES=[
 export const STAGE_COUNT=5, PHASES_PER_STAGE=5, QUESTIONS_PER_PHASE=5;
 export const TOTAL_QUESTIONS=STAGE_COUNT*PHASES_PER_STAGE*QUESTIONS_PER_PHASE;
 export function enemySpawnInterval(stageIndex,mode='normal'){
- const intervals=mode==='hard'?[3,5,7,9,11]:[1.65,3,4,5,7];
+ const intervals=mode==='easy'?[2.5,5,7,10,12]:mode==='hard'?[3,5,7,9,11]:[1.65,3,4,5,7];
  return intervals[stageIndex]??intervals[intervals.length-1];
 }
 const GRAMMAR_UNITS=[['be'],['general','mixed'],['perfect','infinitive'],['participle','relative'],['question','svoo','svoc','indirect','conjunction']];
@@ -66,10 +67,17 @@ function wave(pool,phase,random,seen){
 }
 export function createCampaign(random=Math.random,mode='normal'){
  const hard=mode==='hard';
+ const usedEasyWords=new Set();
+ const levels=mode==='easy'?['junior1','junior1','junior2','junior2','junior3']:VOCAB_KEYS;
  const words=hard
-  ? Array.from({length:PHASES_PER_STAGE},(_,i)=>[]) // populate once from a shared grade-2 pool below
-  : VOCAB_KEYS.map((level,i)=>unique(shuffle(WORD_POOLS[level].filter(w=>normalizedTyping(w.word)&&w.ja&&!hasApostrophe(w.word)),random)
-    .map(w=>({id:w.id,topic:PHASE_NAMES[0][i],hint:w.ja,ja:w.ja,template:w.word,answer:w.word})),QUESTIONS_PER_PHASE));
+  ? Array.from({length:PHASES_PER_STAGE},()=>[]) // populate from a shared grade-2 pool below
+  : levels.map((level,i)=>{
+    const chosen=unique(shuffle(WORD_POOLS[level].filter(w=>normalizedTyping(w.word)&&w.ja&&!hasApostrophe(w.word)&&
+      (mode!=='easy'||!usedEasyWords.has(w.id))),random)
+      .map(w=>({id:w.id,topic:mode==='easy'?EASY_WORD_PHASE_NAMES[i]:PHASE_NAMES[0][i],hint:w.ja,ja:w.ja,template:w.word,answer:w.word})),QUESTIONS_PER_PHASE);
+    if(mode==='easy')for(const q of chosen)usedEasyWords.add(q.id);
+    return chosen;
+  });
  if(hard){
   const valid=shuffle(EIKEN2_WORDS.filter(w=>normalizedTyping(w.word)&&w.ja&&!hasApostrophe(w.word)),random);
   for(let phase=0;phase<PHASES_PER_STAGE;phase++){
