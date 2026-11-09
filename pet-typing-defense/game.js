@@ -68,8 +68,8 @@ function showQuestion(){
    $('wordMeaning').hidden=true;
    $('wordChoices').hidden=true;
    $('questionTemplate').hidden=false;
-   $('questionTemplate').textContent='次の敵を待とう';
-   $('questionType').textContent='待機中';
+   $('questionTemplate').textContent='フェーズを終了しています';
+   $('questionType').textContent='終了';
   }
   return;
  }
