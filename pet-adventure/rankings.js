@@ -39,6 +39,7 @@ document.getElementById('rankingClose').addEventListener('click',()=>dialog.clos
 const defenseDialog=document.getElementById('defenseRankingDialog');
 const defenseReload=document.getElementById('defenseRankingReload');
 const defenseModes=[
+ {key:'easy',status:document.getElementById('defenseRankingEasyStatus'),list:document.getElementById('defenseRankingEasyList')},
  {key:'normal',status:document.getElementById('defenseRankingNormalStatus'),list:document.getElementById('defenseRankingNormalList')},
  {key:'hard',status:document.getElementById('defenseRankingHardStatus'),list:document.getElementById('defenseRankingHardList')}
 ];
