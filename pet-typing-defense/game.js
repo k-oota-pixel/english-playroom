@@ -3,7 +3,7 @@ import {createCampaign,normalizedDefenseTyping,revealedWord,enemyInvasionTime,sc
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
 const TOTAL=TOTAL_QUESTIONS;
-let campaign=null,run=null,frame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='',rewardRunId=0;
+let campaign=null,run=null,frame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='';
 const MAX_HP=6,ENEMY_START_X=970,CASTLE_X=155;
 function setFeedback(message,type=''){
  $('feedback').textContent=message;
@@ -173,87 +173,96 @@ function showOverlay(eyebrow,heading,body,buttonLabel,fn){
  over.hidden=false;
  button.focus({preventScroll:true});
 }
-function rewardDescription(mode,stage,phase){
- if(mode==='easy'&&phase!==PHASES_PER_STAGE-1)return null;
- const amount=mode==='hard'?2:1;
- const label=mode==='easy'?'ステージ '+(stage+1)+' クリア！':'ステージ '+(stage+1)+'・フェーズ '+(phase+1)+' クリア！';
- return {amount,label};
+function pendingCoins(target=run){
+ return target.mode==='easy'?Math.floor(target.clearedPhases/5):target.clearedPhases*(target.mode==='hard'?2:1);
 }
-async function rewardApi(){
- try{
-  if(parent!==window&&parent.location.origin===location.origin&&typeof parent.EnglishPlayroomCoins?.awardTypingDefenseClear==='function'){
-   return parent.EnglishPlayroomCoins;
-  }
- }catch{}
- await import('../coin-reward.js?v=2.4.49');
+function availableCoinApi(){
+ try{if(parent!==window&&parent.location.origin===location.origin&&parent.EnglishPlayroomCoins?.settleTypingDefenseRun)return parent.EnglishPlayroomCoins}catch{}
  return window.EnglishPlayroomCoins||null;
 }
-async function payPhaseReward(stage,phase,id){
- const mode=run.mode,sessionId=run.sessionId,description=rewardDescription(mode,stage,phase);
- const receipt=$('rewardStatus'),retry=$('retryReward');
- if(!description||run.rewardPaid.has(id))return;
- $('nextPhase').disabled=true;
- receipt.textContent='🪙 コイン報酬を確認中…';
- retry.hidden=true;
- try{
-  const api=await rewardApi();
-  if(!api?.awardTypingDefenseClear)throw Error('コイン処理を読み込めませんでした。');
-  const claimId=sessionId+'-'+mode+'-'+(stage+1)+'-'+(phase+1);
-  const result=await api.awardTypingDefenseClear(mode,stage+1,phase+1,claimId);
-  if(!result?.awarded&&result?.reason!=='already-paid'){
-   if(result?.reason==='signed-out')throw Error('ログインが必要です。');
-   throw Error('コイン付与を確認できませんでした。');
-  }
-  let rankingRecord=null;
-  if(phase===PHASES_PER_STAGE-1){
-   if(typeof api.recordTypingDefenseStage!=='function')throw Error('ランキング処理を読み込めませんでした。');
-   rankingRecord=await api.recordTypingDefenseStage(mode,stage+1);
-   if(!rankingRecord?.recorded&&!rankingRecord?.duplicate)throw Error('本日のランキング記録を確認できませんでした。');
-  }
-  if(id!==rewardRunId)return;
-  run.rewardPaid.add(id);
-  receipt.textContent=(result.awarded?'🪙 +'+description.amount+'コインを獲得！':'🪙 このクリアの報酬は受取済みです。')+
-   (rankingRecord?' ／ 🏆 '+(rankingRecord.duplicate?'本日の順位記録済み':'本日のランキングに記録しました'):'');
- }catch(error){
-  if(id!==rewardRunId)return;
-  receipt.textContent='コイン・ランキングの保存を確認できませんでした。再試行できます。';
-  retry.hidden=false;
-  retry.onclick=()=>{void payPhaseReward(stage,phase,id)};
-  console.warn('Typing defense reward error',error);
- }finally{
-  if(id===rewardRunId)$('nextPhase').disabled=false;
+async function rewardApi(){
+ const api=availableCoinApi();
+ if(api?.settleTypingDefenseRun)return api;
+ await import('../coin-reward.js?v=2.4.52');
+ return window.EnglishPlayroomCoins||availableCoinApi();
+}
+function queueProgress(target=run,finished=false){
+ if(!target)return;
+ const api=availableCoinApi();
+ if(api?.queueTypingDefenseProgress){
+  api.queueTypingDefenseProgress(target.mode,target.sessionId,target.clearedPhases,finished);
+ }else{
+  void rewardApi().then(mod=>mod?.queueTypingDefenseProgress?.(target.mode,target.sessionId,target.clearedPhases,finished))
+   .catch(error=>console.warn('Defense progress queue delayed',error));
  }
 }
-
+async function settleRun(target=run){
+ if(!target)return {ok:true};
+ if(target.settling)return target.settling;
+ target.ended=true;target.active=false;
+ if(frame)cancelAnimationFrame(frame);frame=0;
+ $('typing').disabled=true;
+ const next=$('nextPhase'),status=$('rewardStatus'),retry=$('retryReward');
+ next.disabled=true;retry.hidden=true;
+ status.textContent='🪙 '+pendingCoins(target)+'コインと到達記録をまとめて保存しています…';
+ target.settling=(async()=>{
+  let result={ok:false};
+  try{
+   const api=await rewardApi();
+   if(!api?.settleTypingDefenseRun)throw Error('一括精算機能を取得できませんでした');
+   result=await api.settleTypingDefenseRun(target.mode,target.sessionId,target.clearedPhases);
+  }catch(error){console.warn('Defense settlement failed',error)}
+  if(run===target){
+   if(result.ok){
+    status.textContent='✅ '+(result.duplicate?'保存済みの記録を確認しました。':result.earnedCoins+'コインと到達記録を保存しました。');
+    next.disabled=false;
+   }else if(result.queued){
+    status.textContent='📱 通信待ち：端末に保存しました。次回ログイン時に自動再送します。';
+    next.disabled=false;retry.hidden=false;
+   }else{
+    status.textContent='⚠️ 未保存です。ログインを確認して再試行してください。';
+    next.disabled=true;retry.hidden=false;
+   }
+   retry.onclick=()=>{void settleRun(target)};
+  }
+  target.settling=null;
+  return result;
+ })();
+ return target.settling;
+}
+function interruptPlay(buttonLabel,callback){
+ if(!run)return callback();
+ const target=run;
+ if(target.ended){callback();return}
+ target.active=false;if(frame)cancelAnimationFrame(frame);frame=0;
+ showOverlay('PLAY END','今回のプレイを終了','ここまでのクリア結果を一括保存します。',buttonLabel,callback);
+ queueProgress(target,true);
+ void settleRun(target);
+}
 function waveComplete(){
  if(!run?.active)return;
- run.active=false;
- cancelAnimationFrame(frame);frame=0;
+ run.active=false;cancelAnimationFrame(frame);frame=0;
  $('typing').disabled=true;
- const phase=run.phaseIndex%PHASES_PER_STAGE;
- const stage=Math.floor(run.phaseIndex/PHASES_PER_STAGE);
- const next=()=>{run.phaseIndex++;openPhase()};
- const rewardId=++rewardRunId;
- if(phase===4&&stage===STAGE_COUNT-1){finish(true,stage,phase,rewardId);return}
+ const phase=run.phaseIndex%PHASES_PER_STAGE,stage=Math.floor(run.phaseIndex/PHASES_PER_STAGE);
+ run.clearedPhases=run.phaseIndex+1;
+ queueProgress(run);
+ if(phase===4&&stage===STAGE_COUNT-1){finish(true);return}
  if(phase===4){
-  showOverlay('STAGE CLEAR','ステージ '+(stage+1)+' クリア！','残りのお城の耐久力：'+run.hp+'。次は「'+STAGE_NAMES[stage+1]+'」！','次のステージへ',next);
+  showOverlay('STAGE CLEAR','ステージ '+(stage+1)+' クリア！','残りのお城の耐久力：'+run.hp+'。次は「'+STAGE_NAMES[stage+1]+'」！','次のステージへ',()=>{run.phaseIndex++;openPhase()});
  }else{
-  showOverlay('PHASE CLEAR','フェーズ '+(phase+1)+' クリア！','魔物5体の波をしのいだ！ あと'+(4-phase)+'フェーズ。','次のフェーズへ',next);
+  showOverlay('PHASE CLEAR','フェーズ '+(phase+1)+' クリア！','魔物5体の波をしのいだ！ あと'+(4-phase)+'フェーズ。','次のフェーズへ',()=>{run.phaseIndex++;openPhase()});
  }
- void payPhaseReward(stage,phase,rewardId);
+ $('rewardStatus').textContent='🪙 獲得予定：'+pendingCoins(run)+'コイン（プレイ終了時に一括保存）';
 }
-function finish(success,finalStage=null,finalPhase=null,finalId=null){
- if(!run)return;
+function finish(success){
+ if(!run||run.ended)return;
  run.active=false;if(frame)cancelAnimationFrame(frame);frame=0;
  $('typing').disabled=true;
  const summary='撃退：'+run.kills+'体 ／ 城への侵入：'+run.misses+'体 ／ 耐久力：'+run.hp;
- if(success){
-  showOverlay('ALL STAGES COMPLETE','🏆 お城を守り切った！',summary+'。5ステージ・25フェーズを突破！','もう一度遊ぶ',start);
-  if(finalStage!==null)void payPhaseReward(finalStage,finalPhase,finalId);
- }else{
-  showOverlay('GAME OVER','お城が落とされた…',summary+'。もう一度挑戦しよう！','リトライ',start);
- }
- hud();
+ if(success)showOverlay('ALL STAGES COMPLETE','🏆 お城を守り切った！',summary+'。5ステージ・25フェーズを突破！','もう一度遊ぶ',()=>start(run.mode));
+ else showOverlay('GAME OVER','お城が落とされた…',summary+'。獲得したコインと到達記録を保存します。','リトライ',()=>start(run.mode));
+ queueProgress(run,true);
+ void settleRun(run);
 }
 function fireProjectile(x){
  const orb=document.createElement('span');
@@ -324,16 +333,23 @@ function start(mode=run?.mode||'normal'){
  if(frame)cancelAnimationFrame(frame);frame=0;
  $('opening').hidden=true;$('game').hidden=false;
  document.body.classList.add('typing-in-progress');
- rewardRunId++;
- run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),rewardPaid:new Set(),enemies:[],active:false};
- choosePet();openPhase();
+ run={phaseIndex:0,clearedPhases:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),enemies:[],active:false,ended:false,settling:null};
+ choosePet();openPhase();void rewardApi().catch(error=>console.warn('Defense rewards init deferred',error));
 }
 $('easyStart').addEventListener('click',()=>start('easy'));
 $('normalStart').addEventListener('click',()=>start('normal'));
 $('hardStart').addEventListener('click',()=>start('hard'));
 $('nextPhase').addEventListener('click',()=>{});
 $('restart').addEventListener('click',()=>{
- if(!run?.active||confirm('最初からやり直しますか？'))start();
+ if(run?.ended){start(run.mode);return}
+ if(confirm('現在のプレイを終了し、最初からやり直しますか？'))
+  interruptPlay('もう一度遊ぶ',()=>start(run.mode));
+});
+const adventureLink=document.querySelector('.game-actions a[href="../pet-adventure/"]');
+if(adventureLink)adventureLink.addEventListener('click',event=>{
+ if(!run||run.ended)return;
+ event.preventDefault();
+ interruptPlay('冒険先に戻る',()=>{location.href=adventureLink.href});
 });
 $('typing').addEventListener('input',onType);
 $('typing').addEventListener('keydown',event=>{
@@ -343,4 +359,4 @@ $('typing').addEventListener('keydown',event=>{
   if(currentEnemy()&&normalizedDefenseTyping($('typing').value,stageIndex())===normalizedDefenseTyping(currentEnemy().q.answer,stageIndex()))strike();
  }
 });
-window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame)});
+window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame);if(run&&!run.ended){run.ended=true;queueProgress(run,true)}});
