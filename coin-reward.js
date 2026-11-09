@@ -1,6 +1,6 @@
 import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.3.51';
 import './material-open.js?v=2.3.1';
-import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.4.33';
+import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.4.49';
 installStandaloneMaterialRanking();
 import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
 import './nickname-profile.js?v=2.2.2';
@@ -356,6 +356,7 @@ async function awardTypingDefenseClear(mode,stageNumber,phaseNumber,claimId){
   let awarded=false,newCoins=0;
   try{
     await runTransaction(db,async tx=>{
+      awarded=false; // A Firestore transaction callback may be retried after a conflict.
       const wallet=walletRef(user);
       const receiptSnap=await tx.get(receipt),walletSnap=await tx.get(wallet);
       const data=walletSnap.exists()?(walletSnap.data()||{}):{};
