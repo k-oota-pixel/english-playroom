@@ -17,13 +17,13 @@ import './pet-cat-dog-v1425.js?v=1.5.7';
 // Sleep mode now owns original and cloned eye visibility together.
 import './pet-lion-v149.js?v=2.1.25';
 import './pet-play-menu-v164.js?v=2.4.37';
-import './material-return.js?v=2.4.37';
+import './material-return.js?v=2.4.49';
 import './developer-contact.js?v=2.3.20';
 import './today-home-card.js?v=2.3.52';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.3.8').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.4.48';
+const APP_VERSION='2.4.49';
 const APP_ROOT=new URL('./',import.meta.url);
 let forceRefreshBusy=false;
 
