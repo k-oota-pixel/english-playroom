@@ -25,6 +25,7 @@ let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsT
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 let navigationToken='',navigationExitInFlight=null;
+let lastActionDialogSignature='';
 
 function stopAutoRefresh(){
  if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
@@ -253,6 +254,8 @@ async function answerQuestion(index){
  els.answerFeedback.textContent=correct?'正解！ 攻撃！':'不正解… 自分に1ダメージ';els.answerFeedback.className='answer-feedback '+(correct?'ok':'no');
  try{const room=await act(correct?'attack':'miss',{render:false});currentRoom=room;renderRoom(room);await new Promise(resolve=>setTimeout(resolve,420));if(currentRoom?.status==='playing'){busy=false;prepareTurn(currentRoom);}else busy=false;}
  catch{busy=false;if(currentRoom?.status==='playing')prepareTurn(currentRoom);}
+ // Unlock action buttons immediately after the answer animation.
+ syncActionControls();
 }
 
 function renderWaiting(room,mine,other){
@@ -274,13 +277,31 @@ function renderPlaying(room){
  else if(selectedAttack){els.attackPanel.hidden=true;els.quizPanel.hidden=false;}
  else{els.attackPanel.hidden=false;els.quizPanel.hidden=true;}
 }
+function syncActionControls(){
+ const room=currentRoom,available=room?.status==='playing'&&!busy&&!room.noItems;
+ els.magicBtn.disabled=!available;els.itemBtn.disabled=!available;
+ if(!room||room.status!=='playing'||room.noItems){
+  if(els.magicDialog.open)els.magicDialog.close();
+  if(els.itemDialog.open)els.itemDialog.close();
+  lastActionDialogSignature='';
+  return;
+ }
+ const mine=minePlayer(room);
+ const signature=[room.roomId,mine?.hp,mine?.mp,busy].join('|');
+ if(signature===lastActionDialogSignature)return;
+ lastActionDialogSignature=signature;
+ // Remote actions may change HP/MP while a dialog is open.
+ // Use the cached inventory; do not add Firestore reads to the poll loop.
+ if(els.magicDialog.open)renderMagic();
+ if(els.itemDialog.open)renderItems(normalizeDungeonInventory(ownData.petDungeonItems));
+}
 function renderRoom(room){
  if(!room||room.roomId!==activeRoom)return;
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+(room.roomNo||String(room.roomId||'').split('-').pop());els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent='MAGIC / ITEM';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
  updateFighters(room);animateEvent(room);
  if(lastStatus!==room.status){if(room.status==='playing'){resetTurn();seenQuestionIds.clear();lastQuestionId='';}lastStatus=room.status;}
- const playable=room.status==='playing'&&!busy;els.magicBtn.disabled=!playable||room.noItems;els.itemBtn.disabled=!playable||room.noItems;els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
+ syncActionControls();els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
  if(room.status==='waiting')renderWaiting(room,mine,other);else if(room.status==='playing')renderPlaying(room);else if(room.status==='finished')renderFinished(room,mine);
  startAutoRefresh();
 }
@@ -339,8 +360,8 @@ function renderMagic(message='',error=false){
  const mine=minePlayer(),level=ownLevel(),maxMp=Math.max(0,Number(mine?.stats?.mp)||0),mp=Math.max(0,Number(mine?.mp??maxMp)||0);
  els.magicMpStatus.textContent=`Lv.${level}　MP ${mp} / ${maxMp}`;els.magicMessage.textContent=message;els.magicMessage.className='battle-action-message'+(error?' error':'');els.magicList.replaceChildren();
  for(const spell of MAGIC_SPELLS){
-  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');
-  card.innerHTML=`<strong>${esc(spell.name)}</strong><span>${unlocked?esc(spell.description):`Lv.${spell.level}で習得`}</span><small>${unlocked?`消費MP ${spell.mpCost}`:'LOCKED'}</small><button type="button">${unlocked?'使う':'未習得'}</button>`;
+  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),reason=!unlocked?'未習得':mp<spell.mpCost?'MP不足':full?'HPが満タンです':busy?'処理中':'',card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');
+  card.innerHTML=`<strong>${esc(spell.name)}</strong><span>${unlocked?esc(spell.description):`Lv.${spell.level}で習得`}</span><small>${unlocked?`消費MP ${spell.mpCost}`:'LOCKED'}${reason?' · '+esc(reason):''}</small><button type="button">${unlocked?'使う':'未習得'}</button>`;
   const button=card.querySelector('button');button.disabled=busy||!unlocked||mp<spell.mpCost||full;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
  }
 }
@@ -352,13 +373,14 @@ async function castMagic(spell){
  if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
  try{els.magicDialog.close();const room=await act('magic',{render:false,body:{spellId:spell.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
  catch(error){busy=false;try{await refreshOwnData();}catch{}renderMagic(error?.message||'魔法を使えませんでした。',true);if(!els.magicDialog.open)els.magicDialog.showModal();}
+  syncActionControls();
 }
 function renderItems(inventory,message='',error=false){
  const mine=minePlayer(),maxHp=Math.max(1,Number(mine?.stats?.hp)||1),hp=Math.max(0,Number(mine?.hp)||0),maxMp=Math.max(0,Number(mine?.stats?.mp)||0),mp=Math.max(0,Number(mine?.mp??maxMp)||0);
  els.itemMessage.textContent=message;els.itemMessage.className='battle-action-message'+(error?' error':'');els.itemList.replaceChildren();
  for(const item of DUNGEON_ITEMS){
-  const count=inventory[item.id]||0,full=item.kind==='hp'?hp>=maxHp:mp>=maxMp,card=document.createElement('article');card.className='battle-action-card';
-  card.innerHTML=`<strong>${item.icon} ${esc(item.name)}</strong><span>${esc(item.description)}</span><small>所持 ${count}個</small><button type="button">使う</button>`;
+  const count=inventory[item.id]||0,full=item.kind==='hp'?hp>=maxHp:mp>=maxMp,reason=count<1?'未所持':full?(item.kind==='hp'?'HPが満タンです':'MPが満タンです'):busy?'処理中':'',card=document.createElement('article');card.className='battle-action-card';
+  card.innerHTML=`<strong>${item.icon} ${esc(item.name)}</strong><span>${esc(item.description)}</span><small>所持 ${count}個${reason?' · '+esc(reason):''}</small><button type="button">使う</button>`;
   const button=card.querySelector('button');button.disabled=busy||count<1||full;button.addEventListener('click',()=>void useItem(item));els.itemList.append(card);
  }
 }
@@ -371,6 +393,7 @@ async function useItem(item){
  if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
  try{els.itemDialog.close();const room=await act('item',{render:false,body:{itemId:item.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
  catch(error){busy=false;try{await refreshOwnData();}catch{}renderItems(normalizeDungeonInventory(ownData.petDungeonItems),error?.message||'アイテムを使えませんでした。',true);if(!els.itemDialog.open)els.itemDialog.showModal();}
+  syncActionControls();
 }
 
 async function loadQuestionPool(){
