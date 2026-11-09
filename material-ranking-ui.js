@@ -1,7 +1,7 @@
 /* Per-material daily top-three, shared by the shell and standalone exercises. */
 const ENDPOINT='https://task-quest.onrender.com/api/learning/material-rankings';
 const DEFENSE_BEST_ENDPOINT='https://task-quest.onrender.com/api/adventure/defense-rankings';
-const supported=new Set(['word-breaker','ateru','basic-quest','basic-grammar','grammar','eiken-retry','eiken-cloze','eiken-title','reading-training','listening-training','task-quest','talk-quest','pre2-interview-questions','eiken-pre2-interview-a','pet-catch','pet-fishing','today','word-tower','eiken-dungeon','case-talk','pet-chat','pet-instructions','pet-typing-defense-normal','pet-typing-defense-hard']);
+const supported=new Set(['word-breaker','ateru','basic-quest','basic-grammar','grammar','eiken-retry','eiken-cloze','eiken-title','reading-training','listening-training','task-quest','talk-quest','pre2-interview-questions','eiken-pre2-interview-a','pet-catch','pet-fishing','today','word-tower','eiken-dungeon','case-talk','pet-chat','pet-instructions','pet-typing-defense-easy','pet-typing-defense-normal','pet-typing-defense-hard']);
 const styleId='monstudyMaterialRankStyle';
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 export function materialRankingAppId(url=location.href){
@@ -50,7 +50,7 @@ export async function openMaterialRanking(appId){
  dialog?.remove();
  dialog=make('dialog','ms-material-rank-dialog');
  const head=make('header','ms-material-rank-head');
- const defenseMode=appId==='pet-typing-defense-normal'?'ノーマル':appId==='pet-typing-defense-hard'?'ハード':'';
+ const defenseMode=appId==='pet-typing-defense-easy'?'イージー':appId==='pet-typing-defense-normal'?'ノーマル':appId==='pet-typing-defense-hard'?'ハード':'';
  head.append(make('h2','',defenseMode?'🏆 もんすた城の防衛 '+defenseMode+'ランキング':'🏆 本日の取り組みランキング'));
  const close=make('button','','閉じる');close.type='button';close.addEventListener('click',()=>dialog.close());head.append(close);
  dialog.append(head);
@@ -62,7 +62,7 @@ export async function openMaterialRanking(appId){
   const user=getAuth().currentUser;
   if(!user)throw Error('ログインするとランキングを確認できます。');
   const token=await user.getIdToken();
-  const url=defenseMode?DEFENSE_BEST_ENDPOINT+'?mode='+(defenseMode==='ノーマル'?'normal':'hard'):ENDPOINT+'?appId='+encodeURIComponent(appId);
+  const url=defenseMode?DEFENSE_BEST_ENDPOINT+'?mode='+({イージー:'easy',ノーマル:'normal',ハード:'hard'})[defenseMode]:ENDPOINT+'?appId='+encodeURIComponent(appId);
   const response=await fetch(url,{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function'?AbortSignal.timeout(20000):undefined});
   const data=await response.json();if(!response.ok)throw Error(data.error||'取得に失敗しました。');
   if(!status.isConnected)return;
