@@ -1,4 +1,4 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.3.68';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,EASY_WORD_PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.4.49';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
@@ -42,7 +42,7 @@ function hud(){
  $('killMeter').textContent=run.kills+' / '+TOTAL;
  $('hpMeter').textContent='♥ '.repeat(run.hp).trim()+' ♡'.repeat(MAX_HP-run.hp);
  $('courseName').textContent=STAGE_NAMES[stage];
- $('phaseName').textContent=stage===0&&run.mode==='hard'?'英検2級・第'+(phase+1)+'フェーズ':PHASE_NAMES[stage][phase];
+ $('phaseName').textContent=stage===0&&run.mode==='hard'?'英検2級・第'+(phase+1)+'フェーズ':stage===0&&run.mode==='easy'?EASY_WORD_PHASE_NAMES[phase]:PHASE_NAMES[stage][phase];
  $('waveMeter').textContent=run.enemies.filter(e=>e.resolved).length+' / '+QUESTIONS_PER_PHASE;
 }
 function currentEnemy(){
@@ -74,7 +74,7 @@ function showQuestion(){
   return;
  }
  if(shownQuestion===enemy.q.id){
-  if(stageIndex()===0)refreshWordReveal(enemy);
+  if(stageIndex()===0&&run.mode!=='easy')refreshWordReveal(enemy);
   return;
  }
  shownQuestion=enemy.q.id;
@@ -97,7 +97,7 @@ function showQuestion(){
   }
  }
  $('questionType').textContent=enemy.q.topic||'';
- if(isWordStage)refreshWordReveal(enemy);
+ if(isWordStage){if(run.mode==='easy'){$('questionTemplate').textContent=enemy.q.answer;wordReveal=enemy.q.answer;}else refreshWordReveal(enemy);}
  $('answerBar').style.width='0%';
  setFeedback('先頭の魔物を撃退しよう！');
  $('typing').focus({preventScroll:true});
@@ -136,7 +136,7 @@ function openPhase(){
  $('questionTemplate').hidden=false;
  $('answerBar').style.width='0%';
  $('questionTemplate').textContent='タイピングの準備！';
- setFeedback(stage===0?'日本語訳から単語を入力！ 2秒で頭文字、4秒で全体表示。':run.mode==='hard'?'和訳とバラバラの単語を見て、正しい順番でタイプしよう！':'和訳と英文を確認してタイプしよう！ スペースは入力不要です。');
+ setFeedback(stage===0?(run.mode==='easy'?'日本語訳と英単語を見ながらタイプしよう！':'日本語訳から単語を入力！ 2秒で頭文字、4秒で全体表示。'):run.mode==='hard'?'和訳とバラバラの単語を見て、正しい順番でタイプしよう！':'和訳と英文を確認してタイプしよう！ スペースは入力不要です。');
  hud();
  if(frame)cancelAnimationFrame(frame);
  lastFrame=performance.now();
@@ -155,51 +155,46 @@ function showOverlay(eyebrow,heading,body,buttonLabel,fn){
  button.focus({preventScroll:true});
 }
 function rewardDescription(mode,stage,phase){
- if(mode==='normal'&&phase!==4)return null;
- const amount=mode==='normal'?1:stage===0?1:2;
- const stageNo=stage+1,phaseNo=phase+1;
- const claims=mode==='normal'?[ 'normal-stage-'+stageNo ]:
-  Array.from({length:amount},(_,i)=>'hard-stage-'+stageNo+'-phase-'+phaseNo+'-coin-'+(i+1));
- return {amount,claims,label:mode==='normal'?'ステージ '+stageNo+' クリア！':'ステージ '+stageNo+'・フェーズ '+phaseNo+' クリア！'};
+ if(mode==='easy'&&phase!==PHASES_PER_STAGE-1)return null;
+ const amount=mode==='hard'?2:1;
+ const label=mode==='easy'?'ステージ '+(stage+1)+' クリア！':'ステージ '+(stage+1)+'・フェーズ '+(phase+1)+' クリア！';
+ return {amount,label};
 }
 async function rewardApi(){
  try{
-  if(parent!==window&&parent.location.origin===location.origin&&typeof parent.EnglishPlayroomCoins?.recordTypingDefenseStage==='function'){
+  if(parent!==window&&parent.location.origin===location.origin&&typeof parent.EnglishPlayroomCoins?.awardTypingDefenseClear==='function'){
    return parent.EnglishPlayroomCoins;
   }
  }catch{}
- await import('../coin-reward.js?v=2.3.68.1');
+ await import('../coin-reward.js?v=2.4.49');
  return window.EnglishPlayroomCoins||null;
 }
 async function payPhaseReward(stage,phase,id){
- const description=rewardDescription(run.mode,stage,phase);
+ const mode=run.mode,sessionId=run.sessionId,description=rewardDescription(mode,stage,phase);
  const receipt=$('rewardStatus'),retry=$('retryReward');
- if(!description)return;
- if(run.rewardPaid.has(id))return;
+ if(!description||run.rewardPaid.has(id))return;
  $('nextPhase').disabled=true;
  receipt.textContent='🪙 コイン報酬を確認中…';
  retry.hidden=true;
  try{
   const api=await rewardApi();
-  if(!api?.awardOncePerDay)throw Error('コイン処理を読み込めませんでした。');
-  let gained=0,duplicate=0;
-  for(const claim of description.claims){
-   const result=await api.awardOncePerDay('pet-typing-defense',claim,description.label);
-   if(result?.awarded)gained++;
-   else if(['already-today','already-counted'].includes(result?.reason))duplicate++;
-   else if(result?.reason==='signed-out')throw Error('ログインが必要です。');
-   else throw Error('コイン付与を確認できませんでした。');
+  if(!api?.awardTypingDefenseClear)throw Error('コイン処理を読み込めませんでした。');
+  const claimId=sessionId+'-'+mode+'-'+(stage+1)+'-'+(phase+1);
+  const result=await api.awardTypingDefenseClear(mode,stage+1,phase+1,claimId);
+  if(!result?.awarded&&result?.reason!=='already-paid'){
+   if(result?.reason==='signed-out')throw Error('ログインが必要です。');
+   throw Error('コイン付与を確認できませんでした。');
   }
   let rankingRecord=null;
   if(phase===PHASES_PER_STAGE-1){
    if(typeof api.recordTypingDefenseStage!=='function')throw Error('ランキング処理を読み込めませんでした。');
-   rankingRecord=await api.recordTypingDefenseStage(run.mode,stage+1);
+   rankingRecord=await api.recordTypingDefenseStage(mode,stage+1);
    if(!rankingRecord?.recorded&&!rankingRecord?.duplicate)throw Error('本日のランキング記録を確認できませんでした。');
   }
   if(id!==rewardRunId)return;
   run.rewardPaid.add(id);
-  const rewardMessage=gained?'🪙 +'+gained+'コインを獲得！'+(duplicate?'（残りは本日獲得済み）':''):'🪙 本日の報酬は獲得済みです。';
-  receipt.textContent=rewardMessage+(rankingRecord?' ／ 🏆 '+(rankingRecord.duplicate?'本日の順位記録済み':'本日のランキングに記録しました'):'');
+  receipt.textContent=(result.awarded?'🪙 +'+description.amount+'コインを獲得！':'🪙 このクリアの報酬は受取済みです。')+
+   (rankingRecord?' ／ 🏆 '+(rankingRecord.duplicate?'本日の順位記録済み':'本日のランキングに記録しました'):'');
  }catch(error){
   if(id!==rewardRunId)return;
   receipt.textContent='コイン・ランキングの保存を確認できませんでした。再試行できます。';
@@ -311,7 +306,7 @@ function onType(){
  else setFeedback('その調子！ 最後まで入力すると魔法が発動するよ。');
 }
 function start(mode=run?.mode||'normal'){
- mode=mode==='hard'?'hard':'normal';
+ mode=['easy','normal','hard'].includes(mode)?mode:'normal';
  try{campaign=createCampaign(Math.random,mode)}catch(error){
   alert('問題データの準備に失敗しました。'+(error?.message||''));return;
  }
@@ -319,9 +314,10 @@ function start(mode=run?.mode||'normal'){
  $('opening').hidden=true;$('game').hidden=false;
  document.body.classList.add('typing-in-progress');
  rewardRunId++;
- run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,rewardPaid:new Set(),enemies:[],elapsed:0,active:false};
+ run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),rewardPaid:new Set(),enemies:[],elapsed:0,active:false};
  choosePet();openPhase();
 }
+$('easyStart').addEventListener('click',()=>start('easy'));
 $('normalStart').addEventListener('click',()=>start('normal'));
 $('hardStart').addEventListener('click',()=>start('hard'));
 $('nextPhase').addEventListener('click',()=>{});
