@@ -17,9 +17,16 @@ export const PHASE_NAMES=[
 ];
 export const STAGE_COUNT=5, PHASES_PER_STAGE=5, QUESTIONS_PER_PHASE=5;
 export const TOTAL_QUESTIONS=STAGE_COUNT*PHASES_PER_STAGE*QUESTIONS_PER_PHASE;
-export function enemySpawnInterval(stageIndex,mode='normal'){
- const intervals=mode==='easy'?[2.5,5,7,10,12]:mode==='hard'?[3,5,7,9,11]:[1.65,3,4,5,7];
- return intervals[stageIndex]??intervals[intervals.length-1];
+// The time (in seconds) for one enemy to travel from the spawn point to the castle.
+// The next enemy spawns immediately when the current one is defeated or breaches.
+export const INVASION_SECONDS=Object.freeze({
+ easy:Object.freeze([12,20,22,24,30]),
+ normal:Object.freeze([10,15,18,22,28]),
+ hard:Object.freeze([8,12,14,16,20])
+});
+export function enemyInvasionTime(stageIndex,mode='normal'){
+ const times=INVASION_SECONDS[mode]||INVASION_SECONDS.normal;
+ return times[stageIndex]??times[times.length-1];
 }
 const GRAMMAR_UNITS=[['be'],['general','mixed'],['perfect','infinitive'],['participle','relative'],['question','svoo','svoc','indirect','conjunction']];
 const VOCAB_KEYS=['junior1','junior2','junior3','high1','high2'];
