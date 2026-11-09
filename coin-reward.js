@@ -463,6 +463,8 @@ window.EnglishPlayroomCoins=Object.freeze({
   recordTodayRead,
   recordTitleEvents,
   recordLearningActivity,
+  flushLearningActivities,
+  pendingLearningActivities:()=>currentUser?readLearningOutbox('monstudy-learning-outbox:'+currentUser.uid).length:0,
   awardOncePerDay,
   awardTypingDefenseClear,
   recordTypingDefenseStage,
