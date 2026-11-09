@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {
  createCampaign,normalizedTyping,normalizedDefenseTyping,revealedWord,enemySpawnInterval,
  characterCount,hasApostrophe,POTATO_MEAN_CHARACTER_COUNT,potatoGap,grammarGap,
- scrambledTokens,TOTAL_QUESTIONS,STAGE_COUNT,STAGE_NAMES,PHASE_NAMES,GRAMMAR_SECTION_COUNT
+ scrambledTokens,TOTAL_QUESTIONS,STAGE_COUNT,STAGE_NAMES,PHASE_NAMES,EASY_WORD_PHASE_NAMES,GRAMMAR_SECTION_COUNT
 } from '../pet-typing-defense/data.js';
 import {TASK_SAMPLES} from '../pet-typing-defense/task-samples.js';
 import {TASK_TRANSLATIONS} from '../pet-typing-defense/task-translations.js';
@@ -17,7 +17,7 @@ import {GRAMMAR_SECTIONS} from '../pet-typing-defense/grammar-sections.js';
 test('Five stages and 125 valid translated questions per mode',()=>{
  assert.equal(STAGE_COUNT,5);assert.equal(TOTAL_QUESTIONS,125);assert.equal(PHASE_NAMES.length,5);
  assert.deepEqual(STAGE_NAMES,['単語の森','ポテトマンの畑','文法の砦','タスク別英会話','文法別の試練']);
- for(const mode of ['normal','hard'])for(let run=0;run<100;run++){
+ for(const mode of ['easy','normal','hard'])for(let run=0;run<100;run++){
   const campaign=createCampaign(Math.random,mode);
   assert.equal(campaign.length,5);
   const all=campaign.flat(2);
@@ -38,6 +38,18 @@ test('Normal stage one uses five grade-level word pools',()=>{
   const ids=new Set(WORD_POOLS[key].map(q=>q.id));
   assert.ok(camp[0][i].every(q=>ids.has(q.id)));
  });
+});
+test('Easy word stage repeats grade 1 and grade 2 without repeating individual words',()=>{
+ const keys=['junior1','junior1','junior2','junior2','junior3'];
+ assert.deepEqual(EASY_WORD_PHASE_NAMES,['中学1年','中学1年','中学2年','中学2年','中学3年']);
+ for(let round=0;round<50;round++){
+  const words=createCampaign(Math.random,'easy')[0];
+  keys.forEach((key,i)=>{
+   const ids=new Set(WORD_POOLS[key].map(w=>w.id));
+   assert.ok(words[i].every(q=>ids.has(q.id)&&q.topic===EASY_WORD_PHASE_NAMES[i]));
+  });
+  assert.equal(new Set(words.flat().map(q=>q.id)).size,25);
+ }
 });
 test('Hard stage one draws 25 distinct Eiken grade 2 correct-answer words',()=>{
  assert.ok(EIKEN2_WORDS.length>=25);
@@ -93,6 +105,9 @@ test('Normal mode keeps 1.65 / 3 / 4 / 5 / 7 second intervals',()=>{
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i)),[1.65,3,4,5,7]);
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'normal')),[1.65,3,4,5,7]);
 });
+test('Easy mode spawns enemies at 2.5 / 5 / 7 / 10 / 12 second intervals',()=>{
+ assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'easy')),[2.5,5,7,10,12]);
+});
 test('Hard mode spawns enemies at 3 / 5 / 7 / 9 / 11 second intervals',()=>{
  const expected=[3,5,7,9,11];
  assert.deepEqual(Array.from({length:5},(_,i)=>enemySpawnInterval(i,'hard')),expected);
@@ -107,19 +122,21 @@ test('Case and punctuation remain optional but letter sequence must match',()=>{
  assert.notEqual(normalizedTyping('was'),normalizedTyping('were'));
 });
 
-test('game launcher has two large direct mode buttons and no old setup text',()=>{
+test('game launcher has three large direct mode buttons and no old setup text',()=>{
  const page=readFileSync(new URL('../pet-typing-defense/index.html',import.meta.url),'utf8');
  const game=readFileSync(new URL('../pet-typing-defense/game.js',import.meta.url),'utf8');
  const css=readFileSync(new URL('../pet-typing-defense/style.css',import.meta.url),'utf8');
  const opening=page.split('<div id="opening"')[1]?.split('<section class="card game"')[0]||'';
+ assert.match(opening,/<button type="button" id="easyStart"[^>]*>イージーモード<\/button>/);
  assert.match(opening,/<button type="button" id="normalStart"[^>]*>ノーマルモード<\/button>/);
  assert.match(opening,/<button type="button" id="hardStart"[^>]*>ハードモード<\/button>/);
- assert.equal((opening.match(/<button /g)||[]).length,2);
+ assert.equal((opening.match(/<button /g)||[]).length,3);
  assert.doesNotMatch(opening,/<select|stage-list|reward-note|description|本日のランキング/);
+ assert.match(game,/easyStart'\)\.addEventListener\('click',\(\)=>start\('easy'\)\)/);
  assert.match(game,/normalStart'\)\.addEventListener\('click',\(\)=>start\('normal'\)\)/);
  assert.match(game,/hardStart'\)\.addEventListener\('click',\(\)=>start\('hard'\)\)/);
  assert.match(game,/function start\(mode=run\?\.mode\|\|'normal'\)/);
- assert.match(css,/\.opening\.mode-chooser\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.match(css,/\.opening\.mode-chooser\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
  assert.doesNotMatch(page,/id="normalRanking"|id="hardRanking"/);
  assert.match(page,/<title>もんすた城の防衛 \| もんすたでぃ<\/title>/);
  assert.match(page,/<h1>もんすた城の防衛<\/h1>/);
