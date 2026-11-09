@@ -130,7 +130,7 @@ body:not(.battle-mode) .app-shell{width:min(1100px,100%)}
 .adventure-choice>.adventure-card{flex:1}
 .adventure-ranking-button{min-height:48px;white-space:normal;display:flex;align-items:center;justify-content:center}
 .adventure-online-actions{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
-.defense-ranking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.defense-ranking-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
 .defense-ranking-board{min-width:0;padding:12px;border:1px solid #d2e0d8;border-radius:14px;background:#f5f8f4}
 .defense-ranking-board h3{margin:0 0 9px;color:#214d40;font-size:16px}
 .defense-ranking-board p{margin:7px 0;font-size:11px;line-height:1.5;color:#657f74}
