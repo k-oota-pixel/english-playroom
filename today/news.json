@@ -1,13 +1,439 @@
 {
-  "generatedAt": "2026-11-07T00:55:32.696Z",
-  "editionDate": "2026-11-07",
+  "generatedAt": "2026-11-09T00:49:54.978Z",
+  "editionDate": "2026-11-09",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-07"
+    "lastSuccessfulEdition": "2026-11-09"
   },
   "articles": [
+    {
+      "id": "2026-11-09-128-shinkin-banks-system-recovery",
+      "date": "2026-11-09",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Shinkin Bank",
+        "System Failure",
+        "ITmedia NEWS"
+      ],
+      "titleJa": "信金システム約6時間で復旧",
+      "title": "128 Shinkin Banks Recover from System Failure",
+      "summaryJa": "全国の信用金庫のシステムで障害が発生しましたが、約6時間後に復旧しました。原因は機器の故障であり、サイバー攻撃ではありません。",
+      "sourcePublishedAt": "2026-11-09T00:26:19.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "システム障害が起きたとき、顧客や金融機関がどのように対応すべきかを考えるため。",
+        "followUpJa": "もしあなたが利用している銀行のATMが使えなくなったら、どのような行動をとりますか？",
+        "questions": {
+          "5級": "What was the problem? Choose: System failure or Cyber attack.",
+          "4級": "How many hours did it take to fix the problem?",
+          "3級": "What caused the big problem in the Shinkin banks?",
+          "準2級": "Why did the operators say it was not a cyber attack?",
+          "2級": "What services could people not use because of the system trouble?",
+          "準1級": "How does the Shinkin common system help individual credit associations, and what implications does this failure carry for shared financial infrastructure?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Problem in Banks",
+          "text": "A big problem happened in many Shinkin banks. People could not use ATMs. They could not send money. The system stopped working in the afternoon. It was a very hard time for everyone. After about six hours, the system was fixed. The banks can work again now.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Shinkin System Recovers",
+          "text": "A big computer problem happened in many Shinkin banks in Japan. Customers could not use ATMs or send money at bank windows. This trouble started in the afternoon. Workers worked hard to fix it. After about six hours, the system came back. The operator said the cause was a machine failure, not a cyber attack. People can use their accounts normally again.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "Shinkin Bank System Failure Fixed in About Six Hours",
+          "text": "A major computer problem recently affected 128 Shinkin banks located west of the Tokai region. Customers could not use ATMs or make bank transfers during the afternoon hours because of the unexpected trouble. The operating center worked quickly to solve the issue. After about six hours, the core system was fully restored and returned to normal. Official reports announced that the cause was simply a machine failure in the system equipment. They confirmed that a cyber attack did not cause this major disruption.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Major Shinkin Bank System Failure Restored After Six Hours",
+          "text": "A large-scale system failure recently affected 128 Shinkin banks, primarily located in regions west of the Tokai area, preventing customers from using ATMs and making transactions at bank windows. The trouble began in the afternoon and caused widespread inconvenience for people trying to manage their finances. However, operations were successfully restored about six hours later. The Shinkin Common Center announced that the root cause was a malfunction in system equipment rather than anything else. They explicitly stated that the incident was not related to any cyber attack. The shared system, which connects many credit associations to reduce operating costs, resumed normal functions by evening.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Shinkin Bank System Recovers After Six Hours Following Equipment Failure",
+          "text": "A large-scale system failure recently disrupted operations at 128 Shinkin banks, primarily located in regions west of Tokai and Hokuriku. The unexpected trouble prevented customers from conducting transactions at bank windows and using automated teller machines for deposits and withdrawals. The core infrastructure, known as the Shinkin Common System, experienced the disruption during the afternoon hours. Fortunately, services were fully restored after approximately six hours of intensive work. The operating organization announced that the problem stemmed from a hardware failure in their system equipment. They firmly denied any connection to a cyber attack, easing public concern over digital security. This shared infrastructure supports essential financial services for hundreds of credit associations across the country to reduce individual development and operational costs. The core network links many financial institutions together to maintain efficient regional operations.",
+          "wordCount": 133
+        },
+        "準1級": {
+          "title": "Swift Restoration Following Shinkin Bank System Disruption and Infrastructure Impact",
+          "text": "A significant technological disruption recently paralyzed financial operations across 128 Shinkin banks, predominantly affecting areas west of the Tokai and Hokuriku regions. Customers experienced severe inconveniences as branch windows and automated teller machines became temporarily non-functional for essential services such as deposits, withdrawals, and remittances. The core infrastructure, known as the Shinkin Common System, encountered the malfunction during the afternoon hours on November 6, prompting immediate investigative and restorative efforts by technicians and the operating organization. Operations were successfully normalized approximately six hours after the initial failure occurred, bringing much-needed relief to countless account holders. Subsequent announcements from the operating center clarified that the underlying cause was a mechanical equipment failure in the system rather than any malicious cyber attack. This shared network, established to mitigate individual operational and developmental expenditures for regional credit associations, currently serves a vast majority of credit unions nationwide by handling critical financial transactions. While the quick recovery averted prolonged financial friction, the incident underscores the vulnerability and critical reliance inherent in centralized digital banking frameworks across modern financial institutions. The operating organization, the Shinkin Common Center, announced that the trouble began at 1:27 PM and was fully fixed by 7:05 PM on the same day. Throughout this period, the 128 Shinkin banks located in the affected regions could not complete customer transactions properly. Technicians worked to resolve the issue quickly, ensuring that normal business activities resumed without further delay for the public relying on these services.",
+          "wordCount": 237
+        }
+      },
+      "sources": [
+        {
+          "name": "ITmedia NEWS",
+          "url": "https://www.itmedia.co.jp/news/article/2611/09/2000002999/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-09-ariyoshi-hikaru-matsuko-radio",
+      "date": "2026-11-09",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ariyoshi",
+        "ohta",
+        "radio",
+        "interview"
+      ],
+      "titleJa": "有吉弘行、結婚の経緯を語る",
+      "title": "Comedian Hikaru Ohta Asks Hiroyuki Ariyoshi About His Marriage Story on Podcast",
+      "summaryJa": "爆笑問題の太田光がポッドキャスト番組で有吉弘行に妻・夏目三久さんとの交際のきっかけを直球質問した。",
+      "sourcePublishedAt": "2026-11-09T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "有吉弘行が妻との関係についてどのように語ったかを知るために読む。",
+        "followUpJa": "有吉が妻との関係の始まりについて語った言葉を誰かに説明してみましょう。",
+        "questions": {
+          "5級": "Did Hikaru Ohta ask Hiroyuki Ariyoshi about his wife?",
+          "4級": "What did Hikaru Ohta ask Hiroyuki Ariyoshi in the podcast?",
+          "3級": "How did Hiroyuki Ariyoshi answer when asked about the start of his relationship?",
+          "準2級": "Why did Hikaru Ohta become curious about Hiroyuki Ariyoshi and his wife?",
+          "2級": "What did Hiroyuki Ariyoshi say about a specific moment when he started to have romantic feelings?",
+          "準1級": "How did Hiroyuki Ariyoshi contrast his own gradual relationship development with Hikaru Ohta's immediate love at first sight?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Ohta and Ariyoshi",
+          "text": "Comedian Hikaru Ohta talks with Hiroyuki Ariyoshi. Ohta asks him about his wife. Ohta wants to know their story. Ariyoshi talks on a podcast. He says they took time. They did not have one special moment. Their love grew naturally over many years. Ohta also talks about his wife.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Asking About Marriage",
+          "text": "Comedian Hikaru Ohta asks Hiroyuki Ariyoshi about his marriage. They talk on a podcast program. Ohta asks when Ariyoshi first liked his wife. Ariyoshi says there was no single moment. He explains that their relationship grew slowly over time. Ohta tries to ask more questions, but Ariyoshi keeps it simple. Ohta even shares his own story of love at first sight with his wife.",
+          "wordCount": 64
+        },
+        "3級": {
+          "title": "Podcast Interview on Marriage",
+          "text": "Comedian Hikaru Ohta recently interviewed Hiroyuki Ariyoshi on a special podcast program. Ohta asked how Ariyoshi and his wife started their relationship. Ohta wondered if a TV show appearance was the beginning of their romance. Ariyoshi answered that there was no sudden moment or special event. Instead, he explained that their relationship developed naturally over a long period of time. Although Ohta tried hard to get more details about the romance, Ariyoshi did not share a dramatic story, and instead asked about Ohta's own past relationship to change the topic.",
+          "wordCount": 90
+        },
+        "準2級": {
+          "title": "Comedian Discusses Relationship History on Podcast",
+          "text": "Comedian Hikaru Ohta recently questioned fellow entertainer Hiroyuki Ariyoshi about his marriage on a special radiko podcast. Ohta asked when Ariyoshi first realized he had romantic feelings for his wife, noting they previously worked together on television. Ariyoshi denied that it was a sudden romance, explaining that their bond deepened slowly and naturally over time rather than from a single dramatic event. When Ohta pressed for more details about their relationship, Ariyoshi playfully turned the conversation around. In response, Ohta ended up sharing his own dramatic story of falling in love at first sight with his wife, leaving the interview without getting all the answers he wanted.",
+          "wordCount": 107
+        },
+        "2級": {
+          "title": "Hiroyuki Ariyoshi Discusses Romance on Podcast",
+          "text": "During a special appearance on a commemorative radiko podcast program celebrating an anniversary, comedian Hikaru Ohta questioned fellow entertainer Hiroyuki Ariyoshi about his marriage. Ohta expressed deep curiosity regarding how Ariyoshi and his wife, who previously co-starred on a television program, transitioned from colleagues to a married couple. Specifically, Ohta asked when Ariyoshi first developed romantic feelings and what the exact turning point of their relationship was. Ariyoshi rejected the notion of a single dramatic catalyst, stating instead that their relationship grew naturally and took a long time to develop over the years. Despite Ohta's persistent questioning and even sharing his own immediate love-at-first-sight story with his wife, Ariyoshi remained tight-lipped about his personal life. The interview ultimately ended with Ohta jokingly demanding a second episode because he felt he had not learned enough details about his friend's romance.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Hiroyuki Ariyoshi Shares Insights Into His Marriage on Podcast",
+          "text": "During a special appearance on a commemorative radiko podcast program celebrating an anniversary, comedian Hikaru Ohta pressed fellow entertainer Hiroyuki Ariyoshi regarding the exact origins of his romance and marriage with his wife, who previously co-starred with him on a television program. Ohta directly inquired about the precise moment when Ariyoshi's feelings shifted toward romance and how their relationship evolved from past professional collaborations. Ariyoshi, however, dismissed the notion of a singular dramatic catalyst or turning point, explaining instead that their relationship developed gradually and naturally over an extended period of time rather than through a sudden emotional spark. As Ohta persistently probed for specific details about the beginning of their relationship, he eventually found himself sharing his own dramatic experience of falling in love at first sight with his own wife. Despite sacrificing his own privacy to loosen Ariyoshi's tongue and steer the conversation forward, Ohta ultimately failed to extract further confessions from his guarded guest. This led him to jokingly demand a follow-up interview as the program drew to a close, complaining with a bitter laugh that the real conversation was only just beginning.",
+          "wordCount": 186
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261109-5281069/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-09-hokkaido-ammonia-supply-hub-2026",
+      "date": "2026-11-09",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "environment"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ammonia",
+        "hokkaido",
+        "clean-energy",
+        "partnership"
+      ],
+      "titleJa": "北海道で新会社設立",
+      "title": "New Company Formed for Ammonia Supply Hub in Hokkaido",
+      "summaryJa": "北海道電力など4社が、苫小牧・厚真地域に低炭素アンモニアの供給拠点を築くための新会社を設立しました。",
+      "sourcePublishedAt": "2026-11-06T01:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "新会社設立の背景や今後のビジネス上の狙いを読み解くため。",
+        "followUpJa": "もしあなたがこのプロジェクトに関わるなら、どの産業への供給を優先すべきか話し合いましょう。",
+        "questions": {
+          "5級": "What did four companies make in Hokkaido?",
+          "4級": "What kind of energy are they going to supply to Hokkaido?",
+          "3級": "When do they plan to build the supply hub in Hokkaido by?",
+          "準2級": "Why did the companies establish the new company called Hokkaido Clean Ammonia Terminal?",
+          "2級": "What specific roles will the new supply hub play for power and industrial sectors?",
+          "準1級": "How does this project align with the Hydrogen Society Promotion Act and regional decarbonization goals?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Four Companies Make a New Company",
+          "text": "Hokkaido Electric Power and three other companies made a new company. They want to make an ammonia supply base in Hokkaido. They hope to supply clean ammonia by 2030. This is a very important project for the future of energy in Japan.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "New Ammonia Supply Base in Hokkaido",
+          "text": "Four companies joined together to start a new project in Hokkaido. They are Hokkaido Electric Power, Mitsui and Co., IHI, and Tomakomai Port. They established a new company on November 6, 2026. The name of this company is Hokkaido Clean Ammonia Terminal. They want to build a clean ammonia supply base in the Tomakomai and Atsuma areas. They plan to finish this by the fiscal year 2030 to help reduce carbon emissions.",
+          "wordCount": 69
+        },
+        "3級": {
+          "title": "Building a Clean Ammonia Hub in Hokkaido",
+          "text": "Four major companies have established a new company named Hokkaido Clean Ammonia Terminal. They made this company on November 6, 2026. Their goal is to build an ammonia supply hub in the Tomakomai and Atsuma areas by the fiscal year 2030. This project aims to bring low-carbon ammonia from overseas and supply it safely to power and industrial sectors. The plan received official certification from the government in March 2026 under a special support system for the Hydrogen Society Promotion Act.",
+          "wordCount": 77
+        },
+        "準2級": {
+          "title": "New Company Established for Ammonia Supply Chain",
+          "text": "On November 6, 2026, Hokkaido Electric Power announced the creation of a new company alongside Mitsui and Co., IHI, and Tomakomai Port. Named Hokkaido Clean Ammonia Terminal, the firm will drive the creation of a large-scale low-carbon ammonia supply chain in the Tomakomai and Atsuma regions. Backed by government certification under the Hydrogen Society Promotion Act received in March 2026, the project aims to establish receiving, storage, and supply facilities by the fiscal year 2030. This initiative strives to ensure a stable energy delivery for power and industrial sectors while contributing to regional decarbonization and economic growth.",
+          "wordCount": 93
+        },
+        "2級": {
+          "title": "Launching Hokkaido Clean Ammonia Terminal for 2030",
+          "text": "On November 6, 2026, Hokkaido Electric Power, Mitsui and Co., IHI, and Tomakomai Port officially established a joint venture named Hokkaido Clean Ammonia Terminal. This milestone follows their previous government certification under the Hydrogen Society Promotion Act's hub development support system in March 2026. The newly formed company will take over the planning and execution for creating Japan's first commercial-scale low-carbon ammonia supply chain in the Tomakomai and Atsuma regions by the fiscal year 2030. By importing ammonia from overseas and building robust receiving, storage, and supply facilities, the project seeks to guarantee a stable energy supply for power generation and industrial sectors, ultimately fostering regional decarbonization and local economic development. Through close collaboration among the four founding partners, the initiative aims to advance sustainable energy solutions across Hokkaido while meeting broader national environmental goals.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Strategic Partnership Establishes Hokkaido Clean Ammonia Terminal for Regional Decarbonization and Clean Energy",
+          "text": "In a major step toward regional decarbonization and clean energy adoption in Japan, Hokkaido Electric Power, Mitsui and Co., IHI, and Tomakomai Port have jointly established Hokkaido Clean Ammonia Terminal Co., Ltd. Formed on November 6, 2026, the new company will spearhead the development of Japan's inaugural commercial-scale low-carbon ammonia supply chain in the Tomakomai and Atsuma regions. This initiative builds directly upon official certification received on March 27, 2026, under the Hydrogen Society Promotion Act's hub development support framework, granted jointly by the Minister of Economy, Trade and Industry and the Minister of Land, Infrastructure, Transport and Tourism. The newly formed entity will manage upcoming transition procedures and construct comprehensive receiving, storage, and distribution infrastructure targeting completion by the fiscal year 2030. By securing international procurement channels for low-carbon ammonia and establishing a reliable domestic network, the partners aim to provide a stable energy source for power and industrial users. Ultimately, the project addresses the dual imperatives of cutting industrial carbon emissions, advancing local economic development, and securing a sustainable energy future for the region through close collaboration among all four founding partners.",
+          "wordCount": 179
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253233_2073.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-09-ishikawa-body-identified",
+      "date": "2026-11-09",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "crime",
+        "police",
+        "ishikawa"
+      ],
+      "titleJa": "山林遺体は20代女性",
+      "title": "Body in Woods Identified as Woman from Ishikawa",
+      "summaryJa": "石川県の20代女性が監禁された後に山林で遺体として見つかり、警察が事件の捜査を進めています。",
+      "sourcePublishedAt": "2026-11-08T23:42:13.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "事件の被害者や発見場所に関する基本情報を正しく把握する。",
+        "followUpJa": "警察の発表をもとに、どのような経緯で事件が発覚したかを確認しましょう。",
+        "questions": {
+          "5級": "Where was the body found?",
+          "4級": "What was the age group of the woman from Ishikawa?",
+          "3級": "Based on whose information did police find the body in the mountain woods?",
+          "準2級": "What did the police confirm about the woman found dead in the woods?",
+          "2級": "According to the suspect's information, when was the woman likely killed after being confined?",
+          "準1級": "What primary cause of death was determined regarding the young woman found in the mountain area?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Body Found in Woods",
+          "text": "A body is in the mountain woods. It is a young woman from Ishikawa. She is in her twenties. The police have a suspect. The suspect is her partner. The police arrested the man. They are looking into the crime. People are very sad about this bad news today.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Woman from Ishikawa Found",
+          "text": "A sad crime case happened in Japan. A young woman from Ishikawa Prefecture was found dead in the mountain woods. She was in her twenties. A suspect, who is believed to be her partner, was arrested for confining her. Based on his information, police found her body. Investigators are working hard to learn how she died and what happened.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Body in Mountain Woods Identified",
+          "text": "Police in Japan have confirmed that a body found in the mountain woods belongs to a woman in her twenties from Ishikawa Prefecture. A male suspect, who is thought to be her partner, was previously arrested for allegedly confining her. Authorities located the body based on information provided by the suspect. Officials believe that she was killed shortly after being confined. The investigation into this tragic case is continuing now, and police are working hard to uncover all the important details about what happened to the young woman.",
+          "wordCount": 88
+        },
+        "準2級": {
+          "title": "Ishikawa Woman Found Dead in Mountain Woods",
+          "text": "Japanese authorities have officially confirmed that a body discovered in a mountain area is indeed a woman in her twenties from Ishikawa Prefecture. The victim had been reported missing after allegedly being confined. A suspect, believed to be her romantic partner, was previously arrested by the police in connection with the unlawful confinement. Acting on statements and information provided by the suspect during questioning, officers searched the woods and found the remains. Investigators suspect that the young woman was killed shortly after the confinement took place. Officials are continuing to examine the exact cause and circumstances of her tragic death, noting that her cause of death involved pressure applied to her neck.",
+          "wordCount": 112
+        },
+        "2級": {
+          "title": "Body Found in Mountain Woods Identified as Ishikawa Woman",
+          "text": "Japanese law enforcement authorities have officially confirmed that a body recently discovered in a remote mountain forest belongs to a woman in her twenties from Ishikawa Prefecture. The breakthrough in the case came after police arrested a male suspect, believed to be the victim's romantic partner, on suspicion of confining her. Acting on information and statements provided by the suspect during questioning, officers located the remains in the woods. Investigators believe that the young woman was murdered shortly after being placed in confinement. Medical examinations and ongoing police inquiries suggest that her cause of death involved pressure applied to her neck. The tragic incident has drawn significant public attention, and authorities are continuing their thorough investigation into the full sequence of events to ensure that justice is properly served for the victim.",
+          "wordCount": 132
+        },
+        "準1級": {
+          "title": "Tragic Discovery: Body in Mountain Woods Confirmed as Missing Ishikawa Woman",
+          "text": "Japanese law enforcement and investigative authorities have officially verified that a body recovered from a secluded mountainous area is indeed a young woman in her twenties from Ishikawa Prefecture. The grim discovery follows the earlier arrest of a male suspect, widely believed to be the victim's romantic partner, who was taken into custody on serious allegations of unlawful confinement. Investigative sources disclosed that the precise location of the hidden remains was successfully pinpointed based on statements and active cooperation provided by the suspect during comprehensive police interrogations. Current forensic and circumstantial findings strongly suggest that the young woman was killed shortly after being subjected to confinement, with preliminary medical indications pointing directly to neck compression as a primary factor in her tragic death. As the local community reels from this deeply unsettling news, regional law enforcement agencies are pressing forward with their thorough investigation to uncover every single detail surrounding the sequence of events, ensuring that all aspects of how this terrible crime transpired are fully brought to light through rigorous legal procedures and ongoing professional examination.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261109de72639"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-09-man-utd-defensive-problems",
+      "date": "2026-11-09",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Manchester United",
+        "Aston Villa",
+        "Premier League",
+        "football"
+      ],
+      "titleJa": "マンUの守備の課題",
+      "title": "Four 'huge mistakes' that show Man Utd's defensive problems",
+      "summaryJa": "マンチェスター・ユナイテッドがアストン・ビラ戦で4失点し、専門家が守備の課題を分析しました。",
+      "sourcePublishedAt": "2026-11-08T23:53:20.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "マンチェスター・ユナイテッドの守備を立て直すためのアドバイスを考えましょう。",
+        "followUpJa": "試合の映像や専門家の分析から、チームが一番直すべき弱点について話し合ってみましょう。",
+        "questions": {
+          "5級": "What team played against Manchester United?",
+          "4級": "How many goals did Manchester United concede in the match?",
+          "3級": "Who are the two experts that analyzed the defensive issues on Match of the Day?",
+          "準2級": "What score did Manchester United and Aston Villa draw with at Old Trafford?",
+          "2級": "According to the experts, what specific defensive problems did the team show during the match?",
+          "準1級": "How did the experts explain the defensive breakdown after Manchester United came from two goals down twice?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Manchester United Match",
+          "text": "Manchester United played a football game. They played against Aston Villa in the Premier League. The team conceded four goals in the game. It was a big match. Experts look at the game. They see huge mistakes in the defense. The team can do better. Fans watch the video to see the big problems.",
+          "wordCount": 54
+        },
+        "4級": {
+          "title": "Defensive Problems for United",
+          "text": "Manchester United had a difficult football match in the Premier League. They played against Aston Villa at Old Trafford. During the game, Manchester United conceded four preventable goals. Experts Dion Dublin and Leon Osman looked at the match on television. They want to show four huge mistakes. These mistakes explain why the team has big defensive problems right now.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Experts Analyze Manchester United's Defense",
+          "text": "Manchester United recently played an exciting match against Aston Villa in the Premier League. Although they came from two goals down to draw 4-4 at Old Trafford, the team conceded four preventable goals. Because of this, football experts Dion Dublin and Leon Osman examined the game on Match of the Day to break down what went wrong. They highlighted four huge mistakes that show the defensive problems at the club right now.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "Examining Manchester United's Defensive Issues",
+          "text": "Manchester United experienced a dramatic match in the Premier League against Aston Villa. Even though they managed to come from two goals down twice to secure a 4-4 draw at Old Trafford, their defensive performance raised serious concerns. They conceded four preventable goals during the game. Following the match, football experts Dion Dublin and Leon Osman appeared on Match of the Day to break down the action. They closely examined what is going wrong by pointing out four huge mistakes that clearly show Manchester United's ongoing defensive problems in the tournament.",
+          "wordCount": 90
+        },
+        "2級": {
+          "title": "Breaking Down Manchester United's Defensive Vulnerabilities",
+          "text": "In a thrilling and chaotic Premier League encounter at Old Trafford, Manchester United played out a dramatic 4-4 draw with Aston Villa. Despite showing great resilience to come from two goals down during the fixture, the team's defensive frailties were once again heavily exposed as they conceded four preventable goals. In response to these recurring defensive issues that continue to trouble the club, football experts Dion Dublin and Leon Osman took to Match of the Day to analyze the team's performance. They thoroughly broke down the tactical breakdowns and highlighted four huge mistakes that accurately illustrate what is currently going wrong with Manchester United's backline during this important football season, giving fans and managers much to consider regarding their defensive stability moving forward, while reviewing all the key moments from the match.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Expert Analysis Uncovers Manchester United's Defensive Flaws",
+          "text": "The Premier League fixture between Manchester United and Aston Villa at Old Trafford delivered an eventful spectacle, culminating in a pulsating 4-4 draw. While Manchester United demonstrated admirable character by twice recovering from a two-goal deficit during the match, the encounter laid bare their persistent structural vulnerabilities in the backline. The football team conceded four entirely preventable goals, prompting severe scrutiny regarding their overall defensive solidity and tactical organization. Consequently, seasoned football analysts Dion Dublin and Leon Osman utilized Match of the Day to deconstruct the team's performance in detail. By meticulously scrutinizing the gameplay and highlighting four major mistakes, the analysts provided crucial insights into the defensive malfunctions that continue to plague Manchester United throughout the ongoing season, emphasizing the urgent need for structural improvements to secure better results in future matches. Football supporters and commentators alike watched the broadcast to understand how Manchester United could allow such defensive lapses after coming from two goals down twice. Dion Dublin and Leon Osman explained that these four huge mistakes directly contributed to the four goals conceded against Aston Villa in the Premier League. The analysis on Match of the Day offered a thorough examination of the defensive issues that Manchester United must address. As the Premier League season progresses, Manchester United will need to correct these defensive errors to avoid further difficulties during subsequent matches at Old Trafford and away grounds. The comprehensive review by Dion Dublin and Leon Osman remains a central topic for Manchester United followers who wish to see the club overcome its current defensive vulnerabilities and improve its overall standing in the Premier League through disciplined tactical adjustments and greater concentration in defense.",
+          "wordCount": 276
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/videos/c64g1n1wezvyo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-09-sapporo-market-fin-whale-record-price",
+      "date": "2026-11-09",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "whale",
+        "sapporo",
+        "market",
+        "hokkaido"
+      ],
+      "titleJa": "クジラ生肉に最高値",
+      "title": "Fin Whale Meat Reaches Record High Price at Sapporo Market",
+      "summaryJa": "札幌市中央卸売市場に希少なナガスクジラの生肉が上場され、最高値が1キロ当たり20万111円を記録しました。",
+      "sourcePublishedAt": "2026-11-09T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "高額なナガスクジラを仕入れるべきか判断する",
+        "followUpJa": "仕入れのメリットと価格の理由を整理しましょう",
+        "questions": {
+          "5級": "How much was one kilo of whale meat?",
+          "4級": "Where was the whale meat sold in Sapporo?",
+          "3級": "Which ship processed the whale meat before it went to Sapporo?",
+          "準2級": "How was the whale meat traded at the central wholesale market instead of a regular auction?",
+          "2級": "When and where were the fin whales caught, and how does this year's top price compare to 2025?",
+          "準1級": "Explain the journey of the fin whale meat from the Pacific Ocean to the Sapporo market, noting the roles of the vessels involved."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Fresh Whale Meat",
+          "text": "Look at this news. Fresh whale meat is here. It is in Sapporo. People call it the diamond of food. One kilo is very expensive. It costs two hundred thousand and one hundred eleven yen. Many people want to see it. It is very rare and special meat.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "High Price for Whale Meat",
+          "text": "Fresh whale meat arrived in Sapporo. It appeared at the central wholesale market early in the morning. People call this rare meat a food diamond. The highest price reached two hundred thousand, one hundred eleven yen per kilo. About two tons of meat came directly from Kushiro. A mother ship brought it there. Many buyers watched the special market event with great interest today.",
+          "wordCount": 64
+        },
+        "3級": {
+          "title": "Record Price at Sapporo Market",
+          "text": "Fresh fin whale meat arrived at the Sapporo Central Wholesale Market early in the morning on November 9. People often call this rare food a diamond. About two tons of meat were sent directly from Kushiro, where the whaling mother ship Kangei Maru first arrived. The meat was sold through a special bidding system instead of a standard auction. The highest price reached two hundred thousand, one hundred eleven yen per kilo. This shows how valuable and rare this special meat is in Japan today.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "Fin Whale Meat Sets New High in Sapporo",
+          "text": "Rare fresh fin whale meat was put up for sale at the Sapporo Central Wholesale Market on the morning of November 9. Around two tons of meat were sent directly from Kushiro, marking a visit by the whaling mother ship Kangei Maru. The transaction was conducted using a bidding system rather than a traditional auction, and the results opened just before six o'clock in the morning. The highest price hit a record two hundred thousand, one hundred eleven yen per kilo. The whales were caught off eastern Hokkaido in the northwest Pacific by the vessel Yushinmaru. Last year, the top price for the tail meat reached one hundred fifty thousand yen, showing strong interest.",
+          "wordCount": 113
+        },
+        "2級": {
+          "title": "Fin Whale Meat Reaches Record High of Over 200,000 Yen in Sapporo",
+          "text": "On the morning of November 9, rare fresh fin whale meat was listed at the Sapporo Central Wholesale Market. Often referred to as the diamond of food, approximately two tons of the meat were sent directly from Kushiro, where the whaling mother ship Kangei Maru had made its first port call. Operated by the mother-ship whaling company Kyodo Senpaku, the transaction did not use a traditional auction. Instead, it was conducted through a bidding system, with results opened just before six in the morning. The meat came from three fin whales caught in the northwest Pacific off eastern Hokkaido by the catcher boat Yushinmaru, and it was processed aboard the Kangei Maru. Fin whale meat was first listed in the Sapporo market in 2024, and in November 2025, the premium tail meat reached a high of one hundred fifty thousand yen per kilo. This year, the price surpassed that mark, setting a new record of two hundred thousand, one hundred eleven yen per kilo for buyers.",
+          "wordCount": 163
+        },
+        "準1級": {
+          "title": "Fin Whale Meat Commands Record Prices at Sapporo Central Wholesale Market",
+          "text": "In a development highlighting the enduring demand for specialty marine products, rare fresh fin whale meat was officially listed at the Sapporo Central Wholesale Market on the morning of November 9. Widely celebrated as the diamond of food due to its scarcity and prized flavor, approximately two tons of the product were shipped directly from Kushiro. This followed the historic initial port call of the whaling mother ship Kangei Maru in that city. The transaction, managed by mother-ship whaling operator Kyodo Senpaku, bypassed traditional open-cry auctions in favor of a sealed bidding format, with results unveiled just ahead of six o'clock in the morning. The meat originated from three fin whales harvested in the northwest Pacific off the eastern coast of Hokkaido by the catcher boat Yushinmaru, and it was subsequently processed and dismantled aboard the Kangei Maru. Market listings for fresh fin whale meat in Sapporo began in 2024, and by November 2025, the highly coveted tail meat commanded a high of one hundred fifty thousand yen per kilo. This season, the valuation climbed even higher, achieving a remarkable record peak of two hundred thousand, one hundred eleven yen per kilo, underscoring the enduring high status of whale meat in regional culinary circles and markets.",
+          "wordCount": 203
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63464"
+        }
+      ]
+    },
     {
       "id": "2026-11-07-inujima-population-decline-seto-inland-sea",
       "date": "2026-11-07",
