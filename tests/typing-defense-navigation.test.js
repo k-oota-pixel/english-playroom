@@ -49,9 +49,10 @@ test('each adventure card has its own ranking button directly underneath',()=>{
  assert.match(page,/class="ranking-actions adventure-online-actions"/);
 });
 
-test('defense ranking dialog shows normal and hard together on demand with cached GETs',()=>{
+test('defense ranking dialog shows easy, normal and hard together on demand with cached GETs',()=>{
  const page=read('pet-adventure/index.html');
  const rankings=read('pet-adventure/rankings.js');
+ assert.match(page,/id="defenseRankingEasyList"/);
  assert.match(page,/id="defenseRankingNormalList"/);
  assert.match(page,/id="defenseRankingHardList"/);
  assert.doesNotMatch(page,/data-defense-ranking=/);
