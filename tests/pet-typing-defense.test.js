@@ -130,6 +130,9 @@ test('game launcher has two large direct mode buttons and no old setup text',()=
  assert.match(topbar,/rankingBtn.hidden=isDefense\|\|!materialRankingAppId\(frame.src\)/);
  assert.match(css,/body\.typing-in-progress \.game\{display:grid;grid-template-columns:/);
  assert.match(css,/body\.typing-in-progress \.question-panel\{grid-column:2;grid-row:3;/);
+ assert.match(game,/classList\.toggle\('sentence-defense',run\.mode==='hard'&&stage>0\)/);
+ assert.match(css,/body\.typing-in-progress\.sentence-defense \.question-panel\{[^}]*height:auto;[^}]*overflow:visible/);
+ assert.match(css,/body\.typing-in-progress\.sentence-defense \.word-choices\{[^}]*flex:0 0 auto;[^}]*overflow:visible/);
  assert.doesNotMatch(game, /textContent='魔物 '\+\(i\+1\)/);
  assert.match(game,/node.append\(monster,shadow\)/);
 });
