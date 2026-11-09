@@ -44,10 +44,10 @@ function install(){
   const defenseActions=document.createElement('div');
   defenseActions.className='ms-defense-rank-actions';
   defenseActions.hidden=true;
-  for(const [mode,label] of [['normal','🏆 ノーマル'],['hard','🏆 ハード']]){
+  for(const [mode,label] of [['easy','🏆 イージー'],['normal','🏆 ノーマル'],['hard','🏆 ハード']]){
     const button=document.createElement('button');
     button.type='button';button.textContent=label;
-    button.setAttribute('aria-label',(mode==='normal'?'ノーマル':'ハード')+'モードの本日のランキング');
+    button.setAttribute('aria-label',({easy:'イージー',normal:'ノーマル',hard:'ハード'})[mode]+'モードのランキング');
     button.addEventListener('click',()=>{void openMaterialRanking('pet-typing-defense-'+mode);});
     defenseActions.append(button);
   }
