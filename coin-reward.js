@@ -26,7 +26,7 @@ export { auth, db, authReady, walletRef, recordLearningActivity };
 let currentUser=auth.currentUser||null;
 let authResolved=false,resolveAuth;
 const authReady=new Promise(r=>resolveAuth=r);
-onAuthStateChanged(auth,user=>{currentUser=user||null;if(user)queueMicrotask(()=>{void flushTitleEvents();void flushLearningActivities();if(readRetryOutbox(RETRY_OUTBOX_PREFIX+user.uid).length)void flushRetryAttempts();});if(!authResolved){authResolved=true;resolveAuth();}});
+onAuthStateChanged(auth,user=>{currentUser=user||null;if(user)queueMicrotask(()=>{void flushTitleEvents();void flushLearningActivities();if(readRetryOutbox(RETRY_OUTBOX_PREFIX+user.uid).length)void flushRetryAttempts();void flushPendingTypingDefenseRuns();});if(!authResolved){authResolved=true;resolveAuth();}});
 
 function todayKey(){
   const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -378,6 +378,84 @@ async function awardTypingDefenseClear(mode,stageNumber,phaseNumber,claimId){
   }
 }
 
+
+// Typing-defense rewards and stage records are *only* sent after a run ends.
+// Phase milestones are queued in localStorage (no Firestore reads/writes).
+const DEFENSE_PENDING_PREFIX='monstudy-defense-pending:';
+const DEFENSE_SETTLEMENT_API='https://task-quest.onrender.com/api/adventure/defense-settlement';
+let defenseFlushPending=null;
+const defenseKey=uid=>DEFENSE_PENDING_PREFIX+uid;
+function readDefenseOutbox(uid){
+ try{const rows=JSON.parse(localStorage.getItem(defenseKey(uid))||'[]');
+  return Array.isArray(rows)?rows.filter(row=>row&&typeof row.runId==='string'&&['easy','normal','hard'].includes(row.mode)&&Number.isInteger(row.clearedPhases)):[];}catch{return [];}
+}
+function writeDefenseOutbox(uid,rows){
+ try{localStorage.setItem(defenseKey(uid),JSON.stringify(rows));return true;}
+ catch(error){console.warn('Typing defense local progress could not be saved',error);return false;}
+}
+function queueTypingDefenseProgress(mode,runId,clearedPhases,finished=false){
+ const user=currentUser,phases=Number(clearedPhases);
+ if(!user||!['easy','normal','hard'].includes(mode)||typeof runId!=='string'||!/^td-[A-Za-z0-9_-]{9,60}$/.test(runId)||
+    !Number.isInteger(phases)||phases<0||phases>25)return {queued:false,reason:user?'invalid-run':'signed-out'};
+ const rows=readDefenseOutbox(user.uid),index=rows.findIndex(row=>row.runId===runId);
+ if(index>=0){
+  const old=rows[index];
+  if(old.mode!==mode)return {queued:false,reason:'mode-mismatch'};
+  if(old.finished)return {queued:true,finished:true};
+  rows[index]={...old,clearedPhases:Math.max(old.clearedPhases,phases),finished:!!finished};
+ }else rows.push({runId,mode,clearedPhases:phases,finished:!!finished});
+ return {queued:writeDefenseOutbox(user.uid,rows),finished:!!finished};
+}
+async function flushPendingTypingDefenseRuns(){
+ if(defenseFlushPending)return defenseFlushPending;
+ defenseFlushPending=(async()=>{
+  await authReady;
+  const user=currentUser,results=[];
+  if(!user)return {ok:false,results,reason:'signed-out'};
+  const uid=user.uid;
+  const pending=readDefenseOutbox(uid).filter(row=>row.finished);
+  for(const item of pending){
+   try{
+    const token=await user.getIdToken();
+    const response=await fetch(DEFENSE_SETTLEMENT_API,{
+     method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+     body:JSON.stringify({runId:item.runId,mode:item.mode,clearedPhases:item.clearedPhases}),
+     cache:'no-store',keepalive:true
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.ok)throw Error(data.error||'防衛結果を送信できませんでした。');
+    if(currentUser?.uid!==uid)return {ok:false,results,reason:'user-changed'};
+    const latest=readDefenseOutbox(uid);
+    if(latest.some(row=>row.runId===item.runId)){
+     if(!writeDefenseOutbox(uid,latest.filter(row=>row.runId!==item.runId)))
+      throw Error('保存済みの結果を端末から消去できませんでした。');
+    }
+    results.push({runId:item.runId,...data});
+    if(!data.duplicate&&data.coinsAdded>0)toast('🪙 +'+data.coinsAdded+'　もんすた城の防衛を精算しました！');
+   }catch(error){
+    console.warn('Defense end-of-run settlement deferred',error);
+    return {ok:false,results,reason:'network-error',error};
+   }
+  }
+  return {ok:true,results};
+ })().finally(()=>{defenseFlushPending=null});
+ return defenseFlushPending;
+}
+async function settleTypingDefenseRun(mode,runId,clearedPhases){
+ await authReady;
+ const queued=queueTypingDefenseProgress(mode,runId,clearedPhases,true);
+ if(!queued.queued)return {ok:false,queued:false,reason:queued.reason};
+ let flushed=await flushPendingTypingDefenseRuns();
+ let found=flushed.results?.find(row=>row.runId===runId);
+ if(!found&&flushed.ok){
+  // Another earlier flush may have started before this run was queued.
+  flushed=await flushPendingTypingDefenseRuns();
+  found=flushed.results?.find(row=>row.runId===runId);
+ }
+ if(found)return found;
+ return {ok:false,queued:true,reason:flushed.reason||'pending',earnedCoins:mode==='easy'?Math.floor(clearedPhases/5):clearedPhases*(mode==='hard'?2:1)};
+}
+
 // One authenticated daily milestone per typing-defense mode and cleared stage.
 // The deterministic batch receipt prevents repeat plays (and other devices) from
 // inflating daily leaderboards. Reuse the existing activity endpoint and weekly titles.
@@ -468,6 +546,9 @@ window.EnglishPlayroomCoins=Object.freeze({
   awardOncePerDay,
   awardTypingDefenseClear,
   recordTypingDefenseStage,
+  queueTypingDefenseProgress,
+  settleTypingDefenseRun,
+  flushPendingTypingDefenseRuns,
   recordRetryAttempt,
   recordRetrySession,
   awardAteru:roundId=>awardOncePerDay('ateru',`round-${cleanPart(roundId)}`,'アテル3問以上正解！'),
