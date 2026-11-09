@@ -1,10 +1,10 @@
-import {createCampaign,normalizedDefenseTyping,revealedWord,enemySpawnInterval,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,EASY_WORD_PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.4.49';
+import {createCampaign,normalizedDefenseTyping,revealedWord,enemyInvasionTime,scrambledTokens,TOTAL_QUESTIONS,STAGE_NAMES,PHASE_NAMES,EASY_WORD_PHASE_NAMES,PHASES_PER_STAGE,STAGE_COUNT,QUESTIONS_PER_PHASE} from './data.js?v=2.4.51';
 
 const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
 const TOTAL=TOTAL_QUESTIONS;
-let campaign=null,run=null,frame=0,lastFrame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='',lastTypedAt=-1e9,rewardRunId=0;
-const MAX_HP=6;
+let campaign=null,run=null,frame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='',rewardRunId=0;
+const MAX_HP=6,ENEMY_START_X=970,CASTLE_X=155;
 function setFeedback(message,type=''){
  $('feedback').textContent=message;
  $('feedback').className='feedback'+(type?' '+type:'');
@@ -111,12 +111,31 @@ function drawFocus(){
 function makeEnemy(e,i,stage){
  const node=document.createElement('div');
  node.className='foe';
- node.style.left='101%';
+ node.style.left=(ENEMY_START_X/10)+'%';
  const monster=document.createElement('span');monster.className='monster';monster.textContent=FACES[(stage+i)%FACES.length];
  const shadow=document.createElement('span');shadow.className='shadow';
  node.append(monster,shadow);
  $('enemyLayer').appendChild(node);
  e.node=node;
+}
+// Exactly one enemy is active at a time. Its deadline starts when it appears.
+function spawnNextEnemy(){
+ if(!run?.active||currentEnemy())return false;
+ const index=run.enemies.findIndex(enemy=>!enemy.spawned&&!enemy.resolved);
+ if(index<0)return false;
+ const enemy=run.enemies[index];
+ const now=performance.now();
+ enemy.spawned=true;
+ enemy.spawnedAt=now;
+ enemy.deadlineAt=now+enemyInvasionTime(stageIndex(),run.mode)*1000;
+ enemy.x=ENEMY_START_X;
+ makeEnemy(enemy,index,stageIndex());
+ return true;
+}
+function advanceAfterEnemy(){
+ if(run.enemies.every(enemy=>enemy.resolved)){waveComplete();return}
+ spawnNextEnemy();
+ showQuestion();
 }
 function openPhase(){
  if(!run)return;
@@ -127,9 +146,8 @@ function openPhase(){
  document.body.classList.toggle('sentence-defense',run.mode==='hard'&&stage>0);
  const questions=campaign[stage][phase];
  $('enemyLayer').replaceChildren();$('effects').replaceChildren();
- run.enemies=questions.map((q,i)=>({q,x:970,spawnAt:i*enemySpawnInterval(stage,run.mode),spawned:false,resolved:false,node:null}));
- run.enemies.forEach((e,i)=>makeEnemy(e,i,stage));
- run.elapsed=0;run.active=true;shownQuestion=null;shownQuestionAt=0;wordReveal=null;lastTypedAt=-1e9;
+ run.enemies=questions.map(q=>({q,x:ENEMY_START_X,spawned:false,resolved:false,node:null,spawnedAt:0,deadlineAt:0}));
+ run.active=true;shownQuestion=null;shownQuestionAt=0;wordReveal=null;
  $('typing').value='';$('typing').disabled=true;$('typing').classList.remove('wrong');
  $('wordMeaning').hidden=true;
  $('wordChoices').hidden=true;
@@ -138,8 +156,9 @@ function openPhase(){
  $('questionTemplate').textContent='タイピングの準備！';
  setFeedback(stage===0?(run.mode==='easy'?'日本語訳と英単語を見ながらタイプしよう！':'日本語訳から単語を入力！ 2秒で頭文字、4秒で全体表示。'):run.mode==='hard'?'和訳とバラバラの単語を見て、正しい順番でタイプしよう！':'和訳と英文を確認してタイプしよう！ スペースは入力不要です。');
  hud();
+ spawnNextEnemy();
+ showQuestion();
  if(frame)cancelAnimationFrame(frame);
- lastFrame=performance.now();
  frame=requestAnimationFrame(tick);
 }
 function showOverlay(eyebrow,heading,body,buttonLabel,fn){
@@ -252,41 +271,34 @@ function fireProjectile(x){
 function strike(){
  if(!run?.active)return;
  const e=currentEnemy();if(!e)return;
+ // A delayed input event must not count as a victory after the enemy has arrived.
+ if(performance.now()>=e.deadlineAt){breach(e);return}
  e.resolved=true;run.kills++;
  fireProjectile(e.x);
  $('pet').classList.remove('attack');void $('pet').offsetWidth;$('pet').classList.add('attack');
  e.node.remove();
  shownQuestion=null;hud();
+ advanceAfterEnemy();
  setFeedback('正解！ 魔法が命中！','ok');
- showQuestion();
- if(run.enemies.every(enemy=>enemy.resolved))waveComplete();
 }
 function breach(e){
  if(e.resolved)return;
  e.resolved=true;e.node.remove();run.misses++;run.hp--;
  shownQuestion=null;hud();
  $('arena').classList.remove('breach');void $('arena').offsetWidth;$('arena').classList.add('breach');
- setFeedback('魔物が城に到達！ 耐久力が1減った。','error');
  if(run.hp<=0){finish(false);return}
- showQuestion();
- if(run.enemies.every(enemy=>enemy.resolved))waveComplete();
+ advanceAfterEnemy();
+ setFeedback('魔物が城に到達！ 耐久力が1減った。','error');
 }
 function tick(now){
  if(!run?.active)return;
- const delta=Math.min(.06,Math.max(0,(now-lastFrame)/1000));
- lastFrame=now;
- run.elapsed+=delta;
- const speed=run.mode==='hard'?61:43;
- const typing=false;
- for(const e of run.enemies){
-  if(e.resolved)continue;
-  if(!e.spawned){
-   if(run.elapsed<e.spawnAt)continue;
-   e.spawned=true;
-  }
-  e.x-=speed*(typing?.35:1)*delta;
-  e.node.style.left=(e.x/10)+'%';
-  if(e.x<=155){breach(e);if(!run.active)break}
+ const enemy=currentEnemy();
+ if(enemy){
+  const duration=enemyInvasionTime(stageIndex(),run.mode)*1000;
+  const progress=Math.min(1,Math.max(0,(now-enemy.spawnedAt)/duration));
+  enemy.x=ENEMY_START_X-(ENEMY_START_X-CASTLE_X)*progress;
+  enemy.node.style.left=(enemy.x/10)+'%';
+  if(progress>=1)breach(enemy);
  }
  if(!run?.active)return;
  showQuestion();drawFocus();
@@ -295,7 +307,6 @@ function tick(now){
 function onType(){
  if(!run?.active)return;
  const target=currentEnemy();if(!target)return;
- lastTypedAt=performance.now();
  const input=normalizedDefenseTyping($('typing').value,stageIndex());
  const expected=normalizedDefenseTyping(target.q.answer,stageIndex());
  const isPrefix=expected.startsWith(input);
@@ -314,7 +325,7 @@ function start(mode=run?.mode||'normal'){
  $('opening').hidden=true;$('game').hidden=false;
  document.body.classList.add('typing-in-progress');
  rewardRunId++;
- run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),rewardPaid:new Set(),enemies:[],elapsed:0,active:false};
+ run={phaseIndex:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),rewardPaid:new Set(),enemies:[],active:false};
  choosePet();openPhase();
 }
 $('easyStart').addEventListener('click',()=>start('easy'));
