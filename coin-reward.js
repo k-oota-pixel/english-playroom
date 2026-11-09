@@ -257,7 +257,7 @@ async function recordLearningActivity(appId=learningContentFromPage()){
  if(lastLearningUid===user.uid&&lastLearningApp===appId&&Date.now()-lastLearningSent<1000)return;
  lastLearningUid=user.uid;lastLearningApp=appId;lastLearningSent=Date.now();
  const key='monstudy-learning-outbox:'+user.uid,rows=readLearningOutbox(key);
- rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));if(typeof setTimeout!=='function')return flushLearningActivities();scheduleLearningFlush();
+ rows.push({eventId:newClientEventId(),appId,at:Date.now()});writeLearningOutbox(key,rows.slice(-1000));if(typeof setTimeout!=='function')return flushLearningActivities();scheduleLearningFlush(LEARNING_ACTIVITY_IDS.has(appId)?700:5000);
 }
 
 const RETRY_OUTBOX_PREFIX='monstudy-retry-coin-outbox:';
@@ -316,8 +316,9 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
   const today=todayKey(),claim=`${cleanPart(appId)}:${cleanPart(itemId)}`;
-  if(hasRewardCache(user.uid,today,claim))return {awarded:false,reason:'already-today',cached:true};
+  // Completing a lesson counts for challenges even when its coin was earned earlier.
   void recordLearningActivity(appId);
+  if(hasRewardCache(user.uid,today,claim))return {awarded:false,reason:'already-today',cached:true};
   let awarded=false,newCoins=0;
   try{
     await runTransaction(db,async tx=>{
