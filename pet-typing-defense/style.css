@@ -39,11 +39,12 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}button:fo
 .today-ranking-bar small{font-size:10px;color:#63816d;line-height:1.5}
 @media(max-width:650px){.today-ranking-bar small{flex-basis:100%}}
 
-/* The landing page is a two-choice launcher, not an instruction sheet. */
-.opening.mode-chooser{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:28px}
+/* A direct three-mode launcher with large, distinct buttons. */
+.opening.mode-chooser{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:24px}
 .mode-choice{display:grid;place-items:center;min-height:184px;width:100%;padding:24px 18px;border:0;border-radius:21px;
  color:#fff;font-size:clamp(25px,3.4vw,42px);font-weight:950;letter-spacing:.025em;text-align:center;
  line-height:1.35;box-shadow:0 8px 0 #193c2b24,0 16px 28px #172e2820;transition:transform .15s,box-shadow .15s}
+.mode-easy{background:linear-gradient(145deg,#338cba,#22638c)}
 .mode-normal{background:linear-gradient(145deg,#258052,#145a3e)}
 .mode-hard{background:linear-gradient(145deg,#6a49ac,#3e2875)}
 .mode-choice:hover{transform:translateY(-3px);filter:brightness(1.06);box-shadow:0 11px 0 #193c2b24,0 18px 32px #172e2828}
