@@ -124,6 +124,7 @@ function openPhase(){
  if(phaseIndex>=STAGE_COUNT*PHASES_PER_STAGE){finish(true);return}
  $('phaseOverlay').hidden=true;
  const stage=Math.floor(phaseIndex/PHASES_PER_STAGE),phase=phaseIndex%PHASES_PER_STAGE;
+ document.body.classList.toggle('sentence-defense',run.mode==='hard'&&stage>0);
  const questions=campaign[stage][phase];
  $('enemyLayer').replaceChildren();$('effects').replaceChildren();
  run.enemies=questions.map((q,i)=>({q,x:970,spawnAt:i*enemySpawnInterval(stage,run.mode),spawned:false,resolved:false,node:null}));
