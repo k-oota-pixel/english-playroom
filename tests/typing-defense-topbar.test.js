@@ -29,9 +29,9 @@ test('shared return bar moves typing-defense mode rankings to the right and pres
  assert.equal(bar.hidden,false);
  assert.equal(regular.hidden,true);
  assert.equal(pair.hidden,false);
- assert.deepEqual(pair.children.map(x=>x.textContent),['🏆 ノーマル','🏆 ハード']);
+ assert.deepEqual(pair.children.map(x=>x.textContent),['🏆 イージー','🏆 ノーマル','🏆 ハード']);
  for(const button of pair.children)button.dispatch('click');
- assert.deepEqual(clicked,['pet-typing-defense-normal','pet-typing-defense-hard']);
+ assert.deepEqual(clicked,['pet-typing-defense-easy','pet-typing-defense-normal','pet-typing-defense-hard']);
  frame.src='https://k-oota-pixel.github.io/english-playroom/ateru/';
  frame.dispatch('load');
  assert.equal(regular.hidden,false,'original button must be visible for normal lessons');
