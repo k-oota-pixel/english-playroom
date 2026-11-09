@@ -340,13 +340,49 @@ async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   }catch(error){console.error('Coin reward failed',error);return {awarded:false,reason:'error',error};}
 }
 
+// Each cleared typing-defense milestone earns coins, even on repeated runs in the
+// same day. A receipt document makes network retries idempotent without an ever-
+// growing daily claims array in the wallet. Only one transaction per milestone.
+async function awardTypingDefenseClear(mode,stageNumber,phaseNumber,claimId){
+  const stage=Number(stageNumber),phase=Number(phaseNumber);
+  if(!['easy','normal','hard'].includes(mode)||!Number.isInteger(stage)||stage<1||stage>5||
+     !Number.isInteger(phase)||phase<1||phase>5||(mode==='easy'&&phase!==5)||
+     typeof claimId!=='string'||!/^[A-Za-z0-9_-]{8,80}$/.test(claimId))
+    return {awarded:false,reason:'invalid-clear'};
+  await authReady;
+  const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
+  const amount=mode==='hard'?2:1,today=todayKey();
+  const receipt=doc(db,'users',user.uid,'apps','english-playroom','typingDefenseRewards',claimId);
+  let awarded=false,newCoins=0;
+  try{
+    await runTransaction(db,async tx=>{
+      const wallet=walletRef(user);
+      const receiptSnap=await tx.get(receipt),walletSnap=await tx.get(wallet);
+      const data=walletSnap.exists()?(walletSnap.data()||{}):{};
+      const oldCoins=Math.max(0,Math.floor(Number(data.coins)||0));
+      newCoins=oldCoins;
+      if(receiptSnap.exists())return;
+      const earned=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
+      newCoins=oldCoins+amount;awarded=true;
+      tx.set(wallet,{coins:newCoins,coinEarnedDate:today,coinsEarnedToday:earned+amount,
+        coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});
+      tx.set(receipt,{mode,stage,phase,amount,awardedAt:serverTimestamp()});
+    });
+    if(awarded){toast('🪙 +'+amount+'　もんすた城の防衛クリア！');notifyDailyCoinLeaderboard(user);}
+    return {awarded,amount:awarded?amount:0,coins:newCoins,reason:awarded?'awarded':'already-paid'};
+  }catch(error){
+    console.error('Typing defense coin reward failed',error);
+    return {awarded:false,reason:'error',error};
+  }
+}
+
 // One authenticated daily milestone per typing-defense mode and cleared stage.
 // The deterministic batch receipt prevents repeat plays (and other devices) from
 // inflating daily leaderboards. Reuse the existing activity endpoint and weekly titles.
 const typingDefenseRankingCache=new Set();
 async function recordTypingDefenseStage(mode,stageNumber){
   const stage=Number(stageNumber);
-  if(!['normal','hard'].includes(mode)||!Number.isInteger(stage)||stage<1||stage>5)return {recorded:false,reason:'invalid-stage'};
+  if(!['easy','normal','hard'].includes(mode)||!Number.isInteger(stage)||stage<1||stage>5)return {recorded:false,reason:'invalid-stage'};
   await authReady;
   const user=currentUser;
   if(!user)return {recorded:false,reason:'signed-out'};
@@ -426,6 +462,7 @@ window.EnglishPlayroomCoins=Object.freeze({
   recordTitleEvents,
   recordLearningActivity,
   awardOncePerDay,
+  awardTypingDefenseClear,
   recordTypingDefenseStage,
   recordRetryAttempt,
   recordRetrySession,
