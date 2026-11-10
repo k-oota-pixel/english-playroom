@@ -2,7 +2,7 @@ const root = new URL('./', import.meta.url);
 const MATERIAL_RELEASE='2.1.33';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
-  ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh']
+  ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']
 ];
 
 function install() {
