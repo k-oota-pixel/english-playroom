@@ -154,7 +154,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.66">ver2.4.66</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.67">ver2.4.67</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -479,7 +479,7 @@ import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,valid
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.4.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 import './pet-shop.js?v=2.4.62';
-import './pet-gifts.js?v=2.4.66';
+import './pet-gifts.js?v=2.4.67';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -996,11 +996,11 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
-<script type="module" src="./pet-friends.js?v=2.4.66"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.66'></script>
+<script type="module" src="./pet-friends.js?v=2.4.67"></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.67'></script>
 <script>
 (() => {
-  const version = '2.4.66';
+  const version = '2.4.67';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
