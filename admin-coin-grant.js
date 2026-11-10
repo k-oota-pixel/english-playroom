@@ -21,11 +21,11 @@ dialog.className='coin-grant-dialog';
 dialog.setAttribute('aria-labelledby','coin-grant-title');
 dialog.innerHTML=[
  '<h2 id="coin-grant-title">🪙 コインを付与</h2>',
- '<p class="cg-note">検索して本人を選択し、付与するコイン数を指定してください。検索は管理者のみ利用できます。</p>',
+ '<p class="cg-note">最初に利用者検索情報を1件取得し、以後はブラウザ内で検索します。</p>',
  '<label for="coin-grant-search">コード名・ニックネーム・ペット名・IDで検索</label>',
- '<input id="coin-grant-search" type="search" maxlength="32" autocomplete="off" placeholder="2文字以上入力（ペット名は完全一致）">',
+ '<input id="coin-grant-search" type="search" maxlength="32" autocomplete="off" placeholder="コード名・ニックネーム・ペット名・ID（部分一致）">',
  '<div class="cg-feedback" role="status" aria-live="polite" data-status>検索語を入力してください。</div>',
- '<div class="cg-results" data-results></div>',
+ '<div class="cg-results" data-results></div><button class="btn" type="button" data-reload>検索情報を更新</button>',
  '<section data-selected hidden>',
  ' <label>付与対象（本人確認）</label><div class="cg-selection" data-identity></div>',
  ' <label for="coin-grant-amount">付与するコイン数</label>',
@@ -40,7 +40,7 @@ const $=selector=>dialog.querySelector(selector);
 const searchInput=$('#coin-grant-search'),amountInput=$('#coin-grant-amount');
 const feedback=$('[data-status]'),results=$('[data-results]'),selectedPanel=$('[data-selected]');
 const identity=$('[data-identity]'),grantButton=$('[data-grant]');
-let selected=null,loading=false,searchSerial=0,searchTimer=null;
+let selected=null,loading=false,searchSerial=0,searchTimer=null,indexUsers=null,indexLoadedAt=0,indexLoading=null;
 function status(message,kind=''){feedback.textContent=message;feedback.className='cg-feedback'+(kind?' '+kind:'');}
 function describe(u){
  return 'コード名：'+(u.codeName||'未登録')+'\nニックネーム：'+(u.nickname||'未登録')+
@@ -60,40 +60,47 @@ async function adminApi(path,options={}){
  if(!response.ok)throw Error(body.error||'管理サーバーからの取得に失敗しました。');
  return body;
 }
-function selectUser(u){
- selected=u;results.replaceChildren();selectedPanel.hidden=false;
- identity.textContent=describe(u);amountInput.value='20';grantButton.disabled=false;
- status('付与対象を確認してください。','');
- amountInput.focus();
+async function selectUser(u){
+ const serial=++searchSerial;results.replaceChildren();resetSelection();status('現在の残高を確認しています…');
+ try{
+  const current=await adminApi('/api/admin/search-user?uid='+encodeURIComponent(u.uid));
+  if(!dialog.open||serial!==searchSerial)return;
+  selected={...u,...current};selectedPanel.hidden=false;identity.textContent=describe(selected);
+  amountInput.value='20';grantButton.disabled=false;status('付与対象を確認してください。');amountInput.focus();
+ }catch(error){if(serial===searchSerial)status(error.message||'利用者の確認に失敗しました。','error');}
 }
 function renderResults(data){
  results.replaceChildren();
  const users=Array.isArray(data.users)?data.users:[];
- if(!users.length){status('一致する登録者がいません。ペット名は完全一致で検索してください。');return;}
+ if(!users.length){status('一致する登録者がいません。');return;}
  for(const u of users.slice(0,30)){
   const b=document.createElement('button');b.type='button';b.className='cg-result';
   const name=document.createElement('strong'),details=document.createElement('small');
   name.textContent=(u.codeName||'コード名未登録')+' ／ '+(u.nickname||'ニックネーム未登録');
-  details.textContent='ペット：'+(u.petName||'未設定')+' ｜ ID：'+u.uid+' ｜ 🪙'+Number(u.coins||0).toLocaleString('ja-JP');
+  details.textContent='ペット：'+(u.petName||'未設定')+' ｜ ID：'+u.uid;
   b.append(name,details);b.addEventListener('click',()=>selectUser(u));results.append(b);
  }
  const total=Number(data.total)||users.length;
  status(total+'件見つかりました。対象者を選択してください。'+(total>30?'（最初の30件を表示。検索語を絞ってください。）':''));
 }
 function search(){
- clearTimeout(searchTimer);const serial=++searchSerial;resetSelection();results.replaceChildren();
- const query=searchInput.value.trim();
- if([...query].length<2){status('2文字以上入力してください。');return;}
- status('登録者全体から検索しています…');
- searchTimer=setTimeout(async()=>{
-  try{
-   const data=await adminApi('/api/admin/users?search='+encodeURIComponent(query));
-   if(serial!==searchSerial||query!==searchInput.value.trim()||!dialog.open)return;
-   renderResults(data);
-  }catch(error){
-   if(serial===searchSerial&&dialog.open)status(error.message||'検索に失敗しました。','error');
-  }
- },500);
+ ++searchSerial;resetSelection();results.replaceChildren();
+ const query=searchInput.value.normalize('NFKC').trim().toLocaleLowerCase('ja-JP');
+ if([...query].length<1){status('検索語を入力してください。');return;}
+ if(!indexUsers){status('利用者検索情報を取得しています…');return;}
+ const matched=indexUsers.filter(u=>[u.uid,u.codeName,u.loginId,u.nickname,u.petName].some(v=>String(v||'').normalize('NFKC').toLocaleLowerCase('ja-JP').includes(query)));
+ renderResults({users:matched.slice(0,30),total:matched.length});
+}
+async function loadIndex(force=false){
+ if(!force&&indexUsers&&Date.now()-indexLoadedAt<120000)return;
+ if(indexLoading)return indexLoading;
+ status('利用者検索情報を読み込んでいます（初回は作成処理が入ります）…');
+ indexLoading=(async()=>{
+  const data=await adminApi('/api/admin/search-index'+(force?'?refresh=1':''));
+  indexUsers=Array.isArray(data.users)?data.users:[];indexLoadedAt=Date.now();
+  if(dialog.open)searchInput.value.trim()?search():status(indexUsers.length+'人分の検索情報を読み込みました。名前などを入力してください。');
+ })().catch(error=>{if(dialog.open)status(error.message||'検索情報を取得できませんでした。','error');}).finally(()=>{indexLoading=null;});
+ return indexLoading;
 }
 searchInput.addEventListener('input',search);
 amountInput.addEventListener('input',()=>{
@@ -106,8 +113,9 @@ $('[data-quick]').addEventListener('click',event=>{
 $('[data-close]').addEventListener('click',()=>dialog.close());
 openButton.addEventListener('click',()=>{
  if(!authorized())return;
- resetModal();dialog.showModal();searchInput.focus();
+ resetModal();dialog.showModal();searchInput.focus();void loadIndex();
 });
+$('[data-reload]').addEventListener('click',()=>{indexLoadedAt=0;void loadIndex();});
 dialog.addEventListener('close',()=>{clearTimeout(searchTimer);++searchSerial;});
 grantButton.addEventListener('click',async()=>{
  if(loading||!selected||!authorized())return;
@@ -128,7 +136,7 @@ grantButton.addEventListener('click',async()=>{
 });
 function updateAuthorization(){
  const ok=authorized();openButton.hidden=!ok;
- if(!ok&&dialog.open)dialog.close();
+ if(!ok){indexUsers=null;indexLoadedAt=0;if(dialog.open)dialog.close();}
 }
 window.addEventListener('monstudy-admin-access-change',updateAuthorization);
 updateAuthorization();
