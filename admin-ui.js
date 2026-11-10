@@ -47,12 +47,31 @@ async function load(index=pageIndex,force=false){
  busy=true;updateRefresh();$('prev').disabled=true;$('next').disabled=true;setStatus('6人分の一覧を読み込んでいます…（サーバー休止時は復帰に時間がかかることがあります）');
  try{
   if(force)pageCache.delete(key);
-  let data=pageCache.get(key);if(!data||Date.now()-data.fetchedAt>=TTL){data=await api('/api/admin/users?limit=6'+(key?'&pageToken='+encodeURIComponent(key):''));if(own!==generation||request!==viewGeneration)return;pageCache.set(key,data);}
+  let data=pageCache.get(key);
+  if(!data||Date.now()-data.fetchedAt>=TTL){
+   const url='/api/admin/users?limit=6'+(key?'&pageToken='+encodeURIComponent(key):'');
+   try{
+    // Activity order is queried once; identity and pet names come from the single search-index document.
+    const [compact,indexUsers]=await Promise.all([api(url+'&compact=1'),loadSearchIndex(force)]);
+    const names=new Map(indexUsers.map(user=>[user.uid,user]));
+    data={...compact,users:(compact.users||[]).map(row=>{
+     const profile=names.get(row.uid)||{};
+     return {...profile,...row,coins:null,hasNickname:!!profile.nickname};
+    })};
+   }catch(error){
+    // Keep administrator access available if the index has not yet been built.
+    console.warn('Compact admin list unavailable; using legacy read path',error);
+    const legacy=await api(url);
+    data={...legacy,users:(legacy.users||[]).map(row=>({...row,coins:null}))};
+   }
+   if(own!==generation||request!==viewGeneration)return;
+   pageCache.set(key,data);
+  }
   if(own!==generation||request!==viewGeneration)return;
   allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLearningAt||0)-Number(a.lastLearningAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
   restorePageMeta();
-  setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体から登録コード、IDまたはニックネームを検索できます。','ok');render();
+  setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。名前は検索用データから表示し、コイン残高は利用者を開いたときだけ取得します。','ok');render();
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
@@ -120,8 +139,8 @@ function render(){
  }else $('count').textContent=(pageIndex+1)+'ページ目・'+list.length+' / '+allUsers.length+'人（6人ずつ）';
  if(searching&&searchResults===null){$('users').innerHTML='<div class="empty">登録者全体から検索しています…</div>';return;}
  $('users').innerHTML=list.map(u=>{
-  const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps,activity:detail.activity}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
-  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="code-name">コード名：'+esc(u.loginId?(u.codeName||'未復元'):'—')+'</div><div class="login-id">ID：'+esc(u.loginId||'—')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div><div class="coin">🪙 '+Number(u.coins||0).toLocaleString('ja-JP')+'</div><div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
+  const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const profile=detail?.apps?.['english-playroom'];const currentCoins=profile&&Number.isFinite(Number(profile.coins))?Number(profile.coins):null;const coinBadge=open&&currentCoins!==null?'<div class="coin">🪙 '+currentCoins.toLocaleString('ja-JP')+'</div>':'';const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps,activity:detail.activity}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
+  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><button class="user-summary" type="button" aria-expanded="'+open+'"><div class="code-name">コード名：'+esc(u.loginId?(u.codeName||'未復元'):'—')+'</div><div class="login-id">ID：'+esc(u.loginId||'—')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div>'+coinBadge+'<div class="chev" aria-hidden="true">⌄</div></button>'+(open?body:'')+'</article>';
  }).join('')||'<div class="empty">一致する登録者はいません。</div>';
  document.querySelectorAll('.user-summary').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));
  document.querySelectorAll('.detail-retry').forEach(b=>b.onclick=()=>{const uid=b.closest('.user').dataset.uid;detailCache.delete(uid);expandedUid='';expand(uid);});
