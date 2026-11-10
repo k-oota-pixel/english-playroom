@@ -1,8 +1,8 @@
 import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.3.51';
-import './material-open.js?v=2.3.1';
+import './material-open.js?v=2.4.61';
 import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.4.49';
 installStandaloneMaterialRanking();
-import {interviewAttemptPatch} from './dashboard-extra.js?v=1';
+import {interviewAttemptPatch} from './dashboard-extra.js?v=2.4.61';
 import './nickname-profile.js?v=2.2.2';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
