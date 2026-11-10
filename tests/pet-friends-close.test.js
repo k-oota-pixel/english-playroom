@@ -14,6 +14,8 @@ test('friends modal close button is distinct from refresh and explicitly wired',
  assert.match(social, /\$\('\.ms-friends-close',petDialog\)\.onclick=\(\)=>petDialog\.close\(\)/);
 });
 test('social script cache entry matches displayed release',()=>{
- assert.match(home,/pet-friends\.js\?v=2\.4\.65/);
- assert.match(home,/ver2\.4\.65/);
+ const script=readFileSync(new URL('../version-badge-v176.js',import.meta.url),'utf8');
+ const version=script.match(/const APP_VERSION='([^']+)'/)[1];
+ assert.ok(home.includes('pet-friends.js?v='+version));
+ assert.ok(home.includes('ver'+version));
 });

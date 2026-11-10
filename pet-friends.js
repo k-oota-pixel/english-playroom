@@ -40,7 +40,7 @@ async function request(path,payload){
 async function ensureSocial(force=false){
  if(!viewer)throw Error('ログインしてください。');
  if(!force){
-  if(social)return social;
+  if(social&&cached('list',TTL.social))return social;
   const previous=cached('list',TTL.social);
   if(previous){social=previous;return social;}
  }
@@ -219,6 +219,17 @@ function init(){
  }
  boot();
 }
+// Gift screens reuse this same friend-list request and 30-minute cache.
+// Only accepted friends are exposed; pending requests are never gift shortcuts.
+window.monstudyFriendsGetAccepted=async(force=false)=>{
+ const currentUid=viewer?.uid;
+ if(!currentUid)throw Error('ログインしてください。');
+ const data=await ensureSocial(force);
+ if(viewer?.uid!==currentUid)throw Error('ログイン状態が変わりました。');
+ return Array.isArray(data.friends)?data.friends
+  .filter(x=>x&&typeof x.uid==='string'&&x.uid!==currentUid)
+  .map(x=>({uid:x.uid,nickname:String(x.nickname||''),petName:String(x.petName||'')})):[];
+};
 window.monstudyFriendsOpen=()=>openFriends();
 window.monstudyFriendsRequest=uid=>sendRequest({uid});
 window.monstudyPetView=(uid,force=false)=>showPet(uid,force);
