@@ -1,0 +1,26 @@
+name: Admin aggregated search and messages
+on:
+  push:
+    paths:
+      - 'admin-ui.js'
+      - 'admin-coin-grant.js'
+      - 'admin-contact-messages.js'
+      - 'admin.html'
+      - 'index.html'
+      - 'tests/admin-index-cache.test.js'
+      - '.github/workflows/admin-index-cache.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node --check admin-ui.js
+      - run: node --check admin-coin-grant.js
+      - run: node --check admin-contact-messages.js
+      - run: node --test tests/admin-index-cache.test.js
