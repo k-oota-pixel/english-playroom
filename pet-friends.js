@@ -204,6 +204,7 @@ function init(){
  document.body.append(petDialog);
  $('.ms-friends-close',petDialog).onclick=()=>petDialog.close();
  openButton.onclick=openFriends;
+ const initialPetUid=new URLSearchParams(location.search).get('petView');let initialOpened=false;
  function boot(){
   if(!getApps().length){setTimeout(boot,100);return;}
   onAuthStateChanged(getAuth(getApp()),user=>{
@@ -211,6 +212,7 @@ function init(){
    if(previous&&previous!==user?.uid)clearFor(previous);
    if(!user){dialog.close();petDialog.close();}
    openButton.disabled=!user;
+   if(user&&initialPetUid&&!initialOpened){initialOpened=true;queueMicrotask(()=>showPet(initialPetUid));}
   });
  }
  boot();
