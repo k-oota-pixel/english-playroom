@@ -18,8 +18,8 @@ const messagePanel=document.createElement("section");messagePanel.className="con
 messagePanel.innerHTML='<div class="contact-admin-status" data-status>メッセージを開くと一覧を読み込みます。</div><div class="contact-admin-list" data-list></div><button type="button" class="btn contact-admin-more" data-more hidden>次の50件</button>';
 adminPanel.append(messagePanel);
 const status=messagePanel.querySelector("[data-status]"),list=messagePanel.querySelector("[data-list]"),more=messagePanel.querySelector("[data-more]");
-let unsubscribe=null,nextToken=null,loading=false,adminUid="",opened=false;
-function setCount(value){const n=Math.max(0,Math.floor(Number(value)||0));messageTab.replaceChildren(document.createTextNode("✉ メッセージ"));if(n){const badge=document.createElement("span");badge.className="admin-tab-message-count";badge.textContent=String(n);messageTab.append(badge);}messageTab.setAttribute("aria-label",n?("開発者へのメッセージ、新着"+n+"件"):"開発者へのメッセージ");}
+let unsubscribe=null,nextToken=null,loading=false,adminUid="",opened=false,loadedAt=0,unreadCount=0;
+function setCount(value){const n=Math.max(0,Math.floor(Number(value)||0));unreadCount=n;messageTab.replaceChildren(document.createTextNode("✉ メッセージ"));if(n){const badge=document.createElement("span");badge.className="admin-tab-message-count";badge.textContent=String(n);messageTab.append(badge);}messageTab.setAttribute("aria-label",n?("開発者へのメッセージ、新着"+n+"件"):"開発者へのメッセージ");}
 function date(value){if(!value)return "日時不明";const d=new Date(value);return Number.isNaN(d.getTime())?value:d.toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});}
 function card(item){
  const el=document.createElement("article");el.className="contact-admin-card";
@@ -36,13 +36,13 @@ function card(item){
  const uid=document.createElement("div");uid.className="contact-admin-meta";uid.textContent="ユーザーID: "+(item.uid||"不明");
  el.append(meta,msg,identity,uid);return el;
 }
-async function loadPage(token=""){if(loading)return;loading=true;more.disabled=true;status.textContent="読み込み中…";try{const user=auth.currentUser;if(!user)throw Error("管理者としてログインしてください。");const idToken=await user.getIdToken();const url=new URL(API+"/api/admin/contact-messages");if(token)url.searchParams.set("pageToken",token);const response=await fetch(url,{headers:{Authorization:"Bearer "+idToken},signal:AbortSignal.timeout(90000)});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"メッセージを取得できませんでした。");if(!token)list.replaceChildren();for(const item of data.messages||[])list.append(card(item));nextToken=data.nextPageToken||null;more.hidden=!nextToken;status.textContent=list.childElementCount?list.childElementCount+"件を表示中":"メッセージはまだありません。";}catch(error){status.textContent=error.message||"読み込みに失敗しました。";}finally{loading=false;more.disabled=false;}}
-async function showMessages(){messagePanel.hidden=false;opened=true;for(const child of adminPanel.children){if(child!==tabs&&child!==messagePanel)child.hidden=true;}for(const tab of tabs.querySelectorAll(".admin-tab"))tab.classList.remove("active");messageTab.classList.add("active");await loadPage("");}
+async function loadPage(token=""){if(loading)return;loading=true;more.disabled=true;status.textContent="読み込み中…";try{const user=auth.currentUser;if(!user)throw Error("管理者としてログインしてください。");const idToken=await user.getIdToken();const url=new URL(API+"/api/admin/contact-messages");if(token)url.searchParams.set("pageToken",token);const response=await fetch(url,{headers:{Authorization:"Bearer "+idToken},signal:AbortSignal.timeout(90000)});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"メッセージを取得できませんでした。");if(!token)list.replaceChildren();for(const item of data.messages||[])list.append(card(item));if(!token)loadedAt=Date.now();nextToken=data.nextPageToken||null;more.hidden=!nextToken;status.textContent=list.childElementCount?list.childElementCount+"件を表示中":"メッセージはまだありません。";}catch(error){status.textContent=error.message||"読み込みに失敗しました。";}finally{loading=false;more.disabled=false;}}
+async function showMessages(){messagePanel.hidden=false;opened=true;for(const child of adminPanel.children){if(child!==tabs&&child!==messagePanel)child.hidden=true;}for(const tab of tabs.querySelectorAll(".admin-tab"))tab.classList.remove("active");messageTab.classList.add("active");if(!loadedAt||Date.now()-loadedAt>120000||unreadCount>0)await loadPage("");}
 function leaveMessages(){messagePanel.hidden=true;messageTab.classList.remove("active");opened=false;}
 messageTab.onclick=showMessages;usersTab.addEventListener("click",leaveMessages);securityTab.addEventListener("click",leaveMessages);more.onclick=()=>nextToken&&loadPage(nextToken);
 function syncAdminMessageAccess(authorized){
  if(unsubscribe){unsubscribe();unsubscribe=null;}
- adminUid='';messagePanel.hidden=true;messageTab.hidden=true;setCount(0);
+ adminUid='';loadedAt=0;nextToken=null;list.replaceChildren();messagePanel.hidden=true;messageTab.hidden=true;setCount(0);
  if(!authorized)return;
  const user=auth.currentUser;if(!user)return;
  adminUid=user.uid;messageTab.hidden=false;
