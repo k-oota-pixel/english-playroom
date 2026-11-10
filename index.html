@@ -148,13 +148,13 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.4.37"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.4.56"></script>
-<script type="module" src="./pet-play-menu-v164.js?v=2.4.56"></script>
+<script type="module" src="./app-shell.js?v=2.4.57"></script>
+<script type="module" src="./pet-play-menu-v164.js?v=2.4.57"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.56">ver2.4.56</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.57">ver2.4.57</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -446,7 +446,7 @@ import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.4.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
-import './pet-shop.js?v=2.4.56';
+import './pet-shop.js?v=2.4.57';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -963,10 +963,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.56'></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.57'></script>
 <script>
 (() => {
-  const version = '2.4.56';
+  const version = '2.4.57';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
