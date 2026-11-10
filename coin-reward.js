@@ -544,6 +544,7 @@ window.EnglishPlayroomCoins=Object.freeze({
   flushLearningActivities,
   pendingLearningActivities:()=>currentUser?readLearningOutbox('monstudy-learning-outbox:'+currentUser.uid).length:0,
   awardOncePerDay,
+  notifyDailyCoinLeaderboard:()=>{if(currentUser)notifyDailyCoinLeaderboard(currentUser);},
   awardTypingDefenseClear,
   recordTypingDefenseStage,
   queueTypingDefenseProgress,
