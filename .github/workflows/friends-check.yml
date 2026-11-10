@@ -1,0 +1,13 @@
+name: Friends UI checks
+on: [pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check pet-friends.js && node --check pet-gifts.js && node --check material-ranking-ui.js && node --check learning-titles.js && node --check pet-adventure/rankings.js && node --check pet-adventure/online-battle.js && node --check app-shell.js
