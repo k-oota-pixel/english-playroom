@@ -148,13 +148,13 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.4.37"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.4.59"></script>
+<script type="module" src="./app-shell.js?v=2.4.60"></script>
 <script type="module" src="./pet-play-menu-v164.js?v=2.4.59"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.59">ver2.4.59</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.60">ver2.4.60</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -251,8 +251,39 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
   </div>
 
   <p class="card-reward-note">🪙 コインはログイン中に獲得できます。各教材の獲得条件はこちら。</p>
-<nav class="material-nav" aria-label="教材のジャンル"><a href="#materials-group-games">グループゲーム</a><a href="#materials-vocabulary-grammar">語彙文法学習</a><a href="#materials-reading">長文演習</a><a href="#materials-listening">リスニング</a><a href="#materials-conversation">英会話</a><a href="#materials-exam">英検対策</a></nav>
+<nav class="material-nav" aria-label="教材のジャンル"><a href="#materials-pet-play">ぺっとと遊ぶ</a><a href="#materials-dungeons">エイゴダンジョンズ</a><a href="#materials-group-games">グループゲーム</a><a href="#materials-vocabulary-grammar">語彙文法学習</a><a href="#materials-reading">長文演習</a><a href="#materials-listening">リスニング</a><a href="#materials-conversation">英会話</a><a href="#materials-exam">英検対策</a></nav>
 <div class="material-groups">
+<section class="material-group" id="materials-pet-play" aria-labelledby="heading-pet-play">
+  <div class="material-group-head"><h2 id="heading-pet-play">ぺっとと遊ぶ</h2><span>2教材</span></div>
+  <div class="cards">
+    <a class="card" href="./pet-fishing/">
+      <div class="eyebrow">PET PLAY · FISHING</div>
+      <div class="title">PET FISHING</div>
+      <div class="desc">ペットといっしょに魚釣り！ 基礎英文法や英検の問題に答えて、正解バブルを釣りあげよう。</div>
+      <div class="chips"><span class="chip">基礎英文法・英検</span><span class="chip">問題コース選択</span><span class="chip">ペットと遊ぶ</span></div>
+      <div class="open-note">コースを選んで釣りに挑戦</div>
+    </a>
+    <a class="card" href="./pet-catch/">
+      <div class="eyebrow">PET PLAY · CATCH</div>
+      <div class="title">PET CATCH</div>
+      <div class="desc">ペットを左右に動かして、英語の問題の正しい答えをキャッチしよう。</div>
+      <div class="chips"><span class="chip">英語クイズ</span><span class="chip">左右に移動</span><span class="chip">ペットと遊ぶ</span></div>
+      <div class="open-note">ペットといっしょにチャレンジ</div>
+    </a>
+  </div>
+</section>
+<section class="material-group" id="materials-dungeons" aria-labelledby="heading-dungeons">
+  <div class="material-group-head"><h2 id="heading-dungeons">エイゴダンジョンズ</h2><span>1教材</span></div>
+  <div class="cards">
+    <a class="card" href="./pet-adventure/">
+      <div class="eyebrow">MONSTUDY ADVENTURE</div>
+      <div class="title">エイゴダンジョンズ</div>
+      <div class="desc">英語の力で冒険へ出発！ 魔王の塔・魔物の巣窟・もんすた城の防衛など、冒険先を選んで挑戦しよう。</div>
+      <div class="chips"><span class="chip">魔王の塔</span><span class="chip">魔物の巣窟</span><span class="chip">もんすた城の防衛</span></div>
+      <div class="open-note">冒険先を選ぶ</div>
+    </a>
+  </div>
+</section>
 <section class="material-group" id="materials-group-games" aria-labelledby="heading-group-games"><div class="material-group-head"><h2 id="heading-group-games">グループゲーム</h2><span>2教材</span></div><div class="cards">
 <a class="card" href="./eigo-meter/">
   
@@ -273,7 +304,6 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 </div></section>
 <section class="material-group" id="materials-vocabulary-grammar" aria-labelledby="heading-vocabulary-grammar"><div class="material-group-head"><h2 id="heading-vocabulary-grammar">語彙文法学習</h2><span>6教材</span></div><div class="cards">
 <a class="card" href="./potato-harvest/" target="_blank" rel="noopener noreferrer">
-      <div class="icon">🥔</div>
       <div class="eyebrow">ENGLISH GRAMMAR GAME</div>
       <div class="title">ポテトマンを収穫せよ</div>
       <div class="desc">文法問題に答えて畑を育てよう。正解を重ねてポテトマンを収穫するゲームです。</div>
@@ -966,7 +996,7 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 <script type="module" src='./version-badge-v176.js?v=2.4.59'></script>
 <script>
 (() => {
-  const version = '2.4.59';
+  const version = '2.4.60';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
