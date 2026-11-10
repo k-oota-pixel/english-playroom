@@ -463,7 +463,7 @@ function renderDailyRanking(data){
   const name=document.createElement('td'),nickname=document.createElement('span'),pet=document.createElement('small');
   nickname.className='online-ranking-name';nickname.textContent=String(entry.nickname||'なまえ未設定');
   pet.className='online-ranking-pet';pet.textContent='ペット：'+String(entry.petName||'ペット');
-  name.append(nickname,pet);
+  name.append(nickname,pet);const view=document.createElement('button');view.type='button';view.textContent='ぺっとを見る';view.style.cssText='display:block;margin-top:5px;padding:4px 7px;border:1px solid #99bda3;border-radius:7px;cursor:pointer;background:#e8f4ec;color:#245744';view.onclick=()=>window.parent?.monstudyPetView?.(entry.uid);name.append(view);
   const record=document.createElement('td');record.textContent=(Number(entry.games)||0)+'戦 '+(Number(entry.wins)||0)+'勝';
   const rate=document.createElement('td');rate.textContent=(Number(entry.winRate)||0).toFixed(1)+'%';
   tr.append(rank,name,record,rate);rankingRows.append(tr);
