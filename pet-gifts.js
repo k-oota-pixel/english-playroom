@@ -4,6 +4,8 @@ const MSG={thanks:'いつもありがとう！',birthday:'お誕生日おめで�
 const REPLY={thanks:'ありがとう！',happy:'とってもうれしい！',treasure:'大切に使うね！',hooray:'やったー！'};
 let user=null,profile={},chosen=null,recipient=null,pendingId='',busy=false,tab='received';
 let button=null,sendDialog=null,boxDialog=null;
+// A local opening preview allows one atomic write for opening + thanks.
+const previewedGifts=new Set();
 const entries=x=>Array.isArray(x)?x.filter(v=>v&&typeof v==='object'):[];
 const el=(parent,tag,label,cls)=>{const node=document.createElement(tag);node.textContent=String(label??'');if(cls)node.className=cls;parent.append(node);return node;};
 function notice(message,error=false){
@@ -50,6 +52,7 @@ function init(){
  boxDialog.innerHTML='<button class="pet-gift-close" type="button">×</button><h2>🎁 ギフトボックス</h2><div class="pet-gift-tabs"><button data-gift-tab="received" type="button">届いたギフト</button><button data-gift-tab="sent" type="button">送ったギフト</button><button data-gift-tab="replies" type="button">お礼</button></div><p id="giftBoxNotice" class="pet-gift-status" role="status"></p><div id="giftBoxList"></div>';
  document.body.append(boxDialog);
  boxDialog.querySelector('.pet-gift-close').onclick=()=>boxDialog.close();
+ boxDialog.addEventListener('close',()=>previewedGifts.clear());
  boxDialog.querySelectorAll('[data-gift-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.giftTab;notice('');renderBox();});
  button.onclick=()=>{if(!user)return;tab='received';renderBox();boxDialog.showModal();};
  paintButton();
@@ -103,28 +106,45 @@ function renderBox(){
  const items=(tab==='received'?entries(profile.giftInbox):tab==='sent'?entries(profile.giftSent):entries(profile.giftReplies)).slice(-20).reverse();
  if(!items.length){el(area,'p','まだギフトはありません。','pet-gift-note');return;}
  for(const gift of items){
-   const card=el(area,'section','','pet-gift-card');
+   const card=el(area,'section','','pet-gift-card');card.dataset.giftId=gift.giftId||'';
    if(tab==='received'){
      el(card,'strong','🎁 '+gift.itemName);
      el(card,'small','送信者：'+gift.senderPetName+' ／ '+gift.senderNickname);
      el(card,'p',MSG[gift.messageId]||'プレゼントです！');
-     if(!gift.opened){
-       const b=el(card,'button','🎁 プレゼントを開く');b.disabled=busy;
-       b.onclick=()=>attempt(async()=>{
-         await request('/api/shop/gifts/open',{giftId:gift.giftId});
-         profile={...profile,giftInbox:entries(profile.giftInbox).map(x=>x.giftId===gift.giftId?{...x,opened:true}:x),giftUnreadCount:Math.max(0,Number(profile.giftUnreadCount||0)-1)};
-         notice('✨ '+gift.itemName+'が届きました！');renderBox();paintButton();area.firstElementChild?.classList.add('pet-gift-pop');
-       });
-     }else if(!gift.replyId){
-       const select=document.createElement('select');
-       for(const [key,value] of Object.entries(REPLY)){const o=el(select,'option',value);o.value=key;}card.append(select);
-       const b=el(card,'button','お礼を送る');b.disabled=busy;
-       b.onclick=()=>attempt(async()=>{
-         await request('/api/shop/gifts/reply',{giftId:gift.giftId,replyId:select.value});
-         profile={...profile,giftInbox:entries(profile.giftInbox).map(x=>x.giftId===gift.giftId?{...x,replyId:select.value}:x)};
-         notice('お礼を送りました。');renderBox();
-       });
-     }else el(card,'small','返信済み：'+(REPLY[gift.replyId]||''));
+     const opening=previewedGifts.has(gift.giftId)&&!gift.opened;
+    if(!gift.opened&&!opening){
+      const b=el(card,'button','🎁 プレゼントを開く');b.disabled=busy;
+      b.onclick=()=>{
+        previewedGifts.add(gift.giftId);
+        notice('✨ '+gift.itemName+'が届きました！ お礼を送るか「あとで」を選んでください。');
+        renderBox();
+        [...area.querySelectorAll('.pet-gift-card')].find(x=>x.dataset.giftId===gift.giftId)?.classList.add('pet-gift-pop');
+      };
+    }else if(!gift.replyId){
+      if(opening)el(card,'small','✨ 開封しました！ お礼を送ると開封記録もまとめて保存されます。');
+      const select=document.createElement('select');
+      for(const [key,value]of Object.entries(REPLY)){const o=el(select,'option',value);o.value=key;}card.append(select);
+      const b=el(card,'button','お礼を送る');b.disabled=busy;
+      b.onclick=()=>attempt(async()=>{
+        const replyId=select.value;
+        await request(opening?'/api/shop/gifts/open-and-reply':'/api/shop/gifts/reply',{giftId:gift.giftId,replyId});
+        previewedGifts.delete(gift.giftId);
+        profile={...profile,giftInbox:entries(profile.giftInbox).map(x=>x.giftId===gift.giftId?{...x,opened:true,replyId}:x),
+          giftUnreadCount:opening?Math.max(0,Number(profile.giftUnreadCount||0)-1):profile.giftUnreadCount};
+        notice('お礼を送りました。');renderBox();paintButton();
+      });
+      if(opening){
+        const later=el(card,'button','あとで');later.type='button';later.disabled=busy;
+        later.style.marginLeft='8px';
+        later.onclick=()=>attempt(async()=>{
+          await request('/api/shop/gifts/open',{giftId:gift.giftId});
+          previewedGifts.delete(gift.giftId);
+          profile={...profile,giftInbox:entries(profile.giftInbox).map(x=>x.giftId===gift.giftId?{...x,opened:true}:x),
+            giftUnreadCount:Math.max(0,Number(profile.giftUnreadCount||0)-1)};
+          notice('開封を記録しました。お礼は後から送れます。');renderBox();paintButton();
+        });
+      }
+    }else el(card,'small','返信済み：'+(REPLY[gift.replyId]||''));
    }else if(tab==='sent'){
      el(card,'strong','🎁 '+gift.itemName);el(card,'small','送信先：'+gift.recipientPetName+' ／ '+gift.recipientNickname);el(card,'p',MSG[gift.messageId]||'');
    }else{
@@ -139,5 +159,5 @@ function renderBox(){
    }
  }
 }
-window.addEventListener('monstudy-shop-state',e=>{user=e.detail?.user||null;profile=e.detail?.data||{};paintButton();if(boxDialog?.open&&!busy)renderBox();});
+window.addEventListener('monstudy-shop-state',e=>{const nextUser=e.detail?.user||null;if(user?.uid!==nextUser?.uid)previewedGifts.clear();user=nextUser;profile=e.detail?.data||{};paintButton();if(boxDialog?.open&&!busy)renderBox();});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
