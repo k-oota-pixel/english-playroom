@@ -57,9 +57,9 @@ async function load(index=pageIndex,force=false){
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
 let indexRequest=null;
-async function loadSearchIndex(){
+async function loadSearchIndex(force=false){
  const shared=window.__monstudyAdminIndex;
- if(shared?.users&&Date.now()-shared.at<120000)return shared.users;
+ if(!force&&shared?.users&&Date.now()-shared.at<120000)return shared.users;
  if(indexRequest)return indexRequest;
  indexRequest=api('/api/admin/search-index').then(data=>{
   const users=Array.isArray(data.users)?data.users:[];
@@ -68,12 +68,12 @@ async function loadSearchIndex(){
  }).finally(()=>{indexRequest=null;});
  return indexRequest;
 }
-async function runSearch(){
+async function runSearch(force=false){
  const q=searchQuery();if(!q||!auth.currentUser)return;
  const own=generation,serial=++searchSerial;searchBusy=true;expandedUid='';searchResults=null;updateRefresh();$('prev').disabled=true;$('next').disabled=true;
  setStatus('検索用ドキュメントを読み込んでいます…');render();
  try{
-  const users=await loadSearchIndex();
+  const users=await loadSearchIndex(force);
   if(own!==generation||serial!==searchSerial||q!==searchQuery())return;
   const query=q.normalize('NFKC').toLocaleLowerCase('ja-JP');
   const matching=users.filter(u=>[u.uid,u.codeName,u.loginId,u.nickname,u.petName].some(value=>String(value||'').normalize('NFKC').toLocaleLowerCase('ja-JP').includes(query)));
@@ -152,7 +152,7 @@ async function resetPetName(card){
 const usagePanel=createMaterialUsagePanel({host:$('updated'),request:()=>api('/api/admin/material-usage'),getIdentity:()=>auth.currentUser?.uid});
 $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.message,'error'));
 $('logout').onclick=()=>signOut(auth);
-$('refresh').onclick=()=>searchQuery()?runSearch():load(pageIndex,true);$('search').oninput=onSearchInput;
+$('refresh').onclick=()=>searchQuery()?runSearch(true):load(pageIndex,true);$('search').oninput=onSearchInput;
 $('prev').onclick=()=>load(pageIndex-1);$('next').onclick=()=>load(pageIndex+1);
 function setAdminAuthorized(authorized){
  document.documentElement.dataset.monstudyAdminAuthorized=String(Boolean(authorized));
