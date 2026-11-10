@@ -1,4 +1,5 @@
 import {auth,authReady} from '../coin-reward.js?v=2.3.6';
+function openRankedPet(uid){try{if(typeof window.parent.monstudyPetView==='function')return window.parent.monstudyPetView(uid);}catch{}location.href=new URL('../index.html?petView='+encodeURIComponent(uid),import.meta.url).href;}
 
 const dialog=document.getElementById('rankingDialog'),heading=document.getElementById('rankingTitle'),status=document.getElementById('rankingStatus'),list=document.getElementById('rankingList'),reload=document.getElementById('rankingReload');
 let mode='tower',sequence=0,controller=null;
@@ -22,9 +23,9 @@ async function load(){
   if(!Array.isArray(data.leaders))throw Error('ランキングを取得できませんでした。');
   for(const entry of data.leaders){
    const row=document.createElement('li'),rank=document.createElement('strong'),identity=document.createElement('span'),name=document.createElement('b'),title=document.createElement('small'),floor=document.createElement('strong');
-   rank.textContent=entry.rank+'位';name.textContent=entry.petName;name.style.cursor='pointer';name.title='ぺっとを見る';name.onclick=()=>window.parent?.monstudyPetView?.(entry.uid);title.textContent='ー'+(entry.title||'称号なし')+'ー';identity.append(name,title);floor.className='ranking-floor';floor.append(document.createTextNode(current==='tower'?entry.floor+'階':'地下'+entry.floor+'層'));
+   rank.textContent=entry.rank+'位';name.textContent=entry.petName;name.style.cursor='pointer';name.title='ぺっとを見る';name.onclick=()=>openRankedPet(entry.uid);title.textContent='ー'+(entry.title||'称号なし')+'ー';identity.append(name,title);floor.className='ranking-floor';floor.append(document.createTextNode(current==='tower'?entry.floor+'階':'地下'+entry.floor+'層'));
    if(Number(entry.floor)===100){const clearState=document.createElement('small');clearState.className='adventure-clear-state '+(entry.cleared===true?'is-cleared':'is-challenging');clearState.textContent=entry.cleared===true?'★ 完全制覇':'挑戦中';floor.append(clearState);}
-   const view=document.createElement('button');view.type='button';view.textContent='ぺっとを見る';view.style.cssText='border:1px solid #8eb5a2;border-radius:7px;padding:5px 7px;background:#e7f3e9;color:#245744;cursor:pointer;font-size:12px';view.onclick=()=>window.parent?.monstudyPetView?.(entry.uid);row.append(rank,identity,floor,view);list.append(row);
+   const view=document.createElement('button');view.type='button';view.textContent='ぺっとを見る';view.style.cssText='border:1px solid #8eb5a2;border-radius:7px;padding:5px 7px;background:#e7f3e9;color:#245744;cursor:pointer;font-size:12px';view.onclick=()=>openRankedPet(entry.uid);row.append(rank,identity,floor,view);list.append(row);
   }
   status.textContent=data.leaders.length?'自己ベスト更新後にランキングへ反映されます。':'まだ記録がありません。最初の冒険に挑戦しよう！';
  }catch(error){if(requestId===sequence&&error.name!=='AbortError')status.textContent=error.message;}
