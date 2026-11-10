@@ -92,12 +92,15 @@ function search(){
  renderResults({users:matched.slice(0,30),total:matched.length});
 }
 async function loadIndex(force=false){
+ const shared=window.__monstudyAdminIndex;
+ if(!force&&shared?.users&&Date.now()-shared.at<120000){indexUsers=shared.users;indexLoadedAt=shared.at;searchInput.value.trim()?search():status(indexUsers.length+'人分の検索情報を利用できます。');return;}
  if(!force&&indexUsers&&Date.now()-indexLoadedAt<120000)return;
  if(indexLoading)return indexLoading;
  status('利用者検索情報を読み込んでいます（初回は作成処理が入ります）…');
  indexLoading=(async()=>{
   const data=await adminApi('/api/admin/search-index'+(force?'?refresh=1':''));
   indexUsers=Array.isArray(data.users)?data.users:[];indexLoadedAt=Date.now();
+  window.__monstudyAdminIndex={users:indexUsers,at:indexLoadedAt};
   if(dialog.open)searchInput.value.trim()?search():status(indexUsers.length+'人分の検索情報を読み込みました。名前などを入力してください。');
  })().catch(error=>{if(dialog.open)status(error.message||'検索情報を取得できませんでした。','error');}).finally(()=>{indexLoading=null;});
  return indexLoading;
@@ -136,7 +139,7 @@ grantButton.addEventListener('click',async()=>{
 });
 function updateAuthorization(){
  const ok=authorized();openButton.hidden=!ok;
- if(!ok){indexUsers=null;indexLoadedAt=0;if(dialog.open)dialog.close();}
+ if(!ok){indexUsers=null;indexLoadedAt=0;delete window.__monstudyAdminIndex;if(dialog.open)dialog.close();}
 }
 window.addEventListener('monstudy-admin-access-change',updateAuthorization);
 updateAuthorization();
