@@ -53,13 +53,14 @@ function button(parent,label,cb,cls=''){
  const b=textEl(parent,'button',label,'ms-friends-btn '+cls);b.type='button';b.disabled=busy;b.onclick=cb;return b;
 }
 async function action(path,body,onSuccess,done){
- if(busy)return;
+ if(busy)return false;
  busy=true;render();
  try{
   await request(path,body);
   if(typeof onSuccess==='function')onSuccess();
   if(done)notify(done);
- }catch(error){notify(error.message||'処理に失敗しました。',true);}
+  return true;
+ }catch(error){notify(error.message||'処理に失敗しました。',true);return false;}
  finally{busy=false;render();}
 }
 function record(person){return {uid:person.uid,nickname:person.nickname||'',petName:person.petName||''};}
@@ -72,12 +73,13 @@ function stateFor(uid){
 }
 async function sendRequest(person,target=dialog){
  if(!person?.uid||person.uid===viewer?.uid)return;
- await action('/api/friends/request',{targetUid:person.uid},()=>{
+ const ok=await action('/api/friends/request',{targetUid:person.uid},()=>{
   const next=social||{friends:[],incoming:[],outgoing:[]};
   if(!stateFor(person.uid))next.outgoing=[...next.outgoing,record(person)];
   updateSocial({...next});
  },'おともだち申請を送信しました。');
- if(target===petDialog)notify('申請を送信しました。',false,petDialog);
+ if(target===petDialog)notify(ok?'申請を送信しました。':'申請できませんでした。',!ok,petDialog);
+ return ok;
 }
 function personRow(parent,person,kind){
  const card=textEl(parent,'div','','ms-friends-person');
