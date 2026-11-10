@@ -184,7 +184,8 @@ function install() {
       if(!style){style=doc.createElement('style');style.id='monstudy-shared-screen-theme';(doc.head||doc.documentElement).append(style);}
       const color=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.color||'')?sharedScreenTheme.color:'#f6f5ef';
       const foreground=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.textColor||'')?sharedScreenTheme.textColor:'#193d38';
-      const pattern=typeof sharedScreenTheme.pattern==='string'&&/^url\("data:image\/svg\+xml,[^"\n]+"\)$/.test(sharedScreenTheme.pattern)?sharedScreenTheme.pattern:'none';
+      const trustedWebp='url("https://k-oota-pixel.github.io/english-playroom/assets/hikakin-screen-background.webp?v=2.4.54")';
+      const pattern=typeof sharedScreenTheme.pattern==='string'&&(/^url\("data:image\/svg\+xml,[^"\n]+"\)$/.test(sharedScreenTheme.pattern)||sharedScreenTheme.pattern===trustedWebp)?sharedScreenTheme.pattern:'none';
       const patternSize=/^(?:[1-9][0-9]{1,2}px [1-9][0-9]{1,2}px|cover)$/.test(sharedScreenTheme.patternSize||'')?sharedScreenTheme.patternSize:'auto';
       const patternRepeat=sharedScreenTheme.patternRepeat==='no-repeat'?'no-repeat':'repeat';
       const patternPosition=sharedScreenTheme.patternPosition==='center bottom'?'center bottom':'center center';
