@@ -56,17 +56,35 @@ async function load(index=pageIndex,force=false){
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
+let indexRequest=null;
+async function loadSearchIndex(){
+ const shared=window.__monstudyAdminIndex;
+ if(shared?.users&&Date.now()-shared.at<120000)return shared.users;
+ if(indexRequest)return indexRequest;
+ indexRequest=api('/api/admin/search-index').then(data=>{
+  const users=Array.isArray(data.users)?data.users:[];
+  window.__monstudyAdminIndex={users,at:Date.now()};
+  return users;
+ }).finally(()=>{indexRequest=null;});
+ return indexRequest;
+}
 async function runSearch(){
  const q=searchQuery();if(!q||!auth.currentUser)return;
  const own=generation,serial=++searchSerial;searchBusy=true;expandedUid='';searchResults=null;updateRefresh();$('prev').disabled=true;$('next').disabled=true;
- setStatus(`登録者全体から「${q}」を検索しています…`);render();
+ setStatus('検索用ドキュメントを読み込んでいます…');render();
  try{
-  const data=await api('/api/admin/users?search='+encodeURIComponent(q));
+  const users=await loadSearchIndex();
   if(own!==generation||serial!==searchSerial||q!==searchQuery())return;
-  searchResults=[...(data.users||[])];searchTotal=Math.max(searchResults.length,Number(data.total)||0);searchTruncated=!!data.truncated;searchFetchedAt=data.fetchedAt||Date.now();
-  $('updated').textContent='検索の最終更新: '+fmtDate(searchFetchedAt)+' ／ 登録者全体を対象にしています。';
-  const note=searchTruncated?`「${q}」の検索結果を上位${searchResults.length}人表示しています。`:`「${q}」に一致する登録者は${searchTotal}人です。`;
-  setStatus(note,'ok');render();
+  const query=q.normalize('NFKC').toLocaleLowerCase('ja-JP');
+  const matching=users.filter(u=>[u.uid,u.codeName,u.loginId,u.nickname,u.petName].some(value=>String(value||'').normalize('NFKC').toLocaleLowerCase('ja-JP').includes(query)));
+  const display=matching.slice(0,6);
+  const preview=display.length?await api('/api/admin/search-preview?uids='+encodeURIComponent(display.map(u=>u.uid).join(','))):{users:[]};
+  if(own!==generation||serial!==searchSerial||q!==searchQuery())return;
+  const snapshots=new Map((preview.users||[]).map(u=>[u.uid,u]));
+  searchResults=display.map(u=>({...u,...(snapshots.get(u.uid)||{}),hasNickname:!!u.nickname}));
+  searchTotal=matching.length;searchTruncated=matching.length>display.length;searchFetchedAt=Date.now();
+  $('updated').textContent='検索の最終更新: '+fmtDate(searchFetchedAt)+' ／ 検索文字列の比較では追加readしません。';
+  setStatus('「'+q+'」に一致する登録者は'+matching.length+'人です。'+(searchTruncated?'上位6人を表示しています。':'') ,'ok');render();
  }catch(e){if(own===generation&&serial===searchSerial){searchResults=[];searchTotal=0;searchTruncated=false;setStatus(e.message,'error');render();}}
  finally{if(own===generation&&serial===searchSerial){searchBusy=false;updateRefresh();$('prev').disabled=true;$('next').disabled=true;}}
 }
@@ -143,7 +161,7 @@ function setAdminAuthorized(authorized){
 onAuthStateChanged(auth,user=>{
  usagePanel.reset();generation++;viewGeneration++;searchSerial++;clearTimeout(searchTimer);
  allUsers=[];searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;
- pageCache.clear();detailCache.clear();expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;
+ pageCache.clear();detailCache.clear();delete window.__monstudyAdminIndex;indexRequest=null;expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;
  fetchedAt=0;searchFetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;$('search').value='';
  setAdminAuthorized(false);
  $('users').replaceChildren();
