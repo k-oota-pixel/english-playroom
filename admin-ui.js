@@ -56,7 +56,7 @@ async function load(index=pageIndex,force=false){
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
-let indexRequest=null;
+let indexRequest=null,indexedMatches=[],searchPageIndex=0;
 async function loadSearchIndex(force=false){
  const shared=window.__monstudyAdminIndex;
  if(!force&&shared?.users&&Date.now()-shared.at<120000)return shared.users;
@@ -68,6 +68,20 @@ async function loadSearchIndex(force=false){
  }).finally(()=>{indexRequest=null;});
  return indexRequest;
 }
+async function showSearchPage(index,own=generation,serial=searchSerial,q=searchQuery()){
+ if(index<0||index>=Math.max(1,Math.ceil(indexedMatches.length/6)))return;
+ const display=indexedMatches.slice(index*6,index*6+6);
+ const preview=display.length?await api('/api/admin/search-preview?uids='+encodeURIComponent(display.map(u=>u.uid).join(','))):{users:[]};
+ if(own!==generation||serial!==searchSerial||q!==searchQuery())return;
+ const snapshots=new Map((preview.users||[]).map(u=>[u.uid,u]));
+ searchResults=display.map(u=>({...u,...(snapshots.get(u.uid)||{}),hasNickname:!!u.nickname}));
+ searchPageIndex=index;searchTotal=indexedMatches.length;searchTruncated=searchTotal>6;searchFetchedAt=Date.now();expandedUid='';
+ $('updated').textContent='検索の最終更新: '+fmtDate(searchFetchedAt)+' ／ 検索文字列の比較では追加readしません。';
+ $('prev').disabled=index===0;
+ $('next').disabled=(index+1)*6>=searchTotal;
+ setStatus('「'+q+'」に一致する登録者は'+searchTotal+'人です。'+(searchTotal>6?'検索結果 '+(index+1)+'ページ目を表示しています。':'') ,'ok');
+ render();
+}
 async function runSearch(force=false){
  const q=searchQuery();if(!q||!auth.currentUser)return;
  const own=generation,serial=++searchSerial;searchBusy=true;expandedUid='';searchResults=null;updateRefresh();$('prev').disabled=true;$('next').disabled=true;
@@ -76,22 +90,15 @@ async function runSearch(force=false){
   const users=await loadSearchIndex(force);
   if(own!==generation||serial!==searchSerial||q!==searchQuery())return;
   const query=q.normalize('NFKC').toLocaleLowerCase('ja-JP');
-  const matching=users.filter(u=>[u.uid,u.codeName,u.loginId,u.nickname,u.petName].some(value=>String(value||'').normalize('NFKC').toLocaleLowerCase('ja-JP').includes(query)));
-  const display=matching.slice(0,6);
-  const preview=display.length?await api('/api/admin/search-preview?uids='+encodeURIComponent(display.map(u=>u.uid).join(','))):{users:[]};
-  if(own!==generation||serial!==searchSerial||q!==searchQuery())return;
-  const snapshots=new Map((preview.users||[]).map(u=>[u.uid,u]));
-  searchResults=display.map(u=>({...u,...(snapshots.get(u.uid)||{}),hasNickname:!!u.nickname}));
-  searchTotal=matching.length;searchTruncated=matching.length>display.length;searchFetchedAt=Date.now();
-  $('updated').textContent='検索の最終更新: '+fmtDate(searchFetchedAt)+' ／ 検索文字列の比較では追加readしません。';
-  setStatus('「'+q+'」に一致する登録者は'+matching.length+'人です。'+(searchTruncated?'上位6人を表示しています。':'') ,'ok');render();
+  indexedMatches=users.filter(u=>[u.uid,u.codeName,u.loginId,u.nickname,u.petName].some(value=>String(value||'').normalize('NFKC').toLocaleLowerCase('ja-JP').includes(query)));
+  await showSearchPage(0,own,serial,q);
  }catch(e){if(own===generation&&serial===searchSerial){searchResults=[];searchTotal=0;searchTruncated=false;setStatus(e.message,'error');render();}}
- finally{if(own===generation&&serial===searchSerial){searchBusy=false;updateRefresh();$('prev').disabled=true;$('next').disabled=true;}}
+ finally{if(own===generation&&serial===searchSerial){searchBusy=false;updateRefresh();}}
 }
 function onSearchInput(){
  clearTimeout(searchTimer);searchSerial++;expandedUid='';detailCache.clear();
  const q=searchQuery();
- if(!q){searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体から登録コード、IDまたはニックネームを検索できます。','ok');render();return;}
+ if(!q){indexedMatches=[];searchPageIndex=0;searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;searchFetchedAt=0;updateRefresh();restorePageMeta();setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。検索欄では登録者全体から登録コード、IDまたはニックネームを検索できます。','ok');render();return;}
  searchResults=null;searchTotal=0;searchTruncated=false;updateRefresh();$('prev').disabled=true;$('next').disabled=true;render();
  searchTimer=setTimeout(runSearch,320);
 }
@@ -153,7 +160,7 @@ const usagePanel=createMaterialUsagePanel({host:$('updated'),request:()=>api('/a
 $('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>setStatus(e.message,'error'));
 $('logout').onclick=()=>signOut(auth);
 $('refresh').onclick=()=>searchQuery()?runSearch(true):load(pageIndex,true);$('search').oninput=onSearchInput;
-$('prev').onclick=()=>load(pageIndex-1);$('next').onclick=()=>load(pageIndex+1);
+$('prev').onclick=()=>searchQuery()?showSearchPage(searchPageIndex-1):load(pageIndex-1);$('next').onclick=()=>searchQuery()?showSearchPage(searchPageIndex+1):load(pageIndex+1);
 function setAdminAuthorized(authorized){
  document.documentElement.dataset.monstudyAdminAuthorized=String(Boolean(authorized));
  window.dispatchEvent(new CustomEvent('monstudy-admin-access-change',{detail:{authorized:Boolean(authorized)}}));
@@ -161,7 +168,7 @@ function setAdminAuthorized(authorized){
 onAuthStateChanged(auth,user=>{
  usagePanel.reset();generation++;viewGeneration++;searchSerial++;clearTimeout(searchTimer);
  allUsers=[];searchResults=null;searchTotal=0;searchTruncated=false;searchBusy=false;
- pageCache.clear();detailCache.clear();delete window.__monstudyAdminIndex;indexRequest=null;expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;
+ pageCache.clear();detailCache.clear();delete window.__monstudyAdminIndex;indexRequest=null;indexedMatches=[];searchPageIndex=0;expandedUid='';busy=false;pageIndex=0;cursors=[''];nextToken=null;
  fetchedAt=0;searchFetchedAt=0;currentUid=user?.uid||'';$('panel').hidden=true;$('search').value='';
  setAdminAuthorized(false);
  $('users').replaceChildren();
