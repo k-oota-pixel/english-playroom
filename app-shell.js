@@ -30,18 +30,20 @@ function install() {
       return {name:title.textContent.trim(), url:new URL(card.href)};
     })
   }));
-  groups.push({name:'エイゴダンジョンズ',items:[
+  const dungeonItems = [
     {name:'冒険先を選ぶ',url:new URL('pet-adventure/',root)},
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
     {name:'オンライン対戦',url:new URL('pet-adventure/online-battle.html',root)},
     {name:'もんすた城の防衛',url:new URL('pet-typing-defense/',root)}
-  ]});
-  const hiddenMaterials=[{name:'ぺっとのおへや',url:new URL('pet-room/room-v4.html',root)},{name:'WebPベッド試験版',url:new URL('pet-room/room-webp-v1.html',root)},{name:'ぺっとのおへや・ほっこり版',url:new URL('pet-room/room-cozy.html',root)},{name:'ペットのおへや（旧トップビュー版）',url:new URL('pet-room/topview.html',root)},{name:'ペットのおへや（旧アイソメ版）',url:new URL('pet-room/v5.html',root)},{name:'PET FISHING',url:new URL('pet-fishing/',root)}];
+  ];
+  const dungeonGroup = groups.find(group => group.name === 'エイゴダンジョンズ');
+  if (dungeonGroup) dungeonGroup.items = dungeonItems;
+  else groups.push({name:'エイゴダンジョンズ',items:dungeonItems});
+  const hiddenMaterials=[{name:'ぺっとのおへや',url:new URL('pet-room/room-v4.html',root)},{name:'WebPベッド試験版',url:new URL('pet-room/room-webp-v1.html',root)},{name:'ぺっとのおへや・ほっこり版',url:new URL('pet-room/room-cozy.html',root)},{name:'ペットのおへや（旧トップビュー版）',url:new URL('pet-room/topview.html',root)},{name:'ペットのおへや（旧アイソメ版）',url:new URL('pet-room/v5.html',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
   const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
-  allowed.add(new URL('pet-catch/',root).pathname);
   const homePath = root.pathname;
   const immersiveMaterialPath = new URL('../eiken-retry/',root).pathname;
   function canOpen(value) {
