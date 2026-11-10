@@ -148,13 +148,13 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.4.37"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
-<script type="module" src="./app-shell.js?v=2.4.61"></script>
+<script type="module" src="./app-shell.js?v=2.4.64"></script>
 <script type="module" src="./pet-play-menu-v164.js?v=2.4.59"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.63">ver2.4.63</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.64">ver2.4.64</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -245,7 +245,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
       <p id="petNameResetNotice" role="status" hidden>管理者によってリセットされました。再設定してください。</p>
       <button id="petRetry" class="pet-button secondary" type="button" hidden>ペットをリセットして孵化からやり直す</button>
       <div class="pet-bar" aria-hidden="true"><i id="petBar" style="width:0%"></i></div>
-<div id="petLearningActions" class="pet-learning-actions"><button id="petStrengthOpen" class="pet-shop-open" type="button" aria-haspopup="dialog" disabled>ペット強化</button><span id="learningTitles"><button type="button" class="pet-shop-open" data-titles-open aria-haspopup="dialog" disabled>称号</button><span data-titles-note hidden></span></span><button id="monsterFortuneOpen" class="pet-shop-open" type="button" aria-haspopup="dialog" aria-controls="monsterFortuneDialog" disabled>もんすた占い</button></div>
+<div id="petLearningActions" class="pet-learning-actions"><button id="monstudyFriendsOpen" class="pet-shop-open" type="button" disabled>おともだち</button><button id="petStrengthOpen" class="pet-shop-open" type="button" aria-haspopup="dialog" disabled>ペット強化</button><span id="learningTitles"><button type="button" class="pet-shop-open" data-titles-open aria-haspopup="dialog" disabled>称号</button><span data-titles-note hidden></span></span><button id="monsterFortuneOpen" class="pet-shop-open" type="button" aria-haspopup="dialog" aria-controls="monsterFortuneDialog" disabled>もんすた占い</button></div>
     </div>
   </section>
   </div>
@@ -479,7 +479,7 @@ import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,valid
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.4.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 import './pet-shop.js?v=2.4.62';
-import './pet-gifts.js?v=2.4.63';
+import './pet-gifts.js?v=2.4.64';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -870,9 +870,9 @@ function renderCoinRanking(entries,emptyMessage="本日コインを獲得した�
   entries.slice(0,3).forEach((entry,index)=>{
     const item=document.createElement("li");item.className="coin-rank-item";
     const place=document.createElement("span");place.className="coin-rank-place";place.textContent=`${index+1}位`;
-    const name=document.createElement("span");name.className="coin-rank-name";name.textContent=entry.petName+' ー'+(entry.title||'称号なし')+'ー';
+    const name=document.createElement("button");name.type="button";name.className="coin-rank-name";name.textContent=entry.petName+' ー'+(entry.title||'称号なし')+'ー';name.title='ぺっとを見る';name.style.cssText='border:0;background:transparent;text-align:left;cursor:pointer;text-decoration:underline;color:inherit;font:inherit';name.onclick=()=>window.monstudyPetView?.(entry.uid);
     const amount=document.createElement("span");amount.className="coin-rank-coins";amount.textContent=`🪙 ${Number(entry.coinsToday||0).toLocaleString("ja-JP")}`;
-    item.append(place,name,amount);coinRankList.appendChild(item);
+    const view=document.createElement('button');view.type='button';view.textContent='ぺっとを見る';view.style.cssText='padding:5px 7px;border:1px solid #9ac8b0;border-radius:7px;color:#245744;background:#eaf4ee;cursor:pointer';view.onclick=()=>window.monstudyPetView?.(entry.uid);item.append(place,name,amount,view);coinRankList.appendChild(item);
   });
 }
 let coinBoardRequest=null,coinBoardLastAttempt=null;
@@ -996,10 +996,11 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.63'></script>
+<script type="module" src="./pet-friends.js?v=2.4.64"></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.64'></script>
 <script>
 (() => {
-  const version = '2.4.63';
+  const version = '2.4.64';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
