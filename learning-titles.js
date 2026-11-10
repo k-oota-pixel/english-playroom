@@ -31,7 +31,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   const list=el('ol');list.className='titles-ranking-list';
   for(const [index,item] of leaders.entries()){
    const row=el('li');row.className='titles-ranking-entry';
-   row.append(el('span',['🥇','🥈','🥉'][index]||String(index+1)),el('span',item.petName||'ふしぎなたまご'),el('strong',String(Math.max(0,Number(item.unlockedTitleCount)||0))+'個'));
+   row.append(el('span',['🥇','🥈','🥉'][index]||String(index+1)),el('span',item.petName||'ふしぎなたまご'),el('strong',String(Math.max(0,Number(item.unlockedTitleCount)||0))+'個'));const view=el('button','ぺっとを見る');view.type='button';view.style.cssText='padding:5px 7px;border:1px solid #96b6a0;border-radius:7px;background:#e7f3e9;color:#245744;cursor:pointer';view.onclick=()=>window.monstudyPetView?.(item.uid);row.append(view);
    list.append(row);
   }
   root.append(list);

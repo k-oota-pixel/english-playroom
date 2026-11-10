@@ -3,7 +3,7 @@ const API='https://task-quest.onrender.com';
 const MSG={thanks:'いつもありがとう！',birthday:'お誕生日おめでとう！',cheer:'がんばってね！',enjoy:'これ、使ってね！',friends:'これからもよろしく！'};
 const REPLY={thanks:'ありがとう！',happy:'とってもうれしい！',treasure:'大切に使うね！',hooray:'やったー！'};
 let user=null,profile={},chosen=null,recipient=null,pendingId='',busy=false,tab='received';
-let button=null,sendDialog=null,boxDialog=null;
+let button=null,sendDialog=null,boxDialog=null,giftPrefill=null;
 // A local opening preview allows one atomic write for opening + thanks.
 const previewedGifts=new Set();
 const entries=x=>Array.isArray(x)?x.filter(v=>v&&typeof v==='object'):[];
@@ -41,7 +41,7 @@ function init(){
  button=document.createElement('button');button.type='button';button.className='pet-shop-open';button.id='petGiftOpen';button.textContent='🎁 ギフト';
  shop.insertAdjacentElement('afterend',button);
  sendDialog=document.createElement('dialog');sendDialog.className='pet-gift-modal';
- sendDialog.innerHTML='<button class="pet-gift-close" type="button">×</button><h2>🎁 おともだちに贈る</h2><strong id="giftProduct"></strong><p class="pet-gift-note">ぺっと名で検索し、ニックネームも確認してください。相手が持っている商品は送れません。</p><div class="pet-gift-search"><input id="giftSearchText" maxlength="24" placeholder="ぺっと名"><button class="pet-gift-primary" id="giftSearchBtn" type="button">検索</button></div><div id="giftResults"></div><p id="giftRecipient" class="pet-gift-note">送る相手を選択してください。</p><label for="giftMessage">メッセージ：</label><select id="giftMessage"></select><button id="giftSendNow" type="button" class="pet-gift-primary pet-gift-wide" disabled>ギフトを送る</button><p id="giftSendNotice" class="pet-gift-status" role="status"></p>';
+ sendDialog.innerHTML='<button class="pet-gift-close" type="button">×</button><h2>🎁 おともだちに贈る</h2><strong id="giftProduct"></strong><p class="pet-gift-note">ぺっと名・ニックネームで検索し、両方の名前を確認してください。相手が持っている商品は送れません。</p><div class="pet-gift-search"><input id="giftSearchText" maxlength="24" placeholder="ぺっと名・ニックネーム"><button class="pet-gift-primary" id="giftSearchBtn" type="button">検索</button></div><div id="giftResults"></div><p id="giftRecipient" class="pet-gift-note">送る相手を選択してください。</p><label for="giftMessage">メッセージ：</label><select id="giftMessage"></select><button id="giftSendNow" type="button" class="pet-gift-primary pet-gift-wide" disabled>ギフトを送る</button><p id="giftSendNotice" class="pet-gift-status" role="status"></p>';
  document.body.append(sendDialog);
  sendDialog.querySelector('.pet-gift-close').onclick=()=>sendDialog.close();
  sendDialog.querySelector('#giftSearchBtn').onclick=search;
@@ -71,16 +71,18 @@ function startGift(item){
  sendDialog.querySelector('#giftProduct').textContent=item.name+'　🪙 '+item.price+'コイン';
  sendDialog.querySelector('#giftSearchText').value='';
  sendDialog.querySelector('#giftResults').replaceChildren();
- sendDialog.querySelector('#giftRecipient').textContent='送る相手を選択してください。';
+ if(giftPrefill){recipient={...giftPrefill};giftPrefill=null;sendDialog.querySelector('#giftRecipient').textContent='送る相手：'+recipient.petName+' ／ ニックネーム：'+recipient.nickname;}
+ else sendDialog.querySelector('#giftRecipient').textContent='送る相手を選択してください。';
  sendDialog.querySelector('#giftMessage').value='thanks';
  sendDialog.querySelector('#giftSendNotice').textContent='';
  sendDialog.showModal();paintButton();
 }
 window.monstudyGiftStart=startGift;
+window.monstudyGiftPrefillFriend=person=>{if(!person?.uid)return;giftPrefill={uid:person.uid,petName:person.petName||'',nickname:person.nickname||''};document.getElementById('petShopOpen')?.click();};
 async function search(){
  if(busy)return;
  const q=sendDialog.querySelector('#giftSearchText').value.normalize('NFKC').trim();
- if(!q||[...q].length>12){notice('ぺっと名は1〜12文字で検索してください。',true);return;}
+ if(!q||[...q].length>20){notice('名前は1〜20文字で検索してください。',true);return;}
  recipient=null;pendingId='';paintButton();
  const area=sendDialog.querySelector('#giftResults');area.textContent='検索しています…';
  await attempt(async()=>{
@@ -89,7 +91,8 @@ async function search(){
    if(!users.length){el(area,'p','該当するぺっとが見つかりませんでした。','pet-gift-note');return;}
    for(const person of users){
      const b=el(area,'button','🐾 '+person.petName+' ／ '+person.nickname,'pet-gift-result');b.type='button';b.setAttribute('aria-pressed','false');
-     b.onclick=()=>{recipient=person;pendingId='';area.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));sendDialog.querySelector('#giftRecipient').textContent='ぺっと名：'+person.petName+' ／ ニックネーム：'+person.nickname;paintButton();};
+     b.onclick=()=>{recipient=person;pendingId='';area.querySelectorAll('.pet-gift-result').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));sendDialog.querySelector('#giftRecipient').textContent='ぺっと名：'+person.petName+' ／ ニックネーム：'+person.nickname;paintButton();};
+     const friendButton=el(area,'button','おともだち申請','pet-gift-primary');friendButton.type='button';friendButton.style.cssText='margin:0 0 8px;background:#477b69';friendButton.onclick=async()=>{if(!window.monstudyFriendsRequest){notice('おともだち画面から申請してください。',true);return;}const ok=await window.monstudyFriendsRequest(person.uid);notice(ok?'おともだち申請を送りました。':'申請を完了できませんでした。',!ok);};
    }
    if(users.length===10)el(area,'small','上位10件を表示しています。名前を詳しく入力すると絞り込めます。');
  });

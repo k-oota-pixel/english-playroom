@@ -70,6 +70,7 @@ export async function openMaterialRanking(appId){
   status.textContent=defenseMode?'最高クリアステージ TOP3・同じ記録は同順位です。':'学習完了として保存された取り組み数のランキング（日本時間）';
   if(!list.length){dialog.append(make('p','',defenseMode?'まだクリア記録がありません。':'まだ本日の学習記録はありません。'));return;}
   const ol=make('ol','ms-material-rank-list');
+  const petButton=item=>{const b=make('button','','ぺっとを見る');b.type='button';b.style.cssText='padding:5px 7px;border:1px solid #9bbda8;border-radius:7px;background:#e8f4eb;color:#24634f;cursor:pointer';b.onclick=()=>{const root=window.parent!==window?window.parent:window;if(typeof root.monstudyPetView==='function')root.monstudyPetView(item.uid);else location.href=new URL('./index.html?petView='+encodeURIComponent(item.uid),import.meta.url).href;};return b;};
   for(const [i,item] of list.entries()){
    const li=make('li');
    if(defenseMode){
@@ -78,9 +79,9 @@ export async function openMaterialRanking(appId){
     name.append(make('small','ms-material-rank-title','ー'+(item.title||'称号なし')+'ー'));
     const score=make('strong','','第'+Math.max(0,Math.floor(Number(item.floor)||0))+'ステージ');
     if(Number(item.floor)===5)score.append(make('small','ms-material-rank-cleared','★ 完全制覇'));
-    li.append(rank,name,score);
+    li.append(rank,name,score,petButton(item));
    }else{
-    li.append(make('span','',['🥇','🥈','🥉'][i]||String(i+1)),make('span','',item.petName||'ふしぎなたまご'),make('strong','',Math.max(0,Math.floor(Number(item.count)||0))+'回'));
+    li.append(make('span','',['🥇','🥈','🥉'][i]||String(i+1)),make('span','',item.petName||'ふしぎなたまご'),make('strong','',Math.max(0,Math.floor(Number(item.count)||0))+'回'),petButton(item));
    }
    ol.append(li);
   }
