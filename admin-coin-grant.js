@@ -118,7 +118,7 @@ openButton.addEventListener('click',()=>{
  if(!authorized())return;
  resetModal();dialog.showModal();searchInput.focus();void loadIndex();
 });
-$('[data-reload]').addEventListener('click',()=>{indexLoadedAt=0;void loadIndex();});
+$('[data-reload]').addEventListener('click',()=>{indexUsers=null;indexLoadedAt=0;delete window.__monstudyAdminIndex;void loadIndex();});
 dialog.addEventListener('close',()=>{clearTimeout(searchTimer);++searchSerial;});
 grantButton.addEventListener('click',async()=>{
  if(loading||!selected||!authorized())return;
