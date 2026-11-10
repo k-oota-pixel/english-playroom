@@ -72,7 +72,8 @@ function stateFor(uid){
  return '';
 }
 async function sendRequest(person,target=dialog){
- if(!person?.uid||person.uid===viewer?.uid)return;
+ if(!person?.uid||person.uid===viewer?.uid)return false;
+ try{await ensureSocial();}catch(error){notify(error.message||'おともだち一覧を取得できませんでした。',true,target);return false;}
  const ok=await action('/api/friends/request',{targetUid:person.uid},()=>{
   const next=social||{friends:[],incoming:[],outgoing:[]};
   if(!stateFor(person.uid))next.outgoing=[...next.outgoing,record(person)];
