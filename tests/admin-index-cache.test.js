@@ -24,3 +24,15 @@ test('pet creation triggers name index sync',()=>{
  assert.match(html,/api\/search-index\/self-sync/);
  assert.equal((html.match(/void syncAdminPetSearchIndex\(\);/g)||[]).length,2);
 });
+
+
+test('initial six users are enriched from one cached index and coins display only after detail',()=>{
+ const main=fs.readFileSync('admin-ui.js','utf8');
+ assert.match(main,/api\(url\+'&compact=1'\)/);
+ assert.match(main,/Promise\.all\(\[api\(url\+'&compact=1'\),loadSearchIndex\(force\)\]\)/);
+ assert.match(main,/new Map\(indexUsers\.map\(user=>\[user\.uid,user\]\)\)/);
+ assert.match(main,/coins:null/);
+ assert.match(main,/coinBadge=open&&currentCoins!==null/);
+ assert.match(main,/api\/admin\/user\?uid=/);
+ assert.doesNotMatch(main,/<div class="coin">🪙 '\+Number\(u\.coins/);
+});
