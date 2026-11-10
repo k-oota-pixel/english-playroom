@@ -70,7 +70,7 @@ export async function openMaterialRanking(appId){
   status.textContent=defenseMode?'最高クリアステージ TOP3・同じ記録は同順位です。':'学習完了として保存された取り組み数のランキング（日本時間）';
   if(!list.length){dialog.append(make('p','',defenseMode?'まだクリア記録がありません。':'まだ本日の学習記録はありません。'));return;}
   const ol=make('ol','ms-material-rank-list');
-  const petButton=item=>{const b=make('button','','ぺっとを見る');b.type='button';b.style.cssText='padding:5px 7px;border:1px solid #9bbda8;border-radius:7px;background:#e8f4eb;color:#24634f;cursor:pointer';b.onclick=()=>{const root=window.parent!==window?window.parent:window;root.monstudyPetView?.(item.uid);};return b;};
+  const petButton=item=>{const b=make('button','','ぺっとを見る');b.type='button';b.style.cssText='padding:5px 7px;border:1px solid #9bbda8;border-radius:7px;background:#e8f4eb;color:#24634f;cursor:pointer';b.onclick=()=>{const root=window.parent!==window?window.parent:window;if(typeof root.monstudyPetView==='function')root.monstudyPetView(item.uid);else location.href=new URL('./index.html?petView='+encodeURIComponent(item.uid),import.meta.url).href;};return b;};
   for(const [i,item] of list.entries()){
    const li=make('li');
    if(defenseMode){
