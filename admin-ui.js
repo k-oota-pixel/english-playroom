@@ -110,6 +110,15 @@ async function grant(card){const uid=card.dataset.uid,amount=Math.floor(Number(c
  if(searchResults)for(const item of searchResults)if(item.uid===uid)item.coins=r.coins;
  const detail=detailCache.get(uid);if(detail?.apps?.['english-playroom'])detail.apps['english-playroom'].coins=r.coins;
  setStatus(label+' に '+amount.toLocaleString('ja-JP')+'コイン付与しました。','ok');render();}catch(e){if(own===generation)setStatus(e.message,'error');}finally{const btn=document.querySelector(`.user[data-uid="${CSS.escape(uid)}"] .grantBtn`);if(btn)btn.disabled=false;}}
+window.addEventListener('monstudy-admin-coin-granted',event=>{
+ const uid=String(event.detail?.uid||''),coins=Number(event.detail?.coins);
+ if(!uid||!Number.isFinite(coins))return;
+ for(const page of pageCache.values())for(const item of page.users||[])if(item.uid===uid)item.coins=coins;
+ for(const item of allUsers)if(item.uid===uid)item.coins=coins;
+ for(const item of searchResults||[])if(item.uid===uid)item.coins=coins;
+ const detail=detailCache.get(uid);if(detail?.apps?.['english-playroom'])detail.apps['english-playroom'].coins=coins;
+ render();
+});
 async function resetPetName(card){
  const uid=card.dataset.uid,u=(searchResults||[]).find(x=>x.uid===uid)||allUsers.find(x=>x.uid===uid),label=u?.nickname||'このユーザー';
  if(!confirm(label+' のペット名をリセットしますか？ユーザーに再設定を案内します。'))return;
