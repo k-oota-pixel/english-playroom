@@ -268,7 +268,7 @@ function renderWaiting(room,mine,other){
 function renderFinished(room,mine){
  resetTurn();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.waitingCard.hidden=true;els.resultCard.hidden=false;els.readyBtn.hidden=true;
  const win=room.winnerUid===user.uid,forfeit=room.lastEvent?.type==='forfeit';els.resultIcon.textContent=win?'🏆':'💫';els.resultTitle.textContent=win?'VICTORY':'BATTLE END';
- els.resultText.textContent=win?(forfeit?'相手が投了しました。不戦勝！ 2コイン獲得しました。':'勝利！ 2コイン獲得しました。'):'敗北… 次の対戦でリベンジしよう。';
+ els.resultText.textContent=win?(forfeit?'相手が投了しました。不戦勝！ 1コイン獲得しました。':'勝利！ 1コイン獲得しました。'):'敗北… 次の対戦でリベンジしよう。';
  const canRematch=(room.players||[]).length===2;els.retryBtn.hidden=!canRematch;els.retryBtn.textContent=mine?.rematchReady?'相手の再戦準備を待っています…':'もう一度対戦';els.retryBtn.disabled=!canRematch||Boolean(mine?.rematchReady);els.readyCount.textContent=canRematch?'再戦準備 '+(room.players||[]).filter(p=>p.rematchReady).length+'/2':'';
 }
 function renderPlaying(room){
