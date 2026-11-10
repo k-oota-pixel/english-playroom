@@ -2,7 +2,7 @@
 // The wallpaper itself is a real raster WebP asset, not SVG or a data URL.
 export const HIKAKIN_SCREEN_THEME=Object.freeze({
   pattern:'url("https://k-oota-pixel.github.io/english-playroom/assets/hikakin-screen-background.webp?v=2.4.54")',
-  patternSize:'cover',
-  patternRepeat:'no-repeat',
+  patternSize:'824px 464px',
+  patternRepeat:'repeat',
   patternPosition:'center center'
 });
