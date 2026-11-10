@@ -678,6 +678,10 @@ async function sendPetChat(quickText=''){
   }finally{setPetChatBusy(false);petChatInput.focus();}
 }
 petChatForm.addEventListener('submit',event=>{event.preventDefault();sendPetChat();});
+async function syncAdminPetSearchIndex(){
+ try{const headers=await apiHeaders();await fetch('https://task-quest.onrender.com/api/search-index/self-sync',{method:'POST',headers,body:'{}'});}
+ catch(error){console.warn('Pet-name search index sync deferred',error);}
+}
 const petMaker=createPetMaker(async (appearance,name)=>{
   const user=petUser,generation=petAuthGeneration;
   if(!user || auth.currentUser?.uid!==user.uid)throw Error('もう一度ログインしてください。');
@@ -696,6 +700,7 @@ const petMaker=createPetMaker(async (appearance,name)=>{
       return {...data,...payload};
     });
     if(generation===petAuthGeneration && auth.currentUser?.uid===user.uid){petData=saved;renderPet(saved);}
+    void syncAdminPetSearchIndex();
   }catch(error){
     if(error.code)throw Error('クラウドに保存できませんでした。通信状態を確認して、もう一度お試しください。');
     throw error;
@@ -729,6 +734,7 @@ const petNameDialog=createPetNameDialog(async name=>{
       transaction.set(ref,payload,{merge:true});return {...data,...payload};
     });
     if(generation===petAuthGeneration && auth.currentUser?.uid===user.uid){petData=saved;renderPet(saved);}
+    void syncAdminPetSearchIndex();
   }catch(error){throw Error(error.code?'名前を保存できませんでした。通信状態を確認して、もう一度お試しください。':error.message);}
 });
 petNameButton.addEventListener('click',()=>{if(petUser && hasPet(petData) && !validPetName(petData.petName))petNameDialog.open();});
