@@ -166,7 +166,7 @@ function makeCard(item,shop){
   const equipped=equippedFor(shop,item.slot)===item.id,owned=isOwned(shop,item.id),coins=coinsOf(currentData);const card=document.createElement('div');card.className='pet-shop-item';card.dataset.extraItem='1';card.dataset.itemId=item.id;
   const action=equipped?'はずす':owned?'装備':`${item.price}コインで購入`;card.innerHTML=`<div class="pet-shop-icon">${item.icon}</div><div class="pet-shop-name">${item.name}</div><div class="pet-shop-price">${owned?'購入済み':`🪙 ${item.price}`}</div><button class="pet-shop-action ${owned?'owned':''} ${equipped?'equipped':''}" type="button">${action}</button>`;
   card.addEventListener('click',()=>{previewSelection={slot:item.slot,id:item.id};renderAllLayers();document.querySelectorAll('.pet-shop-item.selected').forEach(el=>el.classList.remove('selected'));card.classList.add('selected');});
-  const button=card.querySelector('button');button.disabled=!owned&&coins<item.price;button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();handleItem(item);});return card;
+  const button=card.querySelector('button');button.disabled=!owned&&coins<item.price;button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();handleItem(item);});const gift=document.createElement('button');gift.type='button';gift.className='pet-shop-gift-action';gift.textContent='🎁 おともだちに贈る';gift.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();window.monstudyGiftStart?.(item);});card.appendChild(gift);return card;
 }
 function augmentShop(){
   const panel=document.getElementById('petShopPanel');if(!panel)return;const slot=activeSlot();if(!slot)return;const grid=panel.querySelector('.pet-shop-grid');if(!grid)return;const shop=shopOf(currentData);
