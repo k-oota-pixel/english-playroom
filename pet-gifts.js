@@ -52,7 +52,14 @@ function init(){
  boxDialog.innerHTML='<button class="pet-gift-close" type="button">×</button><h2>🎁 ギフトボックス</h2><div class="pet-gift-tabs"><button data-gift-tab="received" type="button">届いたギフト</button><button data-gift-tab="sent" type="button">送ったギフト</button><button data-gift-tab="replies" type="button">お礼</button></div><p id="giftBoxNotice" class="pet-gift-status" role="status"></p><div id="giftBoxList"></div>';
  document.body.append(boxDialog);
  boxDialog.querySelector('.pet-gift-close').onclick=()=>boxDialog.close();
- boxDialog.addEventListener('close',()=>previewedGifts.clear());
+ boxDialog.addEventListener('close',()=>{
+  // If the player enjoys opening but closes without replying, persist opening.
+  // The item itself was already granted when it was sent.
+  const pending=[...previewedGifts];previewedGifts.clear();
+  if(!user||busy)return;
+  for(const giftId of pending)void request('/api/shop/gifts/open',{giftId})
+    .catch(error=>console.warn('Gift opening will be available to retry',error));
+ });
  boxDialog.querySelectorAll('[data-gift-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.giftTab;notice('');renderBox();});
  button.onclick=()=>{if(!user)return;tab='received';renderBox();boxDialog.showModal();};
  paintButton();
