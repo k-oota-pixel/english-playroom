@@ -154,7 +154,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.67">ver2.4.67</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.68">ver2.4.68</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -304,7 +304,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
   <div class="open-note">単語を隠して回そう・コイン付与なし</div>
 </a>
 </div></section>
-<section class="material-group" id="materials-vocabulary-grammar" aria-labelledby="heading-vocabulary-grammar"><div class="material-group-head"><h2 id="heading-vocabulary-grammar">語彙文法学習</h2><span>6教材</span></div><div class="cards">
+<section class="material-group" id="materials-vocabulary-grammar" aria-labelledby="heading-vocabulary-grammar"><div class="material-group-head"><h2 id="heading-vocabulary-grammar">語彙文法学習</h2><span>7教材</span></div><div class="cards">
 <a class="card" href="./potato-harvest/" target="_blank" rel="noopener noreferrer">
       <div class="eyebrow">ENGLISH GRAMMAR GAME</div>
       <div class="title">ポテトマンを収穫せよ</div>
@@ -364,6 +364,13 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
       <div class="chips"><span class="chip">準1〜4級程度</span><span class="chip">1,585問</span><span class="chip">復習</span></div>
       <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>5問回答するごと</span><small>同じ問題のカウントは1日1回</small></div></div>
       <div class="open-note">GitHub Pagesで開きます</div>
+    </a>
+    <a class="card" href="./vocabulary/" target="_blank" rel="noopener noreferrer">
+      <div class="eyebrow">PERSONAL VOCABULARY &amp; ADAPTIVE REVIEW</div>
+      <div class="title">英単語・熟語帳</div>
+      <div class="desc">自分だけの単語帳を作り、復習タイミングに合わせたテストで学習しよう。</div>
+      <div class="chips"><span class="chip">4択・スペル</span><span class="chip">赤シート</span><span class="chip">復習スケジュール</span></div>
+      <div class="open-note">もんすたでぃの共通ログインで開きます</div>
     </a>
 </div></section>
 <section class="material-group" id="materials-reading" aria-labelledby="heading-reading"><div class="material-group-head"><h2 id="heading-reading">長文演習</h2><span>4教材</span></div><div class="cards">
@@ -997,10 +1004,10 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
 <script type="module" src="./pet-friends.js?v=2.4.67"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.67'></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.68'></script>
 <script>
 (() => {
-  const version = '2.4.67';
+  const version = '2.4.68';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
