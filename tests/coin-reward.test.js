@@ -18,7 +18,7 @@ async function rewards({trackActivity=false,trackTypingDefense=false}={}){
   }
   return {ok:true,json:async()=>({freshTitles:[]})};
  }}:{}),location:{pathname:'/',href:'https://home.test/'},document:{readyState:'loading',addEventListener(){}},
- enableAppCheck:()=>null,initializeApp:()=>({}),getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:user}),getFirestore:()=>({}),doc:(_db,...path)=>({path:path.join('/')}),serverTimestamp:()=>0,
+ installStandaloneMaterialRanking:()=>{},enableAppCheck:()=>null,initializeApp:()=>({}),getApps:()=>[{}],getApp:()=>({}),getAuth:()=>({currentUser:user}),getFirestore:()=>({}),doc:(_db,...path)=>({path:path.join('/')}),serverTimestamp:()=>0,
  onAuthStateChanged:(_,fn)=>queueMicrotask(()=>fn(user)),interviewAttemptPatch:()=>({attempted:true}),
  runTransaction:async(_,fn)=>fn({get:async ref=>ref.path.includes('/typingDefenseRewards/')?({exists:()=>rewardReceipts.has(ref.path),data:()=>structuredClone(rewardReceipts.get(ref.path))}):({exists:()=>true,data:()=>structuredClone(wallet)}),set:(ref,patch)=>{if(ref.path.includes('/typingDefenseRewards/'))rewardReceipts.set(ref.path,patch);else Object.assign(wallet,patch);}})});
  vm.runInContext(source+'\n toast=()=>{};window.signOutForTest=()=>{currentUser=null;};',context);
