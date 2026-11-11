@@ -7,7 +7,7 @@ async function rewards({trackActivity=false,trackTypingDefense=false}={}){
  let clock=Date.now(),activityCalls=0;const defenseEvents=[],rewardReceipts=new Map();
  const source=readFileSync(new URL('../coin-reward.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/^export .*;\r?\n/gm,'');
  const user={uid:'tester',getIdToken:async()=>'token'};
- const context=vm.createContext({window:{addEventListener(){}},announceTitles(){},console,queueMicrotask,Date:class extends Date{static now(){return clock;}},...(trackActivity||trackTypingDefense?{fetch:async (url,options={})=>{
+ const context=vm.createContext({window:{addEventListener(){}},announceTitles(){},console,queueMicrotask,Date:class extends Date{constructor(...args){super(...(args.length?args:[clock]));}static now(){return clock;}},...(trackActivity||trackTypingDefense?{fetch:async (url,options={})=>{
   if(url.endsWith('/api/learning/activity')){
    if(trackTypingDefense){
     const body=JSON.parse(options.body),duplicate=defenseEvents.some(x=>x.batchId===body.batchId);
@@ -22,17 +22,40 @@ async function rewards({trackActivity=false,trackTypingDefense=false}={}){
  onAuthStateChanged:(_,fn)=>queueMicrotask(()=>fn(user)),interviewAttemptPatch:()=>({attempted:true}),
  runTransaction:async(_,fn)=>fn({get:async ref=>ref.path.includes('/typingDefenseRewards/')?({exists:()=>rewardReceipts.has(ref.path),data:()=>structuredClone(rewardReceipts.get(ref.path))}):({exists:()=>true,data:()=>structuredClone(wallet)}),set:(ref,patch)=>{if(ref.path.includes('/typingDefenseRewards/'))rewardReceipts.set(ref.path,patch);else Object.assign(wallet,patch);}})});
  vm.runInContext(source+'\n toast=()=>{};window.signOutForTest=()=>{currentUser=null;};',context);
- return {api:context.window.EnglishPlayroomCoins,wallet:()=>wallet,signOut:context.window.signOutForTest,activityCalls:()=>activityCalls,defenseEvents:()=>defenseEvents,advance:()=>clock+=2000,pendingRetries:()=>vm.runInContext("readRetryOutbox(RETRY_OUTBOX_PREFIX+'tester').length",context)};
+ return {api:context.window.EnglishPlayroomCoins,wallet:()=>wallet,signOut:context.window.signOutForTest,activityCalls:()=>activityCalls,defenseEvents:()=>defenseEvents,advance:()=>clock+=2000,nextDay:()=>clock+=86400000,pendingRetries:()=>vm.runInContext("readRetryOutbox(RETRY_OUTBOX_PREFIX+'tester').length",context)};
 }
 test('daily rewards remain per stage, topic and question, without collisions between apps',async()=>{
  const {api,wallet}=await rewards();
  for(const name of ['awardBasic','awardCloze','awardTitle','awardTask','awardPre2A','awardTalk','awardPre2Questions','awardReading']){
-  assert.equal((await api[name]('1')).awarded,true,name);
-  assert.equal((await api[name]('1')).awarded,false,name);
-  assert.equal((await api[name]('2')).awarded,true,name);
+    const call=(id)=>['awardCloze','awardTitle','awardReading'].includes(name)?api[name](id,true):api[name](id);
+  assert.equal((await call('1')).awarded,true,name);
+  assert.equal((await call('1')).awarded,false,name);
+  assert.equal((await call('2')).awarded,true,name);
  }
  assert.equal(wallet().coins,26);assert.equal(wallet().petName,'ふわ');assert.deepEqual(wallet().petShop,{ownedItems:['crown']});
 });
+test('reading coins require a perfect first attempt and do not pay after a wrong first try',async()=>{
+ const {api,wallet,nextDay}=await rewards();
+ assert.equal((await api.awardCloze('bad',false)).awarded,false);
+ assert.equal((await api.awardCloze('bad',true)).awarded,false,'a correct retry does not pay');
+ assert.equal((await api.awardTitle('good',true)).awarded,true);
+ assert.equal((await api.awardTitle('good',false)).awarded,false);
+ assert.equal((await api.awardReading('exercise',false)).awarded,false);
+ assert.equal((await api.awardReading('exercise',true)).awarded,false,'exercise and summary share the first attempt');
+ assert.equal((await api.awardReading('another',true)).awarded,true);
+ assert.equal((await api.awardReading('missing')).reason,'invalid-attempt');
+ assert.equal(wallet().coins,12);
+ assert.equal(wallet().readingFirstAttempts.length,4);
+ assert.equal(wallet().coinsEarnedToday,2);
+ nextDay();
+ assert.equal((await api.awardCloze('bad',true)).awarded,true);
+ assert.equal((await api.awardTitle('good',false)).awarded,false);
+ assert.equal((await api.awardTitle('good',true)).awarded,false);
+ assert.equal(wallet().coins,13);
+ assert.equal(wallet().readingFirstAttempts.length,2);
+ assert.equal(wallet().coinsEarnedToday,1);
+});
+
 test('listening sets and ateru rounds have no daily cap but cannot be paid twice',async()=>{
  const {api,wallet}=await rewards();
  for(let i=0;i<12;i++)for(const name of ['awardListening','awardAteru']){
