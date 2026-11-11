@@ -263,7 +263,9 @@ function init(){
    if(!user){dialog.close();petDialog.close();}
    openButton.disabled=!user;
    updateFriendBadge();
-   if(user&&latestShopState?.uid===user.uid)applyProfileState(latestShopState);
+   const current=window.monstudyShopCurrentState?.();
+   if(user&&current?.user?.uid===user.uid)applyProfileState({uid:user.uid,data:current.data,ready:current.ready===true});
+   else if(user&&latestShopState?.uid===user.uid)applyProfileState(latestShopState);
    if(user&&initialPetUid&&!initialOpened){initialOpened=true;queueMicrotask(()=>showPet(initialPetUid));}
   });
  }
