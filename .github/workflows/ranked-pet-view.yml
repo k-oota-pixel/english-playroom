@@ -1,0 +1,39 @@
+name: Ranked pet view regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ranked-pet-view.js'
+      - 'material-ranking-ui.js'
+      - 'learning-titles.js'
+      - 'learning-titles.css'
+      - 'pet-adventure/rankings.js'
+      - 'pet-adventure/online-battle.js'
+      - 'pet-adventure/styles.css'
+      - 'index.html'
+      - 'tests/ranked-pet-view.test.js'
+      - '.github/workflows/ranked-pet-view.yml'
+  pull_request:
+    paths:
+      - 'ranked-pet-view.js'
+      - 'material-ranking-ui.js'
+      - 'learning-titles.js'
+      - 'learning-titles.css'
+      - 'pet-adventure/rankings.js'
+      - 'pet-adventure/online-battle.js'
+      - 'pet-adventure/styles.css'
+      - 'index.html'
+      - 'tests/ranked-pet-view.test.js'
+      - '.github/workflows/ranked-pet-view.yml'
+permissions:
+  contents: read
+jobs:
+  pet-view:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --check ranked-pet-view.js && node --check material-ranking-ui.js && node --check learning-titles.js && node --check pet-adventure/rankings.js && node --check pet-adventure/online-battle.js
+      - run: node --test tests/ranked-pet-view.test.js
