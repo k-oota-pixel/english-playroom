@@ -1,4 +1,5 @@
-import {auth,authReady} from '../coin-reward.js?v=2.1.11';
+import {auth,authReady} from '../coin-reward.js?v=2.4.72';
+import {announceTitles} from '../learning-titles.js?v=2.4.72';
 import {rankedPetButton} from '../ranked-pet-view.js?v=2.4.71';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
@@ -25,6 +26,7 @@ let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsT
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 let navigationToken='',navigationExitInFlight=null;
+const battleAwardsSeen=new Set();
 let lastActionDialogSignature='';
 
 function stopAutoRefresh(){
@@ -261,11 +263,27 @@ function renderWaiting(room,mine,other){
  else if(mine?.ready){els.waitingTitle.textContent='準備完了！';els.waitingText.textContent='相手の準備を待っています';}
  else{els.waitingTitle.textContent='対戦準備OK';els.waitingText.textContent='「準備完了」を押すと、2人そろった時点で開始します';}
 }
+function announceFinishedBattleTitles(room){
+ if(room.status!=='finished'||!user||!Array.isArray(room.freshTitles)||!room.freshTitles.length)return;
+ const id=String(room.lastSettledMatchId||room.matchId||'');
+ if(!id)return;
+ const key='monstudy-online-title-awards:'+user.uid+':'+id;
+ if(battleAwardsSeen.has(key))return;
+ battleAwardsSeen.add(key);
+ try{
+  if(sessionStorage.getItem(key)==='1')return;
+  sessionStorage.setItem(key,'1');
+ }catch{}
+ // Trigger only on the settled result screen, never while polling in combat.
+ queueMicrotask(()=>announceTitles(room.freshTitles));
+}
+
 function renderFinished(room,mine){
  resetTurn();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.waitingCard.hidden=true;els.resultCard.hidden=false;els.readyBtn.hidden=true;
  const win=room.winnerUid===user.uid,forfeit=room.lastEvent?.type==='forfeit';els.resultIcon.textContent=win?'🏆':'💫';els.resultTitle.textContent=win?'VICTORY':'BATTLE END';
  els.resultText.textContent=win?(forfeit?'相手が投了しました。不戦勝！ 1コイン獲得しました。':'勝利！ 1コイン獲得しました。'):'敗北… 次の対戦でリベンジしよう。';
  const canRematch=(room.players||[]).length===2;els.retryBtn.hidden=!canRematch;els.retryBtn.textContent=mine?.rematchReady?'相手の再戦準備を待っています…':'もう一度対戦';els.retryBtn.disabled=!canRematch||Boolean(mine?.rematchReady);els.readyCount.textContent=canRematch?'再戦準備 '+(room.players||[]).filter(p=>p.rematchReady).length+'/2':'';
+ announceFinishedBattleTitles(room);
 }
 function renderPlaying(room){
  els.waitingCard.hidden=true;els.resultCard.hidden=true;els.readyBtn.hidden=true;els.readyCount.textContent='';
