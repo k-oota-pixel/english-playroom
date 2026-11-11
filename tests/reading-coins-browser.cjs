@@ -34,7 +34,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await context.route('https://task-quest.onrender.com/**',route=>route.fulfill({contentType:'application/json',body:'{}'}));
  await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
 await page.goto('http://127.0.0.1:8765/reading-training/index.html');
- const readingData=JSON.parse(fs.readFileSync(path.join(root,'reading-training/passages.json'),'utf8'));
+ const readingData=JSON.parse(fs.readFileSync(path.join(root,'reading-training/passages.json'),'utf8')).passages;
  let activePassage=await page.locator('[data-passage]').first().getAttribute('data-passage');
  await page.locator('[data-passage]').first().click();
  assert.equal(await page.locator('#gradeExercise').isDisabled(),true);
