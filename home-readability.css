@@ -1,0 +1,195 @@
+/* Homepage readability layer: keep purchased screen themes visible outside content. */
+#monstudyShell .ms-home-content .home{
+  max-width:1240px;
+  margin:18px auto 34px;
+  padding:26px 26px 38px;
+  border:1px solid #cfdfd5;
+  border-radius:26px;
+  background:rgba(250,252,249,.965);
+  color:#193d38;
+  box-shadow:0 14px 44px rgba(13,37,29,.24);
+}
+
+/* The pet used to float directly on top of a patterned wallpaper. */
+#monstudyShell .ms-home-content .hero .pet-card{
+  background:rgba(255,255,255,.98);
+  border:2px solid #d8e5dc;
+  border-radius:22px;
+  box-shadow:0 7px 22px rgba(17,55,43,.14);
+  padding:17px 12px 16px;
+  color:#193d38;
+  min-width:0;
+}
+#monstudyShell .ms-home-content .hero .pet-visual-wrap{
+  box-sizing:border-box;
+  width:min(100%,195px);
+  height:auto;
+  aspect-ratio:1;
+  flex:0 0 auto;
+  background:#fff5dd;
+  border:1px solid #ecdfc4;
+}
+#monstudyShell .ms-home-content .hero .pet-title strong{
+  font-size:20px;
+  color:#203f33;
+}
+#monstudyShell .ms-home-content .hero :is(.pet-status,.pet-days,.pet-selected-title){
+  font-size:12px;
+  line-height:1.55;
+}
+#monstudyShell .ms-home-content .hero .pet-status{color:#425e50}
+#monstudyShell .ms-home-content .hero .pet-chat-panel{
+  border:2px solid #d0e0d6;
+  box-shadow:0 7px 22px rgba(17,55,43,.14);
+}
+#monstudyShell .ms-home-content .hero .pet-chat-heading strong{font-size:15px}
+#monstudyShell .ms-home-content .hero .pet-chat-heading span{font-size:10px;color:#50685b}
+#monstudyShell .ms-home-content .hero .pet-chat-note{font-size:10px;color:#596f61}
+#monstudyShell .ms-home-content :is(.coin-today,.coin-ranking,.login-streak-bonus){
+  border-width:2px;
+  box-shadow:0 4px 14px rgba(23,55,42,.09);
+}
+#monstudyShell .ms-home-content .coin-rank-title{font-size:15px;color:#234636}
+#monstudyShell .ms-home-content :is(.coin-caption,.coin-rank-note){font-size:11px;line-height:1.55;color:#526659}
+#monstudyShell .ms-home-content .login-streak-heading strong{font-size:12.5px}
+#monstudyShell .ms-home-content .login-streak-heading>span{font-size:10.5px;color:#5d6c5f}
+
+/* Group headings and materials should be readable with any wallpaper. */
+#monstudyShell .ms-home-content .material-nav{
+  gap:8px;
+  margin:12px 0 22px;
+  padding:12px;
+  background:#fff;
+  border:1px solid #d6e3d9;
+  border-radius:16px;
+  box-shadow:0 3px 12px rgba(23,55,42,.07);
+}
+#monstudyShell .ms-home-content .material-nav a{
+  background:#f1f7f2;
+  border:1px solid #b6d0bd;
+  color:#234e3a;
+  font-size:12px;
+  font-weight:850;
+  line-height:1.4;
+  padding:8px 12px;
+}
+#monstudyShell .ms-home-content .material-nav a:hover,
+#monstudyShell .ms-home-content .material-nav a:focus-visible{
+  background:#e0f0e4;
+  border-color:#68a182;
+}
+#monstudyShell .ms-home-content .card-reward-note{
+  margin:18px 0 10px;
+  padding:10px 13px;
+  background:#fffdf2;
+  border:1px solid #e4d6b4;
+  border-radius:12px;
+  color:#5b4c2a;
+  font-size:12px;
+  font-weight:750;
+  line-height:1.55;
+}
+#monstudyShell .ms-home-content .material-groups{gap:18px}
+#monstudyShell .ms-home-content .material-group{
+  padding:17px;
+  border:1px solid #d2e0d6;
+  border-radius:19px;
+  background:rgba(255,255,255,.99);
+  box-shadow:0 5px 16px rgba(23,55,42,.08);
+  color:#193d38;
+}
+#monstudyShell .ms-home-content .material-group-head{
+  min-height:45px;
+  padding:9px 12px;
+  background:#edf6ef;
+  border:1px solid #d1e2d4;
+  border-radius:11px;
+  color:#234836;
+}
+#monstudyShell .ms-home-content .material-group-head h2{
+  font-size:19px;
+  line-height:1.4;
+  font-weight:900;
+}
+#monstudyShell .ms-home-content .material-group-head>span{
+  font-size:11px;
+  font-weight:800;
+  background:#fff;
+  color:#426449;
+  border:1px solid #c9dbca;
+  white-space:nowrap;
+}
+#monstudyShell .ms-home-content .material-group .cards{margin-top:12px}
+#monstudyShell .ms-home-content .material-group .card{
+  background:#fff;
+  border:1.5px solid #cbdcd0;
+  box-shadow:0 3px 10px rgba(23,55,42,.07);
+}
+#monstudyShell .ms-home-content .material-group .card:hover{
+  border-color:#7dae92;
+  box-shadow:0 7px 19px rgba(23,55,42,.15);
+}
+#monstudyShell .ms-home-content .material-group .title{
+  color:#203e32;
+  font-size:clamp(16px,1.3vw,20px);
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+#monstudyShell .ms-home-content .material-group :is(.eyebrow,.open-note){
+  color:#506c5d;
+  font-size:10px;
+  line-height:1.5;
+  font-weight:750;
+}
+#monstudyShell .ms-home-content .material-group .desc{
+  font-size:12.5px;
+  line-height:1.65;
+  color:#405a4c;
+}
+#monstudyShell .ms-home-content .material-group .card-reward{
+  border-color:#e4d5b8;
+  background:#fffaf0;
+}
+#monstudyShell .ms-home-content .material-group .card-reward span{color:#405948;font-size:11.5px}
+#monstudyShell .ms-home-content .material-group .card-reward small{color:#667367;font-size:10.5px}
+#monstudyShell .ms-home-content .learning-dashboard{
+  border:1.5px solid #cfdfd4;
+  box-shadow:0 5px 16px rgba(23,55,42,.08);
+}
+#monstudyShell .ms-home-content .foot{font-size:11px;color:#526659}
+
+/* The selected dark screen theme keeps its dark canvas; content is on light cards. */
+body[data-screen-theme="dark"] #monstudyShell .ms-home-content .home{
+  background:rgba(21,31,29,.965);
+  border-color:#486254;
+  color:#f0f5ef;
+}
+body[data-screen-theme="dark"] #monstudyShell .ms-home-content :is(
+  .material-group,.material-nav,.card-reward-note,.learning-dashboard,.hero .pet-card
+){color:#193d38}
+body[data-screen-theme="dark"] #monstudyShell .ms-home-content .hero .pet-card{
+  background:#fff;
+  border-color:#a9c9b5;
+}
+body[data-screen-theme="dark"] #monstudyShell .ms-home-content .foot{color:#e2ece4}
+
+@media(max-width:900px){
+  #monstudyShell .ms-home-content .home{margin:12px 12px 24px;padding:20px 16px 28px;border-radius:20px}
+  #monstudyShell .ms-home-content .material-group{padding:14px}
+  #monstudyShell .ms-home-content .hero .pet-card{padding:15px 12px}
+}
+@media(max-width:560px){
+  #monstudyShell .ms-home-content .home{margin:8px 7px 20px;padding:14px 10px 22px;border-radius:16px}
+  #monstudyShell .ms-home-content .material-group{padding:11px;border-radius:14px}
+  #monstudyShell .ms-home-content .material-group-head{padding:9px 10px;min-height:40px}
+  #monstudyShell .ms-home-content .material-group-head h2{font-size:17px}
+  #monstudyShell .ms-home-content .material-nav{padding:9px;gap:6px}
+  #monstudyShell .ms-home-content .material-nav a{font-size:11.5px;padding:8px 10px}
+  #monstudyShell .ms-home-content .material-group .card{padding:11px}
+  #monstudyShell .ms-home-content .material-group .title{font-size:17px}
+  #monstudyShell .ms-home-content .material-group .desc{font-size:12px}
+  #monstudyShell .ms-home-content .hero .pet-card{width:min(100%,440px);justify-self:center}
+}
+@media(prefers-reduced-motion:reduce){
+  #monstudyShell .ms-home-content .material-group .card{transition:none}
+}
