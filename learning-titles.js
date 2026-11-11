@@ -1,3 +1,4 @@
+import {rankedPetButton} from './ranked-pet-view.js?v=2.4.71';
 const API='https://task-quest.onrender.com/api/learning/titles';
 const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
 export function makeDialog(title){
@@ -5,7 +6,7 @@ export function makeDialog(title){
  const header=el('div');header.className='titles-heading';const close=el('button','閉じる');close.type='button';close.addEventListener('click',()=>dialog.close());header.append(el('h2',title),close);dialog.append(header);
  dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});document.body.append(dialog);return dialog;
 }
-function styles(){if(document.getElementById('titleStyles'))return;const link=el('link');link.id='titleStyles';link.rel='stylesheet';link.href=new URL('./learning-titles.css?v=2.3.50',import.meta.url).href;document.head.append(link);}
+function styles(){if(document.getElementById('titleStyles')||document.querySelector('link[rel="stylesheet"][href*="learning-titles.css"]'))return;const link=el('link');link.id='titleStyles';link.rel='stylesheet';link.href=new URL('./learning-titles.css?v=2.4.71',import.meta.url).href;document.head.append(link);}
 export function announceTitles(titles){
  if(!Array.isArray(titles)||!titles.length)return;styles();
  const dialog=makeDialog('🏆 新しい称号を解放！');for(const t of titles){const row=el('article');row.className='title-award';row.append(el('small',t.label),el('h3',t.name),el('p',t.condition));dialog.append(row);}
@@ -31,7 +32,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   const list=el('ol');list.className='titles-ranking-list';
   for(const [index,item] of leaders.entries()){
    const row=el('li');row.className='titles-ranking-entry';
-   row.append(el('span',['🥇','🥈','🥉'][index]||String(index+1)),el('span',item.petName||'ふしぎなたまご'),el('strong',String(Math.max(0,Number(item.unlockedTitleCount)||0))+'個'));const view=el('button','ぺっとを見る');view.type='button';view.style.cssText='padding:5px 7px;border:1px solid #96b6a0;border-radius:7px;background:#e7f3e9;color:#245744;cursor:pointer';view.onclick=()=>window.monstudyPetView?.(item.uid);row.append(view);
+   row.append(el('span',['🥇','🥈','🥉'][index]||String(index+1)),el('span',item.petName||'ふしぎなたまご'),el('strong',String(Math.max(0,Number(item.unlockedTitleCount)||0))+'個'));const view=rankedPetButton(item,message=>{rankingError=message;renderRanking();});view.classList.add('titles-pet-view');row.append(view);
    list.append(row);
   }
   root.append(list);
@@ -66,7 +67,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    const isWeekly=t=>t.category==='weekly'||String(t.id).startsWith('weekly:');
    const filtered=allTitles.filter(t=>activeTab==='master'?isMaster(t):activeTab==='weekly'?isWeekly(t):!isMaster(t)&&!isWeekly(t));
    const groups=new Map();for(const t of filtered){if(!groups.has(t.appId))groups.set(t.appId,[]);groups.get(t.appId).push(t);}
-   if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノートや塔・巣窟の記録も引き継ぎます。'));
+   if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノート・魔王の塔・魔物の巣窟・もんすた城の防衛の記録も確認できます。'));
    if(activeTab==='weekly'){panel.append(el('p','月曜日から日曜日までの挑戦。前日までに確定した順位を集計し、4日達成で永久に獲得します。'));if(weeklyBusy)panel.append(el('p','週間ランキングを集計しています…'));if(weeklyError)panel.append(el('p',weeklyError));}
    if(activeTab==='master')panel.append(el('p','教材の対象称号をすべて解放すると、特別なマスター称号を獲得できます。'));
    if(!groups.size)panel.append(el('p','この種類の称号はまだありません。'));

@@ -6,6 +6,7 @@ const API='https://task-quest.onrender.com';
 const TTL={social:30*60*1000,pet:10*60*1000,search:5*60*1000};
 let viewer=null,social=null,profile={},openButton=null,dialog=null,petDialog=null;
 let tab='friends',busy=false,results=[],searchTerm='',socialPromise=null;
+let latestShopState=null,migrationStartedFor=null;
 const searchCache=new Map();
 const $=(q,root=document)=>root.querySelector(q);
 function textEl(parent,tag,value,cls){
@@ -37,15 +38,61 @@ async function request(path,payload){
  if(!r.ok)throw Error(result.error||'通信に失敗しました。');
  return result;
 }
+
+function cleanSocial(value){
+ const list=key=>Array.isArray(value?.[key])?value[key].filter(x=>x&&typeof x.uid==='string'):[];
+ return {friends:list('friends'),incoming:list('incoming'),outgoing:list('outgoing')};
+}
+function updateFriendBadge(){
+ if(!openButton)return;
+ const count=social?.incoming?.length||0;
+ openButton.replaceChildren(document.createTextNode('おともだち'));
+ if(count>0){
+  const badge=textEl(openButton,'span',count>99?'99+':String(count),'pet-notification-count');
+  badge.setAttribute('aria-hidden','true');
+ }
+ openButton.setAttribute('aria-label',count?'おともだち、未承認の申請'+count+'件':'おともだち');
+}
+function applyProfileState(state){
+ if(!viewer||state?.uid!==viewer.uid)return;
+ profile=state.data||{};
+ const stored=profile.socialFriends;
+ if(stored&&stored.schemaVersion===1){
+  const next=cleanSocial(stored);
+  if(JSON.stringify(next)!==JSON.stringify(social)){
+   social=next;
+   save('list',social);
+   render();
+  }
+  return;
+ }
+ // One-time migration only after the existing profile listener receives its first snapshot.
+ if(state.ready&&migrationStartedFor!==viewer.uid){
+  migrationStartedFor=viewer.uid;
+  void ensureSocial().catch(error=>console.warn('Friends migration can be retried from friends screen',error));
+ }
+}
 async function ensureSocial(force=false){
  if(!viewer)throw Error('ログインしてください。');
- if(!force){
-  if(social&&cached('list',TTL.social))return social;
-  const previous=cached('list',TTL.social);
-  if(previous){social=previous;return social;}
+ // Reuse the user profile already supplied by pet-shop.js; no Firestore GET on opening.
+ if(!force&&social)return social;
+ const stored=profile?.socialFriends;
+ if(stored&&stored.schemaVersion===1){
+  social=cleanSocial(stored);
+  save('list',social);
+  render();
+  return social;
  }
  if(socialPromise)return socialPromise;
- socialPromise=request('/api/friends').then(data=>{social=data;save('list',data);return data;}).finally(()=>{socialPromise=null;});
+ const uid=viewer.uid;
+ // Only historical profiles without socialFriends need this one-time migration call.
+ socialPromise=request('/api/friends').then(data=>{
+  if(viewer?.uid!==uid)throw Error('ログイン状態が変わりました。');
+  social=cleanSocial(profile?.socialFriends?.schemaVersion===1?profile.socialFriends:data);
+  save('list',social);
+  render();
+  return social;
+ }).finally(()=>{socialPromise=null;});
  return socialPromise;
 }
 function updateSocial(next){social=next;save('list',next);render();}
@@ -97,7 +144,7 @@ function personRow(parent,person,kind){
  }else if(kind==='incoming'){
   button(actions,'承認',()=>action('/api/friends/respond',{senderUid:person.uid,accept:true},()=>{
    updateSocial({...social,incoming:social.incoming.filter(x=>x.uid!==person.uid),
-    friends:[...social.friends,record(person)]});
+    friends:stateFor(person.uid)==='friend'?social.friends:[...social.friends,record(person)]});
   },'おともだちになりました。'));
   button(actions,'拒否',()=>action('/api/friends/respond',{senderUid:person.uid,accept:false},()=>{
    updateSocial({...social,incoming:social.incoming.filter(x=>x.uid!==person.uid)});
@@ -115,6 +162,7 @@ function personRow(parent,person,kind){
  }
 }
 function render(){
+ updateFriendBadge();
  if(!dialog)return;
  const tabs=dialog.querySelectorAll('[data-friends-tab]');
  tabs.forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.friendsTab===tab));b.disabled=busy;});
@@ -156,8 +204,8 @@ async function search(value){
 }
 async function openFriends(){
  if(!viewer)return;
- tab='friends';dialog.showModal();render();
- try{await ensureSocial();render();}catch(e){notify(e.message,true);}
+ tab=social?.incoming?.length?'incoming':'friends';dialog.showModal();render();
+ try{await ensureSocial();if(social?.incoming?.length&&tab==='friends')tab='incoming';render();}catch(e){notify(e.message,true);}
 }
 async function showPet(uid,force=false){
  if(!viewer){return;}
@@ -210,10 +258,14 @@ function init(){
  function boot(){
   if(!getApps().length){setTimeout(boot,100);return;}
   onAuthStateChanged(getAuth(getApp()),user=>{
-   const previous=viewer?.uid;viewer=user;social=null;socialPromise=null;results=[];searchCache.clear();
+   const previous=viewer?.uid;viewer=user;social=null;socialPromise=null;results=[];profile={};migrationStartedFor=null;searchCache.clear();
    if(previous&&previous!==user?.uid)clearFor(previous);
    if(!user){dialog.close();petDialog.close();}
    openButton.disabled=!user;
+   updateFriendBadge();
+   const current=window.monstudyShopCurrentState?.();
+   if(user&&current?.user?.uid===user.uid)applyProfileState({uid:user.uid,data:current.data,ready:current.ready===true});
+   else if(user&&latestShopState?.uid===user.uid)applyProfileState(latestShopState);
    if(user&&initialPetUid&&!initialOpened){initialOpened=true;queueMicrotask(()=>showPet(initialPetUid));}
   });
  }
@@ -233,5 +285,9 @@ window.monstudyFriendsGetAccepted=async(force=false)=>{
 window.monstudyFriendsOpen=()=>openFriends();
 window.monstudyFriendsRequest=uid=>sendRequest({uid});
 window.monstudyPetView=(uid,force=false)=>showPet(uid,force);
-window.addEventListener('monstudy-shop-state',event=>{if(event.detail?.user?.uid===viewer?.uid)profile=event.detail?.data||{};});
+window.addEventListener('monstudy-shop-state',event=>{
+ const detail=event.detail||{};
+ latestShopState={uid:detail.user?.uid||null,data:detail.data||{},ready:detail.ready===true};
+ if(latestShopState.uid===viewer?.uid)applyProfileState(latestShopState);
+});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();

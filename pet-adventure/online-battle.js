@@ -1,14 +1,22 @@
-import {auth,authReady} from '../coin-reward.js?v=2.1.11';
+import {auth,authReady} from '../coin-reward.js?v=2.4.72';
+import {announceTitles} from '../learning-titles.js?v=2.4.72';
+import {rankedPetButton} from '../ranked-pet-view.js?v=2.4.71';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=1.10.22';
 
-const API='https://task-quest.onrender.com/api/online-battle';
+const LEGACY_API='https://task-quest.onrender.com/api/online-battle';
+const REALTIME_API=LEGACY_API+'-realtime';
+let preferredRealtime=false, roomRealtime=false, liveSubscription=null;
+const roomApi=()=> (activeRoom?roomRealtime:preferredRealtime)?REALTIME_API:LEGACY_API;
 const $=id=>document.getElementById(id);
 const ELEMENTS=[['fire','🔥','FIRE'],['thunder','⚡','THUNDER'],['leaf','🍃','LEAF'],['water','💧','WATER']];
 const lobbyView=$('lobbyView'),battleView=$('battleView'),gradePicker=$('gradePicker'),roomList=$('roomList'),roomsEl=$('rooms'),notice=$('notice'),selectedGradeTitle=$('selectedGradeTitle');
 const GRADES=Object.freeze([{key:'4',label:'4級'},{key:'3',label:'3級'},{key:'pre2',label:'準2級'},{key:'2',label:'2級'}]);
 const ROOM_STORAGE_KEY='monstudy-online-room-v2';
+const REALTIME_ROOM_STORAGE_KEY='monstudy-online-rtdb-room';
+const roomStorageKey=()=>roomRealtime?REALTIME_ROOM_STORAGE_KEY:ROOM_STORAGE_KEY;
+const LOBBY_REFRESH_MS=5000;
 const AUTO_IDLE_MS=5*60*1000;
 const els={
  coinCount:$('coinCount'),modeTitle:$('modeTitle'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),
@@ -21,12 +29,15 @@ const els={
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsTimer=0,roomRefreshInFlight='',coins=0,questionPool=[],ownData={};
+const lobbyRequests=new Set();
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 let navigationToken='',navigationExitInFlight=null;
+const battleAwardsSeen=new Set();
 let lastActionDialogSignature='';
 
 function stopAutoRefresh(){
+ if(liveSubscription){liveSubscription.controller.abort();liveSubscription=null;}
  if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
  pollIntervalMs=0;
  if(roomsTimer){clearInterval(roomsTimer);roomsTimer=0;}
@@ -35,7 +46,9 @@ function startAutoRefresh(){
  if(document.hidden||!user||autoPausedForIdle)return;
  // Only active matches need 1-second sync; waiting rooms retain 2.5 seconds.
  const interval=activeRoom&&currentRoom?.roomId===activeRoom&&currentRoom.status==='playing'?1000:2500;
- if(!activeRoom){
+ if(activeRoom&&roomRealtime)connectRoomUpdates(activeRoom);
+ else if(liveSubscription){liveSubscription.controller.abort();liveSubscription=null;}
+ if(!activeRoom||roomRealtime){
   if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
   pollIntervalMs=0;
  }else if(!pollTimer||pollIntervalMs!==interval){
@@ -43,7 +56,7 @@ function startAutoRefresh(){
   pollIntervalMs=interval;
   pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},interval);
  }
- if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},15000);
+ if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},LOBBY_REFRESH_MS);
 }
 function armIdlePause(){
  clearTimeout(idleTimer);
@@ -57,13 +70,69 @@ async function syncVisibleState(){
 }
 function registerActivity(){
  if(document.hidden||!user)return;
- const shouldResync=autoPausedForIdle||(!pollTimer&&!roomsTimer);
+ const shouldResync=autoPausedForIdle||(!pollTimer&&!liveSubscription&&!roomsTimer);
  autoPausedForIdle=false;armIdlePause();startAutoRefresh();
  if(shouldResync)void syncVisibleState();
 }
 function handleVisibility(){
  if(document.hidden){stopAutoRefresh();return;}
  autoPausedForIdle=false;armIdlePause();startAutoRefresh();void syncVisibleState();
+}
+
+function connectRoomUpdates(roomId){
+ if(liveSubscription?.roomId===roomId)return;
+ liveSubscription?.controller.abort();
+ const controller=new AbortController();
+ const subscription={roomId,controller};
+ liveSubscription=subscription;
+ void (async()=>{
+  while(!controller.signal.aborted){
+   try{
+    const token=await user.getIdToken();
+    const response=await fetch(REALTIME_API+'/room/'+roomId+'/live',{
+     headers:{Authorization:'Bearer '+token},
+     signal:AbortSignal.any([controller.signal,AbortSignal.timeout(75000)]),
+     cache:'no-store'
+    });
+    if(!response.ok){
+     await response.body?.cancel();
+     if(response.status===403&&roomId===activeRoom)await refreshRoom();
+     throw new Error('対戦の更新に接続できませんでした。');
+    }
+    // Safari exposes fetch streams through getReader(), but not necessarily
+    // through ReadableStream's async iterator (for await...of).
+    const reader=response.body?.getReader();
+    if(!reader)throw new Error('対戦のリアルタイム更新を受信できませんでした。');
+    const decoder=new TextDecoder();
+    let buffer='';
+    try{
+     while(!controller.signal.aborted){
+      const {done,value}=await reader.read();
+      if(done)break;
+      buffer+=decoder.decode(value,{stream:true});
+      let boundary;
+      while((boundary=buffer.indexOf('\n\n'))>=0){
+       const frame=buffer.slice(0,boundary);
+       buffer=buffer.slice(boundary+2);
+       const data=frame.split('\n').find(line=>line.startsWith('data: '));
+       if(!data||liveSubscription!==subscription||roomId!==activeRoom)continue;
+       const room=JSON.parse(data.slice(6));
+       if(!room.players.some(player=>player.uid===user.uid)){await refreshRoom();break;}
+       renderRoom(room);
+      }
+      if(buffer.length>256000)throw new Error('対戦の更新データが大きすぎます。');
+     }
+    }finally{
+     // Release the stream if the room changes, the tab hides or a frame fails.
+     try{await reader.cancel();}catch{}
+     reader.releaseLock();
+    }
+   }catch(error){
+    if(!controller.signal.aborted)say(error.message,true);
+   }
+   if(!controller.signal.aborted)await new Promise(resolve=>setTimeout(resolve,1500));
+  }
+ })();
 }
 
 function say(message,error=false){
@@ -88,12 +157,12 @@ function petArt(player){
  if(!player.petHatched)return '<span class="online-egg" role="img" aria-label="たまご">🥚</span>';
  try{return renderPetSVG(player.petAppearance,{...player.petShop,equipped:{...player.petShop?.equipped,'pet-frame':''}},player.petAdult?'adult':'baby',{background:false});}catch{return '🐾';}
 }
-async function api(path,method='GET',body=null){
+async function api(path,method='GET',body=null,endpoint=roomApi()){
  const token=await user.getIdToken();
  navigationToken=token;
  let response;
  try{
-  response=await fetch(API+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store',signal:AbortSignal.timeout(30000)});
+  response=await fetch(endpoint+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store',signal:AbortSignal.timeout(30000)});
  }catch(error){
   if(error?.name==='TimeoutError'||error?.name==='AbortError')throw new Error('通信がタイムアウトしました。もう一度お試しください。');
   throw new Error('サーバーに接続できませんでした。通信環境を確認してください。');
@@ -107,10 +176,10 @@ async function api(path,method='GET',body=null){
 // same-tab navigation where the browser supports it.
 function leaveOnNavigate(){
  if(!activeRoom||navigationExitInFlight)return navigationExitInFlight;
- const roomId=activeRoom,token=navigationToken;
- activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);
+ const roomId=activeRoom,token=navigationToken,endpoint=roomApi();
+ activeRoom='';localStorage.removeItem(roomStorageKey());
  stopAutoRefresh();clearTimeout(idleTimer);
- const send=authToken=>fetch(API+'/room/'+encodeURIComponent(roomId)+'/leave',{
+ const send=authToken=>fetch(endpoint+'/room/'+encodeURIComponent(roomId)+'/leave',{
   method:'POST',headers:{Authorization:'Bearer '+authToken,'Content-Type':'application/json'},
   body:'{}',cache:'no-store',keepalive:true
  }).then(response=>{
@@ -139,10 +208,21 @@ function gradeLabel(key){return GRADES.find(entry=>entry.key===key)?.label||'4�
 function showGradePicker(){selectedGrade='';roomList.hidden=true;gradePicker.hidden=false;roomsEl.replaceChildren();say('');}
 async function selectGrade(key){if(!GRADES.some(entry=>entry.key===key))return;selectedGrade=key;selectedGradeTitle.textContent=gradeLabel(key);gradePicker.hidden=true;roomList.hidden=false;await refreshLobby();}
 async function refreshLobby(){
- if(!selectedGrade||activeRoom)return;
- try{const data=await api('/lobby/'+selectedGrade),lobby=data.lobby||{};selectedGradeTitle.textContent=lobby.grade||gradeLabel(selectedGrade);renderRooms(lobby.rooms||[]);if(!notice.classList.contains('error'))say('');}
- catch(e){say(e.message,true);}
+ const grade=selectedGrade;
+ if(!grade||activeRoom||lobbyRequests.has(grade))return;
+ lobbyRequests.add(grade);
+ try{
+  const data=await api('/lobby/'+grade);
+  if(activeRoom||selectedGrade!==grade)return;
+  const lobby=data.lobby||{};
+  selectedGradeTitle.textContent=lobby.grade||gradeLabel(grade);
+  renderRooms(lobby.rooms||[]);
+  if(!notice.classList.contains('error'))say('');
+ }catch(e){
+  if(!activeRoom&&selectedGrade===grade)say(e.message,true);
+ }finally{lobbyRequests.delete(grade);}
 }
+
 
 function enterBattleLayout(){lobbyView.hidden=true;battleView.hidden=false;document.body.classList.add('battle-mode');}
 function enterLobbyLayout(){battleView.hidden=true;lobbyView.hidden=false;document.body.classList.remove('battle-mode');}
@@ -260,11 +340,28 @@ function renderWaiting(room,mine,other){
  else if(mine?.ready){els.waitingTitle.textContent='準備完了！';els.waitingText.textContent='相手の準備を待っています';}
  else{els.waitingTitle.textContent='対戦準備OK';els.waitingText.textContent='「準備完了」を押すと、2人そろった時点で開始します';}
 }
+function announceFinishedBattleTitles(room){
+ if(room.status!=='finished'||!user||!Array.isArray(room.freshTitles)||!room.freshTitles.length)return;
+ const id=String(room.lastSettledMatchId||room.matchId||'');
+ if(!id)return;
+ const key='monstudy-online-title-awards:'+user.uid+':'+id;
+ if(battleAwardsSeen.has(key))return;
+ battleAwardsSeen.add(key);
+ try{
+  if(sessionStorage.getItem(key)==='1')return;
+  sessionStorage.setItem(key,'1');
+ }catch{}
+ // Trigger only on the settled result screen, never while polling in combat.
+ queueMicrotask(()=>announceTitles(room.freshTitles));
+}
+
 function renderFinished(room,mine){
  resetTurn();els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.waitingCard.hidden=true;els.resultCard.hidden=false;els.readyBtn.hidden=true;
- const win=room.winnerUid===user.uid,forfeit=room.lastEvent?.type==='forfeit';els.resultIcon.textContent=win?'🏆':'💫';els.resultTitle.textContent=win?'VICTORY':'BATTLE END';
- els.resultText.textContent=win?(forfeit?'相手が投了しました。不戦勝！ 1コイン獲得しました。':'勝利！ 1コイン獲得しました。'):'敗北… 次の対戦でリベンジしよう。';
- const canRematch=(room.players||[]).length===2;els.retryBtn.hidden=!canRematch;els.retryBtn.textContent=mine?.rematchReady?'相手の再戦準備を待っています…':'もう一度対戦';els.retryBtn.disabled=!canRematch||Boolean(mine?.rematchReady);els.readyCount.textContent=canRematch?'再戦準備 '+(room.players||[]).filter(p=>p.rematchReady).length+'/2':'';
+ const win=room.winnerUid===user.uid,forfeit=room.lastEvent?.type==='forfeit',pending=room.settlementPending===true;els.resultIcon.textContent=win?'🏆':'💫';els.resultTitle.textContent=win?'VICTORY':'BATTLE END';
+ const victory=forfeit?'相手が投了しました。不戦勝！':'勝利！';
+ els.resultText.textContent=win?victory+(pending?' コインを反映しています…':' 1コイン獲得しました。'):'敗北… 次の対戦でリベンジしよう。';
+ const canRematch=(room.players||[]).length===2;els.retryBtn.hidden=!canRematch;els.retryBtn.textContent=mine?.rematchReady?'相手の再戦準備を待っています…':'もう一度対戦';els.retryBtn.disabled=pending||!canRematch||Boolean(mine?.rematchReady);els.readyCount.textContent=canRematch?'再戦準備 '+(room.players||[]).filter(p=>p.rematchReady).length+'/2':'';
+ announceFinishedBattleTitles(room);
 }
 function renderPlaying(room){
  els.waitingCard.hidden=true;els.resultCard.hidden=true;els.readyBtn.hidden=true;els.readyCount.textContent='';
@@ -290,8 +387,13 @@ function syncActionControls(){
  if(els.magicDialog.open)renderMagic();
  if(els.itemDialog.open)renderItems(normalizeDungeonInventory(ownData.petDungeonItems));
 }
+function isOlderRoom(room){
+ if(currentRoom?.roomId!==room?.roomId)return false;
+ if(Number(room.seq)!==Number(currentRoom.seq))return Number(room.seq)<Number(currentRoom.seq);
+ return Boolean(currentRoom.matchId&&currentRoom.lastSettledMatchId===currentRoom.matchId&&room.lastSettledMatchId!==room.matchId);
+}
 function renderRoom(room){
- if(!room||room.roomId!==activeRoom)return;
+ if(!room||room.roomId!==activeRoom||isOlderRoom(room))return;
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  if(mine){
   ownData.petDungeonItems=normalizeDungeonInventory(mine.inventory||{});
@@ -318,7 +420,7 @@ async function refreshRoom(){
   // A slow polling response must not roll back a freshly confirmed ready/start state.
   if(currentRoom?.roomId===roomId&&Number(room.seq)<Number(currentRoom.seq))return;
   if(!(room.players||[]).some(p=>p.uid===user.uid)){
-   activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';
+   activeRoom='';localStorage.removeItem(roomStorageKey());currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';
    clearBattleEffects();resetTurn();enterLobbyLayout();startAutoRefresh();
    if(selectedGrade)await refreshLobby();else showGradePicker();return;
   }
@@ -329,9 +431,13 @@ async function refreshRoom(){
 async function enterRoom(id){
  try{
   say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;
-  const data=await api('/room/'+id+'/join','POST');
+  const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);
+  if(transport)preferredRealtime=transport.realtime===true;
+  const realtime=preferredRealtime;
+  const data=await api('/room/'+id+'/join','POST',null,realtime?REALTIME_API:LEGACY_API);
+  roomRealtime=realtime;
   navigationExitInFlight=null;
-  activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);
+  activeRoom=id;localStorage.setItem(roomStorageKey(),id);
   currentRoom=null;lastEventRoomId=id;lastEventKey=eventFingerprint(data.room?.lastEvent);
   lastStatus='';readyPending=false;busy=false;seenQuestionIds.clear();lastQuestionId='';
   clearBattleEffects();clearBattleFeedback();resetTurn();
@@ -343,15 +449,16 @@ async function enterRoom(id){
 async function act(action,{render=true,body=null}={}){
  const roomId=activeRoom;
  try{
-  const data=await api('/room/'+roomId+'/'+action,'POST',body);
+  const data=await api('/room/'+roomId+'/'+action,'POST',{...body,matchId:currentRoom?.matchId});
   // An earlier room's delayed response cannot change the room now on screen.
   if(roomId!==activeRoom)return null;
   if(action==='leave'){
-   activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;
+   activeRoom='';localStorage.removeItem(roomStorageKey());currentRoom=null;
    lastEventKey='';lastEventRoomId='';lastStatus='';busy=false;readyPending=false;
    clearBattleEffects();resetTurn();startAutoRefresh();enterLobbyLayout();
    if(selectedGrade)await refreshLobby();else showGradePicker();return null;
   }
+  if(isOlderRoom(data.room))return currentRoom;
   currentRoom=data.room;if(render)renderRoom(data.room);return data.room;
  }catch(e){if(roomId===activeRoom){await refreshRoom();say(e.message,true);}throw e;}
 }
@@ -455,7 +562,7 @@ function previousJapanDate(){
  const fields=Object.fromEntries(parts.map(part=>[part.type,part.value]));
  return fields.year+'-'+fields.month+'-'+fields.day;
 }
-function openRankedPet(uid){try{if(typeof window.parent.monstudyPetView==='function')return window.parent.monstudyPetView(uid);}catch{}location.href=new URL('../index.html?petView='+encodeURIComponent(uid),import.meta.url).href;}
+
 function renderDailyRanking(data){
  rankingRows.replaceChildren();
  for(const entry of (Array.isArray(data.leaders)?data.leaders:[]).slice(0,10)){
@@ -464,7 +571,7 @@ function renderDailyRanking(data){
   const name=document.createElement('td'),nickname=document.createElement('span'),pet=document.createElement('small');
   nickname.className='online-ranking-name';nickname.textContent=String(entry.nickname||'なまえ未設定');
   pet.className='online-ranking-pet';pet.textContent='ペット：'+String(entry.petName||'ペット');
-  name.append(nickname,pet);const view=document.createElement('button');view.type='button';view.textContent='ぺっとを見る';view.style.cssText='display:block;margin-top:5px;padding:4px 7px;border:1px solid #99bda3;border-radius:7px;cursor:pointer;background:#e8f4ec;color:#245744';view.onclick=()=>openRankedPet(entry.uid);name.append(view);
+  name.append(nickname,pet);const view=rankedPetButton(entry,message=>{rankingStatus.textContent=message;rankingStatus.classList.add('error');});view.style.marginTop='7px';name.append(view);
   const record=document.createElement('td');record.textContent=(Number(entry.games)||0)+'戦 '+(Number(entry.wins)||0)+'勝';
   const rate=document.createElement('td');rate.textContent=(Number(entry.winRate)||0).toFixed(1)+'%';
   tr.append(rank,name,record,rate);rankingRows.append(tr);
@@ -517,7 +624,7 @@ els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEvent
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
 async function init(){
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();enterLobbyLayout();showGradePicker();const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);preferredRealtime=transport?.realtime===true;const savedRealtime=localStorage.getItem(REALTIME_ROOM_STORAGE_KEY)||'';roomRealtime=Boolean(savedRealtime);const saved=savedRealtime||localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
 window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
 window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});

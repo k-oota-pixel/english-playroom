@@ -156,3 +156,23 @@ body:not(.battle-mode) .app-shell{width:min(1100px,100%)}
 .defense-ranking-list li>span small{font-size:10px;color:#678579;margin-top:4px}
 .defense-ranking-list li>strong{text-align:right;white-space:normal}
 .defense-ranking-list li .adventure-clear-state{display:block;margin:5px 0 0 auto}
+
+
+/* Compact, non-wrapping pet actions across adventure and defense rankings. */
+.ranking-list li{grid-template-columns:3em minmax(0,1fr) max-content max-content;gap:10px}
+.ranking-list li>span{min-width:0;overflow:hidden}
+.ranking-list li>span b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ranking-list li>.ms-ranked-pet-button{white-space:nowrap;justify-self:end}
+@media(max-width:650px){
+ .ranking-list li{grid-template-columns:3em minmax(0,1fr) max-content;gap:6px 9px}
+ .ranking-list li>strong:first-child{grid-column:1;grid-row:1 / 3}
+ .ranking-list li>span{grid-column:2;grid-row:1}
+ .ranking-list li>.ranking-floor{grid-column:3;grid-row:1}
+ .ranking-list li>.ms-ranked-pet-button{grid-column:2 / 4;grid-row:2}
+}
+.defense-ranking-list li{grid-template-columns:2.4em minmax(0,1fr) max-content;gap:6px 8px}
+.defense-ranking-list li>b:first-child{grid-column:1;grid-row:1 / 3}
+.defense-ranking-list li>span{grid-column:2;grid-row:1;min-width:0;overflow:hidden}
+.defense-ranking-list li>span b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.defense-ranking-list li>strong{grid-column:3;grid-row:1}
+.defense-ranking-list li>.ms-ranked-pet-button{grid-column:2 / 4;grid-row:2;justify-self:end;min-width:92px;min-height:30px;padding:6px 8px}

@@ -65,7 +65,9 @@ test('no approved friends leaves search available, and refresh forces shared lis
 test('friend UI exposes one accepted-only cached friend list and release bumps entrypoints',()=>{
  assert.match(friends,/window\.monstudyFriendsGetAccepted=async\(force=false\)=>/);
  assert.match(friends,/Array\.isArray\(data\.friends\)\?data\.friends/);
- assert.match(home,/pet-gifts\.js\?v=2\.4\.66/);
- assert.match(home,/pet-friends\.js\?v=2\.4\.66/);
- assert.match(home,/ver2\.4\.66/);
+ const version=home.match(/aria-label="version (\d+\.\d+\.\d+)"/)?.[1];
+ assert.ok(version,'home badge must contain a release version');
+ assert.ok(home.includes('pet-gifts.js?v='+version),'gifts import must be refreshed for this release');
+ assert.ok(home.includes('pet-friends.js?v='+version),'friends import must be refreshed for this release');
+ assert.ok(home.includes('ver'+version),'visible release badge must match the imports');
 });

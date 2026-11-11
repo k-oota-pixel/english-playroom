@@ -183,16 +183,16 @@ function availableCoinApi(){
 async function rewardApi(){
  const api=availableCoinApi();
  if(api?.settleTypingDefenseRun)return api;
- await import('../coin-reward.js?v=2.4.52');
+ await import('../coin-reward.js?v=2.4.69');
  return window.EnglishPlayroomCoins||availableCoinApi();
 }
 function queueProgress(target=run,finished=false){
  if(!target)return;
  const api=availableCoinApi();
  if(api?.queueTypingDefenseProgress){
-  api.queueTypingDefenseProgress(target.mode,target.sessionId,target.clearedPhases,finished);
+  api.queueTypingDefenseProgress(target.mode,target.sessionId,target.clearedPhases,finished,{misses:target.misses,perfectStages:target.perfectStages});
  }else{
-  void rewardApi().then(mod=>mod?.queueTypingDefenseProgress?.(target.mode,target.sessionId,target.clearedPhases,finished))
+  void rewardApi().then(mod=>mod?.queueTypingDefenseProgress?.(target.mode,target.sessionId,target.clearedPhases,finished,{misses:target.misses,perfectStages:target.perfectStages}))
    .catch(error=>console.warn('Defense progress queue delayed',error));
  }
 }
@@ -210,7 +210,7 @@ async function settleRun(target=run){
   try{
    const api=await rewardApi();
    if(!api?.settleTypingDefenseRun)throw Error('一括精算機能を取得できませんでした');
-   result=await api.settleTypingDefenseRun(target.mode,target.sessionId,target.clearedPhases);
+   result=await api.settleTypingDefenseRun(target.mode,target.sessionId,target.clearedPhases,{misses:target.misses,perfectStages:target.perfectStages});
   }catch(error){console.warn('Defense settlement failed',error)}
   if(run===target){
    if(result.ok){
@@ -245,6 +245,11 @@ function waveComplete(){
  $('typing').disabled=true;
  const phase=run.phaseIndex%PHASES_PER_STAGE,stage=Math.floor(run.phaseIndex/PHASES_PER_STAGE);
  run.clearedPhases=run.phaseIndex+1;
+ // One stage is 5 phases (25 enemies). A no-breach stage is a perfect stage.
+ if(phase===4){
+  if(run.misses===run.stageStartMisses)run.perfectStages++;
+  run.stageStartMisses=run.misses;
+ }
  queueProgress(run);
  if(phase===4&&stage===STAGE_COUNT-1){finish(true);return}
  if(phase===4){
@@ -333,7 +338,7 @@ function start(mode=run?.mode||'normal'){
  if(frame)cancelAnimationFrame(frame);frame=0;
  $('opening').hidden=true;$('game').hidden=false;
  document.body.classList.add('typing-in-progress');
- run={phaseIndex:0,clearedPhases:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),enemies:[],active:false,ended:false,settling:null};
+ run={phaseIndex:0,clearedPhases:0,hp:MAX_HP,kills:0,misses:0,mode,sessionId:'td-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12),enemies:[],active:false,ended:false,settling:null,perfectStages:0,stageStartMisses:0};
  choosePet();openPhase();void rewardApi().catch(error=>console.warn('Defense rewards init deferred',error));
 }
 $('easyStart').addEventListener('click',()=>start('easy'));
@@ -367,7 +372,7 @@ window.addEventListener('pagehide',()=>{
   // Best effort: a keepalive request can finish even when the iframe is removed.
   const api=availableCoinApi();
   if(api?.settleTypingDefenseRun)
-   void api.settleTypingDefenseRun(run.mode,run.sessionId,run.clearedPhases);
+   void api.settleTypingDefenseRun(run.mode,run.sessionId,run.clearedPhases,{misses:run.misses,perfectStages:run.perfectStages});
  }
 });
 window.addEventListener('pageshow',event=>{

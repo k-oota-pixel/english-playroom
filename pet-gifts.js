@@ -28,8 +28,19 @@ async function attempt(fn){
  finally{busy=false;paintButton();}
 }
 function paintButton(){
- const unread=Number(profile.giftUnreadCount||0)+Number(profile.giftUnreadReplyCount||0);
- if(button){button.disabled=!user;button.textContent=unread?'🎁 ギフト '+unread:'🎁 ギフト';}
+ const unread=Math.max(0,Number(profile.giftUnreadCount||0)+Number(profile.giftUnreadReplyCount||0));
+ if(button){
+  button.disabled=!user;
+  button.replaceChildren(document.createTextNode('🎁 ギフト'));
+  if(unread>0){
+   const badge=document.createElement('span');
+   badge.className='pet-notification-count';
+   badge.setAttribute('aria-hidden','true');
+   badge.textContent=unread>99?'99+':String(unread);
+   button.append(badge);
+  }
+  button.setAttribute('aria-label',unread?'ギフト、未確認'+unread+'件':'ギフト');
+ }
  const sendNow=sendDialog?.querySelector('#giftSendNow');if(sendNow)sendNow.disabled=busy||!recipient||!chosen||Number(profile.coins||0)<chosen.price;
 }
 function init(){

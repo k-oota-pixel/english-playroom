@@ -95,12 +95,24 @@ h1{font-size:clamp(28px,4.2vw,40px);letter-spacing:.02em;margin:6px 0 8px;line-h
 .coin-rank-title{font-size:15px;font-weight:900;color:#193d38}
 .coin-rank-refresh{border:1px solid #d6e1d8;background:#fff;color:#41665a;border-radius:999px;padding:6px 9px;font:inherit;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap}
 .coin-rank-refresh:hover{background:#edf5ef}.coin-rank-refresh:disabled{cursor:wait;opacity:.6}
-.coin-rank-list{display:grid;gap:7px;margin:11px 0 0;padding:0;list-style:none}
-.coin-rank-item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:32px;padding:5px 8px;border-radius:10px;background:#f7f8f4;color:#193d38}
+.coin-rank-list{display:grid;gap:8px;margin:11px 0 0;padding:0;list-style:none}
+.coin-rank-list[hidden]{display:none}
+.coin-rank-item{display:grid;grid-template-columns:36px minmax(0,1fr) max-content max-content;align-items:center;gap:10px;min-height:48px;padding:10px 12px;border-radius:12px;background:#f7f8f4;color:#193d38}
 .coin-rank-item:nth-child(1){background:#fff6df}.coin-rank-item:nth-child(2){background:#f1f4f2}.coin-rank-item:nth-child(3){background:#f8efe5}
-.coin-rank-place{font-size:12px;font-weight:950;color:#8a6a25;text-align:center}
-.coin-rank-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:850}
-.coin-rank-coins{font-size:11px;font-weight:850;color:#7c6125;font-variant-numeric:tabular-nums;white-space:nowrap}
+.coin-rank-place{font-size:12px;font-weight:950;color:#8a6a25;text-align:center;white-space:nowrap}
+.coin-rank-name{min-width:0;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:inherit;font-size:13px;font-weight:800;text-align:left;color:inherit;background:transparent;border:0;padding:4px 0;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.coin-rank-coins{font-size:12px;font-weight:850;color:#7c6125;font-variant-numeric:tabular-nums;white-space:nowrap}
+.coin-rank-view{padding:7px 12px;border:1px solid #94bdaa;border-radius:9px;background:#eaf4ee;color:#245744;font:inherit;font-size:12px;font-weight:800;line-height:1.2;white-space:nowrap;cursor:pointer}
+.coin-rank-view:hover{background:#daeee3}
+.coin-rank-view:focus-visible,.coin-rank-name:focus-visible{outline:2px solid #247b61;outline-offset:3px}
+#coinRankDialog{width:min(650px,calc(100vw - 24px));max-height:min(82dvh,720px);overflow-y:auto;box-sizing:border-box}
+@media(max-width:520px){
+  #coinRankDialog .coin-rank-item{grid-template-columns:32px minmax(0,1fr) max-content;gap:6px 9px;padding:9px 10px}
+  #coinRankDialog .coin-rank-place{grid-column:1;grid-row:1 / 3}
+  #coinRankDialog .coin-rank-name{grid-column:2;grid-row:1}
+  #coinRankDialog .coin-rank-coins{grid-column:3;grid-row:1}
+  #coinRankDialog .coin-rank-view{grid-column:2 / 4;grid-row:2;justify-self:end;padding:6px 10px}
+}
 .coin-rank-note{min-height:15px;margin-top:7px;font-size:9.5px;color:#829087}
 body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 @media(max-width:620px){.coin-board{grid-template-columns:1fr;gap:10px}.coin-today{min-height:126px;padding:15px 17px}.coin-total strong{font-size:38px}}
@@ -143,18 +155,19 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 .app-version-badge{font-size:9px;letter-spacing:.02em;font-weight:700;color:#8a9b94;white-space:nowrap}
 .material-nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 26px}.material-nav a{border:1px solid #cdded5;background:#fff;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:750;text-decoration:none;color:#355e50}.material-nav a:hover{background:#e9f3ec;border-color:#75a18a}.material-groups{display:grid;gap:28px}.material-group{scroll-margin-top:20px}.material-group-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid #dce6dd;padding-bottom:10px}.material-group-head h2{font-size:20px;margin:0;letter-spacing:.03em}.material-group-head>span{font-size:11px;color:#6b8073;background:#eaf0e7;border-radius:99px;padding:3px 9px}.material-group .cards{margin-top:12px}.material-group .desc{min-height:0}.material-group .card-reward:last-child{margin-bottom:0}@media(max-width:900px) and (min-width:561px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:560px){.material-nav{gap:6px;margin:20px 0}.material-nav a{font-size:11px;padding:7px 11px}.material-groups{gap:24px}.material-group-head h2{font-size:18px}}
 </style>
-<link rel="stylesheet" href="./learning-titles.css?v=2.3.51">
-<script type="module" src="./learning-titles.js?v=2.4.37"></script>
+<link rel="stylesheet" href="./learning-titles.css?v=2.4.72">
+<script type="module" src="./learning-titles.js?v=2.4.72"></script>
 <link rel="stylesheet" href="./pet-strength.css?v=2.1.9">
 <script type="module" src="./pet-strength.js?v=2.4.37"></script>
 <link rel="stylesheet" href="./app-shell.css?v=2.1.32">
+<link rel="stylesheet" href="./home-readability.css?v=2.4.79">
 <script type="module" src="./app-shell.js?v=2.4.64"></script>
 <script type="module" src="./pet-play-menu-v164.js?v=2.4.59"></script>
 </head>
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.68">ver2.4.68</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.4.81">ver2.4.81</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -386,21 +399,21 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
       <div class="title">長文空所補充<span class="eiken-badge">英検対応</span></div>
       <div class="desc">長文を読んで、空所に入る英語を考えよう。自由入力はGeminiが判定。選択肢モードでも練習できます。</div>
       <div class="chips"><span class="chip">自由入力</span><span class="chip">選択問題</span><span class="chip">読解</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>回答して判定を受ける</span><small>同じ長文は1日1回</small></div></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>初回解答で全空所正解した場合のみ</span><small>1日の題数制限なし・同じ長文の再挑戦は対象外</small></div></div>
     </a>
 <a class="card" href="https://k-oota-pixel.github.io/eiken-title/" target="_blank" rel="noopener noreferrer">
       <div class="eyebrow">READING &amp; TITLES</div>
       <div class="title">長文概要把握<span class="eiken-badge">英検対応</span></div>
       <div class="desc">本文を読んで、内容に合うタイトルを考えよう。本文の要点を捉える練習です。</div>
       <div class="chips"><span class="chip">タイトル作成</span><span class="chip">Gemini判定</span><span class="chip">読解</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>タイトルを回答して判定を受ける</span><small>同じ長文は1日1回</small></div></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>初回のAI判定がexcellent・goodの場合のみ</span><small>1日の題数制限なし・同じ長文の再挑戦は対象外</small></div></div>
     </a>
 <a class="card" href="./reading-training/">
       <div class="eyebrow">READING &amp; SUMMARY</div>
       <div class="title">長文演習<span class="eiken-badge">英検対応</span></div>
       <div class="desc">4級〜準1級の長文を読んで、問題演習と要約に挑戦。要約はGeminiが確認します。</div>
       <div class="chips"><span class="chip">126長文</span><span class="chip">526問</span><span class="chip">演習・要約</span></div>
-      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>全設問の答え合わせ、または要約のAI確認</span><small>同じテーマは1日1回（演習・要約共通）</small></div></div>
+      <div class="card-reward"><div class="card-reward-line"><strong>🪙 1コイン</strong><span>初回に全問正解、または要約でgood以上</span><small>1日の題数制限なし・演習と要約は同じ長文で初回判定を共用</small></div></div>
     </a>
 </div></section>
 <section class="material-group" id="materials-listening" aria-labelledby="heading-listening"><div class="material-group-head"><h2 id="heading-listening">リスニング</h2><span>1教材</span></div><div class="cards">
@@ -468,7 +481,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=2.4.61";
+import {recordLearningActivity} from "./coin-reward.js?v=2.4.72";
 import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.4.37';
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -485,8 +498,8 @@ import {growthPatch,hatchPatch} from './pet-growth.js';
 import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.4.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
-import './pet-shop.js?v=2.4.62';
-import './pet-gifts.js?v=2.4.67';
+import './pet-shop.js?v=2.4.79';
+import './pet-gifts.js?v=2.4.79';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -877,9 +890,22 @@ function renderCoinRanking(entries,emptyMessage="本日コインを獲得した�
   entries.slice(0,3).forEach((entry,index)=>{
     const item=document.createElement("li");item.className="coin-rank-item";
     const place=document.createElement("span");place.className="coin-rank-place";place.textContent=`${index+1}位`;
-    const name=document.createElement("button");name.type="button";name.className="coin-rank-name";name.textContent=entry.petName+' ー'+(entry.title||'称号なし')+'ー';name.title='ぺっとを見る';name.style.cssText='border:0;background:transparent;text-align:left;cursor:pointer;text-decoration:underline;color:inherit;font:inherit';name.onclick=()=>window.monstudyPetView?.(entry.uid);
+    const petName=String(entry.petName||"ふしぎなたまご");
+    const displayName=`${petName} — ${entry.title||"称号なし"}`;
+    const uid=typeof entry.uid==="string"?entry.uid:"";
+    const openPet=()=>{
+      if(!/^[A-Za-z0-9_-]{1,128}$/.test(uid)){
+        coinRankNote.textContent="ペットの閲覧情報がありません。「更新」を押して再取得してください。";return;
+      }
+      if(typeof window.monstudyPetView!=="function"){
+        coinRankNote.textContent="ペット閲覧機能を読み込めませんでした。ページを再読み込みしてください。";return;
+      }
+      window.monstudyPetView(uid);
+    };
+    const name=document.createElement("button");name.type="button";name.className="coin-rank-name";name.textContent=displayName;name.title=displayName;name.setAttribute("aria-label",petName+"のぺっとを見る");name.addEventListener("click",openPet);
     const amount=document.createElement("span");amount.className="coin-rank-coins";amount.textContent=`🪙 ${Number(entry.coinsToday||0).toLocaleString("ja-JP")}`;
-    const view=document.createElement('button');view.type='button';view.textContent='ぺっとを見る';view.style.cssText='padding:5px 7px;border:1px solid #9ac8b0;border-radius:7px;color:#245744;background:#eaf4ee;cursor:pointer';view.onclick=()=>window.monstudyPetView?.(entry.uid);item.append(place,name,amount,view);coinRankList.appendChild(item);
+    const view=document.createElement("button");view.type="button";view.className="coin-rank-view";view.textContent="ぺっとを見る";view.setAttribute("aria-label",petName+"のぺっとを見る");view.addEventListener("click",openPet);
+    item.append(place,name,amount,view);coinRankList.appendChild(item);
   });
 }
 let coinBoardRequest=null,coinBoardLastAttempt=null;
@@ -924,7 +950,7 @@ async function refreshCoinBoard(user=coinBoardUser,{force=false}={}){
   }
 }
 const coinRankDialog=document.createElement('dialog');coinRankDialog.id='coinRankDialog';coinRankDialog.className='titles-dialog';coinRankDialog.setAttribute('aria-label','本日の獲得コイン TOP3');
-const rankHead=document.createElement('div');rankHead.className='titles-heading';const rankTitle=document.createElement('h2');rankTitle.textContent='本日の獲得コイン TOP3';const rankClose=document.createElement('button');rankClose.type='button';rankClose.textContent='閉じる';rankClose.addEventListener('click',()=>coinRankDialog.close());const rankReload=document.createElement('button');rankReload.type='button';rankReload.textContent='表示';rankReload.addEventListener('click',()=>refreshCoinBoard(coinBoardUser,{force:true}));rankHead.append(rankTitle,rankReload,rankClose);coinRankDialog.append(rankHead,coinRankList,coinRankNote);document.body.append(coinRankDialog);
+const rankHead=document.createElement('div');rankHead.className='titles-heading';const rankTitle=document.createElement('h2');rankTitle.textContent='本日の獲得コイン TOP3';const rankClose=document.createElement('button');rankClose.type='button';rankClose.textContent='閉じる';rankClose.addEventListener('click',()=>coinRankDialog.close());const rankReload=document.createElement('button');rankReload.type='button';rankReload.textContent='更新';rankReload.addEventListener('click',()=>refreshCoinBoard(coinBoardUser,{force:true}));rankHead.append(rankTitle,rankReload,rankClose);coinRankDialog.append(rankHead,coinRankList,coinRankNote);document.body.append(coinRankDialog);
 coinRankRefresh.addEventListener('click',()=>{coinRankDialog.showModal();refreshCoinBoard(coinBoardUser,{force:true});});
 
 
@@ -1003,11 +1029,11 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
-<script type="module" src="./pet-friends.js?v=2.4.67"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.68'></script>
+<script type="module" src="./pet-friends.js?v=2.4.79"></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.81'></script>
 <script>
 (() => {
-  const version = '2.4.68';
+  const version = '2.4.81';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
