@@ -1,3 +1,4 @@
+import {rankedPetButton} from './ranked-pet-view.js?v=2.4.71';
 /* Per-material daily top-three, shared by the shell and standalone exercises. */
 const ENDPOINT='https://task-quest.onrender.com/api/learning/material-rankings';
 const DEFENSE_BEST_ENDPOINT='https://task-quest.onrender.com/api/adventure/defense-rankings';
@@ -28,11 +29,18 @@ function styles(){
  .ms-material-rank-head h2{font-size:18px;margin:0}
  .ms-material-rank-dialog button{border:1px solid #a7c2ae;background:#fff;color:#205540;cursor:pointer;border-radius:10px;padding:6px 10px;font:inherit}
  .ms-material-rank-list{padding:0;margin:9px 0;list-style:none}
- .ms-material-rank-list li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 5px;border-top:1px solid #d4e2d7}
+ .ms-material-rank-list li{display:grid;grid-template-columns:34px minmax(0,1fr) max-content max-content;align-items:center;gap:10px;padding:10px 5px;border-top:1px solid #d4e2d7}
  .ms-material-rank-list li strong{white-space:nowrap;font-variant-numeric:tabular-nums}
- .ms-material-rank-list li span:nth-child(2){overflow-wrap:anywhere}
+ .ms-material-rank-list li span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;white-space:nowrap}
  .ms-material-rank-title{display:block;margin-top:3px;font-size:10px;color:#648272}
  .ms-material-rank-cleared{display:block;margin-top:3px;font-size:10px;color:#836011;white-space:nowrap}
+ @media(max-width:540px){
+  .ms-material-rank-list li{grid-template-columns:30px minmax(0,1fr) max-content;gap:6px 8px}
+  .ms-material-rank-list li>span:first-child{grid-column:1;grid-row:1 / 3}
+  .ms-material-rank-list li>span:nth-child(2){grid-column:2;grid-row:1}
+  .ms-material-rank-list li>strong{grid-column:3;grid-row:1}
+  .ms-material-rank-list li>.ms-ranked-pet-button{grid-column:2 / 4;grid-row:2;justify-self:end}
+ }
  .ms-material-rank-dialog p{font-size:12px;color:#5d7469;margin:7px 0}
  .ms-material-rank-floating{position:fixed;right:12px;bottom:16px;z-index:900;min-height:40px;border:1px solid #8aaf9a;background:#f4faf3;color:#1f5a40;border-radius:999px;padding:9px 13px;box-shadow:0 4px 15px #0003;font:800 12px system-ui,sans-serif;cursor:pointer}
  body[data-screen-theme="dark"] .ms-material-rank-dialog,body[data-theme="dark"] .ms-material-rank-dialog{background:#1b2c23;color:#ecf4ec;border-color:#557763}
@@ -70,7 +78,7 @@ export async function openMaterialRanking(appId){
   status.textContent=defenseMode?'最高クリアステージ TOP3・同じ記録は同順位です。':'学習完了として保存された取り組み数のランキング（日本時間）';
   if(!list.length){dialog.append(make('p','',defenseMode?'まだクリア記録がありません。':'まだ本日の学習記録はありません。'));return;}
   const ol=make('ol','ms-material-rank-list');
-  const petButton=item=>{const b=make('button','','ぺっとを見る');b.type='button';b.style.cssText='padding:5px 7px;border:1px solid #9bbda8;border-radius:7px;background:#e8f4eb;color:#24634f;cursor:pointer';b.onclick=()=>{const root=window.parent!==window?window.parent:window;if(typeof root.monstudyPetView==='function')root.monstudyPetView(item.uid);else location.href=new URL('./index.html?petView='+encodeURIComponent(item.uid),import.meta.url).href;};return b;};
+  const petButton=item=>rankedPetButton(item,message=>{status.textContent=message;});
   for(const [i,item] of list.entries()){
    const li=make('li');
    if(defenseMode){
