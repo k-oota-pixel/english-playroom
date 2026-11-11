@@ -16,6 +16,7 @@ const GRADES=Object.freeze([{key:'4',label:'4級'},{key:'3',label:'3級'},{key:'
 const ROOM_STORAGE_KEY='monstudy-online-room-v2';
 const REALTIME_ROOM_STORAGE_KEY='monstudy-online-rtdb-room';
 const roomStorageKey=()=>roomRealtime?REALTIME_ROOM_STORAGE_KEY:ROOM_STORAGE_KEY;
+const LOBBY_REFRESH_MS=5000;
 const AUTO_IDLE_MS=5*60*1000;
 const els={
  coinCount:$('coinCount'),modeTitle:$('modeTitle'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),
@@ -28,6 +29,7 @@ const els={
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsTimer=0,roomRefreshInFlight='',coins=0,questionPool=[],ownData={};
+const lobbyRequests=new Set();
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 let navigationToken='',navigationExitInFlight=null;
@@ -54,7 +56,7 @@ function startAutoRefresh(){
   pollIntervalMs=interval;
   pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},interval);
  }
- if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},15000);
+ if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},LOBBY_REFRESH_MS);
 }
 function armIdlePause(){
  clearTimeout(idleTimer);
@@ -206,10 +208,21 @@ function gradeLabel(key){return GRADES.find(entry=>entry.key===key)?.label||'4�
 function showGradePicker(){selectedGrade='';roomList.hidden=true;gradePicker.hidden=false;roomsEl.replaceChildren();say('');}
 async function selectGrade(key){if(!GRADES.some(entry=>entry.key===key))return;selectedGrade=key;selectedGradeTitle.textContent=gradeLabel(key);gradePicker.hidden=true;roomList.hidden=false;await refreshLobby();}
 async function refreshLobby(){
- if(!selectedGrade||activeRoom)return;
- try{const data=await api('/lobby/'+selectedGrade),lobby=data.lobby||{};selectedGradeTitle.textContent=lobby.grade||gradeLabel(selectedGrade);renderRooms(lobby.rooms||[]);if(!notice.classList.contains('error'))say('');}
- catch(e){say(e.message,true);}
+ const grade=selectedGrade;
+ if(!grade||activeRoom||lobbyRequests.has(grade))return;
+ lobbyRequests.add(grade);
+ try{
+  const data=await api('/lobby/'+grade);
+  if(activeRoom||selectedGrade!==grade)return;
+  const lobby=data.lobby||{};
+  selectedGradeTitle.textContent=lobby.grade||gradeLabel(grade);
+  renderRooms(lobby.rooms||[]);
+  if(!notice.classList.contains('error'))say('');
+ }catch(e){
+  if(!activeRoom&&selectedGrade===grade)say(e.message,true);
+ }finally{lobbyRequests.delete(grade);}
 }
+
 
 function enterBattleLayout(){lobbyView.hidden=true;battleView.hidden=false;document.body.classList.add('battle-mode');}
 function enterLobbyLayout(){battleView.hidden=true;lobbyView.hidden=false;document.body.classList.remove('battle-mode');}
