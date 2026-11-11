@@ -3,11 +3,11 @@
   max-width:1240px;
   margin:18px auto 34px;
   padding:26px 26px 38px;
-  border:1px solid #cfdfd5;
-  border-radius:26px;
-  background:rgba(250,252,249,.965);
+  border:0;
+  border-radius:0;
+  background:transparent;
   color:#193d38;
-  box-shadow:0 14px 44px rgba(13,37,29,.24);
+  box-shadow:none;
 }
 
 /* The pet used to float directly on top of a patterned wallpaper. */
@@ -160,8 +160,9 @@
 
 /* The selected dark screen theme keeps its dark canvas; content is on light cards. */
 body[data-screen-theme="dark"] #monstudyShell .ms-home-content .home{
-  background:rgba(21,31,29,.965);
-  border-color:#486254;
+  background:transparent;
+  border:0;
+  box-shadow:none;
   color:#f0f5ef;
 }
 body[data-screen-theme="dark"] #monstudyShell .ms-home-content :is(
@@ -174,12 +175,12 @@ body[data-screen-theme="dark"] #monstudyShell .ms-home-content .hero .pet-card{
 body[data-screen-theme="dark"] #monstudyShell .ms-home-content .foot{color:#e2ece4}
 
 @media(max-width:900px){
-  #monstudyShell .ms-home-content .home{margin:12px 12px 24px;padding:20px 16px 28px;border-radius:20px}
+  #monstudyShell .ms-home-content .home{margin:12px 12px 24px;padding:20px 16px 28px;border-radius:0}
   #monstudyShell .ms-home-content .material-group{padding:14px}
   #monstudyShell .ms-home-content .hero .pet-card{padding:15px 12px}
 }
 @media(max-width:560px){
-  #monstudyShell .ms-home-content .home{margin:8px 7px 20px;padding:14px 10px 22px;border-radius:16px}
+  #monstudyShell .ms-home-content .home{margin:8px 7px 20px;padding:14px 10px 22px;border-radius:0}
   #monstudyShell .ms-home-content .material-group{padding:11px;border-radius:14px}
   #monstudyShell .ms-home-content .material-group-head{padding:9px 10px;min-height:40px}
   #monstudyShell .ms-home-content .material-group-head h2{font-size:17px}
