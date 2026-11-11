@@ -1,8 +1,8 @@
 import {apiHeaders} from '../firebase-security.js?v=2.1.2';
 import {GRADES,validatePassages,judge,nextRandom,validFeedback} from './model.js';
-const coinsReady=import('../coin-reward.js?v=2.4.50').catch(error=>console.warn('Coin rewards unavailable',error));
+const coinsReady=import('../coin-reward.js?v=2.4.70').catch(error=>console.warn('Coin rewards unavailable',error));
 function titleEvent(payload){void coinsReady.then(()=>window.EnglishPlayroomCoins?.recordTitleEvent?.('reading-training',payload));}
-async function rewardPassage(id){await coinsReady;return window.EnglishPlayroomCoins?.awardReading?.(id);}
+async function rewardPassage(id,firstCorrect,expectedUid){await coinsReady;return window.EnglishPlayroomCoins?.awardReading?.(id,firstCorrect,expectedUid);}
 const app=document.getElementById('app');
 const API='https://eiken-title.onrender.com/api/reading/summary';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -53,7 +53,7 @@ function renderExercise(){
  });
  work.querySelector('#gradeExercise')?.addEventListener('click',()=>{
   if(graded||passage.questions.some((q,i)=>!Number.isInteger(answers[i])))return;
-  graded=true;const correct=passage.questions.filter((q,i)=>judge(q,answers[i])).length;titleEvent({kind:'exercise',itemId:passage.id,grade:passage.grade,score:correct,total});save('completed:'+passage.id,JSON.stringify({correct,total,at:Date.now()}));void rewardPassage(passage.id);renderExercise();focusWork();
+  graded=true;const correct=passage.questions.filter((q,i)=>judge(q,answers[i])).length;titleEvent({kind:'exercise',itemId:passage.id,grade:passage.grade,score:correct,total});save('completed:'+passage.id,JSON.stringify({correct,total,at:Date.now()}));void rewardPassage(passage.id,correct===total,window.EnglishPlayroomCoins?.getUserId?.()||'');renderExercise();focusWork();
  });
  work.querySelector('#retry')?.addEventListener('click',()=>{graded=false;answers=[];renderExercise();focusWork();});
  work.querySelector('#toSummary')?.addEventListener('click',()=>{route='summary';renderLesson();focusWork();});
@@ -78,7 +78,7 @@ async function submitSummary(){
  const timer=setTimeout(()=>controller?.abort(),65000);
  try{const response=await fetch(API,{method:'POST',headers:await apiHeaders(),signal:controller.signal,body:JSON.stringify({passage_id:passage.id,summary:value,language})});let result;try{result=await response.json();}catch{throw new Error('AIに接続できませんでした。少し待って再試行してください。');}
  if(!response.ok)throw new Error(result.error||'要約を確認できませんでした。');if(!validFeedback(result))throw new Error('フィードバックを読み取れませんでした。もう一度お試しください。');if(token!==requestId)return;
- titleEvent({kind:'summary',expectedUid:titleOwner,itemId:passage.id,grade:passage.grade,language,correct:['excellent','good'].includes(result.verdict)});save('summary-completed:'+passage.id,JSON.stringify({at:Date.now(),language,total:result.total}));void rewardPassage(passage.id);feedbacks.set(key,{input:value,result});document.getElementById('summaryStatus').innerHTML='';document.getElementById('summaryResult').innerHTML=feedbackHTML(result);
+ titleEvent({kind:'summary',expectedUid:titleOwner,itemId:passage.id,grade:passage.grade,language,correct:['excellent','good'].includes(result.verdict)});save('summary-completed:'+passage.id,JSON.stringify({at:Date.now(),language,total:result.total}));void rewardPassage(passage.id,['excellent','good'].includes(result.verdict),titleOwner);feedbacks.set(key,{input:value,result});document.getElementById('summaryStatus').innerHTML='';document.getElementById('summaryResult').innerHTML=feedbackHTML(result);
  }catch(e){if(token!==requestId)return;document.getElementById('summaryStatus').innerHTML=`<div class="error" role="alert">${esc(e.name==='AbortError'?'接続に時間がかかっています。要約は保存されています。もう一度お試しください。':e.message)}</div>`;
  }finally{clearTimeout(timer);if(token===requestId){busy=false;controller=null;input.readOnly=false;document.getElementById('language').disabled=false;document.getElementById('checkSummary').disabled=input.value.trim().length<5;}}
 }
