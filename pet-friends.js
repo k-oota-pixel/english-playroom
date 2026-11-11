@@ -58,9 +58,12 @@ function applyProfileState(state){
  profile=state.data||{};
  const stored=profile.socialFriends;
  if(stored&&stored.schemaVersion===1){
-  social=cleanSocial(stored);
-  save('list',social);
-  render();
+  const next=cleanSocial(stored);
+  if(JSON.stringify(next)!==JSON.stringify(social)){
+   social=next;
+   save('list',social);
+   render();
+  }
   return;
  }
  // One-time migration only after the existing profile listener receives its first snapshot.
