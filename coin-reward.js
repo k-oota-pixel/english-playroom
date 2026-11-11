@@ -1,4 +1,4 @@
-import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.3.51';
+import {announceTitles} from 'https://k-oota-pixel.github.io/english-playroom/learning-titles.js?v=2.4.69';
 import './material-open.js?v=2.4.61';
 import {installStandaloneMaterialRanking} from './material-ranking-ui.js?v=2.4.49';
 installStandaloneMaterialRanking();
@@ -393,17 +393,21 @@ function writeDefenseOutbox(uid,rows){
  try{localStorage.setItem(defenseKey(uid),JSON.stringify(rows));return true;}
  catch(error){console.warn('Typing defense local progress could not be saved',error);return false;}
 }
-function queueTypingDefenseProgress(mode,runId,clearedPhases,finished=false){
+function queueTypingDefenseProgress(mode,runId,clearedPhases,finished=false,details={}){
  const user=currentUser,phases=Number(clearedPhases);
  if(!user||!['easy','normal','hard'].includes(mode)||typeof runId!=='string'||!/^td-[A-Za-z0-9_-]{9,60}$/.test(runId)||
     !Number.isInteger(phases)||phases<0||phases>25)return {queued:false,reason:user?'invalid-run':'signed-out'};
+ const stats={
+  ...(Number.isInteger(details?.misses)&&details.misses>=0&&details.misses<=6?{misses:details.misses}:{}),
+  ...(Number.isInteger(details?.perfectStages)&&details.perfectStages>=0&&details.perfectStages<=5?{perfectStages:details.perfectStages}:{})
+ };
  const rows=readDefenseOutbox(user.uid),index=rows.findIndex(row=>row.runId===runId);
  if(index>=0){
   const old=rows[index];
   if(old.mode!==mode)return {queued:false,reason:'mode-mismatch'};
-  if(old.finished)return {queued:true,finished:true};
-  rows[index]={...old,clearedPhases:Math.max(old.clearedPhases,phases),finished:!!finished};
- }else rows.push({runId,mode,clearedPhases:phases,finished:!!finished});
+  if(old.finished&&Object.keys(stats).length===0)return {queued:true,finished:true};
+  rows[index]={...old,...stats,clearedPhases:Math.max(old.clearedPhases,phases),finished:old.finished||!!finished};
+ }else rows.push({runId,mode,clearedPhases:phases,finished:!!finished,...stats});
  return {queued:writeDefenseOutbox(user.uid,rows),finished:!!finished};
 }
 async function flushPendingTypingDefenseRuns(){
@@ -419,7 +423,9 @@ async function flushPendingTypingDefenseRuns(){
     const token=await user.getIdToken();
     const response=await fetch(DEFENSE_SETTLEMENT_API,{
      method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
-     body:JSON.stringify({runId:item.runId,mode:item.mode,clearedPhases:item.clearedPhases}),
+     body:JSON.stringify({runId:item.runId,mode:item.mode,clearedPhases:item.clearedPhases,
+      ...(Number.isInteger(item.misses)?{misses:item.misses}:{}),
+      ...(Number.isInteger(item.perfectStages)?{perfectStages:item.perfectStages}:{})}),
      cache:'no-store',keepalive:true
     });
     const data=await response.json().catch(()=>({}));
@@ -431,6 +437,8 @@ async function flushPendingTypingDefenseRuns(){
       throw Error('保存済みの結果を端末から消去できませんでした。');
     }
     results.push({runId:item.runId,...data});
+    if(!data.duplicate&&Array.isArray(data.freshTitles)&&data.freshTitles.length&&currentUser?.uid===uid)
+     announceTitles(data.freshTitles);
     if(!data.duplicate&&data.coinsAdded>0)toast('🪙 +'+data.coinsAdded+'　もんすた城の防衛を精算しました！');
    }catch(error){
     console.warn('Defense end-of-run settlement deferred',error);
@@ -441,9 +449,9 @@ async function flushPendingTypingDefenseRuns(){
  })().finally(()=>{defenseFlushPending=null});
  return defenseFlushPending;
 }
-async function settleTypingDefenseRun(mode,runId,clearedPhases){
+async function settleTypingDefenseRun(mode,runId,clearedPhases,details={}){
  await authReady;
- const queued=queueTypingDefenseProgress(mode,runId,clearedPhases,true);
+ const queued=queueTypingDefenseProgress(mode,runId,clearedPhases,true,details);
  if(!queued.queued)return {ok:false,queued:false,reason:queued.reason};
  let flushed=await flushPendingTypingDefenseRuns();
  let found=flushed.results?.find(row=>row.runId===runId);
