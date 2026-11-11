@@ -194,3 +194,24 @@ body[data-screen-theme="dark"] #monstudyShell .ms-home-content .foot{color:#e2ec
 @media(prefers-reduced-motion:reduce){
   #monstudyShell .ms-home-content .material-group .card{transition:none}
 }
+
+/* Compact notification counts; no additional Firestore watcher or polling. */
+#monstudyShell .ms-home-content .pet-notification-count{
+  display:inline-flex;
+  vertical-align:middle;
+  align-items:center;
+  justify-content:center;
+  min-width:18px;
+  height:18px;
+  margin-left:5px;
+  padding:0 4px;
+  border-radius:999px;
+  border:1.5px solid #fff;
+  background:#c42c45;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 1px 3px rgba(99,18,32,.25);
+}
