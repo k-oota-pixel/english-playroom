@@ -23,7 +23,7 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
  const RealDate=Date;const fixed=new RealDate(2026,9,18,0,30).getTime();
- window.Date=class extends RealDate {constructor(...args){super(...(args.length?args:[fixed]));}getHours(){return window.forceDay?12:0;}getMinutes(){return 30;}};
+ window.Date=class extends RealDate {constructor(...args){super(...(args.length?args:[fixed+(window.dayOffset||0)*86400000]));}getHours(){return window.forceDay?12:0;}getMinutes(){return 30;}};
  const d=new Date();const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
  window.petStore={petHatched:true,petAdult:true,petGrowthVersion:1427,petLifecycleVersion:141,petLoginDays:7,petLifeDays:7,petLastLoginDate:key,petLastLifeLoginDate:key,petBirthBonusGranted:true,petName:'ふわ',coins:30,petAppearance:{species:'dog',bodyColor:'blue',eyes:'round',feature:'classic',pattern:'none',baseBackground:'sky'},petShop:{ownedItems:['crown'],equipped:{head:'crown'}}};
  });
@@ -34,18 +34,19 @@ if(staged){window.petStore=staged;window.writeCount=(window.writeCount||0)+1;for
  await context.route('https://task-quest.onrender.com/**',route=>route.fulfill({contentType:'application/json',body:'{}'}));
  await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
 await page.goto('http://127.0.0.1:8765/reading-training/index.html');
- const first=await page.locator('[data-passage]').first().getAttribute('data-passage');
+ const readingData=JSON.parse(fs.readFileSync(path.join(root,'reading-training/passages.json'),'utf8'));
+ let activePassage=await page.locator('[data-passage]').first().getAttribute('data-passage');
  await page.locator('[data-passage]').first().click();
  assert.equal(await page.locator('#gradeExercise').isDisabled(),true);
- async function complete(){const questions=await page.locator('.choices').count();for(let i=0;i<questions;i++)await page.locator('.choices').nth(i).locator('[data-answer]').first().click();await page.locator('#gradeExercise').click();}
- await complete();await page.waitForFunction(()=>window.petStore.coins===31);
- await page.locator('#retry').click();await complete();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),31);
- await page.locator('#toSummary').click();await page.locator('#summaryInput').fill('This passage explains an interesting topic.');await page.locator('#checkSummary').click();await page.locator('#summaryStatus .error').waitFor();assert.equal(await page.evaluate(()=>window.petStore.coins),31);
- summaryFails=false;await page.locator('#checkSummary').click();await page.locator('.ai-result').waitFor();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),31,'exercise and summary share one daily reward');
- await page.locator('#back').click();await page.locator('[data-route=exercise]').click();await page.locator('[data-passage]').nth(1).click();await complete();await page.waitForFunction(()=>window.petStore.coins===32);
- await page.evaluate(()=>{window.petStore.coinRewardDate='2000-01-01';});await page.locator('#retry').click();await complete();await page.waitForFunction(()=>window.petStore.coins===33);
- await page.locator('#back').click();await page.locator('[data-route=summary]').click();await page.locator('[data-passage]').nth(2).click();await page.locator('#summaryInput').fill('This passage explains another interesting topic.');await page.locator('#checkSummary').click();await page.waitForFunction(()=>window.petStore.coins===34);
- await page.evaluate(()=>window.authCallbacks.forEach(cb=>cb(null)));await page.locator('#back').click();await page.locator('[data-route=exercise]').click();await page.locator('[data-passage]').nth(3).click();await complete();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),34,'signed out learners get no coins');
- assert.deepEqual(errors,[]);console.log('PASS: complete exercise, repeat, failed summary, shared summary reward, different theme, next day, signed out.');
+ async function complete(allCorrect=true){const questions=readingData.find(p=>p.id===activePassage).questions;for(let i=0;i<questions.length;i++){const answer=allCorrect?questions[i].answer:(questions[i].answer===1?2:1);await page.locator('.choices').nth(i).locator('[data-answer="'+answer+'"]').click();}await page.locator('#gradeExercise').click();}
+ await complete(false);await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),30,'initial incorrect answers earn no coins');
+ await page.locator('#retry').click();await complete(true);await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),30,'correct retry earns no coins');
+ await page.locator('#toSummary').click();await page.locator('#summaryInput').fill('This passage explains an interesting topic.');await page.locator('#checkSummary').click();await page.locator('#summaryStatus .error').waitFor();assert.equal(await page.evaluate(()=>window.petStore.coins),30);
+ summaryFails=false;await page.locator('#checkSummary').click();await page.locator('.ai-result').waitFor();await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),30,'exercise and summary share the first attempt');
+ await page.locator('#back').click();await page.locator('[data-route=exercise]').click();activePassage=await page.locator('[data-passage]').nth(1).getAttribute('data-passage');await page.locator('[data-passage]').nth(1).click();await complete(true);await page.waitForFunction(()=>window.petStore.coins===31);
+ await page.evaluate(()=>{window.dayOffset=1;});await page.locator('#retry').click();await complete(true);await page.waitForFunction(()=>window.petStore.coins===32);
+ await page.locator('#back').click();await page.locator('[data-route=summary]').click();activePassage=await page.locator('[data-passage]').nth(2).getAttribute('data-passage');await page.locator('[data-passage]').nth(2).click();await page.locator('#summaryInput').fill('This passage explains another interesting topic.');await page.locator('#checkSummary').click();await page.waitForFunction(()=>window.petStore.coins===33);
+ await page.evaluate(()=>window.authCallbacks.forEach(cb=>cb(null)));await page.locator('#back').click();await page.locator('[data-route=exercise]').click();activePassage=await page.locator('[data-passage]').nth(3).getAttribute('data-passage');await page.locator('[data-passage]').nth(3).click();await complete(true);await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.petStore.coins),33,'signed out learners get no coins');
+ assert.deepEqual(errors,[]);console.log('PASS: first wrong, correct retry, failed summary, shared attempt, perfect first, next day, good summary, signed out.');
  }finally{await browser.close();}
 })();
