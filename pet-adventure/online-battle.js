@@ -1,5 +1,4 @@
-import {auth,authReady,walletRef} from '../coin-reward.js?v=2.1.11';
-import {getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import {auth,authReady} from '../coin-reward.js?v=2.1.11';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=1.10.22';
@@ -83,7 +82,7 @@ function roomPlayerCount(room){return Math.max(0,Math.min(2,Number(room.playerCo
 function roomStatus(room){const count=roomPlayerCount(room);if(room.status==='playing')return '対戦中';if(room.status==='finished')return '結果発表';if(count===1)return '1人待機中';if(count===2)return '準備中';return '空室';}
 function setBar(el,value,max){const pct=max>0?Math.max(0,Math.min(100,value/max*100)):0;el.style.width=pct+'%';}
 function minePlayer(room=currentRoom){return (room?.players||[]).find(p=>p.uid===user?.uid)||null;}
-function ownLevel(){return strengthLevel(ownData.petStrengthLevelPoints,ownData.petStrength);}
+function ownLevel(){return Math.max(1,Number(minePlayer()?.level)||strengthLevel(ownData.petStrengthLevelPoints,ownData.petStrength));}
 function petArt(player){
  if(!player)return '👾';
  if(!player.petHatched)return '<span class="online-egg" role="img" aria-label="たまご">🥚</span>';
@@ -123,10 +122,6 @@ function leaveOnNavigate(){
  return navigationExitInFlight;
 }
 
-async function refreshOwnData(){
- const snap=await getDoc(walletRef(user));ownData=snap.exists()?(snap.data()||{}):{};coins=Math.max(0,Math.floor(Number(ownData.coins)||0));els.coinCount.textContent=coins;return ownData;
-}
-async function updateCoins(){try{await refreshOwnData();}catch{els.coinCount.textContent='—';}}
 
 function renderRooms(list){
  roomsEl.replaceChildren();
@@ -298,6 +293,11 @@ function syncActionControls(){
 function renderRoom(room){
  if(!room||room.roomId!==activeRoom)return;
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
+ if(mine){
+  ownData.petDungeonItems=normalizeDungeonInventory(mine.inventory||{});
+  coins=Math.max(0,Math.floor(Number(mine.coins)||0));
+  els.coinCount.textContent=String(coins);
+ }
  els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+(room.roomNo||String(room.roomId||'').split('-').pop());els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent='MAGIC / ITEM';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
  updateFighters(room);animateEvent(room);
  if(lastStatus!==room.status){if(room.status==='playing'){resetTurn();seenQuestionIds.clear();lastQuestionId='';}lastStatus=room.status;}
@@ -349,10 +349,10 @@ async function act(action,{render=true,body=null}={}){
   if(action==='leave'){
    activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;
    lastEventKey='';lastEventRoomId='';lastStatus='';busy=false;readyPending=false;
-   clearBattleEffects();resetTurn();startAutoRefresh();await updateCoins();enterLobbyLayout();
+   clearBattleEffects();resetTurn();startAutoRefresh();enterLobbyLayout();
    if(selectedGrade)await refreshLobby();else showGradePicker();return null;
   }
-  currentRoom=data.room;if(render)renderRoom(data.room);await updateCoins();return data.room;
+  currentRoom=data.room;if(render)renderRoom(data.room);return data.room;
  }catch(e){if(roomId===activeRoom){await refreshRoom();say(e.message,true);}throw e;}
 }
 
@@ -365,14 +365,14 @@ function renderMagic(message='',error=false){
   const button=card.querySelector('button');button.disabled=busy||!unlocked||mp<spell.mpCost||full;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
  }
 }
-async function openMagic(){
- if(els.magicBtn.disabled)return;els.magicList.innerHTML='<p>魔法を読み込み中…</p>';els.magicMessage.textContent='';els.magicDialog.showModal();
- try{await refreshOwnData();if(els.magicDialog.open)renderMagic();}catch(error){if(els.magicDialog.open)renderMagic(error?.message||'魔法を読み込めませんでした。',true);}
+function openMagic(){
+ if(els.magicBtn.disabled)return;
+ els.magicMessage.textContent='';els.magicDialog.showModal();renderMagic();
 }
 async function castMagic(spell){
  if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
  try{els.magicDialog.close();const room=await act('magic',{render:false,body:{spellId:spell.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
- catch(error){busy=false;try{await refreshOwnData();}catch{}renderMagic(error?.message||'魔法を使えませんでした。',true);if(!els.magicDialog.open)els.magicDialog.showModal();}
+ catch(error){busy=false;renderMagic(error?.message||'魔法を使えませんでした。',true);if(!els.magicDialog.open)els.magicDialog.showModal();}
   syncActionControls();
 }
 function renderItems(inventory,message='',error=false){
@@ -384,15 +384,15 @@ function renderItems(inventory,message='',error=false){
   const button=card.querySelector('button');button.disabled=busy||count<1||full;button.addEventListener('click',()=>void useItem(item));els.itemList.append(card);
  }
 }
-async function openItem(){
- if(els.itemBtn.disabled)return;els.itemList.innerHTML='<p>持ち物を読み込み中…</p>';els.itemMessage.textContent='';els.itemDialog.showModal();
- try{const data=await refreshOwnData();if(els.itemDialog.open)renderItems(normalizeDungeonInventory(data.petDungeonItems));}
- catch(error){if(els.itemDialog.open)renderItems(normalizeDungeonInventory(ownData.petDungeonItems),error?.message||'持ち物を読み込めませんでした。',true);}
+function openItem(){
+ if(els.itemBtn.disabled)return;
+ els.itemMessage.textContent='';els.itemDialog.showModal();
+ renderItems(normalizeDungeonInventory(minePlayer()?.inventory||ownData.petDungeonItems));
 }
 async function useItem(item){
  if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
  try{els.itemDialog.close();const room=await act('item',{render:false,body:{itemId:item.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
- catch(error){busy=false;try{await refreshOwnData();}catch{}renderItems(normalizeDungeonInventory(ownData.petDungeonItems),error?.message||'アイテムを使えませんでした。',true);if(!els.itemDialog.open)els.itemDialog.showModal();}
+ catch(error){busy=false;renderItems(normalizeDungeonInventory(minePlayer()?.inventory||ownData.petDungeonItems),error?.message||'アイテムを使えませんでした。',true);if(!els.itemDialog.open)els.itemDialog.showModal();}
   syncActionControls();
 }
 
@@ -517,7 +517,7 @@ els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEvent
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
 async function init(){
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();await updateCoins();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
 window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
 window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
