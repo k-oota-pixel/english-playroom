@@ -97,21 +97,33 @@ function connectRoomUpdates(roomId){
      if(response.status===403&&roomId===activeRoom)await refreshRoom();
      throw new Error('対戦の更新に接続できませんでした。');
     }
+    // Safari exposes fetch streams through getReader(), but not necessarily
+    // through ReadableStream's async iterator (for await...of).
+    const reader=response.body?.getReader();
+    if(!reader)throw new Error('対戦のリアルタイム更新を受信できませんでした。');
     const decoder=new TextDecoder();
     let buffer='';
-    for await(const chunk of response.body){
-     buffer+=decoder.decode(chunk,{stream:true});
-     let boundary;
-     while((boundary=buffer.indexOf('\n\n'))>=0){
-      const frame=buffer.slice(0,boundary);
-      buffer=buffer.slice(boundary+2);
-      const data=frame.split('\n').find(line=>line.startsWith('data: '));
-      if(!data||liveSubscription!==subscription||roomId!==activeRoom)continue;
-      const room=JSON.parse(data.slice(6));
-      if(!room.players.some(player=>player.uid===user.uid)){await refreshRoom();break;}
-      renderRoom(room);
+    try{
+     while(!controller.signal.aborted){
+      const {done,value}=await reader.read();
+      if(done)break;
+      buffer+=decoder.decode(value,{stream:true});
+      let boundary;
+      while((boundary=buffer.indexOf('\n\n'))>=0){
+       const frame=buffer.slice(0,boundary);
+       buffer=buffer.slice(boundary+2);
+       const data=frame.split('\n').find(line=>line.startsWith('data: '));
+       if(!data||liveSubscription!==subscription||roomId!==activeRoom)continue;
+       const room=JSON.parse(data.slice(6));
+       if(!room.players.some(player=>player.uid===user.uid)){await refreshRoom();break;}
+       renderRoom(room);
+      }
+      if(buffer.length>256000)throw new Error('対戦の更新データが大きすぎます。');
      }
-     if(buffer.length>256000)throw new Error('対戦の更新データが大きすぎます。');
+    }finally{
+     // Release the stream if the room changes, the tab hides or a frame fails.
+     try{await reader.cancel();}catch{}
+     reader.releaseLock();
     }
    }catch(error){
     if(!controller.signal.aborted)say(error.message,true);
