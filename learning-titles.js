@@ -1,3 +1,4 @@
+import {rankedPetButton} from './ranked-pet-view.js?v=2.4.71';
 const API='https://task-quest.onrender.com/api/learning/titles';
 const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
 export function makeDialog(title){
@@ -31,7 +32,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   const list=el('ol');list.className='titles-ranking-list';
   for(const [index,item] of leaders.entries()){
    const row=el('li');row.className='titles-ranking-entry';
-   row.append(el('span',['🥇','🥈','🥉'][index]||String(index+1)),el('span',item.petName||'ふしぎなたまご'),el('strong',String(Math.max(0,Number(item.unlockedTitleCount)||0))+'個'));const view=el('button','ぺっとを見る');view.type='button';view.className='titles-pet-view';view.onclick=()=>window.monstudyPetView?.(item.uid);row.append(view);
+   row.append(el('span',['🥇','🥈','🥉'][index]||String(index+1)),el('span',item.petName||'ふしぎなたまご'),el('strong',String(Math.max(0,Number(item.unlockedTitleCount)||0))+'個'));const view=rankedPetButton(item,message=>{rankingError=message;renderRanking();});view.classList.add('titles-pet-view');row.append(view);
    list.append(row);
   }
   root.append(list);
