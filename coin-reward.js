@@ -312,6 +312,49 @@ function flushRetryAttempts(force=false){
  return retryQueue;
 }
 window.addEventListener('pagehide',()=>{void flushGrammarAnswers();void flushLearningActivities();void flushRetryAttempts();});
+// Three reading materials: the first graded attempt per passage per Japan day
+// determines the reward. Correct and incorrect first attempts share one wallet
+// receipt list, and the wallet transaction prevents double payment across tabs.
+const readingFirstAttemptQueues=new Map();
+async function recordReadingFirstAttempt(appId,itemId,correct,label,expectedUid){
+  await authReady;
+  const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
+  if(expectedUid&&expectedUid!==user.uid)return {awarded:false,reason:'user-changed'};
+  if(typeof correct!=='boolean'||!String(itemId??'').trim())return {awarded:false,reason:'invalid-attempt'};
+  const today=todayKey(),claim=`${cleanPart(appId)}:theme-${cleanPart(itemId)}`;
+  void recordLearningActivity(appId);
+  if(hasRewardCache(user.uid,today,claim))return {awarded:false,reason:'already-today',cached:true};
+  const queueKey=user.uid+':'+today+':'+claim,previous=readingFirstAttemptQueues.get(queueKey)||Promise.resolve();
+  const pending=previous.catch(()=>{}).then(async()=>{
+    if(hasRewardCache(user.uid,today,claim))return {awarded:false,reason:'already-today',cached:true};
+    let awarded=false,newCoins=0;
+    try{
+      await runTransaction(db,async tx=>{
+        awarded=false;
+        const ref=walletRef(user),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{};
+        const attempts=data.readingFirstAttemptsDate===today&&Array.isArray(data.readingFirstAttempts)?data.readingFirstAttempts.filter(x=>typeof x==='string'):[];
+        const claims=data.coinRewardDate===today&&Array.isArray(data.coinRewardClaims)?data.coinRewardClaims.filter(x=>typeof x==='string'):[];
+        const oldCoins=Math.max(0,Math.floor(Number(data.coins)||0));
+        newCoins=oldCoins;
+        if(attempts.includes(claim)||claims.includes(claim))return;
+        const patch={readingFirstAttemptsDate:today,readingFirstAttempts:[...attempts,claim]};
+        if(correct){
+          newCoins=oldCoins+1;awarded=true;
+          const earned=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
+          Object.assign(patch,{coins:newCoins,coinRewardDate:today,coinRewardClaims:[...claims,claim],
+            coinEarnedDate:today,coinsEarnedToday:earned+1,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1});
+        }
+        tx.set(ref,patch,{merge:true});
+      });
+      rememberRewardCache(user.uid,today,claim);
+      if(awarded){toast('🪙 +1　'+label);notifyDailyCoinLeaderboard(user);}
+      return {awarded,coins:newCoins,reason:awarded?'awarded':'already-today'};
+    }catch(error){console.error('Reading first-attempt reward failed',error);return {awarded:false,reason:'error',error};}
+  });
+  readingFirstAttemptQueues.set(queueKey,pending);
+  try{return await pending;}finally{if(readingFirstAttemptQueues.get(queueKey)===pending)readingFirstAttemptQueues.delete(queueKey);}
+}
+
 async function awardOncePerDay(appId,itemId,label='1コインGET！'){
   await authReady;
   const user=currentUser;if(!user)return {awarded:false,reason:'signed-out'};
@@ -562,9 +605,9 @@ window.EnglishPlayroomCoins=Object.freeze({
   recordRetrySession,
   awardAteru:roundId=>awardOncePerDay('ateru',`round-${cleanPart(roundId)}`,'アテル3問以上正解！'),
   awardBasic:stageId=>awardOncePerDay('basic-quest',`stage-${cleanPart(stageId)}`,'Basic Questクリア！'),
-  awardCloze:themeId=>awardOncePerDay('eiken-cloze',`theme-${cleanPart(themeId)}`,'空所補充に挑戦！'),
-  awardTitle:themeId=>awardOncePerDay('eiken-title',`theme-${cleanPart(themeId)}`,'タイトルに挑戦！'),
-  awardReading:passageId=>awardOncePerDay('reading-training',`theme-${cleanPart(passageId)}`,'長文演習を完了！'),
+  awardCloze:(themeId,firstCorrect,expectedUid)=>recordReadingFirstAttempt('eiken-cloze',themeId,firstCorrect,'長文空所補充・初回正解！',expectedUid),
+  awardTitle:(themeId,firstCorrect,expectedUid)=>recordReadingFirstAttempt('eiken-title',themeId,firstCorrect,'長文概要把握・初回正解！',expectedUid),
+  awardReading:(passageId,firstCorrect,expectedUid)=>recordReadingFirstAttempt('reading-training',passageId,firstCorrect,'長文演習・初回正解！',expectedUid),
   awardListening:setId=>awardOncePerDay('listening-training',`set-${cleanPart(setId)}`,'Listening 5問達成！'),
   awardTalk:themeId=>awardOncePerDay('talk-quest',`theme-${cleanPart(themeId)}`,'日常英会話に挑戦！'),
   awardPre2Questions:questionId=>awardOncePerDay('pre2-interview-questions',`question-${cleanPart(questionId)}`,'準2級質問対策に挑戦！'),
