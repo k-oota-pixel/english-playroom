@@ -36,3 +36,36 @@ body[data-screen-theme="dark"] .title-award{background:#223a2e;color:#e9f3eb;bor
 body[data-screen-theme="dark"] .title-award.unlocked{background:#2b4830;border-color:#78985a}
 body[data-screen-theme="dark"] .title-award.locked{background:#26352c;color:#d0dcd1}
 @media(max-width:480px){.titles-dialog .titles-tab{font-size:10px;padding:7px 8px}.titles-ranking{padding:10px 12px}}
+
+/* Castle title collection layout 2.4.69: compact desktop/mobile rankings. */
+.titles-dialog{overscroll-behavior:contain;scrollbar-gutter:stable;max-height:88dvh}
+.titles-dialog .titles-heading{position:sticky;top:-22px;background:#f9fbf6;z-index:3;padding:7px 0 11px;border-bottom:1px solid #e0e9de}
+.titles-ranking{padding:10px 14px;margin:10px 0 10px}
+.titles-ranking-list{margin-top:5px}
+.titles-ranking-entry{
+ display:grid;grid-template-columns:26px minmax(0,1fr) auto auto;
+ column-gap:10px;row-gap:0;align-items:center;min-height:47px;padding:6px 0;
+}
+.titles-ranking-entry>span:nth-child(2){min-width:0;overflow-wrap:break-word;word-break:normal;line-height:1.4}
+.titles-ranking-entry>strong{justify-self:end;white-space:nowrap;font-size:12px}
+.titles-dialog .titles-ranking-entry>.titles-pet-view{
+ grid-column:auto;display:inline-flex;align-items:center;justify-content:center;
+ min-height:32px;min-width:100px;margin:0;padding:5px 9px;
+ white-space:nowrap;word-break:keep-all;writing-mode:horizontal-tb;
+ font-size:11px;line-height:1.3;font-weight:700;
+ color:#245744;background:#e7f3e9;border:1px solid #96b6a0;border-radius:8px;
+}
+.titles-dialog .title-group{padding:0 1px}
+.titles-dialog .title-group>summary{padding:9px 12px;background:#eef5ed;border:1px solid #cfdfd2;border-radius:9px;font-size:13px}
+.titles-dialog .title-group[open]>summary{background:#e7f1e9;border-color:#a9cbb5}
+body[data-screen-theme="dark"] .titles-dialog .titles-heading{background:#172820;border-color:#446452}
+body[data-screen-theme="dark"] .titles-dialog .titles-ranking-entry>.titles-pet-view{background:#284e3d;color:#f1f7f2;border-color:#658577}
+body[data-screen-theme="dark"] .titles-dialog .title-group>summary{background:#203b2d;border-color:#4e725c}
+@media(max-width:480px){
+ .titles-dialog{width:calc(100% - 16px);padding:14px;scrollbar-gutter:auto}
+ .titles-dialog .titles-heading{top:-14px}
+ .titles-ranking{padding:9px 10px}
+ .titles-ranking-entry{grid-template-columns:22px minmax(0,1fr) auto auto;column-gap:5px;min-height:43px;font-size:12px}
+ .titles-ranking-entry>strong{font-size:11px}
+ .titles-dialog .titles-ranking-entry>.titles-pet-view{min-width:0;min-height:29px;padding:4px 6px;font-size:10px}
+}
