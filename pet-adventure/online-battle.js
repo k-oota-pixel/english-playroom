@@ -5,12 +5,17 @@ import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=1.10.22';
 
-const API='https://task-quest.onrender.com/api/online-battle';
+const LEGACY_API='https://task-quest.onrender.com/api/online-battle';
+const REALTIME_API=LEGACY_API+'-realtime';
+let preferredRealtime=false, roomRealtime=false, liveSubscription=null;
+const roomApi=()=> (activeRoom?roomRealtime:preferredRealtime)?REALTIME_API:LEGACY_API;
 const $=id=>document.getElementById(id);
 const ELEMENTS=[['fire','🔥','FIRE'],['thunder','⚡','THUNDER'],['leaf','🍃','LEAF'],['water','💧','WATER']];
 const lobbyView=$('lobbyView'),battleView=$('battleView'),gradePicker=$('gradePicker'),roomList=$('roomList'),roomsEl=$('rooms'),notice=$('notice'),selectedGradeTitle=$('selectedGradeTitle');
 const GRADES=Object.freeze([{key:'4',label:'4級'},{key:'3',label:'3級'},{key:'pre2',label:'準2級'},{key:'2',label:'2級'}]);
 const ROOM_STORAGE_KEY='monstudy-online-room-v2';
+const REALTIME_ROOM_STORAGE_KEY='monstudy-online-rtdb-room';
+const roomStorageKey=()=>roomRealtime?REALTIME_ROOM_STORAGE_KEY:ROOM_STORAGE_KEY;
 const AUTO_IDLE_MS=5*60*1000;
 const els={
  coinCount:$('coinCount'),modeTitle:$('modeTitle'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),
@@ -30,6 +35,7 @@ const battleAwardsSeen=new Set();
 let lastActionDialogSignature='';
 
 function stopAutoRefresh(){
+ if(liveSubscription){liveSubscription.controller.abort();liveSubscription=null;}
  if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
  pollIntervalMs=0;
  if(roomsTimer){clearInterval(roomsTimer);roomsTimer=0;}
@@ -38,7 +44,9 @@ function startAutoRefresh(){
  if(document.hidden||!user||autoPausedForIdle)return;
  // Only active matches need 1-second sync; waiting rooms retain 2.5 seconds.
  const interval=activeRoom&&currentRoom?.roomId===activeRoom&&currentRoom.status==='playing'?1000:2500;
- if(!activeRoom){
+ if(activeRoom&&roomRealtime)connectRoomUpdates(activeRoom);
+ else if(liveSubscription){liveSubscription.controller.abort();liveSubscription=null;}
+ if(!activeRoom||roomRealtime){
   if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
   pollIntervalMs=0;
  }else if(!pollTimer||pollIntervalMs!==interval){
@@ -60,13 +68,57 @@ async function syncVisibleState(){
 }
 function registerActivity(){
  if(document.hidden||!user)return;
- const shouldResync=autoPausedForIdle||(!pollTimer&&!roomsTimer);
+ const shouldResync=autoPausedForIdle||(!pollTimer&&!liveSubscription&&!roomsTimer);
  autoPausedForIdle=false;armIdlePause();startAutoRefresh();
  if(shouldResync)void syncVisibleState();
 }
 function handleVisibility(){
  if(document.hidden){stopAutoRefresh();return;}
  autoPausedForIdle=false;armIdlePause();startAutoRefresh();void syncVisibleState();
+}
+
+function connectRoomUpdates(roomId){
+ if(liveSubscription?.roomId===roomId)return;
+ liveSubscription?.controller.abort();
+ const controller=new AbortController();
+ const subscription={roomId,controller};
+ liveSubscription=subscription;
+ void (async()=>{
+  while(!controller.signal.aborted){
+   try{
+    const token=await user.getIdToken();
+    const response=await fetch(REALTIME_API+'/room/'+roomId+'/live',{
+     headers:{Authorization:'Bearer '+token},
+     signal:AbortSignal.any([controller.signal,AbortSignal.timeout(75000)]),
+     cache:'no-store'
+    });
+    if(!response.ok){
+     await response.body?.cancel();
+     if(response.status===403&&roomId===activeRoom)await refreshRoom();
+     throw new Error('対戦の更新に接続できませんでした。');
+    }
+    const decoder=new TextDecoder();
+    let buffer='';
+    for await(const chunk of response.body){
+     buffer+=decoder.decode(chunk,{stream:true});
+     let boundary;
+     while((boundary=buffer.indexOf('\n\n'))>=0){
+      const frame=buffer.slice(0,boundary);
+      buffer=buffer.slice(boundary+2);
+      const data=frame.split('\n').find(line=>line.startsWith('data: '));
+      if(!data||liveSubscription!==subscription||roomId!==activeRoom)continue;
+      const room=JSON.parse(data.slice(6));
+      if(!room.players.some(player=>player.uid===user.uid)){await refreshRoom();break;}
+      renderRoom(room);
+     }
+     if(buffer.length>256000)throw new Error('対戦の更新データが大きすぎます。');
+    }
+   }catch(error){
+    if(!controller.signal.aborted)say(error.message,true);
+   }
+   if(!controller.signal.aborted)await new Promise(resolve=>setTimeout(resolve,1500));
+  }
+ })();
 }
 
 function say(message,error=false){
@@ -91,12 +143,12 @@ function petArt(player){
  if(!player.petHatched)return '<span class="online-egg" role="img" aria-label="たまご">🥚</span>';
  try{return renderPetSVG(player.petAppearance,{...player.petShop,equipped:{...player.petShop?.equipped,'pet-frame':''}},player.petAdult?'adult':'baby',{background:false});}catch{return '🐾';}
 }
-async function api(path,method='GET',body=null){
+async function api(path,method='GET',body=null,endpoint=roomApi()){
  const token=await user.getIdToken();
  navigationToken=token;
  let response;
  try{
-  response=await fetch(API+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store',signal:AbortSignal.timeout(30000)});
+  response=await fetch(endpoint+path,{method,headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},body:method==='POST'?JSON.stringify(body||{}):undefined,cache:'no-store',signal:AbortSignal.timeout(30000)});
  }catch(error){
   if(error?.name==='TimeoutError'||error?.name==='AbortError')throw new Error('通信がタイムアウトしました。もう一度お試しください。');
   throw new Error('サーバーに接続できませんでした。通信環境を確認してください。');
@@ -110,10 +162,10 @@ async function api(path,method='GET',body=null){
 // same-tab navigation where the browser supports it.
 function leaveOnNavigate(){
  if(!activeRoom||navigationExitInFlight)return navigationExitInFlight;
- const roomId=activeRoom,token=navigationToken;
- activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);
+ const roomId=activeRoom,token=navigationToken,endpoint=roomApi();
+ activeRoom='';localStorage.removeItem(roomStorageKey());
  stopAutoRefresh();clearTimeout(idleTimer);
- const send=authToken=>fetch(API+'/room/'+encodeURIComponent(roomId)+'/leave',{
+ const send=authToken=>fetch(endpoint+'/room/'+encodeURIComponent(roomId)+'/leave',{
   method:'POST',headers:{Authorization:'Bearer '+authToken,'Content-Type':'application/json'},
   body:'{}',cache:'no-store',keepalive:true
  }).then(response=>{
@@ -309,8 +361,13 @@ function syncActionControls(){
  if(els.magicDialog.open)renderMagic();
  if(els.itemDialog.open)renderItems(normalizeDungeonInventory(ownData.petDungeonItems));
 }
+function isOlderRoom(room){
+ if(currentRoom?.roomId!==room?.roomId)return false;
+ if(Number(room.seq)!==Number(currentRoom.seq))return Number(room.seq)<Number(currentRoom.seq);
+ return Boolean(currentRoom.matchId&&currentRoom.lastSettledMatchId===currentRoom.matchId&&room.lastSettledMatchId!==room.matchId);
+}
 function renderRoom(room){
- if(!room||room.roomId!==activeRoom)return;
+ if(!room||room.roomId!==activeRoom||isOlderRoom(room))return;
  currentRoom=room;enterBattleLayout();const mine=(room.players||[]).find(p=>p.uid===user.uid),other=(room.players||[]).find(p=>p.uid!==user.uid);
  if(mine){
   ownData.petDungeonItems=normalizeDungeonInventory(mine.inventory||{});
@@ -337,7 +394,7 @@ async function refreshRoom(){
   // A slow polling response must not roll back a freshly confirmed ready/start state.
   if(currentRoom?.roomId===roomId&&Number(room.seq)<Number(currentRoom.seq))return;
   if(!(room.players||[]).some(p=>p.uid===user.uid)){
-   activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';
+   activeRoom='';localStorage.removeItem(roomStorageKey());currentRoom=null;lastEventKey='';lastEventRoomId='';lastStatus='';
    clearBattleEffects();resetTurn();enterLobbyLayout();startAutoRefresh();
    if(selectedGrade)await refreshLobby();else showGradePicker();return;
   }
@@ -348,9 +405,13 @@ async function refreshRoom(){
 async function enterRoom(id){
  try{
   say('ルームに入室しています…');selectedGrade=String(id).split('-')[0]||selectedGrade;
-  const data=await api('/room/'+id+'/join','POST');
+  const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);
+  if(transport)preferredRealtime=transport.realtime===true;
+  const realtime=preferredRealtime;
+  const data=await api('/room/'+id+'/join','POST',null,realtime?REALTIME_API:LEGACY_API);
+  roomRealtime=realtime;
   navigationExitInFlight=null;
-  activeRoom=id;localStorage.setItem(ROOM_STORAGE_KEY,id);
+  activeRoom=id;localStorage.setItem(roomStorageKey(),id);
   currentRoom=null;lastEventRoomId=id;lastEventKey=eventFingerprint(data.room?.lastEvent);
   lastStatus='';readyPending=false;busy=false;seenQuestionIds.clear();lastQuestionId='';
   clearBattleEffects();clearBattleFeedback();resetTurn();
@@ -362,15 +423,16 @@ async function enterRoom(id){
 async function act(action,{render=true,body=null}={}){
  const roomId=activeRoom;
  try{
-  const data=await api('/room/'+roomId+'/'+action,'POST',body);
+  const data=await api('/room/'+roomId+'/'+action,'POST',{...body,matchId:currentRoom?.matchId});
   // An earlier room's delayed response cannot change the room now on screen.
   if(roomId!==activeRoom)return null;
   if(action==='leave'){
-   activeRoom='';localStorage.removeItem(ROOM_STORAGE_KEY);currentRoom=null;
+   activeRoom='';localStorage.removeItem(roomStorageKey());currentRoom=null;
    lastEventKey='';lastEventRoomId='';lastStatus='';busy=false;readyPending=false;
    clearBattleEffects();resetTurn();startAutoRefresh();enterLobbyLayout();
    if(selectedGrade)await refreshLobby();else showGradePicker();return null;
   }
+  if(isOlderRoom(data.room))return currentRoom;
   currentRoom=data.room;if(render)renderRoom(data.room);return data.room;
  }catch(e){if(roomId===activeRoom){await refreshRoom();say(e.message,true);}throw e;}
 }
@@ -536,7 +598,7 @@ els.magicBtn.addEventListener('click',()=>void openMagic());els.itemBtn.addEvent
 els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClose.addEventListener('click',()=>els.itemDialog.close());
 
 async function init(){
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();enterLobbyLayout();showGradePicker();const saved=localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();enterLobbyLayout();showGradePicker();const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);preferredRealtime=transport?.realtime===true;const savedRealtime=localStorage.getItem(REALTIME_ROOM_STORAGE_KEY)||'';roomRealtime=Boolean(savedRealtime);const saved=savedRealtime||localStorage.getItem(ROOM_STORAGE_KEY)||'';if(/^(?:4|3|pre2|2)-(?:10|[1-9])$/.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
 window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
 window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
