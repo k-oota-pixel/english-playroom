@@ -1,5 +1,6 @@
+import {scheduledBattleEntry} from './online-battle-schedule.js?v=2.4.89';
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.34';
+const MATERIAL_RELEASE='2.1.35';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']
@@ -23,6 +24,19 @@ function install() {
     if(count)count.textContent=conversationCards.querySelectorAll('a.card').length+'教材';
   }
 
+  const battleEntry=scheduledBattleEntry();
+  const dungeonHome=home.querySelector('#materials-dungeons');
+  const dungeonCards=dungeonHome?.querySelector('.cards');
+  if(dungeonCards&&!dungeonCards.querySelector('[data-online-battle-card]')){
+    const card=document.createElement('a');
+    card.className='card';card.dataset.onlineBattleCard='1';
+    card.href=new URL(battleEntry.path,root).href;
+    card.innerHTML='<div class="eyebrow">ONLINE PET BATTLE · DAILY</div><div class="title">'+battleEntry.title+'</div><div class="desc">'+battleEntry.description+'</div><div class="chips"><span class="chip">4級・3級・準2級・2級</span><span class="chip">勝利で1コイン</span></div><div class="open-note">今日のオンライン対戦へ</div>';
+    dungeonCards.append(card);
+    const count=dungeonHome.querySelector('.material-group-head>span');
+    if(count)count.textContent=dungeonCards.querySelectorAll('a.card').length+'教材';
+  }
+
   const groups = [...home.querySelectorAll('.material-group')].map(group => ({
     name:group.querySelector('h2').textContent,
     items:[...group.querySelectorAll('a.card')].map(card => {
@@ -34,13 +48,13 @@ function install() {
     {name:'冒険先を選ぶ',url:new URL('pet-adventure/',root)},
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
-    {name:'オンライン対戦',url:new URL('pet-adventure/online-battle.html',root)},
+    {name:battleEntry.title,url:new URL(battleEntry.path,root)},
     {name:'もんすた城の防衛',url:new URL('pet-typing-defense/',root)}
   ];
   const dungeonGroup = groups.find(group => group.name === 'エイゴダンジョンズ');
   if (dungeonGroup) dungeonGroup.items = dungeonItems;
   else groups.push({name:'エイゴダンジョンズ',items:dungeonItems});
-  const hiddenMaterials=[{name:'ぺっとのおへや',url:new URL('pet-room/room-v4.html',root)},{name:'WebPベッド試験版',url:new URL('pet-room/room-webp-v1.html',root)},{name:'ぺっとのおへや・ほっこり版',url:new URL('pet-room/room-cozy.html',root)},{name:'ペットのおへや（旧トップビュー版）',url:new URL('pet-room/topview.html',root)},{name:'ペットのおへや（旧アイソメ版）',url:new URL('pet-room/v5.html',root)}];
+  const hiddenMaterials=[{name:'オンライン対戦（単語）',url:new URL('pet-adventure/online-battle.html',root)},{name:'オンライン対戦（問題）',url:new URL('pet-adventure/online-battle-questions.html',root)},{name:'ぺっとのおへや',url:new URL('pet-room/room-v4.html',root)},{name:'WebPベッド試験版',url:new URL('pet-room/room-webp-v1.html',root)},{name:'ぺっとのおへや・ほっこり版',url:new URL('pet-room/room-cozy.html',root)},{name:'ペットのおへや（旧トップビュー版）',url:new URL('pet-room/topview.html',root)},{name:'ペットのおへや（旧アイソメ版）',url:new URL('pet-room/v5.html',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
   const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
