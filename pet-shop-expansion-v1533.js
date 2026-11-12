@@ -1,7 +1,7 @@
 import {equipmentTransform,normalizeEquipmentSlots} from './pet-equipment-fit.js?v=2.1.25';
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
-import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet} from './pet-model.js?v=2.1.25';
 import {NEW_YEAR_PET_SCENES} from './new-year-backgrounds.js?v=2.3.58';
 
@@ -180,13 +180,22 @@ async function handleItem(item){
 async function unequipExtra(slot,id){
   if(!currentUser)return;try{await runTransaction(db,async tx=>{const ref=refFor(currentUser),snap=await tx.get(ref),data=snap.exists()?(snap.data()||{}):{},shop=shopOf(data),next={ownedItems:[...shop.ownedItems],equipped:{...shop.equipped}};if(next.equipped[slot]===id)next.equipped[slot]=null;tx.set(ref,{petShop:next,petUpdatedAt:serverTimestamp()},{merge:true});});previewSelection=null;}catch(error){window.alert(error?.message||'装備をはずせませんでした。');}
 }
-function watchUser(user){if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};previewSelection=null;if(!user){queueAugment();return;}unsubscribe=onSnapshot(refFor(user),snap=>{currentData=snap.exists()?(snap.data()||{}):{};queueAugment();},error=>console.error('Shop expansion sync failed',error));}
+function shopState(detail){
+ if(!currentUser||detail?.user?.uid!==currentUser.uid||!detail.ready)return;
+ currentData=detail.data||{};queueAugment();
+}
+function watchUser(user){
+ currentUser=user;currentData={};previewSelection=null;
+ if(!user){queueAugment();return;}
+ shopState(window.MonstudyShopState);
+}
 function mutationNeedsRefresh(mutations){return mutations.some(m=>[...m.addedNodes,...m.removedNodes].some(node=>{if(node.nodeType!==1)return false;const el=node;return !el.matches?.('[data-pet-extra-layer],[data-extra-item="1"]');}));}
 function boot(){
   if(!document.getElementById('petShopExpansionStyles')){const style=document.createElement('style');style.id='petShopExpansionStyles';style.textContent=STYLE;document.head.append(style);}
   if(!getApps().length){setTimeout(boot,80);return;}const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,watchUser);
+  window.addEventListener('monstudy-shop-state',event=>shopState(event.detail));
   const observer=new MutationObserver(mutations=>{if(mutationNeedsRefresh(mutations))queueAugment();});observer.observe(document.documentElement,{childList:true,subtree:true});
   document.addEventListener('click',event=>{const card=event.target.closest?.('.pet-shop-item');if(card&&!card.dataset.extraItem){previewSelection=card.dataset.itemSlot?{slot:card.dataset.itemSlot,id:card.dataset.itemId}:null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-tab')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('.pet-shop-empty')){previewSelection=null;setTimeout(queueAugment,0);}if(event.target.closest?.('#petShopOpen')){previewSelection=null;setTimeout(queueAugment,50);}},true);
-  document.addEventListener('pet-state-updated',queueAugment);window.addEventListener('pagehide',()=>{observer.disconnect();unsubscribe?.();},{once:true});queueAugment();
+  document.addEventListener('pet-state-updated',queueAugment);window.addEventListener('pagehide',()=>{observer.disconnect();},{once:true});queueAugment();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
