@@ -365,6 +365,33 @@ export function applyLayoutAction(current,action){
   f.inventory.fields[field.size]++;
   return {farm:f,message:'圃場を持ち物に戻しました。'};
  }
+ if(type==='place-display'){
+  const displayType=String(action.displayType||'');
+  if(!DISPLAY_TYPES[displayType]||!f.inventory.displays[displayType])fail('陳列家具の持ち物がありません。');
+  if(!canPlaceDisplay(f,displayType,x,y))fail('そこには陳列家具を置けません。');
+  const displayId='d'+f.nextDisplayId++;
+  f.displays.push({id:displayId,type:displayType,x,y,crop:'',quantity:0});
+  f.inventory.displays[displayType]--;
+  return {farm:f,id:displayId,message:DISPLAY_TYPES[displayType].name+'を配置しました。'};
+ }
+ if(type==='move-display'){
+  const display=f.displays.find(item=>item.id===id);
+  if(!display)fail('陳列家具が見つかりません。');
+  if(!canPlaceDisplay(f,display.type,x,y,id))fail('そこには陳列家具を移動できません。');
+  display.x=x;display.y=y;
+  return {farm:f,message:DISPLAY_TYPES[display.type].name+'を移動しました。'};
+ }
+ if(type==='remove-display'){
+  const display=f.displays.find(item=>item.id===id);
+  if(!display)fail('陳列家具が見つかりません。');
+  if(display.crop){
+   if(f.inventory.produce[display.crop]+display.quantity>99999)fail('倉庫が満杯なので撤去できません。');
+   f.inventory.produce[display.crop]+=display.quantity;
+  }
+  f.displays=f.displays.filter(item=>item.id!==id);
+  f.inventory.displays[display.type]++;
+  return {farm:f,message:'陳列物を倉庫へ、家具をアイテムへ戻しました。'};
+ }
  if(type==='place-flower'){
   const flower=String(action.flower||'');
   if(!Object.hasOwn(FLOWERS,flower))fail('花畑の種類が正しくありません。');
@@ -448,7 +475,14 @@ export function applyPurchase(current,kind,id,coins,quantity=1){
    f.inventory.fields[id]+=quantity;
    message=item.name+'を'+quantity+'個購入しました。';
   }
- }else if(kind==='flower'){
+ }else if(kind==='display'){
+   const item=DISPLAY_TYPES[id];
+   if(!item)fail('陳列家具が見つかりません。');
+   unitPrice=item.price;
+   if(f.inventory.displays[id]+quantity>99999)fail('陳列家具の所持上限を超えています。');
+   f.inventory.displays[id]+=quantity;
+   message=item.name+'を'+quantity+'個購入しました。「アイテム」から配置できます。';
+  }else if(kind==='flower'){
    const item=FLOWERS[id];
    if(!item)fail('花畑が見つかりません。');
    unitPrice=item.price;
@@ -465,6 +499,36 @@ export function applyPurchase(current,kind,id,coins,quantity=1){
  const price=unitPrice*quantity;
  if(balance<price)fail('コインが足りません（必要 '+price+'C）。');
  return {farm:f,cost:price,quantity,message};
+}
+// Move harvested produce between existing inventory and displays; no extra reads.
+export function applyDisplayAction(current,action){
+ const f=copy(current),display=f.displays.find(d=>d.id===String(action?.id||''));
+ if(!display)fail('陳列家具が見つかりません。');
+ const type=DISPLAY_TYPES[display.type];
+ if(action?.type==='restock'){
+  const crop=String(action?.crop||'');
+  if(!type.crops.includes(crop))fail('この家具には陳列できない作物です。');
+  if(display.quantity&&display.crop!==crop)fail('別の作物を入れるには、先に倉庫へ戻してください。');
+  const available=f.inventory.produce[crop]||0;
+  if(!available)fail('収穫した'+CROPS[crop].name+'が倉庫にありません。');
+  const space=type.capacity-display.quantity;
+  if(space<1)fail('陳列棚は満杯です。');
+  const requested=action.quantity===undefined?Math.min(available,space):Number(action.quantity);
+  if(!Number.isSafeInteger(requested)||requested<1||requested>available||requested>space)
+   fail('補充する数が正しくありません。');
+  f.inventory.produce[crop]-=requested;
+  display.crop=crop;display.quantity+=requested;
+  return {farm:f,message:CROPS[crop].name+'を'+requested+'個補充しました。（'+display.quantity+'/'+type.capacity+'）'};
+ }
+ if(action?.type==='unstock'){
+  if(!display.quantity||!display.crop)fail('陳列棚は空です。');
+  if(f.inventory.produce[display.crop]+display.quantity>99999)fail('倉庫が満杯です。');
+  const count=display.quantity,crop=display.crop;
+  f.inventory.produce[crop]+=count;
+  display.crop='';display.quantity=0;
+  return {farm:f,message:CROPS[crop].name+'を'+count+'個倉庫に戻しました。'};
+ }
+ fail('陳列操作が正しくありません。');
 }
 export function useProduce(current,kind,crop){
  const f=copy(current);
