@@ -1261,8 +1261,8 @@ addEventListener('load',f);addEventListener('resize',f);setTimeout(f,300);})();
             <button type="button" id="privacy-link" class="text-indigo-600 hover:underline text-sm font-bold">プライバシーポリシー</button>
         </div>
         <div><button type="button" id="install-link" class="hidden text-indigo-600 hover:underline text-sm font-bold">📲 ホーム画面に追加（アプリとして使う）</button></div>
-        <div>&copy; 2026 英単語・熟語帳 & 適応型テストアプリ <span class="text-slate-300" title="公開されている版の目印">· 版 1111-c</span></div>
-        <div class="text-[10px] text-slate-400">Ver. 2026.11.09</div>
+        <div>&copy; 2026 英単語・熟語帳 & 適応型テストアプリ <span class="text-slate-300" title="公開されている版の目印">· 版 1112-d</span></div>
+        <div class="text-[10px] text-slate-400">Ver. 2026.11.12</div>
         <div><button type="button" id="diag-btn" class="text-[11px] text-slate-400 hover:underline">診断情報をコピー</button></div>
     </footer>
     <script>
@@ -1339,7 +1339,7 @@ addEventListener('load',f);addEventListener('resize',f);setTimeout(f,300);})();
          * iOSはメモリ不足などでアプリを突然終了させることがあり、そのときはエラーも通知も残らない。
          * 「画面を開いている状態」で記録が止まっていたら、前回は異常終了とみなし、直前の操作(パンくず)を残す。
          * 原因の調査用で、端末の中にだけ保存する。フッターの「診断情報をコピー」で取り出せる。 */
-        const APP_VER = '2026.11.11c';
+        const APP_VER = '2026.11.12d';
         const SESSION_KEY = 'eitango_session', CRASH_LOG_KEY = 'eitango_crash_log';
         const lsJson = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
         const crumbs = [];
@@ -1892,8 +1892,9 @@ addEventListener('load',f);addEventListener('resize',f);setTimeout(f,300);})();
         /* =========================================================
          * 6. データ購読 (onSnapshot: 追加/編集/削除のたびの全件再取得を廃止)
          * ========================================================= */
-        const wordsCol = () => collection(db, "users", state.user.uid, "apps", "english-playroom", "vocabulary", "words");
-        const wordDoc = (id) => doc(db, "users", state.user.uid, "apps", "english-playroom", "vocabulary", "words", id);
+        const vocabularyPath = () => ["users", state.user.uid, "apps", "english-playroom", "vocabulary", "personal"];
+        const wordsCol = () => collection(db, ...vocabularyPath(), "words");
+        const wordDoc = (id) => doc(db, ...vocabularyPath(), "words", id);
         function normalizeDoc(d) {
              const data = d.data({ serverTimestamps: 'estimate' });
              const original = String(data.original ?? '');
@@ -5811,4 +5812,3 @@ function setImportUISk(on) {
     </script>
 </body>
 </html>
-index.html を表示しています。
