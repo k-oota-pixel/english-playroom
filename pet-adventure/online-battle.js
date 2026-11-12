@@ -710,24 +710,4 @@ window.addEventListener('focus',handleVisibility);
 // Parent shell navigation removes the iframe without reloading the top-level page.
 if(window.MonstudyMaterial)window.MonstudyMaterial.onNavigateAway=leaveOnNavigate;
 window.addEventListener('pagehide',()=>{void leaveOnNavigate();stopAutoRefresh();clearTimeout(idleTimer);});
-init();:'^(?:4|3|pre2|2)-(?:10|[1-9]){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
-}
-window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
-window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
-window.addEventListener('keydown',registerActivity,true);
-document.addEventListener('visibilitychange',handleVisibility);
-window.addEventListener('focus',handleVisibility);
-// Parent shell navigation removes the iframe without reloading the top-level page.
-if(window.MonstudyMaterial)window.MonstudyMaterial.onNavigateAway=leaveOnNavigate;
-window.addEventListener('pagehide',()=>{void leaveOnNavigate();stopAutoRefresh();clearTimeout(idleTimer);});
-init();).test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
-}
-window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
-window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
-window.addEventListener('keydown',registerActivity,true);
-document.addEventListener('visibilitychange',handleVisibility);
-window.addEventListener('focus',handleVisibility);
-// Parent shell navigation removes the iframe without reloading the top-level page.
-if(window.MonstudyMaterial)window.MonstudyMaterial.onNavigateAway=leaveOnNavigate;
-window.addEventListener('pagehide',()=>{void leaveOnNavigate();stopAutoRefresh();clearTimeout(idleTimer);});
 init();
