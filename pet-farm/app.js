@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FIELD_TYPES,FIELD_SIZES,DISPLAY_TYPES,displayIds,FLOWERS,flowerIds,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,canPlaceFlower,canPlaceDisplay,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,applyDisplayAction,useProduce} from './model.js?v=12';
+import {MAP,FIELD_TYPES,FIELD_SIZES,DISPLAY_TYPES,displayIds,FLOWERS,flowerIds,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,canPlaceFlower,canPlaceDisplay,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,applyDisplayAction,useProduce} from './model.js?v=13';
 import {flowerTileSVG} from './flower-art.js?v=1';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=6';
 
