@@ -1,6 +1,6 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
-import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {hasPet,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
 
 import {growthPatch,hatchPatch,hatchDay} from './pet-growth.js';
@@ -12,7 +12,7 @@ const MAX_MEMORIES=40;
 const app=getApps().length?getApp():null;
 const auth=app?getAuth(app):null;
 const db=app?getFirestore(app):null;
-let currentUser=null,currentData={},unsubscribe=null,lastSvgSignature='',syncInitializedUid='';
+let currentUser=null,currentData={},lastSvgSignature='',syncInitializedUid='';
 
 function localDateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function int(value,fallback=0){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.floor(n)):fallback;}
@@ -280,13 +280,23 @@ window.addEventListener('pet-lifecycle-sync-request',event=>{
   runLifecycleSync(currentUser);
 });
 
+// Lifecycle now consumes the single live wallet subscription owned by SHOP.
+// All login, growth and departure writes still use conflict-safe transactions.
+function receiveShopState(detail){
+ const user=detail?.user;
+ if(!user||auth?.currentUser?.uid!==user.uid)return;
+ currentUser=user;currentData=detail.data||{};applyUi(currentData);
+ if(detail.ready&&syncInitializedUid!==user.uid){
+  syncInitializedUid=user.uid;runLifecycleSync(user);
+ }
+}
 function start(){
   if(!auth||!db)return;ensureStyles();ensureMemoryButton();installGuard();
+  window.addEventListener('monstudy-shop-state',event=>receiveShopState(event.detail));
   onAuthStateChanged(auth,user=>{
-    if(unsubscribe){unsubscribe();unsubscribe=null;}currentUser=user;currentData={};lastSvgSignature='';syncInitializedUid='';window.MonstudyLifecycleSync=null;
+    currentUser=user;currentData={};lastSvgSignature='';syncInitializedUid='';window.MonstudyLifecycleSync=null;
     if(!user){renderHealth({});delete document.documentElement.dataset.petStage;const b=ensureMemoryButton();if(b)b.hidden=true;return;}
-    const ref=dataRef(user);
-    unsubscribe=onSnapshot(ref,snap=>{if(auth.currentUser?.uid!==user.uid)return;currentData=snap.exists()?(snap.data()||{}):{};applyUi(currentData);if(snap.metadata?.fromCache===false&&syncInitializedUid!==user.uid){syncInitializedUid=user.uid;runLifecycleSync(user);}},error=>{console.error('Pet lifecycle snapshot failed',error);if(syncInitializedUid!==user.uid)publishLifecycleSync(user,currentData,error);});
+    receiveShopState(window.MonstudyShopState);
   });
   // The legacy page renderer still updates some labels after auth; quietly re-apply lifecycle labels.
   let checkedDate=localDateKey();
