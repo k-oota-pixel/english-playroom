@@ -39,6 +39,14 @@ export const FLOWERS=Object.freeze({
  marigold:{name:'マリーゴールド',icon:'🌼',price:50},
  tulip:{name:'チューリップ',icon:'🌷',price:50}
 });
+// Displays share the existing farm document: no additional Firestore document reads.
+export const DISPLAY_TYPES=Object.freeze({
+ crate:{name:'やさいクレート',icon:'🧺',price:30,w:2,h:1,capacity:12,
+  crops:Object.freeze(['lettuce','carrot','pumpkin','tomato','potato','pepper'])},
+ cooler:{name:'ひんやりクーラー棚',icon:'🧊',price:60,w:2,h:2,capacity:8,
+  crops:Object.freeze(['strawberry','melon'])}
+});
+export const displayIds=Object.keys(DISPLAY_TYPES);
 export const flowerIds=Object.keys(FLOWERS);
 export const SUPPLIES = Object.freeze({water:{name:'水',icon:'💧',price:1,count:1},fertilizer:{name:'肥料',icon:'🌱',price:2,count:1}});
 export const cropIds=Object.keys(CROPS).filter(id=>!CROPS[id].legacy);
@@ -61,8 +69,8 @@ const integer=(value,max=99999)=>Math.min(max,Math.max(0,Math.floor(Number(value
 const stock=(v,ids)=>Object.fromEntries(ids.map(id=>[id,integer(v?.[id])]));
 export function freshFarm(){
  return {schemaVersion:3,unlocked:[true,false,false,false],starterClaimed:false,
-  fields:[],roads:[],flowers:[],nextFieldId:1,
-  plots:{},inventory:{seeds:{lettuce:3},water:3,fertilizer:0,produce:{},giftBox:{},fields:{'4':0,'6':0,'9':0,'16':0},roads:0,flowers:Object.fromEntries(flowerIds.map(id=>[id,0]))},
+  fields:[],roads:[],flowers:[],displays:[],nextFieldId:1,nextDisplayId:1,
+  plots:{},inventory:{seeds:{lettuce:3},water:3,fertilizer:0,produce:{},giftBox:{},fields:{'4':0,'6':0,'9':0,'16':0},roads:0,flowers:Object.fromEntries(flowerIds.map(id=>[id,0])),displays:Object.fromEntries(displayIds.map(id=>[id,0]))},
   harvestCounts:{},bond:0,harvests:0,feedCount:0,giftsPacked:0,updatedAt:0};
 }
 const validPoint=(x,y)=>Number.isInteger(x)&&Number.isInteger(y)&&x>=1&&y>=1&&x<MAP.w-1&&y<MAP.h-1;
@@ -76,12 +84,39 @@ export function canPlace(farm,kind,x,y,ignoreId=''){
  const roads=new Set(farm.roads||[]);
  for(let dy=0;dy<shape.h;dy++)for(let dx=0;dx<shape.w;dx++)if(roads.has((x+dx)+','+(y+dy)))return false;
  if((farm.flowers||[]).some(flower=>intersects(rect,{x:flower.x,y:flower.y,w:1,h:1})))return false;
+ if((farm.displays||[]).some(d=>{
+  const size=DISPLAY_TYPES[d.type];
+  return size&&intersects(rect,{x:d.x,y:d.y,w:size.w,h:size.h});
+ }))return false;
  return true;
 }
 export function canPlaceRoad(farm,x,y){
  if(!validPoint(x,y)||RESERVED_ZONES.some(z=>intersects({x,y,w:1,h:1},z)))return false;
  if((farm.fields||[]).some(f=>intersects({x,y,w:1,h:1},{x:f.x,y:f.y,...FIELD_TYPES[f.size]})))return false;
- return !(farm.roads||[]).includes(x+','+y)&&!(farm.flowers||[]).some(f=>f.x===x&&f.y===y);
+ return !(farm.roads||[]).includes(x+','+y)&&!(farm.flowers||[]).some(f=>f.x===x&&f.y===y)&&
+  !(farm.displays||[]).some(d=>{
+   const size=DISPLAY_TYPES[d.type];
+   return size&&intersects({x,y,w:1,h:1},{x:d.x,y:d.y,w:size.w,h:size.h});
+  });
+}
+export function canPlaceDisplay(farm,type,x,y,ignoreId=''){
+ const size=DISPLAY_TYPES[type];
+ if(!size||!validPoint(x,y)||x+size.w>MAP.w-1||y+size.h>MAP.h-1)return false;
+ const rect={x,y,w:size.w,h:size.h};
+ if(RESERVED_ZONES.some(zone=>intersects(rect,zone)))return false;
+ if((farm.fields||[]).some(field=>{
+  const shape=FIELD_TYPES[field.size];
+  return shape&&intersects(rect,{x:field.x,y:field.y,w:shape.w,h:shape.h});
+ }))return false;
+ if((farm.displays||[]).some(d=>{
+  const shape=DISPLAY_TYPES[d.type];
+  return d.id!==ignoreId&&shape&&intersects(rect,{x:d.x,y:d.y,w:shape.w,h:shape.h});
+ }))return false;
+ if((farm.flowers||[]).some(f=>intersects(rect,{x:f.x,y:f.y,w:1,h:1})))return false;
+ const roads=new Set(farm.roads||[]);
+ for(let dy=0;dy<size.h;dy++)for(let dx=0;dx<size.w;dx++)
+  if(roads.has((x+dx)+','+(y+dy)))return false;
+ return true;
 }
 export const canPlaceFlower=(farm,x,y)=>canPlaceRoad(farm,x,y);
 export const locateField=(farm,id,index)=>{
@@ -103,6 +138,10 @@ export function findWorkStand(farm,area,index,fromX=16,fromY=8){
   ...(farm.fields||[]).flatMap(f=>{
    const size=FIELD_TYPES[f.size];
    return size?[{x:f.x,y:f.y,w:size.w,h:size.h}]:[];
+  }),
+  ...(farm.displays||[]).flatMap(d=>{
+   const size=DISPLAY_TYPES[d.type];
+   return size?[{x:d.x,y:d.y,w:size.w,h:size.h}]:[];
   })
  ];
  const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
@@ -151,6 +190,7 @@ export function normalizeFarm(raw){
  f.inventory.produce=stock(v.inventory?.produce,allCropIds);
  f.inventory.giftBox=stock(v.inventory?.giftBox,allCropIds);
  f.inventory.flowers=stock(v.inventory?.flowers,flowerIds);
+ f.inventory.displays=stock(v.inventory?.displays,displayIds);
  f.harvestCounts=stock(v.harvestCounts,allCropIds);
  f.bond=integer(v.bond,999999);
  f.harvests=integer(v.harvests,999999);
@@ -198,6 +238,19 @@ export function normalizeFarm(raw){
    if(!Object.hasOwn(FLOWERS,type)||!canPlaceFlower(f,x,y))continue;
    f.flowers.push({type,x,y});
   }
+  const seenDisplays=new Set();
+  for(const item of (Array.isArray(v.displays)?v.displays:[])){
+   const id=String(item?.id||'').slice(0,32),type=String(item?.type||'');
+   const x=Number(item?.x),y=Number(item?.y);
+   if(!id||seenDisplays.has(id)||!canPlaceDisplay(f,type,x,y))continue;
+   const itemType=DISPLAY_TYPES[type],crop=String(item?.crop||'');
+   const quantity=integer(item?.quantity,itemType.capacity);
+   const stocked=quantity>0&&itemType.crops.includes(crop);
+   f.displays.push({id,type,x,y,crop:stocked?crop:'',quantity:stocked?quantity:0});
+   seenDisplays.add(id);
+  }
+  f.nextDisplayId=Math.max(1,integer(v.nextDisplayId,999999),
+   ...f.displays.map(d=>/^d\d+$/.test(d.id)?Number(d.id.slice(1))+1:1));
  }
  const oldMinutes={carrot:1,pumpkin:7,strawberry:5,tomato:3,potato:2,pepper:4};
  for(const field of f.fields){
