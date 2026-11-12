@@ -31,6 +31,7 @@ const els={
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsTimer=0,roomRefreshInFlight='',coins=0,questionPool=[],ownData={};
+let difficultySnapshot=null;
 const lobbyRequests=new Set();
 let currentRoom=null,turnCards=[],selectedAttack=null,currentQuestion=null,lastQuestionId='',lastEventKey='',lastEventRoomId='',lastStatus='',busy=false,readyPending=false,seenQuestionIds=new Set();
 let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
@@ -327,7 +328,7 @@ function animateEvent(room){
  const ev=room.lastEvent,mine=ev.from===user.uid;
  if(ev.type==='attack'){
   const target=ev.to===user.uid?els.petVisual:els.enemyVisual;target.classList.remove('hurt');void target.offsetWidth;target.classList.add('hurt');
-  if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash('攻撃成功！\n-'+ev.damage+' HP');}
+  if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash('攻撃成功！'+(QUESTION_MODE&&ev.bonusPercent?' ＋'+ev.bonusPercent+'%':'')+'\n-'+ev.damage+' HP');}
   else flash('相手の攻撃！\n-'+ev.damage+' HP');
  }else if(ev.type==='magic'){
   const name=ev.name||'魔法';
@@ -344,6 +345,31 @@ function animateEvent(room){
  else if(ev.type==='start')flash('BATTLE START!');
 }
 
+async function loadAccuracySnapshot(){
+ try{
+  const url=new URL('../online-question-accuracy.json',import.meta.url);
+  const response=await fetch(url.href,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+  if(!response.ok)throw new Error('正答率の配信待ち');
+  const snapshot=await response.json();
+  if(snapshot?.schemaVersion!==1||!Number.isFinite(Date.parse(snapshot.updatedAt))||!snapshot.grades)throw new Error('正答率を準備中');
+  difficultySnapshot=snapshot;
+ }catch(error){
+  difficultySnapshot=null;
+  console.warn('Online battle accuracy snapshot unavailable',error?.message||error);
+  const note=$('dataNote');
+  if(note)note.textContent='正答率データを取得できないため、追加ダメージは一時的に無効です。';
+ }
+}
+function difficultyFor(card,room){
+ if(!QUESTION_MODE)return {known:false,bonus:0,label:''};
+ const byGrade=difficultySnapshot?.grades?.[gradeLevel(room.grade)];
+ if(!byGrade||!Object.hasOwn(byGrade,card.id))return {known:false,bonus:0,label:'取得待ち'};
+ const rate=byGrade[card.id];
+ if(rate===null)return {known:true,bonus:35,label:'データなし',rate};
+ if(typeof rate!=='number'||!Number.isFinite(rate)||rate<0||rate>100)return {known:false,bonus:0,label:'取得待ち'};
+ const bonus=rate>=75?0:rate>=50?10:rate>=21?20:30;
+ return {known:true,bonus,label:Number(rate).toFixed(1)+'%',rate};
+}
 function makeChoices(card,room){
  if(QUESTION_MODE)return {choices:card.choices,correctIndex:card.correctIndex};
  const level=gradeLevel(room.grade),same=questionPool.filter(q=>q.level===level&&q.meaning!==card.meaning),all=questionPool.filter(q=>q.meaning!==card.meaning);
@@ -368,14 +394,21 @@ function renderAttackCards(room){
  els.attackGrid.replaceChildren();
  for(const card of turnCards){
   const button=document.createElement('button');button.type='button';button.className='attack-card';button.disabled=busy;
-  button.innerHTML=`<span class="element">${card.element[1]} ${card.element[2]}</span><span class="attack-name">${esc(card.word)}</span><span class="attack-sub"><span>英検${esc(room.grade)}</span><span>POWER ${card.power}</span></span>`;
+  if(QUESTION_MODE){
+   const diff=difficultyFor(card,room);
+   button.classList.add('online-accuracy-card');
+   button.setAttribute('aria-label','正答率 '+diff.label+'、正解時 '+(diff.bonus?'ダメージ＋'+diff.bonus+'％':'追加ダメージなし'));
+   button.innerHTML=`<span class="element">${card.element[1]} ${card.element[2]}</span><span class="online-accuracy-label">初回正答率</span><span class="attack-name online-accuracy-number">${esc(diff.label)}</span><span class="online-accuracy-bonus">${diff.known?(diff.bonus?'正解時 ダメージ＋'+diff.bonus+'%':'正解時 追加ダメージなし'):'倍率は取得待ち'}</span><span class="attack-sub"><span>英検${esc(room.grade)}</span><span>POWER ${card.power}</span></span>`;
+  }else{
+   button.innerHTML=`<span class="element">${card.element[1]} ${card.element[2]}</span><span class="attack-name">${esc(card.word)}</span><span class="attack-sub"><span>英検${esc(room.grade)}</span><span>POWER ${card.power}</span></span>`;
+  }
   button.addEventListener('click',()=>openQuestion(card,room));els.attackGrid.append(button);
  }
 }
 function prepareTurn(room){if(room.status!=='playing'||busy)return;selectedAttack=null;currentQuestion=null;els.quizPanel.hidden=true;els.attackPanel.hidden=false;buildTurn(room);}
 function openQuestion(card,room){
  if(busy||room.status!=='playing')return;selectedAttack=card;lastQuestionId=card.id;const q=makeChoices(card,room);currentQuestion={...q,card};
- els.attackBadge.textContent=`${card.element[1]} ${card.element[2]}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=QUESTION_MODE?esc(card.question).replace(/\(____\)/g,'<span class="blank">（　　）</span>'):`<strong>${esc(card.word)}</strong> の意味は？`;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();
+ els.attackBadge.textContent=`${card.element[1]} ${card.element[2]}`;els.attackPower.textContent=QUESTION_MODE?`POWER ${card.power} · 正解時＋${difficultyFor(card,room).bonus}%`:`POWER ${card.power}`;els.questionText.innerHTML=QUESTION_MODE?esc(card.question).replace(/\(____\)/g,'<span class="blank">（　　）</span>'):`<strong>${esc(card.word)}</strong> の意味は？`;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();
  q.choices.forEach((choice,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${esc(choice)}`;b.addEventListener('click',()=>void answerQuestion(index));els.answerGrid.appendChild(b);});
  els.attackPanel.hidden=true;els.quizPanel.hidden=false;
 }
@@ -384,7 +417,7 @@ async function answerQuestion(index){
  const buttons=[...els.answerGrid.querySelectorAll('.answer-btn')],correct=index===currentQuestion.correctIndex;
  buttons.forEach((b,i)=>{b.disabled=true;if(i===currentQuestion.correctIndex)b.classList.add('correct');else if(i===index)b.classList.add('wrong');});
  const missDamage=Math.max(1,Math.ceil(Math.max(1,Number(minePlayer()?.stats?.hp)||1)/4));
- els.answerFeedback.textContent=correct?'正解！ 攻撃！':`不正解… 自分に${missDamage}ダメージ`;els.answerFeedback.className='answer-feedback '+(correct?'ok':'no');
+ els.answerFeedback.textContent=correct?(QUESTION_MODE?`正解！ 攻撃！（追加ダメージ＋${difficultyFor(currentQuestion.card,currentRoom).bonus}%）`:'正解！ 攻撃！'):`不正解… 自分に${missDamage}ダメージ`;els.answerFeedback.className='answer-feedback '+(correct?'ok':'no');
  try{const room=await act(correct?'attack':'miss',{render:false,body:QUESTION_MODE?{questionId:currentQuestion.card.id}:null});currentRoom=room;renderRoom(room);await new Promise(resolve=>setTimeout(resolve,420));if(currentRoom?.status==='playing'){busy=false;prepareTurn(currentRoom);}else busy=false;}
  catch{busy=false;if(currentRoom?.status==='playing')prepareTurn(currentRoom);}
  // Unlock action buttons immediately after the answer animation.
@@ -700,7 +733,7 @@ els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClo
 
 async function init(){
  els.attackHeading.textContent=QUESTION_MODE?'問題を選ぼう':'英単語を選ぼう';
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await loadQuestionPool();enterLobbyLayout();showGradePicker();const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);preferredRealtime=transport?.realtime===true;const savedRealtime=localStorage.getItem(REALTIME_ROOM_STORAGE_KEY)||'';roomRealtime=Boolean(savedRealtime);const saved=savedRealtime||localStorage.getItem(ROOM_STORAGE_KEY)||'';const validRoom=QUESTION_MODE?/^(?:4-(?:20|1[0-9]|[1-9])|(?:3|pre2|2)-(?:10|[1-9]))$/:/^(?:4|3|pre2|2)-(?:10|[1-9])$/;if(validRoom.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await Promise.all([loadQuestionPool(),QUESTION_MODE?loadAccuracySnapshot():Promise.resolve()]);enterLobbyLayout();showGradePicker();const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);preferredRealtime=transport?.realtime===true;const savedRealtime=localStorage.getItem(REALTIME_ROOM_STORAGE_KEY)||'';roomRealtime=Boolean(savedRealtime);const saved=savedRealtime||localStorage.getItem(ROOM_STORAGE_KEY)||'';const validRoom=QUESTION_MODE?/^(?:4-(?:20|1[0-9]|[1-9])|(?:3|pre2|2)-(?:10|[1-9]))$/:/^(?:4|3|pre2|2)-(?:10|[1-9])$/;if(validRoom.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
 window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
 window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
