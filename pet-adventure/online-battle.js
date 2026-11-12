@@ -47,6 +47,7 @@ function startAutoRefresh(){
  // Only active matches need 1-second sync; waiting rooms retain 2.5 seconds.
  const interval=activeRoom&&currentRoom?.roomId===activeRoom&&currentRoom.status==='playing'?1000:2500;
  if(activeRoom&&roomRealtime)connectRoomUpdates(activeRoom);
+ else if(!activeRoom&&selectedGrade&&preferredRealtime)connectLobbyUpdates(selectedGrade);
  else if(liveSubscription){liveSubscription.controller.abort();liveSubscription=null;}
  if(!activeRoom||roomRealtime){
   if(pollTimer){clearInterval(pollTimer);pollTimer=0;}
@@ -56,7 +57,8 @@ function startAutoRefresh(){
   pollIntervalMs=interval;
   pollTimer=window.setInterval(()=>{if(activeRoom)void refreshRoom();},interval);
  }
- if(!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},LOBBY_REFRESH_MS);
+ if(preferredRealtime&&roomsTimer){clearInterval(roomsTimer);roomsTimer=0;}
+ if(!preferredRealtime&&!roomsTimer)roomsTimer=window.setInterval(()=>{if(!activeRoom&&selectedGrade)void refreshLobby();},LOBBY_REFRESH_MS);
 }
 function armIdlePause(){
  clearTimeout(idleTimer);
@@ -65,7 +67,7 @@ function armIdlePause(){
 async function syncVisibleState(){
  if(document.hidden||!user||resumeSyncing)return;
  const now=Date.now();if(now-lastResumeSyncAt<750)return;lastResumeSyncAt=now;resumeSyncing=true;
- try{if(activeRoom)await refreshRoom();else if(selectedGrade)await refreshLobby();}
+ try{if(activeRoom)await refreshRoom();else if(selectedGrade&&!preferredRealtime)await refreshLobby();}
  finally{resumeSyncing=false;}
 }
 function registerActivity(){
@@ -135,6 +137,58 @@ function connectRoomUpdates(roomId){
  })();
 }
 
+// The lobby receives an initial grade snapshot plus changed room updates.
+// This avoids the five-second REST polling loop while a student waits.
+function connectLobbyUpdates(grade){
+ if(liveSubscription?.grade===grade)return;
+ liveSubscription?.controller.abort();
+ const controller=new AbortController(),subscription={grade,controller};
+ liveSubscription=subscription;
+ void (async()=>{
+  let retryMs=1500;
+  while(!controller.signal.aborted){
+   try{
+    const token=await user.getIdToken();
+    const response=await fetch(REALTIME_API+'/lobby/'+grade+'/live',{
+     headers:{Authorization:'Bearer '+token},
+     signal:AbortSignal.any([controller.signal,AbortSignal.timeout(75000)]),cache:'no-store'
+    });
+    if(!response.ok){
+     await response.body?.cancel();
+     if(response.status===404){
+      preferredRealtime=false;startAutoRefresh();void refreshLobby();return;
+     }
+     throw new Error('ロビーの更新に接続できませんでした。');
+    }
+    const reader=response.body?.getReader();
+    if(!reader)throw new Error('ロビーのリアルタイム更新を受信できませんでした。');
+    const decoder=new TextDecoder();let buffer='';
+    try{
+     while(!controller.signal.aborted){
+      const {done,value}=await reader.read();if(done)break;
+      buffer+=decoder.decode(value,{stream:true});
+      let boundary;
+      while((boundary=buffer.indexOf('\n\n'))>=0){
+       const frame=buffer.slice(0,boundary);buffer=buffer.slice(boundary+2);
+       const data=frame.split('\n').find(line=>line.startsWith('data: '));
+       if(!data||liveSubscription!==subscription||grade!==selectedGrade||activeRoom)continue;
+       const lobby=JSON.parse(data.slice(6)).lobby||{};
+       selectedGradeTitle.textContent=lobby.grade||gradeLabel(grade);
+       renderRooms(lobby.rooms||[]);
+       if(!notice.classList.contains('error'))say('');
+       retryMs=1500;
+      }
+      if(buffer.length>256000)throw new Error('ロビーの更新データが大きすぎます。');
+     }
+    }finally{try{await reader.cancel();}catch{}reader.releaseLock();}
+   }catch(error){if(!controller.signal.aborted)say(error.message,true);}
+   if(!controller.signal.aborted){
+    await new Promise(resolve=>setTimeout(resolve,retryMs));
+    retryMs=Math.min(15000,retryMs*2);
+   }
+  }
+ })();
+}
 function say(message,error=false){
  notice.textContent=message;notice.classList.toggle('error',error);
  // The lobby notice is hidden in the battle layout: show action errors where players can see them.
@@ -205,8 +259,8 @@ function renderRooms(list){
  }
 }
 function gradeLabel(key){return GRADES.find(entry=>entry.key===key)?.label||'4級';}
-function showGradePicker(){selectedGrade='';roomList.hidden=true;gradePicker.hidden=false;roomsEl.replaceChildren();say('');}
-async function selectGrade(key){if(!GRADES.some(entry=>entry.key===key))return;selectedGrade=key;selectedGradeTitle.textContent=gradeLabel(key);gradePicker.hidden=true;roomList.hidden=false;await refreshLobby();}
+function showGradePicker(){selectedGrade='';roomList.hidden=true;gradePicker.hidden=false;roomsEl.replaceChildren();say('');startAutoRefresh();}
+async function selectGrade(key){if(!GRADES.some(entry=>entry.key===key))return;selectedGrade=key;selectedGradeTitle.textContent=gradeLabel(key);gradePicker.hidden=true;roomList.hidden=false;roomsEl.replaceChildren();startAutoRefresh();if(!preferredRealtime)await refreshLobby();}
 async function refreshLobby(){
  const grade=selectedGrade;
  if(!grade||activeRoom||lobbyRequests.has(grade))return;
