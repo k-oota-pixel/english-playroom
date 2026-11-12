@@ -273,7 +273,26 @@ async function changeShopName(kind,value){
   }catch(e){if(currentUser?.uid===user.uid)setToast(e?.message||'名前を変更できませんでした。','error');}});
 }
 async function grantBirthBonusIfNeeded(user,data){if(!hasPet(data)||data.petBirthBonusGranted===true)return;try{let granted=false;await runTransaction(db,async tx=>{const ref=refFor(user),snap=await tx.get(ref),fresh=snap.exists()?snap.data():{};if(!hasPet(fresh)||fresh.petBirthBonusGranted===true)return;const coins=coinsOf(fresh);tx.set(ref,{coins:coins+10,petBirthBonusGranted:true,petBirthBonusGrantedAt:serverTimestamp(),coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1},{merge:true});granted=true;});if(granted&&!birthToastShown){birthToastShown=true;setToast('🎉 誕生記念に10コインプレゼント！','ok');}}catch(e){console.error('Birth coin bonus failed',e);}}
-function watchUser(user){if(unsubDoc){unsubDoc();unsubDoc=null;}currentUser=user;currentData={};shopProfileReady=false;renameDrafts.pet=null;renameDrafts.user=null;birthToastShown=false;setToast('');renderWallet();window.dispatchEvent(new CustomEvent('monstudy-shop-state',{detail:{user:currentUser,data:currentData,ready:false}}));if(!user)return;unsubDoc=onSnapshot(refFor(user),snap=>{currentData=snap.exists()?(snap.data()||{}):{};shopProfileReady=true;renderWallet();window.dispatchEvent(new CustomEvent('monstudy-shop-state',{detail:{user:currentUser,data:currentData,ready:true}}));grantBirthBonusIfNeeded(user,currentData);updateWaste();},err=>{console.error('Pet shop sync failed',err);setToast('ショップの同期に失敗しました。','error');});}
+// The sole home-page wallet subscription supplies pet lifecycle, extra SHOP
+// items, gifts and friends. Consumers never open another listener for this doc.
+function publishShopState(ready){
+ const detail={user:currentUser,data:currentData,ready};
+ window.MonstudyShopState=detail;
+ window.dispatchEvent(new CustomEvent('monstudy-shop-state',{detail}));
+}
+function watchUser(user){
+ if(unsubDoc){unsubDoc();unsubDoc=null;}
+ currentUser=user;currentData={};shopProfileReady=false;
+ renameDrafts.pet=null;renameDrafts.user=null;birthToastShown=false;setToast('');
+ renderWallet();publishShopState(false);
+ if(!user)return;
+ unsubDoc=onSnapshot(refFor(user),snap=>{
+  if(currentUser?.uid!==user.uid)return;
+  currentData=snap.exists()?(snap.data()||{}):{};
+  shopProfileReady=true;renderWallet();publishShopState(true);
+  grantBirthBonusIfNeeded(user,currentData);updateWaste();
+ },err=>{console.error('Pet shop sync failed',err);setToast('ショップの同期に失敗しました。','error');});
+}
 function boot(){injectUI();if(!getApps().length){setTimeout(boot,0);return;}const app=getApp();auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,watchUser);}boot();
 
 
