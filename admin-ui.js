@@ -1,5 +1,5 @@
 import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.9';
-import {adminContentRows} from './admin-content-model.js?v=2.1.5';
+import {adminContentRows,adminMaterialLabel} from './admin-content-model.js?v=2.4.83';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,setPersistence,browserLocalPersistence,ensureRenderReady,timeoutSignal} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
@@ -140,7 +140,7 @@ function render(){
  if(searching&&searchResults===null){$('users').innerHTML='<div class="empty">登録者全体から検索しています…</div>';return;}
  $('users').innerHTML=list.map(u=>{
   const open=u.uid===expandedUid,detail=detailCache.get(u.uid);const profile=detail?.apps?.['english-playroom'];const currentCoins=profile&&Number.isFinite(Number(profile.coins))?Number(profile.coins):null;const coinBadge=open&&currentCoins!==null?'<div class="coin">🪙 '+currentCoins.toLocaleString('ja-JP')+'</div>':'';const body=detail?.error?'<div class="user-body">'+esc(detail.error)+'<button type="button" class="btn detail-retry">再試行</button></div>':detail?.apps?userBody({...u,apps:detail.apps,activity:detail.activity}):'<div class="user-body" role="status">学習記録を読み込んでいます…</div>';
-  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><div class="user-summary"><div class="code-name">コード名：<span class="copy-value">'+esc(u.loginId?(u.codeName||'未復元'):'—')+'</span></div><div class="login-id">ID：'+esc(u.loginId||'—')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta">最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</div>'+'<div class="summary-actions">'+coinBadge+'<button type="button" class="btn detail-toggle" aria-expanded="'+open+'">'+(open?'閉じる':'詳細を確認')+'</button></div></div>'+(open?body:'')+'</article>';
+  return '<article class="user'+(open?' open':'')+'" data-uid="'+esc(u.uid)+'"><div class="user-summary"><div class="code-name">コード名：<span class="copy-value">'+esc(u.loginId?(u.codeName||'未復元'):'—')+'</span></div><div class="login-id">ID：'+esc(u.loginId||'—')+'</div><div class="nickname">'+esc(u.nickname||'ニックネーム未登録')+'</div><div class="pet-name">'+esc(u.petName||'ペット名未設定')+'</div><div class="summary-meta"><span>最終学習日時 '+esc(fmtDate(u.lastLearningAt))+'</span><span class="last-material">教材：'+esc(adminMaterialLabel(u.lastLearningAppId))+'</span></div>'+'<div class="summary-actions">'+coinBadge+'<button type="button" class="btn detail-toggle" aria-expanded="'+open+'">'+(open?'閉じる':'詳細を確認')+'</button></div></div>'+(open?body:'')+'</article>';
  }).join('')||'<div class="empty">一致する登録者はいません。</div>';
  document.querySelectorAll('.detail-toggle').forEach(b=>b.onclick=()=>expand(b.closest('.user').dataset.uid));
  document.querySelectorAll('.detail-retry').forEach(b=>b.onclick=()=>{const uid=b.closest('.user').dataset.uid;detailCache.delete(uid);expandedUid='';expand(uid);});
