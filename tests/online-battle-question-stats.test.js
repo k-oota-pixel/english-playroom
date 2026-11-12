@@ -53,9 +53,10 @@ test('正答率データはJSONを毎朝生成し、対戦中はFirestoreを読�
  assert.match(script,/api\/online-battle\/accuracy\/export/);
  assert.match(script,/online-question-accuracy\.json/);
  assert.match(battle,/fetch\(url\.href,\{cache:'no-store'/);
- assert.equal(placeholder.updatedAt,null,'初回の集計前に推測した倍率を配信しない');
+ assert.ok(placeholder.updatedAt===null||Number.isFinite(Date.parse(placeholder.updatedAt)),'初回未生成か有効な日次スナップショット');
  assert.ok(Object.keys(placeholder.grades['4']).length>=4);
  const {validExport}=await import('../today/update-online-accuracy.mjs');
- assert.equal(validExport(placeholder),false);
- assert.equal(validExport({...placeholder,updatedAt:'2026-11-13T00:00:00Z'}),true);
+ assert.equal(validExport({...placeholder,updatedAt:null}),false,'未生成のデータを有効とみなさない');
+ assert.equal(validExport({...placeholder,updatedAt:'2026-11-13T00:00:00Z'}),true,'公開済み実データでもテスト可能');
+ assert.equal(validExport(placeholder),placeholder.updatedAt!==null,'初回生成後も継続的にテストを通す');
 });
