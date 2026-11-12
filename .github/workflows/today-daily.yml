@@ -17,6 +17,9 @@ on:
       - '.github/workflows/today-daily.yml'
       - 'today/update-daily-news.mjs'
       - 'today/update-online-rankings.mjs'
+      - 'today/update-online-accuracy.mjs'
+      - 'online-question-accuracy.json'
+      - 'tests/online-battle-question-stats.test.js'
       - 'tests/today-daily-update.test.js'
 
 permissions:
@@ -39,6 +42,7 @@ jobs:
       - name: Check TODAY updater and daily ranking publisher
         run: |
           node --check today/update-online-rankings.mjs
+          node --check today/update-online-accuracy.mjs
           node --test tests/today-daily-update.test.js
   update:
     if: github.event_name != 'push'
@@ -81,3 +85,32 @@ jobs:
           node-version: '22'
       - name: Publish previous-day online battle rankings
         run: node today/update-online-rankings.mjs
+
+  # Independent from TODAY news and battle ranking jobs. Runs on the first
+  # code release too, then 06:10 JST daily. A failed export never commits an
+  # empty or fabricated accuracy snapshot.
+  accuracy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Export combined question accuracy to static JSON
+        run: node today/update-online-accuracy.mjs
+      - name: Commit verified daily accuracy snapshot
+        run: |
+          if git diff --quiet -- online-question-accuracy.json; then
+            echo "Accuracy snapshot unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-question-accuracy.json
+          git commit -m "Update daily combined question accuracy"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
