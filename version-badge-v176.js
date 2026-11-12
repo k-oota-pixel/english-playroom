@@ -8,7 +8,7 @@ import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.9.6';
 import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
-import './pet-lifecycle-v141.js?v=2.1.62';
+import './pet-lifecycle-v141.js?v=2.4.87';
 import './pet-egg-ui-v141.js?v=1.8.4';
 import './pet-six-species-v141.js?v=2.1.9';
 import './pet-eye-emphasis-v144.js?v=1.9.6';
@@ -23,7 +23,7 @@ import './today-home-card.js?v=2.3.52';
 
 queueMicrotask(()=>import('./pet-admin-panel.js?v=2.3.8').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.4.85';
+const APP_VERSION='2.4.87';
 const APP_ROOT=new URL('./',import.meta.url);
 let forceRefreshBusy=false;
 

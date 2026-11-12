@@ -1,4 +1,4 @@
-// Calendar days since hatching; each day's draw is stable across tabs and retries.
+// Stable growth draw per pet generation and login-day step; repeated visits do not redraw.
 export const GROWTH_VERSION=1428;
 export const GROWTH_CHANCES=[0,0,.60,1];
 export function hatchDay(data,today){const start=data.petHatchDate;return start?Math.max(1,Math.floor((Date.parse(today+'T00:00:00Z')-Date.parse(start+'T00:00:00Z'))/86400000)+1):1;}

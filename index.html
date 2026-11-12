@@ -831,8 +831,8 @@ function renderPet(data={},message=''){
     petVisual.textContent='🥚';
     petVisual.setAttribute('aria-label','ふしぎなたまご');
     petTitle.textContent=ready?'たまごがかえりそう！':'ふしぎなたまご';
-    const remain=Math.max(0,3-days);
-    petStatus.textContent=message||(ready?'アンケートに答えて、あなたのペットに出会おう。':days?`あと${remain}日ログインすると、たまごがかえります。`:'Googleログインすると、たまごの育成が始まります。');
+    const remain=Math.max(0,2-days);
+    petStatus.textContent=message||(ready?'たまごをかえして、ペットの赤ちゃんを迎えよう。':days?`あと${remain}日ログインすると、たまごがかえります。`:'Googleログインすると、たまごの育成が始まります。');
   }
 }
 
@@ -1023,7 +1023,7 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
 <script type="module" src="./pet-friends.js?v=2.4.79"></script>
-<script type="module" src='./version-badge-v176.js?v=2.4.85'></script>
+<script type="module" src='./version-badge-v176.js?v=2.4.87'></script>
 <script>
 (() => {
   const version = '2.4.83';
