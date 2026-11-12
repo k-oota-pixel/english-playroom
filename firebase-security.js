@@ -13,8 +13,9 @@ export function enableAppCheck(app){
   }catch(error){console.warn('App Check initialization deferred',error.code);return null;}
 }
 const config={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
+export function getMonstudyApp(){return getApps().length?getApp():initializeApp(config);}
 export async function apiHeaders(){
-  const app=getApps().length?getApp():initializeApp(config);
+  const app=getMonstudyApp();
   const check=enableAppCheck(app),auth=getAuth(app);
   await auth.authStateReady();
   if(!auth.currentUser)throw Error('AI判定にはログインが必要です。もんすたでぃでログインしてから、もう一度お試しください。');
