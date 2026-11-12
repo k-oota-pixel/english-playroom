@@ -69,7 +69,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    const filtered=allTitles.filter(t=>activeTab==='master'?isMaster(t):activeTab==='weekly'?isWeekly(t):!isMaster(t)&&!isWeekly(t));
    const groups=new Map();for(const t of filtered){if(!groups.has(t.appId))groups.set(t.appId,[]);groups.get(t.appId).push(t);}
    if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノート・魔王の塔・魔物の巣窟・もんすた城の防衛の記録も確認できます。'));
-   if(activeTab==='weekly'){panel.append(el('p','月曜日から日曜日までの挑戦。前日までに確定した順位を集計し、4日達成で永久に獲得します。'));if(weeklyBusy)panel.append(el('p','週間ランキングを集計しています…'));if(weeklyError)panel.append(el('p',weeklyError));}
+   if(activeTab==='weekly'){panel.append(el('p','月曜から日曜までに4日達成すると、翌週に称号が自動で付与されます。今週の進み具合は前日分まで表示します。'));if(weeklyBusy)panel.append(el('p','週間ランキングを集計しています…'));if(weeklyError)panel.append(el('p',weeklyError));}
    if(activeTab==='master')panel.append(el('p','教材の対象称号をすべて解放すると、特別なマスター称号を獲得できます。'));
    if(activeTab==='normal'&&!progressLoaded){
     const details=el('button',progressBusy?'進捗を読み込み中…':'詳しい進捗を表示');
