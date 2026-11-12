@@ -80,7 +80,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
      if(!section.isConnected)return;
      if(section.open){
       openGroups.add(appId);
-      if(!progressLoaded&&!progressAppLoaded.has(appId)&&!progressAppLoading.has(appId))void loadAppProgress(appId);
+      if(activeTab==='normal'&&!progressLoaded&&!progressAppLoaded.has(appId)&&!progressAppLoading.has(appId))void loadAppProgress(appId);
      }else openGroups.delete(appId);
     });
     section.append(el('summary',list[0].label+'　'+list.filter(t=>t.unlocked).length+' / '+list.length+' 解放'));
