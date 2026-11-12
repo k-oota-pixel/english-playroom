@@ -18,8 +18,9 @@ test('login counts distinct days, skips repeats and backwards clocks',()=>{
   assert.equal(loginProgress(day,'2026-10-16').petLoginDays,3);
   assert.equal(loginProgress({petLoginDays:Infinity},'2026-10-14').petLoginDays,1);
 });
-test('third day and legacy hatch require a choice before showing a pet',()=>{
-  assert.equal(readyToHatch({petLoginDays:2}),false);
+test('second login makes the egg ready; hatching alone does not produce an adult',()=>{
+  assert.equal(readyToHatch({petLoginDays:1}),false);
+  assert.equal(readyToHatch({petLoginDays:2}),true);
   assert.equal(readyToHatch({petLoginDays:3}),true);
   assert.equal(readyToHatch({petHatched:true}),true);
   assert.equal(hasPet({petHatched:true}),false);

@@ -13,7 +13,7 @@ export const DEFAULT_APPEARANCE = Object.freeze(Object.fromEntries(Object.entrie
 export function normalizeAppearance(value={}) {return Object.fromEntries(Object.entries(OPTIONS).map(([key,items])=>[key,items.some(item=>item.id===value?.[key])?value[key]:items[0].id]));}
 export function validAppearance(value) {return !!value && Object.entries(OPTIONS).every(([key,items])=>items.some(item=>item.id===value[key]));}
 export function loginProgress(data,today) {const raw=Number(data.petLoginDays),days=Number.isFinite(raw)?Math.max(0,Math.floor(raw)):0,last=typeof data.petLastLoginDate==='string'?data.petLastLoginDate:'',count=!last||today>last;return {petLoginDays:days+(count?1:0),petLastLoginDate:count?today:last};}
-export function readyToHatch(data) {return !!data.petHatched||Number(data.petLoginDays)>=3;}
+export function readyToHatch(data) {return !!data.petHatched||Number(data.petLoginDays)>=2;}
 export function hasPet(data) {return !!data.petHatched&&(data.petAdult===false||validAppearance(data.petAppearance));}
 
 export const SHOP_LAYERS = Object.freeze({

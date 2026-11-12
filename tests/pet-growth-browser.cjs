@@ -28,7 +28,7 @@ await page.goto('http://127.0.0.1:8765');await page.waitForTimeout(1600);}
  assert.equal(await page.evaluate(()=>window.petStore.petAppearance),null);assert.equal(await page.locator('dialog[open]').count(),0);assert.ok(await page.locator('#petVisual svg[data-pet-stage=mystery]').count());
  assert.ok(await page.evaluate(()=>window.petStore.coins>=90));
  const newborn=await page.evaluate(()=>window.petStore);
- await load({...newborn,petHatchDate:'2026-01-01',petName:'ふわ',petShop:{ownedItems:['crown'],equipped:{head:'crown'}}});
+ await load({...newborn,petLoginDays:5,petLifeDays:5,petHatchDate:'2026-01-01',petName:'ふわ',petShop:{ownedItems:['crown'],equipped:{head:'crown'}}});
  await page.waitForSelector('dialog[open] #petMakerTitle');
  for(let i=0;i<3;i++){await page.locator('dialog[open] .pet-choice').first().click();await page.locator('dialog[open] [data-next]').click();}
  assert.equal(await page.locator('#newPetName').inputValue(),'ふわ');

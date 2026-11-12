@@ -1,9 +1,9 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {getFirestore,doc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {hasPet,normalizePetName,validPetName} from './pet-model.js?v=2.1.25';
+import {hasPet,normalizePetName,validPetName} from './pet-model.js?v=2.4.87';
 
-import {growthPatch,hatchPatch,hatchDay} from './pet-growth.js';
+import {growthPatch,hatchPatch} from './pet-growth.js?v=2.4.87';
 import {renderPetVisual} from './pet-art.js?v=2.1.25';
 import {chanceFor,shouldDepart} from './pet-lifetime-model.js?v=2.1.62';
 import {advanceHealth} from './pet-health-model.js?v=1.8.1';
@@ -232,8 +232,8 @@ function installGuard(){
     if(days<2){
       event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();applyUi(currentData);return;
     }
-    // The legacy page still has a 3-day hatch check. On day 2, hatch here first and stop that older handler.
-    if(days===2){
+    // Hatch on or after the second login, before the legacy handler can bypass the juvenile stage.
+    if(days>=2){
       event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();button.disabled=true;
       const user=currentUser,today=localDateKey();
       runTransaction(db,async transaction=>{
@@ -241,7 +241,7 @@ function installGuard(){
         if(hasPet(data))return;
         const progress=Math.max(int(data.petLifeDays,0),int(data.petLoginDays,0));
         if(progress<2)throw Error('2日ログインすると孵化できます。');
-        transaction.set(ref,{...hatchPatch(today),petHatchedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
+        transaction.set(ref,{...hatchPatch(today,data.petLoginDays??data.petLifeDays),petHatchedAt:serverTimestamp(),petUpdatedAt:serverTimestamp()},{merge:true});
       }).catch(error=>{const status=document.getElementById('petStatus');if(status)status.textContent=error.message||'孵化できませんでした。';}).finally(()=>{button.disabled=false;});
     }
   },true);
