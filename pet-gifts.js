@@ -76,9 +76,13 @@ function init(){
   // If the player enjoys opening but closes without replying, persist opening.
   // The item itself was already granted when it was sent.
   const pending=[...previewedGifts];previewedGifts.clear();
-  if(!user||busy)return;
-  for(const giftId of pending)void request('/api/shop/gifts/open',{giftId})
-    .catch(error=>console.warn('Gift opening will be available to retry',error));
+  if(!pending.length)return;
+  if(!user||busy){for(const id of pending)previewedGifts.add(id);return;}
+  // One Firestore wallet read and write even after opening many gifts.
+  void request('/api/shop/gifts/open-batch',{giftIds:pending}).catch(error=>{
+    for(const id of pending)previewedGifts.add(id);
+    console.warn('Gift opening will be available to retry',error);
+  });
  });
  boxDialog.querySelectorAll('[data-gift-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.giftTab;notice('');renderBox();});
  button.onclick=()=>{if(!user)return;tab='received';renderBox();boxDialog.showModal();};
