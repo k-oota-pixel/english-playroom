@@ -338,7 +338,7 @@ function animateEvent(room){
    if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash('✨ '+name+'！\n-'+ev.damage+' HP');}
    else flash('相手の '+name+'！\n-'+ev.damage+' HP');
   }
- }else if(ev.type==='miss')flash(mine?'不正解…\n自分に1ダメージ':'相手が不正解！');
+ }else if(ev.type==='miss')flash(mine?'不正解…\n自分に'+String(ev.damage||0)+'ダメージ':'相手が不正解！\n-'+String(ev.damage||0)+' HP');
  else if(ev.type==='item')flash((mine?'': '相手の ')+(ev.icon||'🎒')+' '+(ev.name||'アイテム')+'\n'+String(ev.kind||'hp').toUpperCase()+' +'+(ev.amount||0));
  else if(ev.type==='forfeit')flash(mine?'投了しました':'相手が投了しました！\n不戦勝！');
  else if(ev.type==='start')flash('BATTLE START!');
