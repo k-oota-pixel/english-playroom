@@ -187,8 +187,8 @@ button:focus-visible,a:focus-visible{outline:4px solid #f8d477;outline-offset:3p
 .action-btn.gold{background:#dca34f;color:#4d3521;border-color:#b7813e}
 .action-btn:hover:not(:disabled){filter:brightness(1.06)}
 .modal-hint,.tiny{font-size:12px;color:#80765d;line-height:1.6;margin:12px 0}
-.shop-tabs{display:flex;gap:7px;margin:12px 0}
-.tab{flex:1;padding:9px;border:2px solid #d6c39f;border-radius:10px;
+.shop-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.tab{flex:1 0 72px;padding:9px;border:2px solid #d6c39f;border-radius:10px;
  background:#fffdf4;color:#765e3a;font-weight:850;font-size:12px}
 .tab.active{background:#6e9469;color:#fff;border-color:#5c805b}
 .shop-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
