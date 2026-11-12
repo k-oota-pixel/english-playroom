@@ -469,9 +469,11 @@ function beginPlacement(type,value){
  if(type==='field'&&!(farm.inventory.fields[value]>0)){toast('圃場の持ち物がありません。');return;}
  if(type==='road'&&!farm.inventory.roads){toast('道路の持ち物がありません。');return;}
  if(type==='flower'&&!(farm.inventory.flowers[value]>0)){toast('花畑の持ち物がありません。');return;}
+ if(type==='display'&&!(farm.inventory.displays[value]>0)){toast('陳列家具の持ち物がありません。');return;}
+ if(type==='move-display'&&!farm.displays.some(d=>d.id===value)){toast('陳列家具が見つかりません。');return;}
  if(type==='move'&&!farm.fields.some(f=>f.id===value)){toast('圃場が見つかりません。');return;}
  placement={type,value};
- hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');hideDialog('tileManageDialog');
+ hideDialog('itemsDialog');hideDialog('shopDialog');hideDialog('manageDialog');hideDialog('displayDialog');hideDialog('tileManageDialog');
  renderPlacement();updateTileManageButton();
  toast(type==='manage-tile'?'道路または花畑をタップして選んでください。':
   type==='move-tile'?'移動先のマスをタップしてください。':'好きな場所をタップして配置してください。');
@@ -486,6 +488,11 @@ function placementAllowed(x,y){
  if(placement.type==='move'){
   const field=farm.fields.find(f=>f.id===placement.value);
   return !!field&&canPlace(farm,field.size,x,y,field.id);
+ }
+ if(placement.type==='display')return farm.inventory.displays[placement.value]>0&&canPlaceDisplay(farm,placement.value,x,y);
+ if(placement.type==='move-display'){
+  const d=farm.displays.find(item=>item.id===placement.value);
+  return !!d&&canPlaceDisplay(farm,d.type,x,y,d.id);
  }
  if(placement.type==='road')return farm.inventory.roads>0&&canPlaceRoad(farm,x,y);
  if(placement.type==='flower')return farm.inventory.flowers[placement.value]>0&&canPlaceFlower(farm,x,y);
@@ -503,8 +510,10 @@ function previewPlacement(x,y){
  const p=$('placementPreview');
  if(!placement||placement.type==='manage-tile'||!placementAllowed(x,y)){p.hidden=true;return;}
  const field=placement.type==='move'?farm.fields.find(f=>f.id===placement.value):null;
+ const display=placement.type==='move-display'?farm.displays.find(d=>d.id===placement.value):null;
  const type=field?.size||(placement.type==='field'?placement.value:null);
- const shape=FIELD_TYPES[type]||{w:1,h:1};
+ const displayType=display?.type||(placement.type==='display'?placement.value:null);
+ const shape=FIELD_TYPES[type]||DISPLAY_TYPES[displayType]||{w:1,h:1};
  Object.assign(p.style,{left:x*tile+'px',top:y*tile+'px',width:shape.w*tile+'px',height:shape.h*tile+'px'});
  p.hidden=false;
 }
@@ -519,6 +528,8 @@ function renderPlacement(){
   type==='move'?'移動先の左上をタップ':
   type==='road'?'道路を敷くマスをタップ（残り '+farm.inventory.roads+'枚）':
   type==='flower'?FLOWERS[placement.value].name+'を植えるマスをタップ（残り '+farm.inventory.flowers[placement.value]+'マス）':
+  type==='display'?DISPLAY_TYPES[placement.value].name+'の左上をタップ（残り '+farm.inventory.displays[placement.value]+'個）':
+  type==='move-display'?'陳列家具の移動先をタップ':
   type==='manage-tile'?'移動・撤去する道路または花畑をタップ':
   type==='move-tile'?'移動先の空いているマスをタップ（コイン不要）':
   type==='erase-flower'?'取り除く花畑をタップ':'取り除く道路をタップ';
@@ -584,6 +595,14 @@ function choosePlacement(x,y){
  }
  if(placement.type==='flower'){
   if(applyLayout({type:'place-flower',flower:placement.value,x,y})&&!farm.inventory.flowers[placement.value])stopPlacement();
+  return;
+ }
+ if(placement.type==='display'){
+  if(applyLayout({type:'place-display',displayType:placement.value,x,y})&&!farm.inventory.displays[placement.value])stopPlacement();
+  return;
+ }
+ if(placement.type==='move-display'){
+  if(applyLayout({type:'move-display',id:placement.value,x,y}))stopPlacement();
   return;
  }
  if(placement.type==='erase-flower'){applyLayout({type:'remove-flower',x,y});return;}
