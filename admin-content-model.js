@@ -34,3 +34,17 @@ export function adminContentRows(apps={},activity={}){
   return {id,label,lines,recorded:recorded||!!lastLearningAt,lastLearningAt};
  });
 }
+
+// Display name only: resolving these IDs must never trigger Firebase reads.
+const RECENT_MATERIAL_LABELS=Object.freeze({
+ 'adventure-tower':'魔王の塔','adventure-dungeon':'魔物の巣窟',
+ 'eigo-meter':'エイゴメーター','word-wolf':'ワードウルフ',
+ 'pet-chat':'ペットと英会話','pet-instructions':'指示表現の学習',
+ 'pet-typing-defense-easy':'もんすた城の防衛（イージー）',
+ 'pet-typing-defense-normal':'もんすた城の防衛（ノーマル）',
+ 'pet-typing-defense-hard':'もんすた城の防衛（ハード）'
+});
+export function adminMaterialLabel(id){
+ if(typeof id!=='string'||!id)return '—';
+ return ADMIN_CONTENTS.find(([key])=>key===id)?.[1]||RECENT_MATERIAL_LABELS[id]||id;
+}
