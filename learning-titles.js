@@ -14,8 +14,8 @@ export function announceTitles(titles){
 }
 export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  const mountKey=Symbol.for('monstudy.titles.controller');if(root[mountKey])return root[mountKey];
- styles();const button=root.querySelector('[data-titles-open]'),note=root.querySelector('[data-titles-note]');let generation=0,state=null,dialog=null,busy=false,activeTab='normal',ranking=null,rankingBusy=false,rankingError='',rankingLoadId=0,weeklyBusy=false,weeklyLoaded=false,weeklyError='';
- function reset(){generation++;rankingLoadId++;state=null;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';onSelection('');busy=false;if(dialog){dialog.close();dialog.remove();dialog=null;}button.disabled=!getUser();note.textContent=getUser()?'教材ごとの実績と、表示する称号を確認できます。':'ログインすると称号を確認・選択できます。';}
+ styles();const button=root.querySelector('[data-titles-open]'),note=root.querySelector('[data-titles-note]');let generation=0,state=null,dialog=null,busy=false,activeTab='normal',ranking=null,rankingBusy=false,rankingError='',rankingLoadId=0,weeklyBusy=false,weeklyLoaded=false,weeklyError='',progressBusy=false,progressLoaded=false,progressError='';
+ function reset(){generation++;rankingLoadId++;state=null;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';progressBusy=false;progressLoaded=false;progressError='';onSelection('');busy=false;if(dialog){dialog.close();dialog.remove();dialog=null;}button.disabled=!getUser();note.textContent=getUser()?'教材ごとの実績と、表示する称号を確認できます。':'ログインすると称号を確認・選択できます。';}
  function hydrateSelection(data={}){const selectedId=typeof data.selectedId==='string'?data.selectedId:typeof data.selectedTitleId==='string'?data.selectedTitleId:'',selectedTitle=typeof data.selectedTitle==='string'?data.selectedTitle:'';state={...(state||{}),selectedId,selectedTitle};onSelection(selectedTitle);note.textContent=selectedTitle?'表示中：ー'+selectedTitle+'ー':'称号を選んでランキングに表示できます。';}
  function renderRanking(){
   if(!dialog)return;
@@ -40,7 +40,8 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  }
  function cardForTitle(t){
   const card=el('article');card.className='title-award'+(t.unlocked?' unlocked':' locked');
-  card.append(el('small',t.id===state.selectedId?'表示中':t.unlocked?'解放済み':'未解放'),el('h4',t.name),Object.assign(el('p',t.condition),{className:'title-condition'}),Object.assign(el('p',Math.min(t.done,t.need)+' / '+t.need),{className:'title-progress'}));
+  card.append(el('small',t.id===state.selectedId?'表示中':t.unlocked?'解放済み':'未解放'),el('h4',t.name),Object.assign(el('p',t.condition),{className:'title-condition'}));
+  if(Number.isFinite(t.done))card.append(Object.assign(el('p',Math.min(t.done,t.need)+' / '+t.need),{className:'title-progress'}));
   const equip=el('button',t.id===state.selectedId?'選択中':'この称号を表示');equip.disabled=busy||!t.unlocked||t.id===state.selectedId;
   equip.addEventListener('click',()=>select(t.id));card.append(equip);return card;
  }
@@ -70,6 +71,11 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノート・魔王の塔・魔物の巣窟・もんすた城の防衛の記録も確認できます。'));
    if(activeTab==='weekly'){panel.append(el('p','月曜日から日曜日までの挑戦。前日までに確定した順位を集計し、4日達成で永久に獲得します。'));if(weeklyBusy)panel.append(el('p','週間ランキングを集計しています…'));if(weeklyError)panel.append(el('p',weeklyError));}
    if(activeTab==='master')panel.append(el('p','教材の対象称号をすべて解放すると、特別なマスター称号を獲得できます。'));
+   if(activeTab==='normal'&&!progressLoaded){
+    const details=el('button',progressBusy?'進捗を読み込み中…':'詳しい進捗を表示');
+    details.type='button';details.disabled=progressBusy;details.addEventListener('click',()=>void loadProgress());
+    panel.append(details);if(progressError)panel.append(el('p',progressError));
+   }
    if(!groups.size)panel.append(el('p','この種類の称号はまだありません。'));
    for(const list of groups.values()){
     const section=el('details');section.open=list.some(t=>t.id===state.selectedId);section.className='title-group';
@@ -82,13 +88,13 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  }
  async function load(){
   const user=getUser();if(!user||busy)return;
-  busy=true;button.disabled=true;ranking=null;rankingBusy=true;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';
+  busy=true;button.disabled=true;ranking=null;rankingBusy=true;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';progressBusy=false;progressLoaded=false;progressError='';
   const id=++generation,rankId=++rankingLoadId;
   note.textContent='称号を読み込み中…';
   if(dialog){dialog.close();dialog.remove();}
   dialog=makeDialog('称号');dialog.append(el('p','称号を読み込み中…'));dialog.showModal();
   try{
-   const data=await request(user);
+   const data=await request(user,undefined,'collection');
    if(id!==generation||getUser()?.uid!==user.uid)return;
    state=data;onSelection(state.selectedTitle||'');busy=false;render();
    note.textContent=state.selectedTitle?'表示中：ー'+state.selectedTitle+'ー':'称号を選んでランキングに表示できます。';
@@ -103,13 +109,27 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    if(id===generation){note.textContent=error.message||'称号を取得できませんでした。もう一度お試しください。';dialog.append(el('p',note.textContent));}
   }finally{if(id===generation){busy=false;button.disabled=false;}}
  }
+ async function loadProgress(){
+  const user=getUser();if(!user||progressBusy||progressLoaded)return;
+  const id=generation;progressBusy=true;progressError='';render();
+  try{
+   const data=await request(user,undefined,'progress');
+   if(id!==generation||getUser()?.uid!==user.uid)return;
+   const details=new Map(data.titles.map(title=>[title.id,title]));
+   state={...state,selectedId:data.selectedId,selectedTitle:data.selectedTitle,unlockedTitleCount:data.unlockedTitleCount,
+    titles:state.titles.map(title=>title.category==='weekly'?title:details.get(title.id)||title)};
+   progressLoaded=true;
+  }catch(error){if(id===generation)progressError=error.message||'進捗を取得できませんでした。';}
+  finally{if(id===generation){progressBusy=false;if(dialog?.open)render();}}
+ }
  async function loadWeekly(){
   const user=getUser();if(!user||weeklyBusy||weeklyLoaded)return;
   const id=generation;weeklyBusy=true;weeklyError='';render();
   try{
    const data=await request(user,undefined,'weekly');
    if(id!==generation||getUser()?.uid!==user.uid)return;
-   state={...state,...data};weeklyLoaded=true;weeklyBusy=false;
+   const existing=new Map(state.titles.map(title=>[title.id,title]));
+   state={...state,...data,titles:data.titles.map(title=>title.done===null&&existing.has(title.id)?{...title,done:existing.get(title.id).done}:title)};weeklyLoaded=true;weeklyBusy=false;
    onSelection(state.selectedTitle||'');
    if(dialog?.open)render();
   }catch(error){
