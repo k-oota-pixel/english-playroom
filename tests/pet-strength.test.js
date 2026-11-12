@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js';
+import {titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats,stepStrengthDraft,strengthDraftChanges} from '../pet-strength-model.js';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,rollMagicAmount} from '../pet-dungeons-model.js';
 import {enemyAttack,enemyMaxHp,attackPowerForGrade} from '../pet-adventure/core.js';
 
@@ -14,3 +14,31 @@ test('pet level tracks highest number of newly spent points and survives a respe
 test('magic unlock data probability bands and labels match the dungeon specification',()=>{assert.deepEqual(MAGIC_SPELLS.map(x=>[x.level,x.name,x.base,x.mpCost,x.description]),[[5,'ミムロス',10,5,'体力を小回復'],[15,'ミロゴロ',15,5,'敵に小ダメージ'],[25,'ミムローズ',30,10,'体力を大回復'],[35,'ミロゴロン',30,10,'敵に大ダメージ']]);assert.equal(rollMagicAmount(10,()=>.1),10);assert.equal(rollMagicAmount(10,()=>.5),8);assert.equal(rollMagicAmount(10,()=>.625),9);assert.equal(rollMagicAmount(10,()=>.75),11);assert.equal(rollMagicAmount(10,()=>.875),12);});
 test('dungeon shop contains the six agreed consumables and prices',()=>{assert.deepEqual(DUNGEON_ITEMS.map(x=>[x.name,x.amount,x.price]),[['ばんそうこう',10,8],['きずぐすり',20,15],['伊達医院の処方箋',100,50],['インターの処方箋',100,50],['だてのみず',10,8],['ようていざんのみず',20,20]]);});
 test('defense reduces incoming damage but never below one; opening enemies match small stats',()=>{assert.equal(incomingDamage(3,1),2);assert.equal(incomingDamage(3,2),1);assert.equal(incomingDamage(3,99),1);assert.equal(enemyMaxHp(1,0),6);assert.equal(enemyAttack(1,0),3);assert.equal(attackPowerForGrade('4級')+1,3);});
+
+test('draft allocations are local, reversible and cannot undo confirmed SHOP spending',()=>{
+ const original={hp:2,attack:1,defense:0,mp:0};
+ let draft={...original};
+ for(let i=0;i<4;i++)draft=stepStrengthDraft(30,original,draft,'hp',1);
+ for(let i=0;i<2;i++)draft=stepStrengthDraft(30,original,draft,'attack',1);
+ assert.deepEqual(strengthDraftChanges(original,draft),{hp:4,attack:2,defense:0,mp:0});
+ assert.equal(strengthState(30,draft).available,1);
+ draft=stepStrengthDraft(30,original,draft,'hp',-1);
+ draft=stepStrengthDraft(30,original,draft,'attack',-1);
+ assert.deepEqual(strengthDraftChanges(original,draft),{hp:3,attack:1,defense:0,mp:0});
+ draft={...original};
+ assert.deepEqual(strengthDraftChanges(original,draft),{hp:0,attack:0,defense:0,mp:0});
+ assert.deepEqual(stepStrengthDraft(30,original,draft,'hp',-1),original);
+ assert.throws(()=>stepStrengthDraft(3,original,draft,'hp',1));
+ assert.throws(()=>strengthDraftChanges(original,{...original,hp:1}));
+});
+test('staging 40 adjustments consumes no quota and can be committed as a single final allocation',()=>{
+ const original={hp:0,attack:0,defense:0,mp:0};
+ let draft={...original};
+ for(let i=0;i<20;i++)draft=stepStrengthDraft(120,original,draft,'hp',1);
+ for(let i=0;i<20;i++)draft=stepStrengthDraft(120,original,draft,'defense',1);
+ assert.deepEqual(strengthDraftChanges(original,draft),{hp:20,attack:0,defense:20,mp:0});
+ assert.equal(strengthLevel(0,draft),41);
+ assert.equal(strengthState(120,draft).available,0);
+ draft=stepStrengthDraft(120,original,draft,'hp',-1);
+ assert.equal(strengthState(120,draft).available,1);
+});

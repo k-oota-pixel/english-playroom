@@ -82,5 +82,24 @@ export function allocatePoint(count,allocation,key,grantedPoints=0){
  return {...state.points,[key]:state.points[key]+1};
 }
 
+// Only provisional points may be subtracted without using the paid SHOP respec.
+export function stepStrengthDraft(count,committed,draft,key,direction,grantedPoints=0){
+ if(!STAT_KEYS.includes(key)||![1,-1].includes(direction))throw Error('能力を選んでください。');
+ if(direction===1)return allocatePoint(count,draft,key,grantedPoints);
+ const current=strengthState(count,draft,BASE_STATS,{grantedPoints}).points;
+ const saved=strengthState(count,committed,BASE_STATS,{grantedPoints}).points;
+ return current[key]>saved[key]?{...current,[key]:current[key]-1}:current;
+}
+
+export function strengthDraftChanges(committed={},draft={}){
+ const changes={};
+ for(const key of STAT_KEYS){
+  const before=Number(committed[key]||0),after=Number(draft[key]||0);
+  if(!Number.isSafeInteger(before)||!Number.isSafeInteger(after)||before<0||after<before)throw Error('確定済みのポイントはSHOPで振り直してください。');
+  changes[key]=after-before;
+ }
+ return changes;
+}
+
 export function incomingDamage(power,defense){return Math.max(1,power-defense);}
 

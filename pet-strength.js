@@ -2,7 +2,7 @@ import {auth,db,walletRef} from './coin-reward.js?v=2.1.25';
 import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37';
 import {getDocFromServer as getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js?v=2.1.25';
-import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats,grantedStrengthPoints} from './pet-strength-model.js?v=2.3.23';
+import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats,grantedStrengthPoints,stepStrengthDraft,strengthDraftChanges} from './pet-strength-model.js?v=2.4.88';
 import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
 import {collectedTitleCount} from './title-ownership.js?v=1';
@@ -90,73 +90,127 @@ const button=document.getElementById('petStrengthOpen');
 if(button){
  const dialog=document.createElement('dialog');
  dialog.className='strength-dialog';dialog.setAttribute('aria-labelledby','strengthHeading');
- dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>たまごの状態でも称号ポイントを配分できます。獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力・MPは＋1ずつ強化でき、初めて使う強化ポイント1つにつきレベルが1上がります。</p><div data-body></div><p data-message role="status"></p>';
+ dialog.innerHTML='<header><h2 id="strengthHeading">ペット強化</h2><button type="button" data-close>閉じる</button></header><p>たまごの状態でも称号ポイントを配分できます。獲得した称号3個につき1ポイント。HPは＋2、攻撃力・防御力・MPは＋1ずつ強化でき、初めて使う強化ポイント1つにつきレベルが1上がります。</p><p class="strength-preview-help">＋／－の操作は仮の変更です。最後に「変更を確定」を押すまで保存されません。</p><div data-body></div><footer class="strength-actions"><button type="button" data-undo>元に戻す</button><button type="button" data-confirm>変更を確定</button></footer><p data-message role="status" aria-live="polite"></p>';
  document.body.append(dialog);
  const body=dialog.querySelector('[data-body]'),message=dialog.querySelector('[data-message]');
- let busy=false,generation=0,loadedCount=null;
- dialog.querySelector('[data-close]').onclick=()=>dialog.close();
- dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+ const confirmButton=dialog.querySelector('[data-confirm]'),undoButton=dialog.querySelector('[data-undo]');
+ let busy=false,generation=0,session=null;
 
- function render(count,data){
-  const state=strengthState(count,data.petStrength,data.petBaseStats,{ageDays:data.petLifeDays,adult:hasPet(data)&&data.petAdult!==false,grantedPoints:grantedStrengthPoints(data)}),level=strengthLevel(levelPointsOf(data),data.petStrength);body.replaceChildren();
-  const levelCard=document.createElement('div');levelCard.className='strength-level-card';levelCard.innerHTML=`<span>PET LEVEL</span><strong>Lv.${level}</strong>`;body.append(levelCard);
-  const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント`;body.append(summary);
+ function pendingChanges(){
+  if(!session)return null;
+  return strengthDraftChanges(session.initial,session.draft);
+ }
+ function pendingTotal(){return Object.values(pendingChanges()||{}).reduce((sum,value)=>sum+value,0);}
+ function requestClose(){
+  if(busy)return;
+  if(pendingTotal()>0&&!window.confirm('まだ確定していない強化があります。変更を破棄して閉じますか？'))return;
+  session=null;dialog.close();
+ }
+ dialog.querySelector('[data-close]').onclick=requestClose;
+ dialog.addEventListener('click',event=>{if(event.target===dialog)requestClose();});
+ dialog.addEventListener('cancel',event=>{event.preventDefault();requestClose();});
+
+ function render(){
+  if(!session)return;
+  const {count,data,initial,draft}=session;
+  const state=strengthState(count,draft,data.petBaseStats,{ageDays:data.petLifeDays,adult:hasPet(data)&&data.petAdult!==false,grantedPoints:grantedStrengthPoints(data)});
+  const level=strengthLevel(levelPointsOf(data),draft),pending=pendingTotal();
+  body.replaceChildren();
+  const levelCard=document.createElement('div');levelCard.className='strength-level-card';levelCard.innerHTML=`<span>PET LEVEL${pending?'（仮）':''}</span><strong>Lv.${level}</strong>`;body.append(levelCard);
+  const summary=document.createElement('p');summary.className='strength-summary';summary.textContent=`獲得称号 ${count}個　／　残り ${state.available}ポイント${pending?`（未確定 ${pending}pt）`:''}`;body.append(summary);
   const next=document.createElement('p');next.textContent=`次のポイントまで称号あと${3-count%3}個`;body.append(next);
   for(const [key,label,gain] of [['hp','HP',2],['attack','攻撃力',1],['defense','防御力',1],['mp','MP',1]]){
    const row=document.createElement('div');row.className='strength-row';
-   const text=document.createElement('strong');text.textContent=`${label}　${state.stats[key]}`;
-   const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!canStrengthen(data)||state.available<1;add.onclick=()=>save(key);
-   row.append(text,add);body.append(row);
+   const text=document.createElement('strong');text.textContent=`${label}　${state.stats[key]}${draft[key]>initial[key]?'（仮）':''}`;
+   const actions=document.createElement('div');actions.className='strength-row-actions';
+   const subtract=document.createElement('button');subtract.type='button';subtract.className='strength-subtract';subtract.textContent='－';subtract.setAttribute('aria-label',`${label}の未確定ポイントを1戻す`);
+   subtract.disabled=busy||draft[key]<=initial[key];subtract.onclick=()=>change(key,-1);
+   const add=document.createElement('button');add.type='button';add.textContent=`＋${gain}（1pt）`;add.disabled=busy||!canStrengthen(data)||state.available<1;add.onclick=()=>change(key,1);
+   actions.append(subtract,add);row.append(text,actions);body.append(row);
   }
   const magicEffect=spell=>spell.description.replace('体力','HP');
   const learned=MAGIC_SPELLS.filter(spell=>spell.level<=level),list=document.createElement('section');list.className='strength-magic-list';
-  const heading=document.createElement('h3');heading.textContent='習得済みの魔法';list.append(heading);
+  const heading=document.createElement('h3');heading.textContent='習得済みの魔法${pending?'（確定後に反映）':''}';list.append(heading);
   for(const spell of learned){const item=document.createElement('p');item.innerHTML=`<strong>${spell.name}</strong><span>${magicEffect(spell)} ／ 消費MP ${spell.mpCost}</span>`;list.append(item);}
   if(!learned.length){const empty=document.createElement('p');empty.textContent='まだ魔法を習得していません。';list.append(empty);}body.append(list);
   const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」\n${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法を習得済み！';body.append(magic);
-  const note=document.createElement('p');note.textContent=hasPet(data)?'強化は塔・洞窟の次の冒険から反映されます。振り直しはSHOPで30コインです（レベルは下がりません）。':canStrengthen(data)?'配分した強化ポイントとレベルは、孵化後の冒険から反映されます。':'新しいたまごを迎えると強化できます。';body.append(note);
+  const note=document.createElement('p');note.textContent=hasPet(data)?'強化を確定すると、塔・洞窟の次の冒険から反映されます。確定後の振り直しはSHOPで30コインです（レベルは下がりません）。':canStrengthen(data)?'確定した強化ポイントとレベルは、孵化後の冒険から反映されます。':'新しいたまごを迎えると強化できます。';body.append(note);
+  undoButton.disabled=busy||pending===0;
+  confirmButton.disabled=busy||pending===0;
+  confirmButton.textContent=pending?`変更を確定（${pending}pt）`:'変更を確定';
  }
+
+ function change(key,direction){
+  if(busy||!session)return;
+  try{
+   const {count,data,initial,draft}=session;
+   session.draft=stepStrengthDraft(count,initial,draft,key,direction,grantedStrengthPoints(data));
+   message.textContent='';render();
+  }catch(error){message.textContent=error.message||'ポイントを変更できませんでした。';}
+ }
+ undoButton.onclick=()=>{
+  if(busy||!session)return;
+  session.draft={...session.initial};message.textContent='未確定の変更を元に戻しました。';render();
+ };
 
  async function load(){
   const user=auth.currentUser;if(!user||busy)return;
-  const id=++generation;busy=true;body.textContent='読み込み中…';message.textContent='';dialog.showModal();
+  const id=++generation;busy=true;session=null;body.textContent='読み込み中…';message.textContent='';
+  confirmButton.disabled=true;undoButton.disabled=true;dialog.showModal();
   try{
-   const snap=await getDoc(walletRef(user));
+   // Reuse the home page's existing wallet subscription; no extra Firestore read on normal opens.
+   const live=window.MonstudyShopState;
+   const dataFromWallet=live?.ready&&live.user?.uid===user.uid?live.data:null;
+   const snap=dataFromWallet==null?await getDoc(walletRef(user)):null;
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
-   let data=snap.data()||{};data=await reconcilePetStats(user,data);
+   let data=dataFromWallet??(snap?.data()||{});
+   data=await reconcilePetStats(user,data);
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
    const count=await loadStrengthTitles(user,{walletData:data});
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
-   loadedCount=count;busy=false;render(count,data);
-  }catch(e){if(id===generation){body.textContent='';message.textContent=e.message;}}
+   const initial=strengthState(count,data.petStrength,BASE_STATS,{grantedPoints:grantedStrengthPoints(data)}).points;
+   session={uid:user.uid,count,data,initial:{...initial},draft:{...initial},generation:generationOf(data)};
+   busy=false;render();
+  }catch(error){if(id===generation){body.textContent='';message.textContent=error.message||'読み込めませんでした。';}}
   finally{if(id===generation)busy=false;}
  }
 
- async function save(key){
-  const user=auth.currentUser;if(!user||busy)return;
-  const id=generation;busy=true;body.querySelectorAll('button').forEach(b=>b.disabled=true);message.textContent='保存中…';
+ async function save(){
+  const user=auth.currentUser;if(!user||busy||!session||session.uid!==user.uid)return;
+  const changes=pendingChanges(),total=Object.values(changes).reduce((sum,value)=>sum+value,0);
+  if(total===0)return;
+  const id=generation,editing=session;
+  busy=true;render();message.textContent='確定して保存しています…';
   try{
    const result=await runTransaction(db,async tx=>{
     if(auth.currentUser?.uid!==user.uid)throw Error('ログインし直してください。');
     const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};
-    if(!canStrengthen(data))throw Error('たまごの状態またはペットがいるときに強化できます。');
-    const count=storedTitleCount(data);if(count===null)throw Error('称号が更新されました。閉じてもう一度開くと最新のポイントを確認できます。');
-    const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength),petStrength=allocatePoint(count,data.petStrength,key,grantedStrengthPoints(data));
-    const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength)),afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
+    if(!canStrengthen(data)||generationOf(data)!==editing.generation)throw Error('ペットの状態が変わりました。画面を開き直してください。');
+    const count=storedTitleCount(data);
+    if(count===null||count!==editing.count)throw Error('称号ポイントが更新されました。画面を開き直してください。');
+    const current=strengthState(count,data.petStrength,BASE_STATS,{grantedPoints:grantedStrengthPoints(data)}).points;
+    if(Object.keys(changes).some(key=>current[key]!==editing.initial[key]))throw Error('別の画面で強化内容が変わりました。画面を開き直してください。');
+    let petStrength={...current};
+    for(const key of ['hp','attack','defense','mp'])for(let n=0;n<changes[key];n++)petStrength=allocatePoint(count,petStrength,key,grantedStrengthPoints(data));
+    const beforeLevel=strengthLevel(levelPointsOf(data),data.petStrength);
+    const petStrengthLevelPoints=Math.max(levelPointsOf(data),allocationTotal(petStrength));
+    const afterLevel=strengthLevel(petStrengthLevelPoints,petStrength);
     tx.set(ref,{petStrength,petStrengthLevelPoints,petUpdatedAt:serverTimestamp()},{merge:true});
     return {data:{...data,petStrength,petStrengthLevelPoints},count,beforeLevel,afterLevel};
    });
    if(id!==generation||auth.currentUser?.uid!==user.uid)return;
-   loadedCount=result.count;busy=false;render(result.count,result.data);message.textContent='強化を保存しました！';
+   const initial=strengthState(result.count,result.data.petStrength,BASE_STATS,{grantedPoints:grantedStrengthPoints(result.data)}).points;
+   session={uid:user.uid,count:result.count,data:result.data,initial:{...initial},draft:{...initial},generation:generationOf(result.data)};
+   message.textContent='すべての変更をまとめて保存しました！';
    if(result.afterLevel>result.beforeLevel)showLevelUp(result.afterLevel);
-  }catch(e){if(id===generation){message.textContent=e.message||'保存できませんでした。閉じてもう一度お試しください。';}}
-  finally{if(id===generation)busy=false;}
+  }catch(error){if(id===generation)message.textContent=error.message||'保存できませんでした。再度お試しください。';}
+  finally{if(id===generation){busy=false;render();}}
  }
-
+ confirmButton.onclick=save;
  button.onclick=load;
  onAuthStateChanged(auth,user=>{
-  generation++;busy=false;loadedCount=null;button.disabled=!user;dialog.close();body.replaceChildren();
-  // Pet stats are reconciled when the panel is opened or an adventure loads; avoid an auth-time wallet read on every page.
+  generation++;busy=false;session=null;button.disabled=!user;dialog.close();body.replaceChildren();
+  // Pet stats are reconciled by the existing lifecycle update, not by every draft click.
  });
 }
 
