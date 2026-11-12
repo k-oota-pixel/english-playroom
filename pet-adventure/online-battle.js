@@ -385,7 +385,7 @@ async function answerQuestion(index){
  buttons.forEach((b,i)=>{b.disabled=true;if(i===currentQuestion.correctIndex)b.classList.add('correct');else if(i===index)b.classList.add('wrong');});
  const missDamage=Math.max(1,Math.ceil(Math.max(1,Number(minePlayer()?.stats?.hp)||1)/4));
  els.answerFeedback.textContent=correct?'正解！ 攻撃！':`不正解… 自分に${missDamage}ダメージ`;els.answerFeedback.className='answer-feedback '+(correct?'ok':'no');
- try{const room=await act(correct?'attack':'miss',{render:false});currentRoom=room;renderRoom(room);await new Promise(resolve=>setTimeout(resolve,420));if(currentRoom?.status==='playing'){busy=false;prepareTurn(currentRoom);}else busy=false;}
+ try{const room=await act(correct?'attack':'miss',{render:false,body:QUESTION_MODE?{questionId:currentQuestion.card.id}:null});currentRoom=room;renderRoom(room);await new Promise(resolve=>setTimeout(resolve,420));if(currentRoom?.status==='playing'){busy=false;prepareTurn(currentRoom);}else busy=false;}
  catch{busy=false;if(currentRoom?.status==='playing')prepareTurn(currentRoom);}
  // Unlock action buttons immediately after the answer animation.
  syncActionControls();
