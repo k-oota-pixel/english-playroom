@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {getFirestore,doc,getDoc,setDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
-import {MAP,FIELD_TYPES,FIELD_SIZES,FLOWERS,flowerIds,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,canPlaceFlower,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,useProduce} from './model.js?v=12';
+import {MAP,FIELD_TYPES,FIELD_SIZES,DISPLAY_TYPES,displayIds,FLOWERS,flowerIds,CROPS,SUPPLIES,cropIds,allCropIds,cropUnlockProgress,isCropUnlocked,plotKey,locateField,findWorkStand,canPlace,canPlaceRoad,canPlaceFlower,canPlaceDisplay,freshFarm,normalizeFarm,growthPhase,remaining,applyFarmAction,applyLayoutAction,applyPurchase,applyDisplayAction,useProduce} from './model.js?v=12';
 import {flowerTileSVG} from './flower-art.js?v=1';
 import {installScenery,FARM_SCENE_SIZE} from './scenery.js?v=6';
 
@@ -14,7 +14,7 @@ const $=id=>document.getElementById(id);
 const tile=MAP.tile;
 let user=null,petData={},farm=freshFarm(),balance=0,selected=null,chosenSeed='lettuce',shopTab='field';
 let busy=false,dirty=false,saving=null,saveTimer=0,toastTimer=0,zoom=1,baseZoom=1,petX=8.0,petY=6.5,walking=false,ready=false,authSequence=0;
-let actionChoice=null,chosenPurchase=null,chosenProduce=null,placement=null,pendingNamePlacement=null,managedFieldId=null;
+let actionChoice=null,chosenPurchase=null,chosenProduce=null,placement=null,pendingNamePlacement=null,managedFieldId=null,managedDisplayId=null;
 function walletRef(){return doc(db,'users',user.uid,'apps','english-playroom');}
 function farmRef(){return doc(db,'users',user.uid,'apps','pet-farm');}
 const coords=(x,y)=>({left:(x*tile)+'px',top:(y*tile)+'px'});
@@ -30,7 +30,7 @@ function updateTileManageButton(){
  btn.setAttribute('aria-pressed',String(active));
 }
 function refresh(){
- updateCoin();renderRoads();renderFlowers();renderPlots();renderPlacement();renderSelection();renderShop();renderInventory();renderManage();
+ updateCoin();renderRoads();renderFlowers();renderPlots();renderDisplays();renderPlacement();renderSelection();renderShop();renderInventory();renderManage();renderDisplayDialog();
  updateTileManageButton();
  $('saveBtn').disabled=!user||busy||!dirty;
 }
@@ -280,6 +280,7 @@ function shopStock(kind,id){
  if(kind==='field')return id==='free'?Number(farm.starterClaimed):Math.max(0,Number(farm.inventory.fields[id])||0);
  if(kind==='road')return Math.max(0,Number(farm.inventory.roads)||0);
  if(kind==='flower')return Math.max(0,Number(farm.inventory.flowers[id])||0);
+ if(kind==='display')return Math.max(0,Number(farm.inventory.displays[id])||0);
  return 0;
 }
 function maxPurchaseQuantity(item){
@@ -307,6 +308,9 @@ function shopItems(){
  if(shopTab==='seed')return cropIds.map(id=>({kind:'seed',id,label:CROPS[id].name+'のタネ',icon:CROPS[id].icon,price:CROPS[id].seed,units:CROPS[id].pack,sub:'成長 '+CROPS[id].minutes/60+'時間'}));
  if(shopTab==='supply')return Object.entries(SUPPLIES).map(([id,t])=>({kind:'supply',id,label:t.name,icon:t.icon,price:t.price,sub:id==='water'?'残り時間を2/3に短縮':'残り時間を1/3に短縮'}));
  if(shopTab==='flower')return flowerIds.map(id=>({kind:'flower',id,label:FLOWERS[id].name+'の花畑',icon:FLOWERS[id].icon,price:FLOWERS[id].price,sub:'1マスに花が4つ・枠なし'}));
+ if(shopTab==='display')return displayIds.map(id=>({kind:'display',id,label:DISPLAY_TYPES[id].name,
+  icon:DISPLAY_TYPES[id].icon,price:DISPLAY_TYPES[id].price,
+  sub:DISPLAY_TYPES[id].w+'×'+DISPLAY_TYPES[id].h+'マス・最大'+DISPLAY_TYPES[id].capacity+'個補充'}));
  if(shopTab==='field')return [{kind:'field',id:'free',label:'初回限定・4マス圃場',icon:'🌱',price:0,sub:'1つ目は無料'},
   ...FIELD_SIZES.map(id=>({kind:'field',id,label:FIELD_TYPES[id].name,icon:'🌾',price:FIELD_TYPES[id].price,sub:'好きな場所へ置けます'}))];
  return [{kind:'road',id:'dirt',label:'土の道',icon:'🟫',price:1,sub:'1マス1C・自由な配置'}];
@@ -365,7 +369,7 @@ function renderShop(){
    const success=await buy(p.kind,p.id,p.quantity);
    if(!success)return;
    chosenPurchase=null;
-   if(['field','road','flower'].includes(p.kind)){
+   if(['field','road','flower','display'].includes(p.kind)){
     hideDialog('shopDialog');
     beginPlacement(p.kind,p.id==='free'?'4':p.id);
    }else renderShop();
@@ -413,6 +417,23 @@ function renderInventory(){
  const eraseFlower=node('button','inv-chip inv-action','🌸 花畑を取り除く');
  eraseFlower.type='button';eraseFlower.disabled=!ready||busy||!farm.flowers.length;
  eraseFlower.addEventListener('click',()=>beginPlacement('erase-flower',''));wrap.appendChild(eraseFlower);
+ heading('🧺 陳列家具の持ち物・配置する');
+ wrap=row();
+ for(const id of displayIds){
+  const count=farm.inventory.displays[id]||0;
+  const btn=node('button','inv-chip inv-action',DISPLAY_TYPES[id].icon+' '+DISPLAY_TYPES[id].name+' ×'+count+'　配置');
+  btn.type='button';btn.disabled=!ready||busy||!count;
+  btn.addEventListener('click',()=>beginPlacement('display',id));wrap.appendChild(btn);
+ }
+ heading('🍓 配置済みの陳列家具');
+ wrap=row();
+ if(!farm.displays.length)wrap.appendChild(node('span','tiny','まだ陳列家具を置いていません'));
+ for(const display of farm.displays){
+  const item=DISPLAY_TYPES[display.type];
+  const btn=node('button','inv-chip inv-action',item.icon+' '+item.name+'　'+display.quantity+'/'+item.capacity+'　管理');
+  btn.type='button';btn.disabled=!ready||busy;
+  btn.addEventListener('click',()=>openDisplay(display.id));wrap.appendChild(btn);
+ }
  heading('🌰 タネの持ち物');
  wrap=row();
  for(const id of allCropIds)if(farm.inventory.seeds[id])wrap.appendChild(node('span','inv-chip',CROPS[id].icon+' '+CROPS[id].name+' ×'+farm.inventory.seeds[id]));
