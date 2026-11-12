@@ -25,8 +25,9 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   const header=el('div');header.className='titles-ranking-heading';
   header.append(el('strong','👑 称号獲得数 TOP3'),el('small','全期間'));
   root.append(header);
+  if(!ranking&&!rankingBusy&&!rankingError){const loadButton=el('button','称号ランキングを表示');loadButton.type='button';loadButton.addEventListener('click',()=>void loadRanking());root.append(loadButton);return;}
   if(rankingBusy){root.append(el('p','ランキングを取得しています…'));return;}
-  if(rankingError){root.append(el('p',rankingError));return;}
+  if(rankingError){root.append(el('p',rankingError));const retry=el('button','ランキングを再取得');retry.type='button';retry.addEventListener('click',()=>void loadRanking());root.append(retry);return;}
   const leaders=Array.isArray(ranking?.leaders)?ranking.leaders:[];
   if(!leaders.length){root.append(el('p','まだランキング対象の記録がありません。'));return;}
   const list=el('ol');list.className='titles-ranking-list';
@@ -88,8 +89,8 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  }
  async function load(){
   const user=getUser();if(!user||busy)return;
-  busy=true;button.disabled=true;ranking=null;rankingBusy=true;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';progressBusy=false;progressLoaded=false;progressError='';
-  const id=++generation,rankId=++rankingLoadId;
+  busy=true;button.disabled=true;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';progressBusy=false;progressLoaded=false;progressError='';
+  const id=++generation;rankingLoadId++;
   note.textContent='称号を読み込み中…';
   if(dialog){dialog.close();dialog.remove();}
   dialog=makeDialog('称号');dialog.append(el('p','称号を読み込み中…'));dialog.showModal();
@@ -98,16 +99,23 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    if(id!==generation||getUser()?.uid!==user.uid)return;
    state=data;onSelection(state.selectedTitle||'');busy=false;render();
    note.textContent=state.selectedTitle?'表示中：ー'+state.selectedTitle+'ー':'称号を選んでランキングに表示できます。';
-   void request(user,undefined,'ranking').then(data=>{
-    if(rankId!==rankingLoadId||getUser()?.uid!==user.uid)return;
-    ranking=data;rankingBusy=false;renderRanking();
-   }).catch(error=>{
-    if(rankId!==rankingLoadId||getUser()?.uid!==user.uid)return;
-    rankingBusy=false;rankingError=error.message||'ランキングを取得できませんでした。';renderRanking();
-   });
+
   }catch(error){
    if(id===generation){note.textContent=error.message||'称号を取得できませんでした。もう一度お試しください。';dialog.append(el('p',note.textContent));}
   }finally{if(id===generation){busy=false;button.disabled=false;}}
+ }
+ async function loadRanking(){
+  const user=getUser();if(!user||rankingBusy)return;
+  const rankId=++rankingLoadId;
+  ranking=null;rankingBusy=true;rankingError='';renderRanking();
+  try{
+   const data=await request(user,undefined,'ranking');
+   if(rankId!==rankingLoadId||getUser()?.uid!==user.uid)return;
+   ranking=data;rankingError='';
+  }catch(error){
+   if(rankId!==rankingLoadId||getUser()?.uid!==user.uid)return;
+   rankingError=error.message||'ランキングを取得できませんでした。';
+  }finally{if(rankId===rankingLoadId){rankingBusy=false;renderRanking();}}
  }
  async function loadProgress(){
   const user=getUser();if(!user||progressBusy||progressLoaded)return;
