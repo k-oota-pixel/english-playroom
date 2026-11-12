@@ -105,3 +105,21 @@ html[data-monstudy-screen-theme="dark"] .online-ranking-table td,
 html[data-monstudy-screen-theme="dark"] .online-ranking-table th{border-color:#405448}
 html[data-monstudy-screen-theme="dark"] #onlineRankingClose{background:#34483c;color:#effef3;border-color:#718d79}
 html[data-monstudy-screen-theme="dark"] .online-ranking-status.error{color:#ffc1b9}
+
+/* Retry Note questions are sentences, not single vocabulary words. Keep the
+   same battle layout while preserving legibility on narrow iPads/phones. */
+body.online-questions-mode #attackPanel .attack-name{
+ font-size:clamp(12px,2.3vw,15px);line-height:1.45;
+ display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+ overflow:hidden;overflow-wrap:anywhere;
+}
+body.online-questions-mode #quizPanel .question{
+ font-size:clamp(13px,2.5vw,18px);line-height:1.45;overflow:auto;
+}
+body.online-questions-mode #quizPanel .answer-btn{
+ font-size:clamp(12px,2.3vw,15px);overflow:auto;overflow-wrap:anywhere;
+}
+@media(max-width:520px){
+ body.online-questions-mode #quizPanel .question{font-size:13px;}
+ body.online-questions-mode #quizPanel .answer-btn{font-size:12px;}
+}
