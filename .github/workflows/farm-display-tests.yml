@@ -1,0 +1,26 @@
+name: Farm display tests
+on:
+  pull_request:
+    paths:
+      - 'pet-farm/**'
+      - 'tests/pet-farm-*.test.js'
+      - '.github/workflows/farm-display-tests.yml'
+  push:
+    paths:
+      - 'pet-farm/**'
+      - 'tests/pet-farm-*.test.js'
+      - '.github/workflows/farm-display-tests.yml'
+jobs:
+  model-and-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: |
+          node --check pet-farm/model.js
+          node --check pet-farm/app.js
+      - name: Existing and new model tests
+        run: node --test tests/pet-farm-model.test.js tests/pet-farm-displays.test.js
