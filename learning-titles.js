@@ -14,8 +14,8 @@ export function announceTitles(titles){
 }
 export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  const mountKey=Symbol.for('monstudy.titles.controller');if(root[mountKey])return root[mountKey];
- styles();const button=root.querySelector('[data-titles-open]'),note=root.querySelector('[data-titles-note]');let generation=0,state=null,dialog=null,busy=false,activeTab='normal',ranking=null,rankingBusy=false,rankingError='',rankingLoadId=0,weeklyBusy=false,weeklyLoaded=false,weeklyError='',progressBusy=false,progressLoaded=false,progressError='';
- function reset(){generation++;rankingLoadId++;state=null;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';progressBusy=false;progressLoaded=false;progressError='';onSelection('');busy=false;if(dialog){dialog.close();dialog.remove();dialog=null;}button.disabled=!getUser();note.textContent=getUser()?'教材ごとの実績と、表示する称号を確認できます。':'ログインすると称号を確認・選択できます。';}
+ styles();const button=root.querySelector('[data-titles-open]'),note=root.querySelector('[data-titles-note]');let generation=0,state=null,dialog=null,busy=false,activeTab='normal',ranking=null,rankingBusy=false,rankingError='',rankingLoadId=0,weeklyBusy=false,weeklyLoaded=false,weeklyError='',progressBusy=false,progressLoaded=false,progressError='',openGroups=new Set(),progressAppLoaded=new Set(),progressAppLoading=new Set(),progressAppErrors=new Map();
+ function reset(){generation++;rankingLoadId++;openGroups.clear();progressAppLoaded.clear();progressAppLoading.clear();progressAppErrors.clear();state=null;ranking=null;rankingBusy=false;rankingError='';activeTab='normal';weeklyBusy=false;weeklyLoaded=false;weeklyError='';progressBusy=false;progressLoaded=false;progressError='';openGroups.clear();progressAppLoaded.clear();progressAppLoading.clear();progressAppErrors.clear();onSelection('');busy=false;if(dialog){dialog.close();dialog.remove();dialog=null;}button.disabled=!getUser();note.textContent=getUser()?'教材ごとの実績と、表示する称号を確認できます。':'ログインすると称号を確認・選択できます。';}
  function hydrateSelection(data={}){const selectedId=typeof data.selectedId==='string'?data.selectedId:typeof data.selectedTitleId==='string'?data.selectedTitleId:'',selectedTitle=typeof data.selectedTitle==='string'?data.selectedTitle:'';state={...(state||{}),selectedId,selectedTitle};onSelection(selectedTitle);note.textContent=selectedTitle?'表示中：ー'+selectedTitle+'ー':'称号を選んでランキングに表示できます。';}
  function renderRanking(){
   if(!dialog)return;
@@ -72,14 +72,17 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    if(activeTab==='normal')panel.append(el('p','各教材の獲得状況を確認できます。リトライノート・魔王の塔・魔物の巣窟・もんすた城の防衛の記録も確認できます。'));
    if(activeTab==='weekly'){panel.append(el('p','月曜から日曜までに4日達成すると、翌週に称号が自動で付与されます。今週の進み具合は前日分まで表示します。'));if(weeklyBusy)panel.append(el('p','週間ランキングを集計しています…'));if(weeklyError)panel.append(el('p',weeklyError));}
    if(activeTab==='master')panel.append(el('p','教材の対象称号をすべて解放すると、特別なマスター称号を獲得できます。'));
-   if(activeTab==='normal'&&!progressLoaded){
-    const details=el('button',progressBusy?'進捗を読み込み中…':'詳しい進捗を表示');
-    details.type='button';details.disabled=progressBusy;details.addEventListener('click',()=>void loadProgress());
-    panel.append(details);if(progressError)panel.append(el('p',progressError));
-   }
+   if(activeTab==='normal')panel.append(el('p','教材名を開くと、未達成の称号の進捗を教材ごとに読み込みます。'));
    if(!groups.size)panel.append(el('p','この種類の称号はまだありません。'));
    for(const list of groups.values()){
-    const section=el('details');section.open=list.some(t=>t.id===state.selectedId);section.className='title-group';
+    const appId=list[0].appId,section=el('details');section.open=openGroups.has(appId)||list.some(t=>t.id===state.selectedId);section.className='title-group';section.dataset.titleAppId=appId;
+    section.addEventListener('toggle',()=>{
+     if(!section.isConnected)return;
+     if(section.open){
+      openGroups.add(appId);
+      if(!progressLoaded&&!progressAppLoaded.has(appId)&&!progressAppLoading.has(appId))void loadAppProgress(appId);
+     }else openGroups.delete(appId);
+    });
     section.append(el('summary',list[0].label+'　'+list.filter(t=>t.unlocked).length+' / '+list.length+' 解放'));
     const grid=el('div');grid.className='title-grid';for(const t of list)grid.append(cardForTitle(t));
     section.append(grid);panel.append(section);
@@ -117,6 +120,33 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    rankingError=error.message||'ランキングを取得できませんでした。';
   }finally{if(rankId===rankingLoadId){rankingBusy=false;renderRanking();}}
  }
+ async function loadAppProgress(appId){
+  const user=getUser();if(!user||progressAppLoaded.has(appId)||progressAppLoading.has(appId))return;
+  const id=generation;progressAppLoading.add(appId);progressAppErrors.delete(appId);
+  const group=dialog?.querySelector(`[data-title-app-id="${appId}"]`);
+  const notice=el('p','進捗を取得しています…');notice.className='title-progress-message';group?.append(notice);
+  try{
+   const data=await request(user,undefined,'app-progress:'+appId);
+   if(id!==generation||getUser()?.uid!==user.uid)return;
+   const doneById=new Map((Array.isArray(data.titles)?data.titles:[]).map(title=>[title.id,title.done]));
+   state={...state,titles:state.titles.map(title=>title.appId===appId&&!title.unlocked&&doneById.has(title.id)?{...title,done:doneById.get(title.id)}:title)};
+   progressAppLoaded.add(appId);
+   const currentGroup=dialog?.querySelector(`[data-title-app-id="${appId}"]`);
+   const matching=state.titles.filter(title=>title.appId===appId);
+   if(currentGroup){
+    const cards=[...currentGroup.querySelectorAll('.title-grid .title-award')];
+    matching.forEach((title,i)=>{
+     const card=cards[i];if(!card||!Number.isFinite(title.done))return;
+     const text=Math.min(title.done,title.need)+' / '+title.need;
+     let progress=card.querySelector('.title-progress');
+     if(!progress){progress=el('p');progress.className='title-progress';card.insertBefore(progress,card.querySelector('button'));}
+     progress.textContent=text;
+    });
+   }
+  }catch(error){
+   if(id===generation){const message=error.message||'進捗を取得できませんでした。';progressAppErrors.set(appId,message);const target=dialog?.querySelector(`[data-title-app-id="${appId}"]`);const retry=el('button','進捗を再取得');retry.type='button';retry.addEventListener('click',()=>{retry.remove();void loadAppProgress(appId);});target?.append(el('p',message),retry);}
+  }finally{progressAppLoading.delete(appId);notice.remove();}
+ }
  async function loadProgress(){
   const user=getUser();if(!user||progressBusy||progressLoaded)return;
   const id=generation;progressBusy=true;progressError='';render();
@@ -150,7 +180,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
  async function refreshSelection(){const user=getUser();if(!user)return;const id=generation;const data=await request(user,undefined,'selection');if(id!==generation||getUser()?.uid!==user.uid)return;hydrateSelection(data);}
  button.addEventListener('click',load);reset();const controller={reset,load,refreshSelection,hydrateSelection};root[mountKey]=controller;return controller;
 }
-async function boot(){const root=document.getElementById('learningTitles');if(!root)return;const bootKey=Symbol.for('monstudy.titles.boot');if(root[bootKey])return;root[bootKey]=true;try{styles();const [{getApps,getApp},{getAuth,onAuthStateChanged}]=await Promise.all([import('https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js'),import('https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37')]);if(!getApps().length){delete root[bootKey];setTimeout(boot,80);return;}let user=null,fallbackUid='';const board=mountTitles({root,getUser:()=>user,onSelection:name=>{const label=document.getElementById('petSelectedTitle');if(label)label.textContent=name||'称号なし';},request:async(u,body,view)=>{const token=await u.getIdToken(),url=view==='ranking'?'https://task-quest.onrender.com/api/learning/title-rankings':view?API+'?view='+encodeURIComponent(view):API,r=await fetch(url,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(45000)});const data=await r.json();if(!r.ok)throw Error(data.error||'称号を取得できませんでした。');return data;}});
+async function boot(){const root=document.getElementById('learningTitles');if(!root)return;const bootKey=Symbol.for('monstudy.titles.boot');if(root[bootKey])return;root[bootKey]=true;try{styles();const [{getApps,getApp},{getAuth,onAuthStateChanged}]=await Promise.all([import('https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js'),import('https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37')]);if(!getApps().length){delete root[bootKey];setTimeout(boot,80);return;}let user=null,fallbackUid='';const board=mountTitles({root,getUser:()=>user,onSelection:name=>{const label=document.getElementById('petSelectedTitle');if(label)label.textContent=name||'称号なし';},request:async(u,body,view)=>{const token=await u.getIdToken(),url=view==='ranking'?'https://task-quest.onrender.com/api/learning/title-rankings':view?.startsWith('app-progress:')?API+'?view=app-progress&appId='+encodeURIComponent(view.slice(13)):view?API+'?view='+encodeURIComponent(view):API,r=await fetch(url,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(45000)});const data=await r.json();if(!r.ok)throw Error(data.error||'称号を取得できませんでした。');return data;}});
  const hydrateWallet=data=>{if(!data||typeof data!=='object')return false;const has=Object.prototype.hasOwnProperty.call(data,'selectedTitleId')||Object.prototype.hasOwnProperty.call(data,'selectedTitle');if(!has)return false;board.hydrateSelection({selectedId:typeof data.selectedTitleId==='string'?data.selectedTitleId:'',selectedTitle:typeof data.selectedTitle==='string'?data.selectedTitle:''});return true;};
  const fallback=()=>{if(!user||fallbackUid===user.uid)return;fallbackUid=user.uid;void board.refreshSelection().catch(console.warn);};
  onAuthStateChanged(getAuth(getApp()),u=>{user=u;fallbackUid='';board.reset();if(!u)return;const cached=window.EnglishPlayroomWallet;if(cached?.uid===u.uid){if(!hydrateWallet(cached.data))fallback();}});
