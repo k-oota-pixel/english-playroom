@@ -1,13 +1,442 @@
 {
-  "generatedAt": "2026-11-09T17:27:22.217Z",
-  "editionDate": "2026-11-10",
+  "generatedAt": "2026-11-12T02:16:42.652Z",
+  "editionDate": "2026-11-12",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-10"
+    "lastSuccessfulEdition": "2026-11-12"
   },
   "articles": [
+    {
+      "id": "2026-11-12-andreeva-beats-sabalenka-wta-finals",
+      "date": "2026-11-12",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "tennis",
+        "WTA Finals",
+        "Mirra Andreeva"
+      ],
+      "titleJa": "アンデレーバ快勝",
+      "title": "Andreeva Thrashes Sabalenka at WTA Finals",
+      "summaryJa": "ミラ・アンデレーバ選手が世界ランキング2位のアリーナ・サバレンカ選手に11ゲーム連取で勝利し、WTAファイナルの準決勝進出を決めました。",
+      "sourcePublishedAt": "2026-11-12T00:48:23.000Z",
+      "mission": {
+        "type": "prediction",
+        "purposeJa": "金曜日の試合で誰が準決勝に進むか予測するため",
+        "followUpJa": "サバレンカ選手とスビトリナ選手の試合展開について話し合ってみましょう。",
+        "questions": {
+          "5級": "Who wins 11 games in a row?",
+          "4級": "Which player is world number two?",
+          "3級": "What was the final score of the match between Andreeva and Sabalenka?",
+          "準2級": "Who will play in the final group match on Friday to decide the other semi-finalist?",
+          "2級": "What specific tactics did Andreeva use to beat Sabalenka after falling behind in the first set?",
+          "準1級": "How did Andreeva assess her own performance and her opponent's form after the match?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Mirra Andreeva Wins",
+          "text": "Mirra Andreeva plays tennis. She is 19 years old. She plays against Aryna Sabalenka. Sabalenka is world number two. Andreeva plays very well. She wins eleven games in a row. She wins the match. She goes to the semi-finals at the WTA Finals. She is very happy now.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Great Win for Andreeva",
+          "text": "Mirra Andreeva achieved a great win at the WTA Finals. She played against world number two Aryna Sabalenka. Andreeva lost the first few games. Then, she won eleven games in a row. She played smart tennis and used high balls. Sabalenka made many mistakes. Andreeva won the match with a score of six to four and six to zero. She reached the last four easily.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Andreeva Reaches WTA Semifinals",
+          "text": "Mirra Andreeva reached the semi-finals at the WTA Finals after a stunning victory against world number two Aryna Sabalenka. At first, Andreeva was losing four games to one in the opening set. However, she played brilliant tennis and took advantage of her opponent's mistakes. She won eleven games in a row to secure a straight-set victory with a score of six to four and six to zero. Andreeva showed great focus and control during the match. Meanwhile, Sabalenka struggled significantly and made twenty-three unforced errors while failing to produce a single ace. This important win means that Andreeva advances as the group winner. The final group match between Sabalenka and Elina Svitolina will decide who takes the remaining semi-final spot.",
+          "wordCount": 120
+        },
+        "準2級": {
+          "title": "Andreeva Thrashes Sabalenka in WTA Finals",
+          "text": "Teenager Mirra Andreeva produced a brilliant performance to defeat world number two Aryna Sabalenka at the WTA Finals and reach the last four. The nineteen-year-old Russian found herself four-one down in the opening set before turning the match around completely by winning eleven games in a row. Andreeva used loopy high balls and easy power to pressure her opponent, securing a statement six-four, six-zero victory. Sabalenka struggled significantly, committing twenty-three unforced errors and failing to produce a single ace throughout the contest. This impressive result means Andreeva advances directly as the group winner. Meanwhile, the final group match on Friday between Sabalenka and Elina Svitolina will decide who takes the remaining semi-final spot to join her in the next stage of the tournament.",
+          "wordCount": 123
+        },
+        "2級": {
+          "title": "Andreeva Dominates Sabalenka to Reach WTA Finals Semifinals",
+          "text": "Nineteen-year-old Mirra Andreeva booked her place in the semi-finals of the WTA Finals with a dominant victory over world number two Aryna Sabalenka. The French Open champion initially fell four-one behind in the opening set. Despite this slow start, Andreeva raised her level dramatically, winning eleven consecutive games to seal a comprehensive six-four, six-zero triumph. Andreeva showcased intelligent tactics, utilizing loopy high balls to wrong-foot Sabalenka before unleashing baseline winners and creating brilliant angles. Sabalenka suffered a drastic collapse, hitting twenty-three unforced errors and winning only ten more points after holding a double-break lead in the first set. Andreeva admitted afterward that her opponent was not having her best day. The outcome leaves Sabalenka to face Elina Svitolina on Friday, with the winner advancing alongside Andreeva into the knockout stages.",
+          "wordCount": 130
+        },
+        "準1級": {
+          "title": "Andreeva Cruises into WTA Finals Semifinals After Commanding Win Over Sabalenka",
+          "text": "Nineteen-year-old Mirra Andreeva delivered a masterclass in tactical discipline and composure, surging past world number two Aryna Sabalenka with an astonishing eleven-game winning streak to secure her spot in the semi-finals of the WTA Finals. Although nineteen-year-old Mirra Andreeva initially fell four-one down in the opening set, nineteen-year-old Mirra Andreeva systematically dismantled Aryna Sabalenka by employing loopy high balls to disrupt her rhythm before utilizing her trademark baseline power and hitting sixteen winners to only six unforced errors. Aryna Sabalenka, despite wearing protective knee taping that did not appear to hinder her movement, suffered a spectacular collapse reminiscent of her earlier struggles this season, accumulating twenty-three unforced errors and winning a meager ten points after surrendering a double-break advantage. Reflecting on her triumph, a candid nineteen-year-old Mirra Andreeva acknowledged that Aryna Sabalenka was off-color, emphasizing her own objective to maintain emotional equilibrium and control manageable variables. This decisive outcome ensures nineteen-year-old Mirra Andreeva qualifies as the group winner, leaving Aryna Sabalenka to battle Elina Svitolina in a high-stakes showdown on Friday to determine the second qualifier.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/tennis/articles/cq1md03gz0zvo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-12-apple-support-community-closing",
+      "date": "2026-11-12",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "apple",
+        "forum",
+        "closure",
+        "tech-news"
+      ],
+      "titleJa": "アップルがサポート終了",
+      "title": "Apple to Close Support Community",
+      "summaryJa": "アップルは2026年11月20日にユーザー同士のサポートフォーラムを閉鎖すると発表しました。",
+      "sourcePublishedAt": "2026-11-12T02:04:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "コミュニティ閉鎖のスケジュールや今後の対応について正しく理解するため。",
+        "followUpJa": "今後のApple製品に関する相談先はどう変わるか確認しましょう。",
+        "questions": {
+          "5級": "When will Apple close the forum?",
+          "4級": "What can users do in the Apple Support Community?",
+          "3級": "How many years has the forum run since 1998?",
+          "準2級": "What did Apple tell MacRumors about the reason for closing?",
+          "2級": "What specific concern did The Verge raise regarding the closure?",
+          "準1級": "How did Apple describe the decision when speaking to MacRumors, and what remaining uncertainty exists according to technology media?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Apple Forum Closes",
+          "text": "Apple has big news today. Apple will close the Apple Support Community. This forum is for users. Users can ask and answer questions. The close date is November 20, 2026. New posts can not be made now. People can only read old posts. Apple says thank you to all members.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Apple Support Forum Closing",
+          "text": "Apple announced a big change for users. The Apple Support Community will close on November 20, 2026. This online forum started in 1998. Users could share tips and fix problems for devices like iPhone and Mac. From today, new posts are stopped. Apple thanked all members for their great help over many years. Users must use the official Apple website now.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "End of Apple Support Community",
+          "text": "Apple announced that the Apple Support Community will permanently close on November 20, 2026. This online forum started back in 1998 as a place where users could help each other with iPhone and Mac problems by sharing questions and answers. Over the years, the name changed several times. Starting on November 10, the forum stopped accepting new posts and became viewable only. Apple thanked all community members for sharing their knowledge and supporting users. Moving forward, Apple suggests using the official support website for trusted information.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Apple to Shut Down Long-Running Support Forum",
+          "text": "Apple has announced that the Apple Support Community, a popular online forum where users of devices like the iPhone and Mac could help each other and share troubleshooting tips, will close on November 20, 2026. Launched in 1998 under a different name, the forum has operated for nearly twenty-eight years through several name changes. Following the announcement, new posts are no longer accepted, and the site has transitioned to a read-only archive format. Apple expressed deep gratitude to all members who contributed their time and expertise. When asked by media outlets like MacRumors, Apple explained that the closure resulted from careful consideration of business strategy and customer needs, though they did not announce alternative forum plans.",
+          "wordCount": 113
+        },
+        "2級": {
+          "title": "Apple Announces Closure of Decades-Old Support Community",
+          "text": "Apple has officially announced that the Apple Support Community, an online platform allowing users to share technical advice, ask questions, and discuss troubleshooting tips for products like the iPhone, iPad, and Mac, will shut down on November 20, 2026. Operating in various forms since 1998, this forum has a history spanning roughly twenty-eight years with multiple name changes. Effective immediately after the announcement, the platform stopped accepting new posts, transitioning to a read-only archive before its final closure. Apple expressed sincere appreciation to community members for their dedication and knowledge sharing over the years. According to statements given to the tech site MacRumors, the decision was driven by business strategy and evolving customer needs. However, technology outlets like The Verge have raised questions about what will happen to the vast amount of user-generated data accumulated over decades once the site goes offline completely.",
+          "wordCount": 140
+        },
+        "準1級": {
+          "title": "Apple to Terminate Decades-Old Support Community Forum",
+          "text": "In a significant move for its customer support ecosystem, Apple has announced the permanent closure of the Apple Support Community, which is officially set to close on November 20, 2026. Established originally in 1998 as Apple Tech Exchange and undergoing multiple rebranding phases over the decades, the forum has served as a vital peer-to-peer troubleshooting hub where users could resolve technical issues concerning devices such as iPhones, iPads, and Macs. Following the official announcement made on November 10, the platform immediately ceased accepting new submissions, transitioning into a limited view-only mode where past content remains temporarily accessible. Apple publicly thanked the dedicated community members whose voluntary expertise and time have assisted countless users over the nearly twenty-eight-year history of the forum. When pressed for clarification by news outlets like MacRumors, Apple attributed the shutdown to a careful evaluation of business strategies and changing customer preferences, though management declined to detail specific catalysts or announce a replacement community forum. Meanwhile, technology observers point out that critical questions remain unanswered regarding the preservation and ultimate fate of decades of accumulated user contributions once the platform goes completely offline.",
+          "wordCount": 182
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261112-apple-support-community-closing/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-12-asahikawa-museum-copper-theft-arrest",
+      "date": "2026-11-12",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Asahikawa",
+        "Museum",
+        "CopperWire",
+        "Arrest",
+        "Hokkaido"
+      ],
+      "titleJa": "美術館で銅線盗未遂、男2人…",
+      "title": "Two Men Arrested for Attempted Copper Wire Theft at Closed Museum in Hokkaido",
+      "summaryJa": "北海道旭川市の閉鎖された美術館に侵入し、銅線を盗もうとしたとして暴力団員ら男2人が逮捕されました。警察は共犯者がいるとみて調べています。",
+      "sourcePublishedAt": "2026-11-12T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "事件の通報理由や容疑者の背景などの事実関係を正確に把握し、事件の全体像を理解する。",
+        "followUpJa": "この事件が発覚したきっかけや、警察が捜査している理由について話し合ってみましょう。",
+        "questions": {
+          "5級": "What did the two men try to steal from the closed museum?",
+          "4級": "Why did the two men run away from the museum before stealing anything?",
+          "3級": "What did a passing person hear and see before calling the police?",
+          "準2級": "What are the ages and jobs of the two men arrested by the Hokkaido police?",
+          "2級": "How did the police find out about the crime after arriving at the empty museum?",
+          "準1級": "What specific suspicions do police hold regarding the suspects and potential accomplices?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Two Men Arrested",
+          "text": "Two men can go into an empty museum. They want to take copper wire. A person sees them and calls the police. The two men run away fast. The police find them later. They arrest the two men in Hokkaido now. It is a big news story today.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Museum Break-In",
+          "text": "Police in Hokkaido arrested two men. They went into a closed museum in Asahikawa. They wanted to steal copper wire from inside the building. A person heard strange noises and called the police. The men ran away before they could take anything. Now, the police are looking at the case very carefully and searching for more people.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "Attempted Copper Theft at Museum",
+          "text": "Two men were arrested in Hokkaido after they entered a closed museum illegally. They planned to steal copper wire from inside the building. However, they got scared and ran away because they were afraid that someone would catch them. A passing person heard tool noises and called the police right away to report the suspicious activity. When officers arrived at the scene, the suspects were already gone. Police are still investigating the case because they believe other people might be involved in the crime.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "Men Arrested for Museum Break-In",
+          "text": "On November 11, Hokkaido police arrested two men for entering a closed museum and attempting to steal copper wire. The suspects are a 52-year-old organized crime member living in Kushiro and a 25-year-old construction worker from Asahikawa. The incident happened around July 27, 2025. They went into the empty building in Asahikawa but ran away because they feared getting caught. A witness heard tool sounds and reported suspicious people to the police via an emergency call. Officers discovered cut wires and signs of forced entry at the scene. Police have not revealed whether the men admitted to the crime and are continuing their investigation to find potential accomplices.",
+          "wordCount": 105
+        },
+        "2級": {
+          "title": "Arrests Made in Hokkaido Museum Wire Theft",
+          "text": "Japanese authorities in Hokkaido have arrested two men following an investigation into a break-in at a closed museum. The suspects, a 52-year-old organized crime member from Kushiro and a 25-year-old construction worker from Asahikawa, were taken into custody on November 11. According to investigators, the pair entered the vacant museum located in Asahikawa on July 27, 2025, intending to steal copper wire from the building. They fled the scene before completing the theft due to fear of discovery. The police response was triggered by a vigilant passerby who heard suspicious tool noises and reported individuals entering the restricted property via an emergency call. Although the suspects had already escaped when officers arrived, police discovered clear signs of intrusion and cut wires during their subsequent inspection. Authorities are currently withholding statements regarding the suspects' pleas while actively investigating the possibility of further co-conspirators in the case.",
+          "wordCount": 142
+        },
+        "準1級": {
+          "title": "Hokkaido Police Detain Suspects Over Closed Museum Intrusion and Wire Theft Attempt",
+          "text": "In an ongoing investigation into property crime, Hokkaido Prefectural Police arrested two men on November 11 on suspicion of structural intrusion and attempted theft. The suspects are identified as a 52-year-old affiliate of a Yamaguchi-gumi splinter faction residing in Kushiro, alongside a 25-year-old construction worker from Asahikawa. The alleged incident occurred around July 27, 2025, when the pair unlawfully entered a shuttered museum in Asahikawa with the explicit intention of stripping copper wire from the interior. However, their plan was aborted when they fled the scene, reportedly fearing immediate detection by others. Law enforcement involvement began following an emergency call from a passing citizen who observed suspicious individuals heading toward the vacant facility and reported hearing the distinct sound of tools in use. Although the suspects had already vanished by the time officers reached the location, subsequent inspections revealed tangible evidence of trespassing and severed copper wiring, ultimately leading to the recent arrests. Police officials have not disclosed whether the suspects have confessed to the allegations and are currently pursuing various investigative leads to identify and apprehend potential accomplices.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63557"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-12-katsushika-captain-tsubasa-stadium-plan",
+      "date": "2026-11-12",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "sports"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Katsushika",
+        "Captain Tsubasa",
+        "stadium",
+        "public project"
+      ],
+      "titleJa": "巨大スタジアム計画に疑念",
+      "title": "Questions Rise Over Katsushika's Captain Tsubasa Stadium Plan",
+      "summaryJa": "東京都葛飾区が進めるキャプテン翼スタジアムの建設計画に対し、巨額の土地買収や住民からの反発を巡り疑念が深まっています。",
+      "sourcePublishedAt": "2026-11-12T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "住民の意見や計画の問題点を踏まえ、あなたならこのスタジアム建設に賛成するか反対するかを決定します。",
+        "followUpJa": "選んだ理由や、計画に必要な改善点について話し合ってみましょう。",
+        "questions": {
+          "5級": "Do you like the Captain Tsubasa stadium?",
+          "4級": "Do local people want a new stadium in Katsushika?",
+          "3級": "Why are some residents angry about the new stadium plan?",
+          "準2級": "What are the main concerns raised by local residents regarding the stadium project?",
+          "2級": "How has the Katsushika ward office handled the land purchase and planning process for the stadium?",
+          "準1級": "Evaluate the controversies surrounding the 32.5 billion yen land acquisition and the justifications provided by the ward for the stadium initiative."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A New Stadium Plan",
+          "text": "Katsushika ward has a big plan. They want to make a new soccer stadium. The plan is for Captain Tsubasa. Many people can watch games there. But some local people are not happy. They have big questions about this new project. They want to talk to the ward leaders now.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Questions About a Big Stadium",
+          "text": "Katsushika ward in Tokyo has a big plan for a new soccer stadium. The total cost is very high. The ward wants to use the famous story Captain Tsubasa. Many residents are worried about this project. They think the current sports field is very useful for everyone. Now, local people are asking many questions to the ward office about the secret talks and the high cost.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Questions Over a New Stadium Plan",
+          "text": "Katsushika ward in Tokyo has a big plan to build a new soccer stadium. The project uses the famous manga Captain Tsubasa. The ward wants to spend 32.5 billion yen to buy land at the East Shin-Koiwa Sports Ground. However, many local residents are very angry. They held a meeting to express their worries about the project. They do not want to lose their sports field for just one soccer club. The ward office must listen to these strong voices.",
+          "wordCount": 79
+        },
+        "準2級": {
+          "title": "Growing Concerns Over Katsushika Stadium Plan",
+          "text": "Katsushika ward in Tokyo is advancing a massive 50 billion yen stadium project based on the popular manga Captain Tsubasa. The plan involves acquiring the East Shin-Koiwa Sports Ground for 32.5 billion yen to build a 15,000-seat stadium. However, this initiative has sparked strong opposition from local residents. During recent information sessions, citizens voiced deep concerns, questioning why the ward is spending such a huge amount of money to support a local soccer club while destroying a sports field that many people use every day. A resident group has even formed to demand transparency and rethink the project.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "Deepening Doubts Surround Katsushika's Captain Tsubasa Stadium Proposal",
+          "text": "A controversial 50 billion yen project by Katsushika ward to build a Captain Tsubasa-themed soccer stadium has triggered intense public scrutiny and resident backlash across the community. The proposed venue is planned for the East Shin-Koiwa Sports Ground, a 68,000-square-meter public site featuring baseball and track facilities utilized by many local citizens. The ward previously arranged a 32.5 billion yen land acquisition through secret negotiations and aims to develop a J1-standard stadium for the local club Nankatsu SC, which is associated with manga creator Yoichi Takahashi. Although an advisory committee was established featuring prominent sports figures like Shinji Ono, seven recent briefing sessions revealed deep anxiety and anger among local citizens who fear losing a vital recreation space. Critics argue that the massive public expenditure disproportionately benefits a single private club at the expense of everyday residents, prompting people to organize opposition groups to challenge the ward's actions and demand greater administrative transparency regarding the staggering investment.",
+          "wordCount": 155
+        },
+        "準1級": {
+          "title": "Controversy Erupts Over Katsushika Ward's Captain Tsubasa Stadium Initiative",
+          "text": "Katsushika ward's ambitious 50 billion yen initiative to construct a state-of-the-art soccer stadium centered around the globally acclaimed manga Captain Tsubasa has encountered fierce public resistance and widespread skepticism across the local community. The proposed development targets the East Shin-Koiwa Sports Ground, an expansive 68,000-square-meter municipal facility currently utilized by numerous citizens for various athletic activities including baseball, track events, and tennis courts. Central to the controversy is the ward's massive 32.5 billion yen expenditure to acquire the land through clandestine negotiations, coupled with plans to accommodate Nankatsu SC, a local football club tied to the manga's creator Yoichi Takahashi. While the municipal administration and an appointed committee featuring figures like Shinji Ono promote the facility as an international cultural hub, successive resident briefing sessions have exposed profound anxiety and anger among local taxpayers who fear losing a vital recreation space. Critics contend that sacrificing a heavily used community resource for a single sports entity lacks justification, leading concerned citizens to mobilize resistance, launch petition drives through groups like the association to protect the sports ground, and demand absolute administrative transparency regarding the staggering public investment.",
+          "wordCount": 184
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964118?display=b"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-12-kyoto-bird-flu-2026-11",
+      "date": "2026-11-12",
+      "scope": "japan",
+      "category": "world",
+      "categories": [
+        "health"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "bird-flu",
+        "Kyoto",
+        "Kameoka",
+        "NHK"
+      ],
+      "titleJa": "京都で鳥インフル",
+      "title": "Bird Flu Confirmed at Kyoto Farm",
+      "summaryJa": "京都府亀岡市の養鶏場で今シーズン初めて高病原性鳥インフルエンザの感染が確認されました。",
+      "sourcePublishedAt": "2026-11-12T01:49:29.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "鳥インフルエンザの発生を受け、農場周辺の対策としてどのような対応が必要か判断する。",
+        "followUpJa": "自分の住む地域や農場での感染防止策について話し合ってみましょう。",
+        "questions": {
+          "5級": "Where did the bird flu happen?",
+          "4級": "How many chickens were found dead at the farm in Kameoka?",
+          "3級": "What kind of bird flu virus did tests find in Kyoto?",
+          "準2級": "When did workers find the dead chickens at the Kameoka farm?",
+          "2級": "What specific actions did the Kyoto prefectural government take after finding the dead chickens?",
+          "準1級": "How does the detection of the H5 type virus impact the local poultry industry and regional biosecurity measures?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Bird Flu in Kyoto",
+          "text": "A bird flu is in Kyoto. It is new. Workers find dead chickens on a farm. The farm is in Kameoka. The virus is dangerous. People must be very careful now. This is the first time this season. The local government checks the farm.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "First Bird Flu Case Confirmed in Kyoto",
+          "text": "Bird flu has been found in Kyoto for the first time this season. On the eleventh day, workers discovered fourteen dead chickens at a poultry farm located in Kameoka City. After this report, the prefectural government conducted detailed tests. These tests confirmed a high pathogenic H5 type bird flu virus. People in the area are paying close attention to this important news.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Bird Flu Virus Found at Kameoka Farm",
+          "text": "A serious bird flu has been confirmed in Kyoto Prefecture for the first time this season. On November eleventh, workers found fourteen dead chickens at a poultry farm in Kameoka City. Following this discovery, the local government started detailed inspections. The test results showed the presence of a high pathogenic H5 type bird flu virus. Officials are now working hard to handle the situation carefully and prevent any further spread.",
+          "wordCount": 69
+        },
+        "準2級": {
+          "title": "First Seasonal Bird Flu Confirmed in Kameoka City",
+          "text": "High pathogenic bird flu has been confirmed for the very first time this season in Kyoto Prefecture. On November eleventh, fourteen chickens were discovered dead at a poultry farm located in Kameoka City, raising concerns across the region. Following this unexpected and concerning discovery, the local prefectural government quickly conducted detailed examinations. The test results successfully confirmed the presence of the high pathogenic H5 type bird flu virus. Authorities are now closely monitoring the situation and taking necessary precautions to prevent any further spread of the infection among local poultry farms across the wider region.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "High Pathogenic Bird Flu Detected at Kyoto Poultry Farm",
+          "text": "High pathogenic avian influenza has been officially confirmed at a poultry farm located in Kameoka City, Kyoto Prefecture, marking the very first such case of the current season. The serious situation came to light after fourteen chickens were discovered dead at the facility on the eleventh of November, prompting immediate attention and action from agricultural authorities. Prompted by this serious finding, the Kyoto prefectural government initiated thorough and detailed inspections to determine the exact cause and scope of the problem. Subsequent laboratory tests successfully detected the high pathogenic H5 type bird flu virus in the collected samples from the farm. Local authorities and agricultural officials are now carefully monitoring the situation to manage the outbreak and prevent further infections in the region. The Kyoto prefectural government and related agricultural organizations continue to work closely together following the confirmation of the high pathogenic H5 type bird flu virus at the Kameoka City poultry farm.",
+          "wordCount": 151
+        },
+        "準1級": {
+          "title": "First Avian Influenza Outbreak Confirmed at Kyoto Poultry Farm",
+          "text": "Avian influenza has officially reached Kyoto Prefecture as local authorities confirmed the very first high pathogenic outbreak of the current season at a poultry farm situated within Kameoka City. The situation initially came to light on November eleventh when fourteen chickens were discovered dead at the agricultural facility, prompting immediate concern and swift action from the Kyoto prefectural government. Following this unexpected discovery, prefectural authorities quickly launched detailed laboratory examinations to determine the exact cause of the mortality among the flock. Subsequent comprehensive testing successfully revealed the undeniable presence of the virulent high pathogenic H5 type avian influenza virus in the samples collected from the Kameoka City poultry farm. In response to this confirmed infection, agricultural officials and local government bodies are carefully evaluating the situation and maintaining strict oversight to safeguard surrounding poultry operations, prevent any further viral dissemination across the region, and manage the outbreak effectively. The Kyoto prefectural government and related agricultural organizations continue to work closely together following the confirmation of the high pathogenic H5 type bird flu virus at the Kameoka City poultry farm to ensure public safety and regional biosecurity standards remain robust and fully protected.",
+          "wordCount": 190
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261112de74535"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-12-tamaki-koji-budokan-tour-finale-2026",
+      "date": "2026-11-12",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Koji Tamaki",
+        "Nippon Budokan",
+        "concert"
+      ],
+      "titleJa": "玉置浩二が武道館で熱狂のツ…",
+      "title": "Koji Tamaki Holds Thrilling Tour Finale at Nippon Budokan",
+      "summaryJa": "歌手の玉置浩二が11月5日に日本武道館で全国ツアーの最終公演を開催し、360度の観客を魅了しました。",
+      "sourcePublishedAt": "2026-11-12T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "玉置浩二のコンサートの魅力を理解し、どの曲を聴きたいか考えるため。",
+        "followUpJa": "記事に登場した楽曲や演奏について友達と話し合ってみましょう。",
+        "questions": {
+          "5級": "Where did Koji Tamaki have his concert?",
+          "4級": "When did Koji Tamaki hold his tour final concert?",
+          "3級": "How many shows did he do in this tour, and were they sold out?",
+          "準2級": "What made the performance of 'JUNK LAND' so special at the Budokan?",
+          "2級": "How did Koji Tamaki honor the late music producer Akira Sudo during the encore?",
+          "準1級": "What underlying emotions and artistic evolution defined the finale of his 2026 tour?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Koji Tamaki Has a Concert",
+          "text": "Koji Tamaki has a big concert. It is at Nippon Budokan. Many fans go to see him. He sings very well. The seats are full. Everyone is very happy. Music is nice. Fans clapped a lot. He has a great voice. It was a very good show for all people.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Tour Finale at Budokan",
+          "text": "Koji Tamaki had his tour final concert on November 5 at Nippon Budokan. All thirty shows of his national tour were sold out. The venue had 360-degree seats, and they were all full of fans. When he came on the stage, the crowd gave him loud applause. He played his guitar and sang many wonderful songs. The fans enjoyed his powerful voice and wonderful music very much.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Koji Tamaki's Amazing Tour Finale",
+          "text": "On November 5, singer Koji Tamaki held the final show of his national concert tour at Nippon Budokan. All thirty shows in the tour completely sold out. The venue was packed with fans sitting in 360-degree seats. Tamaki sang many popular songs with his band and string players. The audience was very excited and stood up during fast songs like 'Netsushisen' and 'JUNK LAND'. His wonderful voice and great performance made everyone very happy at the end of the show.",
+          "wordCount": 79
+        },
+        "準2級": {
+          "title": "Concert Tour Finale Brings Joy to Fans",
+          "text": "Singer Koji Tamaki successfully finished his national concert tour with a final performance at Nippon Budokan on November 5. All thirty shows across the country were completely sold out. The historic venue was packed with fans surrounding the stage in 360-degree seats. Accompanied by his band and string musicians, Tamaki performed a rich setlist featuring recent solo tracks and Anzenchitai numbers. The audience was deeply moved by his emotional ballads and energized by powerful up-tempo songs. During the encore, he performed a touching tribute to the late producer Akira Sudo, leaving the crowd with unforgettable memories as the tour came to a successful close.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Koji Tamaki Captivates Packed Nippon Budokan at Tour Finale",
+          "text": "On November 5, acclaimed singer Koji Tamaki brought his nationwide tour to a triumphant close at Nippon Budokan. Marking the end of thirty completely sold-out shows, the concert featured a 360-degree seating arrangement packed with enthusiastic fans. The performance showcased Tamaki's remarkable vocal range and emotional depth, supported by a fifteen-member band that included a double quartet. The setlist blended post-2000 Anzenchitai hits, moving duets, and high-energy numbers like 'JUNK LAND' and 'Den-en,' which brought the entire arena to its feet. In a deeply personal and poignant encore, Tamaki performed using a guitar bearing a sticker honoring the late music producer Akira Sudo. The breathtaking finale highlighted his enduring artistic vitality and passion, leaving the audience with unforgettable memories as the tour concluded successfully across the country. Additional plans include future orchestral performances.",
+          "wordCount": 132
+        },
+        "準1級": {
+          "title": "Koji Tamaki Delivers Unforgettable Tour Finale at Nippon Budokan",
+          "text": "On November 5, acclaimed singer Koji Tamaki brought his nationwide tour, titled 'Tamaki Koji with Furusato Gakudan Concert Tour 2026 Fanfare!!', to a triumphant close at a packed Nippon Budokan. All thirty dates of the nationwide tour had sold out completely, creating an electric atmosphere inside the historic arena long before the lights dimmed. The 360-degree seating arrangement was filled entirely with enthusiastic fans eager to witness the final performance. Accompanied by his fifteen-member Furusato Gakudan ensemble, which included a double quartet, Koji Tamaki navigated a diverse setlist that bridged contemplative ballads and roaring up-tempo anthems with effortless grace and power. The first half of the concert featured many tracks from post-2000 Anzenchitai numbers, building a steady and captivating groove. From poignant duets to thunderous renditions of concert classics like 'JUNK LAND' and 'Den-en,' every musical moment underscored Koji Tamaki's peerless vocal command and magnetic stage presence. During the emotional encore, Koji Tamaki performed a deeply personal tribute using an acoustic guitar adorned with a sticker displaying the emblem of the late music producer Akira Sudo, whose personal office was named Karinto Factory Inc. Akira Sudo was also the father of pianist and bandmaster Tomi Yo. As Koji Tamaki looks ahead to future orchestral collaborations and milestone anniversaries, this remarkable tour finale served as a powerful testament to an artist who continually captivates audiences with unrelenting passion throughout his career.",
+          "wordCount": 228
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261112-5307005/"
+        }
+      ]
+    },
     {
       "id": "2026-11-10-astronauts-across-generations-share-the-stage",
       "date": "2026-11-10",
