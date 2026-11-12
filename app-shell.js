@@ -1,5 +1,5 @@
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.33';
+const MATERIAL_RELEASE='2.1.34';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']
@@ -90,6 +90,7 @@ function install() {
   signout.onclick=()=>document.getElementById('logoutBtn')?.click();featureContainer.after(signout);
   let sharedScreenTheme=null;
   let themedSurfaceDoc=null,themedSurfaceKey='',themedSurfaceObserver=null,themedSurfaceTimer=0;
+  const themedPendingRoots=new Set();
   const themedSurfaceOriginals=new Map();
   function restoreThemedSurfaces(){
     themedSurfaceObserver?.disconnect();themedSurfaceObserver=null;
@@ -99,7 +100,7 @@ function install() {
         if(value)element.style.setProperty(property,value,priority);else element.style.removeProperty(property);
       }
     }
-    themedSurfaceOriginals.clear();themedSurfaceDoc=null;themedSurfaceKey='';
+    themedSurfaceOriginals.clear();themedPendingRoots.clear();themedSurfaceDoc=null;themedSurfaceKey='';
   }
   function cssRgb(value){
     const m=String(value||'').match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+))?/i);
@@ -131,30 +132,57 @@ function install() {
     });
     if(element.style.getPropertyValue(property)!==value||element.style.getPropertyPriority(property)!=='important')element.style.setProperty(property,value,'important');
   }
-  function scanThemedSurfaces(doc,color,foreground){
+  // Refresh only the subtree that changed. Reverting styles first preserves
+  // the original inline styles when a material switches its own UI state.
+  function restoreThemedRoots(doc,roots){
+    for(const [element,original] of themedSurfaceOriginals){
+      if(element.ownerDocument!==doc||!doc.body.contains(element)){themedSurfaceOriginals.delete(element);continue;}
+      if(!roots.some(root=>root.contains(element)))continue;
+      for(const [property,value,priority] of [['background-color',original.backgroundColor,original.backgroundColorPriority],['background-image',original.backgroundImage,original.backgroundImagePriority],['color',original.color,original.colorPriority],['caret-color',original.caretColor,original.caretColorPriority],['-webkit-text-fill-color',original.textFillColor,original.textFillColorPriority]]){
+        if(value)element.style.setProperty(property,value,priority);else element.style.removeProperty(property);
+      }
+      themedSurfaceOriginals.delete(element);
+    }
+  }
+  function scanThemedSurfaces(doc,color,foreground,roots=[doc.body]){
     if(!doc.body)return;
     const bg=hexRgb(color),fg=hexRgb(foreground);
     if(colorLuminance(bg)>.38||colorLuminance(fg)<.62){restoreThemedSurfaces();return;}
     const key=color.toLowerCase()+'|'+foreground.toLowerCase();
     if(themedSurfaceDoc!==doc||themedSurfaceKey!==key){restoreThemedSurfaces();themedSurfaceDoc=doc;themedSurfaceKey=key;}
     const win=doc.defaultView,surface=[],surfaceSet=new Set(),surfaceColor=mixedHex(color,foreground);
-    const candidates=doc.body.querySelectorAll('*');
+    const candidates=[],seen=new Set();
+    for(const root of roots){
+      if(root?.nodeType!==1||!doc.body.contains(root))continue;
+      if(root!==doc.body&&!seen.has(root)){seen.add(root);candidates.push(root);}
+      for(const element of root.querySelectorAll('*'))if(!seen.has(element)){seen.add(element);candidates.push(element);}
+    }
     for(const element of candidates){
       if(/^(SVG|PATH|IMG|VIDEO|CANVAS|IFRAME|SCRIPT|STYLE)$/.test(element.tagName))continue;
+      const formControl=/^(INPUT|TEXTAREA|SELECT|OPTION)$/.test(element.tagName);
+      if(!formControl&&!element.textContent?.trim())continue;
       const style=win.getComputedStyle(element),background=cssRgb(style.backgroundColor);
       let light=Boolean(background&&background.a>=.90&&colorLuminance(background)>.88);
       if(!light&&style.backgroundImage&&style.backgroundImage!=='none'){
         const stops=[...style.backgroundImage.matchAll(/#[0-9a-f]{3,8}\b/ig)].map(m=>hexRgb(m[0]));
         if(stops.length&&stops.length<=8&&stops.every(stop=>colorLuminance(stop)>.86))light=true;
       }
-      const formControl=/^(INPUT|TEXTAREA|SELECT|OPTION)$/.test(element.tagName);
-      if(light&&(formControl||Boolean(element.textContent?.trim()))){surface.push(element);surfaceSet.add(element);}
+      if(light){surface.push(element);surfaceSet.add(element);}
     }
     for(const element of surface){
       patchThemedSurface(element,'background-color',surfaceColor);
       if(win.getComputedStyle(element).backgroundImage!=='none')patchThemedSurface(element,'background-image','none');
     }
-    for(const root of surface){
+    // Include text added inside an already themed ancestor, without revisiting
+    // unrelated material sections.
+    const textRoots=new Set(surface);
+    for(const root of roots){
+      if(root?.nodeType!==1||root===doc.body||!doc.body.contains(root))continue;
+      for(let ancestor=root.parentElement;ancestor&&ancestor!==doc.body;ancestor=ancestor.parentElement){
+        if(themedSurfaceOriginals.has(ancestor)){textRoots.add(root);break;}
+      }
+    }
+    for(const root of textRoots){
       const textNodes=[root,...root.querySelectorAll('*')];
       for(const element of textNodes){
         if(element!==root&&surfaceSet.has(element))continue;
@@ -164,10 +192,8 @@ function install() {
         if(colorLuminance(cssRgb(style.color))<.36)patchThemedSurface(element,'color',foreground);
       }
     }
-    // Form fields have no text nodes, so the surface scanner above cannot adjust
-    // the entered text. Keep background, ink and caret together for dark themes.
-    // Exclude non-text inputs (checkboxes, buttons, sliders, etc.) to preserve their UI.
-    for(const control of doc.body.querySelectorAll('textarea,select,input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]):not([type="color"]):not([type="file"])')){
+    for(const control of candidates){
+      if(!control.matches('textarea,select,input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]):not([type="color"]):not([type="file"])'))continue;
       const appearance=win.getComputedStyle(control);
       if(appearance.display==='none'||appearance.visibility==='hidden')continue;
       patchThemedSurface(control,'background-color',surfaceColor);
@@ -175,6 +201,7 @@ function install() {
       patchThemedSurface(control,'caret-color',foreground);
       patchThemedSurface(control,'-webkit-text-fill-color',foreground);
     }
+    // Ignore style mutations generated by our own patches.
     themedSurfaceObserver?.takeRecords();
   }
   function applySharedScreenTheme(){
@@ -194,11 +221,30 @@ function install() {
       // The equipped SHOP palette is the single source of truth; child materials use this attribute for matched surfaces and text.
       doc.documentElement.setAttribute('data-monstudy-screen-theme',sharedScreenTheme.theme==='dark'?'dark':'light');
       style.textContent=`html,body{--screen-background:${color};--screen-foreground:${foreground};background-color:${color}!important;background-image:${pattern}!important;background-size:${patternSize}!important;background-repeat:${patternRepeat}!important;background-position:${patternPosition}!important;background-attachment:fixed!important;color:${foreground}!important;transition:background-color .2s,color .2s}input::placeholder,textarea::placeholder{color:color-mix(in srgb,${foreground} 62%,${color} 38%)!important}option{background-color:${color};color:${foreground}}`;
+      // A light palette needs no DOM scanner or mutation observer.
+      if(colorLuminance(hexRgb(color))>.38||colorLuminance(hexRgb(foreground))<.62){
+        restoreThemedSurfaces();return;
+      }
       scanThemedSurfaces(doc,color,foreground);
-      if(!themedSurfaceObserver||themedSurfaceDoc!==doc){
-        themedSurfaceObserver=new doc.defaultView.MutationObserver(()=>{
+      if(!themedSurfaceObserver){
+        themedSurfaceObserver=new doc.defaultView.MutationObserver(mutations=>{
+          for(const mutation of mutations){
+            if(mutation.target?.nodeType===1)themedPendingRoots.add(mutation.target);
+          }
+          if(!themedPendingRoots.size)return;
           if(themedSurfaceTimer)clearTimeout(themedSurfaceTimer);
-          themedSurfaceTimer=setTimeout(()=>{themedSurfaceTimer=0;restoreThemedSurfaces();applySharedScreenTheme();},90);
+          themedSurfaceTimer=setTimeout(()=>{
+            themedSurfaceTimer=0;
+            if(frame.contentDocument!==doc||!themedSurfaceObserver){themedPendingRoots.clear();return;}
+            const changed=[...themedPendingRoots].filter(node=>doc.body.contains(node));
+            themedPendingRoots.clear();
+            // When an ancestor changed, processing its descendants separately
+            // would duplicate expensive getComputedStyle calls.
+            const roots=changed.filter(node=>!changed.some(other=>other!==node&&other.contains(node)));
+            if(!roots.length)return;
+            restoreThemedRoots(doc,roots);
+            scanThemedSurfaces(doc,color,foreground,roots);
+          },180);
         });
         themedSurfaceObserver.observe(doc.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
       }
@@ -289,7 +335,7 @@ function install() {
     syncTitle(u);
     home.hidden=!!current; frame.hidden=!current;
     shell.querySelectorAll('nav a').forEach(a=>{const active=current?key(new URL(a.href))===current:a.classList.contains('ms-home');if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release',`${MATERIAL_RELEASE}-${Date.now()}`);frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
+    if(current){const entry=new URL(u);entry.searchParams.set('monstudy-release',MATERIAL_RELEASE);frame.title=title.textContent;frame.src=entry.href;status.textContent='教材を読み込んでいます…';status.hidden=false;}
     else {frame.removeAttribute('src');status.hidden=true;}
     mobileMenu(false);closeGroups();shell.querySelector('.ms-workspace').scrollTop=0;
   }
