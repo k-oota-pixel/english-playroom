@@ -5,24 +5,29 @@ import {hasPet} from './pet-model.js?v=2.1.25';
 import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats,grantedStrengthPoints} from './pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
 
+import {collectedTitleCount} from './title-ownership.js?v=1';
+
 const RESPEC_PRICE=30;
 const EMPTY_STRENGTH=Object.freeze({hp:0,attack:0,defense:0,mp:0});
 function canStrengthen(data={}){return hasPet(data)||(!data.petHatched&&!data.petLastDeparture);}
 
 const titleCountCache=new Map(),titleCountRequests=new Map();
 function storedTitleCount(data={}){
+ const collected=collectedTitleCount(data);
+ if(collected!==null)return collected;
  if(!data||data.titleCountSummaryVersion!==1||Number(data.titleCountSyncedRevision)!==Number(data.titleCountRevision||0))return null;
  const n=Number(data.unlockedTitleCount);return Number.isSafeInteger(n)&&n>=0?n:null;
 }
 export async function loadStrengthTitles(user,{force=false,walletData=null}={}){
  const uid=user?.uid;if(!uid)throw Error('ログインが必要です。');
- const stored=storedTitleCount(walletData);if(!force&&stored!==null){titleCountCache.set(uid,{count:stored,expiresAt:Date.now()+30000});return stored;}
+ const stored=collectedTitleCount(walletData);if(stored!==null){titleCountCache.set(uid,{count:stored,expiresAt:Date.now()+30000});return stored;}
  const cached=titleCountCache.get(uid);if(!force&&!walletData&&cached&&cached.expiresAt>Date.now())return cached.count;
  if(!force&&titleCountRequests.has(uid))return titleCountRequests.get(uid);
  const request=(async()=>{
-  const token=await user.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/learning/titles',{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
+  const view=walletData&&!walletData.titleCollectionVersion?'initialize':'strength';
+  const token=await user.getIdToken(),r=await fetch('https://task-quest.onrender.com/api/learning/titles?view='+view,{headers:{Authorization:'Bearer '+token},cache:'no-store',signal:AbortSignal.timeout(45000)});
   if(!r.ok)throw Error('称号を読み込めませんでした。もう一度お試しください。');
-  const data=await r.json();if(!Array.isArray(data.titles))throw Error('称号を確認できませんでした。');
+  const data=await r.json();if(!Array.isArray(data.titles)&&!Number.isSafeInteger(data.unlockedTitleCount))throw Error('称号を確認できませんでした。');
   const summarized=Number(data.unlockedTitleCount),count=Number.isSafeInteger(summarized)&&summarized>=0?summarized:titleCount(data.titles);titleCountCache.set(uid,{count,expiresAt:Date.now()+30000});return count;
  })();titleCountRequests.set(uid,request);
  try{return await request;}finally{if(titleCountRequests.get(uid)===request)titleCountRequests.delete(uid);}
