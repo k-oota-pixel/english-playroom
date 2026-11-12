@@ -130,7 +130,7 @@ if(button){
   }
   const magicEffect=spell=>spell.description.replace('体力','HP');
   const learned=MAGIC_SPELLS.filter(spell=>spell.level<=level),list=document.createElement('section');list.className='strength-magic-list';
-  const heading=document.createElement('h3');heading.textContent='習得済みの魔法${pending?'（確定後に反映）':''}';list.append(heading);
+  const heading=document.createElement('h3');heading.textContent=`習得済みの魔法${pending?'（確定後に反映）':''}`;list.append(heading);
   for(const spell of learned){const item=document.createElement('p');item.innerHTML=`<strong>${spell.name}</strong><span>${magicEffect(spell)} ／ 消費MP ${spell.mpCost}</span>`;list.append(item);}
   if(!learned.length){const empty=document.createElement('p');empty.textContent='まだ魔法を習得していません。';list.append(empty);}body.append(list);
   const nextMagic=MAGIC_SPELLS.find(spell=>spell.level>level),magic=document.createElement('p');magic.className='strength-magic-next';magic.textContent=nextMagic?`次の魔法：Lv.${nextMagic.level}で「${nextMagic.name}」\n${magicEffect(nextMagic)} ／ 消費MP ${nextMagic.mpCost}`:'すべての魔法を習得済み！';body.append(magic);
