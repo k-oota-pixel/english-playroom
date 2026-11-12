@@ -124,6 +124,30 @@ function renderFlowers(){
   layer.appendChild(tileEl);
  }
 }
+function renderDisplays(){
+ const layer=$('displaysLayer');layer.replaceChildren();
+ for(const display of farm.displays){
+  const item=DISPLAY_TYPES[display.type];
+  if(!item)continue;
+  const fixture=node('button','produce-display produce-display--'+display.type);
+  fixture.type='button';
+  Object.assign(fixture.style,{left:display.x*tile+'px',top:display.y*tile+'px',
+   width:item.w*tile+'px',height:item.h*tile+'px'});
+  fixture.setAttribute('aria-label',item.name+'。'+(display.crop?CROPS[display.crop].name:'空')+
+   ' '+display.quantity+'/'+item.capacity+'個。タップして補充や移動');
+  fixture.appendChild(node('span','display-name',item.name));
+  const body=node('span','display-body');
+  const goods=node('span','display-goods');
+  if(display.crop&&display.quantity){
+   const count=Math.min(display.quantity,display.type==='cooler'?6:7);
+   for(let i=0;i<count;i++)goods.appendChild(node('span','display-goods-item',CROPS[display.crop].icon));
+  }else goods.appendChild(node('span','display-empty','＋ 補充'));
+  body.appendChild(goods);fixture.appendChild(body);
+  fixture.appendChild(node('span','display-stock',display.quantity+' / '+item.capacity));
+  fixture.addEventListener('click',()=>openDisplay(display.id));
+  layer.appendChild(fixture);
+ }
+}
 function renderPlots(){
  const layer=$('plotLayer');layer.replaceChildren();
  const now=Date.now();
@@ -647,6 +671,62 @@ function renderManage(){
     if(applyLayout({type:'remove-field',id:field.id})){hideDialog('manageDialog');managedFieldId=null;selected=null;}
    }),actionButton('やめる','secondary',()=>renderManage()));
    check.appendChild(confirmRow);controls.replaceChildren(check);
+  })
+ );
+ controls.appendChild(row);
+}
+function applyDisplayOperation(action){
+ if(!ready||busy)return;
+ try{
+  const result=applyDisplayAction(farm,action);
+  farm=result.farm;queueSave();toast(result.message);refresh();
+ }catch(e){toast(e.message||'補充できませんでした。');}
+}
+function openDisplay(id){
+ if(!ready||busy||placement)return;
+ if(!farm.displays.some(d=>d.id===id))return;
+ managedDisplayId=id;hideDialog('itemsDialog');
+ renderDisplayDialog();showDialog('displayDialog');
+}
+function renderDisplayDialog(){
+ const controls=$('displayControls');controls.replaceChildren();
+ const display=farm.displays.find(d=>d.id===managedDisplayId);
+ if(!display)return;
+ const item=DISPLAY_TYPES[display.type];
+ $('displayTitle').textContent=item.icon+' '+item.name;
+ const current=display.quantity&&display.crop?CROPS[display.crop]:null;
+ controls.appendChild(node('p','modal-hint',
+  '位置：'+(display.x+1)+'列・'+(display.y+1)+'行　｜　陳列：'+
+  (current?current.icon+' '+current.name:'なし')+'　'+display.quantity+'/'+item.capacity+'個'));
+ controls.appendChild(node('div','inv-title','🧺 収穫した作物から補充する'));
+ const available=item.crops.filter(crop=>
+  (farm.inventory.produce[crop]||0)>0&&
+  (!display.quantity||display.crop===crop));
+ if(display.quantity>=item.capacity){
+  controls.appendChild(node('p','modal-hint','満杯です。中身を倉庫へ戻すと別の作物を並べられます。'));
+ }else if(available.length){
+  const products=node('div','display-refill-options');
+  for(const crop of available){
+   const count=Math.min(farm.inventory.produce[crop],item.capacity-display.quantity);
+   products.appendChild(actionButton(CROPS[crop].icon+' '+CROPS[crop].name+'を'+count+'個補充','gold',
+    ()=>applyDisplayOperation({type:'restock',id:display.id,crop})));
+  }
+  controls.appendChild(products);
+ }else controls.appendChild(node('p','modal-hint',
+  display.quantity?'同じ作物が倉庫にありません。別の作物を並べるには倉庫へ戻してください。':
+  '対応する作物が倉庫にありません。収穫すると補充できます。'));
+ if(display.quantity)controls.appendChild(actionButton('📦 陳列中の作物を倉庫へ戻す','secondary',
+  ()=>applyDisplayOperation({type:'unstock',id:display.id})));
+ const row=node('div','modal-actions');
+ row.append(
+  actionButton('↗️ 移動する','gold',()=>beginPlacement('move-display',display.id)),
+  actionButton('📦 家具を片付ける','secondary',()=>{
+   controls.replaceChildren(node('p','confirm-label','この家具を持ち物に戻しますか？ 陳列中の作物も倉庫へ戻ります。'));
+   const confirm=node('div','modal-actions');
+   confirm.append(actionButton('片付けを確定','gold',()=>{
+    if(applyLayout({type:'remove-display',id:display.id})){managedDisplayId=null;hideDialog('displayDialog');}
+   }),actionButton('やめる','secondary',renderDisplayDialog));
+   controls.appendChild(confirm);
   })
  );
  controls.appendChild(row);
