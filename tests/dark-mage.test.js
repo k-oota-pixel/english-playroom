@@ -18,8 +18,10 @@ test('first form repeatedly heals even after casting; normal attacks sometimes i
  for(let i=0;i<100;i++){const a=chooseMinibossAction(s,()=>.1);assert.equal(a.id,'mimuros');s.mp-=a.mpCost;assert.ok(s.mp>=0);}assert.equal(s.mp,0);
 });
 test('second form uses only Mimurose and Mirogoro, respects their costs, and waits when empty',()=>{
- const s=state(2);assert.equal(chooseMinibossAction(s,()=>.99).id,'mimurose');assert.equal(chooseMinibossAction({...s,hp:96},()=>0).id,'mirogoro');
- for(let i=0;i<100;i++){const a=chooseMinibossAction(s);assert.ok(['mimurose','mirogoro'].includes(a.id));s.mp-=a.mpCost;assert.ok(s.mp>=0);}assert.equal(s.mp,0);assert.equal(chooseMinibossAction(s).kind,'wait');
+ const s=state(2);assert.equal(chooseMinibossAction(s,()=>.99).id,'mimurose');assert.equal(chooseMinibossAction({...s,hp:96},()=>.9).id,'mirogoro');
+ assert.equal(chooseMinibossAction({...s,hp:96,reflectActive:false},()=>0).id,'mirogoturn');
+ assert.equal(chooseMinibossAction({...s,hp:96,reflectActive:true},()=>0).id,'mirogoro');
+ for(let i=0;i<100;i++){const a=chooseMinibossAction({...s,reflectActive:true});assert.ok(['mimurose','mirogoro'].includes(a.id));s.mp-=a.mpCost;assert.ok(s.mp>=0);}assert.equal(s.mp,0);assert.equal(chooseMinibossAction(s).kind,'wait');
  assert.equal(chooseMinibossAction({...s,mp:5}).id,'mirogoro');assert.equal(chooseMinibossAction({...s,mp:4}).kind,'wait');
 });
 
