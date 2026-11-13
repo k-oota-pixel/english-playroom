@@ -156,3 +156,14 @@ html[data-monstudy-screen-theme="dark"] body.online-questions-mode #attackPanel 
  body.online-questions-mode #attackPanel .online-accuracy-card .online-accuracy-number{font-size:clamp(16px,4.5vw,20px)}
  body.online-questions-mode #attackPanel .online-accuracy-card .online-accuracy-bonus{font-size:10px;padding:3px 5px}
 }
+
+/* Mirogoturn shield persists until a single attacking spell is reflected. */
+#battleView .pet-visual.online-reflect-active svg,
+#battleView .enemy-visual.online-reflect-active svg{
+ filter:drop-shadow(0 0 5px #95dbff) drop-shadow(0 0 12px #8b80ff);
+}
+#battleView .online-reflect-active{position:relative}
+#battleView .online-reflect-active:after{
+ content:"🛡️";pointer-events:none;position:absolute;right:0;top:0;
+ font-size:clamp(17px,2.6vw,26px);filter:drop-shadow(0 0 7px #7bbcff);
+}
