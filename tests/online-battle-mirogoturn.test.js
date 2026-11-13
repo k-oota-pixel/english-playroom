@@ -8,7 +8,7 @@ const source=path=>readFileSync(new URL(path,root),'utf8');
 test('Lv20 MP8 反射1回・時間制限なしは共通魔法カタログから取得',()=>{
  const battle=source('pet-adventure/online-battle.js'),spells=source('pet-dungeons-model.js');
  assert.match(spells,/id:'mirogoturn',name:'ミロゴターン',level:20,kind:'reflect',base:0,mpCost:8/);
- assert.match(battle,/時間制限なし/);
+ assert.match(spells,/時間制限なし/);
  assert.match(battle,/for\(const spell of ONLINE_MAGIC_SPELLS\)/);
  assert.match(battle,/const ONLINE_MAGIC_SPELLS=MAGIC_SPELLS/,'両モードで共通の魔法カタログを使う');
  assert.match(battle,/reflectActive=spell.kind==='reflect'/);
