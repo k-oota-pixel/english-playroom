@@ -113,7 +113,7 @@ async function realtimeChecks(page,mode){
   else{const target=path.resolve(file.endsWith('/')?file+'index.html':file);if(!target.startsWith(process.cwd())||!fs.existsSync(target))return route.fulfill({status:404,body:''});body=fs.readFileSync(target);type=target.endsWith('.html')?'text/html':target.endsWith('.css')?'text/css':target.endsWith('.svg')?'image/svg+xml':type;}
   await route.fulfill({contentType:type,body});
  });
- await page.route('https://www.gstatic.com/**',r=>r.fulfill({contentType:'text/javascript',body:"export const getDoc=async()=>({exists:()=>true,data:()=>({petHatched:true,petAdult:true,petName:'テスト',petAppearance:{species:'penguin',bodyColor:'cream',eyes:'sleepy',feature:'classic',pattern:'none',baseBackground:'sky'},petShop:{ownedItems:['forest-bg','crown'],equipped:{backgrounds:'forest-bg',head:'crown'}},petBaseStats:{hp:15,attack:1,defense:1},petBaseStatsGeneration:1})});export const getDocFromServer=getDoc;export const runTransaction=async()=>{};export const setDoc=async()=>{};export const serverTimestamp=()=>0;export const onAuthStateChanged=(a,f)=>f(a.currentUser);"}));
+ await page.route('https://www.gstatic.com/**',r=>r.fulfill({contentType:'text/javascript',body:"export const getDoc=async()=>({exists:()=>true,data:()=>({petHatched:true,petAdult:true,petName:'テスト',petAppearance:{species:'penguin',bodyColor:'cream',eyes:'sleepy',feature:'classic',pattern:'none',baseBackground:'sky'},petShop:{ownedItems:['forest-bg','crown'],equipped:{backgrounds:'forest-bg',head:'crown'}},petBaseStats:{hp:15,attack:1,defense:1},petBaseStatsGeneration:1})});export const getDocFromServer=getDoc;export const runTransaction=async(_db,callback)=>callback({get:async()=>({data:()=>({...getDoc().data(),eikenDungeonSeason:'2026-11-mamono-reflect'})}),set:()=>{}});export const setDoc=async()=>{};export const serverTimestamp=()=>0;export const onAuthStateChanged=(a,f)=>f(a.currentUser);"}));
  await page.route('https://k-oota-pixel.github.io/**',r=>{
   if(r.request().url().includes('word-breaker'))return r.fulfill({json:{levels:Object.fromEntries(['junior1','junior2','junior3','high1','high2'].map(level=>[level,Array.from({length:5},(_,i)=>({id:level+i,word:level+i,answers:['意味'+i]}))]))}});
   const grades=['4級','3級','準2級','2級','準1級'];
@@ -123,7 +123,7 @@ async function realtimeChecks(page,mode){
  await page.route('https://task-quest.onrender.com/**',r=>r.fulfill({json:{}}));
  console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
 await page.goto('https://adventure.test/pet-adventure/');
- assert.equal(await page.locator('.adventure-card').count(),2);
+ assert.equal(await page.locator('.adventure-card').count(),3);
  assert.equal(await page.locator('#battleView').isVisible(),false);
  assert.ok(await page.locator('.adventure-card img').evaluateAll(imgs=>imgs.every(i=>i.complete&&i.naturalWidth>0)));
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
@@ -202,7 +202,7 @@ await page.goto('https://adventure.test/pet-adventure/');
  await page.locator('#petPlayOpen').click();
  await page.locator('#petGameMenu a[href="./pet-adventure/"]').click();
  await page.waitForURL('**/pet-adventure/');await page.waitForSelector('.adventure-card');
- assert.equal(await page.locator('.adventure-card').count(),2);
+ assert.equal(await page.locator('.adventure-card').count(),3);
  if(width===1100){
   realStrength=true;
   await page.route('https://task-quest.onrender.com/api/learning/titles',r=>r.fulfill({json:{titles:[]}}));
