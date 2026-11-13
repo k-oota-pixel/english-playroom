@@ -38,7 +38,7 @@ test('4枚の問題カードには正答率と正解時倍率だけが表示さ�
  assert.match(js,/button\.addEventListener\('click',\(\)=>openQuestion\(card,room\)\)/);
  assert.match(js,/els\.questionText\.innerHTML=QUESTION_MODE\?esc\(card\.question\)/);
  assert.match(js,/new URL\('\.\.\/online-question-accuracy\.json',import\.meta\.url\)/);
- assert.match(html,/online-battle\.css\?v=2\.4\.92/);
+ assert.match(html,/online-battle\.css\?v=2\.4\.93/);
  assert.match(html,/online-battle\.js\?v=2\.4\.92/);
  assert.match(css,/online-accuracy-number/);
 });
@@ -59,4 +59,13 @@ test('正答率データはJSONを毎朝生成し、対戦中はFirestoreを読�
  assert.equal(validExport({...placeholder,updatedAt:null}),false,'未生成のデータを有効とみなさない');
  assert.equal(validExport({...placeholder,updatedAt:'2026-11-13T00:00:00Z'}),true,'公開済み実データでもテスト可能');
  assert.equal(validExport(placeholder),placeholder.updatedAt!==null,'初回生成後も継続的にテストを通す');
+});
+
+test('正答率の文字は4枚のカードに収まる控えめなサイズで表示する',()=>{
+ const css=source('pet-adventure/online-battle.css');
+ const block=css.match(/body\.online-questions-mode #attackPanel \.online-accuracy-card \.online-accuracy-number\{([^}]+)\}/);
+ assert.ok(block);
+ assert.match(block[1],/font-size:clamp\(17px,2\.2vw,23px\)/);
+ assert.match(css,/\.online-accuracy-number\{font-size:clamp\(16px,4\.5vw,20px\)\}/);
+ assert.doesNotMatch(block[1],/38px/,'拡大表示を戻さない');
 });
