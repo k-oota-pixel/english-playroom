@@ -2,7 +2,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),vm=require(
 const root=path.resolve(__dirname,'..'),source=fs.readFileSync(path.join(root,'pet-adventure/rankings.js'),'utf8').replace(/^import .*;\n/gm,'');
 function fixture({authReady=Promise.resolve(),user={uid:'learner',getIdToken:async()=> 'test-token'},response}={}){
  const nodes={},calls=[],buttons=['tower','dungeon'].map(mode=>node({ranking:mode}));
- function node(dataset={}){return {dataset,textContent:'',children:[],events:{},disabled:false,addEventListener(k,fn){this.events[k]=fn;},replaceChildren(){this.children=[];},append(...children){this.children.push(...children);},showModal(){},close(){this.events.close?.();}};}
+ function node(dataset={}){return {dataset,textContent:'',children:[],events:{},disabled:false,style:{},addEventListener(k,fn){this.events[k]=fn;},replaceChildren(){this.children=[];},append(...children){this.children.push(...children);},showModal(){},close(){this.events.close?.();}};}
  const auth={currentUser:user};
  const c=vm.createContext({auth,authReady,AbortController,Error,rankedPetButton:()=>node(),openRankedPet:()=>{},document:{getElementById(id){return nodes[id]||=(node());},querySelectorAll(){return buttons;},createElement(){return node();},createTextNode(text){const item=node();item.textContent=text;return item;}},fetch:async(url,options)=>{calls.push({url,options});return response?response(url,options):{ok:true,status:200,json:async()=>({leaders:[{rank:1,petName:'もこ',title:'塔の冒険者',floor:50}]})};}});
  vm.runInContext(source,c);
