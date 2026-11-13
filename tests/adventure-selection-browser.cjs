@@ -216,7 +216,7 @@ await page.goto('https://adventure.test/pet-adventure/');
   await page.waitForSelector('.strength-row');
   assert.equal(await page.locator('.strength-born').count(),0);
   assert.doesNotMatch(await page.locator('.strength-dialog').textContent(),/生まれつきの個体差/);
-  assert.match(await page.locator('.strength-row').first().textContent(),/HP　15/);
+  assert.match(await page.locator('.strength-row').first().textContent(),/HP　17/); // Individual base HP 15 plus adult bonus 2.
   console.log('PASS strength bonuses remain effective without the birth-bonus label');
  }
  assert.deepEqual(errors,[]);await page.close();
