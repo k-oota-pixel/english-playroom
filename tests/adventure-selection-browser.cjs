@@ -118,8 +118,8 @@ async function realtimeChecks(page,mode){
   if(r.request().url().includes('/english-playroom/access-gate.js'))return r.fulfill({contentType:'text/javascript',body:'document.getElementById("monstudy-access-lock")?.remove();'});
   if(r.request().url().includes('word-breaker'))return r.fulfill({json:{levels:Object.fromEntries(['junior1','junior2','junior3','high1','high2'].map(level=>[level,Array.from({length:5},(_,i)=>({id:level+i,word:level+i,answers:['意味'+i]}))]))}});
   const grades=['4級','3級','準2級','2級','準1級'];
-  const questions=grades.flatMap(grade=>Array.from({length:5},(_,i)=>({id:grade+i,grade,question:'Although the weather forecast predicted heavy rain, the students decided to (____) their outdoor activities because they had been looking forward to the trip for several weeks.',choices:[{number:1,text:'continue their planned activities'},{number:2,text:'cancel without further discussion'},{number:3,text:'refuse to consider another plan'},{number:4,text:'forget all the necessary equipment'}],answer_number:1})));
-  return r.fulfill({contentType:'text/html',body:'<script id="question-data" type="application/json">'+JSON.stringify(questions)+'</script>'});
+  const questions=grades.flatMap(grade=>Array.from({length:20},(_,i)=>({id:grade+i,grade,question:'Although the weather forecast predicted heavy rain, the students decided to (____) their outdoor activities because they had been looking forward to the trip for several weeks.',choices:[{number:1,text:'continue their planned activities'},{number:2,text:'cancel without further discussion'},{number:3,text:'refuse to consider another plan'},{number:4,text:'forget all the necessary equipment'}],answer_number:1})));
+  return r.fulfill({contentType:'text/javascript',body:'window.RETRY_QUESTIONS='+JSON.stringify(questions)+';'});
  });
  await page.route('https://task-quest.onrender.com/**',r=>r.fulfill({json:{}}));
  console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export const accountSession=async()=>({admin:false,resetRequired:false});"}));
