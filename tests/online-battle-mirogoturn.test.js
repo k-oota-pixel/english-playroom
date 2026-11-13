@@ -5,9 +5,9 @@ import {execFileSync} from 'node:child_process';
 const root=new URL('../',import.meta.url);
 const source=path=>readFileSync(new URL(path,root),'utf8');
 
-test('Lv20 MP8 反射1回・時間制限なしは共通魔法カタログから取得',()=>{
+test('Lv20 MP5 反射1回・時間制限なしは共通魔法カタログから取得',()=>{
  const battle=source('pet-adventure/online-battle.js'),spells=source('pet-dungeons-model.js');
- assert.match(spells,/id:'mirogoturn',name:'ミロゴターン',level:20,kind:'reflect',base:0,mpCost:8/);
+ assert.match(spells,/id:'mirogoturn',name:'ミロゴターン',level:20,kind:'reflect',base:0,mpCost:5/);
  assert.match(spells,/時間制限なし/);
  assert.match(battle,/for\(const spell of ONLINE_MAGIC_SPELLS\)/);
  assert.match(battle,/const ONLINE_MAGIC_SPELLS=MAGIC_SPELLS/,'両モードで共通の魔法カタログを使う');
@@ -31,6 +31,22 @@ test('単語・問題の両方で同じ告知を読み込む',()=>{
  assert.match(notice,/オンライン対戦 新魔法ミロゴターン/);
  assert.match(css,/online-mirogoturn-dialog/);
  assert.doesNotMatch(notice,/firestore|databaseURL|runTransaction|getDoc/);
+});
+test('円形メーターと残秒・共通CT・反射待機を単語/問題対戦に表示',()=>{
+ const battle=source('pet-adventure/online-battle.js'),css=source('pet-adventure/online-battle.css');
+ for(const page of ['pet-adventure/online-battle.html','pet-adventure/online-battle-questions.html']){
+  assert.match(source(page),/id="magicCooldownCount"/);
+  assert.match(source(page),/online-magic-ring/);
+ }
+ assert.match(battle,/magicReadyAt/);
+ assert.match(battle,/magicCooldownMs/);
+ assert.match(battle,/magicRemainingMs/);
+ assert.match(battle,/setInterval\(\(\)=>\{if\(!document.hidden\)updateMagicCooldown\(\);\},100\)/);
+ assert.match(battle,/online-magic-ready-glow/);
+ assert.match(battle,/reflectActive\?'反射中'/);
+ assert.match(css,/conic-gradient/);
+ assert.match(css,/onlineMagicReadyPulse/);
+ assert.doesNotMatch(battle,/setInterval\([\s\S]{0,90}(getDoc|runTransaction|firestore)/);
 });
 test('告知画像は実際のWebPファイルで配信される',()=>{
  const fs=source('pet-adventure/online-mirogoturn-news.js');
