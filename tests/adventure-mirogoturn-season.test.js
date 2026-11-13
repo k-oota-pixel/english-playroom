@@ -8,9 +8,9 @@ import {createFinalEncounter,finalEnemyActions} from '../pet-adventure/final-enc
 import {DUNGEON_SEASON_ID} from '../pet-adventure/dungeon-season.js';
 const source=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 
-test('both adventure modes share the Lv20 MP8 reflect spell',()=>{
+test('both adventure modes share the Lv20 MP5 reflect spell',()=>{
  const reflect=MAGIC_SPELLS.find(s=>s.id==='mirogoturn');
- assert.equal(reflect.level,20);assert.equal(reflect.mpCost,8);assert.equal(reflect.kind,'reflect');
+ assert.equal(reflect.level,20);assert.equal(reflect.mpCost,5);assert.equal(reflect.kind,'reflect');
  assert.equal(unlockedMagic(19).some(s=>s.id==='mirogoturn'),false);
  assert.equal(unlockedMagic(20).some(s=>s.id==='mirogoturn'),true);
  const game=source('pet-adventure/game.js');
