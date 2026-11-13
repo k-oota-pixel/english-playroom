@@ -18,7 +18,7 @@ test('Lv20 MP5 反射1回・時間制限なしは共通魔法カタログから�
 test('単語・問題の両方で同じ告知を読み込む',()=>{
  const js=source('pet-adventure/online-battle.js');
  for(const page of ['pet-adventure/online-battle.html','pet-adventure/online-battle-questions.html']){
-  assert.match(source(page),/online-battle.js\?v=2\.4\.96/);
+  assert.match(source(page),/online-battle.js\?v=2\.4\.97/);
  }
  assert.match(js,/installMirogoturnNews\(user.uid\)/);
  assert.match(js,/online-mirogoturn-news.js\?v=2\.4\.95/);
