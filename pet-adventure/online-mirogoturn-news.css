@@ -20,3 +20,6 @@
 .online-mirogoturn-close:focus-visible,.online-mirogoturn-poster-ok:focus-visible,.online-mirogoturn-dismiss:focus-visible,.online-mirogoturn-fallback-ok:focus-visible,.online-mirogoturn-reopen:focus-visible{outline:3px solid #ffe07a;outline-offset:3px}
 @media(max-width:520px){.online-mirogoturn-dialog{width:min(95vw,440px)}.online-mirogoturn-poster{max-height:72dvh}.online-mirogoturn-controls{padding:9px 11px}.online-mirogoturn-reopen{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.online-mirogoturn-reopen{transition:none}}
+
+.online-mirogoturn-update{margin:0;padding:9px 12px;text-align:center;background:#33285c;color:#fff7c8;font:800 11px/1.5 system-ui}
+.online-mirogoturn-update strong{color:#fff;font-size:13px}
