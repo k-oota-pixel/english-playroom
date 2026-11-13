@@ -35,6 +35,6 @@ test('server failures retain retry guidance and retry renders the ranking',async
  let failed=true;const f=fixture({response:()=>({ok:!failed,status:failed?503:200,json:async()=>failed?{error:'failed'}:{leaders:[{rank:1,petName:'もこ',floor:8}]}})});await f.load('tower');assert.match(f.nodes.rankingStatus.textContent,/再表示/);failed=false;await f.load('tower');assert.equal(f.nodes.rankingList.children.length,1);
 });
 test('the released entry loads the new ranking module',()=>{
- assert.match(fs.readFileSync(path.join(root,'pet-adventure/index.html'),'utf8'),/entry\.js\?v=2\.3\.42/);
- assert.match(fs.readFileSync(path.join(root,'pet-adventure/entry.js'),'utf8'),/rankings\.js\?v=2\.3\.42/);
+ assert.match(fs.readFileSync(path.join(root,'pet-adventure/index.html'),'utf8'),/entry\.js\?v=2\.4\.95/);
+ assert.match(fs.readFileSync(path.join(root,'pet-adventure/entry.js'),'utf8'),/rankings\.js\?v=2\.4\.95/);
 });
