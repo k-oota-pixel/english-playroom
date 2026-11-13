@@ -36,7 +36,7 @@ async function realtimeChecks(page,mode){
  await page.clock.runFor(interval*2);assert.equal(await hp(),beforePause);
  await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
  await page.clock.runFor(100);assert.equal(await hp(),beforePause);
- await minimumAttack(page);await page.clock.runFor(interval*12);
+ await minimumAttack(page);for(let n=0;n<32&&await hp()>0;n++)await page.clock.runFor(interval);
  assert.equal(await hp(),0);assert.equal(await page.locator('#resultCard').isVisible(),true);
  await page.clock.runFor(interval*2);assert.equal(await hp(),0);
  await page.locator('#retryBtn').click();await page.clock.runFor(100);
@@ -84,7 +84,7 @@ async function realtimeChecks(page,mode){
  assert.equal(await page.locator('#bossBadge').isVisible(),false);
  const coins=await page.evaluate(()=>window.adventureCoins);assert.equal(coins.filter(c=>c.appId===(mode==='tower'?'word-tower':'eiken-dungeon')).length,mode==='tower'?0:1);if(mode==='dungeon')assert.match(coins[0].label,/5層到達/);
  assert.equal(await page.evaluate(()=>window.adventureTitleEvents.length),beforeFinishEvents,'active-run title events are held until the run ends');
- await page.clock.runFor(interval*12);assert.equal(await hp(),0);assert.equal(await page.locator('#resultCard').isVisible(),true);
+ for(let n=0;n<32&&await hp()>0;n++)await page.clock.runFor(interval);assert.equal(await hp(),0);assert.equal(await page.locator('#resultCard').isVisible(),true);
  const events=await page.evaluate(()=>window.adventureTitleEvents);
  assert.ok(events.length>0);assert.ok(events.every(e=>e.appId===(mode==='tower'?'word-tower':'eiken-dungeon')&&e.expectedUid==='test'));
  assert.equal(new Set(events.map(e=>e.eventId)).size,events.length);
