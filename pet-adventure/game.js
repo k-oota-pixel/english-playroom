@@ -8,7 +8,7 @@ import {adminStatsAdjustment} from '../pet-admin-stats-adjustment.js?v=2.3.23';
 import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.23';
 import {accountSession} from '../auth-session.js?v=2.4.37';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=2.3.23';
-import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.95';
+import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.96';
 import {DUNGEON_SEASON_ID} from './dungeon-season.js?v=2.4.95';
 import {getDoc,setDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {auth,db,authReady,walletRef} from '../coin-reward.js?v=2.1.11';
