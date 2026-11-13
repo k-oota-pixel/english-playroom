@@ -4,7 +4,7 @@ import {rankedPetButton} from '../ranked-pet-view.js?v=2.4.71';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=2.4.96';
-import {installMirogoturnNews} from './online-mirogoturn-news.js?v=2.4.95';
+import {installMirogoturnNews} from './online-mirogoturn-news.js?v=2.4.96';
 // One shared spell catalog now powers online battles, the tower, and the dungeon.
 const ONLINE_MAGIC_SPELLS=MAGIC_SPELLS;
 
