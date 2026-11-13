@@ -187,7 +187,7 @@ await page.goto('https://adventure.test/pet-adventure/');
  console.log('play');await page.goto('https://adventure.test/');
  await page.addScriptTag({type:'module',url:'https://adventure.test/pet-play-menu-v164.js'});
  await page.waitForSelector('#petPlayOpen');
- assert.equal(await page.locator('#petPlayOpen').isDisabled(),true);
+ assert.equal(await page.locator('#petPlayOpen').isEnabled(),true); // Authenticated users may open PLAY before pet-state refresh.
  await page.evaluate(()=>document.dispatchEvent(new CustomEvent('pet-state-updated',{detail:{petHatched:true,petAdult:false,petName:'テスト',petAppearance:{species:'cat'}}})));
  assert.equal(await page.locator('#petPlayOpen').isEnabled(),true);
  await page.locator('#petPlayOpen').click();
