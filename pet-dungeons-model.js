@@ -10,6 +10,7 @@ export const DUNGEON_ITEMS=Object.freeze([
 export const MAGIC_SPELLS=Object.freeze([
  {id:'mimuros',name:'ミムロス',level:5,kind:'heal',base:10,mpCost:5,description:'体力を小回復'},
  {id:'mirogoro',name:'ミロゴロ',level:15,kind:'attack',base:15,mpCost:5,description:'敵に小ダメージ'},
+ {id:'mirogoturn',name:'ミロゴターン',level:20,kind:'reflect',base:0,mpCost:8,description:'次に受ける攻撃魔法を1回だけ反射（時間制限なし）'},
  {id:'mimurose',name:'ミムローズ',level:25,kind:'heal',base:30,mpCost:10,description:'体力を大回復'},
  {id:'mirogoron',name:'ミロゴロン',level:35,kind:'attack',base:30,mpCost:10,description:'敵に大ダメージ'}
 ]);
