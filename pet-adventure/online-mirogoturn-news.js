@@ -12,7 +12,7 @@ export function installMirogoturnNews(uid){
  const preferenceKey=keyFor(uid);
 
  const link=document.createElement('link');
- link.rel='stylesheet';link.href='./online-mirogoturn-news.css?v=2.4.94';link.dataset.onlineMirogoturnStyle='1';document.head.append(link);
+ link.rel='stylesheet';link.href='./online-mirogoturn-news.css?v=2.4.96';link.dataset.onlineMirogoturnStyle='1';document.head.append(link);
 
  const reopen=document.createElement('button');
  reopen.type='button';reopen.className='online-mirogoturn-reopen';
@@ -26,10 +26,11 @@ export function installMirogoturnNews(uid){
  dialog.innerHTML=`<div class="online-mirogoturn-sheet">
   <button type="button" class="online-mirogoturn-close" aria-label="お知らせを閉じる">×</button>
   <div class="online-mirogoturn-image-wrap">
-   <img class="online-mirogoturn-poster" src="./mirogoturn-new-spell.webp?v=2.4.95" alt="新魔法 ミロゴターン。Lv.20で習得、消費MP8。時間制限なく、受けた攻撃魔法を1回だけ反射する。自分はダメージを受けず相手にはね返す。" width="640" height="800" decoding="async">
+   <img class="online-mirogoturn-poster" src="./mirogoturn-new-spell.webp?v=2.4.95" alt="新魔法 ミロゴターン。Lv.20で習得、消費MP5。時間制限なく、受けた攻撃魔法を1回だけ反射する。自分はダメージを受けず相手にはね返す。" width="640" height="800" decoding="async">
    <button type="button" class="online-mirogoturn-poster-ok" aria-label="新魔法のお知らせを閉じる"></button>
-   <div class="online-mirogoturn-fallback" hidden><strong>✨ 新魔法 ミロゴターン</strong><p>Lv.20で習得・消費MP 8</p><p>攻撃魔法を1回だけはね返す！<br>時間制限なし</p><button type="button" class="online-mirogoturn-fallback-ok">OK</button></div>
+   <div class="online-mirogoturn-fallback" hidden><strong>✨ 新魔法 ミロゴターン</strong><p>Lv.20で習得・消費MP 5</p><p>攻撃魔法を1回だけはね返す！<br>時間制限なし</p><button type="button" class="online-mirogoturn-fallback-ok">OK</button></div>
   </div>
+  <p class="online-mirogoturn-update">仕様変更：消費MP <strong>5</strong> ／ クールタイム <strong>5秒</strong>（画像内のMP8は旧仕様です）</p>
   <div class="online-mirogoturn-controls">
    <label><input type="checkbox"> 次回以降表示しない</label>
    <button type="button" class="online-mirogoturn-dismiss">閉じる</button>
