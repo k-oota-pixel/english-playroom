@@ -3,7 +3,7 @@ import {announceTitles} from '../learning-titles.js?v=2.4.72';
 import {rankedPetButton} from '../ranked-pet-view.js?v=2.4.71';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
-import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=2.4.95';
+import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=2.4.96';
 import {installMirogoturnNews} from './online-mirogoturn-news.js?v=2.4.95';
 // One shared spell catalog now powers online battles, the tower, and the dungeon.
 const ONLINE_MAGIC_SPELLS=MAGIC_SPELLS;
@@ -30,7 +30,7 @@ const els={
  battleStatus:$('battleStatus'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackGrid:$('attackGrid'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),
  quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),
  waitingCard:$('waitingCard'),waitingTitle:$('waitingTitle'),waitingText:$('waitingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultTitle:$('resultTitle'),resultText:$('resultText'),
- readyBtn:$('readyBtn'),readyCount:$('readyCount'),readyFeedback:$('readyFeedback'),resultFeedback:$('resultFeedback'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),
+ readyBtn:$('readyBtn'),readyCount:$('readyCount'),readyFeedback:$('readyFeedback'),resultFeedback:$('resultFeedback'),retryBtn:$('retryBtn'),leaveBtn:$('leaveBtn'),exitRunBtn:$('exitRunBtn'),magicBtn:$('magicBtn'),magicCooldownCount:$('magicCooldownCount'),itemBtn:$('itemBtn'),
  magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')
 };
 let user=null,activeRoom='',selectedGrade='',pollTimer=0,pollIntervalMs=0,roomsTimer=0,roomRefreshInFlight='',coins=0,questionPool=[],ownData={};
@@ -41,6 +41,7 @@ let idleTimer=0,autoPausedForIdle=false,resumeSyncing=false,lastResumeSyncAt=0;
 let navigationToken='',navigationExitInFlight=null;
 const battleAwardsSeen=new Set();
 let lastActionDialogSignature='';
+let magicClock=0,magicWasCooling=false,magicClockMatchId='',magicLastDialogSecond=-1;
 
 function stopAutoRefresh(){
  if(liveSubscription){liveSubscription.controller.abort();liveSubscription=null;}
@@ -285,7 +286,7 @@ async function refreshLobby(){
 
 
 function enterBattleLayout(){lobbyView.hidden=true;battleView.hidden=false;document.body.classList.add('battle-mode');}
-function enterLobbyLayout(){battleView.hidden=true;lobbyView.hidden=false;document.body.classList.remove('battle-mode');}
+function enterLobbyLayout(){stopMagicCooldownClock();battleView.hidden=true;lobbyView.hidden=false;document.body.classList.remove('battle-mode');}
 function resetTurn(){turnCards=[];selectedAttack=null;currentQuestion=null;els.answerGrid.replaceChildren();els.answerFeedback.textContent='';els.quizPanel.hidden=true;}
 function clearBattleEffects(){
  els.battleFlash.classList.remove('show');
@@ -468,6 +469,47 @@ function renderPlaying(room){
  else if(selectedAttack){els.attackPanel.hidden=true;els.quizPanel.hidden=false;}
  else{els.attackPanel.hidden=false;els.quizPanel.hidden=true;}
 }
+// The server owns the UTC deadline. The 10 Hz meter never polls or writes to Firebase.
+function magicRemainingMs(player=minePlayer(),at=Date.now()){
+ return Math.max(0,Math.floor(Number(player?.magicReadyAt)||0)-at);
+}
+function stopMagicCooldownClock(){
+ if(magicClock){clearInterval(magicClock);magicClock=0;}
+ magicWasCooling=false;magicClockMatchId='';magicLastDialogSecond=-1;
+ els.magicBtn.classList.remove('online-magic-cooling','online-magic-ready-glow');
+ els.magicBtn.style.setProperty('--magic-progress','100%');
+ els.magicCooldownCount.textContent='✓';
+}
+function updateMagicCooldown(){
+ const room=currentRoom;
+ if(room?.status!=='playing'||room.roomId!==activeRoom||room.noItems)return;
+ const mine=minePlayer(room);
+ if(!mine)return;
+ if(magicClockMatchId!==room.matchId){
+  magicClockMatchId=room.matchId;magicWasCooling=false;magicLastDialogSecond=-1;
+  els.magicBtn.classList.remove('online-magic-ready-glow');
+ }
+ const remaining=magicRemainingMs(mine),duration=Math.max(0,Number(mine.magicCooldownMs)||0);
+ const cooling=remaining>0,seconds=Math.ceil(remaining/1000);
+ const progress=duration>0?100*Math.max(0,Math.min(1,1-remaining/duration)):100;
+ els.magicBtn.style.setProperty('--magic-progress',progress.toFixed(2)+'%');
+ els.magicCooldownCount.textContent=cooling?String(seconds):'✓';
+ els.magicBtn.classList.toggle('online-magic-cooling',cooling);
+ els.magicBtn.setAttribute('aria-label',cooling?'魔法：あと'+seconds+'秒で使用可能':'魔法：使用可能');
+ if(cooling){
+  magicWasCooling=true;els.magicBtn.classList.remove('online-magic-ready-glow');
+ }else if(magicWasCooling){
+  magicWasCooling=false;
+  els.magicBtn.classList.add('online-magic-ready-glow');
+ }
+ if(els.magicDialog.open&&seconds!==magicLastDialogSecond){
+  magicLastDialogSecond=seconds;renderMagic();
+ }
+}
+function startMagicCooldownClock(){
+ if(!magicClock)magicClock=setInterval(()=>{if(!document.hidden)updateMagicCooldown();},100);
+ updateMagicCooldown();
+}
 function syncActionControls(){
  const room=currentRoom,available=room?.status==='playing'&&!busy&&!room.noItems;
  els.magicBtn.disabled=!available;els.itemBtn.disabled=!available;
@@ -478,7 +520,7 @@ function syncActionControls(){
   return;
  }
  const mine=minePlayer(room);
- const signature=[room.roomId,mine?.hp,mine?.mp,busy].join('|');
+ const signature=[room.roomId,room.matchId,mine?.hp,mine?.mp,mine?.magicReadyAt,mine?.magicReflect,busy].join('|');
  if(signature===lastActionDialogSignature)return;
  lastActionDialogSignature=signature;
  // Remote actions may change HP/MP while a dialog is open.
@@ -502,7 +544,7 @@ function renderRoom(room){
  els.areaLabel.textContent='英検'+(room.grade||'4級');els.stageLabel.textContent='ROOM '+(room.roomNo||String(room.roomId||'').split('-').pop());els.enemyCount.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';els.bestLabel.textContent='MAGIC / ITEM';els.battleStatus.textContent=room.status==='playing'?'LIVE':room.status==='finished'?'FINISH':'WAITING';
  updateFighters(room);animateEvent(room);
  if(lastStatus!==room.status){if(room.status==='playing'){resetTurn();seenQuestionIds.clear();lastQuestionId='';}lastStatus=room.status;}
- syncActionControls();els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
+ syncActionControls();if(room.status==='playing')startMagicCooldownClock();else stopMagicCooldownClock();els.exitRunBtn.disabled=false;els.exitRunBtn.textContent=room.status==='playing'?'投了する':'対戦を終了する';
  if(room.status==='waiting')renderWaiting(room,mine,other);else if(room.status==='playing')renderPlaying(room);else if(room.status==='finished')renderFinished(room,mine);
  startAutoRefresh();
 }
@@ -564,11 +606,12 @@ async function act(action,{render=true,body=null}={}){
 
 function renderMagic(message='',error=false){
  const mine=minePlayer(),level=ownLevel(),maxMp=Math.max(0,Number(mine?.stats?.mp)||0),mp=Math.max(0,Number(mine?.mp??maxMp)||0);
- els.magicMpStatus.textContent=`Lv.${level}　MP ${mp} / ${maxMp}`;els.magicMessage.textContent=message;els.magicMessage.className='battle-action-message'+(error?' error':'');els.magicList.replaceChildren();
+ const remaining=magicRemainingMs(mine),seconds=Math.ceil(remaining/1000),cooling=remaining>0;
+ els.magicMpStatus.textContent=`Lv.${level}　MP ${mp} / ${maxMp}`+(cooling?`　全魔法 あと${seconds}秒`:'');els.magicMessage.textContent=message;els.magicMessage.className='battle-action-message'+(error?' error':'');els.magicList.replaceChildren();
  for(const spell of ONLINE_MAGIC_SPELLS){
-  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),reflectActive=spell.kind==='reflect'&&mine?.magicReflect===true,reason=!unlocked?'未習得':mp<spell.mpCost?'MP不足':full?'HPが満タンです':reflectActive?'反射待機中':busy?'処理中':'',card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');
+  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),reflectActive=spell.kind==='reflect'&&mine?.magicReflect===true,reason=!unlocked?'未習得':reflectActive?'反射中':cooling?`あと${seconds}秒`:mp<spell.mpCost?'MP不足':full?'HPが満タンです':busy?'処理中':'',card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked')+(cooling?' online-spell-cooling':'');
   card.innerHTML=`<strong>${esc(spell.name)}</strong><span>${unlocked?esc(spell.description):`Lv.${spell.level}で習得`}</span><small>${unlocked?`消費MP ${spell.mpCost}`:'LOCKED'}${reason?' · '+esc(reason):''}</small><button type="button">${unlocked?'使う':'未習得'}</button>`;
-  const button=card.querySelector('button');button.disabled=busy||!unlocked||mp<spell.mpCost||full||reflectActive;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
+  const button=card.querySelector('button');button.disabled=busy||cooling||!unlocked||mp<spell.mpCost||full||reflectActive;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
  }
 }
 function openMagic(){
@@ -576,7 +619,11 @@ function openMagic(){
  els.magicMessage.textContent='';els.magicDialog.showModal();renderMagic();
 }
 async function castMagic(spell){
- if(busy||!currentRoom||currentRoom.status!=='playing')return;busy=true;resetTurn();
+ if(busy||!currentRoom||currentRoom.status!=='playing')return;
+ const mine=minePlayer();
+ if(magicRemainingMs(mine)>0){renderMagic('魔法はクールタイム中です。',true);return;}
+ if(spell.kind==='reflect'&&mine?.magicReflect){renderMagic('反射待機中はミロゴターンを再使用できません。',true);return;}
+ busy=true;resetTurn();
  try{els.magicDialog.close();const room=await act('magic',{render:false,body:{spellId:spell.id}});busy=false;if(room){renderRoom(room);if(room.status==='playing')prepareTurn(room);}}
  catch(error){busy=false;renderMagic(error?.message||'魔法を使えませんでした。',true);if(!els.magicDialog.open)els.magicDialog.showModal();}
   syncActionControls();
@@ -750,5 +797,5 @@ document.addEventListener('visibilitychange',handleVisibility);
 window.addEventListener('focus',handleVisibility);
 // Parent shell navigation removes the iframe without reloading the top-level page.
 if(window.MonstudyMaterial)window.MonstudyMaterial.onNavigateAway=leaveOnNavigate;
-window.addEventListener('pagehide',()=>{void leaveOnNavigate();stopAutoRefresh();clearTimeout(idleTimer);});
+window.addEventListener('pagehide',()=>{void leaveOnNavigate();stopAutoRefresh();stopMagicCooldownClock();clearTimeout(idleTimer);});
 init();
