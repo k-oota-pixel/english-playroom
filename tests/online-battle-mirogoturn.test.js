@@ -18,10 +18,10 @@ test('オンライン対戦専用 Lv20 MP8 反射1回・時間制限なし',()=>
 test('単語・問題の両方で同じ告知を読み込む',()=>{
  const js=source('pet-adventure/online-battle.js');
  for(const page of ['pet-adventure/online-battle.html','pet-adventure/online-battle-questions.html']){
-  assert.match(source(page),/online-battle.js\?v=2\.4\.94/);
+  assert.match(source(page),/online-battle.js\?v=2\.4\.95/);
  }
  assert.match(js,/installMirogoturnNews\(user.uid\)/);
- assert.match(js,/online-mirogoturn-news.js\?v=2\.4\.94/);
+ assert.match(js,/online-mirogoturn-news.js\?v=2\.4\.95/);
  const notice=source('pet-adventure/online-mirogoturn-news.js'),css=source('pet-adventure/online-mirogoturn-news.css');
  assert.match(notice,/mirogoturn-new-spell.webp/);
  assert.match(notice,/次回以降表示しない/);

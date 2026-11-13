@@ -39,7 +39,7 @@ test('4枚の問題カードには正答率と正解時倍率だけが表示さ�
  assert.match(js,/els\.questionText\.innerHTML=QUESTION_MODE\?esc\(card\.question\)/);
  assert.match(js,/new URL\('\.\.\/online-question-accuracy\.json',import\.meta\.url\)/);
  assert.match(html,/online-battle\.css\?v=2\.4\.94/);
- assert.match(html,/online-battle\.js\?v=2\.4\.94/);
+ assert.match(html,/online-battle\.js\?v=2\.4\.95/);
  assert.match(css,/online-accuracy-number/);
 });
 
