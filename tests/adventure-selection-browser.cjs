@@ -122,7 +122,7 @@ async function realtimeChecks(page,mode){
   return r.fulfill({contentType:'text/html',body:'<script id="question-data" type="application/json">'+JSON.stringify(questions)+'</script>'});
  });
  await page.route('https://task-quest.onrender.com/**',r=>r.fulfill({json:{}}));
- console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export * from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';"}));
+ console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export const accountSession=async()=>({admin:false,resetRequired:false});"}));
 await page.goto('https://adventure.test/pet-adventure/');
  assert.equal(await page.locator('.adventure-card').count(),3);
  assert.equal(await page.locator('#battleView').isVisible(),false);
