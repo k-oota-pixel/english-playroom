@@ -6,7 +6,7 @@ import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=1.10.22';
 import {installMirogoturnNews} from './online-mirogoturn-news.js?v=2.4.95';
 // This defense spell is online-only; leave the tower and dungeon PVE spell lists unchanged.
-const ONLINE_MAGIC_SPELLS=[...MAGIC_SPELLS.slice(0,2),{id:'mirogoturn',name:'ミロゴターン',level:20,kind:'reflect',mpCost:8,description:'次に受ける攻撃魔法を1回だけ反射（時間制限なし）'},...MAGIC_SPELLS.slice(2)];
+const ONLINE_MAGIC_SPELLS=MAGIC_SPELLS;
 
 const QUESTION_MODE=location.pathname.endsWith('/online-battle-questions.html');
 if(QUESTION_MODE)document.body.classList.add('online-questions-mode');
