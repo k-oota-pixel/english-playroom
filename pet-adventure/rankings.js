@@ -32,7 +32,7 @@ async function load(){
  }catch(error){if(requestId===sequence&&error.name!=='AbortError')status.textContent=error.message;}
  finally{if(requestId===sequence)reload.disabled=false;}
 }
-for(const button of document.querySelectorAll('[data-ranking]'))button.addEventListener('click',()=>{mode=button.dataset.ranking;heading.textContent=(mode==='tower'?'魔王の塔':'魔物の巣窟')+'ランキング';dialog.showModal();load();});
+for(const button of document.querySelectorAll('[data-ranking]'))button.addEventListener('click',()=>{mode=button.dataset.ranking;heading.textContent=(mode==='tower'?'魔王の塔':'魔物の巣窟')+'ランキング'+(mode==='dungeon'?'（新シーズン）':'');dialog.showModal();load();});
 document.getElementById('rankingClose').addEventListener('click',()=>dialog.close());reload.addEventListener('click',load);dialog.addEventListener('close',()=>{sequence++;controller?.abort();reload.disabled=false;});
 
 
