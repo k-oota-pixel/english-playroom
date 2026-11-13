@@ -1,4 +1,4 @@
-import {MAGIC_SPELLS} from '../pet-dungeons-model.js?v=1.10.22';
+import {MAGIC_SPELLS} from '../pet-dungeons-model.js?v=2.4.95';
 
 const BOSSES=Object.freeze([
  {floor:15,id:'crysturtle',name:'クリスタートル',element:'water'},
