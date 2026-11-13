@@ -24,7 +24,7 @@ function createActor(kind,phase,mode,guardMp){
  const interval=bossActionInterval(kind,phase,mode,kind==='king'?({1:3500,2:3000,3:1500})[phase]:phase===3?(kind==='mage'?2500:4000):boss.attackInterval||enemyAttackInterval(floor,mode));
  const image=kind==='king'?`final-king-${phase}.svg`:kind==='mage'?`dark-mage-${phase}.svg`:phase===3?'royal-guard-lion-3.svg':boss.image;
  const name=kind==='king'?'魔王':kind==='mage'?'闇の魔術師':'魔王親衛隊';
- return {id:`${kind}-${phase}`,kind,phase,name,level:floor,element:kind==='king'?(phase===1?'leaf':phase===2?'water':'fire'):boss.element||'fire',image,royal:true,boss,maxHp,hp:maxHp,maxMp,mp:kind==='guard'&&phase===2?Math.min(maxMp,guardMp):maxMp,interval,physical:kind==='mage'&&phase===1?3:enemyAttack(floor),clock:createAttackClock(interval),lastAction:null};
+ return {id:`${kind}-${phase}`,kind,phase,name,level:floor,element:kind==='king'?(phase===1?'leaf':phase===2?'water':'fire'):boss.element||'fire',image,royal:true,boss,maxHp,hp:maxHp,maxMp,mp:kind==='guard'&&phase===2?Math.min(maxMp,guardMp):maxMp,interval,physical:kind==='mage'&&phase===1?3:enemyAttack(floor),clock:createAttackClock(interval),magicReflect:false,lastAction:null};
 }
 
 // Enemy clocks and resources are independent, including while the other enemy is targeted.
@@ -48,7 +48,7 @@ export function createFinalEncounter(mode){
 }
 
 function chooseFreeSpell(enemy,random){
- const pool=MAGIC_SPELLS.filter(s=>s.mpCost<=enemy.mp&&(s.kind!=='heal'||enemy.maxHp-enemy.hp>=s.base));
+ const pool=MAGIC_SPELLS.filter(s=>s.mpCost<=enemy.mp&&(s.kind!=='heal'||enemy.maxHp-enemy.hp>=s.base)&&(s.kind!=='reflect'||!enemy.magicReflect));
  if(!pool.length)return null;
  const heals=pool.filter(s=>s.kind==='heal');
  return enemy.hp/enemy.maxHp<=.5&&heals.length?heals.at(-1):pool[Math.min(pool.length-1,Math.floor(random()*pool.length))];
@@ -58,16 +58,16 @@ export function finalEnemyActions(enemy,playerHp,random=Math.random,allies=[]){
  let spells=[],physical=false,healingTarget=enemy;
  if(enemy.kind==='king'){
   if(enemy.phase===1)physical=true;
-  else if(enemy.phase===2){if(enemy.mp>=10&&enemy.hp/enemy.maxHp<=.65&&enemy.maxHp-enemy.hp>=25)spells=[spell('mimurose')];else physical=true;}
+  else if(enemy.phase===2){if(enemy.mp>=10&&enemy.hp/enemy.maxHp<=.65&&enemy.maxHp-enemy.hp>=25)spells=[spell('mimurose')];else if(enemy.mp>=8&&!enemy.magicReflect&&random()<.2)spells=[spell('mirogoturn')];else physical=true;}
   else{const chosen=chooseFreeSpell(enemy,random);if(chosen)spells=[chosen];}
  }else if(enemy.phase===3){
   const mage=enemy.kind==='guard'&&allies.find(a=>a.kind==='mage'&&a.hp>0&&a.hp<a.maxHp);
   if(mage&&enemy.mp>=5){healingTarget=mage;spells=[spell(enemy.mp>=10&&mage.maxHp-mage.hp>=25?'mimurose':'mimuros')];}
   else{const chosen=chooseFreeSpell(enemy,random);if(chosen)spells=[chosen];}
  }
- else{const chosen=chooseMinibossAction({boss:enemy.boss,hp:enemy.hp,maxHp:enemy.maxHp,mp:enemy.mp,playerHp,lastAction:enemy.lastAction},random);if(chosen?.kind==='wait')return [];if(chosen)spells=[chosen];else physical=true;enemy.lastAction=chosen?'spell':'attack';}
+ else{const chosen=chooseMinibossAction({boss:enemy.boss,hp:enemy.hp,maxHp:enemy.maxHp,mp:enemy.mp,playerHp,lastAction:enemy.lastAction,reflectActive:enemy.magicReflect===true},random);if(chosen?.kind==='wait')return [];if(chosen)spells=[chosen];else physical=true;enemy.lastAction=chosen?'spell':'attack';}
  const actions=physical?[{kind:'physical',amount:enemy.physical}]:[];
- for(const s of spells){if(enemy.mp<s.mpCost)continue;enemy.mp-=s.mpCost;const rolled=rollMagicAmount(s.base,random);if(s.kind==='heal'){const actual=Math.min(rolled,healingTarget.maxHp-healingTarget.hp);healingTarget.hp+=actual;actions.push({kind:'heal',spell:s,amount:actual,target:healingTarget});}else actions.push({kind:'magic',spell:s,amount:rolled});}
+ for(const s of spells){if(enemy.mp<s.mpCost)continue;enemy.mp-=s.mpCost;const rolled=rollMagicAmount(s.base,random);if(s.kind==='heal'){const actual=Math.min(rolled,healingTarget.maxHp-healingTarget.hp);healingTarget.hp+=actual;actions.push({kind:'heal',spell:s,amount:actual,target:healingTarget});}else if(s.kind==='reflect'){enemy.magicReflect=true;actions.push({kind:'reflect',spell:s,amount:0});}else actions.push({kind:'magic',spell:s,amount:rolled});}
  return actions;
 }
 
