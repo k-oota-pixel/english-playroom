@@ -27,12 +27,12 @@ test('a Mimurose-capable boss can cast one shield; first-form mage cannot',()=>{
  assert.notEqual(chooseMinibossAction({...input,boss:phase2,reflectActive:true},()=>0)?.id,'mirogoturn');
 });
 
-test('final king spends MP8 on shield and cannot activate two shields',()=>{
+test('final king spends MP5 on shield and cannot activate two shields',()=>{
  const encounter=createFinalEncounter('dungeon');
  while(encounter.waveIndex<4){encounter.damageTarget(100000);encounter.settleDefeat();}
  const king=encounter.target;king.hp=king.maxHp;
  assert.equal(finalEnemyActions(king,100,()=>0)[0].kind,'reflect');
- assert.equal(king.mp,92);assert.equal(king.magicReflect,true);
+ assert.equal(king.mp,95);assert.equal(king.magicReflect,true);
  assert.equal(finalEnemyActions(king,100,()=>0)[0].kind,'physical');
 });
 
