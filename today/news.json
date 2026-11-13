@@ -1,13 +1,438 @@
 {
-  "generatedAt": "2026-11-12T02:16:42.652Z",
-  "editionDate": "2026-11-12",
+  "generatedAt": "2026-11-13T01:48:57.756Z",
+  "editionDate": "2026-11-13",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-12"
+    "lastSuccessfulEdition": "2026-11-13"
   },
   "articles": [
+    {
+      "id": "2026-11-13-hokkaido-electric-support-2027",
+      "date": "2026-11-13",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "Hokkaido Electric Power",
+        "electricity",
+        "gas",
+        "subsidy",
+        "Japan"
+      ],
+      "titleJa": "電気とガス料金の負担軽減へ",
+      "title": "Hokkaido Electric Power Implements Government Utility Support",
+      "summaryJa": "北海道電力は、国の支援を受けて2027年1月から3月まで電気と都市ガスの料金を値引きすると発表しました。",
+      "sourcePublishedAt": "2026-11-11T06:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "家庭や企業の光熱費負担がどのように軽減されるか、割引期間や対象条件を確認しましょう。",
+        "followUpJa": "ご自身の契約内容や割引が適用される期間を確認し、計画的に光熱費を管理してみましょう。",
+        "questions": {
+          "5級": "When do the electric bill discounts start?",
+          "4級": "How many months do the government utility bill discounts last?",
+          "3級": "Why is no special application necessary for customers to receive the discounts?",
+          "準2級": "What are the discount rates for low-voltage electricity customers in February and March 2027?",
+          "2級": "How are the discount amounts calculated for low-voltage electricity customers using the standard metered rate plan?",
+          "準1級": "What specific regulatory filing regarding supply conditions other than specific retail supply clauses was submitted to the Minister of Economy, Trade and Industry on the announcement day?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "Hokkaido Electric Power has good news. The company will help the government support program. It will discount electricity and city gas bills. This starts in January 2027. It ends in March 2027. You do not need to apply for this. The company will apply the discounts automatically every single month.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Junior High Level",
+          "text": "Hokkaido Electric Power announced a new plan. The company will cooperate with the national government utility support program. It will discount electricity and city gas bills from January to March 2027. Customers do not need to apply for this support. The discounts apply automatically based on monthly usage. This program helps reduce household energy costs during the cold winter months in Japan.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Advanced Junior High Level",
+          "text": "Hokkaido Electric Power announced that it will implement utility bill discounts. This is part of a national government support program for electricity and city gas. The discounts will run from January 2027 through March 2027. Customers do not need to complete any applications because the deductions apply automatically through fuel or raw material cost adjustments based on monthly usage. Low-voltage and high-voltage electricity customers, as well as city gas customers, are generally eligible for this helpful reduction.",
+          "wordCount": 75
+        },
+        "準2級": {
+          "title": "High School Level",
+          "text": "Hokkaido Electric Power announced that it will participate in the national government utility support program. The company will provide electricity and city gas bill discounts from January 2027 through March 2027. This program applies to all customers with low-voltage or high-voltage electricity contracts and city gas contracts. Because deductions are calculated directly from monthly fuel or raw material cost adjustments, customers do not need to submit any applications. Furthermore, the company submitted an application for specific supply conditions to the Minister of Economy, Trade and Industry to ensure smooth implementation across Hokkaido.",
+          "wordCount": 90
+        },
+        "2級": {
+          "title": "Advanced High School Level",
+          "text": "Hokkaido Electric Power announced its cooperation with the national government utility and gas price support initiative. The company will discount electricity and city gas bills from January 2027 to March 2027 to ease the financial burden on consumers. Eligible recipients include all customers with low-voltage or high-voltage electricity contracts, along with city gas subscribers, excluding specific large-scale industrial users and high-voltage special contracts. Customers do not need to take any action because discounts are automatically reflected in the monthly fuel or raw material cost adjustment amounts based on usage volume. For example, low-voltage electricity customers will receive a discount of 1.0 yen per kilowatt-hour for January 2027 bills, and 4.5 yen per kilowatt-hour for February and March bills. Meanwhile, the company also submitted an authorization application to the Minister of Economy, Trade and Industry regarding supply conditions outside specific retail supply clauses under the Electricity Business Act on the announcement day. The utility will announce further details once official authorization is granted by the government authorities.",
+          "wordCount": 161
+        },
+        "準1級": {
+          "title": "Advanced Level",
+          "text": "Hokkaido Electric Power has officially announced its participation in the national government utility and gas price support program, aimed at easing household and business financial burdens during the winter season. The company will implement automatic discounts on electricity and city gas bills starting from the January 2027 billing period through the March 2027 billing period. Eligibility extends to all customers holding low-voltage or high-voltage electricity contracts, as well as city gas subscribers, while excluding high-voltage special contracts and large-scale industrial gas users. Because the discounts are calculated automatically based on monthly usage and reflected directly in fuel or raw material cost adjustment amounts, customers are entirely exempt from any administrative application procedures. Specific discount unit prices vary by contract category; for instance, low-voltage electricity customers will see a deduction of 1.0 yen per kilowatt-hour for January bills, increasing to 4.5 yen per kilowatt-hour for February and March bills. Similarly, high-voltage electricity and city gas customers have designated discount unit rates applicable across the specified timeframe. Concurrently, the utility submitted an authorization application for supply conditions other than specific retail supply clauses to the Minister of Economy, Trade and Industry in strict accordance with the Electricity Business Act on the announcement date. The company stated that it will provide further announcements as soon as the official regulatory authorization is successfully granted by the government.",
+          "wordCount": 219
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253235_2073.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-13-jialing-seimei-new-ep",
+      "date": "2026-11-13",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "music",
+        "release",
+        "club",
+        "trekkie-trax"
+      ],
+      "titleJa": "日米共作EPが発売",
+      "title": "JIALING and Seimei Release New Collaborative EP",
+      "summaryJa": "JIALINGとSeimeiが共同制作した新作EP『Test Tone / Dual Circuit』が2026年11月13日にリリースされました。",
+      "sourcePublishedAt": "2026-11-13T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "記事を読んで、アーティストの背景や音楽スタイルに合ったおすすめの曲やリミックスを考えましょう。",
+        "followUpJa": "自分の好みの音楽スタイルと、今回の作品で聴けるサウンドを比較してみましょう。",
+        "questions": {
+          "5級": "What is the name of the new EP?",
+          "4級": "Where does Seimei live and work?",
+          "3級": "How do JIALING and Seimei make their music together?",
+          "準2級": "What musical styles are mixed in the track Dual Circuit?",
+          "2級": "Which artists created the remixes included in the new release?",
+          "準1級": "How do the backgrounds of JIALING and Seimei shape the cross-continental sound of this release?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Music Release",
+          "text": "A new music EP is here today. JIALING and Seimei are great musicians. JIALING lives in America. Seimei lives in Tokyo. They make good club music together. Their new EP has four songs. Many fans can listen to it now. It is very exciting for people.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "Artists Connect Tokyo and Baltimore",
+          "text": "JIALING and Seimei have a new collaborative EP. It is called Test Tone / Dual Circuit. It came out on November 13, 2026. JIALING is a producer from America. Seimei is a DJ and producer from Tokyo. They worked together before in 2025. Now they share two original tracks and two special remixes. Fans of club music can enjoy this new release from TREKKIE TRAX very much.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "JIALING and Seimei Release a New EP",
+          "text": "JIALING and Seimei released a new collaborative EP named Test Tone / Dual Circuit on November 13, 2026. JIALING is a producer based in Baltimore and New York. Seimei is a producer and co-founder of TREKKIE TRAX based in Tokyo. After working together in 2025, they decided to create more music together. This new release features two original tracks and two remixes. It connects the club music scenes of Tokyo, Baltimore, and Washington D.C. across the Pacific Ocean for music fans everywhere.",
+          "wordCount": 79
+        },
+        "準2級": {
+          "title": "Cross-Continental Collaboration by JIALING and Seimei",
+          "text": "JIALING and Seimei have officially released their collaborative EP, Test Tone / Dual Circuit, via TREKKIE TRAX on November 13, 2026. Following their first joint work in 2025, the new project combines the unique backgrounds of both artists. JIALING brings classical cello training and deep roots in Baltimore club music, while Seimei contributes extensive experience across techno, bass music, and footwork from Tokyo. The EP features two original songs: Test Tone, which highlights Baltimore club beats and epic synthesizers, and Dual Circuit, a fusion of electro and hardgroove techno. Additionally, the release includes remixes by James Bangura and Fetus, successfully bridging the club scenes in Tokyo, Baltimore, and Washington D.C. across the ocean.",
+          "wordCount": 110
+        },
+        "2級": {
+          "title": "JIALING and Seimei Bridge Global Club Scenes with New EP",
+          "text": "Connecting Tokyo and Baltimore across the Pacific Ocean, producer and DJ JIALING and Japanese counterpart Seimei have released their new collaborative EP titled Test Tone / Dual Circuit on TREKKIE TRAX on November 13, 2026. The project builds upon their successful 2025 collaboration on Seimei's EP Above The City. Like their previous work, Seimei provides initial beat ideas while JIALING layers synthesizers and vocal samples to complete the tracks. The EP consists of four tracks in total, including two originals and two remixes. Test Tone focuses on Baltimore club rhythms with grand synthesizer elements, whereas Dual Circuit blends electro beats with hardgroove techno grooves to maintain high energy. Furthermore, the release features expert remix work by James Bangura, known for Detroit and dub techno influences, and Fetus, who delivers a dark dancehall techno style. This cross-continental project highlights how independent artists from distinct geographic and musical backgrounds can successfully unite their creative visions.",
+          "wordCount": 149
+        },
+        "準1級": {
+          "title": "Transpacific Sonic Fusion: JIALING and Seimei Unveil Collaborative EP",
+          "text": "Bridging the vibrant club music ecosystems of Tokyo, Baltimore, and Washington D.C., producer-DJ duo JIALING and Seimei have launched their joint EP, Test Tone / Dual Circuit, via the independent label TREKKIE TRAX on November 13, 2026. This release marks their second major collaborative venture, following their initial partnership on the 2025 track In the Air. Their creative process remains consistent: Seimei establishes the foundational beat concepts, while JIALING enriches the texture with synthesizers and vocal samples. The four-track release comprises two original compositions alongside two distinct remixes. Test Tone channels JIALING's native Baltimore club heritage with sweeping, epic synthesizer leads, whereas Dual Circuit drives forward with a high-energy fusion of electro beats and hardgroove techno momentum. The remix package features contributions from esteemed peers: James Bangura infuses Detroit and dub techno textures into his reworking of Test Tone, while Fetus applies a dark, energetic dancehall techno aesthetic to Dual Circuit. By uniting disparate geographical locations and diverse musical lineages ranging from classical cello training to multidisciplinary club production, JIALING and Seimei have crafted a cohesive statement that reflects both their individual roots and their shared contemporary trajectory in global electronic music.",
+          "wordCount": 189
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261113-5314266/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-13-notion-ai-data-leak-concerns",
+      "date": "2026-11-13",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Notion",
+        "AI",
+        "Data Leak",
+        "Fireworks.ai"
+      ],
+      "titleJa": "NotionのAI情報流出",
+      "title": "Notion AI Data Leak Concerns Involve Third-Party Vendor",
+      "summaryJa": "NotionのAI機能において、委託先への不正アクセスが原因でチャット記録が漏えいした恐れがあることが分かりました。",
+      "sourcePublishedAt": "2026-11-13T01:22:05.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "NotionのAI機能で発生したデータ漏えいの原因と状況を正しく理解し、企業が今後のツール利用においてどのような安全対策を確認すべきか判断する。",
+        "followUpJa": "自社や個人で利用しているAIサービスのデータ保持ルールや委託先の安全性について確認してみましょう。",
+        "questions": {
+          "5級": "What is the name of the app in the news?",
+          "4級": "Why did the data leak happen?",
+          "3級": "Which company helped Notion with AI processing?",
+          "準2級": "What does ZDR stand for in this article?",
+          "2級": "Why were some requests and answers sent to Fireworks.ai even for ZDR users?",
+          "準1級": "How did the data retention contract differ from what was actually found at the Fireworks endpoint?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Notion AI Issue",
+          "text": "Notion has a work app. It has an AI tool. Some chat data may go out. Notion Labs talks about this problem. They stop some services now. Users must be careful. Data safety is very key for all people today.",
+          "wordCount": 40
+        },
+        "4級": {
+          "title": "AI Chat Records Issue",
+          "text": "Notion Labs shared a new report about their AI tool. Some chat records could leak because of an outside company. Their name is Fireworks.ai. They had bad access to their system. This problem can affect users with zero data retention plans too. Notion stopped using their connection now. They want to check all other partners to keep data safe for all people.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Notion Data Leak Concerns",
+          "text": "Notion Labs shared important news about its AI feature. Chat records might have leaked because of an issue at a partner company named Fireworks.ai. This company had unauthorized access to its system. The problem affects even some users with zero data retention plans. Right now, Notion has stopped all connections with Fireworks.ai. They are also checking other partners to make sure user data stays protected.",
+          "wordCount": 67
+        },
+        "準2級": {
+          "title": "Notion AI Data Leak Concerns Involve Third-Party Vendor",
+          "text": "Notion Labs recently announced that chat records from its AI feature might have leaked due to an unauthorized access incident at Fireworks.ai, an outside company handling specific AI processing for Notion. This security problem could even affect corporate plan users who rely on zero data retention, or ZDR, policies. Although Notion had an agreement with the vendor to keep data retention minimal, a later investigation revealed that data was actually kept at the Fireworks endpoint. As a result, Notion has stopped all connections with Fireworks.ai and is now checking its other AI processing partners to verify proper data safety and retention practices.",
+          "wordCount": 104
+        },
+        "2級": {
+          "title": "Notion AI Data Leak Concerns Involve Third-Party Vendor",
+          "text": "Notion Labs has officially disclosed that chat records from its popular workspace tool, Notion AI, may have leaked due to an unauthorized access incident at its external partner company, Fireworks.ai. The issue specifically stems from the Insights feature, which analyzes AI usage for workspace users. Surprisingly, this security situation might impact even corporate plan users who rely on zero data retention, known as ZDR policies, to protect their sensitive information. Although Notion Labs intended to keep stored data minimal through a strict contract with the vendor, subsequent investigations discovered that user data was unexpectedly kept at the specific Fireworks endpoint during processing. Consequently, Notion Labs has stopped all connections with Fireworks.ai and is currently investigating other inference and data processing partners to ensure user data is properly protected across all services.",
+          "wordCount": 133
+        },
+        "準1級": {
+          "title": "Notion AI Security Incident Involves Third-Party Endpoint",
+          "text": "Notion Labs has officially disclosed that chat records from Notion AI could have leaked, potentially impacting even corporate plan users who utilize zero data retention, or ZDR, policies. The security incident stems from unauthorized access at Fireworks.ai, which is a third-party vendor handling specific AI workloads for Notion. Specifically, the Insights feature sends user requests and responses for analysis, triggering data transmission to the vendor. Although contractual agreements dictated that Fireworks.ai should not retain data to ensure minimal exposure, subsequent investigations revealed that data was indeed stored at the specific endpoint utilized by Notion. Consequently, Notion Labs has severed all connections with Fireworks.ai while expanding its rigorous investigations to other AI inference and data processing partners to verify data retention practices and protect user information securely. Furthermore, Notion Labs explained that the Insights feature, which analyzes AI usage for workspace users, and other features requiring data retention were never strictly covered by corporate ZDR policies in the same way standard chats might be expected to be. Nevertheless, the discovery that data was stored contrary to expectations at the vendor endpoint has raised significant concerns across businesses relying on the collaborative platform. In response to the unfolding situation, Notion Labs is continuing its comprehensive review of all third-party dependencies to ensure that compliance standards and contractual commitments regarding privacy are strictly maintained across every aspect of its cloud-based workspace operations.",
+          "wordCount": 232
+        }
+      },
+      "sources": [
+        {
+          "name": "ITmedia AI+",
+          "url": "https://www.itmedia.co.jp/aiplus/article/2611/13/2000003172/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-13-pegula-reaches-wta-finals-last-four",
+      "date": "2026-11-13",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "Pegula",
+        "Noskova",
+        "WTA Finals",
+        "tennis"
+      ],
+      "titleJa": "ペグラが準決勝へ",
+      "title": "Pegula reaches WTA Finals last four",
+      "summaryJa": "ペグラがノスコヴァを破り、WTAファイナンスの準決勝進出を決めました。",
+      "sourcePublishedAt": "2026-11-13T01:23:06.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "ペグラが試合に勝つために何をしたか情報を探し、その戦い方を確認しましょう。",
+        "followUpJa": "ペグラのサーブや試合展開について、記事から見つけた事実を誰かに伝えてみましょう。",
+        "questions": {
+          "5級": "Who did Jessica Pegula beat to reach the semi-finals?",
+          "4級": "What did Jessica Pegula save during the tennis match?",
+          "3級": "How many aces did Jessica Pegula serve in the match?",
+          "準2級": "Why was Coco Gauff eliminated from the WTA Finals despite her win?",
+          "2級": "What specific challenges did Linda Noskova face on her own serve during the match?",
+          "準1級": "How did the controversy involving the WTA chair and Mirra Andreeva precede Pegula's tournament?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Pegula wins a match",
+          "text": "Jessica Pegula plays tennis well. She plays against Linda Noskova. Pegula is very strong. She saves a match point. Pegula wins the match. She goes to the WTA Finals last four. Coco Gauff does not go. Pegula is very happy.",
+          "wordCount": 40
+        },
+        "4級": {
+          "title": "Pegula reaches the last four",
+          "text": "American tennis player Jessica Pegula played a tough match against Linda Noskova. Pegula needed to win this match to reach the WTA Finals last four. She showed great mental strength during the game. Pegula saved a match point in the third set. She won the match with scores of 7-6, 4-6, and 7-5. Her great win meant that Coco Gauff did not advance to the next round of the tournament.",
+          "wordCount": 67
+        },
+        "3級": {
+          "title": "Pegula beats Noskova for semi-final spot",
+          "text": "Jessica Pegula secured a place in the WTA Finals semi-finals by defeating Wimbledon champion Linda Noskova. Pegula knew she had to win after Coco Gauff beat Marta Kostyuk earlier in the day. The American player showed strong mental resilience during a fluctuating match. She saved a match point while serving at 5-4 in the final set. Pegula served 16 aces and won the match 7-6, 4-6, 7-5. As a direct result of this outcome, Coco Gauff missed out on the final four.",
+          "wordCount": 77
+        },
+        "準2級": {
+          "title": "Pegula saves match point to reach WTA Finals last four",
+          "text": "A determined Jessica Pegula saved a match point to defeat Wimbledon champion Linda Noskova and reach the WTA Finals last four. Pegula entered the match knowing a victory was essential following Coco Gauff's earlier win against Marta Kostyuk. The American displayed impressive mental resilience throughout a fluctuating contest, ultimately winning 7-6, 4-6, 7-5. Noskova gained a break advantage in the final set and held a match point on Pegula's serve at 5-4, but failed to convert it. Pegula served 16 aces, marking her personal best in a WTA Tour match, and returned brilliantly. Meanwhile, Noskova struggled on her serve with 15 double faults. Pegula will now face French Open champion Mirra Andreeva, while Noskova advances to play either Elina Svitolina or Aryna Sabalenka in the next stage.",
+          "wordCount": 121
+        },
+        "2級": {
+          "title": "Pegula overcomes Noskova to secure WTA Finals semi-final berth",
+          "text": "A determined Jessica Pegula saved a match point to defeat Wimbledon champion Linda Noskova and reach the WTA Finals last four, securing her spot at the expense of Coco Gauff. Pegula understood she needed a victory to advance following Gauff's earlier win over Marta Kostyuk on Thursday. The American displayed great mental resilience during a fluctuating encounter to triumph 7-6, 4-6, 7-5. Noskova had taken a break lead in the decisive third set and earned a match point on Pegula's serve at 5-4, but could not capitalize on the opportunity. Pegula served 16 aces, which is the most she has ever produced in a single WTA Tour match, and used brilliant returns to trouble her opponent. The Czech player suffered on her own serve, committing 15 double faults against nine aces. Although Noskova had already secured her semi-final place prior to this match, she will face either Elina Svitolina or Aryna Sabalenka on Saturday. Pegula advances to play French Open champion Mirra Andreeva for the first time.",
+          "wordCount": 161
+        },
+        "準1級": {
+          "title": "Resilient Pegula saves match point to oust Noskova and reach WTA Finals semi-finals",
+          "text": "A gritty and determined Jessica Pegula successfully saved a match point to overcome Wimbledon champion Linda Noskova, securing her place in the WTA Finals last four at the expense of Coco Gauff. Entering the court, Pegula was fully aware that only a victory would suffice following Gauff's earlier triumph over Marta Kostyuk on Thursday. The American exhibited remarkable mental resilience throughout a fiercely contested and fluctuating match, ultimately prevailing 7-6, 4-6, 7-5. Noskova had managed to secure a break in the third set and held a crucial match point on Pegula's serve at 5-4, but ultimately failed to capitalize on the opportunity. Highlighting her strong performance, Pegula delivered 16 aces—her career high in a WTA Tour match—and utilized brilliant returns to keep the Czech player on the back foot. Conversely, Noskova faltered on her service games, accumulating 15 double faults against nine aces. Having already guaranteed her own advancement prior to this fixture, Noskova will now face either Elina Svitolina or Aryna Sabalenka in the next round on Saturday. Meanwhile, Pegula progresses to square off against French Open champion Mirra Andreeva for their very first career meeting, entering the tournament after an eventful build-up that included an apology from the Women's Tennis Association chair regarding a live-streamed practice session comment.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/tennis/articles/c57429mgdkjdo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-13-pickup-news-nov-13-2026",
+      "date": "2026-11-13",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "NHK",
+        "news",
+        "Japan"
+      ],
+      "titleJa": "NHKニュースまとめ",
+      "title": "NHK Pickup News Summary",
+      "summaryJa": "NHKが11月13日に配信した最新のニュースまとめと、AIコストや免税制度などの深掘りコンテンツをお届けします。",
+      "sourcePublishedAt": "2026-11-13T01:46:01.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事から注目のニュースや深掘りコンテンツのトピックを見つけるための読解",
+        "followUpJa": "気になったニュースや深掘りコンテンツについて話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of this news program?",
+          "4級": "What can you watch in one minute?",
+          "3級": "What is the monthly cost for companies mentioned in the deep-dive content?",
+          "準2級": "Which tax-free system is closely covered in the deep-dive content?",
+          "2級": "What subjects are covered in the deep-dive content besides AI and tax-free systems?",
+          "準1級": "How do the deep-dive topics reflect modern social issues according to the news summary?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "One-Minute News",
+          "text": "This is a one-minute news video. NHK shares the news of the day. You can watch short videos. There are many new topics. Please check the latest news today. It is very fast and easy to see.",
+          "wordCount": 37
+        },
+        "4級": {
+          "title": "NHK Pickup News",
+          "text": "NHK brings you the latest news in a one-minute video every day. You can check the news easily. There are also deep-dive contents. Companies face high AI costs. A new tax-free system is introduced to stop fraud. You can also read news about weather, safety, and politics from all over Japan today. Please watch the videos and learn new things easily.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "News Summary and Deep Dive",
+          "text": "NHK delivers the latest news in a simple one-minute video format every day. Besides daily reports, the official platform features special deep-dive contents. Companies face rising AI costs of up to nine hundred thousand yen per month per person. Other important topics include a new tax-free refund system, manga culture, and cyber attacks. You can also check weather forecasts, politics, and regional news easily on your screen.",
+          "wordCount": 67
+        },
+        "準2級": {
+          "title": "Pickup News and Special Features",
+          "text": "NHK provides a convenient one-minute video summary of the latest news and updates from across Japan. Alongside breaking news such as the yen dropping to the 160 range against the dollar and the passing of former House of Councillors President Masaaki Yamazaki, the platform features various deep-dive contents addressing pressing social issues. Topics range from ballooning corporate artificial intelligence costs of nine hundred thousand yen per month per person and a new tax-free refund system designed to prevent fraud to manga culture, cyber attacks, the search for extraterrestrial intelligence, liberalism, copper prices, and information security measures. Readers can also access updated weather forecasts, disaster prevention information, and regional news stories from various prefectures every single day.",
+          "wordCount": 115
+        },
+        "2級": {
+          "title": "NHK Pickup News and In-Depth Contents",
+          "text": "NHK presents a concise one-minute video summary covering the most important stories of the day from across Japan. In addition to breaking news such as the passing of former House of Councillors President Masaaki Yamazaki, the yen temporarily falling to the 160 range against the dollar, and Shohei Ohtani missing out on a fourth consecutive MVP award in Major League Baseball, the platform features a rich collection of deep-dive contents. These articles examine significant contemporary challenges, including soaring corporate artificial intelligence costs reaching nine hundred thousand yen per month per person, the implementation of a new tax-free refund system to prevent fraud, the cultural legacy of manga, the growing threat of cyber attacks affecting daily life, the search for extraterrestrial intelligence, liberalism, copper prices, and measures to protect information against unauthorized access. Users can also access essential weather forecasts, disaster prevention information, and local reports from various regions easily.",
+          "wordCount": 148
+        },
+        "準1級": {
+          "title": "Comprehensive Overview of NHK Pickup News and Analytical Features",
+          "text": "NHK delivers an efficient one-minute video roundup of current events, providing audiences with a swift yet comprehensive overview of the day's developments across Japan. Beyond standard breaking news updates—ranging from the passing of former House of Councillors President Masaaki Yamazaki at the age of 84 and the yen temporarily sliding to the 160 yen range against the dollar for the first time in about two months, to Major League Baseball star Shohei Ohtani missing out on his fourth consecutive and fifth overall MVP award—the broadcast portal highlights an array of in-depth analytical features. These investigative pieces explore complex societal and economic challenges, such as the mounting corporate burden of artificial intelligence costs reaching nine hundred thousand yen per person monthly, and the operational mechanics of a new tax-free refund system designed to curb fraudulent activities. Furthermore, the content touches upon cultural preservation through the legacy of manga creator Tetsuya Chiba, the escalating risks of targeted cyber attacks impacting daily life, the scientific search for extraterrestrial intelligence, the melancholies of liberalism in a nation celebrating its 250th year of freedom, copper prices reflecting economic health, and comprehensive guides on preventing unauthorized access to information. Complementing these analytical pieces are up-to-date weather forecasts, disaster prevention information, and regional reports, ensuring a well-rounded news consumption experience for all viewers.",
+          "wordCount": 215
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261112de75011"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-13-sapporo-matching-app-arrest",
+      "date": "2026-11-13",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "sapporo",
+        "police",
+        "news"
+      ],
+      "titleJa": "札幌で男逮捕",
+      "title": "Man Arrested in Sapporo After Meeting Through Matching App",
+      "summaryJa": "マッチングアプリで知り合った女性に公園でわいせつな行為をしたとして、札幌市の25歳の男が不同意わいせつの疑いで逮捕されました。",
+      "sourcePublishedAt": "2026-11-13T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "マッチングアプリを使って安全に人と会うための防犯上の対策を考える。",
+        "followUpJa": "知らない人と初めて会うときは、どのような場所や時間を選ぶべきか話し合ってみましょう。",
+        "questions": {
+          "5級": "What app did they use?",
+          "4級": "Where did the incident happen in Sapporo?",
+          "3級": "When did the woman go to the police station to talk about the incident?",
+          "準2級": "What specific actions did the 25-year-old suspect admit to during the police investigation?",
+          "2級": "How long after the incident at the park did the victim report it to the police, and when was the suspect finally arrested?",
+          "準1級": "Discuss the sequence of events from the initial meeting via the app to the arrest, including how police identified the suspect."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner 5th Grade",
+          "text": "A man is in trouble. He met a woman on an app. They went to a park. The man did a bad thing. The woman told the police. The police caught the man. He is twenty-five years old. The man lives in Sapporo. He says he did it.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Elementary 4th Grade",
+          "text": "A twenty-five-year-old man in Sapporo was arrested by the police. He met a woman on a matching app. They planned to meet each other at a park. The man touched the woman in a bad way on August 16. Two days later, the woman told the police about it. The police arrested the man on November 12. The man admitted to his crime.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Pre-Intermediate 3rd Grade",
+          "text": "Police in Sapporo arrested a twenty-five-year-old unemployed man for a crime. He met a woman through a matching app and planned to meet her. On August 16, between 8:10 PM and 8:40 PM, they went to a park in Kita Ward. The man touched the woman's upper body without her consent. Two days later, the woman went to a police station to report the incident. Officers investigated, identified the suspect, and arrested him on November 12. The man admitted to the crime.",
+          "wordCount": 78
+        },
+        "準2級": {
+          "title": "Intermediate Pre-2nd Grade",
+          "text": "A twenty-five-year-old unemployed man living in Sapporo's Kita Ward was arrested on suspicion of non-consensual indecency. According to the police, the suspect and a woman in her twenties met through a matching app and arranged to meet in person. Between 8:10 PM and 8:40 PM on August 16, the man committed indecent acts by touching the woman's upper body at a park in Kita Ward. Two days later, the victim visited a police station to report that someone she met online had done this to her. Investigators identified the man and arrested him on November 12. During police questioning, the suspect admitted to the allegations without dispute.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Upper-Intermediate 2nd Grade",
+          "text": "Hokkaido Police in Sapporo have arrested a twenty-five-year-old unemployed resident living in Kita Ward following allegations of non-consensual indecency. Investigators report that the suspect and a woman in her twenties connected through a matching app and agreed to meet in person. The incident took place at a park in Kita Ward, where the man touched the woman's upper body between 8:10 PM and 8:40 PM on August 16. Two days after the encounter, on August 18, the victim visited a local police station to file a complaint stating she had been subjected to indecent behavior by someone she met online. Police pursued the investigation, identified the individual, and officially arrested him on November 12. When questioned by the authorities, the man acknowledged the facts and admitted to the charge without hesitation, while police continue to examine the exact circumstances surrounding their meeting.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Advanced Pre-1st Grade",
+          "text": "Authorities in Sapporo, specifically the Hokkaido Prefectural Police's Kita Precinct, have apprehended a twenty-five-year-old unemployed resident living in Kita Ward on suspicion of committing non-consensual indecency. The investigation stems from an encounter arranged via a smartphone matching app, through which the suspect and a woman in her twenties connected and subsequently agreed to meet in person for the first time. According to law enforcement officials, the incident occurred at a park located within Kita Ward between 8:10 PM and 8:40 PM on the evening of August 16, during which time the man inappropriately touched the victim's upper body without her consent. Two days subsequent to the encounter, on August 18, the distressed woman visited a local police station to report that a person she had met online had subjected her to indecent behavior. Investigators gathered necessary evidence, successfully identified the perpetrator, and ultimately executed the official arrest on November 12. Upon police interrogation and questioning regarding the allegations, the suspect readily confessed to the accusations, confirming the validity of the charges by stating there was no mistake. Meanwhile, law enforcement authorities are continuing to thoroughly examine the exact circumstances surrounding how the two individuals arranged to meet, alongside the detailed sequence of events that transpired that evening.",
+          "wordCount": 202
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63587"
+        }
+      ]
+    },
     {
       "id": "2026-11-12-andreeva-beats-sabalenka-wta-finals",
       "date": "2026-11-12",
