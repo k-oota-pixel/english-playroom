@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/pet-adventure.yml', 'pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'pet-strength-model.js', 'pet-dungeons-model.js', 'pet-dungeons-shop.js', 'version-badge-v176.js', 'index.html', 'tests/pet-strength.test.js', 'tests/release-version.test.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js', 'tests/pet-adventure-eiken.test.js']
+    paths: ['.github/workflows/pet-adventure.yml', 'pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'pet-strength-model.js', 'pet-dungeons-model.js', 'pet-dungeons-shop.js', 'version-badge-v176.js', 'index.html', 'tests/pet-strength.test.js', 'tests/release-version.test.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js', 'tests/pet-adventure-eiken.test.js', 'tests/adventure-mirogoturn-season.test.js']
   pull_request:
-    paths: ['.github/workflows/pet-adventure.yml', 'pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'pet-strength-model.js', 'pet-dungeons-model.js', 'pet-dungeons-shop.js', 'version-badge-v176.js', 'index.html', 'tests/pet-strength.test.js', 'tests/release-version.test.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js', 'tests/pet-adventure-eiken.test.js']
+    paths: ['.github/workflows/pet-adventure.yml', 'pet-adventure/**', 'pet-play*.js', 'pet-art.js', 'pet-strength.js', 'pet-strength.css', 'pet-strength-model.js', 'pet-dungeons-model.js', 'pet-dungeons-shop.js', 'version-badge-v176.js', 'index.html', 'tests/pet-strength.test.js', 'tests/release-version.test.js', 'tests/pet-battle-art.test.js', 'tests/pet-realtime.test.js', 'tests/adventure-selection-browser.cjs', 'tests/adventure-rankings-browser.cjs', 'tests/adventure-checkpoints-browser.cjs', 'tests/pet-adventure.test.js', 'tests/pet-adventure-eiken.test.js', 'tests/adventure-mirogoturn-season.test.js']
 permissions:
   contents: read
 jobs:
@@ -20,6 +20,7 @@ jobs:
       - run: npm install --ignore-scripts
       - run: npx playwright install --with-deps chromium
       - run: node --test tests/pet-adventure-eiken.test.js
+      - run: node --test tests/adventure-mirogoturn-season.test.js
       - run: node --test tests/pet-realtime.test.js tests/pet-battle-art.test.js tests/pet-adventure.test.js tests/pet-strength.test.js tests/release-version.test.js
       - run: node tests/adventure-selection-browser.cjs
       - run: node tests/adventure-rankings-browser.cjs
