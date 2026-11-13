@@ -3,7 +3,7 @@ import {onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroo
 import {getDocFromServer as getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {hasPet} from './pet-model.js?v=2.1.25';
 import {BASE_STATS,titleCount,strengthState,allocatePoint,allocationTotal,strengthLevel,randomBaseStats,hasIndividualBaseStats,grantedStrengthPoints,stepStrengthDraft,strengthDraftChanges} from './pet-strength-model.js?v=2.4.88';
-import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=1.10.22';
+import {MAGIC_SPELLS,magicAtLevel} from './pet-dungeons-model.js?v=2.4.95';
 
 import {collectedTitleCount} from './title-ownership.js?v=1';
 
