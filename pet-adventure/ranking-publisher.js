@@ -1,10 +1,11 @@
 import {auth,authReady} from '../coin-reward.js?v=2.1.2';
 import {accountSession} from '../auth-session.js?v=2.3.8';
 import {TOWER_SEASON_ID} from './tower-season.js?v=2.3.26-hq2';
+import {DUNGEON_SEASON_ID} from './dungeon-season.js?v=2.4.95';
 
 const mode=new URLSearchParams(location.search).get('mode')==='dungeon'?'dungeon':'tower';
 const endpoint='https://task-quest.onrender.com/api/adventure/rankings';
-const storagePrefix='monstudy-adventure-ranking-sync:'+mode+':'+(mode==='tower'?TOWER_SEASON_ID:'default');
+const storagePrefix='monstudy-adventure-ranking-sync:'+mode+':'+(mode==='tower'?TOWER_SEASON_ID:DUNGEON_SEASON_ID);
 const lastPublishedFloor=new Map(),pendingMemory=new Map(),inFlight=new Map();
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function floorFromLabel(value){const floor=Number(String(value||'').match(/\d+/)?.[0]||0);return Number.isSafeInteger(floor)&&floor>0?floor:0;}
