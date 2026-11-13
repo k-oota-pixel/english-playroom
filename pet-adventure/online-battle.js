@@ -4,6 +4,9 @@ import {rankedPetButton} from '../ranked-pet-view.js?v=2.4.71';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=1.10.22';
+import {installMirogoturnNews} from './online-mirogoturn-news.js?v=2.4.94';
+// This defense spell is online-only; leave the tower and dungeon PVE spell lists unchanged.
+const ONLINE_MAGIC_SPELLS=[...MAGIC_SPELLS.slice(0,2),{id:'mirogoturn',name:'ミロゴターン',level:20,kind:'reflect',mpCost:8,description:'次に受ける攻撃魔法を1回だけ反射（時間制限なし）'},...MAGIC_SPELLS.slice(2)];
 
 const QUESTION_MODE=location.pathname.endsWith('/online-battle-questions.html');
 if(QUESTION_MODE)document.body.classList.add('online-questions-mode');
@@ -303,13 +306,14 @@ function updateFighters(room){
   const max=Math.max(1,Number(mine.stats?.hp)||1),hp=Math.max(0,Number(mine.hp)||0),maxMp=Math.max(0,Number(mine.stats?.mp)||0),mp=Math.max(0,Number(mine.mp??maxMp)||0);
   els.petName.textContent=mine.petName||'MY PET';els.myNickname.textContent=mine.nickname||'YOU';els.petHpText.textContent=hp+' / '+max;setBar(els.petHpBar,hp,max);
   els.petMpText.textContent=mp+' / '+maxMp+' MP';setBar(els.petMpBar,mp,Math.max(1,maxMp));els.petStats.textContent=`HP ${max} · 攻撃力 ${Number(mine.stats?.attack||1)} · 防御力 ${Number(mine.stats?.defense||1)} · MP ${mp}/${maxMp}`;
-  els.petVisual.innerHTML=petArt(mine);
+  els.petVisual.innerHTML=petArt(mine);els.petVisual.classList.toggle('online-reflect-active',mine.magicReflect===true);
+   els.petStats.textContent+=(mine.magicReflect?' · 🛡️ 反射待機中':'');
  }
  if(other){
   const max=Math.max(1,Number(other.stats?.hp)||1),hp=Math.max(0,Number(other.hp)||0),maxMp=Math.max(0,Number(other.stats?.mp)||0),mp=Math.max(0,Number(other.mp??maxMp)||0);
-  els.enemyName.textContent=other.petName||'OPPONENT';els.enemyElement.textContent=other.nickname||'RIVAL';els.enemyHpText.textContent=hp+' / '+max;setBar(els.enemyHpBar,hp,max);els.enemyVisual.innerHTML=petArt(other);els.enemyMpText.textContent='MP '+mp+' / '+maxMp;
+  els.enemyName.textContent=other.petName||'OPPONENT';els.enemyElement.textContent=(other.nickname||'RIVAL')+(other.magicReflect?' 🛡️':'');els.enemyVisual.classList.toggle('online-reflect-active',other.magicReflect===true);els.enemyHpText.textContent=hp+' / '+max;setBar(els.enemyHpBar,hp,max);els.enemyVisual.innerHTML=petArt(other);els.enemyMpText.textContent='MP '+mp+' / '+maxMp;
  }else{
-  els.enemyName.textContent='OPPONENT';els.enemyElement.textContent='WAITING';els.enemyHpText.textContent='— / —';setBar(els.enemyHpBar,0,1);els.enemyVisual.textContent='👾';els.enemyMpText.textContent='相手を待っています';
+  els.enemyName.textContent='OPPONENT';els.enemyElement.textContent='WAITING';els.enemyVisual.classList.remove('online-reflect-active');els.enemyHpText.textContent='— / —';setBar(els.enemyHpBar,0,1);els.enemyVisual.textContent='👾';els.enemyMpText.textContent='相手を待っています';
  }
 }
 
@@ -334,6 +338,10 @@ function animateEvent(room){
   const name=ev.name||'魔法';
   if(ev.kind==='heal'){
    const caster=mine?els.petVisual:els.enemyVisual;caster.classList.remove('attack');void caster.offsetWidth;caster.classList.add('attack');flash((mine?'✨ '+name:'相手の '+name)+'\nHP +'+(ev.heal||0));
+  }else if(ev.kind==='reflect'){
+   const caster=mine?els.petVisual:els.enemyVisual;caster.classList.remove('attack');void caster.offsetWidth;caster.classList.add('attack');flash((mine?'🛡️ ミロゴターン！':'🛡️ 相手がミロゴターン！')+'\n攻撃魔法を1回反射');
+  }else if(ev.kind==='reflected'){
+   const struck=mine?els.petVisual:els.enemyVisual;struck.classList.remove('hurt');void struck.offsetWidth;struck.classList.add('hurt');flash('🛡️ ミロゴターンで反射！\n'+(mine?'自分に':'相手に')+ev.damage+'ダメージ');
   }else{
    const target=ev.to===user.uid?els.petVisual:els.enemyVisual;target.classList.remove('hurt');void target.offsetWidth;target.classList.add('hurt');
    if(mine){els.petVisual.classList.remove('attack');void els.petVisual.offsetWidth;els.petVisual.classList.add('attack');flash('✨ '+name+'！\n-'+ev.damage+' HP');}
@@ -557,10 +565,10 @@ async function act(action,{render=true,body=null}={}){
 function renderMagic(message='',error=false){
  const mine=minePlayer(),level=ownLevel(),maxMp=Math.max(0,Number(mine?.stats?.mp)||0),mp=Math.max(0,Number(mine?.mp??maxMp)||0);
  els.magicMpStatus.textContent=`Lv.${level}　MP ${mp} / ${maxMp}`;els.magicMessage.textContent=message;els.magicMessage.className='battle-action-message'+(error?' error':'');els.magicList.replaceChildren();
- for(const spell of MAGIC_SPELLS){
-  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),reason=!unlocked?'未習得':mp<spell.mpCost?'MP不足':full?'HPが満タンです':busy?'処理中':'',card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');
+ for(const spell of ONLINE_MAGIC_SPELLS){
+  const unlocked=level>=spell.level,full=spell.kind==='heal'&&mine&&Number(mine.hp)>=Number(mine.stats?.hp),reflectActive=spell.kind==='reflect'&&mine?.magicReflect===true,reason=!unlocked?'未習得':mp<spell.mpCost?'MP不足':full?'HPが満タンです':reflectActive?'反射待機中':busy?'処理中':'',card=document.createElement('article');card.className='battle-action-card'+(unlocked?'':' locked');
   card.innerHTML=`<strong>${esc(spell.name)}</strong><span>${unlocked?esc(spell.description):`Lv.${spell.level}で習得`}</span><small>${unlocked?`消費MP ${spell.mpCost}`:'LOCKED'}${reason?' · '+esc(reason):''}</small><button type="button">${unlocked?'使う':'未習得'}</button>`;
-  const button=card.querySelector('button');button.disabled=busy||!unlocked||mp<spell.mpCost||full;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
+  const button=card.querySelector('button');button.disabled=busy||!unlocked||mp<spell.mpCost||full||reflectActive;button.addEventListener('click',()=>void castMagic(spell));els.magicList.append(card);
  }
 }
 function openMagic(){
@@ -733,7 +741,7 @@ els.magicClose.addEventListener('click',()=>els.magicDialog.close());els.itemClo
 
 async function init(){
  els.attackHeading.textContent=QUESTION_MODE?'問題を選ぼう':'英単語を選ぼう';
- try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await Promise.all([loadQuestionPool(),QUESTION_MODE?loadAccuracySnapshot():Promise.resolve()]);enterLobbyLayout();showGradePicker();const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);preferredRealtime=transport?.realtime===true;const savedRealtime=localStorage.getItem(REALTIME_ROOM_STORAGE_KEY)||'';roomRealtime=Boolean(savedRealtime);const saved=savedRealtime||localStorage.getItem(ROOM_STORAGE_KEY)||'';const validRoom=QUESTION_MODE?/^(?:4-(?:20|1[0-9]|[1-9])|(?:3|pre2|2)-(?:10|[1-9]))$/:/^(?:4|3|pre2|2)-(?:10|[1-9])$/;if(validRoom.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
+ try{await authReady;user=auth.currentUser;if(!user){say('ログインが必要です。もんすたでぃにログインしてからご利用ください。',true);return;}await Promise.all([loadQuestionPool(),QUESTION_MODE?loadAccuracySnapshot():Promise.resolve()]);enterLobbyLayout();showGradePicker();installMirogoturnNews(user.uid);const transport=await api('/transport','GET',null,LEGACY_API).catch(()=>null);preferredRealtime=transport?.realtime===true;const savedRealtime=localStorage.getItem(REALTIME_ROOM_STORAGE_KEY)||'';roomRealtime=Boolean(savedRealtime);const saved=savedRealtime||localStorage.getItem(ROOM_STORAGE_KEY)||'';const validRoom=QUESTION_MODE?/^(?:4-(?:20|1[0-9]|[1-9])|(?:3|pre2|2)-(?:10|[1-9]))$/:/^(?:4|3|pre2|2)-(?:10|[1-9])$/;if(validRoom.test(saved)){activeRoom=saved;selectedGrade=saved.split('-')[0];await refreshRoom();}autoPausedForIdle=false;armIdlePause();startAutoRefresh();}catch(e){say(e.message||'初期化できませんでした。',true);}
 }
 window.addEventListener('pointerdown',registerActivity,{capture:true,passive:true});
 window.addEventListener('touchstart',registerActivity,{capture:true,passive:true});
