@@ -9,7 +9,7 @@ if(mode==='tower'||mode==='dungeon'){
  }
  // Register ranking listeners before game initialization can emit its ready event.
  await import('./ranking-publisher.js?v=2.4.95');
- await import('./game.js?v=2.4.95');
+ await import('./game.js?v=2.4.96');
 }
 else{
  await Promise.all([installTowerSeasonAnnouncement(),import('./rankings.js?v=2.4.95')]);
