@@ -21,7 +21,7 @@ test('単語・問題の両方で同じ告知を読み込む',()=>{
   assert.match(source(page),/online-battle.js\?v=2\.4\.97/);
  }
  assert.match(js,/installMirogoturnNews\(user.uid\)/);
- assert.match(js,/online-mirogoturn-news.js\?v=2\.4\.95/);
+ assert.match(js,/online-mirogoturn-news.js\?v=2\.4\.96/);
  const notice=source('pet-adventure/online-mirogoturn-news.js'),css=source('pet-adventure/online-mirogoturn-news.css');
  assert.match(notice,/mirogoturn-new-spell.webp/);
  assert.match(notice,/次回以降表示しない/);
