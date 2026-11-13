@@ -122,7 +122,7 @@ async function realtimeChecks(page,mode){
   return r.fulfill({contentType:'text/javascript',body:'window.RETRY_QUESTIONS='+JSON.stringify(questions)+';'});
  });
  await page.route('https://task-quest.onrender.com/**',r=>r.fulfill({json:{}}));
- console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export const accountSession=async()=>({admin:false,resetRequired:false});"}));
+ console.log('selector');await page.route('**/auth-session.js*',r=>r.fulfill({contentType:'text/javascript',body:"export const accountSession=async()=>({admin:false,resetRequired:false});export const onAuthStateChanged=(auth,callback)=>callback(auth.currentUser);"}));
 await page.goto('https://adventure.test/pet-adventure/');
  assert.equal(await page.locator('.adventure-card').count(),3);
  assert.equal(await page.locator('#battleView').isVisible(),false);
@@ -191,7 +191,7 @@ await page.goto('https://adventure.test/pet-adventure/');
  await page.evaluate(()=>document.dispatchEvent(new CustomEvent('pet-state-updated',{detail:{petHatched:true,petAdult:false,petName:'テスト',petAppearance:{species:'cat'}}})));
  assert.equal(await page.locator('#petPlayOpen').isEnabled(),true);
  await page.locator('#petPlayOpen').click();
- assert.equal(await page.locator('#petGameMenu a').count(),2);
+ assert.equal(await page.locator('#petGameMenu a').count(),4);
  assert.equal(await page.locator('#petGameMenu a[href="./pet-catch/"]').count(),1);
  await page.locator('#petGameMenu a[href="./pet-catch/"]').click();
  await page.waitForSelector('#startBtn:not([disabled])');
