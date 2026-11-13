@@ -208,7 +208,7 @@ await page.goto('https://adventure.test/pet-adventure/');
  assert.equal(await page.locator('.adventure-card').count(),3);
  if(width===1100){
   realStrength=true;
-  await page.route('https://task-quest.onrender.com/api/learning/titles',r=>r.fulfill({json:{titles:[]}}));
+  await page.route('https://task-quest.onrender.com/api/learning/titles?*',r=>r.fulfill({json:{titles:[]}}));
   await page.goto('https://adventure.test/');
   await page.evaluate(()=>{const b=document.createElement('button');b.id='petStrengthOpen';b.textContent='ペット強化';document.body.append(b);});
   await page.addScriptTag({type:'module',url:'https://adventure.test/pet-strength.js?fixture=real'});
