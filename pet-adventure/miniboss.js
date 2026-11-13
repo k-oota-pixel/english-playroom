@@ -12,17 +12,22 @@ export function minibossForStage(stage,mode='dungeon'){
 }
 
 // A spell replaces the normal timed attack. Every spell is followed by a normal attack.
-export function chooseMinibossAction({boss,hp,maxHp,mp,playerHp,lastAction},random=Math.random){
+export function chooseMinibossAction({boss,hp,maxHp,mp,playerHp,lastAction,reflectActive=false},random=Math.random){
  if(!boss||hp<=0||playerHp<=0)return null;
+ const reflect=MAGIC_SPELLS.find(s=>s.id==='mirogoturn');
+ // Only boss forms that know Mimurose can cast the shield; never stack charges.
+ const canReflect=boss.royal===true&&(!boss.mage||boss.phase>=2)&&boss.level>=25&&mp>=reflect.mpCost&&!reflectActive;
  if(boss.mage){
   if(boss.phase===1){
    if(mp>=5&&hp<maxHp&&random()<.9)return MAGIC_SPELLS.find(s=>s.id==='mimuros');
    return null;
   }
   if(mp<5)return {id:'wait',kind:'wait',mpCost:0};
+  if(canReflect&&random()<.2)return reflect;
   return MAGIC_SPELLS.find(s=>s.id===(mp>=10&&hp/maxHp<=.75&&maxHp-hp>=25?'mimurose':'mirogoro'));
  }
  if(lastAction==='spell')return null;
+ if(canReflect&&random()<.2)return reflect;
  const heal=MAGIC_SPELLS.find(s=>s.id===(boss.royal&&mp>=10&&maxHp-hp>=25?'mimurose':'mimuros'));
  const attack=MAGIC_SPELLS.find(s=>s.id===(boss.royal&&mp>=10?'mirogoron':'mirogoro'));
  const canCast=spell=>boss.level>=spell.level&&mp>=spell.mpCost;
