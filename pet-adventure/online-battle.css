@@ -167,3 +167,15 @@ html[data-monstudy-screen-theme="dark"] body.online-questions-mode #attackPanel 
  content:"🛡️";pointer-events:none;position:absolute;right:0;top:0;
  font-size:clamp(17px,2.6vw,26px);filter:drop-shadow(0 0 7px #7bbcff);
 }
+
+
+/* MP seconds => one shared spell cooldown. This is rendered locally; no database polling. */
+#battleView #magicBtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;position:relative;isolation:isolate;overflow:visible;transition:filter .18s,opacity .18s,box-shadow .18s}
+#battleView #magicBtn .online-magic-ring{--magic-progress:100%;width:32px;height:32px;flex:0 0 32px;position:relative;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#64e4ab 0 var(--magic-progress),#74898188 var(--magic-progress) 100%);box-shadow:inset 0 0 0 1px #ffffff55}
+#battleView #magicBtn .online-magic-ring::before{content:'';position:absolute;inset:4px;border-radius:50%;background:#1a4239}
+#battleView #magicBtn #magicCooldownCount{position:relative;z-index:1;font:900 13px/1 system-ui;color:#fff;font-variant-numeric:tabular-nums}
+#battleView #magicBtn.online-magic-cooling{opacity:.84;filter:saturate(.73)}
+#battleView #magicBtn.online-magic-ready-glow{animation:onlineMagicReadyPulse .85s ease-out both}
+@keyframes onlineMagicReadyPulse{0%{box-shadow:0 0 0 0 #63f0b6cc;filter:brightness(1.3)}45%{box-shadow:0 0 0 7px #63f0b655;filter:brightness(1.25)}100%{box-shadow:0 0 0 0 #63f0b600;filter:brightness(1)}}
+.battle-action-card.online-spell-cooling{opacity:.7}
+@media (prefers-reduced-motion:reduce){#battleView #magicBtn.online-magic-ready-glow{animation:none;outline:2px solid #35b88c}}
