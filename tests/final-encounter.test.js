@@ -37,11 +37,13 @@ test('guard MP carries from first to second form; neither target nor wave transi
 test('king first form stays physical; king second form uses Mimurose or physical; third forms are magic-only',()=>{
  const first=wave(0).target;first.hp=1;assert.deepEqual(finalEnemyActions(first,100).map(a=>a.kind),['physical']);
  for(const enemy of [...wave(5).enemies,wave(6).target]){enemy.hp=1;const actions=finalEnemyActions(enemy,100,()=>.1);assert.ok(actions.length);assert.ok(actions.every(a=>a.kind!=='physical'));}
- const king=wave(4).target;king.hp=Math.floor(king.maxHp*.5);const actions=finalEnemyActions(king,100,()=>.1);assert.equal(actions[0].spell.id,'mimurose');assert.equal(king.mp,90);king.hp=king.maxHp;assert.equal(finalEnemyActions(king,100)[0].kind,'physical');
+ const king=wave(4).target;king.hp=Math.floor(king.maxHp*.5);const actions=finalEnemyActions(king,100,()=>.1);assert.equal(actions[0].spell.id,'mimurose');assert.equal(king.mp,90);king.hp=king.maxHp;assert.equal(finalEnemyActions(king,100,()=>.9)[0].kind,'physical');
+ assert.equal(finalEnemyActions(king,100,()=>0)[0].kind,'reflect');
+ assert.equal(king.magicReflect,true);
 });
 test('last king casts each spell without physical attacks and respects 10000 MP budget',()=>{
- const used=new Set();for(const choice of [.01,.3,.6,.9]){const king=wave(6).target;king.hp=Math.round(king.maxHp*.8);const values=[choice,.1],actions=finalEnemyActions(king,100,()=>values.shift()??.1);assert.equal(actions.length,1);const cast=actions[0];assert.notEqual(cast.kind,'physical');used.add(cast.spell.id);assert.equal(king.mp,10000-cast.spell.mpCost);}
- assert.deepEqual([...used].sort(),['mimurose','mimuros','mirogoro','mirogoron'].sort());const king=wave(6).target;king.mp=0;assert.deepEqual(finalEnemyActions(king,100,()=>0),[]);
+ const used=new Set();for(const choice of [.01,.26,.51,.76,.99]){const king=wave(6).target;king.hp=Math.round(king.maxHp*.8);const values=[choice,.1],actions=finalEnemyActions(king,100,()=>values.shift()??.1);assert.equal(actions.length,1);const cast=actions[0];assert.notEqual(cast.kind,'physical');used.add(cast.spell.id);assert.equal(king.mp,10000-cast.spell.mpCost);}
+ assert.deepEqual([...used].sort(),['mimurose','mimuros','mirogoro','mirogoron','mirogoturn'].sort());const king=wave(6).target;king.mp=0;assert.deepEqual(finalEnemyActions(king,100,()=>0),[]);
 });
 test('third-form guard heals injured living mage first, spends own MP, caps recovery and never resurrects',()=>{
  const e=wave(5),[mage,guard]=e.enemies;mage.hp-=40;guard.hp-=50;const own=guard.hp;let actions=finalEnemyActions(guard,100,()=>.1,e.enemies);assert.equal(actions[0].spell.id,'mimurose');assert.equal(actions[0].target,mage);assert.equal(mage.hp,mage.maxHp-10);assert.equal(guard.hp,own);assert.equal(guard.mp,990);
