@@ -9,10 +9,10 @@
 <link rel="stylesheet" href="./dungeons-actions.css?v=1.10.24">
 <link rel="stylesheet" href="./guard.css?v=2.3.14">
 <link rel="stylesheet" href="./final.css?v=2.3.22">
-<link rel="stylesheet" href="./online-battle.css?v=2.4.94">
+<link rel="stylesheet" href="./online-battle.css?v=2.4.97">
 <script type="module" src="https://k-oota-pixel.github.io/english-playroom/access-gate.js?v=2.4.37"></script>
 <script src="../shell-bridge.js?v=2.1.1"></script>
-<script type="module" src="./online-battle.js?v=2.4.96"></script>
+<script type="module" src="./online-battle.js?v=2.4.97"></script>
 </head>
 <body>
 <main class="app-shell">
@@ -54,7 +54,7 @@
 
     <section class="battle-tools" aria-label="ペットの能力と道具">
       <span id="petStats">HP — · 攻撃力 — · 防御力 — · MP —</span>
-      <div><button id="magicBtn" type="button" disabled>✨ 魔法</button><button id="itemBtn" type="button" disabled>🎒 アイテム</button><button id="exitRunBtn" class="exit-run-btn" type="button">対戦を終了する</button></div>
+      <div><button id="magicBtn" type="button" disabled><span class="online-magic-ring" aria-hidden="true"><span id="magicCooldownCount">✓</span></span><span>✨ 魔法</span></button><button id="itemBtn" type="button" disabled>🎒 アイテム</button><button id="exitRunBtn" class="exit-run-btn" type="button">対戦を終了する</button></div>
     </section>
 
     <section class="battlefield" id="battlefield" aria-label="オンラインバトル画面">
