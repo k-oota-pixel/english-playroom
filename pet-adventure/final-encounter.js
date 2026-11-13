@@ -1,8 +1,8 @@
 import {createAttackClock,enemyAttackInterval} from './realtime.js?v=1.10.24';
 import {enemyMaxHp,enemyAttack} from './core.js?v=2.1.8';
 import {majorBossForStage,bossActionInterval} from './royal-guard.js?v=2.3.25';
-import {chooseMinibossAction} from './miniboss.js?v=2.3.17';
-import {MAGIC_SPELLS,rollMagicAmount} from '../pet-dungeons-model.js?v=1.10.22';
+import {chooseMinibossAction} from './miniboss.js?v=2.4.95';
+import {MAGIC_SPELLS,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.95';
 
 export const FINAL_FLOOR=100;
 const spell=id=>MAGIC_SPELLS.find(s=>s.id===id);
