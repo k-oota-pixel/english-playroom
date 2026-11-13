@@ -8,8 +8,8 @@ if(mode==='tower'||mode==='dungeon'){
   try{await ensureTowerSeasonReset();}catch(error){console.warn('Tower season reset deferred',error);}
  }
  // Register ranking listeners before game initialization can emit its ready event.
- await import('./ranking-publisher.js?v=2.3.43');
- await import('./game.js?v=2.4.38');
+ await import('./ranking-publisher.js?v=2.4.95');
+ await import('./game.js?v=2.4.95');
 }
 else{
  await Promise.all([installTowerSeasonAnnouncement(),import('./rankings.js?v=2.4.71')]);
