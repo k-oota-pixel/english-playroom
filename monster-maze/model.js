@@ -83,10 +83,11 @@ export function addReward(profile,round,reward){
   if(profile.recentRuns.includes(round)) return;
   profile.recentRuns = [...profile.recentRuns.slice(-24),round];
   profile.crystals = Math.min(maxMaterials,profile.crystals+reward.crystals);
-  if(!reward.card) return;
-  const entry = profile.owned[reward.card];
-  if(entry) entry.copies = Math.min(999,entry.copies+1);
-  else profile.owned[reward.card] = {level:1,copies:0};
+  for(const key of reward.cards ?? (reward.card?[reward.card]:[])){
+    const entry=profile.owned[key];
+    if(entry) entry.copies=Math.min(999,entry.copies+1);
+    else profile.owned[key]={level:1,copies:0};
+  }
 }
 const pick=(values,random)=>values[Math.floor(random()*values.length)];
 function shuffle(values,random){
@@ -97,12 +98,64 @@ function shuffle(values,random){
   }
   return result;
 }
-export function roomOptions(floor,course,random=Math.random){
-  if(floor===course.floors) return [{kind:'boss',id:1+Math.floor(random()*(course.floors===20?10:6))}];
-  if(floor%5===0) return [{kind:'boss',id:1+Math.floor(random()*6)}];
-  const ids=shuffle(enemies.map((_,i)=>i+1),random);
-  const third=pick([{kind:'treasure'},{kind:'mystery'},{kind:'battle',id:ids[2]}],random);
-  return [{kind:'battle',id:ids[0]},{kind:'battle',id:ids[1]},third];
+export const directions = [[0,-1],[1,0],[0,1],[-1,0]];
+export function generateMaze(floor,course,random=Math.random){
+  const width=9, height=7;
+  const tiles=Array.from({length:height},()=>Array(width).fill(false));
+  const stack=[[1,1]];
+  tiles[1][1]=true;
+  while(stack.length){
+    const [x,y]=stack.at(-1);
+    const branches=directions.filter(([dx,dy])=>{
+      const nx=x+2*dx, ny=y+2*dy;
+      return nx>0&&nx<width-1&&ny>0&&ny<height-1&&!tiles[ny][nx];
+    });
+    if(!branches.length){stack.pop();continue;}
+    const [dx,dy]=pick(branches,random);
+    tiles[y+dy][x+dx]=true;
+    tiles[y+2*dy][x+2*dx]=true;
+    stack.push([x+2*dx,y+2*dy]);
+  }
+  const shortcuts=[];
+  for(let y=1;y<height-1;y++){
+    for(let x=1;x<width-1;x++){
+      if(!tiles[y][x]&&((x%2===0&&y%2===1)||(x%2===1&&y%2===0))) shortcuts.push([x,y]);
+    }
+  }
+  for(const [x,y] of shuffle(shortcuts,random).slice(0,2))tiles[y][x]=true;
+  const queue=[[1,1,0]],seen=new Set(['1,1']);
+  for(const [x,y,distance] of queue){
+    for(const [dx,dy] of directions){
+      const nx=x+dx,ny=y+dy,id=nx+','+ny;
+      if(tiles[ny]?.[nx]&&!seen.has(id)){
+        seen.add(id);
+        queue.push([nx,ny,distance+1]);
+      }
+    }
+  }
+  const [exitX,exitY]=queue.at(-1);
+  const boxes=queue.filter(([x,y,distance])=>distance>=4&& (x!==exitX||y!==exitY));
+  const [chestX,chestY]=pick(boxes,random);
+  const bossFloor=floor===course.floors||floor%5===0;
+  const bossId=bossFloor ? (floor===course.floors&&course.floors===20 ? 7 : 1)
+    +Math.floor(random()*(floor===course.floors&&course.floors===20?4:6)) : null;
+  return {tiles,x:1,y:1,exitX,exitY,chestX,chestY,chestOpened:false,steps:0,bossId};
+}
+export function movePet(maze,dx,dy,random=Math.random){
+  if(!directions.some(([x,y])=>dx===x&&dy===y))return null;
+  const x=maze.x+dx,y=maze.y+dy;
+  if(!maze.tiles[y]?.[x])return null;
+  maze.x=x;
+  maze.y=y;
+  if(x===maze.exitX&&y===maze.exitY)return maze.bossId?{kind:'boss',id:maze.bossId}:{kind:'exit'};
+  if(x===maze.chestX&&y===maze.chestY&&!maze.chestOpened){
+    maze.chestOpened=true;
+    return {kind:'chest'};
+  }
+  maze.steps++;
+  if(maze.steps<5||(maze.steps<13&&random()>=0.1))return {kind:'walk'};
+  maze.steps=0;
+  return {kind:'battle',id:1+Math.floor(random()*enemies.length)};
 }
 export function makeFoes(room,floor,random=Math.random){
   const major=room.kind==='boss';

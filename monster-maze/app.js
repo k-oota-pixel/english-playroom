@@ -1,11 +1,12 @@
 import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getFirestore,doc,getDoc,runTransaction} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.4.37';
+import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
-  addReward,roomOptions,makeFoes,question,playTurn,drawReward
-} from './model.js?v=1';
+  addReward,directions,generateMaze,movePet,makeFoes,question,playTurn,drawReward
+} from './model.js?v=2';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -13,7 +14,7 @@ enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 const pane=document.querySelector('#game');
 const status=document.querySelector('#status');
-let profile,cardRef,words,run,busy=false,clock,generation=0;
+let profile,petData,cardRef,words,run,walkView,busy=false,clock,generation=0;
 
 function node(tag,content='',cls=''){
   const el=document.createElement(tag);
@@ -92,6 +93,7 @@ async function save(change,onSuccess,onFailure){
 }
 function lobby(){
   run=null;
+  walkView=null;
   clear();
   pane.append(node('h2','探索隊'),group('team',...profile.team.map(key=>{
     const unit=stats(key,profile.owned[key]);
@@ -135,36 +137,111 @@ function collection(draft=[...profile.team]){
 }
 function start(course){
   message();
-  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,
-    team:profile.team.map(key=>stats(key,profile.owned[key]))};
-  route();
+  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],
+    maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
+  explore();
 }
-function route(){
+const moveLabels=['上','右','下','左'];
+function explore(){
   clear();
+  message();
+  const {maze}=run;
   pane.append(node('h2',run.course.name+' · '+run.floor+' / '+run.course.floors+'階'));
-  pane.append(group('team',...run.team.map(unit=>unitView(unit,'card'))));
-  pane.append(node('h3','進む部屋を選ぶ'));
-  const options=roomOptions(run.floor,run.course);
-  pane.append(group('choices',...options.map(room=>{
-    const boss=room.kind==='boss';
-    const label=boss?(room.id>6?'怪しげな気配 · ':'ボス · ')+bosses[room.id-1]:
-      room.kind==='battle'?enemies[room.id-1]:room.kind==='treasure'?'宝箱':'？';
-    return button(label,()=>enter(room),false,'primary');
-  })),button('探索をやめる',()=>{if(confirm('今回の探索を終了しますか？'))lobby();}));
+  const hint=node('p','矢印キー・方向ボタン・隣のマスをタップして移動。','walk-hint');
+  const map=group('maze-map');
+  map.setAttribute('role','group');
+  map.setAttribute('aria-label','迷宮マップ');
+  map.style.setProperty('--cols',maze.tiles[0].length);
+  const tiles=maze.tiles.map((row,y)=>row.map((passable,x)=>{
+    if(!passable){
+      const wall=node('span','','maze-wall');
+      wall.setAttribute('aria-hidden','true');
+      map.append(wall);
+      return null;
+    }
+    const tile=button('',()=>walk(x-maze.x,y-maze.y),false,'maze-tile');
+    map.append(tile);
+    return tile;
+  }));
+  const pet=node('span','','maze-pet');
+  pet.setAttribute('role','img');
+  pet.setAttribute('aria-label','あなたのペット');
+  if(petData?.petHatched){
+    const shop=petData.petShop||{};
+    const equipped={...shop.equipped};
+    delete equipped['pet-frame'];
+    pet.innerHTML=renderPetSVG(petData.petAdult===false?null:petData.petAppearance,{...shop,equipped},'',{background:false});
+  }else pet.textContent='🥚';
+  const controls=group('maze-controls',...directions.map(([dx,dy],i)=>{
+    const control=button(['↑','→','↓','←'][i],()=>walk(dx,dy));
+    control.setAttribute('aria-label',moveLabels[i]+'に移動');
+    return control;
+  }));
+  const report=node('p','','walk-report');
+  report.setAttribute('role','status');
+  const exit=maze.bossId?'👑 ボス部屋':'🚪 次の階';
+  pane.append(hint,map,controls,node('small','🧰 宝箱　'+exit),report,
+    group('team',...run.team.map(unit=>unitView(unit,'card'))),
+    button('探索を終了',leave));
+  walkView={map,tiles,pet,report};
+  updateMap();
 }
-function enter(room){
-  if(room.kind==='treasure'){
-    run.crystals++;
-    return advance('経験の結晶を1個見つけた！');
+function updateMap(){
+  const {maze}=run;
+  const {map,tiles,pet,report}=walkView;
+  for(const [y,row] of tiles.entries()){
+    for(const [x,tile] of row.entries()){
+      if(!tile)continue;
+      const here=x===maze.x&&y===maze.y;
+      const chest=x===maze.chestX&&y===maze.chestY&&!maze.chestOpened;
+      const exit=x===maze.exitX&&y===maze.exitY;
+      const label=chest?'宝箱':exit?(maze.bossId?'ボス部屋':'次の階'):'通路';
+      tile.classList.toggle('here',here);
+      tile.classList.toggle('landmark',chest||exit);
+      tile.setAttribute('aria-label',here?'ペットの位置':label);
+      tile.tabIndex=-1;
+      tile.textContent=here?'':chest?'🧰':exit?(maze.bossId?'👑':'🚪'):'';
+    }
   }
-  if(room.kind==='mystery'){
-    for(const unit of run.team.filter(ally=>ally.hp>0))unit.hp=Math.min(unit.maxHp,unit.hp+Math.ceil(unit.maxHp/4));
-    return advance('休息の泉で仲間のHPが回復した！');
+  map.append(pet);
+  pet.style.setProperty('--x',maze.x);
+  pet.style.setProperty('--y',maze.y);
+  report.textContent=run.found.length?'見つけたカード '+run.found.length+'枚':'';
+}
+function walk(dx,dy){
+  if(!run||!walkView||busy)return;
+  const event=movePet(run.maze,dx,dy);
+  if(!event)return;
+  if(event.kind==='walk')return updateMap();
+  walkView=null;
+  clear();
+  if(event.kind==='chest'){
+    const reward=drawReward({...run.course,drop:1},0);
+    run.found.push(reward.card);
+    pane.append(node('h2','宝箱を開けた！'),node('p',cardName(reward.card)+' を見つけた。'),
+      group('reward-art',art('card',Number(reward.card.split('-')[0]))),
+      button('探索を続ける',explore,false,'primary'));
+    return;
   }
-  run.foes=makeFoes(room,run.floor);
+  if(event.kind==='exit')return advance();
+  run.foes=makeFoes(event,run.floor);
   run.guard=null;
-  nextQuestion();
+  run.bossFight=event.kind==='boss';
+  const title=run.bossFight?run.foes[0].name+' が道をふさいでいる！':'野生のモンスターが現れた！';
+  pane.append(node('h2',title),group('team',...run.foes.map(unit=>unitView(unit,unit.major?'boss':'enemy'))),
+    button('戦う',nextQuestion,false,'primary'));
 }
+function leave(){
+  if(!confirm('今回の探索を終了しますか？'))return;
+  walkView=null;
+  finish(false);
+}
+document.addEventListener('keydown',event=>{
+  const i=['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].indexOf(event.key);
+  if(!walkView||i<0||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+  event.preventDefault();
+  walk(...directions[i]);
+});
 function nextQuestion(){
   const current=question(words[run.course.grade].words,run.quiz?.word);
   run.quiz=current;
@@ -204,7 +281,7 @@ function battle(){
   const timer=node('span','','timer');
   const quiz=group('quiz',group('quiz-title',node('h3',run.quiz.word),timer),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolveTurn(option),false,'primary'))));
-  pane.append(enemyRow,allies,actions,quiz,button('探索をやめる',()=>{if(confirm('今回の探索を終了しますか？'))lobby();}));
+  pane.append(enemyRow,allies,actions,quiz,button('探索を終了',leave));
   const tick=()=>{
     const seconds=Math.max(0,Math.ceil((run.deadline-Date.now())/1000));
     timer.textContent=seconds+'秒';
@@ -221,35 +298,44 @@ function resolveTurn(answer){
   const feedback=correct?'正解！':(answer&&timely?'不正解':'時間切れ')+' · 正解は「'+run.quiz.answer+'」';
   const detail=result==='won'?'敵を倒した！':result==='lost'?'探索隊は全滅した。':'残った敵が反撃した。';
   pane.append(node('h2',feedback),node('p',detail),group('team',...run.team.map(unit=>unitView(unit,'card'))));
-  if(result==='lost')pane.append(button('探索に戻る',lobby,false,'primary'));
-  else if(result==='won')pane.append(button('進む',()=>advance(),false,'primary'));
+  if(result==='lost')pane.append(button('探索結果',()=>finish(false),false,'primary'));
+  else if(result==='won')pane.append(button('進む',run.bossFight?advance:explore,false,'primary'));
   else pane.append(button('次の問題',nextQuestion,false,'primary'));
 }
-function advance(event){
-  if(run.floor===run.course.floors){
-    run.reward=drawReward(run.course,run.crystals);
-    return results();
-  }
-  if(event){
-    clear();
-    pane.append(node('h2',event),button('次の階へ',()=>advance(),false,'primary'));
-    return;
-  }
+function advance(){
+  if(run.floor===run.course.floors)return finish(true);
   run.floor++;
-  route();
+  run.maze=generateMaze(run.floor,run.course);
+  for(const unit of run.team){
+    if(unit.hp>0)unit.hp=Math.min(unit.maxHp,unit.hp+Math.ceil(unit.maxHp*0.15));
+  }
+  explore();
+}
+function finish(cleared){
+  const bonus=cleared?drawReward(run.course,run.crystals):{crystals:0,card:null};
+  run.cleared=cleared;
+  run.reward={crystals:bonus.crystals,cards:bonus.card?[...run.found,bonus.card]:[...run.found]};
+  results();
 }
 function results(saved=false){
   clear();
   const {id,reward,correct,turns,floor}=run;
-  pane.append(node('h2','迷宮クリア！'),node('p',floor+'階 · '+turns+'ターン · 正解率 '+Math.round(100*correct/Math.max(1,turns))+'%'),
-    node('p','経験の結晶 ×'+reward.crystals),node('p',reward.card?'仲間カード · '+cardName(reward.card):'今回の仲間カード獲得はありません。'));
-  if(reward.card)pane.append(group('reward-art',art('card',Number(reward.card.split('-')[0]))));
-  if(saved)pane.append(button('探索に戻る',lobby,false,'primary'));
+  pane.append(node('h2',run.cleared?'迷宮クリア！':'探索終了'),
+    node('p',floor+'階 · '+turns+'ターン · 正解率 '+Math.round(100*correct/Math.max(1,turns))+'%'));
+  if(reward.crystals) pane.append(node('p','経験の結晶 ×'+reward.crystals));
+  const counts=new Map();
+  for(const key of reward.cards)counts.set(key,(counts.get(key)||0)+1);
+  if(counts.size){
+    pane.append(node('h3','見つけた仲間カード'),group('collection',...[...counts].map(([key,count])=>
+      group('unit',art('card',Number(key.split('-')[0])),node('strong',cardName(key)+' ×'+count)))));
+  }
+  if(saved||(!reward.crystals&&!counts.size))pane.append(button('探索に戻る',lobby,false,'primary'));
   else pane.append(button('報酬を受け取る',()=>save(next=>addReward(next,id,reward),()=>results(true)),false,'primary'));
 }
 async function initialize(user){
   const current=++generation;
   busy=false;
+  walkView=null;
   pane.inert=false;
   pane.hidden=true;
   clear();
@@ -267,10 +353,12 @@ async function initialize(user){
       if(!response.ok)throw Error('問題データを取得できませんでした。');
       return response.json();
     });
-    const [snapshot,data]=await Promise.all([getDoc(ref),wordBank]);
+    const wallet=doc(db,'users',user.uid,'apps','english-playroom');
+    const [snapshot,data,pet]=await Promise.all([getDoc(ref),wordBank,getDoc(wallet)]);
     if(current!==generation)return;
     cardRef=ref;
     words=data.grades;
+    petData=pet.data();
     profile=normalizeProfile(snapshot.data());
     pane.hidden=false;
     message();
