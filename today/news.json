@@ -1,13 +1,443 @@
 {
-  "generatedAt": "2026-11-13T01:48:57.756Z",
-  "editionDate": "2026-11-13",
+  "generatedAt": "2026-11-14T01:26:22.622Z",
+  "editionDate": "2026-11-14",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-13"
+    "lastSuccessfulEdition": "2026-11-14"
   },
   "articles": [
+    {
+      "id": "2026-11-14-aqua-park-shinagawa-little-twin-stars-aquarium",
+      "date": "2026-11-14",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Sanrio",
+        "LittleTwinStars",
+        "AquaParkShinagawa",
+        "Tokyo",
+        "Christmas"
+      ],
+      "titleJa": "品川でキキ＆ララ水族館",
+      "title": "Little Twin Stars Aquarium Opens in Tokyo",
+      "summaryJa": "マクセル アクアパーク品川で、リトルツインスターズとコラボした冬のイベントが11月13日から始まりました。",
+      "sourcePublishedAt": "2026-11-14T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "サンリオのイベントに行く日やプランを計画するため。",
+        "followUpJa": "友達や家族とどのプログラムやチケットが良いか話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the Sanrio characters at the aquarium?",
+          "4級": "When does the Little Twin Stars winter event end at Aqua Park Shinagawa?",
+          "3級": "How much is the adult ticket for the special collaboration set?",
+          "準2級": "What are the two different versions of the dolphin performance during the event?",
+          "2級": "Why did Aqua Park Shinagawa choose to collaborate with Little Twin Stars for this winter season?",
+          "準1級": "What specific digital and interactive features are integrated into the aquarium spaces, and how do they enhance the Little Twin Stars theme?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A New Aquarium Event",
+          "text": "Hello Kitty friends are here. A new event is in Tokyo. It is at Aqua Park Shinagawa. Little Twin Stars can be seen. They love Christmas. You can see blue and pink fish. The show has cute dolphins. Adults pay 2,800 yen. Children pay 1,300 yen. Go and have fun today.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Little Twin Stars at Shinagawa",
+          "text": "A special winter event started in Tokyo. Maxell Aqua Park Shinagawa has a collaboration with Little Twin Stars. Kiki and Lala celebrate Christmas at the aquarium until December 25. Visitors can see pink and blue fish in tanks. There are projection mappings and beautiful photo spots. The dolphin show uses special music and videos. Adults can enter for 2,800 yen. It is a very nice place for families and friends to visit this season.",
+          "wordCount": 72
+        },
+        "3級": {
+          "title": "Little Twin Stars at the Aquarium",
+          "text": "A winter event began on November 13 at Maxell Aqua Park Shinagawa in Tokyo. The aquarium teamed up with Sanrio characters Little Twin Stars to celebrate Christmas. This special event runs until December 25. Inside, visitors can enjoy tanks filled with pink and blue fish that match the characters. There is also an immersive space with projection mapping and interactive walls. The main highlight is the dolphin show, which features day and night versions with special music. Adult tickets cost 2,800 yen.",
+          "wordCount": 79
+        },
+        "準2級": {
+          "title": "Magical Winter Collaboration at Aqua Park Shinagawa",
+          "text": "Maxell Aqua Park Shinagawa in Tokyo launched a special winter event on November 13 in collaboration with Sanrio's Little Twin Stars. Running until December 25, the aquarium combines festive Christmas themes with digital art. Guests can explore rooms featuring pink and blue fish, glowing jellyfish, and interactive walls where touching the surface makes constellations swim. The highlight of the venue is the dolphin performance, which comes in two distinct programs: a daytime show focused on meetings and an evening show featuring a starlit Christmas party with water curtains and projection mapping. A special collaboration ticket costs 3,300 yen for adults.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "Aqua Park Shinagawa Celebrates Winter with Little Twin Stars",
+          "text": "Maxell Aqua Park Shinagawa has launched its seasonal winter event featuring a magical collaboration with Sanrio's popular characters, Little Twin Stars. Running from November 13 through December 25, the attraction integrates Kiki and Lala into various exhibits across the facility. The aquarium selected the characters because of their historical connection to Christmas gifts, the name connection between their traditional seasonal event and the characters, and their high popularity in recent rankings like the Sanrio character poll. Visitors are welcomed by themed photo spots, digital projection mapping, and tanks housing fish carefully chosen to match the characters' signature pink and blue colors. Furthermore, the venue's signature dolphin performance has been completely transformed into special day and night versions incorporating Little Twin Stars music and visuals. Guests can purchase regular admission tickets or opt for a special collaboration package that includes an instant-photo style card.",
+          "wordCount": 141
+        },
+        "準1級": {
+          "title": "Immersive Holiday Magic: Little Twin Stars Transform Aqua Park Shinagawa",
+          "text": "Maxell Aqua Park Shinagawa has embarked on a festive seasonal collaboration with Sanrio characters Little Twin Stars, offering visitors an enchanting holiday experience through December 25. Capitalizing on the characters' historical roots as Christmas gift icons, their shared name connection with the venue's traditional winter event, and their recent high standing in popularity polls, the aquarium has woven Kiki and Lala's whimsical aesthetic deeply into its exhibits. Upon entering, guests encounter digital photo zones and specialized tanks featuring rare marine life carefully curated in the characters' signature pink and blue hues. Advanced technologies such as projection mapping and interactive wall displays transform zones like the Sparkling Sky Ocean into immersive wonderland spaces where touching the walls prompts constellations to move. The centerpiece of the attraction remains its dynamic dolphin performances, split into a daytime introductory party and a nighttime starlit celebration complete with water curtains and themed musical scores. Alongside unique cafe menus and exclusive merchandise, visitors can also secure special collaboration tickets or attend late-night events on Christmas Eve and Christmas Day to fully enjoy the holiday magic at the venue located in Tokyo.",
+          "wordCount": 184
+        }
+      },
+      "sources": [
+        {
+          "name": "Impress Watch",
+          "url": "https://www.watch.impress.co.jp/docs/news/2156416.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-14-kato-takuya-special-tv-broadcast",
+      "date": "2026-11-14",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Takuya Kato",
+        "theater",
+        "movies",
+        "Nihon Eiga Senmon Channel",
+        "Riho Riho",
+        "Haru Kuroki",
+        "Yumi Adachi"
+      ],
+      "titleJa": "加藤拓也の特集放送",
+      "title": "Special TV Feature Highlights Works by Playwright Takuya Kato",
+      "summaryJa": "日本映画専門チャンネルは、気鋭の劇作家・加藤拓也氏の舞台4作品と映画1作品を特集放送する。",
+      "sourcePublishedAt": "2026-11-14T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "加藤拓也氏の特集でテレビ初放送される4つの舞台作品の中から、自分の興味に最も合うものを探すため。",
+        "followUpJa": "どの作品が一番気になったか、その理由を話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the TV channel?",
+          "4級": "Who is the famous playwright in the news?",
+          "3級": "Which actor plays an elementary school student in Ranboumono-me?",
+          "準2級": "What is the title of the movie directed by Takuya Kato that is included in the feature?",
+          "2級": "What strange topic does the play Koko ga Umi deal with regarding a husband and wife?",
+          "準1級": "How do the tea shop owners in Keshiki no Yoi Kankochi change after becoming fascinated with poisonous dishes?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New TV Show",
+          "text": "A special TV program starts soon. It shows four stage plays. A famous young writer made them. His name is Takuya Kato. Many nice actors are in them. People can watch them on TV in Japan. It is very exciting for fans.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Takuya Kato's Special TV Feature",
+          "text": "A special television program will broadcast four stage plays and one movie. These works are by Takuya Kato. He is a talented young playwright, director, and screenwriter in Japan. Famous actors appear in these interesting shows. Fans can enjoy his unique stories and deep characters on television this weekend. Viewers will see four plays shown on television for the first time.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Discovering Takuya Kato's Creative World",
+          "text": "A special television program will soon broadcast four stage plays and one movie created by Takuya Kato. He is a talented young playwright, director, and screenwriter who has won many awards in Japan. The broadcast includes four plays shown on television for the first time. Famous actors star in these interesting stories. Viewers can enjoy his unique conversation style and explore complex human emotions through both theater and film in this special feature.",
+          "wordCount": 73
+        },
+        "準2級": {
+          "title": "Television Special Showcases Works by Playwright Takuya Kato",
+          "text": "A special television program will soon broadcast four stage works and one movie created by Takuya Kato. He is a talented young playwright, director, and screenwriter who has won major awards in Japan. The broadcast includes four plays shown on television for the first time, featuring famous actors such as Riho Yoshioka, Haru Kuroki, and Yumi Adachi. Through unique conversation dramas, Kato explores the deep emotions and complex relationships of modern people. This special feature gives fans a wonderful chance to experience his creative world through both theater and film.",
+          "wordCount": 90
+        },
+        "2級": {
+          "title": "Television Feature Highlights Award-Winning Works by Playwright Takuya Kato",
+          "text": "A special television feature will soon broadcast four stage plays and one film created by Takuya Kato. Kato is a talented young playwright, director, and screenwriter who has received prestigious awards for his theatrical works in Japan, including the Yomiuri Theatre Award and the prestigious Kishida Kunio Drama Award. The upcoming broadcast features four plays being shown on television for the first time, starring popular actors like Riho Riho, Haru Kuroki, and Yumi Adachi. Known for his unique conversational style, Kato highlights the hidden emotions and uneasy relationships of people living in modern society. In the play Koko ga Umi, a husband is told by his wife that she plans to change her gender, prompting a significant shift in their relationship as they live wandering across Japan. In addition to the stage plays, the feature film Hotsureru directed by Kato will also be included in the special lineup, offering viewers a comprehensive look at his creative vision across both theater and cinema.",
+          "wordCount": 162
+        },
+        "準1級": {
+          "title": "Television Special Highlights the Creative World of Playwright and Director Takuya Kato",
+          "text": "A special television feature will soon broadcast four stage plays and one film created by Takuya Kato, a prominent young playwright, director, and screenwriter who has earned significant acclaim in Japan. Born in Osaka in 1993, Kato has received major honors such as the Yomiuri Theatre Award for Best Director and the prestigious Kishida Kunio Drama Award. The upcoming broadcast highlights four distinct theatrical productions airing on television for the first time, featuring notable performers such as Riho Riho, Haru Kuroki, and Yumi Adachi. Recognized for his distinctive conversational style, Kato frequently exposes the hidden emotional depths and underlying tensions of contemporary human relationships. For instance, in the play Keshiki no Yoi Kankochi, tea shop owners Kensuke and Ryuji become fascinated by poisonous dishes and start serving them to regular customers, escalating their dangerous desires. The special television lineup also includes Hotsureru, a feature film directed by Kato starring Mugi Kadowaki, providing audiences with a rare opportunity to appreciate his artistic vision across both stage and screen. Through these diverse narratives, viewers can fully immerse themselves in the complex and thought-provoking universe of one of Japan's most celebrated modern storytellers.",
+          "wordCount": 189
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261114-5310953/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-14-sabalenka-season-ended-by-svitolina-wta-finals",
+      "date": "2026-11-14",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "tennis",
+        "WTA-Finals",
+        "Aryna-Sabalenka",
+        "Elina-Svitolina"
+      ],
+      "titleJa": "サバレンカ敗退",
+      "title": "Sabalenka's season ended by Svitolina at WTA Finals",
+      "summaryJa": "WTAファイナルズで、エリナ・スビトリナがアリーナ・サバレンカを破り、ノックアウトステージ進出を果たしました。",
+      "sourcePublishedAt": "2026-11-14T00:51:25.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "試合の展開や勝敗の要因を分析し、トップアスリートのメンタル面の課題について考察します。",
+        "followUpJa": "アスリートがプレッシャーに直面したとき、どのように気持ちを切り替えるべきだと思いますか？",
+        "questions": {
+          "5級": "Who won the tennis match?",
+          "4級": "Why did Sabalenka lose the match?",
+          "3級": "Who will Svitolina play against in the last four?",
+          "準2級": "How many games did Sabalenka lose in a row during the final set?",
+          "2級": "What milestone regarding majors did Sabalenka miss for the first time since 2022?",
+          "準1級": "How did Svitolina describe her mental approach during the tough match?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Match Ends",
+          "text": "Aryna Sabalenka has a hard match. Elina Svitolina wins the tennis game. Sabalenka is sad. Her season is over now. Svitolina plays very well. She moves to the next round at the WTA Finals. Sabalenka tries hard, but she loses the final set. Many fans watch this big game.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Sabalenka Loses at WTA Finals",
+          "text": "Aryna Sabalenka ended her tennis season with a tough loss. Elina Svitolina beat the former world number one at the WTA Finals. Svitolina claimed her place in the next stage. Sabalenka fought hard and won the second set. However, she lost the final six games. Svitolina played with great focus. She will now meet Linda Noskova in the last four of the tournament.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Svitolina Knocks Out Sabalenka",
+          "text": "Aryna Sabalenka saw her tennis season end in disappointment after a loss to Elina Svitolina at the WTA Finals. Svitolina beat the former world number one to secure her place in the knockout stage. Sabalenka managed to force a deciding set, but she lost the final six games to suffer a 6-3, 3-6, 6-1 defeat. Ukraine's Svitolina will now meet Czech player Linda Noskova in the semi-finals after a very tough match. Sabalenka had hoped to win her first title at this season-ending tournament, but her poor finish brought a sad end to her year on the tour.",
+          "wordCount": 95
+        },
+        "準2級": {
+          "title": "Svitolina Ends Sabalenka's Season at WTA Finals",
+          "text": "Aryna Sabalenka's tennis season ended in disappointment when Elina Svitolina beat the former world number one to reach the knockout stage at the WTA Finals. Sabalenka showed frustration on the court as a semi-final place slipped away. She forced a deciding set after struggling in the first, but she lost the final six games in a 6-3, 3-6, 6-1 defeat. This loss came just two days after she was beaten by Mirra Andreeva. Svitolina will now face Linda Noskova in the last four of the tournament. Svitolina said it was an extremely tough match, especially mentally, but she tried to play one point at a time. Sabalenka hoped to win the prestigious trophy, but her campaign ended with another difficult loss.",
+          "wordCount": 118
+        },
+        "2級": {
+          "title": "Svitolina Eliminates Sabalenka to Reach WTA Finals Knockout Stage",
+          "text": "Aryna Sabalenka's 2026 tennis season ended in disappointment as Elina Svitolina defeated the former world number one to claim a place in the knockout stage at the WTA Finals. Sabalenka showed visible frustration during the match as a semi-final spot slipped away. Although the Belarusian fought back to force a deciding set, she lost the final six games to suffer a 6-3, 3-6, 6-1 defeat. This loss followed a heavy defeat to Mirra Andreeva two days earlier. Ukraine's Svitolina will now meet Czech player Linda Noskova in the last four. Svitolina noted that the match was extremely tough mentally, explaining that she tried to play one point at a time. This marks the first season since 2022 that Sabalenka has failed to win a major title, despite arriving at the tournament with a strong win percentage and a successful year that included titles at Indian Wells and Miami. Sabalenka was bidding for a first success at the season-ending tournament, but her struggles in testing moments once again proved costly as her campaign concluded.",
+          "wordCount": 168
+        },
+        "準1級": {
+          "title": "Svitolina Ousts Frustrated Sabalenka to Secure WTA Finals Semi-Final Berth",
+          "text": "Aryna Sabalenka's season reached a frustrating conclusion as Elina Svitolina overcame the former world number one to secure her place in the knockout stage at the WTA Finals. Sabalenka's visible distress on court mirrored her fading semi-final hopes as she unravelled in the closing stages. Although she mounted a brief fightback to level the match after a poor start, she collapsed in the third set, losing the final six games to fall to a 6-3, 3-6, 6-1 defeat. The loss compounded her misery following a heavy defeat to Mirra Andreeva earlier in the week, where she also lost the final eleven games. Svitolina, a 2018 champion returning to the tournament's latter stages, admitted the encounter was an immense mental challenge where she focused entirely on taking it one point at a time. For Sabalenka, the defeat highlights a difficult end to a year that saw her fail to capture a major title for the first time since 2022, despite dominant stretches that included a Sunshine Double. The defeat leaves her searching for mental resilience in high-stakes moments as she reflects on a missed opportunity at the season-ending championship.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/tennis/articles/cw30gl912vq9o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-14-sapporo-driver-arrested-pedestrian-obstruction",
+      "date": "2026-11-14",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "traffic",
+        "sapporo",
+        "arrest",
+        "pedestrian"
+      ],
+      "titleJa": "歩行者妨害で男逮捕",
+      "title": "Driver Arrested in Sapporo for Failing to Yield to Pedestrian",
+      "summaryJa": "札幌市で、横断歩道を渡っていた歩行者の通行を妨げたとして、55歳の男が道路交通法違反の疑いで現行犯逮捕されました。",
+      "sourcePublishedAt": "2026-11-14T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "運転手が交通ルールを守らなかった理由と自分の行動をどう見直すべきか判断する。",
+        "followUpJa": "横断歩道での安全な運転についてさらに話し合いましょう。",
+        "questions": {
+          "5級": "What did the driver do?",
+          "4級": "Where did this traffic incident happen in Sapporo?",
+          "3級": "Why did the police officer arrest the 55-year-old driver?",
+          "準2級": "What was the driver's reaction when he was arrested by the police?",
+          "2級": "How did the police officer witness the traffic violation at the intersection?",
+          "準1級": "What specific defense did the suspect offer regarding the pedestrian obstruction charge?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Driver Stops and Goes",
+          "text": "A man drove a small car in Sapporo. He stopped at a corner. A person was walking on the crosswalk. The man did not wait. He drove his car again. A police officer saw this. The police officer arrested the man. The man is fifty-five years old.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Man Arrested in Sapporo",
+          "text": "On November thirteenth, a man drove a light cargo car in Sapporo. He wanted to turn left at an intersection. He stopped his car for a moment. However, a pedestrian was still crossing the street. The driver did not wait for the person to finish. A police officer saw the whole thing. The officer arrested the man right there. The man is fifty-five years old.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Driver Arrested in Sapporo for Traffic Violation",
+          "text": "A fifty-five-year-old man was arrested by police in Sapporo on November thirteenth. He was driving a light cargo vehicle in Chuo Ward around four in the afternoon. When he made a left turn at an intersection, he stopped his car temporarily. However, he started driving again before a pedestrian finished crossing the road. A police officer was watching traffic nearby and caught him in the act. The suspect denies the charge completely. He told investigators that he cannot accept the accusation of pedestrian obstruction. Local police are continuing to look into the case to understand all the facts about what happened during this traffic incident today.",
+          "wordCount": 106
+        },
+        "準2級": {
+          "title": "Sapporo Driver Arrested for Blocking Pedestrian at Intersection",
+          "text": "On the evening of November thirteenth, a fifty-five-year-old delivery worker was arrested in Chuo Ward, Sapporo, for a traffic violation. According to local police investigators, the suspect was driving a light cargo vehicle when he approached an intersection and made a left turn. Although the driver came to a temporary halt before turning, he drove away before the pedestrian had completely finished crossing the crosswalk. A police officer who was conducting routine traffic enforcement personally witnessed the infraction and arrested the man on the spot immediately. During the subsequent police questioning, the suspect denied the allegation, stating clearly that he could not understand or accept why he was being accused of pedestrian obstruction. Authorities are continuing their investigation into the exact circumstances of the incident.",
+          "wordCount": 125
+        },
+        "2級": {
+          "title": "Driver Arrested for Pedestrian Obstruction in Sapporo After Failing to Yield",
+          "text": "A fifty-five-year-old man who works in the transport industry was arrested in Sapporo on the evening of November thirteenth for a serious traffic violation. The incident took place at an intersection located in Chuo Ward, where the suspect was operating a light cargo vehicle. According to reports from the local police department, although the driver temporarily stopped his car before executing a left turn, he failed to wait for a pedestrian to completely cross the street before moving forward again. A police officer who happened to be conducting routine traffic enforcement at the scene directly witnessed the infraction and promptly arrested the man on the spot. When questioned later by investigators, the suspect denied the charge, claiming that he could not accept the accusation of pedestrian obstruction. The police are continuing to investigate the exact circumstances surrounding this arrest to determine all relevant facts.",
+          "wordCount": 144
+        },
+        "準1級": {
+          "title": "Sapporo Driver Arrested for Pedestrian Obstruction After Failing to Yield at Intersection",
+          "text": "In the city of Sapporo, a fifty-five-year-old transport worker was apprehended by local law enforcement officers on November thirteenth for allegedly obstructing pedestrian traffic at a busy urban crossing. The incident unfolded late in the afternoon within Chuo Ward, specifically along a roadway in Minami 9-jo Nishi 6-chome, where the suspect was operating a light cargo vehicle while conducting his daily professional duties. According to official statements released by the police department, the driver came to a temporary halt before executing a left turn at the intersection, but subsequently resumed driving before the pedestrian had completely finished traversing the marked crosswalk. A police officer who was actively conducting routine traffic enforcement personally observed the violation in real time and promptly arrested the suspect on the spot. During subsequent questioning by investigators, the man strongly contested the accusation, stating specifically and directly that he could not accept the formal charge of pedestrian obstruction. Local authorities are currently investigating the precise details of the event to clarify the situation, review the operational circumstances, and determine all the relevant facts regarding the traffic infraction.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63617"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-14-tamahome-insurance-fraud-investigation-2026",
+      "date": "2026-11-14",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Tamahome",
+        "insurance",
+        "fraud",
+        "business-ethics"
+      ],
+      "titleJa": "タマホームに火災保険の新規…",
+      "title": "Major Non-Life Insurers Consider Halting New Sales at Tamahome Over Insurance Fraud Claims",
+      "summaryJa": "タマホームの火災保険をめぐる不正請求問題で、大手損保3社が新規販売の停止を検討しています。",
+      "sourcePublishedAt": "2026-11-14T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "タマホームの不正請求問題を受け、損保会社がどのような判断を下そうとしているかを理解する。",
+        "followUpJa": "自分が企業のコンプライアンス担当者なら、このような不正を防ぐためにどのような対策をとるか考えてみましょう。",
+        "questions": {
+          "5級": "What company has an insurance problem?",
+          "4級": "How many false claims were found in the self-survey?",
+          "3級": "Why are the three major non-life insurers considering stopping new sales?",
+          "準2級": "What specific fraudulent methods were revealed during the company's self-investigation?",
+          "2級": "What specific actions have the insurance companies demanded Tamahome take to resolve the current deadlock?",
+          "準1級": "How might the structural incentives within the company and the supervisory responsibility of the insurers complicate this situation?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Tamahome Has Insurance Issues",
+          "text": "Tamahome is a big house company. People found insurance problems there. Three big insurance companies can help people. Now, they want to stop new fire insurance sales. This is a big news in Japan. We must watch what happens next.",
+          "wordCount": 40
+        },
+        "4級": {
+          "title": "Major Insurers Consider Halting New Sales",
+          "text": "Tamahome, a custom home builder, is facing a serious insurance fraud problem. An internal survey found over two hundred suspicious claims. Because of these false claims, three major non-life insurance companies are now thinking about stopping new sales of fire insurance. The insurers want Tamahome to set up a third-party committee to investigate the issue thoroughly, but negotiations are currently facing a difficult deadlock between the companies.",
+          "wordCount": 67
+        },
+        "3級": {
+          "title": "Insurers Consider Halting New Sales Over Claims",
+          "text": "Tamahome, a major custom home builder, is facing a serious insurance fraud scandal involving over twenty million yen in suspicious claims. An internal survey by the company revealed more than two hundred questionable cases, including fabricated damages and exaggerated estimates. Because of these findings, three major non-life insurance companies are considering stopping the new sales of fire insurance. The insurers are now asking Tamahome to set up an independent third-party committee to investigate the problem thoroughly, but talks remain stalled.",
+          "wordCount": 80
+        },
+        "準2級": {
+          "title": "Insurers Consider Halting New Sales Due to Tamahome Fraud",
+          "text": "Custom home builder Tamahome is currently facing severe criticism due to a major insurance fraud scandal. An internal investigation conducted by the company revealed more than two hundred suspicious claims, including fabricated facility damages and exaggerated repair estimates using recycled evidence photos. Furthermore, sample checks performed by insurance companies uncovered additional questionable activities that the internal review had missed. In response to this situation, three major non-life insurance companies are considering stopping new fire insurance sales through Tamahome. The insurers have strongly demanded an independent third-party committee and further investigations, but current discussions remain completely stalled between the parties.",
+          "wordCount": 99
+        },
+        "2級": {
+          "title": "Non-Life Insurers Weigh New Sales Halt Following Tamahome Fraud Scandal",
+          "text": "Custom home builder Tamahome is currently facing a massive scandal involving fraudulent insurance claims totaling over twenty million yen. In response to this situation, three major Japanese non-life insurance companies, including Sompo Japan, Mitsui Sumitomo Insurance, and Tokio Marine & Nichido Fire Insurance, have begun discussing plans to halt new fire insurance sales involving the builder. An internal investigation conducted by Tamahome revealed more than two hundred suspicious cases, including fabricated facility damages using recycled evidence photos and exaggerated repair estimates. Furthermore, sample checks by the insurers uncovered additional questionable activities, leading the insurance companies to demand an independent third-party committee and further comprehensive investigations. However, negotiations have stalled significantly, raising questions about corporate governance, structural incentive systems, and supervisory responsibilities on both sides as the current situation remains at a difficult impasse that requires careful resolution from all the parties involved in the housing and insurance sectors.",
+          "wordCount": 147
+        },
+        "準1級": {
+          "title": "Non-Life Insurance Giants Consider Halting Sales as Tamahome Faces Fraud Allegations",
+          "text": "The custom home building sector is experiencing significant turbulence after a major insurance fraud scandal emerged at Tamahome, involving questionable claims exceeding twenty million yen in total. In light of these developments, three leading non-life insurance giants—Sompo Japan, Mitsui Sumitomo Insurance, and Tokio Marine & Nichido Fire Insurance—have initiated discussions to suspend new fire insurance sales originating through the builder. An internal investigation conducted by Tamahome before the summer uncovered over two hundred suspicious cases, characterized by fabricated damages using recycled evidence photographs and severely inflated repair estimates. Complicating matters further, sample audits performed by the insurers revealed additional irregularities that the company's internal review had overlooked completely. Consequently, the insurance firms have strongly urged Tamahome to establish an independent third-party committee to investigate the matter thoroughly. Unfortunately, discussions have hit a deadlock, leaving both parties at an impasse while structural issues within the internal incentive system and potential supervisory oversights on the insurer side come under intense public scrutiny regarding corporate responsibility, industry ethics, and the broader implications for consumer trust across the entire market.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964717?display=b"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-14-us-airports-grounded-not-terror",
+      "date": "2026-11-14",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "US",
+        "airports",
+        "FAA",
+        "news"
+      ],
+      "titleJa": "米全土で航空機停止",
+      "title": "US Airports Grounded by Communication Issue",
+      "summaryJa": "アメリカ全土の空港で航空機が一時運航停止となりましたが、国土安全保障省はテロや攻撃ではないと発表しました。",
+      "sourcePublishedAt": "2026-11-14T00:22:18.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "アメリカの空港停止に関する原因や公式見解を確認しましょう。",
+        "followUpJa": "今回のトラブルの原因について、どのように報じられているか確認してみましょう。",
+        "questions": {
+          "5級": "What happened at airports in the US?",
+          "4級": "Why did the US Federal Aviation Administration stop planes?",
+          "3級": "What did the Department of Homeland Security say about the cause?",
+          "準2級": "According to officials, is there any sign of an attack against the US?",
+          "2級": "What specific issue caused the nationwide ground stop at US airports, and what did authorities clarify regarding security?",
+          "準1級": "How did the US Department of Homeland Security characterize the incident, and what evidence is currently lacking?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Planes Stop in US",
+          "text": "The US Federal Aviation Administration stops all planes at US airports. Many people are surprised. The Department of Homeland Security looks at the problem. They say it is not an attack. Workers try to fix the system now. Travelers wait at many airports today.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "US Airports Grounded",
+          "text": "The Federal Aviation Administration in the United States stops all airplane flights at airports across the entire country. Many passengers wait inside terminals. The Department of Homeland Security checks the situation carefully. Officials state that a communication problem causes this trouble. They report that there is no sign of an attack against the US right now.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "US Airports Temporarily Grounded",
+          "text": "The Federal Aviation Administration in the United States takes action to stop all airplane flights across the country. Many travelers wait anxiously at airports today because of the unexpected situation. The Department of Homeland Security quickly investigates the entire matter. Officials explain clearly that a communication failure causes this major trouble for transportation. They also state that there is no evidence at this current stage to suggest any attack against the nation. Workers and teams are working hard to solve the issue as soon as possible.",
+          "wordCount": 86
+        },
+        "準2級": {
+          "title": "US Nationwide Airport Ground Stop Caused by Communication Issue",
+          "text": "The Federal Aviation Administration in the United States decides to stop all airplane flights at airports across the entire nation. This unexpected decision affects many travelers who wait patiently inside busy terminals while authorities handle the situation. The Department of Homeland Security investigates the sudden development very carefully. Officials report that a communication issue causes the trouble. They state clearly that there is no material or evidence to judge this incident as an attack against the United States at the present stage. Authorities continue to monitor systems while technical workers address the problem to ensure safety.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "US Airports Nationwide Ground Stop Triggered by Communication Failure",
+          "text": "The Federal Aviation Administration in the United States took decisive action to implement a nationwide ground stop, halting all airplane flights across airports throughout the country. This sudden administrative measure caused significant disruption for numerous passengers and travelers who were waiting inside busy airport terminals for updates. Following the incident, the Department of Homeland Security immediately began investigating the underlying cause of the widespread disruption to understand how the situation developed. Officials formally explained that a communication failure was directly responsible for this emergency measure affecting the aviation network. Furthermore, authorities announced clearly that there was currently no evidence, material, or indication to suggest that the incident constituted an attack against the United States. Technical teams, aviation experts, and relevant workers continued their dedicated efforts to resolve the technical system problem as quickly as possible while passengers monitored the situation closely.",
+          "wordCount": 141
+        },
+        "準1級": {
+          "title": "Nationwide US Airport Ground Stop Linked to Communication Failure",
+          "text": "The Federal Aviation Administration in the United States implemented a comprehensive nationwide ground stop, bringing all airplane flights across the entire country to a temporary halt. This extraordinary administrative measure created considerable disruption for passengers, commercial travelers, and transportation networks alike as terminals filled with waiting crowds seeking updates. In response to the unfolding situation, the Department of Homeland Security quickly stepped in to evaluate the circumstances and determine the exact root cause behind the incident. Government officials confirmed through their initial assessments that a communication failure had triggered the emergency operational response across multiple regions. Importantly, authorities emphasized that there was currently no material, evidence, or indication whatsoever to suggest that the event constituted an intentional attack against the United States. As technical teams investigated further and worked steadily toward achieving a full and safe resolution, officials urged public calm and explained that security agencies were continuing to monitor all related developments very closely. The Department of Homeland Security and the Federal Aviation Administration maintained regular communications with affected personnel to ensure safety protocols remained fully active during the entire duration of the nationwide transportation disruption.",
+          "wordCount": 187
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261114de75764"
+        }
+      ]
+    },
     {
       "id": "2026-11-13-hokkaido-electric-support-2027",
       "date": "2026-11-13",
