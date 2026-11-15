@@ -215,7 +215,7 @@ function worldMap(){
   const instructions=node('p','迷宮の入口にカーソルを合わせると対応する英検級がわかります。入口を選ぶと探索を開始します。','world-map-instructions');
   const frame=group('world-map-frame');
   const mapImage=node('img');
-  mapImage.src='./art/monsta-kingdom-map.webp';
+  mapImage.src='./art/monsta-kingdom-map.avif';
   mapImage.alt='もんすた王国の地図。はじまりの森、きらめきの洞窟、文法の試練、魔獣たちの火山、魔王の影の5つの迷宮';
   mapImage.width=1448;
   mapImage.height=1086;
