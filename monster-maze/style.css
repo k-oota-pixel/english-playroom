@@ -307,3 +307,12 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 
 .supply-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr))}
 .supply-options button{text-align:left}
+
+
+/* Quest entry splash; quest data is only loaded after start. */
+#quest-splash{width:min(100%,56rem);margin:1.25rem auto 2rem}
+.quest-splash-button{display:block;width:100%;padding:0;border:0;border-radius:1rem;background:transparent;cursor:pointer;box-shadow:0 12px 36px rgba(0,0,0,.32)}
+.quest-splash-button img{display:block;width:100%;height:auto;border-radius:inherit}
+.quest-splash-button:focus-visible{outline:3px solid #ffe18e;outline-offset:5px}
+@media(hover:hover){.quest-splash-button:hover{filter:brightness(1.06)}}
+.quest-splash-button:active{transform:scale(.995)}

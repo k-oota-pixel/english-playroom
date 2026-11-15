@@ -16,7 +16,7 @@ const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-re
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
 enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
-const pane=document.querySelector('#game');
+const pane=document.querySelector('#game'); const splash=document.querySelector('#quest-splash'); const startButton=document.querySelector('#quest-start');
 const status=document.querySelector('#status');
 let profile,legacyProfile,petData,walletRef,questions,run,walkView,busy=false,clock,generation=0;
 
@@ -845,6 +845,8 @@ async function initialize(user){
   walkView=null;
   pane.inert=false;
   pane.hidden=true;
+  splash.hidden=true;
+  startButton.onclick=null;
   clear();
   legacyProfile=null;
   walletRef=null;
@@ -853,9 +855,17 @@ async function initialize(user){
     const session=user&&await accountSession(user);
     if(current!==generation)return;
     if(!session?.admin||session.resetRequired){
-      message('もんすた迷宮は管理者向けの先行プレビューです。');
+      message('もんすたクエストは管理者向けの先行プレビューです。');
       return;
     }
+    // Delay game data reads until an authorized admin clicks the splash screen.
+    splash.hidden=false;
+    message();
+    await new Promise(resolve=>{startButton.onclick=resolve;});
+    if(current!==generation)return;
+    startButton.onclick=null;
+    splash.hidden=true;
+    message('冒険の準備中…');
     const wordBank=fetch('../pet-adventure/online-battle-vocab.json').then(response=>{
       if(!response.ok)throw Error('問題データを取得できませんでした。');
       return response.json();
