@@ -4,11 +4,11 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {EIKEN_QUESTIONS_URL,loadFishingEikenBank} from '../pet-fishing/question-bank.js';
-import {unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
+import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=22';
+  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=23';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -16,7 +16,7 @@ enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 const pane=document.querySelector('#game');
 const status=document.querySelector('#status');
-let profile,petData,cardRef,walletRef,questions,run,walkView,busy=false,clock,generation=0;
+let profile,legacyProfile,petData,walletRef,questions,run,walkView,pendingTeam,busy=false,clock,generation=0;
 
 function node(tag,content='',cls=''){
   const el=document.createElement(tag);
@@ -113,38 +113,35 @@ function message(text=''){
   status.textContent=text;
   status.hidden=!text;
 }
-async function save(change,onSuccess,coinChange=null){
-  if(busy||!cardRef)return;
+async function save(change,onSuccess,{id,delta=0,itemDelta=null,onFailure}={}){
+  if(busy||!walletRef)return;
   busy=true;
   const current=generation;
-  const ref=cardRef;
   const wallet=walletRef;
   pane.inert=true;
   message('保存中…');
   try{
     const updated=await runTransaction(db,async tx=>{
-      const snapshot=await tx.get(ref);
-      const next=normalizeProfile(snapshot.data());
-      let balance=null;
-      if(coinChange){
-        const walletSnapshot=await tx.get(wallet);
-        balance=coinBalance(walletSnapshot.data());
-        if(next.recentRuns.includes(coinChange.id))return {next,balance};
-        if(balance+coinChange.delta<0)return {next,balance,insufficient:true};
-        balance+=coinChange.delta;
-      }
+      const data=(await tx.get(wallet)).data()||{};
+      const next=normalizeProfile(data.monsterMaze??legacyProfile);
+      const balance=coinBalance(data);
+      const inventory=data.petDungeonItems;
+      if(id&&next.recentRuns.includes(id))return {next,balance,inventory};
+      if(balance+delta<0)return {next,balance,inventory,insufficient:true};
       if(change(next)===false)throw Error('最新の所持カードや素材を確認してください。');
-      if(coinChange)tx.set(wallet,{coins:balance},{merge:true});
-      tx.set(ref,next);
-      return {next,balance};
+      const patch={monsterMaze:next};
+      if(delta)patch.coins=balance+delta;
+      if(itemDelta)patch.petDungeonItems=settleItems(inventory,itemDelta);
+      tx.set(wallet,patch,{merge:true});
+      return {next,balance:balance+delta,inventory:patch.petDungeonItems??inventory};
     });
     if(current!==generation)return;
     profile=updated.next;
-    if(updated.balance!==null)petData={...petData,coins:updated.balance};
+    petData={...petData,coins:updated.balance,petDungeonItems:updated.inventory};
     if(updated.insufficient){
       const detail='コインが足りません。現在の残高は'+updated.balance+'コインです。';
       message(detail);
-      coinChange.onFailure?.(detail);
+      onFailure?.(detail);
       return;
     }
     message('保存しました。');
@@ -153,7 +150,7 @@ async function save(change,onSuccess,coinChange=null){
     if(current!==generation)return;
     const detail='保存できませんでした。'+error.message;
     message(detail);
-    coinChange?.onFailure?.(detail);
+    onFailure?.(detail);
   }finally{
     if(current===generation){
       busy=false;
@@ -188,7 +185,7 @@ function lobby(){
   const petCard=rosterCard(petSprite('roster-pet-art'),pet.name,'ぺっと · Lv.'+pet.level,
     [['最大HP',pet.maxHp],['最大MP',pet.maxMp],['物理攻撃',pet.attack]],spellList);
   petCard.classList.add('party-pet');
-  const allies=profile.team.map(key=>{
+  const allies=(pendingTeam??profile.team).map(key=>{
     const entry=profile.owned[key];
     const unit=stats(key,entry);
     const special=unit.rarity?skillInfo(unit):null;
@@ -344,13 +341,14 @@ function openCardUpgrade(card,key,entry,draft){
   pane.append(dialog);
   dialog.showModal();
 }
-function collection(draft=[...profile.team]){
+function collection(draft=[...(pendingTeam??profile.team)]){
   clear();
   pane.append(node('h2','仲間カード編成'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
-    group('choices',button('探索に戻る',lobby),button('編成を保存',()=>save(next=>{
-      if(!draft.every(key=>next.owned[key]))return false;
-      next.team=[...draft];
-    },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
+    group('choices',button('探索に戻る',lobby),button('編成を適用',()=>{
+      pendingTeam=draft.join()===profile.team.join()?null:[...draft];
+      lobby();
+      message(pendingTeam?'この編成で出発します。編成は探索終了時に保存されます。':'保存済みの編成に戻しました。');
+    },draft.length!==3||draft.join()===(pendingTeam??profile.team).join(),'primary')));
   if(sampleCardKeys.some(key=>!profile.owned[key])){
     pane.append(button('比較用の鉄甲ガメルを受け取る',()=>save(grantRaritySamples,()=>{
       message('鉄甲ガメルのN・R・SR・SSRがそろいました。');
@@ -382,8 +380,10 @@ function collection(draft=[...profile.team]){
 }
 function start(course){
   message();
-  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],mistakes:new Map(),chestPlan:planChests(course),
-    caster:createCaster(petData),maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
+  const initialInventory=normalizeDungeonInventory(petData.petDungeonItems);
+  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],foundItems:{},mistakes:new Map(),chestPlan:planChests(course),
+    initialInventory,inventory:{...initialInventory},formation:pendingTeam,
+    caster:createCaster(petData),maze:generateMaze(1,course),team:(pendingTeam??profile.team).map(key=>stats(key,profile.owned[key]))};
   explore();
 }
 const moveLabels=['上','右','下','左'];
@@ -422,8 +422,9 @@ function explore(){
   const exit=maze.bossId?'👑 ボス部屋':'🚪 次の階';
   const navigation=group('maze-navigation',controls,node('small','🧰 宝箱　'+exit),report);
   const party=group('team party-row',partyPet().tile,...run.team.map(unit=>unitView(unit,'card')));
-  pane.append(group('explore-stage',title,hint,group('maze-layout',map,navigation),party,
-    button('探索を終了',leave,false,'leave-expedition')));
+  const tools=group('choices',button('回復魔法',()=>openSupplies('heal'),run.caster.hp<=0),
+    button('アイテム',()=>openSupplies('items')),button('探索を終了',leave,false,'leave-expedition'));
+  pane.append(group('explore-stage',title,hint,group('maze-layout',map,navigation),party,tools));
   map.append(pet);
   walkView={world,tiles,report};
   updateMap();
@@ -452,6 +453,47 @@ function updateMap(){
   world.style.setProperty('--y',maze.y);
   report.textContent=run.found.length?'見つけたカード '+run.found.length+'枚':'';
 }
+function openSupplies(kind,inBattle=false){
+  const expedition=run;
+  const itemMenu=kind==='items';
+  const remaining=inBattle?run.deadline-Date.now():0;
+  if(inBattle&&remaining<=0)return;
+  if(inBattle)clearInterval(clock);
+  const dialog=node('dialog','','review-dialog supply-dialog');
+  const title=node('h2',itemMenu?'アイテム':'回復魔法');
+  title.id='maze-supplies';
+  dialog.setAttribute('aria-labelledby',title.id);
+  let report='';
+  const options=itemMenu?DUNGEON_ITEMS.map(item=>
+    button(item.icon+' '+item.name+' · '+item.description+' · '+run.inventory[item.id]+'個',()=>{
+      const restored=useItem(run,item);
+      if(restored)report=item.name+'で '+run.caster.name+'の'+item.kind.toUpperCase()+'が'+restored+'回復した。';
+      dialog.close();
+    },!canUseItem(run,item))):mazeSpells.filter(spell=>spell.kind==='heal'&&run.caster.level>=spell.level).map(spell=>
+    button(spell.name+' · MP '+spell.mpCost,()=>{
+      const healed=healWhileWalking(run,spell);
+      if(healed)report=spell.name+'で '+healed.unit.name+'のHPが'+healed.amount+'回復した。';
+      dialog.close();
+    },!spellAvailable(run.caster,spell)||!injuredAlly(run)));
+  dialog.append(title,node('p','HP '+run.caster.hp+' / '+run.caster.maxHp+'　MP '+run.caster.mp+' / '+run.caster.maxMp));
+  if(options.length)dialog.append(group('choices supply-options',...options));
+  else dialog.append(node('p','回復魔法をまだ覚えていません。'));
+  dialog.append(button('閉じる',()=>dialog.close()));
+  dialog.addEventListener('close',()=>{
+    dialog.remove();
+    if(run!==expedition)return;
+    if(inBattle){
+      if(report)run.battleLog.unshift(report);
+      run.deadline=Date.now()+remaining;
+      battle();
+    }else if(report){
+      explore();
+      message(report);
+    }
+  },{once:true});
+  pane.append(dialog);
+  dialog.showModal();
+}
 function walk(dx,dy){
   if(!run||!walkView||busy)return;
   const event=movePet(run.maze,dx,dy);
@@ -460,10 +502,17 @@ function walk(dx,dy){
   walkView=null;
   clear();
   if(event.kind==='chest'){
-    const reward=drawReward({...run.course,drop:1},0);
-    run.found.push(reward.card);
-    pane.append(node('h2','宝箱を開けた！'),rewardCards([[reward.card,1]]),
-      button('探索を続ける',explore,false,'primary'));
+    const {card,item}=drawChest(run.course);
+    pane.append(node('h2','宝箱を開けた！'));
+    if(card){
+      run.found.push(card);
+      pane.append(rewardCards([[card,1]]));
+    }else{
+      run.inventory[item.id]++;
+      run.foundItems[item.id]=(run.foundItems[item.id]||0)+1;
+      pane.append(node('p',item.icon+' '+item.name+' ×1'),node('p',item.description));
+    }
+    pane.append(button('探索を続ける',explore,false,'primary'));
     return;
   }
   if(event.kind==='exit')return advance();
@@ -484,7 +533,7 @@ function leave(){
 }
 document.addEventListener('keydown',event=>{
   const i=['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].indexOf(event.key);
-  if(!walkView||i<0||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+  if(!walkView||i<0||pane.querySelector('dialog[open]')||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
   event.preventDefault();
   walk(...directions[i]);
 });
@@ -576,7 +625,7 @@ function battle(){
     if(run.action==='physical')chooseAction('magic');
   });
   magic.setAttribute('aria-pressed',String(run.action!=='physical'));
-  const actions=group('choices battle-actions',attack,magic);
+  const actions=group('choices battle-actions',attack,magic,button('アイテム',()=>openSupplies('items',true)));
   const log=node('ol','','battle-log');
   log.setAttribute('aria-label','戦闘ログ（新しい順）');
   log.setAttribute('aria-live','polite');
@@ -766,10 +815,26 @@ function results(saved=false){
   if(counts.size){
     pane.append(node('h3','見つけた仲間カード'),rewardCards(counts));
   }
-  if(saved||(!reward.coins&&!reward.crystals&&!counts.size))pane.append(button('探索に戻る',lobby,false,'primary'));
-  else {
-    const coins=reward.coins?{id,delta:reward.coins}:null;
-    pane.append(button('報酬を受け取る',()=>save(next=>addReward(next,id,reward),()=>results(true),coins),false,'primary'));
+  const items=DUNGEON_ITEMS.filter(item=>run.foundItems[item.id]);
+  if(items.length)pane.append(node('h3','見つけたアイテム'),
+    ...items.map(item=>node('p',item.icon+' '+item.name+' ×'+run.foundItems[item.id])));
+  const itemChanges=Object.keys(run.inventory).filter(key=>run.inventory[key]!==run.initialInventory[key]);
+  if(saved||(!reward.coins&&!reward.crystals&&!counts.size&&!itemChanges.length&&!run.formation)){
+    pane.append(button('探索に戻る',lobby,false,'primary'));
+  }else{
+    const itemDelta=itemChanges.length?Object.fromEntries(itemChanges.map(key=>
+      [key,run.inventory[key]-run.initialInventory[key]])):null;
+    const label=reward.coins||reward.crystals||counts.size||items.length?'報酬を受け取る':'探索結果を保存';
+    pane.append(button(label,()=>save(next=>{
+      if(run.formation){
+        if(!run.formation.every(key=>next.owned[key]))return false;
+        next.team=[...run.formation];
+      }
+      addReward(next,id,reward);
+    },()=>{
+      if(run.formation)pendingTeam=null;
+      results(true);
+    },{id,delta:reward.coins,itemDelta}),false,'primary'));
   }
 }
 async function loadRetryChoiceMeanings(){
@@ -783,11 +848,13 @@ async function loadRetryChoiceMeanings(){
 async function initialize(user){
   const current=++generation;
   busy=false;
+  run=null;
   walkView=null;
   pane.inert=false;
   pane.hidden=true;
   clear();
-  cardRef=null;
+  legacyProfile=null;
+  pendingTeam=null;
   walletRef=null;
   message('管理者権限を確認中…');
   try{
@@ -797,21 +864,23 @@ async function initialize(user){
       message('もんすた迷宮は管理者向けの先行プレビューです。');
       return;
     }
-    const ref=doc(db,'users',user.uid,'apps','monster-maze');
     const wordBank=fetch('../pet-adventure/online-battle-vocab.json').then(response=>{
       if(!response.ok)throw Error('問題データを取得できませんでした。');
       return response.json();
     });
     const wallet=doc(db,'users',user.uid,'apps','english-playroom');
-    const [snapshot,data,retryRows,meanings,pet]=await Promise.all([
-      getDoc(ref),wordBank,loadFishingEikenBank(),loadRetryChoiceMeanings(),getDoc(wallet)
+    const [data,retryRows,meanings,pet]=await Promise.all([
+      wordBank,loadFishingEikenBank(),loadRetryChoiceMeanings(),getDoc(wallet)
     ]);
     if(current!==generation)return;
-    cardRef=ref;
+    const userData=pet.data()||{};
+    const oldProfile=userData.monsterMaze==null?await getDoc(doc(db,'users',user.uid,'apps','monster-maze')):null;
+    if(current!==generation)return;
+    legacyProfile=oldProfile?.data();
     walletRef=wallet;
     questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows);
-    petData=pet.data();
-    profile=normalizeProfile(snapshot.data());
+    petData=userData;
+    profile=normalizeProfile(userData.monsterMaze??legacyProfile);
     pane.hidden=false;
     message();
     lobby();

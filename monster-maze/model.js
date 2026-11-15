@@ -1,4 +1,4 @@
-import {MAGIC_SPELLS,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.96';
+import {DUNGEON_ITEMS,MAGIC_SPELLS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.96';
 import {strengthLevel,strengthStatsFromAllocation} from '../pet-strength-model.js?v=2.3.23';
 
 export const mazeSpells=MAGIC_SPELLS.filter(spell=>spell.kind==='attack'||spell.kind==='heal');
@@ -54,6 +54,8 @@ export const courses = [
   {name:'英検準1級',grade:'pre1',chests:4,coins:30,odds:advancedOdds,drop:1,advancedBoss:true}
 ];
 const starters = ['1-0','7-0','13-0'];
+const hpMultipliers=[0.60,0.57,0.55,0.52];
+const enemyCountOdds=[[80,20,0],[40,60,0],[20,80,0],[10,70,20],[5,40,55]];
 const baseStats = [[104,22,11,9],[79,10,24,10],[86,8,12,20]];
 const maxMaterials = 99999;
 const integer = (value,min,max) => Number.isSafeInteger(value) ? Math.max(min,Math.min(max,value)) : min;
@@ -86,7 +88,7 @@ export function stats(key,entry){
   const card = cards[id-1];
   const [hp,physical,magic,heal] = baseStats[card.role];
   const scale = 1+(entry.level-1)*0.045+rarity*0.17;
-  const maxHp = Math.round((hp+(id%6)*3)*scale);
+  const maxHp = Math.round((hp+(id%6)*3)*scale*hpMultipliers[rarity]);
   return {
     ...card,key,rarity,maxHp,hp:maxHp,
     physical:Math.round((physical+id%3)*scale),
@@ -183,15 +185,21 @@ export function movePet(maze,dx,dy,random=Math.random){
     return {kind:'chest'};
   }
   maze.steps++;
-  // The shortest route to an exit has at least ten moves, including landmarks.
-  if(maze.steps<3||(maze.steps<7&&random()>=0.16))return {kind:'walk'};
+  if(maze.steps<3||random()>=0.16)return {kind:'walk'};
   maze.steps=0;
   return {kind:'battle',id:1+Math.floor(random()*enemies.length)};
 }
 export function makeFoes(room,floor,random=Math.random){
   const major=room.kind==='boss';
-  const other=shuffle(enemies.map((_,i)=>i+1).filter(id=>major || id!==room.id),random);
-  const ids=major||floor<=2?[room.id]:[room.id,...other.slice(0,floor>=8?2:1)];
+  const ids=[room.id];
+  if(!major){
+    let roll=random()*100;
+    const extra=enemyCountOdds[floor-1].findIndex(odds=>(roll-=odds)<0);
+    if(extra>0){
+      const others=enemies.map((_,i)=>i+1).filter(id=>id!==room.id);
+      ids.push(...shuffle(others,random).slice(0,extra));
+    }
+  }
   return ids.map(id=>{
     const hp=major?120+floor*8+(id>6?35:0):38+floor*3+id%7;
     return {id,major,name:(major?bosses:enemies)[id-1],hp,maxHp:hp,
@@ -268,13 +276,50 @@ const actionRoles=['physical','magic','heal'];
 export function canJoinAction(unit,action){
   return unit.hp>0&&actionRoles[unit.role]===action;
 }
+function mostInjured(party){
+  return party.filter(unit=>unit.hp>0).reduce((lowest,unit)=>
+    !lowest||unit.hp/unit.maxHp<lowest.hp/lowest.maxHp?unit:lowest,null);
+}
+export function injuredAlly(run){
+  const target=mostInjured([run.caster,...run.team]);
+  return target&&target.hp<target.maxHp?target:null;
+}
+export function healWhileWalking(run,spell,random=Math.random){
+  if(spell.kind!=='heal'||!spellAvailable(run.caster,spell))return null;
+  const unit=injuredAlly(run);
+  if(!unit)return null;
+  const amount=Math.min(unit.maxHp-unit.hp,rollMagicAmount(spell.base,random));
+  run.caster.mp-=spell.mpCost;
+  unit.hp+=amount;
+  return {unit,amount};
+}
+export function canUseItem(run,item){
+  const pet=run.caster;
+  return pet.hp>0&&run.inventory[item.id]>0&&(item.kind==='hp'?pet.hp<pet.maxHp:pet.mp<pet.maxMp);
+}
+export function useItem(run,item){
+  if(!canUseItem(run,item))return 0;
+  const pet=run.caster;
+  const stat=item.kind;
+  const restored=Math.min(item.amount,(stat==='hp'?pet.maxHp:pet.maxMp)-pet[stat]);
+  run.inventory[item.id]--;
+  pet[stat]+=restored;
+  return restored;
+}
+export function settleItems(value,delta){
+  const inventory=normalizeDungeonInventory(value);
+  for(const item of DUNGEON_ITEMS){
+    const next=inventory[item.id]+(delta[item.id]||0);
+    if(next<0)throw Error(item.name+'が足りません。別のモードで使った場合は、補充してから保存をやり直してください。');
+    inventory[item.id]=next;
+  }
+  return inventory;
+}
 export function playTurn(run,correct,action,target,specialKey,random=Math.random,report=()=>{}){
   const living=run.team.filter(unit=>unit.hp>0);
   const special=correct && living.find(unit=>unit.key===specialKey && unit.rarity && unit.ct===0 && canJoinAction(unit,action));
   for(const unit of living) unit.ct=Math.max(0,unit.ct-(correct?1:0.5));
   const party=[run.caster,...living];
-  const mostInjured=()=>party.filter(unit=>unit.hp>0).reduce((lowest,unit)=>
-    !lowest||unit.hp/unit.maxHp<lowest.hp/lowest.maxHp?unit:lowest,null);
   const enemyTarget=()=>run.foes[target]?.hp>0?run.foes[target]:run.foes.find(foe=>foe.hp>0);
   const changeHp=(actor,unit,next,kind,actionName)=>{
     const delta=next-unit.hp;
@@ -292,7 +337,7 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
     let petCast=false;
     const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
     if(spell && (spell.kind==='heal'?'heal':'magic')===action && spellAvailable(run.caster,spell)){
-      const recipient=action==='heal'?mostInjured():enemyTarget();
+      const recipient=action==='heal'?mostInjured(party):enemyTarget();
       if(recipient){
         petCast=true;
         run.caster.mp-=spell.mpCost;
@@ -308,13 +353,13 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
       if(unit===special){
         const multiplier=specialPower(unit.rarity);
         if(unit.effect==='guard') run.guard=guardEffect(unit.rarity);
-        else if(unit.effect==='heal')heal(unit,mostInjured(),Math.round(unit.heal*multiplier),unit.skill);
+        else if(unit.effect==='heal')heal(unit,mostInjured(party),Math.round(unit.heal*multiplier),unit.skill);
         else {
           const targets=unit.effect.endsWith('All')?run.foes.filter(foe=>foe.hp>0):[enemy];
           for(const foe of targets)strike(unit,foe,unit[action]*multiplier,action,unit.skill);
         }
         unit.ct=unit.maxCt;
-      }else if(action==='heal')heal(unit,mostInjured(),unit.heal,roles[unit.role]);
+      }else if(action==='heal')heal(unit,mostInjured(party),unit.heal,roles[unit.role]);
       else strike(unit,enemy,unit[action],action,roles[unit.role]);
     }
   }
@@ -345,4 +390,9 @@ export function drawGacha(count,random=Math.random){
 export function drawReward(course,crystals,random=Math.random){
   const card=random()<course.drop?drawCard(course.odds,random):null;
   return {crystals:crystals+1,card};
+}
+export function drawChest(course,random=Math.random){
+  return random()<0.5
+    ?{card:drawCard(course.odds,random)}
+    :{item:pick(DUNGEON_ITEMS,random)};
 }

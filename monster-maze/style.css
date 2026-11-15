@@ -175,7 +175,7 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .party-row progress,.party-row .hp-meter,.battle-enemies .hp-meter{height:.34rem}
 .battle-enemies{display:flex;justify-content:center}
 .battle-enemies>*{flex:0 1 min(32%,9rem)}
-.battle-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.battle-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .spell-picker .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .battle-stage .answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .spell-picker button{overflow-wrap:anywhere}
@@ -304,3 +304,6 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .quiz-correct-answer{color:#a4f1c8;font-weight:700}
 .quiz-completed,.quiz-tip{white-space:pre-line}
 .review-progress{margin:.1rem 0 .35rem;color:var(--muted);font-size:.82rem}
+
+.supply-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr))}
+.supply-options button{text-align:left}
