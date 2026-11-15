@@ -40,7 +40,8 @@ function group(cls,...children){
 }
 function art(kind,id){
   const img=node('img');
-  img.src='./art/'+kind+'-'+id+'.webp';
+  const version=kind==='card'&&(id===1||id===6)?'?v=2':'';
+  img.src='./art/'+kind+'-'+id+'.webp'+version;
   img.alt='';
   img.decoding='async';
   return img;
