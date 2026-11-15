@@ -5,7 +5,7 @@ import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {EIKEN_QUESTIONS_URL,loadFishingEikenBank} from '../pet-fishing/question-bank.js';
 import {loadVocabulary} from '../data/vocab/index.js';
-import {buildTarget1000Questions} from '../data/vocab/idiom-questions.js';
+import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
@@ -691,7 +691,7 @@ function battle(){
   const controls=group('battle-controls',actions);
   const timer=node('span','','timer');
   const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,timer});
-  const quizLabel=run.quiz.type==='idiom'?'ターゲット1000 · 熟語':run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
+  const quizLabel=run.quiz.type==='idiom'?'熟語 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語'):run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
   const quiz=group('quiz',
     group('quiz-title',node('small',quizLabel),timer),
     quizPrompt(run.quiz.prompt),
@@ -811,14 +811,11 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
   next.focus({preventScroll:true});
 }
 function advance(){
-  if(run.bossFight)run.caster.mp=run.caster.maxMp;
   run.bossFight=false;
   if(run.floor===floorCount)return finish(true);
   run.floor++;
+  // HP/MP persist between floors; recovery requires an explicit spell or item.
   run.maze=generateMaze(run.floor,run.course,run.chestPlan[run.floor]);
-  for(const unit of [run.caster,...run.team]){
-    if(unit.hp>0)unit.hp=Math.min(unit.maxHp,unit.hp+Math.ceil(unit.maxHp*0.15));
-  }
   explore();
 }
 function finish(cleared){
@@ -934,7 +931,7 @@ async function initialize(user){
     if(current!==generation)return;
     legacyProfile=oldProfile?.data();
     walletRef=wallet;
-    const idioms=buildTarget1000Questions(idiomData.entries);
+    const idioms=buildBilingualIdiomBank(idiomData.entries);
     questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows,idioms);
     petData=userData;
     profile=normalizeProfile(userData.monsterMaze??legacyProfile);
