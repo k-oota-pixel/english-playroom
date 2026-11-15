@@ -6,10 +6,11 @@ import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {loadFishingEikenBank} from '../pet-fishing/question-bank.js';
 import {unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {pre1Grammar} from './pre1-grammar.js';
+import {pre1Words} from './pre1-words.js';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
   addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,prepareQuestions,question,playTurn,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=19';
+} from './model.js?v=20';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -48,10 +49,6 @@ function art(kind,id){
   img.alt='';
   img.decoding='async';
   return img;
-}
-function cardName(key){
-  const [id,rank]=key.split('-').map(Number);
-  return rarities[rank]+' '+cards[id-1].name;
 }
 function cardArt(id){
   return group('card-art',art('card',id));
@@ -317,6 +314,20 @@ function skillInfo(unit){
   };
   return group('skill-info',toggle,node('small','CT '+unit.maxCt),detail);
 }
+function companionCard(key,entry,caption){
+  const unit=stats(key,entry);
+  const rank=rarities[unit.rarity];
+  const tile=rankedCard(group('unit owned-card',
+    cardPortrait(unit,key,rank,unit),node('strong',unit.name)),unit.rarity);
+  const line=group('card-line',node('small','Lv.'+entry.level+' / '+levelCaps[unit.rarity]+caption));
+  if(unit.rarity)line.append(skillInfo(unit));
+  tile.append(line);
+  return {tile,line};
+}
+function rewardCards(counts){
+  return group('collection owned-cards reward-cards',...[...counts].map(([key,count])=>
+    companionCard(key,{level:1},' · 獲得 '+count+'枚').tile));
+}
 function openCardUpgrade(card,key,entry,draft){
   const dialog=node('dialog','','card-upgrade');
   const title=node('h3',card.name+'を強化');
@@ -356,10 +367,7 @@ function collection(draft=[...profile.team]){
         const entry=profile.owned[key];
         if(!entry)continue;
         const picked=draft.includes(key);
-        const unit=stats(key,entry);
-        const tile=rankedCard(group('unit owned-card',cardPortrait(card,key,rank,unit),node('strong',card.name)),rarity);
-        const line=group('card-line',node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+' · 重複 '+entry.copies));
-        if(rarity)line.append(skillInfo(unit));
+        const {tile,line}=companionCard(key,entry,' · 重複 '+entry.copies);
         const teamToggle=button(picked?'はずす':'いれる',
           ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
         teamToggle.setAttribute('aria-pressed',String(picked));
@@ -368,7 +376,6 @@ function collection(draft=[...profile.team]){
         const strengthen=button(atCap?'最大Lv.':'強化',()=>openCardUpgrade(card,key,entry,draft),
           atCap||(!profile.crystals&&!entry.copies));
         line.append(group('card-actions',teamToggle,strengthen));
-        tile.append(line);
         section.append(tile);
       }
     }
@@ -457,8 +464,7 @@ function walk(dx,dy){
   if(event.kind==='chest'){
     const reward=drawReward({...run.course,drop:1},0);
     run.found.push(reward.card);
-    pane.append(node('h2','宝箱を開けた！'),node('p',cardName(reward.card)+' を見つけた。'),
-      group('reward-art',art('card',Number(reward.card.split('-')[0]))),
+    pane.append(node('h2','宝箱を開けた！'),rewardCards([[reward.card,1]]),
       button('探索を続ける',explore,false,'primary'));
     return;
   }
@@ -552,8 +558,9 @@ function battle(){
   const controls=group('battle-controls',actions);
   const timer=node('span','','timer');
   const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,timer});
+  const quizLabel=run.quiz.type==='grammar'?'文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
   const quiz=group('quiz',
-    group('quiz-title',node('small',run.quiz.type==='grammar'?'文法問題':'単語問題'),timer),
+    group('quiz-title',node('small',quizLabel),timer),
     node('h3',run.quiz.prompt.replace(/\s+(?=B\s*:)/,'\n'),'quiz-prompt'),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
   stage.append(enemyRow,allies,resultArea,controls);
@@ -691,8 +698,7 @@ function results(saved=false){
   const counts=new Map();
   for(const key of reward.cards)counts.set(key,(counts.get(key)||0)+1);
   if(counts.size){
-    pane.append(node('h3','見つけた仲間カード'),group('collection',...[...counts].map(([key,count])=>
-      group('unit',art('card',Number(key.split('-')[0])),node('strong',cardName(key)+' ×'+count)))));
+    pane.append(node('h3','見つけた仲間カード'),rewardCards(counts));
   }
   if(saved||(!reward.coins&&!reward.crystals&&!counts.size))pane.append(button('探索に戻る',lobby,false,'primary'));
   else {
@@ -727,7 +733,7 @@ async function initialize(user){
     if(current!==generation)return;
     cardRef=ref;
     walletRef=wallet;
-    questions=prepareQuestions(data.grades,retryRows,pre1Grammar);
+    questions=prepareQuestions({...data.grades,pre1:{words:pre1Words}},retryRows,pre1Grammar);
     petData=pet.data();
     profile=normalizeProfile(snapshot.data());
     pane.hidden=false;

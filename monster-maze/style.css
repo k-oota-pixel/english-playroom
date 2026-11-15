@@ -31,7 +31,7 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .answers button{flex:1 1 40%}
 .collection{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.5rem}
 .card-line{display:grid;width:100%;gap:.25rem;padding:.3rem 0;border-top:1px solid var(--edge)}
-.reward-art img{width:min(50%,12rem)}
+.reward-cards{margin-bottom:.7rem}
 #status{padding:.55rem .8rem;background:#302542;border-radius:.5rem}
 [hidden]{display:none!important}
 @media(max-width:520px){.unit img{width:min(100%,4.65rem)}.team{gap:.32rem}.unit{padding:.35rem .2rem}.choices button{padding:.52rem}.answers button{font-size:.9rem}}

@@ -197,15 +197,24 @@ export function makeFoes(room,floor,random=Math.random){
       power:major?10+Math.floor(floor/2)+(id>6?3:0):5+Math.floor(floor/5)+id%3,weak:id%2?'physical':'magic'};
   });
 }
-function vocabularyQuestion(words,previous,random){
-  const pool=words.filter(row=>row.word!==previous && row.answers?.[0]);
-  for(const row of shuffle(pool,random)){
-    const valid=new Set(row.answers);
-    const distractors=[...new Set(pool.filter(other=>other.word!==row.word &&
-      !other.answers.some(answer=>valid.has(answer))).map(other=>other.answers[0]).filter(Boolean))];
-    if(distractors.length>=3){
-      return {id:row.word,prompt:row.word,answer:row.answers[0],options:shuffle([row.answers[0],...shuffle(distractors,random).slice(0,3)],random)};
+const normalizeChoice=text=>text.normalize('NFKC').toLowerCase().replace(/\s+/g,'');
+function vocabularyQuestion(words,previous,reverse,random){
+  const pool=words.filter(row=>row.answers?.[0]);
+  const candidates=pool.filter(row=>row.word!==previous);
+  for(const row of shuffle(candidates,random)){
+    const word=normalizeChoice(row.word);
+    const correctMeanings=new Set(pool.filter(other=>normalizeChoice(other.word)===word)
+      .flatMap(other=>other.answers.map(normalizeChoice)));
+    const distractors=new Map();
+    for(const other of pool){
+      if(normalizeChoice(other.word)===word||other.answers.some(answer=>correctMeanings.has(normalizeChoice(answer))))continue;
+      const value=reverse?other.word:other.answers[0];
+      distractors.set(normalizeChoice(value),value);
     }
+    if(distractors.size<3)continue;
+    const [prompt,answer]=reverse?[row.answers[0],row.word]:[row.word,row.answers[0]];
+    const options=shuffle([answer,...shuffle([...distractors.values()],random).slice(0,3)],random);
+    return {id:row.word,prompt,answer,options,type:'vocabulary',direction:reverse?'ja-en':'en-ja'};
   }
   throw Error('4択を作れる問題が見つかりません。');
 }
@@ -220,16 +229,14 @@ export function prepareQuestions(wordBank,retryRows,pre1Grammar){
     const words=wordBank[course.grade]?.words;
     const grammar=course.grade==='pre1'?pre1Grammar:rows.filter(row=>row.role==='grammar'||
       (row.role==='manual_g3'&&row.number>=13&&row.number<=15));
-    const vocabulary=words?.length?[]:rows.filter(row=>
-      ['vocab','noun','adjective','verb','adverb','phrase'].includes(row.role));
-    if(grammar.length<2||(!words?.length&&vocabulary.length<2))throw Error(course.name+'の出題データが不足しています。');
-    return [course.grade,{words,grammar,vocabulary}];
+    if(grammar.length<2||!Array.isArray(words)||words.length<5)throw Error(course.name+'の出題データが不足しています。');
+    return [course.grade,{words,grammar}];
   }));
 }
 export function question(bank,previous,random=Math.random){
   const type=random()<0.5?'grammar':'vocabulary';
-  if(type==='vocabulary'&&bank.words?.length)return {...vocabularyQuestion(bank.words,previous,random),type};
-  const row=pick(bank[type].filter(item=>item.id!==previous),random);
+  if(type==='vocabulary')return vocabularyQuestion(bank.words,previous,random()<0.5,random);
+  const row=pick(bank.grammar.filter(item=>item.id!==previous),random);
   return {id:row.id,prompt:row.prompt,answer:row.answer,options:shuffle(row.options,random),type};
 }
 const specialPower=rarity=>1.25+rarity*0.33;
