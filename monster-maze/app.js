@@ -4,11 +4,13 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {EIKEN_QUESTIONS_URL,loadFishingEikenBank} from '../pet-fishing/question-bank.js';
+import {loadVocabulary} from '../data/vocab/index.js';
+import {buildTarget1000Questions} from '../data/vocab/idiom-questions.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
   addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=23';
+} from './model.js?v=24';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -548,7 +550,7 @@ function nextQuestion(continuing=false){
     run.target=run.foes.findIndex(foe=>foe.hp>0);
   }
   run.special=null;
-  run.deadline=Date.now()+(current.type==='grammar'||run.course.grade==='pre1'?25000:15000);
+  run.deadline=Date.now()+(current.type==='grammar'||current.type==='idiom'||run.course.grade==='pre1'?25000:15000);
   battle();
 }
 function quizPrompt(text){
@@ -859,8 +861,9 @@ async function initialize(user){
       return response.json();
     });
     const wallet=doc(db,'users',user.uid,'apps','english-playroom');
-    const [data,retryRows,meanings,pet]=await Promise.all([
-      wordBank,loadFishingEikenBank(),loadRetryChoiceMeanings(),getDoc(wallet)
+    const [data,retryRows,meanings,pet,idiomData]=await Promise.all([
+      wordBank,loadFishingEikenBank(),loadRetryChoiceMeanings(),getDoc(wallet),
+      loadVocabulary('target1000').catch(error=>{console.warn('Target 1000 offline',error);return {entries:[]};})
     ]);
     if(current!==generation)return;
     const userData=pet.data()||{};
@@ -868,7 +871,8 @@ async function initialize(user){
     if(current!==generation)return;
     legacyProfile=oldProfile?.data();
     walletRef=wallet;
-    questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows);
+    const idioms=buildTarget1000Questions(idiomData.entries);
+    questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows,idioms);
     petData=userData;
     profile=normalizeProfile(userData.monsterMaze??legacyProfile);
     pane.hidden=false;
