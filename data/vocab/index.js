@@ -4,12 +4,14 @@
  */
 const SOURCES = Object.freeze({
   target1900: "./target1900.json",
+  target1400: "./target1400.json",
+  target1000: "./target1000.json",
   sokutan: "./sokutan.json",
 });
 const cache = new Map();
 
 /**
- * @param {"target1900"|"sokutan"} deck
+ * @param {"target1900"|"target1400"|"target1000"|"sokutan"} deck
  * @returns {Promise<{schemaVersion:number,deck:string,count:number,entries:Array<{id:string,no:number,en:string,ja:string|null,pos:string|null}>}>}
  */
 export function loadVocabulary(deck) {
