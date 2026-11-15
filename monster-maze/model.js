@@ -240,7 +240,7 @@ export function retryVocabulary(rows,meanings,grade){
   }
   return [...words.values()];
 }
-export function prepareQuestions(wordBank,retryRows){
+export function prepareQuestions(wordBank,retryRows,idiomQuestions=[]){
   return Object.fromEntries(courses.map(course=>{
     const grade=course.name.slice(2);
     // 文法枠はリトライノートの「語彙・文法」4択を全問使用する。
@@ -251,13 +251,17 @@ export function prepareQuestions(wordBank,retryRows){
     })).filter(row=>new Set(row.options).size===4&&row.options.includes(row.answer));
     const words=wordBank[course.grade]?.words;
     if(grammar.length<2||!Array.isArray(words)||words.length<5)throw Error(course.name+'の出題データが不足しています。');
-    return [course.grade,{words,grammar}];
+    return [course.grade,{words,grammar,idioms:course.grade==='2'?idiomQuestions:[]}];
   }));
 }
 export function question(bank,previous,random=Math.random){
-  const type=random()<0.5?'grammar':'vocabulary';
-  if(type==='vocabulary')return vocabularyQuestion(bank.words,previous,random()<0.5,random);
-  const row=pick(bank.grammar.filter(item=>item.id!==previous),random);
+  // 英検2級のみ: 英日・日英単語 / Retry Note / Target 1000 熟語を均等に抽選。
+  const hasIdioms=Array.isArray(bank.idioms)&&bank.idioms.length>0;
+  const kind=Math.floor(random()*(hasIdioms?3:2));
+  if(kind===0)return vocabularyQuestion(bank.words,previous,random()<0.5,random);
+  const type=kind===2?'idiom':'grammar';
+  const pool=(type==='idiom'?bank.idioms:bank.grammar).filter(item=>item.id!==previous);
+  const row=pick(pool,random);
   return {...row,type};
 }
 const specialPower=rarity=>1.25+rarity*0.33;
