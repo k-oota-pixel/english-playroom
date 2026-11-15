@@ -7,8 +7,8 @@ import {EIKEN_QUESTIONS_URL,loadFishingEikenBank} from '../pet-fishing/question-
 import {unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,playTurn,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=21';
+  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=22';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -382,7 +382,7 @@ function collection(draft=[...profile.team]){
 }
 function start(course){
   message();
-  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],chestPlan:planChests(course),
+  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],mistakes:new Map(),chestPlan:planChests(course),
     caster:createCaster(petData),maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
   explore();
 }
@@ -503,6 +503,38 @@ function nextQuestion(continuing=false){
   run.deadline=Date.now()+(current.type==='grammar'||run.course.grade==='pre1'?25000:15000);
   battle();
 }
+function quizPrompt(text){
+  return node('h3',text.replace(/\s+(?=B\s*:)/,'\n'),'quiz-prompt');
+}
+function answerExplanation(quiz){
+  const content=group('quiz-help',node('p','正解　'+quiz.answer,'quiz-correct-answer'));
+  if(quiz.type==='vocabulary'){
+    const [english,japanese]=quiz.direction==='ja-en'?[quiz.answer,quiz.prompt]:[quiz.prompt,quiz.answer];
+    content.append(node('p',english+' は「'+japanese+'」という意味です。'));
+  }else{
+    if(quiz.prompt.includes('(____)'))content.append(node('p',quiz.prompt.replace('(____)',()=>quiz.answer),'quiz-completed'));
+    if(quiz.tip)content.append(node('p',quiz.tip,'quiz-tip'));
+  }
+  return content;
+}
+function pauseForExplanation(quiz,title,selected){
+  return new Promise(resolve=>{
+    const dialog=node('dialog','','review-dialog');
+    const heading=node('h2',title);
+    heading.id='battle-explanation';
+    dialog.setAttribute('aria-labelledby',heading.id);
+    dialog.append(heading,quizPrompt(quiz.prompt));
+    if(selected)dialog.append(node('p','あなたの回答　'+selected));
+    dialog.append(answerExplanation(quiz),button('戦闘に戻る',()=>dialog.close(),false,'primary'));
+    dialog.addEventListener('cancel',event=>event.preventDefault());
+    dialog.addEventListener('close',()=>{
+      dialog.remove();
+      resolve();
+    },{once:true});
+    pane.append(dialog);
+    dialog.showModal();
+  });
+}
 function battle(){
   clear();
   const stage=group('battle-stage',node('h2',run.floor+'階 · バトル'));
@@ -559,7 +591,7 @@ function battle(){
   const quizLabel=run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
   const quiz=group('quiz',
     group('quiz-title',node('small',quizLabel),timer),
-    node('h3',run.quiz.prompt.replace(/\s+(?=B\s*:)/,'\n'),'quiz-prompt'),
+    quizPrompt(run.quiz.prompt),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
   stage.append(enemyRow,allies,resultArea,controls);
   pane.append(stage);
@@ -621,20 +653,27 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
   if(stage.dataset.resolving||!stage.isConnected)return;
   stage.dataset.resolving='true';
   clearInterval(clock);
-  timer.textContent='行動中';
+  const timely=Date.now()<run.deadline;
+  const quiz=run.quiz;
+  const correct=timely&&answer===quiz.answer;
   for(const el of stage.querySelectorAll('button'))el.disabled=true;
   for(const choice of stage.querySelectorAll('.answers button')){
-    if(choice.textContent===run.quiz.answer)choice.classList.add('answer-correct');
+    if(choice.textContent===quiz.answer)choice.classList.add('answer-correct');
     else if(choice.textContent===answer)choice.classList.add('answer-incorrect');
   }
-  const timely=Date.now()<run.deadline;
-  const correct=timely&&answer===run.quiz.answer;
+  const outcomeLabel=answer&&timely?'不正解':'時間切れ';
+  addBattleLog(log,correct?'正解！':outcomeLabel+' · 正解は「'+quiz.answer+'」');
+  if(!correct){
+    if(run.mistakes.size<2&&!run.mistakes.has(quiz.id))run.mistakes.set(quiz.id,quiz);
+    timer.textContent='解説中';
+    await pauseForExplanation(quiz,outcomeLabel+' · 解説',timely?answer:null);
+    if(!stage.isConnected)return;
+  }
+  timer.textContent='行動中';
   const events=[];
   const result=playTurn(run,correct,run.action,run.target,run.special,Math.random,event=>events.push(event));
-  const verdict=correct?'正解！':(answer&&timely?'不正解':'時間切れ')+' · 正解は「'+run.quiz.answer+'」';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  addBattleLog(log,verdict);
   if(!reduced&&events.length)await delay(240);
   for(const {actor,unit,hp,delta,kind,actionName} of events){
     if(!stage.isConnected)return;
@@ -684,7 +723,36 @@ function finish(cleared){
   run.cleared=cleared;
   run.reward={crystals:bonus.crystals,cards:bonus.card?[...run.found,bonus.card]:[...run.found],
     coins:cleared?run.course.coins:0};
-  results();
+  const mistakes=[...run.mistakes.values()];
+  if(mistakes.length)reviewMistakes(mistakes);
+  else results();
+}
+function reviewMistakes(mistakes,index=0){
+  clear();
+  const quiz=mistakes[index];
+  const options=shuffle(quiz.options);
+  const prompt=quizPrompt(quiz.prompt);
+  prompt.tabIndex=-1;
+  const feedback=group('review-feedback');
+  feedback.setAttribute('aria-live','polite');
+  const answers=group('choices answers',...options.map(option=>button(option,()=>{
+    const correct=option===quiz.answer;
+    for(const choice of answers.children){
+      choice.disabled=true;
+      if(choice.textContent===quiz.answer)choice.classList.add('answer-correct');
+      else if(choice.textContent===option)choice.classList.add('answer-incorrect');
+    }
+    feedback.append(node('h3',correct?'正解！':'解説を確認して、もう一度'),answerExplanation(quiz));
+    const last=index+1===mistakes.length;
+    const next=correct
+      ?button(last?'復習を終える':'次の問題',()=>last?results():reviewMistakes(mistakes,index+1),false,'primary')
+      :button('もう一度答える',()=>reviewMistakes(mistakes,index),false,'primary');
+    feedback.append(next);
+    next.focus();
+  },false,'primary')));
+  pane.append(group('battle-stage review-stage',node('h2','探索の復習'),
+    group('quiz',node('p',(index+1)+' / '+mistakes.length+' 問','review-progress'),prompt,answers,feedback)));
+  prompt.focus();
 }
 function results(saved=false){
   clear();

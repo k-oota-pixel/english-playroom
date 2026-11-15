@@ -293,3 +293,14 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .roster-spells small{overflow-wrap:anywhere}
 .quiz-title small{color:var(--muted)}
 .quiz-prompt{margin:.25rem 0 .55rem;color:var(--gold);font-size:clamp(.96rem,3vw,1.25rem);line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+
+.review-dialog{width:min(calc(100% - 1.5rem),37rem);max-height:calc(100% - 1.5rem);padding:clamp(.75rem,3vw,1.25rem);border:1px solid #ad8cce;border-radius:.8rem;color:inherit;background:#272139;overflow:auto}
+.review-dialog::backdrop{background:#120d1bdc}
+.review-dialog h2{margin-top:0}
+.review-dialog button,.review-feedback button{margin-top:.75rem}
+.quiz-help{padding:.65rem .8rem;border:1px solid var(--edge);border-radius:.55rem;background:#211b31;overflow-wrap:anywhere}
+.quiz-help p{margin:0}
+.quiz-help p+p{margin-top:.45rem}
+.quiz-correct-answer{color:#a4f1c8;font-weight:700}
+.quiz-completed,.quiz-tip{white-space:pre-line}
+.review-progress{margin:.1rem 0 .35rem;color:var(--muted);font-size:.82rem}

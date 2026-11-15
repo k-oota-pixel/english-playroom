@@ -115,7 +115,7 @@ export function addReward(profile,round,reward){
   }
 }
 const pick=(values,random)=>values[Math.floor(random()*values.length)];
-function shuffle(values,random){
+export function shuffle(values,random=Math.random){
   const result = [...values];
   for(let i=result.length-1;i>0;i--){
     const j=Math.floor(random()*(i+1));
@@ -239,7 +239,7 @@ export function prepareQuestions(wordBank,retryRows){
     const grammar=retryRows.filter(row=>row.grade===grade&&row.choices.length===4).map(row=>({
       id:row.id,prompt:row.question,
       answer:row.choices.find(choice=>Number(choice.number)===Number(row.answer_number))?.text,
-      options:row.choices.map(choice=>choice.text)
+      options:row.choices.map(choice=>choice.text),tip:row.manual_tip
     })).filter(row=>new Set(row.options).size===4&&row.options.includes(row.answer));
     const words=wordBank[course.grade]?.words;
     if(grammar.length<2||!Array.isArray(words)||words.length<5)throw Error(course.name+'の出題データが不足しています。');
@@ -250,7 +250,7 @@ export function question(bank,previous,random=Math.random){
   const type=random()<0.5?'grammar':'vocabulary';
   if(type==='vocabulary')return vocabularyQuestion(bank.words,previous,random()<0.5,random);
   const row=pick(bank.grammar.filter(item=>item.id!==previous),random);
-  return {id:row.id,prompt:row.prompt,answer:row.answer,options:row.options,type};
+  return {...row,type};
 }
 const specialPower=rarity=>1.25+rarity*0.33;
 const guardEffect=rarity=>({turns:rarity===1?1:2,ratio:rarity/10});
