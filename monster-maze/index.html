@@ -5,16 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="theme-color" content="#18162b">
-<title>もんすた迷宮</title>
+<title>もんすたクエスト</title>
 <link rel="icon" href="../favicon.svg">
-<link rel="stylesheet" href="./style.css?v=25">
-<script type="module" src="./app.js?v=26"></script>
+<link rel="stylesheet" href="./style.css?v=26">
+<script type="module" src="./app.js?v=27"></script>
 </head>
 <body>
-<header><a href="../index.html">← もんすたでぃ</a><h1>もんすた迷宮</h1></header>
+<header><a href="../index.html">← もんすたでぃ</a><h1>もんすたクエスト</h1></header>
 <main>
   <p id="status" role="status">管理者権限を確認中…</p>
-  <section id="game" hidden aria-label="もんすた迷宮"></section>
+  <section id="quest-splash" hidden aria-label="もんすたクエストの入口">
+    <button id="quest-start" class="quest-splash-button" type="button" aria-label="もんすたクエストを開始">
+      <img src="./art/quest-start.webp" alt="もんすたクエスト CLICK TO START" width="1448" height="1086" decoding="async">
+    </button>
+  </section>
+  <section id="game" hidden aria-label="もんすたクエスト"></section>
 </main>
 </body>
 </html>
