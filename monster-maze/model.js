@@ -195,13 +195,19 @@ export function question(words,previous,random=Math.random){
   }
   throw Error('4択を作れる問題が見つかりません。');
 }
-export function playTurn(run,correct,action,target,specialKey,random=Math.random){
+export function playTurn(run,correct,action,target,specialKey,random=Math.random,report=()=>{}){
   const living=run.team.filter(unit=>unit.hp>0);
   const special=correct && living.find(unit=>unit.key===specialKey && unit.rarity && unit.ct===0);
   for(const unit of living) unit.ct=Math.max(0,unit.ct-(correct?1:0.5));
-  const heal=(unit,amount)=>{unit.hp=Math.min(unit.maxHp,unit.hp+amount);};
+  let actor=null, actionName='';
+  const changeHp=(unit,next)=>{
+    const previous=unit.hp;
+    unit.hp=next;
+    if(previous!==next)report({actor,unit,hp:next,delta:next-previous,actionName});
+  };
+  const heal=(unit,amount)=>changeHp(unit,Math.min(unit.maxHp,unit.hp+amount));
   const strike=(enemy,power,type)=>{
-    enemy.hp=Math.max(0,enemy.hp-Math.round(power*(enemy.weak===type?1.25:0.9)));
+    changeHp(enemy,Math.max(0,enemy.hp-Math.round(power*(enemy.weak===type?1.25:0.9))));
   };
   run.cast=null;
   if(correct){
@@ -211,6 +217,7 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
       const weakest=living.reduce((low,unit)=>!low||unit.hp/unit.maxHp<low.hp/low.maxHp?unit:low,null);
       const recipient=spell.kind==='heal'?weakest:enemy;
       if(recipient){
+        actionName=spell.name;
         const amount=rollMagicAmount(spell.base,random);
         if(spell.kind==='heal')heal(recipient,amount);
         else strike(recipient,amount,'magic');
@@ -223,6 +230,8 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
       if(!foes.length) break;
       const enemy=run.foes[target]?.hp>0?run.foes[target]:foes[0];
       const weakest=[...living].sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
+      actor=unit;
+      actionName=unit===special?unit.skill:roles[['physical','magic','heal'].indexOf(action)];
       if(unit===special){
         const multiplier=1.25+unit.rarity*0.33;
         if(unit.effect==='guard') run.guard={turns:unit.rarity===1?1:2,ratio:unit.rarity/10};
@@ -241,7 +250,9 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
     const available=living.filter(unit=>unit.hp>0);
     if(!available.length) break;
     const victim=pick(available,random);
-    victim.hp=Math.max(0,victim.hp-Math.max(1,Math.round(enemy.power*(1-(run.guard?.ratio||0)))));
+    actor=enemy;
+    actionName='反撃';
+    changeHp(victim,Math.max(0,victim.hp-Math.max(1,Math.round(enemy.power*(1-(run.guard?.ratio||0))))));
   }
   if(run.guard && --run.guard.turns===0) run.guard=null;
   run.turns++;

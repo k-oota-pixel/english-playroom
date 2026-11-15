@@ -69,3 +69,24 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .rarity-ssr{--rank-border:linear-gradient(145deg,#f8b3e2,#c6a8ff 34%,#8cdae5 70%,#ffe2a6);--rank-ink:#f4d5ff;--rank-panel:radial-gradient(ellipse at top,#6a477f,#273b55);--rank-bg:#422d54;--rank-trim:#d8bbfa66}
 .rarity-ssr .card-portrait::after{content:'';position:absolute;top:.55rem;right:.55rem;width:.42rem;aspect-ratio:1;transform:rotate(45deg);background:#f7e8ff;box-shadow:0 0 .5rem #e9baff;pointer-events:none}
 @media(max-width:520px){.owned-cards{grid-template-columns:repeat(auto-fill,minmax(min(100%,8.3rem),1fr))}.card-portrait img{width:min(100%,6rem)}}
+
+.battle-unit{position:relative}
+.hp-meter{width:85%;height:.5rem;overflow:hidden;border-radius:1rem;background:#13101f;box-shadow:0 0 0 1px #655873}
+.hp-fill{display:block;width:100%;height:100%;background:#83dcb7;transform-origin:left center;transition:transform .3s ease-out}
+.battle-enemies .hp-fill{background:#ff976f}
+.battle-hp{font-variant-numeric:tabular-nums}
+.battle-enemies .target:disabled{opacity:1}
+.battle-unit.down{opacity:1}
+.battle-unit.down img{filter:grayscale(1);opacity:.4}
+.battle-unit.down .battle-hp{color:#ffa5ad;font-weight:750}
+.battle-delta{display:none;position:absolute;top:.45rem;right:.4rem;padding:.06rem .26rem;border-radius:.3rem;background:#211626;color:#ff9eab;font-weight:850;text-shadow:0 1px #1b0c13;pointer-events:none}
+.taking-hit .battle-delta,.being-healed .battle-delta{display:block;animation:damage-rise .36s ease-out both}
+.being-healed .battle-delta{color:#8bf0bc}
+.battle-unit.acting{box-shadow:inset 0 0 0 2px #ffd48a}
+.battle-unit.taking-hit img{animation:battle-hit .28s ease-out}
+.battle-unit.being-healed{box-shadow:inset 0 0 0 2px #7bddab}
+.battle-feedback{margin:.55rem 0;color:var(--gold)}
+.battle-feedback:empty{display:none}
+@keyframes battle-hit{25%{transform:translateX(-4px);filter:brightness(1.45)}65%{transform:translateX(3px)}}
+@keyframes damage-rise{from{transform:translateY(.3rem);opacity:.65}to{transform:translateY(-.2rem);opacity:1}}
+@media(prefers-reduced-motion:reduce){.hp-fill{transition:none}.battle-unit.taking-hit img,.battle-delta{animation:none}}

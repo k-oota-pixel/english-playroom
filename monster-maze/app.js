@@ -6,7 +6,7 @@ import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
   addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,question,playTurn,drawReward
-} from './model.js?v=4';
+} from './model.js?v=6';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -56,6 +56,25 @@ function unitView(unit,kind){
   hp.setAttribute('aria-label',unit.name+' HP');
   const tile=group('unit'+(unit.hp===0?' down':''),art(kind,unit.id),node('strong',unit.name),hp,node('small',unit.hp+' / '+unit.maxHp));
   return tile;
+}
+function battleUnit(unit,kind){
+  const fill=node('span','','hp-fill');
+  const meter=group('hp-meter',fill);
+  meter.setAttribute('role','progressbar');
+  meter.setAttribute('aria-label',unit.name+' HP');
+  meter.setAttribute('aria-valuemax',String(unit.maxHp));
+  const number=node('small','','battle-hp');
+  const badge=node('span','','battle-delta');
+  badge.setAttribute('aria-hidden','true');
+  const tile=group('unit battle-unit',art(kind,unit.id),node('strong',unit.name),meter,number,badge);
+  const update=hp=>{
+    fill.style.transform='scaleX('+hp/unit.maxHp+')';
+    meter.setAttribute('aria-valuenow',String(hp));
+    number.textContent=hp+' / '+unit.maxHp;
+    tile.classList.toggle('down',hp===0);
+  };
+  update(unit.hp);
+  return {tile,update,badge};
 }
 function message(text=''){
   status.textContent=text;
@@ -262,15 +281,21 @@ function nextQuestion(){
 function battle(){
   clear();
   pane.append(node('h2',run.floor+'階 · バトル'));
-  const enemyRow=group('team');
+  const stage=group('battle-stage');
+  const views=new Map();
+  const enemyRow=group('team battle-enemies');
   for(const [index,foe] of run.foes.entries()){
     const target=button('',()=>{run.target=index;battle();},foe.hp===0,'target');
     target.setAttribute('aria-pressed',String(run.target===index));
-    target.append(unitView(foe,foe.major?'boss':'enemy'));
+    const view=battleUnit(foe,foe.major?'boss':'enemy');
+    views.set(foe,view);
+    target.append(view.tile);
     enemyRow.append(target);
   }
   const allies=group('team',...run.team.map(unit=>{
-    const tile=unitView(unit,'card');
+    const view=battleUnit(unit,'card');
+    views.set(unit,view);
+    const {tile}=view;
     if(unit.rarity){
       const special=button(unit.skill+' · '+(unit.ct?'CT '+unit.ct:'発動可'),()=>{
         run.special=run.special===unit.key?null:unit.key;
@@ -286,10 +311,16 @@ function battle(){
     choice.setAttribute('aria-pressed',String(action===run.action));
     return choice;
   }));
+  const feedback=node('p','','battle-feedback');
+  feedback.setAttribute('role','status');
+  const resultArea=group('battle-result',feedback);
+  const controls=group('battle-controls',actions);
+  const resolve=option=>void resolveTurn(option,{stage,views,feedback,resultArea,controls});
   const timer=node('span','','timer');
   const quiz=group('quiz',group('quiz-title',node('h3',run.quiz.word),timer),
-    group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolveTurn(option),false,'primary'))));
-  pane.append(enemyRow,allies,actions);
+    group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
+  stage.append(enemyRow,allies,resultArea,controls);
+  pane.append(stage);
   if(run.action!=='physical'){
     const {caster}=run;
     const spells=mazeSpells.filter(spell=>spell.kind===(run.action==='heal'?'heal':'attack'));
@@ -306,28 +337,58 @@ function battle(){
       choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
       options.append(choice);
     }
-    pane.append(group('spell-picker',node('p','ぺっとの魔法　MP '+caster.mp+' / '+caster.maxMp),options));
+    controls.append(group('spell-picker',node('p','ぺっとの魔法　MP '+caster.mp+' / '+caster.maxMp),options));
   }
-  pane.append(quiz,button('探索を終了',leave));
+  controls.append(quiz,button('探索を終了',leave));
   const tick=()=>{
     const seconds=Math.max(0,Math.ceil((run.deadline-Date.now())/1000));
     timer.textContent=seconds+'秒';
-    if(!seconds)resolveTurn(null);
+    if(!seconds)resolve(null);
   };
   clock=setInterval(tick,100);
   tick();
 }
-function resolveTurn(answer){
-  clear();
+async function resolveTurn(answer,{stage,views,feedback,resultArea,controls}){
+  if(controls.hidden||!stage.isConnected)return;
+  clearInterval(clock);
+  controls.hidden=true;
+  for(const el of stage.querySelectorAll('button')){
+    el.disabled=true;
+    el.removeAttribute('aria-pressed');
+  }
   const timely=Date.now()<run.deadline;
   const correct=timely&&answer===run.quiz.answer;
-  const result=playTurn(run,correct,run.action,run.target,run.special);
-  const feedback=correct?'正解！':(answer&&timely?'不正解':'時間切れ')+' · 正解は「'+run.quiz.answer+'」';
-  const detail=result==='won'?'敵を倒した！':result==='lost'?'探索隊は全滅した。':'残った敵が反撃した。';
-  pane.append(node('h2',feedback),node('p',run.cast?run.cast+'を唱えた！ '+detail:detail),group('team',...run.team.map(unit=>unitView(unit,'card'))));
-  if(result==='lost')pane.append(button('探索結果',()=>finish(false),false,'primary'));
-  else if(result==='won')pane.append(button('進む',run.bossFight?advance:explore,false,'primary'));
-  else pane.append(button('次の問題',nextQuestion,false,'primary'));
+  const events=[];
+  const result=playTurn(run,correct,run.action,run.target,run.special,Math.random,event=>events.push(event));
+  const verdict=correct?'正解！':(answer&&timely?'不正解':'時間切れ')+' · 正解は「'+run.quiz.answer+'」';
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  feedback.textContent=verdict;
+  if(!reduced&&events.length)await delay(240);
+  for(const {actor,unit,hp,delta,actionName} of events){
+    if(!stage.isConnected)return;
+    const source=views.get(actor);
+    const {tile,update,badge}=views.get(unit);
+    const effect=delta<0?'taking-hit':'being-healed';
+    if(source)source.tile.classList.add('acting');
+    tile.classList.add(effect);
+    badge.textContent=delta>0?'+'+delta:'−'+Math.abs(delta);
+    update(hp);
+    feedback.textContent=(actor?.name||'ぺっと')+'の'+actionName+'！ '+unit.name+
+      (delta>0?'がHPを'+delta+'回復':'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':'');
+    if(!reduced)await delay(360);
+    if(source)source.tile.classList.remove('acting');
+    tile.classList.remove(effect);
+  }
+  if(!stage.isConnected)return;
+  const detail=result==='won'?'敵を倒した！':result==='lost'?'探索隊は全滅した。':
+    events.some(event=>event.actionName==='反撃')?'敵の反撃が終わった。':'次のターンへ。';
+  feedback.textContent=verdict+' '+(run.cast?run.cast+'を唱えた！ ':'')+detail;
+  const next=result==='lost'?button('探索結果',()=>finish(false),false,'primary'):
+    result==='won'?button('進む',run.bossFight?advance:explore,false,'primary'):
+    button('次の問題',nextQuestion,false,'primary');
+  resultArea.append(next);
+  next.focus({preventScroll:true});
 }
 function advance(){
   if(run.bossFight)run.caster.mp=run.caster.maxMp;
