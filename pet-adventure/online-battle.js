@@ -391,13 +391,31 @@ function makeChoices(card,room){
 }
 function buildTurn(room){
  const level=gradeLevel(room.grade),pool=questionPool.filter(q=>q.level===level),source=pool.length?pool:questionPool;
- // Do not re-offer words already shown in the same match until the grade pool is exhausted.
- let available=source.filter(q=>!seenQuestionIds.has(q.id)),count=Math.min(ELEMENTS.length,source.length);
- if(available.length<count){
-  seenQuestionIds.clear();
-  available=source.filter(q=>q.id!==lastQuestionId);
+ const count=Math.min(ELEMENTS.length,source.length);
+ let picked;
+ if(QUESTION_MODE&&level==='2'&&source.some(q=>q.type==='idiom')){
+  // At least one of the four grade-2 cards is a TARGET1000 phrase.
+  const idioms=source.filter(q=>q.type==='idiom');
+  const retry=source.filter(q=>q.type!=='idiom');
+  const idiomCount=Math.min(Math.max(1,Math.round(count/3)),idioms.length);
+  const draw=(group,n)=>{
+   let available=group.filter(q=>!seenQuestionIds.has(q.id));
+   if(available.length<n){
+    for(const q of group)seenQuestionIds.delete(q.id);
+    available=group.filter(q=>q.id!==lastQuestionId);
+   }
+   return shuffle(available.length>=n?available:group).slice(0,n);
+  };
+  picked=shuffle([...draw(idioms,idiomCount),...draw(retry,count-idiomCount)]);
+ }else{
+  // Do not re-offer words already shown in the same match until the deck is exhausted.
+  let available=source.filter(q=>!seenQuestionIds.has(q.id));
+  if(available.length<count){
+   seenQuestionIds.clear();
+   available=source.filter(q=>q.id!==lastQuestionId);
+  }
+  picked=shuffle(available.length>=count?available:source).slice(0,count);
  }
- const picked=shuffle(available.length>=count?available:source).slice(0,count);
  for(const card of picked)seenQuestionIds.add(card.id);
  turnCards=picked.map((q,i)=>({...q,element:ELEMENTS[i],power:Math.max(1,Number((room.players||[]).find(p=>p.uid===user.uid)?.stats?.attack||1)+2)}));
  renderAttackCards(room);
@@ -667,7 +685,15 @@ async function loadQuestionPool(){
    return {id:String(item.id||i),level,word,question,choices,correctIndex,type:'retry'};
   }).filter(Boolean);
   if(!['4','3','pre2','2'].every(grade=>rows.filter(q=>q.level===grade).length>=4))throw new Error('リトライノートの級別問題が不足しています。');
-  questionPool=rows;
+  let idioms=[];
+  try{
+   const data=await loadStaticVocabulary('target1000');
+   idioms=buildTarget1000Questions(data.entries).map(q=>({
+    id:q.id,level:'2',type:'idiom',word:'ターゲット1000',question:q.question,
+    choices:q.options,correctIndex:q.correctIndex
+   }));
+  }catch(error){console.warn('Target 1000 question data unavailable',error);}
+  questionPool=rows.concat(idioms);
   return;
  }
  const sources=[
