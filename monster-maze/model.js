@@ -267,14 +267,17 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   if(correct) run.correct++;
   return run.foes.every(unit=>unit.hp===0)?'won':party.every(unit=>unit.hp===0)?'lost':'continue';
 }
-export const gacha={cost:50,count:5,odds:courses.at(-1).odds};
+export const gacha={
+  odds:courses.at(-1).odds,
+  packs:[{count:5,cost:50},{count:10,cost:100}]
+};
 function drawCard(odds,random){
   let roll=random()*100;
   const rarity=odds.findIndex(weight=>(roll-=weight)<0);
   return pick(cards,random).id+'-'+rarity;
 }
-export function drawGacha(random=Math.random){
-  return Array.from({length:gacha.count},()=>drawCard(gacha.odds,random));
+export function drawGacha(count,random=Math.random){
+  return Array.from({length:count},()=>drawCard(gacha.odds,random));
 }
 export function drawReward(course,crystals,random=Math.random){
   const card=random()<course.drop?drawCard(course.odds,random):null;

@@ -6,7 +6,7 @@ import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,sampleCardKeys,grantRaritySamples,
   addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=16';
+} from './model.js?v=17';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -144,16 +144,18 @@ async function save(change,onSuccess,purchase=null){
     profile=updated.next;
     if(updated.balance!==null)petData={...petData,coins:updated.balance};
     if(updated.insufficient){
-      showGacha();
-      message('コインが足りません。現在の残高は'+updated.balance+'コインです。');
+      const detail='コインが足りません。現在の残高は'+updated.balance+'コインです。';
+      message(detail);
+      purchase.onFailure(detail);
       return;
     }
     message('保存しました。');
     onSuccess();
   }catch(error){
     if(current!==generation)return;
-    message('保存できませんでした。'+error.message);
-
+    const detail='保存できませんでした。'+error.message;
+    message(detail);
+    purchase?.onFailure(detail);
   }finally{
     if(current===generation){
       busy=false;
@@ -176,33 +178,74 @@ function coinBalance(data){
   const balance=Number(data?.coins);
   return Number.isSafeInteger(balance)&&balance>0?balance:0;
 }
-function showGacha(drawn=[]){
+function gachaLabel({cost,count}){
+  return count+'連ガチャ（'+cost+'コイン）';
+}
+function showGacha(){
   clear();
-  const {cost,count,odds}=gachaRules;
   const balance=coinBalance(petData);
-  const oddsText=rarities.map((rank,index)=>rank+' '+odds[index]+'％').join('　');
-  pane.append(node('h2','仲間カードガチャ'),node('p',cost+'コインで'+count+'枚 · 所持 '+balance+'コイン'),
-    node('p','1枚ごとの排出率　'+oddsText,'gacha-odds'));
-  if(drawn.length){
-    const results=group('collection gacha-results');
-    for(const [index,key] of drawn.entries()){
-      const [id,rank]=key.split('-').map(Number);
-      const card=rankedCard(group('unit',cardArt(id),node('strong',cards[id-1].name)),rank);
-      const reveal=group('gacha-reveal',card);
-      reveal.style.setProperty('--delay',index*85+'ms');
-      results.append(reveal);
-    }
-    pane.append(node('h3','獲得したカード'),results);
-  }
+  const oddsText=rarities.map((rank,index)=>rank+' '+gachaRules.odds[index]+'％').join('　');
+  pane.append(node('h2','仲間カードガチャ'),node('p','所持 '+balance+'コイン'),
+    node('p','1枚ごとの排出率　'+oddsText,'gacha-odds'),
+    group('choices',...gachaRules.packs.map(pack=>
+      button(gachaLabel(pack),()=>openGacha(pack),balance<pack.cost,'primary'))),
+    group('choices',button('仲間カード編成',()=>{message();collection();}),
+      button('探索に戻る',()=>{message();lobby();})));
+}
+function openGacha(pack){
+  const dialog=node('dialog','','gacha-dialog');
+  const title=node('h2',gachaLabel(pack));
+  title.id='gacha-title';
+  dialog.setAttribute('aria-labelledby',title.id);
+  const wheel=group('gacha-wheel',node('span','✦'));
+  wheel.setAttribute('aria-hidden','true');
+  const cue=node('p','「回す」でカードを引く','gacha-cue');
+  cue.setAttribute('role','status');
+  const close=button('閉じる',()=>dialog.close());
   let pending=null;
-  const draw=button(cost+'コインで'+count+'枚引く',()=>{
-    if(busy)return;
-    pending??={id:'gacha-'+crypto.randomUUID(),cost,cards:drawGacha()};
-    void save(next=>addReward(next,pending.id,{cards:pending.cards,crystals:0}),()=>showGacha(pending.cards),pending);
-  },balance<cost,'primary');
-  pane.append(group('choices',draw,button('仲間カード編成',()=>{message();collection();}),
-    button('探索に戻る',()=>{message();lobby();})));
-  if(balance<cost)pane.append(node('p','あと'+(cost-balance)+'コインで引けます。'));
+  const roll=button('回す',()=>{
+    if(busy||roll.disabled)return;
+    roll.disabled=true;
+    close.disabled=true;
+    wheel.classList.add('rolling');
+    cue.textContent='ガチャを回しています…';
+    pending??={id:'gacha-'+crypto.randomUUID(),cost:pack.cost,cards:drawGacha(pack.count),
+      onFailure:detail=>{
+        wheel.classList.remove('rolling');
+        cue.textContent=detail;
+        roll.disabled=coinBalance(petData)<pack.cost;
+        close.disabled=false;
+      }};
+    void save(next=>addReward(next,pending.id,{cards:pending.cards,crystals:0}),()=>{
+      wheel.classList.remove('rolling');
+      const rainbow=pending.cards.some(key=>key.endsWith('-3'));
+      if(rainbow)dialog.classList.add('gacha-ssr');
+      cue.textContent=rainbow?'SSR確定！':'獲得したカード';
+      const results=group('collection gacha-results');
+      const lead=rainbow?760:180;
+      for(const [index,key] of pending.cards.entries()){
+        const [id,rank]=key.split('-').map(Number);
+        const card=rankedCard(group('unit',cardArt(id),node('strong',cards[id-1].name)),rank);
+        const reveal=group('gacha-reveal',card);
+        reveal.style.setProperty('--delay',lead+index*85+'ms');
+        results.append(reveal);
+      }
+      dialog.insertBefore(results,actions);
+      roll.remove();
+      close.disabled=false;
+      close.focus();
+    },pending);
+  },false,'primary');
+  const actions=group('choices gacha-dialog-actions',roll,close);
+  dialog.append(title,wheel,cue,actions);
+  dialog.addEventListener('cancel',event=>{if(busy)event.preventDefault();});
+  dialog.addEventListener('close',()=>{
+    dialog.remove();
+    message();
+    showGacha();
+  },{once:true});
+  pane.append(dialog);
+  dialog.showModal();
 }
 function cardPortrait(card,key,rank,unit){
   const detailId='card-stats-'+key;
