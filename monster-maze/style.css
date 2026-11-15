@@ -316,3 +316,36 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .quest-splash-button:focus-visible{outline:3px solid #ffe18e;outline-offset:5px}
 @media(hover:hover){.quest-splash-button:hover{filter:brightness(1.06)}}
 .quest-splash-button:active{transform:scale(.995)}
+
+
+/* Monster Quest's kingdom world map: no additional database requests. */
+.world-map-entry{margin:1.1rem 0 .7rem}
+.world-map-enter{font-size:1.13rem;font-weight:800;padding:.75rem 1.5rem;border-radius:.9rem;box-shadow:0 0 0 1px #ecc17b,0 0 22px #ffba4b64;background:linear-gradient(130deg,#704423,#99592e)!important}
+.world-map-enter:hover{filter:brightness(1.16)}
+.world-map-screen{width:100%;margin:0 auto}
+.world-map-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.world-map-heading h2{color:#ffe4a0;text-shadow:0 2px 9px #855a24}
+.world-map-instructions{color:#e2d4e8;font-size:.91rem;margin:.3rem 0 .8rem}
+.world-map-frame{position:relative;width:100%;aspect-ratio:1448 / 1086;isolation:isolate;overflow:hidden;border:2px solid #b58746;border-radius:1rem;background:radial-gradient(circle at 53% 54%,#66b7be 0 12%,#236d69 45%,#183b5e 80%,#12263c 100%);box-shadow:0 10px 32px #05040a9c}
+.world-map-art{display:block;width:100%;height:100%;object-fit:fill}
+.world-map-art-unavailable .world-map-art{display:none}
+.world-map-hotspot{position:absolute;z-index:2;left:var(--left);top:var(--top);transform:translate(-50%,-50%);width:17%;height:14%;min-height:0;padding:0;border:2px solid transparent;background:transparent;border-radius:35%;font-size:0;color:transparent;touch-action:manipulation}
+.world-map-hotspot:hover,.world-map-hotspot:focus-visible{background:#ffe07c35!important;border-color:#ffdc72;box-shadow:0 0 20px #ffe07d,0 0 0 4px #44265380}
+.world-map-art-unavailable .world-map-hotspot{font-size:clamp(.55rem,1.6vw,.9rem);font-weight:800;color:#fff8cf;text-shadow:0 2px 2px #000;background:#2d1d42bb!important;border-color:#e8c686}
+.world-map-tooltip{position:absolute;z-index:3;right:1%;top:29%;width:22%;height:28%;display:flex;flex-direction:column;gap:.35rem;padding:clamp(.4rem,1.2vw,.9rem);border:2px solid #f9d16b;border-radius:1rem;background:#1e1734f5;box-shadow:0 0 12px #f4cb6580;text-align:center;pointer-events:none;line-height:1.4}
+.world-map-tooltip strong{font-size:clamp(.7rem,1.4vw,1.05rem);color:#ffdda0}
+.world-map-tooltip span{font-size:clamp(.62rem,1.3vw,1rem)}
+.world-map-tooltip small{font-size:clamp(.55rem,1vw,.8rem);color:#e1c5a2}
+.world-map-course-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.5rem;margin-top:.9rem}
+.world-map-course{min-height:3.6rem;text-align:left;border-color:#b49366;background:#44324f}
+.world-map-course:hover{border-color:#ffe4a0}
+@media(max-width:640px){
+  .world-map-frame{aspect-ratio:1.18}
+  .world-map-art{object-fit:fill}
+  .world-map-hotspot{width:25%;height:17%}
+  .world-map-tooltip{right:1%;top:26%;width:33%;height:30%;padding:.3rem;gap:.15rem}
+  .world-map-tooltip strong{font-size:.63rem}
+  .world-map-tooltip span{font-size:.6rem}
+  .world-map-tooltip small{display:none}
+  .world-map-course-list{grid-template-columns:1fr}
+}

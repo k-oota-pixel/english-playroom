@@ -254,15 +254,39 @@ export function prepareQuestions(wordBank,retryRows,idiomQuestions=[]){
     return [course.grade,{words,grammar,idioms:course.grade==='2'?idiomQuestions:[]}];
   }));
 }
+function idiomQuestion(rows,previous,random){
+  const candidates=rows.filter(row=>row.id!==previous&&row.phrase&&row.meaning);
+  const pool=candidates.length?candidates:rows;
+  const reverse=random()<0.5;
+  for(const row of shuffle(pool,random)){
+    const answer=reverse?row.phrase:row.meaning;
+    const otherOptions=new Map();
+    for(const other of rows){
+      if(other.id===row.id)continue;
+      // Exclude equivalent meanings and duplicate English expressions, so the
+      // quiz always has exactly one defensible answer.
+      if(normalizeChoice(other.meaning)===normalizeChoice(row.meaning)
+        ||normalizeChoice(other.phrase)===normalizeChoice(row.phrase))continue;
+      const text=reverse?other.phrase:other.meaning;
+      if(!text||normalizeChoice(text)===normalizeChoice(answer))continue;
+      otherOptions.set(normalizeChoice(text),text);
+    }
+    if(otherOptions.size<3)continue;
+    const options=shuffle([answer,...shuffle([...otherOptions.values()],random).slice(0,3)],random);
+    return {id:row.id,type:'idiom',direction:reverse?'ja-en':'en-ja',
+      prompt:reverse?'次の日本語に合う熟語を選ぼう：'+row.meaning:'次の熟語の意味を選ぼう：'+row.phrase,
+      answer,options,tip:row.phrase+' ＝ '+row.meaning};
+  }
+  throw Error('熟語の4択を作れる問題が見つかりません。');
+}
 export function question(bank,previous,random=Math.random){
-  // 英検2級のみ: 英日・日英単語 / Retry Note / Target 1000 熟語を均等に抽選。
-  const hasIdioms=Array.isArray(bank.idioms)&&bank.idioms.length>0;
+  // 英検2級のみ: 単語 / 語彙・文法 / 熟語の3種を均等抽選。
+  const hasIdioms=Array.isArray(bank.idioms)&&bank.idioms.length>=4;
   const kind=Math.floor(random()*(hasIdioms?3:2));
   if(kind===0)return vocabularyQuestion(bank.words,previous,random()<0.5,random);
-  const type=kind===2?'idiom':'grammar';
-  const pool=(type==='idiom'?bank.idioms:bank.grammar).filter(item=>item.id!==previous);
-  const row=pick(pool,random);
-  return {...row,type};
+  if(kind===2)return idiomQuestion(bank.idioms,previous,random);
+  const pool=bank.grammar.filter(item=>item.id!==previous);
+  return {...pick(pool.length?pool:bank.grammar,random),type:'grammar'};
 }
 const specialPower=rarity=>1.25+rarity*0.33;
 const guardEffect=rarity=>({turns:rarity===1?1:2,ratio:rarity/10});
