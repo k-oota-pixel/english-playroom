@@ -284,3 +284,7 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .skill-detail{position:absolute;z-index:3;inset:auto 0 calc(100% + .2rem);padding:.48rem;border:1px solid #a78cb9;border-radius:.45rem;background:#20182d;color:#f8effb;text-align:left;font-size:.74rem;line-height:1.45;box-shadow:0 .18rem .58rem #100b18a8;visibility:hidden;pointer-events:none}
 .skill-toggle[aria-expanded=true]~.skill-detail{visibility:visible}
 @media(hover:hover){.skill-toggle:hover~.skill-detail{visibility:visible}}
+
+.roster .skill-info{justify-content:flex-start;margin-top:.2rem}
+.roster .roster-card:has(.skill-toggle:hover,.skill-toggle[aria-expanded=true]){z-index:3}
+@media(max-width:520px){.roster .skill-info{justify-content:center}}

@@ -164,16 +164,18 @@ async function save(change,onSuccess,purchase=null){
   }
 }
 function companionStats(unit){
-  return [['最大HP',unit.maxHp],['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]];
+  const roleStats=[['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]];
+  return [['最大HP',unit.maxHp],roleStats[unit.role]];
 }
 function statList(entries,className){
   const list=node('dl','',className);
   for(const [label,value] of entries)list.append(node('dt',label),node('dd',String(value)));
   return list;
 }
-function rosterCard(art,name,subtitle,entries){
-  return group('unit roster-card',art,group('roster-info',
-    node('strong',name),node('small',subtitle),statList(entries,'roster-stats')));
+function rosterCard(art,name,subtitle,entries,special=null){
+  const info=group('roster-info',node('strong',name),node('small',subtitle),statList(entries,'roster-stats'));
+  if(special)info.append(special);
+  return group('unit roster-card',art,info);
 }
 function lobby(){
   run=null;
@@ -186,8 +188,9 @@ function lobby(){
   const allies=profile.team.map(key=>{
     const entry=profile.owned[key];
     const unit=stats(key,entry);
+    const special=unit.rarity?skillInfo(unit):null;
     return rankedCard(rosterCard(cardArt(unit.id),unit.name,roles[unit.role]+' · Lv.'+entry.level,
-      companionStats(unit)),unit.rarity);
+      companionStats(unit),special),unit.rarity);
   });
   pane.append(node('h2','探索隊'),group('roster',petCard,...allies),
     group('choices',button('仲間カード編成',()=>collection()),button('仲間カードガチャ',()=>{message();showGacha();})));
