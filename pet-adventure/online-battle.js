@@ -5,6 +5,8 @@ import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {strengthLevel} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory} from '../pet-dungeons-model.js?v=2.4.96';
 import {installMirogoturnNews} from './online-mirogoturn-news.js?v=2.4.96';
+import {loadVocabulary as loadStaticVocabulary} from '../data/vocab/index.js';
+import {buildTarget1000Questions} from '../data/vocab/idiom-questions.js';
 // One shared spell catalog now powers online battles, the tower, and the dungeon.
 const ONLINE_MAGIC_SPELLS=MAGIC_SPELLS;
 
@@ -371,6 +373,7 @@ async function loadAccuracySnapshot(){
 }
 function difficultyFor(card,room){
  if(!QUESTION_MODE)return {known:false,bonus:0,label:''};
+ if(card.type==='idiom')return {known:true,bonus:0,label:'熟語',source:'target1000'};
  const byGrade=difficultySnapshot?.grades?.[gradeLevel(room.grade)];
  if(!byGrade||!Object.hasOwn(byGrade,card.id))return {known:false,bonus:0,label:'取得待ち'};
  const rate=byGrade[card.id];
@@ -406,8 +409,8 @@ function renderAttackCards(room){
   if(QUESTION_MODE){
    const diff=difficultyFor(card,room);
    button.classList.add('online-accuracy-card');
-   button.setAttribute('aria-label','正答率 '+diff.label+'、正解時 '+(diff.bonus?'ダメージ＋'+diff.bonus+'％':'追加ダメージなし'));
-   button.innerHTML=`<span class="element">${card.element[1]} ${card.element[2]}</span><span class="online-accuracy-label">初回正答率</span><span class="attack-name online-accuracy-number">${esc(diff.label)}</span><span class="online-accuracy-bonus">${diff.known?(diff.bonus?'正解時 ダメージ＋'+diff.bonus+'%':'正解時 追加ダメージなし'):'倍率は取得待ち'}</span><span class="attack-sub"><span>英検${esc(room.grade)}</span><span>POWER ${card.power}</span></span>`;
+   button.setAttribute('aria-label',(card.type==='idiom'?'ターゲット1000の熟語':'正答率 '+diff.label)+'、正解時 '+(diff.bonus?'ダメージ＋'+diff.bonus+'％':'追加ダメージなし'));
+   button.innerHTML=`<span class="element">${card.element[1]} ${card.element[2]}</span><span class="online-accuracy-label">${card.type==='idiom'?'ターゲット1000':'初回正答率'}</span><span class="attack-name online-accuracy-number">${esc(diff.label)}</span><span class="online-accuracy-bonus">${diff.known?(diff.bonus?'正解時 ダメージ＋'+diff.bonus+'%':'正解時 追加ダメージなし'):'倍率は取得待ち'}</span><span class="attack-sub"><span>英検${esc(room.grade)}</span><span>POWER ${card.power}</span></span>`;
   }else{
    button.innerHTML=`<span class="element">${card.element[1]} ${card.element[2]}</span><span class="attack-name">${esc(card.word)}</span><span class="attack-sub"><span>英検${esc(room.grade)}</span><span>POWER ${card.power}</span></span>`;
   }
@@ -661,7 +664,7 @@ async function loadQuestionPool(){
    const correctIndex=Array.isArray(item?.choices)?item.choices.findIndex(choice=>Number(choice?.number)===Number(item?.answer_number)):-1;
    if(!level||!question||choices.length!==4||choices.some(choice=>!choice)||correctIndex<0)return null;
    const word=question.replace(/\(____\)/g,'( ? )').slice(0,72)+(question.length>72?'…':'');
-   return {id:String(item.id||i),level,word,question,choices,correctIndex};
+   return {id:String(item.id||i),level,word,question,choices,correctIndex,type:'retry'};
   }).filter(Boolean);
   if(!['4','3','pre2','2'].every(grade=>rows.filter(q=>q.level===grade).length>=4))throw new Error('リトライノートの級別問題が不足しています。');
   questionPool=rows;
