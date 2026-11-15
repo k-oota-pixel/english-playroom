@@ -85,8 +85,12 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .battle-unit.acting{box-shadow:inset 0 0 0 2px #ffd48a}
 .battle-unit.taking-hit img{animation:battle-hit .28s ease-out}
 .battle-unit.being-healed{box-shadow:inset 0 0 0 2px #7bddab}
-.battle-feedback{margin:.55rem 0;color:var(--gold)}
-.battle-feedback:empty{display:none}
+.battle-log{max-height:7.5rem;overflow:auto;overflow-anchor:none;margin:.55rem 0;padding:.3rem .65rem;border:1px solid var(--edge);border-radius:.55rem;background:#211b32;list-style:none;font-size:.88rem}
+.battle-log li{padding:.22rem 0;color:var(--muted);line-height:1.4}
+.battle-log li+li{border-top:1px solid var(--edge)}
+.battle-log li:first-child,.battle-outcome{color:var(--gold)}
+.battle-log:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.battle-outcome{margin:.55rem 0}
 @keyframes battle-hit{25%{transform:translateX(-4px);filter:brightness(1.45)}65%{transform:translateX(3px)}}
 @keyframes damage-rise{from{transform:translateY(.3rem);opacity:.65}to{transform:translateY(-.2rem);opacity:1}}
 @media(prefers-reduced-motion:reduce){.hp-fill{transition:none}.battle-unit.taking-hit img,.battle-delta{animation:none}}

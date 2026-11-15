@@ -290,6 +290,7 @@ function walk(dx,dy){
   }
   if(event.kind==='exit')return advance();
   run.foes=makeFoes(event,run.floor);
+  run.battleLog=[];
   run.guard=null;
   run.bossFight=event.kind==='boss';
   const title=run.bossFight?run.foes[0].name+' が道をふさいでいる！':'野生のモンスターが現れた！';
@@ -350,11 +351,16 @@ function battle(){
     choice.setAttribute('aria-pressed',String(action===run.action));
     return choice;
   }));
-  const feedback=node('p','','battle-feedback');
-  feedback.setAttribute('role','status');
-  const resultArea=group('battle-result',feedback);
+  const log=node('ol','','battle-log');
+  log.setAttribute('aria-label','戦闘ログ（新しい順）');
+  log.setAttribute('aria-live','polite');
+  log.setAttribute('aria-relevant','additions');
+  log.tabIndex=0;
+  for(const line of run.battleLog)log.append(node('li',line));
+  log.hidden=!run.battleLog.length;
+  const resultArea=group('battle-result',log);
   const controls=group('battle-controls',actions);
-  const resolve=option=>void resolveTurn(option,{stage,views,feedback,resultArea,controls});
+  const resolve=option=>void resolveTurn(option,{stage,views,log,resultArea,controls});
   const timer=node('span','','timer');
   const quiz=group('quiz',group('quiz-title',node('h3',run.quiz.word),timer),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
@@ -387,7 +393,13 @@ function battle(){
   clock=setInterval(tick,100);
   tick();
 }
-async function resolveTurn(answer,{stage,views,feedback,resultArea,controls}){
+function addBattleLog(log,text){
+  run.battleLog.unshift(text);
+  log.hidden=false;
+  log.prepend(node('li',text));
+  log.scrollTop=0;
+}
+async function resolveTurn(answer,{stage,views,log,resultArea,controls}){
   if(controls.hidden||!stage.isConnected)return;
   clearInterval(clock);
   controls.hidden=true;
@@ -402,7 +414,10 @@ async function resolveTurn(answer,{stage,views,feedback,resultArea,controls}){
   const verdict=correct?'正解！':(answer&&timely?'不正解':'時間切れ')+' · 正解は「'+run.quiz.answer+'」';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  feedback.textContent=verdict;
+  addBattleLog(log,verdict);
+  if(run.cast&&!events.some(event=>event.actor===null&&event.actionName===run.cast)){
+    addBattleLog(log,'ぺっとが'+run.cast+'を唱えた！');
+  }
   if(!reduced&&events.length)await delay(240);
   for(const {actor,unit,hp,delta,actionName} of events){
     if(!stage.isConnected)return;
@@ -413,16 +428,18 @@ async function resolveTurn(answer,{stage,views,feedback,resultArea,controls}){
     tile.classList.add(effect);
     badge.textContent=delta>0?'+'+delta:'−'+Math.abs(delta);
     update(hp);
-    feedback.textContent=(actor?.name||'ぺっと')+'の'+actionName+'！ '+unit.name+
-      (delta>0?'がHPを'+delta+'回復':'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':'');
+    addBattleLog(log,(actor?.name||'ぺっと')+'の'+actionName+'！ '+unit.name+
+      (delta>0?'がHPを'+delta+'回復':'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':''));
     if(!reduced)await delay(360);
     if(source)source.tile.classList.remove('acting');
     tile.classList.remove(effect);
   }
   if(!stage.isConnected)return;
-  const detail=result==='won'?'敵を倒した！':result==='lost'?'探索隊は全滅した。':
-    events.some(event=>event.actionName==='反撃')?'敵の反撃が終わった。':'次のターンへ。';
-  feedback.textContent=verdict+' '+(run.cast?run.cast+'を唱えた！ ':'')+detail;
+  if(result!=='continue'){
+    const outcome=node('p',result==='won'?'敵を倒した！':'探索隊は全滅した。','battle-outcome');
+    outcome.setAttribute('role','status');
+    resultArea.append(outcome);
+  }
   const next=result==='lost'?button('探索結果',()=>finish(false),false,'primary'):
     result==='won'?button('進む',run.bossFight?advance:explore,false,'primary'):
     button('次の問題',nextQuestion,false,'primary');
