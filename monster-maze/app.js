@@ -3,14 +3,12 @@ import {getFirestore,doc,getDoc,runTransaction} from 'https://www.gstatic.com/fi
 import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.4.37';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
-import {loadFishingEikenBank} from '../pet-fishing/question-bank.js';
+import {EIKEN_QUESTIONS_URL,loadFishingEikenBank} from '../pet-fishing/question-bank.js';
 import {unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
-import {pre1Grammar} from './pre1-grammar.js';
-import {pre1Words} from './pre1-words.js';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,prepareQuestions,question,playTurn,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=20';
+  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,playTurn,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=21';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -558,7 +556,7 @@ function battle(){
   const controls=group('battle-controls',actions);
   const timer=node('span','','timer');
   const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,timer});
-  const quizLabel=run.quiz.type==='grammar'?'文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
+  const quizLabel=run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
   const quiz=group('quiz',
     group('quiz-title',node('small',quizLabel),timer),
     node('h3',run.quiz.prompt.replace(/\s+(?=B\s*:)/,'\n'),'quiz-prompt'),
@@ -706,6 +704,14 @@ function results(saved=false){
     pane.append(button('報酬を受け取る',()=>save(next=>addReward(next,id,reward),()=>results(true),coins),false,'primary'));
   }
 }
+async function loadRetryChoiceMeanings(){
+  const url=new URL('choice-ja-data.js',EIKEN_QUESTIONS_URL);
+  const response=await fetch(url,{signal:AbortSignal.timeout(30000)});
+  if(!response.ok)throw Error('リトライノートの和訳データを取得できませんでした。');
+  const data=(await response.text()).match(/^\s*window\.RETRY_CHOICE_JA\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
+  if(!data)throw Error('リトライノートの和訳データを確認できませんでした。');
+  return JSON.parse(data[1]);
+}
 async function initialize(user){
   const current=++generation;
   busy=false;
@@ -729,11 +735,13 @@ async function initialize(user){
       return response.json();
     });
     const wallet=doc(db,'users',user.uid,'apps','english-playroom');
-    const [snapshot,data,retryRows,pet]=await Promise.all([getDoc(ref),wordBank,loadFishingEikenBank(),getDoc(wallet)]);
+    const [snapshot,data,retryRows,meanings,pet]=await Promise.all([
+      getDoc(ref),wordBank,loadFishingEikenBank(),loadRetryChoiceMeanings(),getDoc(wallet)
+    ]);
     if(current!==generation)return;
     cardRef=ref;
     walletRef=wallet;
-    questions=prepareQuestions({...data.grades,pre1:{words:pre1Words}},retryRows,pre1Grammar);
+    questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows);
     petData=pet.data();
     profile=normalizeProfile(snapshot.data());
     pane.hidden=false;

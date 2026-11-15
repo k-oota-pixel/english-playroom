@@ -47,6 +47,7 @@ export const bosses = [
 export const floorCount = 5;
 const advancedOdds=[55,30,12,3];
 export const courses = [
+  {name:'英検4級',grade:'4',chests:0,coins:5,odds:[85,14,1,0],drop:0.75},
   {name:'英検3級',grade:'3',chests:1,coins:10,odds:[70,24,5,1],drop:0.9},
   {name:'英検準2級',grade:'pre2',chests:2,coins:15,odds:advancedOdds,drop:1,advancedBoss:true},
   {name:'英検2級',grade:'2',chests:3,coins:20,odds:advancedOdds,drop:1,advancedBoss:true},
@@ -218,17 +219,29 @@ function vocabularyQuestion(words,previous,reverse,random){
   }
   throw Error('4択を作れる問題が見つかりません。');
 }
-export function prepareQuestions(wordBank,retryRows,pre1Grammar){
+export function retryVocabulary(rows,meanings,grade){
+  const words=new Map();
+  for(const row of rows){
+    if(row.grade!==grade)continue;
+    const word=row.choices.find(choice=>Number(choice.number)===Number(row.answer_number))?.text.trim();
+    if(!word)continue;
+    const key=word.toLowerCase();
+    const meaning=meanings[key];
+    if(typeof meaning!=='string'||!meaning.trim())continue;
+    words.set(key,{word,answers:[meaning.trim()]});
+  }
+  return [...words.values()];
+}
+export function prepareQuestions(wordBank,retryRows){
   return Object.fromEntries(courses.map(course=>{
     const grade=course.name.slice(2);
-    const rows=retryRows.filter(row=>row.grade===grade).map(row=>{
-      const options=row.choices.slice(0,4).map(choice=>choice.text.trim());
-      const answer=row.choices.find(choice=>Number(choice.number)===Number(row.answer_number))?.text.trim();
-      return {id:row.id,prompt:row.question.trim(),answer,options,role:row.review_role,number:row.question_number};
-    }).filter(row=>new Set(row.options).size===4&&row.options.includes(row.answer));
+    // 文法枠はリトライノートの「語彙・文法」4択を全問使用する。
+    const grammar=retryRows.filter(row=>row.grade===grade&&row.choices.length===4).map(row=>({
+      id:row.id,prompt:row.question,
+      answer:row.choices.find(choice=>Number(choice.number)===Number(row.answer_number))?.text,
+      options:row.choices.map(choice=>choice.text)
+    })).filter(row=>new Set(row.options).size===4&&row.options.includes(row.answer));
     const words=wordBank[course.grade]?.words;
-    const grammar=course.grade==='pre1'?pre1Grammar:rows.filter(row=>row.role==='grammar'||
-      (row.role==='manual_g3'&&row.number>=13&&row.number<=15));
     if(grammar.length<2||!Array.isArray(words)||words.length<5)throw Error(course.name+'の出題データが不足しています。');
     return [course.grade,{words,grammar}];
   }));
@@ -237,7 +250,7 @@ export function question(bank,previous,random=Math.random){
   const type=random()<0.5?'grammar':'vocabulary';
   if(type==='vocabulary')return vocabularyQuestion(bank.words,previous,random()<0.5,random);
   const row=pick(bank.grammar.filter(item=>item.id!==previous),random);
-  return {id:row.id,prompt:row.prompt,answer:row.answer,options:shuffle(row.options,random),type};
+  return {id:row.id,prompt:row.prompt,answer:row.answer,options:row.options,type};
 }
 const specialPower=rarity=>1.25+rarity*0.33;
 const guardEffect=rarity=>({turns:rarity===1?1:2,ratio:rarity/10});
