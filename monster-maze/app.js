@@ -638,7 +638,7 @@ function battle(){
   const controls=group('battle-controls',actions);
   const timer=node('span','','timer');
   const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,timer});
-  const quizLabel=run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
+  const quizLabel=run.quiz.type==='idiom'?'ターゲット1000 · 熟語':run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
   const quiz=group('quiz',
     group('quiz-title',node('small',quizLabel),timer),
     quizPrompt(run.quiz.prompt),
