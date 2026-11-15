@@ -16,6 +16,8 @@ import {hasPet,validPetName,normalizePetName} from '../pet-model.js';
 import {renderPetSVG} from '../pet-art.js?v=2.1.49';
 import {ELEMENTS,LEVELS,elementMultiplier,towerCardLevelIndexes,dungeonAttackLayout,isBoss,enemyMaxHp,enemyAttack,attackPowerForLevel,attackPowerForGrade,calculateDamage,unlockedStartFloors} from './core.js?v=2.1.8';
 import {buildEikenQuestionBank,createEikenQuestionPicker} from './eiken-question-bank.js?v=2.4.38';
+import {loadVocabulary as loadStaticVocabulary} from '../data/vocab/index.js';
+import {buildTarget1000Questions} from '../data/vocab/idiom-questions.js';
 
 const VOCAB_URL='https://k-oota-pixel.github.io/word-breaker/monstudy_vocab_master.json?v=1.5';
 const RETRY_URL='https://k-oota-pixel.github.io/eiken-retry/';
@@ -34,7 +36,7 @@ const storageKey='monstudy-pet-adventure-v1';
 const els={startDialog:$('startDialog'),startTitle:$('startTitle'),startBest:$('startBest'),startFloors:$('startFloors'),modeTitle:$('modeTitle'),stageCard:$('stageCard'),battlefield:$('battlefield'),bossBadge:$('bossBadge'),areaLabel:$('areaLabel'),stageLabel:$('stageLabel'),enemyCount:$('enemyCount'),bestLabel:$('bestLabel'),petName:$('petName'),petHpBar:$('petHpBar'),petHpText:$('petHpText'),petMpBar:$('petMpBar'),petMpText:$('petMpText'),petStats:$('petStats'),petVisual:$('adventurePetVisual'),enemySide:$('enemySide'),enemyName:$('enemyName'),enemyElement:$('enemyElement'),enemyHpBar:$('enemyHpBar'),enemyHpText:$('enemyHpText'),enemyVisual:$('enemyVisual'),battleFlash:$('battleFlash'),attackPanel:$('attackPanel'),attackHeading:$('attackHeading'),attackHint:$('attackHint'),attackGrid:$('attackGrid'),quizPanel:$('quizPanel'),attackBadge:$('attackBadge'),attackPower:$('attackPower'),questionText:$('questionText'),answerGrid:$('answerGrid'),answerFeedback:$('answerFeedback'),nextBtn:$('nextBtn'),loadingCard:$('loadingCard'),loadingText:$('loadingText'),resultCard:$('resultCard'),resultIcon:$('resultIcon'),resultKicker:$('resultKicker'),resultTitle:$('resultTitle'),resultText:$('resultText'),retryBtn:$('retryBtn'),checkpointBtn:$('checkpointBtn'),dataNote:$('dataNote'),helpBtn:$('helpBtn'),helpDialog:$('helpDialog'),helpClose:$('helpClose'),helpTitle:$('helpTitle'),helpBody:$('helpBody'),pauseBtn:$('pauseBtn'),battleStatus:$('battleStatus'),magicBtn:$('magicBtn'),itemBtn:$('itemBtn'),magicDialog:$('magicDialog'),magicClose:$('magicClose'),magicList:$('magicList'),magicMpStatus:$('magicMpStatus'),magicMessage:$('magicMessage'),itemDialog:$('itemDialog'),itemClose:$('itemClose'),itemList:$('itemList'),itemMessage:$('itemMessage')};
 els.exitRunBtn=exitRunBtn;
 
-let user=null,petData={},vocab={},pickDungeonQuestion=null,stage=1,enemyIndex=0,playerHp=10,playerMp=6,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,finishingRun=false,allowNavigation=false,busy=false;
+let user=null,petData={},vocab={},pickDungeonQuestion=null,pickTargetIdiom=null,stage=1,enemyIndex=0,playerHp=10,playerMp=6,enemyHp=1,enemyMax=1,enemyElement='fire',turnCards=[],selectedAttack=null,runActive=false,finishingRun=false,allowNavigation=false,busy=false;
 let stats=strengthStatsFromAllocation(),petLevel=1,titleSyncPromise=Promise.resolve();
 let adventureTitleEvents=[];
 let records=readRecords();
@@ -185,6 +187,19 @@ function configureMode(){
 async function loadVocabulary(){
   try{const response=await fetch(VOCAB_URL,{cache:'force-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);const payload=await response.json(),source=payload?.levels||payload?.courses||payload,next={};for(const level of LEVELS){const raw=source?.[level.id],rows=Array.isArray(raw)?raw:Array.isArray(raw?.words)?raw.words:[];const cleaned=rows.map((x,i)=>({id:String(x?.id||`${level.id}-${i}`),word:String(x?.word||'').trim(),meaning:(Array.isArray(x?.answers)?x.answers:[]).find(v=>typeof v==='string'&&v.trim())?.trim()||''})).filter(x=>x.word&&x.meaning);if(cleaned.length<4)throw Error(`${level.id} is too small`);next[level.id]=cleaned;}vocab=next;return true;}catch(error){console.warn('魔王の塔 vocabulary fallback',error);vocab=Object.fromEntries(LEVELS.map(level=>[level.id,FALLBACK_WORDS[level.id].map((x,i)=>({id:`fallback-${level.id}-${i}`,word:x[0],meaning:x[1]}))]));return false;}
 }
+async function loadTarget1000Questions(){
+  try{
+    const data=await loadStaticVocabulary('target1000');
+    const items=buildTarget1000Questions(data.entries);
+    if(items.length<4)throw Error('Target 1000 questions are missing');
+    pickTargetIdiom=createEikenQuestionPicker({'2級':items});
+    return true;
+  }catch(error){
+    console.warn('Target 1000 static idioms unavailable',error);
+    pickTargetIdiom=null;
+    return false;
+  }
+}
 async function loadEikenQuestions(){
   try{
     // Retry Notebook now publishes its full question DB as a separate script, not inline HTML.
@@ -236,17 +251,40 @@ async function evolveRoyalGuard(){
  await presentGuard('evolve');if(runActive&&adventureRunId===runId)prepareTurn();
 }
 function sampleDifferent(pool,count,excludeId=''){const choices=shuffle(pool.filter(x=>x.id!==excludeId));return choices.slice(0,count)}
-function towerCards(){const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();return assignElements(indexes.map((idx,pos)=>{const level=LEVELS[idx],pool=vocab[level.id]||[];let item=null;for(const candidate of shuffle(pool)){if(!used.has(candidate.id)){item=candidate;break}}item=item||pool[0]||Object.values(vocab)[0][0];used.add(item.id);return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)+stats.attack};}))}
+function towerCards(){
+  const indexes=shuffle(towerCardLevelIndexes(stage)),used=new Set();
+  const cards=assignElements(indexes.map((idx,pos)=>{
+    const level=LEVELS[idx],pool=vocab[level.id]||[];let item=null;
+    for(const candidate of shuffle(pool)){if(!used.has(candidate.id)){item=candidate;break}}
+    item=item||pool[0]||Object.values(vocab)[0][0];used.add(item.id);
+    return {id:`${item.id}-${pos}-${Date.now()}`,kind:'word',item,level,power:attackPowerForLevel(level.id,stage)+stats.attack};
+  }));
+  // 魔王の塔には級別パートがないため、高2レベルが主力になる41F以降で出題。
+  if(stage>=41&&pickTargetIdiom){
+    const idx=cards.findIndex(card=>card.level.id==='high2');
+    if(idx>=0){
+      const idiom=pickTargetIdiom('2級');
+      cards[idx]={...cards[idx],id:`idiom-${idiom.id}-${Date.now()}`,kind:'idiom',idiom,grade:'2級'};
+    }
+  }
+  return cards;
+}
 function dungeonCards(){return shuffle(dungeonAttackLayout(stage,enemyElement)).map(({grade,element},pos)=>({id:`${grade}-${pos}-${Date.now()}`,kind:'eiken',grade,element,power:attackPowerForGrade(grade,stage)+stats.attack}))}
 function prepareTurn(){if(!runActive||busy)return;selectedAttack=null;turnCards=mode==='tower'?towerCards():dungeonCards();els.quizPanel.hidden=true;els.attackPanel.hidden=false;renderAttackCards()}
-function renderAttackCards(){els.attackGrid.replaceChildren();for(const card of turnCards){const critical=elementMultiplier(card.element,enemyElement)>1,meta=ELEMENTS[card.element],button=document.createElement('button');button.type='button';button.className=`attack-card${critical?' critical':''}`;const name=card.kind==='word'?card.item.word:card.grade,sub=card.kind==='word'?card.level.label:'EIKEN';button.innerHTML=`<span class="element">${meta.icon} ${meta.label}</span><span class="attack-name">${escapeHtml(name)}</span><span class="attack-sub"><span>${sub}</span><span>POWER ${card.power}</span></span>`;button.addEventListener('click',()=>openQuestion(card));els.attackGrid.appendChild(button);}}
+function renderAttackCards(){els.attackGrid.replaceChildren();for(const card of turnCards){const critical=elementMultiplier(card.element,enemyElement)>1,meta=ELEMENTS[card.element],button=document.createElement('button');button.type='button';button.className=`attack-card${critical?' critical':''}`;const name=card.kind==='word'?card.item.word:card.kind==='idiom'?'ターゲット1000':card.grade,sub=card.kind==='word'?card.level.label:card.kind==='idiom'?'英検2級・熟語':'EIKEN';button.innerHTML=`<span class="element">${meta.icon} ${meta.label}</span><span class="attack-name">${escapeHtml(name)}</span><span class="attack-sub"><span>${sub}</span><span>POWER ${card.power}</span></span>`;button.addEventListener('click',()=>openQuestion(card));els.attackGrid.appendChild(button);}}
 function towerQuestion(card){const all=Object.values(vocab).flat(),distractors=sampleDifferent(all.filter(x=>x.meaning!==card.item.meaning),3,card.item.id);const answers=shuffle([{number:1,text:card.item.meaning,correct:true},...distractors.map((x,i)=>({number:i+2,text:x.meaning,correct:false}))]);return {id:card.item.id,html:`<strong>${escapeHtml(card.item.word)}</strong> の意味は？`,answers:answers.map((a,i)=>({...a,number:i+1})),correctIndex:answers.findIndex(a=>a.correct)}}
-function pickEikenQuestion(grade){if(!pickDungeonQuestion)throw new Error('Retry Notebook question DB is unavailable');return pickDungeonQuestion(grade);}
+function pickEikenQuestion(grade){if(!pickDungeonQuestion)throw new Error('Retry Notebook question DB is unavailable');if(grade==='2級'&&pickTargetIdiom&&Math.random()<1/3)return pickTargetIdiom('2級');return pickDungeonQuestion(grade);}
 function eikenQuestion(card){const q=pickEikenQuestion(card.grade);return {id:q.id,html:cleanQuestion(q.question),answers:q.choices.map(c=>({number:Number(c.number),text:String(c.text),correct:Number(c.number)===Number(q.answer_number)})),correctIndex:q.choices.findIndex(c=>Number(c.number)===Number(q.answer_number))}}
+function towerIdiomQuestion(card){
+  const q=card.idiom;
+  return {id:q.id,html:cleanQuestion(q.question),
+    answers:q.choices.map(choice=>({number:choice.number,text:choice.text,correct:choice.number===q.answer_number})),
+    correctIndex:q.correctIndex};
+}
 function fitQuestionText(){if(els.quizPanel.hidden)return;for(const node of [els.questionText,...els.answerGrid.children]){node.style.fontSize='';let size=parseFloat(getComputedStyle(node).fontSize);while((node.scrollHeight>node.clientHeight+1||node.scrollWidth>node.clientWidth+1)&&size>12){size=Math.max(12,size-.5);node.style.fontSize=`${size}px`;}}}
 window.addEventListener('resize',fitQuestionText);
 function openQuestion(card){
-  if(busy||!runActive||isBattlePaused()||playerHp<=0||enemyHp<=0)return;selectedAttack=card;const q=card.kind==='word'?towerQuestion(card):eikenQuestion(card);selectedAttack.question=q;const meta=ELEMENTS[card.element];els.attackBadge.textContent=`${meta.icon} ${meta.label}${elementMultiplier(card.element,enemyElement)>1?' · CRITICAL':''}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=q.html;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();q.answers.forEach((answer,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${escapeHtml(answer.text)}`;b.addEventListener('click',()=>{if(selectedAttack?.question===q)answerQuestion(index);});els.answerGrid.appendChild(b)});els.attackPanel.hidden=true;els.quizPanel.hidden=false;fitQuestionText();
+  if(busy||!runActive||isBattlePaused()||playerHp<=0||enemyHp<=0)return;selectedAttack=card;const q=card.kind==='word'?towerQuestion(card):card.kind==='idiom'?towerIdiomQuestion(card):eikenQuestion(card);selectedAttack.question=q;const meta=ELEMENTS[card.element];els.attackBadge.textContent=`${meta.icon} ${meta.label}${elementMultiplier(card.element,enemyElement)>1?' · CRITICAL':''}`;els.attackPower.textContent=`POWER ${card.power}`;els.questionText.innerHTML=q.html;els.answerFeedback.textContent='';els.answerFeedback.className='answer-feedback';els.nextBtn.hidden=true;els.answerGrid.replaceChildren();q.answers.forEach((answer,index)=>{const b=document.createElement('button');b.type='button';b.className='answer-btn';b.innerHTML=`<strong>${index+1}.</strong> ${escapeHtml(answer.text)}`;b.addEventListener('click',()=>{if(selectedAttack?.question===q)answerQuestion(index);});els.answerGrid.appendChild(b)});els.attackPanel.hidden=true;els.quizPanel.hidden=false;fitQuestionText();
 }
 
 function flash(text){els.battleFlash.textContent=text;els.battleFlash.classList.remove('show');void els.battleFlash.offsetWidth;els.battleFlash.classList.add('show')}
@@ -352,7 +390,7 @@ async function finishRun(reason='defeat'){
 function showUnavailable(title,text){els.pauseBtn.disabled=true;els.magicBtn.disabled=true;els.itemBtn.disabled=true;els.loadingCard.hidden=true;els.attackPanel.hidden=true;els.quizPanel.hidden=true;els.resultCard.hidden=false;els.resultIcon.textContent='🐾';els.resultKicker.textContent='PET ADVENTURE';els.resultTitle.textContent=title;els.resultText.textContent=text;els.retryBtn.hidden=true;els.checkpointBtn.hidden=true;}
 
 async function init(){
-  configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}if(mode==='dungeon'&&!dataOk){showUnavailable('問題データを読み込めませんでした','リトライノートの問題DBに接続できませんでした。通信を確認してページを再読み込みしてください。');return}
+  configureMode();els.attackPanel.hidden=true;els.quizPanel.hidden=true;const dataPromise=mode==='tower'?loadVocabulary():loadEikenQuestions();const [dataOk]=await Promise.all([dataPromise,authReady,loadTarget1000Questions()]);user=auth.currentUser;records=readRecords();if(!user){showUnavailable('ログインが必要です','もんすたでぃのトップでGoogleログインすると、自分のペットと一緒に冒険できます。');return}if(mode==='dungeon'&&!dataOk){showUnavailable('問題データを読み込めませんでした','リトライノートの問題DBに接続できませんでした。通信を確認してページを再読み込みしてください。');return}
   try{const session=await accountSession(user);adminAdventure=session.admin===true&&!session.resetRequired;if(mode==='dungeon'){
     // Reuse the existing wallet read as a transaction; write only once per season.
     petData=await runTransaction(db,async tx=>{const ref=walletRef(user),snap=await tx.get(ref),data=snap.data()||{};if(data.eikenDungeonSeason===DUNGEON_SEASON_ID)return data;const reset={eikenDungeonSeason:DUNGEON_SEASON_ID,eikenDungeonBest:1,eikenDungeonCleared:false,petAdventureUpdatedAt:serverTimestamp()};tx.set(ref,reset,{merge:true});return {...data,...reset};});
