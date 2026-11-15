@@ -1,0 +1,37 @@
+// 準1級向けの文法4択。各行は問題、正答、誤答3つ。
+export const pre1Grammar=[
+  ['Not until the survey was complete (____) the need for a second study.',
+    'did the team recognize','the team recognized','had the team been recognized','the team did recognize'],
+  ['Had the backup system failed, the researchers (____) months of data.',
+    'would have lost','would lose yesterday','had lost','will have lost'],
+  ['The board insisted that the final report (____) before any decision was made.',
+    'be reviewed','was reviewing','is to review','has reviewed'],
+  ['(____) twice about the risks, the climbers decided to turn back.',
+    'Having been warned','Having warned them','To be warning','Being about to warn'],
+  ['The funds were divided among six projects, none of (____) had been funded before.',
+    'which','them','whose','that'],
+  ['No sooner had the doors opened (____) the crowd began to stream in.',
+    'than','when','while','that'],
+  ['The longer the committee delays its decision, (____) the project will become.',
+    'the more expensive','more expensive than','the most expensive','as expensive as'],
+  ['It was not what she said (____) how she said it that upset the audience.',
+    'but','yet','nor','and also'],
+  ['The director would rather the issue (____) at tomorrow’s meeting.',
+    'were discussed','will discuss','has discussed','is discussing'],
+  ['Exhausted (____) she was after the journey, she stayed up to help her hosts.',
+    'though','because','unless','whereas'],
+  ['Were the museum (____) its admission fee, attendance might decline.',
+    'to raise','having raised','raised by','will raise'],
+  ['This is the same data set (____) the researchers initially based their conclusions.',
+    'on which','that','from where','whose'],
+  ['(____) everyone’s surprise, the witness was able to recall every detail.',
+    'To','With','On','By'],
+  ['Only by comparing the two records (____) how the error had occurred.',
+    'could we see','we could see','could see we','we had seen'],
+  ['I wish I (____) a copy of the original before sending it last week.',
+    'had kept','would keep','have kept','were keeping now'],
+  ['What matters is not how many ideas we have, (____) we can put them into practice.',
+    'but whether','yet how many','rather what','nor if']
+].map(([prompt,answer,...distractors],index)=>({
+  id:'maze-pre1-grammar-'+index,prompt,answer,options:[answer,...distractors]
+}));

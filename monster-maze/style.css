@@ -27,7 +27,6 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .target .unit{background:transparent;border:0}
 .quiz{margin:.65rem 0;padding:.65rem .85rem}
 .quiz-title{display:flex;justify-content:space-between;align-items:center}
-.quiz-title h3{font-size:1.45rem;color:var(--gold)}
 .timer{font-variant-numeric:tabular-nums;color:var(--gold)}
 .answers button{flex:1 1 40%}
 .collection{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.5rem}
@@ -288,3 +287,9 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .roster .skill-info{justify-content:flex-start;margin-top:.2rem}
 .roster .roster-card:has(.skill-toggle:hover,.skill-toggle[aria-expanded=true]){z-index:3}
 @media(max-width:520px){.roster .skill-info{justify-content:center}}
+
+.roster-spells{margin-top:.36rem}
+.roster .roster-spells strong{font-size:.74rem;color:var(--gold)}
+.roster-spells small{overflow-wrap:anywhere}
+.quiz-title small{color:var(--muted)}
+.quiz-prompt{margin:.25rem 0 .55rem;color:var(--gold);font-size:clamp(.96rem,3vw,1.25rem);line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}

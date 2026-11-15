@@ -44,10 +44,13 @@ export const bosses = [
   'ゴロガン','カマドン','ウズシオーン','イバラナイト','フブキバッファ','ガチャグモ',
   'カゲミミク','ムオンランタン','ユガミドケイ','ヌルカゲ'
 ];
+export const floorCount = 5;
+const advancedOdds=[55,30,12,3];
 export const courses = [
-  {name:'初級',grade:'4',floors:5,odds:[85,14,1,0],drop:0.75},
-  {name:'中級',grade:'3',floors:10,odds:[70,24,5,1],drop:0.9},
-  {name:'上級',grade:'pre2',floors:20,odds:[55,30,12,3],drop:1}
+  {name:'英検3級',grade:'3',chests:1,coins:10,odds:[70,24,5,1],drop:0.9},
+  {name:'英検準2級',grade:'pre2',chests:2,coins:15,odds:advancedOdds,drop:1,advancedBoss:true},
+  {name:'英検2級',grade:'2',chests:3,coins:20,odds:advancedOdds,drop:1,advancedBoss:true},
+  {name:'英検準1級',grade:'pre1',chests:4,coins:30,odds:advancedOdds,drop:1,advancedBoss:true}
 ];
 const starters = ['1-0','7-0','13-0'];
 const baseStats = [[104,22,11,9],[79,10,24,10],[86,8,12,20]];
@@ -120,7 +123,12 @@ function shuffle(values,random){
   return result;
 }
 export const directions = [[0,-1],[1,0],[0,1],[-1,0]];
-export function generateMaze(floor,course,random=Math.random){
+export function planChests(course,random=Math.random){
+  const floors=Array(floorCount+1).fill(0);
+  for(let i=0;i<course.chests;i++)floors[2+Math.floor(random()*(floorCount-1))]++;
+  return floors;
+}
+export function generateMaze(floor,course,chestCount=0,random=Math.random){
   const width=9, height=7;
   const tiles=Array.from({length:height},()=>Array(width).fill(false));
   const stack=[[1,1]];
@@ -156,11 +164,10 @@ export function generateMaze(floor,course,random=Math.random){
   }
   const [exitX,exitY]=queue.at(-1);
   const boxes=queue.filter(([x,y,distance])=>distance>=4&& (x!==exitX||y!==exitY));
-  const [chestX,chestY]=pick(boxes,random);
-  const bossFloor=floor===course.floors||floor%5===0;
-  const bossId=bossFloor ? (floor===course.floors&&course.floors===20 ? 7 : 1)
-    +Math.floor(random()*(floor===course.floors&&course.floors===20?4:6)) : null;
-  return {tiles,x:1,y:1,exitX,exitY,chestX,chestY,chestOpened:false,steps:0,bossId};
+  const chests=shuffle(boxes,random).slice(0,chestCount).map(([x,y])=>({x,y,opened:false}));
+  const bossId=floor===floorCount ? (course.advancedBoss?7:1)
+    +Math.floor(random()*(course.advancedBoss?4:6)) : null;
+  return {tiles,x:1,y:1,exitX,exitY,chests,steps:0,bossId};
 }
 export function movePet(maze,dx,dy,random=Math.random){
   if(!directions.some(([x,y])=>dx===x&&dy===y))return null;
@@ -169,8 +176,9 @@ export function movePet(maze,dx,dy,random=Math.random){
   maze.x=x;
   maze.y=y;
   if(x===maze.exitX&&y===maze.exitY)return maze.bossId?{kind:'boss',id:maze.bossId}:{kind:'exit'};
-  if(x===maze.chestX&&y===maze.chestY&&!maze.chestOpened){
-    maze.chestOpened=true;
+  const chest=maze.chests.find(item=>item.x===x&&item.y===y&&!item.opened);
+  if(chest){
+    chest.opened=true;
     return {kind:'chest'};
   }
   maze.steps++;
@@ -189,17 +197,40 @@ export function makeFoes(room,floor,random=Math.random){
       power:major?10+Math.floor(floor/2)+(id>6?3:0):5+Math.floor(floor/5)+id%3,weak:id%2?'physical':'magic'};
   });
 }
-export function question(words,previous,random=Math.random){
+function vocabularyQuestion(words,previous,random){
   const pool=words.filter(row=>row.word!==previous && row.answers?.[0]);
   for(const row of shuffle(pool,random)){
     const valid=new Set(row.answers);
     const distractors=[...new Set(pool.filter(other=>other.word!==row.word &&
       !other.answers.some(answer=>valid.has(answer))).map(other=>other.answers[0]).filter(Boolean))];
     if(distractors.length>=3){
-      return {word:row.word,answer:row.answers[0],options:shuffle([row.answers[0],...shuffle(distractors,random).slice(0,3)],random)};
+      return {id:row.word,prompt:row.word,answer:row.answers[0],options:shuffle([row.answers[0],...shuffle(distractors,random).slice(0,3)],random)};
     }
   }
   throw Error('4択を作れる問題が見つかりません。');
+}
+export function prepareQuestions(wordBank,retryRows,pre1Grammar){
+  return Object.fromEntries(courses.map(course=>{
+    const grade=course.name.slice(2);
+    const rows=retryRows.filter(row=>row.grade===grade).map(row=>{
+      const options=row.choices.slice(0,4).map(choice=>choice.text.trim());
+      const answer=row.choices.find(choice=>Number(choice.number)===Number(row.answer_number))?.text.trim();
+      return {id:row.id,prompt:row.question.trim(),answer,options,role:row.review_role,number:row.question_number};
+    }).filter(row=>new Set(row.options).size===4&&row.options.includes(row.answer));
+    const words=wordBank[course.grade]?.words;
+    const grammar=course.grade==='pre1'?pre1Grammar:rows.filter(row=>row.role==='grammar'||
+      (row.role==='manual_g3'&&row.number>=13&&row.number<=15));
+    const vocabulary=words?.length?[]:rows.filter(row=>
+      ['vocab','noun','adjective','verb','adverb','phrase'].includes(row.role));
+    if(grammar.length<2||(!words?.length&&vocabulary.length<2))throw Error(course.name+'の出題データが不足しています。');
+    return [course.grade,{words,grammar,vocabulary}];
+  }));
+}
+export function question(bank,previous,random=Math.random){
+  const type=random()<0.5?'grammar':'vocabulary';
+  if(type==='vocabulary'&&bank.words?.length)return {...vocabularyQuestion(bank.words,previous,random),type};
+  const row=pick(bank[type].filter(item=>item.id!==previous),random);
+  return {id:row.id,prompt:row.prompt,answer:row.answer,options:shuffle(row.options,random),type};
 }
 const specialPower=rarity=>1.25+rarity*0.33;
 const guardEffect=rarity=>({turns:rarity===1?1:2,ratio:rarity/10});
@@ -280,7 +311,7 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   return run.foes.every(unit=>unit.hp===0)?'won':party.every(unit=>unit.hp===0)?'lost':'continue';
 }
 export const gacha={
-  odds:courses.at(-1).odds,
+  odds:advancedOdds,
   packs:[{count:5,cost:50},{count:10,cost:100}]
 };
 function drawCard(odds,random){
