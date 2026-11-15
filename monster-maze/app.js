@@ -4,9 +4,9 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
-  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
+  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,sampleCardKeys,grantRaritySamples,
   addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward
-} from './model.js?v=13';
+} from './model.js?v=14';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -50,13 +50,22 @@ function cardName(key){
   const [id,rank]=key.split('-').map(Number);
   return rarities[rank]+' '+cards[id-1].name;
 }
+function cardArt(id){
+  return group('card-art',art('card',id));
+}
+function rankedCard(tile,rarity){
+  const rank=rarities[rarity];
+  tile.classList.add('ranked-card','rarity-'+rank.toLowerCase());
+  tile.prepend(node('span',rank,'card-rank'));
+  return tile;
+}
 function unitView(unit,kind){
   const hp=node('progress');
   hp.max=unit.maxHp;
   hp.value=unit.hp;
   hp.setAttribute('aria-label',unit.name+' HP');
-  const tile=group('unit'+(unit.hp===0?' down':''),art(kind,unit.id),node('strong',unit.name),hp,node('small',unit.hp+' / '+unit.maxHp));
-  return tile;
+  const tile=group('unit'+(unit.hp===0?' down':''),(kind==='card'?cardArt(unit.id):art(kind,unit.id)),node('strong',unit.name),hp,node('small',unit.hp+' / '+unit.maxHp));
+  return kind==='card'?rankedCard(tile,unit.rarity):tile;
 }
 function battleUnit(unit,portrait){
   const fill=node('span','','hp-fill');
@@ -142,7 +151,7 @@ function lobby(){
   clear();
   pane.append(node('h2','探索隊'),group('team',...profile.team.map(key=>{
     const unit=stats(key,profile.owned[key]);
-    return group('unit',art('card',unit.id),node('strong',cardName(key)),node('small',roles[unit.role]+' · Lv.'+profile.owned[key].level));
+    return rankedCard(group('unit',cardArt(unit.id),node('strong',unit.name),node('small',roles[unit.role]+' · Lv.'+profile.owned[key].level)),unit.rarity);
   })),button('仲間カード編成',()=>collection()));
   pane.append(node('h2','迷宮を選ぶ'),group('choices',...courses.map(course=>
     button(course.name+' · '+course.floors+'階 · 英検'+({4:'4級',3:'3級',pre2:'準2級'}[course.grade]),()=>start(course),false,'primary'))));
@@ -159,7 +168,7 @@ function cardPortrait(card,key,rank,unit){
   portrait.onkeydown=event=>{
     if(event.key==='Escape')portrait.setAttribute('aria-expanded','false');
   };
-  portrait.append(art('card',card.id),node('span',rank,'card-rank'));
+  portrait.append(cardArt(card.id));
 
   const details=node('dl','','card-stats');
   for(const [label,value] of [['最大HP',unit.maxHp],['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]]){
@@ -193,6 +202,12 @@ function collection(draft=[...profile.team]){
       if(!draft.every(key=>next.owned[key]))return false;
       next.team=[...draft];
     },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
+  if(sampleCardKeys.some(key=>!profile.owned[key])){
+    pane.append(button('比較用の鉄甲ガメルを受け取る',()=>save(grantRaritySamples,()=>{
+      message('鉄甲ガメルのN・R・SR・SSRがそろいました。');
+      collection(draft);
+    })));
+  }
   for(const [role,label] of roles.entries()){
     const section=group('collection owned-cards');
     for(const card of cards.filter(item=>item.role===role)){
@@ -202,7 +217,7 @@ function collection(draft=[...profile.team]){
         if(!entry)continue;
         const picked=draft.includes(key);
         const unit=stats(key,entry);
-        const tile=group('unit owned-card rarity-'+rank.toLowerCase(),cardPortrait(card,key,rank,unit),node('strong',card.name));
+        const tile=rankedCard(group('unit owned-card',cardPortrait(card,key,rank,unit),node('strong',card.name)),rarity);
         const line=group('card-line',node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+' · 重複 '+entry.copies));
         if(rarity)line.append(node('small',card.skill+' · CT '+unit.maxCt));
         const teamToggle=button(picked?'はずす':'いれる',
@@ -360,9 +375,9 @@ function battle(){
   const pet=partyPet();
   views.set(run.caster,pet);
   const allies=group('team party-row',pet.tile,...run.team.map(unit=>{
-    const view=battleUnit(unit,art('card',unit.id));
+    const view=battleUnit(unit,cardArt(unit.id));
     views.set(unit,view);
-    const {tile}=view;
+    const tile=rankedCard(view.tile,unit.rarity);
     if(unit.rarity){
       const special=button(unit.skill+' · '+(unit.ct?'CT '+unit.ct:'発動可'),()=>{
         run.special=run.special===unit.key?null:unit.key;

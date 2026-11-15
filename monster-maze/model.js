@@ -71,6 +71,12 @@ export function normalizeProfile(value){
     recentRuns:Array.isArray(value?.recentRuns)?value.recentRuns.filter(id=>typeof id==='string').slice(-25):[]
   };
 }
+export const sampleCardKeys=rarities.map((_,rank)=>'1-'+rank);
+export function grantRaritySamples(profile){
+  const missing=sampleCardKeys.filter(key=>!profile.owned[key]);
+  for(const key of missing)profile.owned[key]={level:1,copies:0};
+  return missing.length>0;
+}
 export function stats(key,entry){
   const [id,rarity] = key.split('-').map(Number);
   const card = cards[id-1];
