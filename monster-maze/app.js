@@ -121,6 +121,45 @@ function lobby(){
   pane.append(node('h2','迷宮を選ぶ'),group('choices',...courses.map(course=>
     button(course.name+' · '+course.floors+'階 · 英検'+({4:'4級',3:'3級',pre2:'準2級'}[course.grade]),()=>start(course),false,'primary'))));
 }
+function cardPortrait(card,key,rank,unit){
+  const detailId='card-stats-'+key;
+  const portrait=button('',()=>{
+    portrait.setAttribute('aria-expanded',String(portrait.getAttribute('aria-expanded')!=='true'));
+  },false,'card-portrait');
+  portrait.setAttribute('aria-label',card.name+' '+rank+'の能力値');
+  portrait.setAttribute('aria-expanded','false');
+  portrait.setAttribute('aria-controls',detailId);
+  portrait.setAttribute('aria-describedby',detailId);
+  portrait.onkeydown=event=>{
+    if(event.key==='Escape')portrait.setAttribute('aria-expanded','false');
+  };
+  portrait.append(art('card',card.id),node('span',rank,'card-rank'));
+
+  const details=node('dl','','card-stats');
+  for(const [label,value] of [['最大HP',unit.maxHp],['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]]){
+    details.append(node('dt',label),node('dd',String(value)));
+  }
+  details.id=detailId;
+  return group('card-preview',portrait,details);
+}
+function openCardUpgrade(card,key,entry,draft){
+  const dialog=node('dialog','','card-upgrade');
+  const title=node('h3',card.name+'を強化');
+  title.id='card-upgrade-title';
+  dialog.setAttribute('aria-labelledby',title.id);
+  const spend=useCopy=>{
+    dialog.close();
+    void save(next=>upgrade(next,key,useCopy),()=>collection(draft));
+  };
+  dialog.append(title,node('p','素材を1つ使ってLv.を1上げます。'),
+    group('choices',
+      button('結晶で強化（'+profile.crystals+'個）',()=>spend(false),!profile.crystals),
+      button('重複カードで強化（'+entry.copies+'枚）',()=>spend(true),!entry.copies)),
+    button('閉じる',()=>dialog.close()));
+  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  pane.append(dialog);
+  dialog.showModal();
+}
 function collection(draft=[...profile.team]){
   clear();
   pane.append(node('h2','仲間カード編成'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
@@ -136,18 +175,18 @@ function collection(draft=[...profile.team]){
         const entry=profile.owned[key];
         if(!entry)continue;
         const picked=draft.includes(key);
-        const portrait=group('card-portrait',art('card',card.id),node('span',rank,'card-rank'));
-        const tile=group('unit owned-card rarity-'+rank.toLowerCase(),portrait,node('strong',card.name));
+        const unit=stats(key,entry);
+        const tile=group('unit owned-card rarity-'+rank.toLowerCase(),cardPortrait(card,key,rank,unit),node('strong',card.name));
         const line=group('card-line',node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+' · 重複 '+entry.copies));
-        if(rarity)line.append(node('small',card.skill+' · CT '+stats(key,entry).maxCt));
-        const teamToggle=button(picked?'編成から外す':'編成に入れる',
+        if(rarity)line.append(node('small',card.skill+' · CT '+unit.maxCt));
+        const teamToggle=button(picked?'はずす':'いれる',
           ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
         teamToggle.setAttribute('aria-pressed',String(picked));
-        line.append(teamToggle);
-        if(entry.level<levelCaps[rarity]){
-          line.append(button('結晶で強化',()=>save(next=>upgrade(next,key,false),()=>collection(draft)),!profile.crystals));
-          if(entry.copies)line.append(button('重複カードで強化',()=>save(next=>upgrade(next,key,true),()=>collection(draft))));
-        }
+        teamToggle.setAttribute('aria-label',card.name+' '+rank+(picked?'を編成からはずす':'を編成にいれる'));
+        const atCap=entry.level>=levelCaps[rarity];
+        const strengthen=button(atCap?'最大Lv.':'強化',()=>openCardUpgrade(card,key,entry,draft),
+          atCap||(!profile.crystals&&!entry.copies));
+        line.append(group('card-actions',teamToggle,strengthen));
         tile.append(line);
         section.append(tile);
       }

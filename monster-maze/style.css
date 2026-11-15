@@ -90,3 +90,14 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 @keyframes battle-hit{25%{transform:translateX(-4px);filter:brightness(1.45)}65%{transform:translateX(3px)}}
 @keyframes damage-rise{from{transform:translateY(.3rem);opacity:.65}to{transform:translateY(-.2rem);opacity:1}}
 @media(prefers-reduced-motion:reduce){.hp-fill{transition:none}.battle-unit.taking-hit img,.battle-delta{animation:none}}
+
+.card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.3rem}
+.card-actions button{padding:.35rem .1rem;white-space:nowrap}
+.card-preview{position:relative;width:100%}
+.owned-card button.card-portrait{border:1px solid transparent;padding:.8rem .2rem .2rem;background:var(--rank-panel)}
+.card-stats{position:absolute;z-index:1;inset:0;display:grid;align-content:center;grid-template-columns:1fr auto;gap:.2rem .35rem;margin:0;padding:.4rem;border:1px solid var(--edge);border-radius:.5rem;background:#1d162b;text-align:left;font-size:.76rem;line-height:1.25;visibility:hidden;pointer-events:none}
+.card-stats dd{margin:0;color:var(--rank-ink);font-variant-numeric:tabular-nums;font-weight:700}
+.card-portrait[aria-expanded=true]+.card-stats,.card-portrait:focus-visible+.card-stats{visibility:visible}
+@media(hover:hover){.owned-card:hover .card-stats{visibility:visible}}
+.card-upgrade{width:min(calc(100% - 2rem),24rem);padding:1rem;border:1px solid #79658d;border-radius:.8rem;background:#272139;color:inherit}
+.card-upgrade::backdrop{background:#13101fc9}
