@@ -51,7 +51,22 @@ export function buildTarget1000Questions(entries,{random=Math.random}={}){
     const fallback=tokens.filter(token=>token.lower.length>=3&&
       !['the','and','one','ones','not','have','has','are','you'].includes(token.lower));
     const maskedToken=links.at(-1)||fallback.at(-1);
-    if(!maskedToken)continue;
+    if(!maskedToken){
+      // No.717 describes the Japanese comparative-correlative pattern.
+      if(phrase.includes('比較級')){
+        const answer='比較級',options=shuffle(['比較級','原級','最上級','不定詞'],random);
+        questions.push({
+          id,source:'target1000',type:'idiom',no:row.no,phrase,
+          question:'ターゲット1000の熟語を完成させよう：'+phrase.replace('比較級','(____)'),
+          prompt:'ターゲット1000の熟語を完成させよう：'+phrase.replace('比較級','(____)'),
+          answer,options,correctIndex:options.indexOf(answer),
+          choices:options.map((text,i)=>({number:i+1,text})),
+          answer_number:options.indexOf(answer)+1,
+          tip:'元の表現：'+phrase
+        });
+      }
+      continue;
+    }
     const correct=maskedToken.text;
     const masked=phrase.slice(0,maskedToken.index)+'(____)'+
       phrase.slice(maskedToken.index+correct.length);
