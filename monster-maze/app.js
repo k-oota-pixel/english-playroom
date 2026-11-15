@@ -5,8 +5,8 @@ import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,sampleCardKeys,grantRaritySamples,
-  addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward
-} from './model.js?v=14';
+  addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=16';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -14,7 +14,7 @@ enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 const pane=document.querySelector('#game');
 const status=document.querySelector('#status');
-let profile,petData,cardRef,words,run,walkView,busy=false,clock,generation=0;
+let profile,petData,cardRef,walletRef,words,run,walkView,busy=false,clock,generation=0;
 
 function node(tag,content='',cls=''){
   const el=document.createElement(tag);
@@ -115,29 +115,45 @@ function message(text=''){
   status.textContent=text;
   status.hidden=!text;
 }
-async function save(change,onSuccess,onFailure){
+async function save(change,onSuccess,purchase=null){
   if(busy||!cardRef)return;
   busy=true;
   const current=generation;
   const ref=cardRef;
+  const wallet=walletRef;
   pane.inert=true;
   message('保存中…');
   try{
     const updated=await runTransaction(db,async tx=>{
       const snapshot=await tx.get(ref);
       const next=normalizeProfile(snapshot.data());
+      let balance=null;
+      if(purchase){
+        const walletSnapshot=await tx.get(wallet);
+        balance=coinBalance(walletSnapshot.data());
+        if(next.recentRuns.includes(purchase.id))return {next,balance};
+        if(balance<purchase.cost)return {next,balance,insufficient:true};
+        balance-=purchase.cost;
+      }
       if(change(next)===false)throw Error('最新の所持カードや素材を確認してください。');
+      if(purchase)tx.update(wallet,{coins:balance});
       tx.set(ref,next);
-      return next;
+      return {next,balance};
     });
     if(current!==generation)return;
-    profile=updated;
+    profile=updated.next;
+    if(updated.balance!==null)petData={...petData,coins:updated.balance};
+    if(updated.insufficient){
+      showGacha();
+      message('コインが足りません。現在の残高は'+updated.balance+'コインです。');
+      return;
+    }
     message('保存しました。');
     onSuccess();
   }catch(error){
     if(current!==generation)return;
     message('保存できませんでした。'+error.message);
-    onFailure?.();
+
   }finally{
     if(current===generation){
       busy=false;
@@ -152,9 +168,41 @@ function lobby(){
   pane.append(node('h2','探索隊'),group('team',...profile.team.map(key=>{
     const unit=stats(key,profile.owned[key]);
     return rankedCard(group('unit',cardArt(unit.id),node('strong',unit.name),node('small',roles[unit.role]+' · Lv.'+profile.owned[key].level)),unit.rarity);
-  })),button('仲間カード編成',()=>collection()));
+  })),group('choices',button('仲間カード編成',()=>collection()),button('仲間カードガチャ',()=>{message();showGacha();})));
   pane.append(node('h2','迷宮を選ぶ'),group('choices',...courses.map(course=>
     button(course.name+' · '+course.floors+'階 · 英検'+({4:'4級',3:'3級',pre2:'準2級'}[course.grade]),()=>start(course),false,'primary'))));
+}
+function coinBalance(data){
+  const balance=Number(data?.coins);
+  return Number.isSafeInteger(balance)&&balance>0?balance:0;
+}
+function showGacha(drawn=[]){
+  clear();
+  const {cost,count,odds}=gachaRules;
+  const balance=coinBalance(petData);
+  const oddsText=rarities.map((rank,index)=>rank+' '+odds[index]+'％').join('　');
+  pane.append(node('h2','仲間カードガチャ'),node('p',cost+'コインで'+count+'枚 · 所持 '+balance+'コイン'),
+    node('p','1枚ごとの排出率　'+oddsText,'gacha-odds'));
+  if(drawn.length){
+    const results=group('collection gacha-results');
+    for(const [index,key] of drawn.entries()){
+      const [id,rank]=key.split('-').map(Number);
+      const card=rankedCard(group('unit',cardArt(id),node('strong',cards[id-1].name)),rank);
+      const reveal=group('gacha-reveal',card);
+      reveal.style.setProperty('--delay',index*85+'ms');
+      results.append(reveal);
+    }
+    pane.append(node('h3','獲得したカード'),results);
+  }
+  let pending=null;
+  const draw=button(cost+'コインで'+count+'枚引く',()=>{
+    if(busy)return;
+    pending??={id:'gacha-'+crypto.randomUUID(),cost,cards:drawGacha()};
+    void save(next=>addReward(next,pending.id,{cards:pending.cards,crystals:0}),()=>showGacha(pending.cards),pending);
+  },balance<cost,'primary');
+  pane.append(group('choices',draw,button('仲間カード編成',()=>{message();collection();}),
+    button('探索に戻る',()=>{message();lobby();})));
+  if(balance<cost)pane.append(node('p','あと'+(cost-balance)+'コインで引けます。'));
 }
 function cardPortrait(card,key,rank,unit){
   const detailId='card-stats-'+key;
@@ -561,6 +609,7 @@ async function initialize(user){
   pane.hidden=true;
   clear();
   cardRef=null;
+  walletRef=null;
   message('管理者権限を確認中…');
   try{
     const session=user&&await accountSession(user);
@@ -578,6 +627,7 @@ async function initialize(user){
     const [snapshot,data,pet]=await Promise.all([getDoc(ref),wordBank,getDoc(wallet)]);
     if(current!==generation)return;
     cardRef=ref;
+    walletRef=wallet;
     words=data.grades;
     petData=pet.data();
     profile=normalizeProfile(snapshot.data());

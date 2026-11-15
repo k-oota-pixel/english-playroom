@@ -212,3 +212,9 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 @media(max-width:600px),(max-height:740px){.party-row .card-art{width:min(100%,2.85rem)}}
 .rarity-ssr.taking-hit .card-art img{animation:battle-hit .28s ease-out}
 @media(prefers-reduced-motion:reduce){.rarity-ssr.taking-hit .card-art img{animation:none}}
+
+.gacha-odds{color:var(--muted);font-variant-numeric:tabular-nums}
+.gacha-results{grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr));max-width:48rem}
+.gacha-reveal{animation:gacha-reveal .3s ease-out var(--delay) both}
+@keyframes gacha-reveal{from{opacity:0;transform:translateY(.45rem) scale(.94)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.gacha-reveal{animation:none}}
