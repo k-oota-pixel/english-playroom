@@ -4,10 +4,10 @@ import {strengthLevel,strengthStatsFromAllocation} from '../pet-strength-model.j
 export const mazeSpells=MAGIC_SPELLS.filter(spell=>spell.kind==='attack'||spell.kind==='heal');
 export function createCaster(data={}){
   const level=strengthLevel(data.petStrengthLevelPoints,data.petStrength);
-  const {hp,mp}=strengthStatsFromAllocation(data.petStrength,data.petBaseStats,{
+  const {hp,mp,attack}=strengthStatsFromAllocation(data.petStrength,data.petBaseStats,{
     ageDays:data.petLifeDays,adult:!!data.petHatched&&data.petAdult!==false
   });
-  return {name:data.petName||'ぺっと',level,hp,maxHp:hp,mp,maxMp:mp};
+  return {name:data.petName||'ぺっと',level,hp,maxHp:hp,mp,maxMp:mp,attack};
 }
 export function spellAvailable(caster,spell){
   return !!caster&&caster.hp>0&&caster.level>=spell.level&&caster.mp>=spell.mpCost;
@@ -216,6 +216,10 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   const strike=(actor,enemy,power,kind,name)=>changeHp(actor,enemy,
     Math.max(0,enemy.hp-Math.round(power*(enemy.weak===kind?1.25:0.9))),kind,name);
   if(correct){
+    if(action==='physical'&&run.caster.hp>0){
+      const enemy=enemyTarget();
+      if(enemy)strike(run.caster,enemy,run.caster.attack,action,roles[0]);
+    }
     let petCast=false;
     const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
     if(spell && (spell.kind==='heal'?'heal':'magic')===action && spellAvailable(run.caster,spell)){
