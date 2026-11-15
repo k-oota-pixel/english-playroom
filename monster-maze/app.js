@@ -197,8 +197,10 @@ function openGacha(pack){
   const title=node('h2',gachaLabel(pack));
   title.id='gacha-title';
   dialog.setAttribute('aria-labelledby',title.id);
-  const wheel=group('gacha-wheel',node('span','✦'));
-  wheel.setAttribute('aria-hidden','true');
+  const globe=group('gacha-globe',...Array.from({length:5},()=>node('span','','gacha-capsule')));
+  const machine=group('gacha-machine',node('span','','gacha-cap'),globe,
+    group('gacha-base',node('span','','gacha-handle'),node('span','','gacha-chute')));
+  machine.setAttribute('aria-hidden','true');
   const cue=node('p','「回す」でカードを引く','gacha-cue');
   cue.setAttribute('role','status');
   const close=button('閉じる',()=>dialog.close());
@@ -207,22 +209,26 @@ function openGacha(pack){
     if(busy||roll.disabled)return;
     roll.disabled=true;
     close.disabled=true;
-    wheel.classList.add('rolling');
+    machine.classList.add('rolling');
     cue.textContent='ガチャを回しています…';
     pending??={id:'gacha-'+crypto.randomUUID(),cost:pack.cost,cards:drawGacha(pack.count),
       onFailure:detail=>{
-        wheel.classList.remove('rolling');
+        machine.classList.remove('rolling');
         cue.textContent=detail;
         roll.disabled=coinBalance(petData)<pack.cost;
         close.disabled=false;
       }};
     void save(next=>addReward(next,pending.id,{cards:pending.cards,crystals:0}),()=>{
-      wheel.classList.remove('rolling');
+      machine.classList.remove('rolling');
       const rainbow=pending.cards.some(key=>key.endsWith('-3'));
-      if(rainbow)dialog.classList.add('gacha-ssr');
-      cue.textContent=rainbow?'SSR確定！':'獲得したカード';
+      if(rainbow){
+        const sparkles=group('gacha-sparkles',...Array.from({length:24},()=>node('span','✦')));
+        sparkles.setAttribute('aria-hidden','true');
+        dialog.append(sparkles);
+      }
+      cue.textContent='獲得したカード';
       const results=group('collection gacha-results');
-      const lead=rainbow?760:180;
+      const lead=rainbow?980:180;
       for(const [index,key] of pending.cards.entries()){
         const [id,rank]=key.split('-').map(Number);
         const card=rankedCard(group('unit',cardArt(id),node('strong',cards[id-1].name)),rank);
@@ -237,7 +243,7 @@ function openGacha(pack){
     },pending);
   },false,'primary');
   const actions=group('choices gacha-dialog-actions',roll,close);
-  dialog.append(title,wheel,cue,actions);
+  dialog.append(title,machine,cue,actions);
   dialog.addEventListener('cancel',event=>{if(busy)event.preventDefault();});
   dialog.addEventListener('close',()=>{
     dialog.remove();
