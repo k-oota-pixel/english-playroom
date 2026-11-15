@@ -16,7 +16,7 @@ enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 const pane=document.querySelector('#game');
 const status=document.querySelector('#status');
-let profile,legacyProfile,petData,walletRef,questions,run,walkView,pendingTeam,busy=false,clock,generation=0;
+let profile,legacyProfile,petData,walletRef,questions,run,walkView,busy=false,clock,generation=0;
 
 function node(tag,content='',cls=''){
   const el=document.createElement(tag);
@@ -185,7 +185,7 @@ function lobby(){
   const petCard=rosterCard(petSprite('roster-pet-art'),pet.name,'ぺっと · Lv.'+pet.level,
     [['最大HP',pet.maxHp],['最大MP',pet.maxMp],['物理攻撃',pet.attack]],spellList);
   petCard.classList.add('party-pet');
-  const allies=(pendingTeam??profile.team).map(key=>{
+  const allies=profile.team.map(key=>{
     const entry=profile.owned[key];
     const unit=stats(key,entry);
     const special=unit.rarity?skillInfo(unit):null;
@@ -341,14 +341,13 @@ function openCardUpgrade(card,key,entry,draft){
   pane.append(dialog);
   dialog.showModal();
 }
-function collection(draft=[...(pendingTeam??profile.team)]){
+function collection(draft=[...profile.team]){
   clear();
   pane.append(node('h2','仲間カード編成'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
-    group('choices',button('探索に戻る',lobby),button('編成を適用',()=>{
-      pendingTeam=draft.join()===profile.team.join()?null:[...draft];
-      lobby();
-      message(pendingTeam?'この編成で出発します。編成は探索終了時に保存されます。':'保存済みの編成に戻しました。');
-    },draft.length!==3||draft.join()===(pendingTeam??profile.team).join(),'primary')));
+    group('choices',button('探索に戻る',lobby),button('編成を保存',()=>save(next=>{
+      if(!draft.every(key=>next.owned[key]))return false;
+      next.team=[...draft];
+    },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
   if(sampleCardKeys.some(key=>!profile.owned[key])){
     pane.append(button('比較用の鉄甲ガメルを受け取る',()=>save(grantRaritySamples,()=>{
       message('鉄甲ガメルのN・R・SR・SSRがそろいました。');
@@ -382,8 +381,8 @@ function start(course){
   message();
   const initialInventory=normalizeDungeonInventory(petData.petDungeonItems);
   run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],foundItems:{},mistakes:new Map(),chestPlan:planChests(course),
-    initialInventory,inventory:{...initialInventory},formation:pendingTeam,
-    caster:createCaster(petData),maze:generateMaze(1,course),team:(pendingTeam??profile.team).map(key=>stats(key,profile.owned[key]))};
+    initialInventory,inventory:{...initialInventory},
+    caster:createCaster(petData),maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
   explore();
 }
 const moveLabels=['上','右','下','左'];
@@ -819,22 +818,14 @@ function results(saved=false){
   if(items.length)pane.append(node('h3','見つけたアイテム'),
     ...items.map(item=>node('p',item.icon+' '+item.name+' ×'+run.foundItems[item.id])));
   const itemChanges=Object.keys(run.inventory).filter(key=>run.inventory[key]!==run.initialInventory[key]);
-  if(saved||(!reward.coins&&!reward.crystals&&!counts.size&&!itemChanges.length&&!run.formation)){
+  if(saved||(!reward.coins&&!reward.crystals&&!counts.size&&!itemChanges.length)){
     pane.append(button('探索に戻る',lobby,false,'primary'));
   }else{
     const itemDelta=itemChanges.length?Object.fromEntries(itemChanges.map(key=>
       [key,run.inventory[key]-run.initialInventory[key]])):null;
     const label=reward.coins||reward.crystals||counts.size||items.length?'報酬を受け取る':'探索結果を保存';
-    pane.append(button(label,()=>save(next=>{
-      if(run.formation){
-        if(!run.formation.every(key=>next.owned[key]))return false;
-        next.team=[...run.formation];
-      }
-      addReward(next,id,reward);
-    },()=>{
-      if(run.formation)pendingTeam=null;
-      results(true);
-    },{id,delta:reward.coins,itemDelta}),false,'primary'));
+    pane.append(button(label,()=>save(next=>addReward(next,id,reward),()=>results(true),
+      {id,delta:reward.coins,itemDelta}),false,'primary'));
   }
 }
 async function loadRetryChoiceMeanings(){
@@ -854,7 +845,6 @@ async function initialize(user){
   pane.hidden=true;
   clear();
   legacyProfile=null;
-  pendingTeam=null;
   walletRef=null;
   message('管理者権限を確認中…');
   try{
