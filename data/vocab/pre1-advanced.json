@@ -151,7 +151,7 @@
       "id": "pre1_t1900_1514",
       "no": 1514,
       "en": "populate",
-      "ja": "住みつく",
+      "ja": "（場所に）居住する",
       "pos": "v",
       "sourceId": "t1900_1514",
       "levelTag": "pre1_approx"
@@ -853,7 +853,7 @@
       "id": "pre1_t1900_1592",
       "no": 1592,
       "en": "sore",
-      "ja": "痛む",
+      "ja": "痛い",
       "pos": "adj",
       "sourceId": "t1900_1592",
       "levelTag": "pre1_approx"
