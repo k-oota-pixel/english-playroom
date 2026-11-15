@@ -153,7 +153,8 @@ export function movePet(maze,dx,dy,random=Math.random){
     return {kind:'chest'};
   }
   maze.steps++;
-  if(maze.steps<5||(maze.steps<13&&random()>=0.1))return {kind:'walk'};
+  // The shortest route to an exit has at least ten moves, including landmarks.
+  if(maze.steps<3||(maze.steps<7&&random()>=0.16))return {kind:'walk'};
   maze.steps=0;
   return {kind:'battle',id:1+Math.floor(random()*enemies.length)};
 }

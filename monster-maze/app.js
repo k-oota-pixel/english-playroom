@@ -6,7 +6,7 @@ import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
   addReward,directions,generateMaze,movePet,makeFoes,question,playTurn,drawReward
-} from './model.js?v=2';
+} from './model.js?v=3';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -151,16 +151,19 @@ function explore(){
   const map=group('maze-map');
   map.setAttribute('role','group');
   map.setAttribute('aria-label','迷宮マップ');
-  map.style.setProperty('--cols',maze.tiles[0].length);
+  const world=group('maze-world');
+  world.style.setProperty('--cols',maze.tiles[0].length);
+  const vision=group('maze-vision',world);
+  map.append(vision);
   const tiles=maze.tiles.map((row,y)=>row.map((passable,x)=>{
     if(!passable){
       const wall=node('span','','maze-wall');
       wall.setAttribute('aria-hidden','true');
-      map.append(wall);
+      world.append(wall);
       return null;
     }
     const tile=button('',()=>walk(x-maze.x,y-maze.y),false,'maze-tile');
-    map.append(tile);
+    world.append(tile);
     return tile;
   }));
   const pet=node('span','','maze-pet');
@@ -183,16 +186,20 @@ function explore(){
   pane.append(hint,map,controls,node('small','🧰 宝箱　'+exit),report,
     group('team',...run.team.map(unit=>unitView(unit,'card'))),
     button('探索を終了',leave));
-  walkView={map,tiles,pet,report};
+  map.append(pet);
+  walkView={world,tiles,report};
   updateMap();
 }
 function updateMap(){
   const {maze}=run;
-  const {map,tiles,pet,report}=walkView;
+  const {world,tiles,report}=walkView;
   for(const [y,row] of tiles.entries()){
     for(const [x,tile] of row.entries()){
       if(!tile)continue;
-      const here=x===maze.x&&y===maze.y;
+      const distance=Math.hypot(x-maze.x,y-maze.y);
+      const here=distance===0;
+      tile.disabled=distance!==1;
+      tile.setAttribute('aria-hidden',String(distance>3));
       const chest=x===maze.chestX&&y===maze.chestY&&!maze.chestOpened;
       const exit=x===maze.exitX&&y===maze.exitY;
       const label=chest?'宝箱':exit?(maze.bossId?'ボス部屋':'次の階'):'通路';
@@ -203,9 +210,8 @@ function updateMap(){
       tile.textContent=here?'':chest?'🧰':exit?(maze.bossId?'👑':'🚪'):'';
     }
   }
-  map.append(pet);
-  pet.style.setProperty('--x',maze.x);
-  pet.style.setProperty('--y',maze.y);
+  world.style.setProperty('--x',maze.x);
+  world.style.setProperty('--y',maze.y);
   report.textContent=run.found.length?'見つけたカード '+run.found.length+'枚':'';
 }
 function walk(dx,dy){
