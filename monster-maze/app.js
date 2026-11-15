@@ -4,9 +4,9 @@ import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
-  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,sampleCardKeys,grantRaritySamples,
+  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
   addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=17';
+} from './model.js?v=18';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -163,14 +163,34 @@ async function save(change,onSuccess,purchase=null){
     }
   }
 }
+function companionStats(unit){
+  return [['最大HP',unit.maxHp],['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]];
+}
+function statList(entries,className){
+  const list=node('dl','',className);
+  for(const [label,value] of entries)list.append(node('dt',label),node('dd',String(value)));
+  return list;
+}
+function rosterCard(art,name,subtitle,entries){
+  return group('unit roster-card',art,group('roster-info',
+    node('strong',name),node('small',subtitle),statList(entries,'roster-stats')));
+}
 function lobby(){
   run=null;
   walkView=null;
   clear();
-  pane.append(node('h2','探索隊'),group('team',...profile.team.map(key=>{
-    const unit=stats(key,profile.owned[key]);
-    return rankedCard(group('unit',cardArt(unit.id),node('strong',unit.name),node('small',roles[unit.role]+' · Lv.'+profile.owned[key].level)),unit.rarity);
-  })),group('choices',button('仲間カード編成',()=>collection()),button('仲間カードガチャ',()=>{message();showGacha();})));
+  const pet=createCaster(petData);
+  const petCard=rosterCard(petSprite('roster-pet-art'),pet.name,'ぺっと · Lv.'+pet.level,
+    [['最大HP',pet.maxHp],['最大MP',pet.maxMp],['物理攻撃',pet.attack]]);
+  petCard.classList.add('party-pet');
+  const allies=profile.team.map(key=>{
+    const entry=profile.owned[key];
+    const unit=stats(key,entry);
+    return rankedCard(rosterCard(cardArt(unit.id),unit.name,roles[unit.role]+' · Lv.'+entry.level,
+      companionStats(unit)),unit.rarity);
+  });
+  pane.append(node('h2','探索隊'),group('roster',petCard,...allies),
+    group('choices',button('仲間カード編成',()=>collection()),button('仲間カードガチャ',()=>{message();showGacha();})));
   pane.append(node('h2','迷宮を選ぶ'),group('choices',...courses.map(course=>
     button(course.name+' · '+course.floors+'階 · 英検'+({4:'4級',3:'3級',pre2:'準2級'}[course.grade]),()=>start(course),false,'primary'))));
 }
@@ -267,12 +287,24 @@ function cardPortrait(card,key,rank,unit){
   };
   portrait.append(cardArt(card.id));
 
-  const details=node('dl','','card-stats');
-  for(const [label,value] of [['最大HP',unit.maxHp],['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]]){
-    details.append(node('dt',label),node('dd',String(value)));
-  }
+  const details=statList(companionStats(unit),'card-stats');
   details.id=detailId;
   return group('card-preview',portrait,details);
+}
+function skillInfo(unit){
+  const detail=node('span',specialDescription(unit),'skill-detail');
+  detail.id='skill-'+unit.key;
+  const toggle=button(unit.skill,()=>{
+    toggle.setAttribute('aria-expanded',String(toggle.getAttribute('aria-expanded')!=='true'));
+  },false,'skill-toggle');
+  toggle.setAttribute('aria-expanded','false');
+  toggle.setAttribute('aria-controls',detail.id);
+  toggle.setAttribute('aria-describedby',detail.id);
+  toggle.onblur=()=>toggle.setAttribute('aria-expanded','false');
+  toggle.onkeydown=event=>{
+    if(event.key==='Escape')toggle.setAttribute('aria-expanded','false');
+  };
+  return group('skill-info',toggle,node('small','CT '+unit.maxCt),detail);
 }
 function openCardUpgrade(card,key,entry,draft){
   const dialog=node('dialog','','card-upgrade');
@@ -316,7 +348,7 @@ function collection(draft=[...profile.team]){
         const unit=stats(key,entry);
         const tile=rankedCard(group('unit owned-card',cardPortrait(card,key,rank,unit),node('strong',card.name)),rarity);
         const line=group('card-line',node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+' · 重複 '+entry.copies));
-        if(rarity)line.append(node('small',card.skill+' · CT '+unit.maxCt));
+        if(rarity)line.append(skillInfo(unit));
         const teamToggle=button(picked?'はずす':'いれる',
           ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
         teamToggle.setAttribute('aria-pressed',String(picked));

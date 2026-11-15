@@ -201,6 +201,18 @@ export function question(words,previous,random=Math.random){
   }
   throw Error('4択を作れる問題が見つかりません。');
 }
+const specialPower=rarity=>1.25+rarity*0.33;
+const guardEffect=rarity=>({turns:rarity===1?1:2,ratio:rarity/10});
+export function specialDescription(unit){
+  if(unit.effect==='guard'){
+    const {turns,ratio}=guardEffect(unit.rarity);
+    return turns+'ターン、味方全員が受けるダメージを'+Math.round(ratio*100)+'％軽減する。発動したターンを含む。';
+  }
+  const power=Math.round(specialPower(unit.rarity)*100)+'％';
+  if(unit.effect==='heal')return '残りHPの割合が最も低い味方1体を、回復力の'+power+'分だけ回復する。';
+  const target=unit.effect.endsWith('All')?'敵全体':'敵1体';
+  return target+'に、通常の'+power+'の威力で'+roles[unit.role]+'を行う。';
+}
 const actionRoles=['physical','magic','heal'];
 export function canJoinAction(unit,action){
   return unit.hp>0&&actionRoles[unit.role]===action;
@@ -243,8 +255,8 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
       const enemy=enemyTarget();
       if(!enemy)break;
       if(unit===special){
-        const multiplier=1.25+unit.rarity*0.33;
-        if(unit.effect==='guard') run.guard={turns:unit.rarity===1?1:2,ratio:unit.rarity/10};
+        const multiplier=specialPower(unit.rarity);
+        if(unit.effect==='guard') run.guard=guardEffect(unit.rarity);
         else if(unit.effect==='heal')heal(unit,mostInjured(),Math.round(unit.heal*multiplier),unit.skill);
         else {
           const targets=unit.effect.endsWith('All')?run.foes.filter(foe=>foe.hp>0):[enemy];
