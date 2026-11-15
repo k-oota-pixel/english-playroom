@@ -98,41 +98,42 @@ function lobby(){
   pane.append(node('h2','探索隊'),group('team',...profile.team.map(key=>{
     const unit=stats(key,profile.owned[key]);
     return group('unit',art('card',unit.id),node('strong',cardName(key)),node('small',roles[unit.role]+' · Lv.'+profile.owned[key].level));
-  })),button('仲間カード図鑑・編成',()=>collection()));
+  })),button('仲間カード編成',()=>collection()));
   pane.append(node('h2','迷宮を選ぶ'),group('choices',...courses.map(course=>
     button(course.name+' · '+course.floors+'階 · 英検'+({4:'4級',3:'3級',pre2:'準2級'}[course.grade]),()=>start(course),false,'primary'))));
 }
 function collection(draft=[...profile.team]){
   clear();
-  pane.append(node('h2','仲間カード図鑑'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
+  pane.append(node('h2','仲間カード編成'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
     group('choices',button('探索に戻る',lobby),button('編成を保存',()=>save(next=>{
       if(!draft.every(key=>next.owned[key]))return false;
       next.team=[...draft];
     },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
-  for(let role=0;role<3;role++){
-    const section=group('collection');
+  for(const [role,label] of roles.entries()){
+    const section=group('collection owned-cards');
     for(const card of cards.filter(item=>item.role===role)){
-      const tile=group('unit',art('card',card.id),node('strong',card.name));
-      for(let rarity=0;rarity<4;rarity++){
+      for(const [rarity,rank] of rarities.entries()){
         const key=card.id+'-'+rarity;
         const entry=profile.owned[key];
-        if(!entry){
-          tile.append(node('small',rarities[rarity]+'　未入手'));
-          continue;
-        }
+        if(!entry)continue;
         const picked=draft.includes(key);
-        const line=group('card-line',node('small',rarities[rarity]+' Lv.'+entry.level+' / '+levelCaps[rarity]+' · 重複 '+entry.copies));
+        const portrait=group('card-portrait',art('card',card.id),node('span',rank,'card-rank'));
+        const tile=group('unit owned-card rarity-'+rank.toLowerCase(),portrait,node('strong',card.name));
+        const line=group('card-line',node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+' · 重複 '+entry.copies));
         if(rarity)line.append(node('small',card.skill+' · CT '+stats(key,entry).maxCt));
-        line.append(button(picked?'編成から外す':'編成に入れる',()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3));
+        const teamToggle=button(picked?'編成から外す':'編成に入れる',
+          ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
+        teamToggle.setAttribute('aria-pressed',String(picked));
+        line.append(teamToggle);
         if(entry.level<levelCaps[rarity]){
           line.append(button('結晶で強化',()=>save(next=>upgrade(next,key,false),()=>collection(draft)),!profile.crystals));
           if(entry.copies)line.append(button('重複カードで強化',()=>save(next=>upgrade(next,key,true),()=>collection(draft))));
         }
         tile.append(line);
+        section.append(tile);
       }
-      section.append(tile);
     }
-    pane.append(node('h3',roles[role]),section);
+    if(section.childElementCount) pane.append(node('h3',label),section);
   }
 }
 function start(course){

@@ -58,3 +58,14 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 
 .spell-picker{padding:.45rem .7rem;border:1px solid var(--edge);border-radius:.7rem;background:#272139}
 .spell-picker p{margin:.15rem 0;color:var(--gold);font-size:.92rem}
+
+.owned-cards{grid-template-columns:repeat(auto-fill,minmax(min(100%,9rem),1fr))}
+.owned-card{--rank-border:#77717e;--rank-ink:#e0dbe3;--rank-panel:#34313d;--rank-bg:#292633;--rank-trim:transparent;border:1px solid transparent;background:linear-gradient(var(--rank-bg),#231e31) padding-box,var(--rank-border) border-box;box-shadow:inset 0 0 0 2px var(--rank-trim)}
+.card-portrait{position:relative;display:grid;place-items:center;width:100%;min-height:5rem;padding:.8rem .2rem .2rem;border-radius:.5rem;background:var(--rank-panel)}
+.card-portrait img{width:min(100%,7.7rem)}
+.card-rank{position:absolute;top:.25rem;left:.25rem;padding:.09rem .36rem;border:1px solid currentColor;border-radius:.25rem;background:#211b2e;color:var(--rank-ink);font-size:.72rem;font-weight:800;line-height:1.25}
+.rarity-r{--rank-border:#6394aa;--rank-ink:#bce6f8;--rank-panel:#263d4c;--rank-bg:#25313e}
+.rarity-sr{--rank-border:linear-gradient(145deg,#f6db9e,#a57943 45%,#f3c87d);--rank-ink:#ffdf9b;--rank-panel:#503a3b;--rank-bg:#432e38;--rank-trim:#b28b5755}
+.rarity-ssr{--rank-border:linear-gradient(145deg,#f8b3e2,#c6a8ff 34%,#8cdae5 70%,#ffe2a6);--rank-ink:#f4d5ff;--rank-panel:radial-gradient(ellipse at top,#6a477f,#273b55);--rank-bg:#422d54;--rank-trim:#d8bbfa66}
+.rarity-ssr .card-portrait::after{content:'';position:absolute;top:.55rem;right:.55rem;width:.42rem;aspect-ratio:1;transform:rotate(45deg);background:#f7e8ff;box-shadow:0 0 .5rem #e9baff;pointer-events:none}
+@media(max-width:520px){.owned-cards{grid-template-columns:repeat(auto-fill,minmax(min(100%,8.3rem),1fr))}.card-portrait img{width:min(100%,6rem)}}
