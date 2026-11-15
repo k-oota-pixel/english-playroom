@@ -8,13 +8,75 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#173d35">
 <title>エイゴダンジョンズ | もんすたでぃ</title>
-<link rel="stylesheet" href="./styles.css?v=2.4.71">
+<link rel="stylesheet" href="./styles.css?v=2.4.124">
 <link rel="stylesheet" href="./guard.css?v=2.3.14">
 <link rel="stylesheet" href="./final.css?v=2.3.22">
 </head>
 <body>
 <main class="app-shell">
-<section id="adventureSelect" class="adventure-select"><a class="back" href="../">← もんすたでぃへ</a><p class="kicker">PET ADVENTURE</p><h1>エイゴダンジョンズ</h1><p class="select-intro">英語の力で、ペットと未知の領域へ。<br>今日はどの冒険に挑戦する？</p><div class="adventure-cards"><div class="adventure-choice"><a class="adventure-card tower-card" href="?mode=tower"><img src="./tower.svg?v=1.10.21" alt="魔王の塔の風景" width="480" height="280"><div class="adventure-copy"><h2>魔王の塔</h2><strong>英単語バトル</strong><p>英単語を武器に、空へ続く塔の頂上を目指せ。</p><small>1階に敵1体 · 5階ごとにBOSS</small><span class="adventure-cta">魔王の塔に挑戦 →</span></div></a><button type="button" class="secondary-btn adventure-ranking-button" data-ranking="tower">🏆 魔王の塔ランキング</button></div><div class="adventure-choice"><a class="adventure-card dungeon-card" href="?mode=dungeon"><img src="./dungeon.svg?v=1.10.21" alt="魔物の巣窟の風景" width="480" height="280"><div class="adventure-copy"><h2>魔物の巣窟</h2><strong>英検語彙・文法バトル</strong><p>英検の問題を突破し、秘密が眠る地底深くへ。</p><small>新シーズン開幕 · 1層に敵1体 · 5層ごとにBOSS</small><span class="adventure-cta">魔物の巣窟に挑戦 →</span></div></a><button type="button" class="secondary-btn adventure-ranking-button" data-ranking="dungeon">🏆 魔物の巣窟ランキング</button></div><div class="adventure-choice"><a class="adventure-card defense-card" href="../pet-typing-defense/"><img src="./defense.svg?v=2.4.9" alt="もんすた城に迫る魔物と防衛の魔法" width="480" height="280"><div class="adventure-copy"><h2>もんすた城の防衛</h2><strong>英語タイピングバトル</strong><p>英語をタイプして魔法を放ち、迫る魔物からお城を守ろう。</p><small>イージー・ノーマル・ハードの3モード</small><span class="adventure-cta">もんすた城を守る →</span></div></a><button type="button" class="secondary-btn adventure-ranking-button" id="defenseRankingOpen">🏆 もんすた城の防衛ランキング</button></div></div><div class="ranking-actions adventure-online-actions"><a class="secondary-btn online-battle-link" href="./online-battle.html">⚔️ オンライン対戦（単語）</a></div><style>.online-battle-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;text-decoration:none;font-weight:800}</style><p class="footnote">最高到達記録はモードごとに保存されます。</p></section>
+
+<section id="adventureSelect" class="adventure-select dungeon-hub">
+  <a class="back" href="../">← もんすたでぃへ</a>
+  <header class="dungeon-hub-header">
+    <span class="dungeon-hub-eyebrow">PET ADVENTURE</span>
+    <h1>エイゴダンジョンズ</h1>
+    <p class="select-intro">英語の力で魔物を倒し、未知の領域へ進め！<br>冒険の舞台を選ぼう。</p>
+  </header>
+  <div class="adventure-cards">
+    <div class="adventure-choice">
+      <a class="adventure-card tower-card" href="?mode=tower">
+        <div class="dungeon-card-art"><img src="./hub-tower.webp?v=2.4.124" alt="輝く魔王の塔に向かって歩む勇者のイラストと「魔王の塔」のタイトル" width="560" height="315" decoding="async" fetchpriority="high"></div>
+        <div class="adventure-copy">
+          <h2 class="sr-only">魔王の塔</h2>
+          <p>英単語を武器に、塔の頂上を目指せ。</p>
+          <ul class="dungeon-mode-info">
+            <li>英単語の4択バトル</li>
+            <li>上へ上へと進むタワー形式</li>
+            <li>5階ごとに強力なボス</li>
+          </ul>
+          <span class="adventure-cta"><span aria-hidden="true">⚔️</span> 魔王の塔に挑戦する <span aria-hidden="true">❯</span></span>
+        </div>
+      </a>
+      <button type="button" class="secondary-btn adventure-ranking-button" data-ranking="tower">🏆 魔王の塔ランキング</button>
+    </div>
+    <div class="adventure-choice">
+      <a class="adventure-card dungeon-card" href="?mode=dungeon">
+        <div class="dungeon-card-art"><img src="./hub-dungeon.webp?v=2.4.124" alt="紫色に輝く水晶の洞窟に潜む魔物と「魔物の巣窟」のタイトル" width="560" height="315" decoding="async"></div>
+        <div class="adventure-copy">
+          <h2 class="sr-only">魔物の巣窟</h2>
+          <p>英検の語彙・文法問題を突破し、地底深くへ潜れ。</p>
+          <ul class="dungeon-mode-info">
+            <li>英検の語彙・文法バトル</li>
+            <li>地下へと潜るダンジョン形式</li>
+            <li>5層ごとに強力なボス</li>
+          </ul>
+          <span class="adventure-cta"><span aria-hidden="true">⚔️</span> 魔物の巣窟に挑戦する <span aria-hidden="true">❯</span></span>
+        </div>
+      </a>
+      <button type="button" class="secondary-btn adventure-ranking-button" data-ranking="dungeon">🏆 魔物の巣窟ランキング</button>
+    </div>
+    <div class="adventure-choice">
+      <a class="adventure-card defense-card" href="../pet-typing-defense/">
+        <div class="dungeon-card-art"><img src="./hub-defense.webp?v=2.4.124" alt="もんすた城の前で魔物に魔法を放つ勇者と「もんすた城の防衛」のタイトル" width="560" height="315" decoding="async"></div>
+        <div class="adventure-copy">
+          <h2 class="sr-only">もんすた城の防衛</h2>
+          <p>英語をタイプして魔法を放ち、迫る魔物から城を守れ。</p>
+          <ul class="dungeon-mode-info">
+            <li>英語タイピングバトル</li>
+            <li>次々と迫る魔物を撃退</li>
+            <li>イージー・ノーマル・ハード</li>
+          </ul>
+          <span class="adventure-cta"><span aria-hidden="true">🛡️</span> もんすた城を守る <span aria-hidden="true">❯</span></span>
+        </div>
+      </a>
+      <button type="button" class="secondary-btn adventure-ranking-button" id="defenseRankingOpen">🏆 もんすた城の防衛ランキング</button>
+    </div>
+  </div>
+  <div class="ranking-actions adventure-online-actions">
+    <a class="secondary-btn online-battle-link" href="./online-battle.html">⚔️ オンライン対戦（単語）</a>
+  </div>
+  <p class="footnote">最高到達記録はモードごとに保存されます。</p>
+</section>
 <div id="battleView" hidden>
   <header class="topbar">
     <a class="back" href="./" aria-label="冒険先を選ぶ画面へ戻る">←</a>
