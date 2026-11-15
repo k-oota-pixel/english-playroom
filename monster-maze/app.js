@@ -6,7 +6,7 @@ import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
   addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward
-} from './model.js?v=10';
+} from './model.js?v=12';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -58,7 +58,7 @@ function unitView(unit,kind){
   const tile=group('unit'+(unit.hp===0?' down':''),art(kind,unit.id),node('strong',unit.name),hp,node('small',unit.hp+' / '+unit.maxHp));
   return tile;
 }
-function battleUnit(unit,kind){
+function battleUnit(unit,portrait){
   const fill=node('span','','hp-fill');
   const meter=group('hp-meter',fill);
   meter.setAttribute('role','progressbar');
@@ -67,7 +67,7 @@ function battleUnit(unit,kind){
   const number=node('small','','battle-hp');
   const badge=node('span','','battle-delta');
   badge.setAttribute('aria-hidden','true');
-  const tile=group('unit battle-unit',art(kind,unit.id),node('strong',unit.name),meter,number,badge);
+  const tile=group('unit battle-unit',portrait,node('strong',unit.name),meter,number,badge);
   const update=hp=>{
     fill.style.transform='scaleX('+hp/unit.maxHp+')';
     meter.setAttribute('aria-valuenow',String(hp));
@@ -95,10 +95,12 @@ function petSprite(className){
 }
 function partyPet(){
   const label=node('small');
-  const tile=group('unit party-pet',petSprite('party-pet-art'),node('strong',petData?.petName||'ぺっと'),label);
-  const update=()=>{label.textContent='MP '+run.caster.mp+' / '+run.caster.maxMp;};
-  update();
-  return {tile,update};
+  const view=battleUnit(run.caster,petSprite('party-pet-art'));
+  view.tile.classList.add('party-pet');
+  view.tile.append(label);
+  const updateMp=()=>{label.textContent='MP '+run.caster.mp+' / '+run.caster.maxMp;};
+  updateMp();
+  return {...view,updateMp};
 }
 function message(text=''){
   status.textContent=text;
@@ -327,12 +329,17 @@ document.addEventListener('keydown',event=>{
   event.preventDefault();
   walk(...directions[i]);
 });
-function nextQuestion(){
+function nextQuestion(continuing=false){
   const current=question(words[run.course.grade].words,run.quiz?.word);
   run.quiz=current;
-  run.action='physical';
-  run.selectedSpell=null;
-  run.target=run.foes.findIndex(foe=>foe.hp>0);
+  const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
+  if(continuing!==true||!spell||!spellAvailable(run.caster,spell)){
+    run.selectedSpell=null;
+    if(continuing!==true||run.action==='heal')run.action='physical';
+  }
+  if(continuing!==true||!(run.foes[run.target]?.hp>0)){
+    run.target=run.foes.findIndex(foe=>foe.hp>0);
+  }
   run.special=null;
   run.deadline=Date.now()+15000;
   battle();
@@ -345,14 +352,15 @@ function battle(){
   for(const [index,foe] of run.foes.entries()){
     const target=button('',()=>{run.target=index;battle();},foe.hp===0,'target');
     target.setAttribute('aria-pressed',String(run.target===index));
-    const view=battleUnit(foe,foe.major?'boss':'enemy');
+    const view=battleUnit(foe,art(foe.major?'boss':'enemy',foe.id));
     views.set(foe,view);
     target.append(view.tile);
     enemyRow.append(target);
   }
   const pet=partyPet();
+  views.set(run.caster,pet);
   const allies=group('team party-row',pet.tile,...run.team.map(unit=>{
-    const view=battleUnit(unit,'card');
+    const view=battleUnit(unit,art('card',unit.id));
     views.set(unit,view);
     const {tile}=view;
     if(unit.rarity){
@@ -374,7 +382,7 @@ function battle(){
   const attack=button('攻撃',()=>chooseAction('physical'));
   attack.setAttribute('aria-pressed',String(run.action==='physical'));
   const magic=button('魔法',()=>{
-    if(run.action==='physical')chooseAction(run.team.some(unit=>canJoinAction(unit,'magic'))?'magic':'heal');
+    if(run.action==='physical')chooseAction('magic');
   });
   magic.setAttribute('aria-pressed',String(run.action!=='physical'));
   const actions=group('choices battle-actions',attack,magic);
@@ -384,11 +392,11 @@ function battle(){
   log.setAttribute('aria-relevant','additions');
   log.tabIndex=0;
   for(const line of run.battleLog)log.append(node('li',line));
-  log.hidden=!run.battleLog.length;
+
   const resultArea=group('battle-result',log);
   const controls=group('battle-controls',actions);
-  const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,controls});
   const timer=node('span','','timer');
+  const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,timer});
   const quiz=group('quiz',group('quiz-title',node('h3',run.quiz.word),timer),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
   stage.append(enemyRow,allies,resultArea,controls);
@@ -396,14 +404,12 @@ function battle(){
   if(run.action!=='physical'){
     const {caster}=run;
     const options=group('choices');
-    for(const [action,label] of [['magic','仲間の攻撃魔法'],['heal','仲間の回復魔法']]){
-      const choice=button(label,()=>chooseAction(action),!run.team.some(unit=>canJoinAction(unit,action)));
-      choice.setAttribute('aria-pressed',String(run.action===action&&!run.selectedSpell));
-      options.append(choice);
-    }
+    const allyMagic=button('仲間の攻撃魔法',()=>chooseAction('magic'),!run.team.some(unit=>canJoinAction(unit,'magic')));
+    allyMagic.setAttribute('aria-pressed',String(run.action==='magic'&&!run.selectedSpell));
+    options.append(allyMagic);
     for(const spell of mazeSpells){
       const action=spell.kind==='heal'?'heal':'magic';
-      const lock=caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':'';
+      const lock=caster.hp===0?' · 戦闘不能':caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':'';
       const choice=button(spell.name+' · MP '+spell.mpCost+lock,()=>chooseAction(action,spell.id),
         !spellAvailable(caster,spell));
       choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
@@ -449,13 +455,15 @@ async function launchEnergy(stage,source,target,kind){
     ],{duration:390,easing:'ease-in-out'}).finished;
   }finally{orb.remove();}
 }
-async function resolveTurn(answer,{stage,views,pet,log,resultArea,controls}){
-  if(controls.hidden||!stage.isConnected)return;
+async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
+  if(stage.dataset.resolving||!stage.isConnected)return;
+  stage.dataset.resolving='true';
   clearInterval(clock);
-  controls.hidden=true;
-  for(const el of stage.querySelectorAll('button')){
-    el.disabled=true;
-    el.removeAttribute('aria-pressed');
+  timer.textContent='行動中';
+  for(const el of stage.querySelectorAll('button'))el.disabled=true;
+  for(const choice of stage.querySelectorAll('.answers button')){
+    if(choice.textContent===run.quiz.answer)choice.classList.add('answer-correct');
+    else if(choice.textContent===answer)choice.classList.add('answer-incorrect');
   }
   const timely=Date.now()<run.deadline;
   const correct=timely&&answer===run.quiz.answer;
@@ -468,31 +476,33 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,controls}){
   if(!reduced&&events.length)await delay(240);
   for(const {actor,unit,hp,delta,kind,actionName} of events){
     if(!stage.isConnected)return;
-    const source=actor===null?pet:views.get(actor);
+    const source=views.get(actor);
     const {tile,update,badge}=views.get(unit);
     const effect=kind==='heal'?'being-healed':'taking-hit';
     if(source)source.tile.classList.add('acting');
     if(!reduced&&source)await launchEnergy(stage,source.tile,tile,kind);
     if(!stage.isConnected)return;
-    if(source===pet)pet.update();
+    if(source===pet)pet.updateMp();
     tile.classList.add(effect);
-    badge.textContent=kind==='heal'?'+'+delta:'−'+Math.abs(delta);
+    badge.textContent=(kind==='heal'?'＋':'−')+Math.abs(delta)+' HP';
     update(hp);
     addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+
       (kind==='heal'?(delta?'がHPを'+delta+'回復':'のHPは満タン'):'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':''));
-    if(!reduced)await delay(260);
+    if(!reduced)await delay(360);
     if(source)source.tile.classList.remove('acting');
     tile.classList.remove(effect);
   }
   if(!stage.isConnected)return;
-  if(result!=='continue'){
-    const outcome=node('p',result==='won'?'敵を倒した！':'探索隊は全滅した。','battle-outcome');
-    outcome.setAttribute('role','status');
-    resultArea.append(outcome);
+  if(result==='continue'){
+    nextQuestion(true);
+    return;
   }
+  timer.textContent='戦闘終了';
+  const outcome=node('p',result==='won'?'敵を倒した！':'探索隊は全滅した。','battle-outcome');
+  outcome.setAttribute('role','status');
+  resultArea.append(outcome);
   const next=result==='lost'?button('探索結果',()=>finish(false),false,'primary'):
-    result==='won'?button('進む',run.bossFight?advance:explore,false,'primary'):
-    button('次の問題',nextQuestion,false,'primary');
+    button('進む',run.bossFight?advance:explore,false,'primary');
   resultArea.append(next);
   next.focus({preventScroll:true});
 }
@@ -502,7 +512,7 @@ function advance(){
   if(run.floor===run.course.floors)return finish(true);
   run.floor++;
   run.maze=generateMaze(run.floor,run.course);
-  for(const unit of run.team){
+  for(const unit of [run.caster,...run.team]){
     if(unit.hp>0)unit.hp=Math.min(unit.maxHp,unit.hp+Math.ceil(unit.maxHp*0.15));
   }
   explore();

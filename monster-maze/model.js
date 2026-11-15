@@ -4,13 +4,13 @@ import {strengthLevel,strengthStatsFromAllocation} from '../pet-strength-model.j
 export const mazeSpells=MAGIC_SPELLS.filter(spell=>spell.kind==='attack'||spell.kind==='heal');
 export function createCaster(data={}){
   const level=strengthLevel(data.petStrengthLevelPoints,data.petStrength);
-  const {mp}=strengthStatsFromAllocation(data.petStrength,data.petBaseStats,{
+  const {hp,mp}=strengthStatsFromAllocation(data.petStrength,data.petBaseStats,{
     ageDays:data.petLifeDays,adult:!!data.petHatched&&data.petAdult!==false
   });
-  return {level,mp,maxMp:mp};
+  return {name:data.petName||'ぺっと',level,hp,maxHp:hp,mp,maxMp:mp};
 }
 export function spellAvailable(caster,spell){
-  return !!caster&&caster.level>=spell.level&&caster.mp>=spell.mpCost;
+  return !!caster&&caster.hp>0&&caster.level>=spell.level&&caster.mp>=spell.mpCost;
 }
 
 const names = [
@@ -203,7 +203,8 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   const living=run.team.filter(unit=>unit.hp>0);
   const special=correct && living.find(unit=>unit.key===specialKey && unit.rarity && unit.ct===0 && canJoinAction(unit,action));
   for(const unit of living) unit.ct=Math.max(0,unit.ct-(correct?1:0.5));
-  const mostInjured=()=>living.reduce((lowest,unit)=>
+  const party=[run.caster,...living];
+  const mostInjured=()=>party.filter(unit=>unit.hp>0).reduce((lowest,unit)=>
     !lowest||unit.hp/unit.maxHp<lowest.hp/lowest.maxHp?unit:lowest,null);
   const enemyTarget=()=>run.foes[target]?.hp>0?run.foes[target]:run.foes.find(foe=>foe.hp>0);
   const changeHp=(actor,unit,next,kind,actionName)=>{
@@ -215,17 +216,20 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   const strike=(actor,enemy,power,kind,name)=>changeHp(actor,enemy,
     Math.max(0,enemy.hp-Math.round(power*(enemy.weak===kind?1.25:0.9))),kind,name);
   if(correct){
+    let petCast=false;
     const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
     if(spell && (spell.kind==='heal'?'heal':'magic')===action && spellAvailable(run.caster,spell)){
       const recipient=action==='heal'?mostInjured():enemyTarget();
       if(recipient){
+        petCast=true;
         run.caster.mp-=spell.mpCost;
         const amount=rollMagicAmount(spell.base,random);
-        if(action==='heal')heal(null,recipient,amount,spell.name);
-        else strike(null,recipient,amount,action,spell.name);
+        if(action==='heal')heal(run.caster,recipient,amount,spell.name);
+        else strike(run.caster,recipient,amount,action,spell.name);
       }
     }
-    for(const unit of living.filter(ally=>canJoinAction(ally,action))){
+    const acting=action==='heal'&&!petCast?[]:living.filter(ally=>canJoinAction(ally,action));
+    for(const unit of acting){
       const enemy=enemyTarget();
       if(!enemy)break;
       if(unit===special){
@@ -242,7 +246,7 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
     }
   }
   for(const enemy of run.foes.filter(unit=>unit.hp>0)){
-    const available=living.filter(unit=>unit.hp>0);
+    const available=party.filter(unit=>unit.hp>0);
     if(!available.length) break;
     const victim=pick(available,random);
     const damage=Math.max(1,Math.round(enemy.power*(1-(run.guard?.ratio||0))));
@@ -251,7 +255,7 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   if(run.guard && --run.guard.turns===0) run.guard=null;
   run.turns++;
   if(correct) run.correct++;
-  return run.foes.every(unit=>unit.hp===0)?'won':run.team.every(unit=>unit.hp===0)?'lost':'continue';
+  return run.foes.every(unit=>unit.hp===0)?'won':party.every(unit=>unit.hp===0)?'lost':'continue';
 }
 export function drawReward(course,crystals,random=Math.random){
   if(random()>=course.drop) return {crystals:crystals+1,card:null};
