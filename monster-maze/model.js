@@ -1,3 +1,18 @@
+import {MAGIC_SPELLS,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.96';
+import {strengthLevel,strengthStatsFromAllocation} from '../pet-strength-model.js?v=2.3.23';
+
+export const mazeSpells=MAGIC_SPELLS.filter(spell=>spell.kind==='attack'||spell.kind==='heal');
+export function createCaster(data={}){
+  const level=strengthLevel(data.petStrengthLevelPoints,data.petStrength);
+  const {mp}=strengthStatsFromAllocation(data.petStrength,data.petBaseStats,{
+    ageDays:data.petLifeDays,adult:!!data.petHatched&&data.petAdult!==false
+  });
+  return {level,mp,maxMp:mp};
+}
+export function spellAvailable(caster,spell){
+  return !!caster&&caster.level>=spell.level&&caster.mp>=spell.mpCost;
+}
+
 const names = [
   '鉄甲ガメル','紅蓮フォクス','岩王ゴロン','トゲマル','シザーク','獅子王レオン',
   'フレアンド','クリオペン','ライコ','ヨルフクロウ','スタークラゲ','ミラーモン',
@@ -188,7 +203,21 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   const strike=(enemy,power,type)=>{
     enemy.hp=Math.max(0,enemy.hp-Math.round(power*(enemy.weak===type?1.25:0.9)));
   };
+  run.cast=null;
   if(correct){
+    const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
+    if(spell && (spell.kind==='heal'?'heal':'magic')===action && spellAvailable(run.caster,spell)){
+      const enemy=run.foes[target]?.hp>0?run.foes[target]:run.foes.find(unit=>unit.hp>0);
+      const weakest=living.reduce((low,unit)=>!low||unit.hp/unit.maxHp<low.hp/low.maxHp?unit:low,null);
+      const recipient=spell.kind==='heal'?weakest:enemy;
+      if(recipient){
+        const amount=rollMagicAmount(spell.base,random);
+        if(spell.kind==='heal')heal(recipient,amount);
+        else strike(recipient,amount,'magic');
+        run.caster.mp-=spell.mpCost;
+        run.cast=spell.name;
+      }
+    }
     for(const unit of living){
       const foes=run.foes.filter(enemy=>enemy.hp>0);
       if(!foes.length) break;

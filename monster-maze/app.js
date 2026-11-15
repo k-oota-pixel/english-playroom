@@ -5,8 +5,8 @@ import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
-  addReward,directions,generateMaze,movePet,makeFoes,question,playTurn,drawReward
-} from './model.js?v=3';
+  addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,question,playTurn,drawReward
+} from './model.js?v=4';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -138,7 +138,7 @@ function collection(draft=[...profile.team]){
 function start(course){
   message();
   run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],
-    maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
+    caster:createCaster(petData),maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
   explore();
 }
 const moveLabels=['上','右','下','左'];
@@ -199,7 +199,7 @@ function updateMap(){
       const distance=Math.hypot(x-maze.x,y-maze.y);
       const here=distance===0;
       tile.disabled=distance!==1;
-      tile.setAttribute('aria-hidden',String(distance>3));
+      tile.setAttribute('aria-hidden',String(distance>2));
       const chest=x===maze.chestX&&y===maze.chestY&&!maze.chestOpened;
       const exit=x===maze.exitX&&y===maze.exitY;
       const label=chest?'宝箱':exit?(maze.bossId?'ボス部屋':'次の階'):'通路';
@@ -252,6 +252,7 @@ function nextQuestion(){
   const current=question(words[run.course.grade].words,run.quiz?.word);
   run.quiz=current;
   run.action='physical';
+  run.selectedSpell=null;
   run.target=run.foes.findIndex(foe=>foe.hp>0);
   run.special=null;
   run.deadline=Date.now()+15000;
@@ -280,14 +281,33 @@ function battle(){
     return tile;
   }));
   const actions=group('choices',...['physical','magic','heal'].map((action,i)=>{
-    const choice=button(roles[i],()=>{run.action=action;battle();});
+    const choice=button(roles[i],()=>{run.action=action;run.selectedSpell=null;battle();});
     choice.setAttribute('aria-pressed',String(action===run.action));
     return choice;
   }));
   const timer=node('span','','timer');
   const quiz=group('quiz',group('quiz-title',node('h3',run.quiz.word),timer),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolveTurn(option),false,'primary'))));
-  pane.append(enemyRow,allies,actions,quiz,button('探索を終了',leave));
+  pane.append(enemyRow,allies,actions);
+  if(run.action!=='physical'){
+    const {caster}=run;
+    const spells=mazeSpells.filter(spell=>spell.kind===(run.action==='heal'?'heal':'attack'));
+    const options=group('choices');
+    const basic=button('仲間の魔法のみ',()=>{run.selectedSpell=null;battle();});
+    basic.setAttribute('aria-pressed',String(!run.selectedSpell));
+    options.append(basic);
+    for(const spell of spells){
+      const lock=caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':'';
+      const choice=button(spell.name+' · MP '+spell.mpCost+lock,()=>{
+        run.selectedSpell=spell.id;
+        battle();
+      },!spellAvailable(caster,spell));
+      choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
+      options.append(choice);
+    }
+    pane.append(group('spell-picker',node('p','ぺっとの魔法　MP '+caster.mp+' / '+caster.maxMp),options));
+  }
+  pane.append(quiz,button('探索を終了',leave));
   const tick=()=>{
     const seconds=Math.max(0,Math.ceil((run.deadline-Date.now())/1000));
     timer.textContent=seconds+'秒';
@@ -303,12 +323,14 @@ function resolveTurn(answer){
   const result=playTurn(run,correct,run.action,run.target,run.special);
   const feedback=correct?'正解！':(answer&&timely?'不正解':'時間切れ')+' · 正解は「'+run.quiz.answer+'」';
   const detail=result==='won'?'敵を倒した！':result==='lost'?'探索隊は全滅した。':'残った敵が反撃した。';
-  pane.append(node('h2',feedback),node('p',detail),group('team',...run.team.map(unit=>unitView(unit,'card'))));
+  pane.append(node('h2',feedback),node('p',run.cast?run.cast+'を唱えた！ '+detail:detail),group('team',...run.team.map(unit=>unitView(unit,'card'))));
   if(result==='lost')pane.append(button('探索結果',()=>finish(false),false,'primary'));
   else if(result==='won')pane.append(button('進む',run.bossFight?advance:explore,false,'primary'));
   else pane.append(button('次の問題',nextQuestion,false,'primary'));
 }
 function advance(){
+  if(run.bossFight)run.caster.mp=run.caster.maxMp;
+  run.bossFight=false;
   if(run.floor===run.course.floors)return finish(true);
   run.floor++;
   run.maze=generateMaze(run.floor,run.course);
