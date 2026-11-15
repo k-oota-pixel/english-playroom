@@ -1,13 +1,439 @@
 {
-  "generatedAt": "2026-11-14T01:26:22.622Z",
-  "editionDate": "2026-11-14",
+  "generatedAt": "2026-11-15T01:02:09.557Z",
+  "editionDate": "2026-11-15",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-14"
+    "lastSuccessfulEdition": "2026-11-15"
   },
   "articles": [
+    {
+      "id": "2026-11-15-fiji-did-ireland-a-favour-rugby",
+      "date": "2026-11-15",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "rugby",
+        "south-africa",
+        "ireland",
+        "fiji"
+      ],
+      "titleJa": "フィジーがアイルランドに助言",
+      "title": "Fiji did Ireland a favour before South Africa game",
+      "summaryJa": "元南アフリカ代表監督のジェイク・ホワイトは、フィジーがアイルランド戦の前半でアイルランドを苦しめ、南アフリカ戦に向けて良い教訓を与えたと語った。",
+      "sourcePublishedAt": "2026-11-15T00:29:26.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "フィジーの監督の言葉をもとに、アイルランド代表が次戦に向けて何を改善すべきか考えよう。",
+        "followUpJa": "アイルランドの課題についてどのようなアドバイスがあったか振り返りましょう。",
+        "questions": {
+          "5級": "Did Fiji play Ireland in a rugby game?",
+          "4級": "Who is the head coach of Fiji?",
+          "3級": "Why did Jake White say Fiji did Ireland a favour?",
+          "準2級": "What did Jake White say about how South Africa would play against Ireland?",
+          "2級": "What specific mistakes did Fiji make that South Africa would have punished?",
+          "準1級": "How did Andy Farrell respond to Jake White's comments about Ireland's performance?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Fiji and Ireland",
+          "text": "Fiji played a rugby game against Ireland. Fiji lost the game by forty-three to fifteen. Ireland scored many points in the second half. The Fiji coach is Jake White. He said Fiji helped Ireland. Ireland will play South Africa next week. They need to play very well.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Rugby Match in Dublin",
+          "text": "Fiji played against Ireland at Aviva Stadium in Dublin. Fiji played very well in the first half of the rugby match. But Ireland scored twenty-six points in the second half to win forty-three to fifteen. Fiji head coach Jake White said his team did Ireland a favour. He thinks Ireland must improve before they play South Africa next week.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Fiji Helps Ireland Improve",
+          "text": "Fiji played a Nations Championship match against Ireland in Dublin. Although Fiji lost forty-three to fifteen, they made things difficult for Ireland during a close first half. After the match, Fiji head coach Jake White said his team did Ireland a favour. He explained that if Ireland play with such sluggish spells against South Africa next week, they will struggle. Ireland boss Andy Farrell admitted his team learned good lessons from the game for next week.",
+          "wordCount": 76
+        },
+        "準2級": {
+          "title": "Jake White Warns Ireland",
+          "text": "Following a forty-three to fifteen defeat against Ireland at Aviva Stadium, Fiji head coach Jake White suggested his side did the Irish a favour. Despite a closely contested first half where Fiji frustrated their opponents, Ireland pulled away with twenty-six unanswered points after the break. White, who led South Africa to World Cup glory in two thousand seven, argued that Andy Farrell's team cannot afford similar sluggish spells when they face the back-to-back world champions in Dublin next week. Ireland boss Farrell acknowledged that the final scoreline flattered his side and admitted they learned important lessons.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "Fiji Coach Warns Ireland Ahead of South Africa Test",
+          "text": "Former South Africa head coach and current Fiji boss Jake White claimed his side did Ireland a favour during Saturday's forty-three to fifteen defeat at Aviva Stadium. While Ireland ultimately secured a comfortable victory after scoring twenty-six unanswered points in the second half, a closely contested opening period saw Fiji frustrate Andy Farrell's team during the Nations Championship match. White argued that Ireland's slow start would prove costly against the back-to-back world champions next week. He highlighted missed opportunities by his own team, such as taking tap penalties instead of scrums, noting that South Africa would ruthlessly punish such errors. When these remarks were presented to Farrell, the Ireland manager admitted the scoreline flattered his side and conceded that they had learned vital lessons for their upcoming fixture against the Springboks.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Fiji Boss Jake White Warns Ireland Over South Africa Threat",
+          "text": "Following his side's forty-three to fifteen defeat against Ireland at Aviva Stadium, Fiji head coach Jake White asserted that his team had inadvertently done their opponents a favour ahead of their upcoming clash with South Africa. Although Ireland eventually pulled away with twenty-six unanswered points in the second half, they endured a sluggish first period during which a resilient Fiji side repeatedly frustrated Andy Farrell's tactical approach in the Nations Championship contest. White, who famously guided South Africa to World Cup success in two thousand seven, expressed frustration that his players opted for tap penalties rather than exerting pressure through scrums and line-outs, noting that a Springboks side led by players like Malcolm Marx would have ruthlessly converted those opportunities into points rather than letting them slip away. White explained that South Africa would have capitalized on five-metre scrums and line-outs to pressure Ireland and potentially force yellow cards. When White's insightful assessment was relayed to the Ireland manager, Andy Farrell candidly admitted that the final scoreline flattered his team and acknowledged that the match provided crucial lessons in the changing rooms that must be thoroughly applied before hosting the world champions in Dublin next weekend, especially since they wanted to ensure the squad is fully prepared for the massive test ahead.",
+          "wordCount": 212
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c9e85d7mm0myo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-15-g-shock-xg-collaboration-model",
+      "date": "2026-11-15",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "G-SHOCK",
+        "XG",
+        "Casio",
+        "Watch"
+      ],
+      "titleJa": "G-SHOCKにXGモデル",
+      "title": "Casio Releases New G-SHOCK XG Collaboration Watch",
+      "summaryJa": "カシオ計算機は、人気グループ「XG」とコラボレーションした新しいG-SHOCK腕時計を2026年11月27日に発売します。",
+      "sourcePublishedAt": "2026-11-15T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "XGの新しいG-SHOCKを買うべきかどうかを、製品の特徴やデザインを知って判断する。",
+        "followUpJa": "自分が欲しい機能やデザインのポイントについて話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the new watch?",
+          "4級": "How much does the new G-SHOCK watch cost?",
+          "3級": "What picture appears when you turn on the backlight?",
+          "準2級": "What special character is engraved on the back cover of the watch?",
+          "2級": "How long is the battery life of the new GM-6900XG-8JR watch?",
+          "準1級": "What specific creative concept and fan connection does this second collaboration model express?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New G-SHOCK Watch",
+          "text": "Casio has a new watch. It is a G-SHOCK. It is a team work with XG. XG is a music group. The watch has a cool design. It comes out on November 27. The price is 39,600 yen. Many people can buy it. Do you like this watch? It is very nice.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "XG and G-SHOCK",
+          "text": "Casio Computer is making a new G-SHOCK watch. It is the second collaboration with the music group XG. The new model is called GM-6900XG-8JR. It will go on sale on November 27, and it costs 39,600 yen. People can already make reservations. The watch has special designs for fans. It has a front button with an X mark and a nice backlight.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Casio and XG New Model",
+          "text": "Casio Computer announced a new G-SHOCK watch. This is the second collaboration model with the music group XG. It is named GM-6900XG-8JR. The watch costs 39,600 yen and will be released on November 27. Pre-orders started on November 13. XG is a popular seven-member music group. The watch design represents the strong bond between XG and their fans. When you turn on the backlight, a wolf silhouette appears. The special package also features seven wolves for the members. This cool watch has many great features for fans to enjoy every single day.",
+          "wordCount": 89
+        },
+        "準2級": {
+          "title": "Second G-SHOCK and XG Collaboration",
+          "text": "Casio Computer has announced its second collaboration model with the global music group XG. The new watch, named GM-6900XG-8JR, will be released on November 27 for 39,600 yen. Pre-orders began on November 13. XG is a seven-member group known for creating the unique X-POP music genre. Based on the 6900 series, the watch features a creative concept about time and bonds with fans. The front button has an X mark, and turning on the backlight reveals a wolf silhouette. The back cover has a special engraving, and the package includes graphics of seven wolves representing the members. The watch has shock resistance, 20-bar water resistance, and a battery life of about five years for users.",
+          "wordCount": 111
+        },
+        "2級": {
+          "title": "Casio Unveils GM-6900XG-8JR Watch",
+          "text": "Casio Computer has announced the upcoming release of the GM-6900XG-8JR, its second collaboration watch with the popular HIPHOP and R&B group XG. Scheduled to launch on November 27 at a price of 39,600 yen, pre-orders have been open since November 13. XG is a seven-member group gaining international attention for their X-POP music style. Following earlier models, this new watch is built on the classic 6900 series design. Its creative concept focuses on the theme of time etched onto the wearer and the connection between the group and their fans, known as ALPHAZ. Distinctive details include an X mark on the front button and a backlight that illuminates a silhouette of a howling wolf. Additionally, the back cover is engraved with a kanji character inspired by the group's pre-performance ritual. The special packaging features graphics of seven wolves, symbolizing all members of the group, offering great durability and style.",
+          "wordCount": 146
+        },
+        "準1級": {
+          "title": "Casio and XG Expand Partnership with Second G-SHOCK Collaboration",
+          "text": "Casio Computer has officially announced the launch of the GM-6900XG-8JR, marking the second major collaboration between the iconic watch brand and the global seven-member music group XG. Priced at 39,600 yen, the new timepiece is slated for release on November 27, with reservation acceptance having commenced on November 13. XG continues to carve out a distinct identity within the global music scene through their pioneering X-POP genre. Building upon the success of earlier releases earlier this year, this new iteration is designed around the classic 6900 series framework. The overarching creative concept, titled TIME, INKED ON YOU, is designed to encapsulate the shared journey and profound bond between the artists and their dedicated fanbase, ALPHAZ. Every detail of the watch reflects this narrative. The front button features a prominent X insignia, while activating the electro-luminescent backlight reveals the silhouette of a howling wolf, a core symbol for ALPHAZ. Furthermore, the case back bears an engraved character derived from HESONOO, the group's signature pre-show chant, symbolizing unity. The timepiece arrives in a specially designed package adorned with graphics of seven individual wolves representing each member. Technically robust, the watch offers standard G-SHOCK durability, including shock resistance, 20-bar water resistance, an approximate five-year battery life, and comprehensive digital utility features for everyday users.",
+          "wordCount": 207
+        }
+      },
+      "sources": [
+        {
+          "name": "Impress Watch",
+          "url": "https://www.watch.impress.co.jp/docs/news/2156221.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-15-hokkaido-man-arrested-trespassing-sunagawa",
+      "date": "2026-11-15",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hokkaido",
+        "Sunagawa",
+        "arrest",
+        "trespassing"
+      ],
+      "titleJa": "砂川市で男を逮捕",
+      "title": "Man Arrested for Trespassing on Apartment Balcony in Hokkaido",
+      "summaryJa": "北海道砂川市で、知人宅のベランダを伝って面識のある60代女性の部屋に侵入したとして、67歳の男が住居侵入の疑いで逮捕されました。",
+      "sourcePublishedAt": "2026-11-15T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "安全な住まいを守るための防犯対策を考える。",
+        "followUpJa": "自分の家やベランダのセキュリティについて話し合ってみましょう。",
+        "questions": {
+          "5級": "What room did the man enter?",
+          "4級": "How did the man get into the woman's balcony?",
+          "3級": "Why was the crime discovered quickly after the man entered?",
+          "準2級": "What connection did the suspect have with the apartment building before the incident?",
+          "2級": "What specific reason did the suspect give to the police after his arrest for entering the balcony?",
+          "準1級": "Analyze the circumstances of how the suspect's familiarity with the building enabled the intrusion and how prompt reporting led to his immediate apprehension."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Man Enters Balcony",
+          "text": "A man is in trouble in Hokkaido. He is sixty-seven years old. He goes to an apartment in Sunagawa city. He goes on a balcony. He enters a woman home. The police catch the man. He can not do that. People are safe now. The man must talk to police.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Man Arrested in Hokkaido",
+          "text": "A sixty-seven-year-old man was arrested in Hokkaido. This happened in Sunagawa city on November fourteenth. The man went onto a balcony of an apartment. A woman in her sixties lived there. The man knew her a little bit. He went through a friend balcony to get there. The family of the woman came home and called the police. Officers arrived fast and caught the suspect right away.",
+          "wordCount": 67
+        },
+        "3級": {
+          "title": "Man Arrested for Apartment Intrusion",
+          "text": "On November fourteenth, a sixty-seven-year-old man was arrested in Sunagawa, Hokkaido. He is suspected of unlawful residential intrusion. The man entered the balcony of an apartment where a woman in her sixties lived. He used a friend balcony in the same building to cross over. Shortly after he got inside, the family of the woman returned home. They found a stranger and quickly called the emergency number. Police officers arrived immediately and arrested the suspect at the scene. The man told police he wanted to see her.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Suspect Arrested After Entering Woman's Balcony",
+          "text": "A sixty-seven-year-old self-employed man was arrested in Sunagawa, Hokkaido, for suspected trespassing. The incident took place on the evening of November fourteenth at an apartment building. According to police, the suspect entered the balcony of a woman in her sixties without any authorization. The suspect often visited a friend living in the same building, which is how he knew the victim. He allegedly climbed from his friend balcony onto the victim balcony. Shortly after he entered, the woman family returned and reported that a person was inside the house. Police arrived promptly and arrested him on the spot. During questioning, the man admitted to the allegations, stating he wanted to see her face.",
+          "wordCount": 113
+        },
+        "2級": {
+          "title": "Man Arrested for Balcony Intrusion in Hokkaido",
+          "text": "A sixty-seven-year-old self-employed man was arrested on November fourteenth in Sunagawa, Hokkaido, facing serious allegations of unlawful residential entry. According to the local police department, the suspect trespassed onto the balcony of an apartment where a woman in her sixties lived. Investigators revealed that the suspect had an acquaintance residing in the exact same apartment building, which meant he frequently visited the complex and had established prior familiarity with the victim. Taking advantage of this layout, the man allegedly crossed over from his acquaintance balcony directly onto the victim balcony without any legal justification. The unlawful intrusion was discovered almost immediately when family members of the woman returned home and noticed an unauthorized person inside their residence. They promptly dialed emergency services to report the situation. Local police officers rushed quickly to the apartment building and apprehended the suspect right at the scene. During subsequent police questioning regarding the incident, the man freely admitted to all the allegations, explaining to investigators that he committed the act because he simply wanted to see the woman face.",
+          "wordCount": 175
+        },
+        "準1級": {
+          "title": "Hokkaido Resident Apprehended Following Apartment Balcony Intrusion",
+          "text": "Authorities representing the Hokkaido Police in Takikawa have officially apprehended a sixty-seven-year-old self-employed individual on suspicion of unlawful residential entry following a disturbing incident at a multi-unit apartment building in Sunagawa. The suspect allegedly breached the private balcony of a residence belonging to a woman in her sixties during the evening hours of November fourteenth, acting entirely without any legitimate justification. Police reports indicate that the suspect possessed pre-existing familiarity with the victim due to his frequent visits to another acquaintance who happened to reside within the very same residential complex. Leveraging this intimate knowledge of the building layout, the man apparently navigated across from his acquaintance balcony directly onto the victim premises. The unauthorized intrusion was abruptly cut short when the resident family returned home moments later and immediately dialed emergency services to report that an unknown person was inside the house. Responding officers arrived swiftly at the scene, successfully taking the suspect into custody without further incident. During subsequent formal interrogations, the man readily admitted to the accusations against him, stating specifically that his primary motivation was simply to catch a glimpse of the woman face. Law enforcement officials are continuing to investigate the detailed sequence of events surrounding this case.",
+          "wordCount": 203
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63633"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-15-influencer-assun-arrested-nagoya",
+      "date": "2026-11-15",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "influencer",
+        "nagoya",
+        "arrest",
+        "youtube"
+      ],
+      "titleJa": "インフルエンサー逮捕",
+      "title": "Influencer Assun Arrested in Nagoya",
+      "summaryJa": "YouTubeなどで活動するインフルエンサーを含む3人が、名古屋市のバーで無許可の接待営業を行ったとして風営法違反の疑いで逮捕されました。",
+      "sourcePublishedAt": "2026-11-14T23:25:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "事件の詳細と逮捕された人物の状況について情報を整理する",
+        "followUpJa": "無許可営業の内容や今後の捜査の動きについて話し合ってみましょう。",
+        "questions": {
+          "5級": "Who is Assun?",
+          "4級": "Where did the incident happen?",
+          "3級": "Why were the three people arrested?",
+          "準2級": "What kind of business were the suspects operating in Nagoya?",
+          "2級": "What specific violation of the law led to the arrest of the influencer and two others?",
+          "準1級": "How did the suspect's background as a YouTube influencer and business owner connect to the unauthorized entertainment activities in Nagoya's nightlife district?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Influencer Arrested",
+          "text": "An influencer named Assun is now in trouble. He works on YouTube. Police arrested him in Nagoya. Three people are suspects. They ran a bar in the city. The bar had workers. The workers entertained customers. But they did not have a permit. This is against the law. Police are checking the case now.",
+          "wordCount": 54
+        },
+        "4級": {
+          "title": "YouTube Influencer Arrested in Nagoya",
+          "text": "A popular YouTube influencer named Assun has been arrested. Police in Nagoya took him and two other people into custody. They are all business owners. The suspects ran a bar in a busy entertainment district in Nagoya. They made workers entertain customers without a proper permit. This is a violation of the adult entertainment business law. Police are investigating the illegal bar operation.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Influencer Assun Arrested in Nagoya",
+          "text": "An online influencer known as Assun, who appeared on YouTube programs, has been arrested by the police. He and two other business owners were taken into custody in Nagoya. They operated a bar in a central entertainment district of the city. According to the police, they let employees entertain customers without getting the required official permission. This action breaks the adult entertainment business law. Authorities are continuing to look into the illegal activities at the bar to understand everything that happened there.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "YouTube Influencer and Bar Owners Arrested in Nagoya",
+          "text": "An influencer named Assun, who is well known for his appearances on various YouTube programs, was recently arrested alongside two other adult entertainment business owners. Police in Nagoya stated that the three suspects operated a bar located in a bustling downtown entertainment district of the city. According to the investigation, they allegedly allowed employees to entertain customers without obtaining the necessary government permits required by law. This unauthorized commercial operation is a direct violation of the adult entertainment business law. The sudden arrests have drawn significant attention from the public and highlight ongoing police crackdowns on illegal nightlife establishments operating without proper regulatory approval in urban centers across the country.",
+          "wordCount": 110
+        },
+        "2級": {
+          "title": "Popular Influencer Assun Arrested Over Unauthorized Nagoya Bar Operation",
+          "text": "An online personality operating under the name Assun, who has gained widespread recognition through various YouTube programs and digital media platforms, has been arrested by police in connection with suspected legal violations. Law enforcement authorities detained Assun and two other individuals who manage adult entertainment businesses following a thorough investigation into local nightlife venues. The trio was allegedly running a bar located in a prominent entertainment district in central Nagoya without official authorization from the government. Investigators revealed that the suspects permitted employees to entertain customers without securing the mandatory permits required by the adult entertainment business law. The high-profile case has drawn substantial public attention due to the suspect's prominent online presence and active involvement in digital media, prompting further police inquiries into the matter and raising questions about regulatory compliance within the urban hospitality sector.",
+          "wordCount": 137
+        },
+        "準1級": {
+          "title": "Influencer Assun and Two Others Arrested in Nagoya Over Adult Entertainment Law Violations",
+          "text": "An online personality operating under the name Assun, who has built a public presence through regular appearances on YouTube programs and various digital media platforms, has been taken into custody by local law enforcement authorities alongside two other individuals. Police in Nagoya arrested the suspects following serious allegations that they managed a nightlife establishment in direct violation of regulatory statutes governing commercial entertainment venues. According to the investigation, the trio operated a bar situated within a central entertainment district of the city, where they allegedly permitted employees to entertain patrons without acquiring the requisite municipal permits mandated by law. This commercial practice constitutes a direct breach of the adult entertainment business law, which strictly regulates hospitality services, venue licensing, and nightlife operations across the region. The involvement of a notable internet influencer has drawn significant public attention and intense scrutiny to regulatory compliance within urban nightlife sectors, prompting further investigative measures by law enforcement agencies to uncover the full scope of these unauthorized operations and ensure complete accountability under the established legal framework. Local authorities continue their detailed examination of the commercial venue, reviewing every aspect of the unauthorized business operations, the specific roles played by the individual suspects, and the precise regulatory violations that triggered the police intervention in the bustling entertainment district of Nagoya.",
+          "wordCount": 216
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261115de76043"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-15-nodacrystal-lineage-classic-radio",
+      "date": "2026-11-15",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "M-1",
+        "Lineage",
+        "Noda Crystal",
+        "radio"
+      ],
+      "titleJa": "野田クリスタルが名作ゲーム…",
+      "title": "Comedian Noda Crystal Might Return to His Favorite Online Game",
+      "summaryJa": "マヂカルラブリーの野田クリスタルが、かつて熱中したオンラインゲーム『リネージュ』の新作『リネージュ クラシック』の事前登録を行ったとラジオ番組で語りました。",
+      "sourcePublishedAt": "2026-11-15T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "野田クリスタルが昔熱中したゲームの復活に対してどのような決断をするのか、記事から確認しましょう。",
+        "followUpJa": "もしあなたが昔大好きだった趣味の復活を知ったら、もう一度時間をかけて取り組みますか？",
+        "questions": {
+          "5級": "Did Noda Crystal register for the game?",
+          "4級": "What is the name of the online game that Noda Crystal used to play?",
+          "3級": "Why did Noda Crystal say he became like a 'haijin' in the past?",
+          "準2級": "How does Murai suggest Noda's financial situation has changed since he won the M-1 Grand Prix?",
+          "2級": "What reasons does Noda give regarding his spending habits on games since winning the M-1 championship?",
+          "準1級": "Analyze how the reunion with 'Lineage Classic' bridges Noda's past passionate gaming days with his current status as an M-1 champion."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Noda Loves Games",
+          "text": "Noda Crystal is a Japanese comedian. He loves video games. He played an online game in the past. He played it a lot every day. Now, a new old game is coming. It is Lineage Classic. Noda is very happy. He did pre-registration for the game. He wants to play it again soon.",
+          "wordCount": 53
+        },
+        "4級": {
+          "title": "Comedian Talks About Old Game",
+          "text": "On a radio show, Japanese comedian Noda Crystal talked about games. He talked about an online game called Lineage. He used to play it a long time ago. He spent so much time on it. Recently, he heard about a new version called Lineage Classic. He was very excited. He already registered for the game before it comes out. His partner, Murakami, talked with him about playing it seriously now.",
+          "wordCount": 70
+        },
+        "3級": {
+          "title": "Noda Crystal Pre-registers for Lineage Classic",
+          "text": "Japanese comedian Noda Crystal talked on his radio show about a nostalgic online game. In the past, he played Lineage so much that he practically became a haiijin because he spent almost all his time on it. When he heard that Lineage Classic is coming soon, he immediately pre-registered for the game. His partner Murakami talked about how much money they can spend now. Since winning the M-1 Grand Prix, Noda has not spent much money on games. However, he is thinking about playing this game again.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Comedian Noda Crystal Considers Returning to Nostalgic Online Game",
+          "text": "Comedian Noda Crystal shared his excitement for a nostalgic video game on a late-night radio broadcast. Speaking on his program, he discussed the online game Lineage, which he played intensely in the past. He admitted that he practically became a haiijin in the virtual world. When he learned about the upcoming release of Lineage Classic, he quickly completed the pre-registration process. His co-host Murakami pointed out that their financial situations have changed since their early days. Murakami suggested that Noda should play the game seriously this time. Although Noda has not spent large amounts of money on games since winning the M-1 Grand Prix, he admitted he might play it properly at least once.",
+          "wordCount": 114
+        },
+        "2級": {
+          "title": "M-1 Champion Noda Crystal Might Return to the Online Game of His Youth",
+          "text": "During a recent broadcast of their radio program, Japanese comedy duo Magical Lovely discussed the topic of long-lasting video games. Noda Crystal revealed his deep history with the classic online game Lineage, recalling how he was once so immersed in it that he practically became a haiijin. Upon discovering that the title is returning as Lineage Classic, Noda immediately completed the pre-registration, showing a mix of nostalgia and high expectations. His partner Murakami noted that their financial circumstances are quite different now compared to the past. They discussed how players from the old days have evolved. When Murakami encouraged him to dive back into the game wholeheartedly, Noda reflected on his habits since winning the M-1 championship, noting he has not heavily invested in microtransactions recently. Nevertheless, he expressed openness to fully immersing himself in the game once again.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Comedian Noda Crystal Faces a Nostalgic Dilemma as Lineage Classic Approaches",
+          "text": "During a recent midnight broadcast of the radio program Magical Lovely's All Night Nippon 0, comedian Noda Crystal surprised listeners by sharing his nostalgic anticipation for an upcoming gaming release. The conversation turned toward titles capable of holding players' attention over extended periods, prompting Noda to reminisce about Lineage, an online game that completely consumed his daily life during his youth. He candidly remarked that he had practically become a haiijin due to his extreme dedication. Upon learning that the title is making a comeback under the banner of Lineage Classic, Noda admitted he had already completed the pre-registration process, unable to resist the pull of nostalgia. His co-host Murakami observed that their financial realities have drastically shifted since those early struggles, sparking a broader conversation about how veteran players have matured over the years. Murakami strongly encouraged Noda to tackle the game with full commitment this time around. Reflecting on his gaming habits since winning the prestigious M-1 Grand Prix, Noda noted that he has largely abstained from heavy in-game purchases. Even so, the prospect of an M-1 champion revisiting his formative digital battlefield has transformed what could have been a casual gaming announcement into a fascinating intersection of his past and present lives.",
+          "wordCount": 204
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261115-5323149/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-15-valor-tokyo-opening",
+      "date": "2026-11-15",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Valor",
+        "supermarket",
+        "Tokyo",
+        "business"
+      ],
+      "titleJa": "バローが東京初進出",
+      "title": "Supermarket Valor Opens Its First Tokyo Store",
+      "summaryJa": "東海地方の人気スーパー「バロー」が東京都内に初進出しました。安くて豪華なローストビーフ丼や特製の惣菜が並び、多くの客が訪れて行列ができています。",
+      "sourcePublishedAt": "2026-11-15T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "東京に進出したバローの魅力や商品の特徴を理解し、どんな人にこのスーパーをおすすめできるかを考えましょう。",
+        "followUpJa": "バローに行ってみたいと思った理由や、食べてみたい商品を話してみましょう。",
+        "questions": {
+          "5級": "What is the name of the new supermarket in Tokyo?",
+          "4級": "Where was the supermarket popular before coming to Tokyo?",
+          "3級": "How much is the roast beef bowl at the new store?",
+          "準2級": "Why did many customers make a long line at the store opening?",
+          "2級": "What special items and foods can shoppers find at the new Valor store?",
+          "準1級": "How might Valor's regional expertise help it succeed in Tokyo's competitive retail market?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Valor in Tokyo",
+          "text": "A popular supermarket named Valor is now in Tokyo. Many people visit the store. They make a long line. The store has cheap and good food. A roast beef bowl is six hundred ninety-eight yen. There are also nice sweets and croquettes. Customers like the food very much every day.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "New Supermarket Opens in Tokyo",
+          "text": "Valor is a very popular supermarket in the Tokai region. Now, it has a new store in Tokyo for the first time. Many shoppers wait outside before the opening time. The store sells a cheap roast beef bowl for six hundred ninety-eight yen. It also has delicious sweets and Hida beef croquettes. People are happy to buy these great foods at low prices in the city.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Valor Brings Popular Goods to Tokyo",
+          "text": "Supermarket Valor is famous in the Tokai area, and it has finally opened its very first store in Tokyo. A large crowd of people formed a long line outside the building. Because of the big excitement, the store opened a little earlier than planned. Inside, shoppers can find amazing items, including a luxurious roast beef bowl for only six hundred ninety-eight yen, beautiful desserts, and tasty croquettes. The company hopes to win over customers in this busy market and show its strengths.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Valor Supermarket Makes its Tokyo Debut",
+          "text": "Valor, a supermarket chain with strong popularity in the Tokai region, has officially expanded into Tokyo for the first time. On opening day, an eager crowd formed a long line outside the new store. Staff members even opened the doors a little earlier than scheduled to welcome everyone. The store offers many attractive products, such as a luxurious roast beef bowl priced at just six hundred ninety-eight yen, photogenic desserts, and crispy Hida beef croquettes. Industry experts are watching to see how the company's regional business experience will succeed against tough competition in the capital city today.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "Popular Regional Supermarket Valor Enters Tokyo Market",
+          "text": "Valor, a supermarket chain that has built a strong reputation and high popularity in the Tokai region, has officially made its debut in Tokyo with the opening of its first store, the Supermarket Valor Honhaneda branch. The opening of the new branch attracted a great deal of attention from local residents, with a long line of shoppers gathering outside before the doors officially opened. To manage the large crowd waiting eagerly outside, management decided to start the opening a little ahead of schedule. Customers inside were impressed by the diverse product lineup, which rivals high-end department store food halls. Highlights include a luxurious roast beef bowl for six hundred ninety-eight yen, visually appealing sweets, and specialty croquettes made with Hida beef. Business analysts are eager to observe how the company utilizes its unique regional strategies developed in Gifu and Aichi to stand out in Tokyo's highly competitive retail environment.",
+          "wordCount": 149
+        },
+        "準1級": {
+          "title": "Supermarket Chain Valor Expands into Tokyo with High Expectations",
+          "text": "Valor, a retail brand renowned for its strong market presence and customer loyalty throughout the Tokai region, has officially marked its entry into the Tokyo metropolitan area by opening its very first branch, the Supermarket Valor Honhaneda store. The grand opening of this inaugural Tokyo location drew significant public attention, resulting in a substantial queue of eager shoppers well before the scheduled start time. Recognizing the high level of anticipation among consumers, store organizers chose to open their doors slightly ahead of schedule to accommodate the gathering public safely and efficiently. Inside, patrons were greeted by a vibrant merchandising display that offers quality comparable to upscale department store basements. Among the standout offerings are a lavish roast beef bowl priced at an affordable six hundred ninety-eight yen, eye-catching desserts designed for social media sharing, and savory Hida beef croquettes. As the company establishes its presence in the capital, industry observers and economic analysts are closely monitoring whether its proven regional operational strategies, cultivated through years of experience in Gifu and Aichi, can effectively navigate and capture market share in Tokyo's intensely competitive retail landscape.",
+          "wordCount": 184
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964647"
+        }
+      ]
+    },
     {
       "id": "2026-11-14-aqua-park-shinagawa-little-twin-stars-aquarium",
       "date": "2026-11-14",
