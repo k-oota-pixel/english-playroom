@@ -5,8 +5,8 @@ import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,upgrade,
-  addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,question,playTurn,drawReward
-} from './model.js?v=6';
+  addReward,directions,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,question,playTurn,drawReward
+} from './model.js?v=10';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -358,17 +358,25 @@ function battle(){
       const special=button(unit.skill+' · '+(unit.ct?'CT '+unit.ct:'発動可'),()=>{
         run.special=run.special===unit.key?null:unit.key;
         battle();
-      },unit.ct>0||unit.hp===0);
+      },unit.ct>0||!canJoinAction(unit,run.action));
       special.setAttribute('aria-pressed',String(run.special===unit.key));
       tile.append(special);
     }
     return tile;
   }));
-  const actions=group('choices battle-actions',...['physical','magic','heal'].map((action,i)=>{
-    const choice=button(roles[i],()=>{run.action=action;run.selectedSpell=null;battle();});
-    choice.setAttribute('aria-pressed',String(action===run.action));
-    return choice;
-  }));
+  const chooseAction=(action,spell=null)=>{
+    if(action!==run.action)run.special=null;
+    run.action=action;
+    run.selectedSpell=spell;
+    battle();
+  };
+  const attack=button('攻撃',()=>chooseAction('physical'));
+  attack.setAttribute('aria-pressed',String(run.action==='physical'));
+  const magic=button('魔法',()=>{
+    if(run.action==='physical')chooseAction(run.team.some(unit=>canJoinAction(unit,'magic'))?'magic':'heal');
+  });
+  magic.setAttribute('aria-pressed',String(run.action!=='physical'));
+  const actions=group('choices battle-actions',attack,magic);
   const log=node('ol','','battle-log');
   log.setAttribute('aria-label','戦闘ログ（新しい順）');
   log.setAttribute('aria-live','polite');
@@ -386,21 +394,21 @@ function battle(){
   pane.append(stage);
   if(run.action!=='physical'){
     const {caster}=run;
-    const spells=mazeSpells.filter(spell=>spell.kind===(run.action==='heal'?'heal':'attack'));
     const options=group('choices');
-    const basic=button('仲間のみ',()=>{run.selectedSpell=null;battle();});
-    basic.setAttribute('aria-pressed',String(!run.selectedSpell));
-    options.append(basic);
-    for(const spell of spells){
+    for(const [action,label] of [['magic','仲間の攻撃魔法'],['heal','仲間の回復魔法']]){
+      const choice=button(label,()=>chooseAction(action),!run.team.some(unit=>canJoinAction(unit,action)));
+      choice.setAttribute('aria-pressed',String(run.action===action&&!run.selectedSpell));
+      options.append(choice);
+    }
+    for(const spell of mazeSpells){
+      const action=spell.kind==='heal'?'heal':'magic';
       const lock=caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':'';
-      const choice=button(spell.name+' · MP '+spell.mpCost+lock,()=>{
-        run.selectedSpell=spell.id;
-        battle();
-      },!spellAvailable(caster,spell));
+      const choice=button(spell.name+' · MP '+spell.mpCost+lock,()=>chooseAction(action,spell.id),
+        !spellAvailable(caster,spell));
       choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
       options.append(choice);
     }
-    options.setAttribute('aria-label','ぺっとの魔法');
+    options.setAttribute('aria-label','魔法を選ぶ');
     controls.append(group('spell-picker',options));
   }
   controls.append(quiz,button('探索を終了',leave,false,'leave-expedition'));
@@ -418,6 +426,28 @@ function addBattleLog(log,text){
   log.prepend(node('li',text));
   log.scrollTop=0;
 }
+async function launchEnergy(stage,source,target,kind){
+  const orb=node('span','','battle-energy energy-'+kind);
+  if(typeof orb.animate!=='function')return;
+  const origin=stage.getBoundingClientRect();
+  const from=source.getBoundingClientRect(),to=target.getBoundingClientRect();
+  const x=from.left+from.width/2-origin.left;
+  const y=from.top+from.height*.35-origin.top;
+  const dx=to.left+to.width/2-origin.left-x;
+  const dy=to.top+to.height*.48-origin.top-y;
+  orb.style.left=x+'px';
+  orb.style.top=y+'px';
+  orb.setAttribute('aria-hidden','true');
+  stage.append(orb);
+  const start='translate(-50%,-50%)';
+  try{
+    await orb.animate([
+      {opacity:.25,transform:start+' scale(.25)'},
+      {opacity:1,transform:start+' scale(1.15)',offset:.42},
+      {opacity:1,transform:start+' translate('+dx+'px,'+dy+'px) scale(.75)'}
+    ],{duration:390,easing:'ease-in-out'}).finished;
+  }finally{orb.remove();}
+}
 async function resolveTurn(answer,{stage,views,pet,log,resultArea,controls}){
   if(controls.hidden||!stage.isConnected)return;
   clearInterval(clock);
@@ -434,27 +464,22 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,controls}){
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   addBattleLog(log,verdict);
-  if(run.cast&&!events.some(event=>event.actor===null&&event.actionName===run.cast)){
-    pet.update();
-    pet.tile.classList.add('acting');
-    addBattleLog(log,(petData?.petName||'ぺっと')+'が'+run.cast+'を唱えた！');
-    if(!reduced)await delay(360);
-    pet.tile.classList.remove('acting');
-  }
   if(!reduced&&events.length)await delay(240);
-  for(const {actor,unit,hp,delta,actionName} of events){
+  for(const {actor,unit,hp,delta,kind,actionName} of events){
     if(!stage.isConnected)return;
     const source=actor===null?pet:views.get(actor);
-    if(source===pet)pet.update();
     const {tile,update,badge}=views.get(unit);
-    const effect=delta<0?'taking-hit':'being-healed';
+    const effect=kind==='heal'?'being-healed':'taking-hit';
     if(source)source.tile.classList.add('acting');
+    if(!reduced&&source)await launchEnergy(stage,source.tile,tile,kind);
+    if(!stage.isConnected)return;
+    if(source===pet)pet.update();
     tile.classList.add(effect);
-    badge.textContent=delta>0?'+'+delta:'−'+Math.abs(delta);
+    badge.textContent=kind==='heal'?'+'+delta:'−'+Math.abs(delta);
     update(hp);
     addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+
-      (delta>0?'がHPを'+delta+'回復':'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':''));
-    if(!reduced)await delay(360);
+      (kind==='heal'?(delta?'がHPを'+delta+'回復':'のHPは満タン'):'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':''));
+    if(!reduced)await delay(260);
     if(source)source.tile.classList.remove('acting');
     tile.classList.remove(effect);
   }

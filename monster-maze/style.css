@@ -126,7 +126,8 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
 .party-row progress,.party-row .hp-meter,.battle-enemies .hp-meter{height:.34rem}
 .battle-enemies{display:flex;justify-content:center}
 .battle-enemies>*{flex:0 1 min(32%,9rem)}
-.battle-actions,.spell-picker .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.battle-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.spell-picker .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .battle-stage .answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .spell-picker button{overflow-wrap:anywhere}
 .leave-expedition{min-height:2.2rem;padding:.25rem .65rem;font-size:.8rem}
@@ -147,3 +148,9 @@ progress{width:85%;height:.7rem;accent-color:#7bdab1}
   .battle-stage .choices button{min-height:2.35rem;padding:.25rem;font-size:.8rem}
   .battle-stage .spell-picker{padding:.08rem .25rem}
 }
+
+.battle-stage{position:relative}
+.battle-energy{position:absolute;z-index:4;width:1.2rem;aspect-ratio:1;pointer-events:none;border-radius:50%;background:radial-gradient(circle,#fff 8%,var(--energy) 50%,transparent 77%);box-shadow:0 0 .8rem .15rem var(--energy)}
+.energy-physical{--energy:#ff515d}
+.energy-magic{--energy:#c774ff}
+.energy-heal{--energy:#65dfff}

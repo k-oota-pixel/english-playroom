@@ -23,8 +23,8 @@ const skills = [
   ['トゲ連撃',4,'physical'],['大ばさみ',5,'physical'],['獅子王の咆哮',7,'physicalAll'],
   ['フレアバースト',6,'magicAll'],['氷晶弾',5,'magic'],['雷鳴連鎖',6,'magicAll'],
   ['夜の羽ばたき',5,'magic'],['星降り',7,'magicAll'],['鏡光線',4,'magic'],
-  ['森の祝福',7,'healAll'],['蜜のしずく',4,'heal'],['再生の翼',8,'healAll'],
-  ['花びらの手当て',5,'heal'],['夢のまくら',6,'healAll'],['雪うさぎの祈り',5,'heal']
+  ['森の祝福',7,'heal'],['蜜のしずく',4,'heal'],['再生の翼',8,'heal'],
+  ['花びらの手当て',5,'heal'],['夢のまくら',6,'heal'],['雪うさぎの祈り',5,'heal']
 ];
 export const cards = names.map((name,index)=>{
   const role = Math.floor(index/6);
@@ -195,64 +195,58 @@ export function question(words,previous,random=Math.random){
   }
   throw Error('4択を作れる問題が見つかりません。');
 }
+const actionRoles=['physical','magic','heal'];
+export function canJoinAction(unit,action){
+  return unit.hp>0&&actionRoles[unit.role]===action;
+}
 export function playTurn(run,correct,action,target,specialKey,random=Math.random,report=()=>{}){
   const living=run.team.filter(unit=>unit.hp>0);
-  const special=correct && living.find(unit=>unit.key===specialKey && unit.rarity && unit.ct===0);
+  const special=correct && living.find(unit=>unit.key===specialKey && unit.rarity && unit.ct===0 && canJoinAction(unit,action));
   for(const unit of living) unit.ct=Math.max(0,unit.ct-(correct?1:0.5));
-  let actor=null, actionName='';
-  const changeHp=(unit,next)=>{
-    const previous=unit.hp;
+  const mostInjured=()=>living.reduce((lowest,unit)=>
+    !lowest||unit.hp/unit.maxHp<lowest.hp/lowest.maxHp?unit:lowest,null);
+  const enemyTarget=()=>run.foes[target]?.hp>0?run.foes[target]:run.foes.find(foe=>foe.hp>0);
+  const changeHp=(actor,unit,next,kind,actionName)=>{
+    const delta=next-unit.hp;
     unit.hp=next;
-    if(previous!==next)report({actor,unit,hp:next,delta:next-previous,actionName});
+    if(delta||kind==='heal')report({actor,unit,hp:next,delta,kind,actionName});
   };
-  const heal=(unit,amount)=>changeHp(unit,Math.min(unit.maxHp,unit.hp+amount));
-  const strike=(enemy,power,type)=>{
-    changeHp(enemy,Math.max(0,enemy.hp-Math.round(power*(enemy.weak===type?1.25:0.9))));
-  };
-  run.cast=null;
+  const heal=(actor,unit,amount,name)=>changeHp(actor,unit,Math.min(unit.maxHp,unit.hp+amount),'heal',name);
+  const strike=(actor,enemy,power,kind,name)=>changeHp(actor,enemy,
+    Math.max(0,enemy.hp-Math.round(power*(enemy.weak===kind?1.25:0.9))),kind,name);
   if(correct){
     const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
     if(spell && (spell.kind==='heal'?'heal':'magic')===action && spellAvailable(run.caster,spell)){
-      const enemy=run.foes[target]?.hp>0?run.foes[target]:run.foes.find(unit=>unit.hp>0);
-      const weakest=living.reduce((low,unit)=>!low||unit.hp/unit.maxHp<low.hp/low.maxHp?unit:low,null);
-      const recipient=spell.kind==='heal'?weakest:enemy;
+      const recipient=action==='heal'?mostInjured():enemyTarget();
       if(recipient){
-        actionName=spell.name;
-        const amount=rollMagicAmount(spell.base,random);
-        if(spell.kind==='heal')heal(recipient,amount);
-        else strike(recipient,amount,'magic');
         run.caster.mp-=spell.mpCost;
-        run.cast=spell.name;
+        const amount=rollMagicAmount(spell.base,random);
+        if(action==='heal')heal(null,recipient,amount,spell.name);
+        else strike(null,recipient,amount,action,spell.name);
       }
     }
-    for(const unit of living){
-      const foes=run.foes.filter(enemy=>enemy.hp>0);
-      if(!foes.length) break;
-      const enemy=run.foes[target]?.hp>0?run.foes[target]:foes[0];
-      const weakest=[...living].sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
-      actor=unit;
-      actionName=unit===special?unit.skill:roles[['physical','magic','heal'].indexOf(action)];
+    for(const unit of living.filter(ally=>canJoinAction(ally,action))){
+      const enemy=enemyTarget();
+      if(!enemy)break;
       if(unit===special){
         const multiplier=1.25+unit.rarity*0.33;
         if(unit.effect==='guard') run.guard={turns:unit.rarity===1?1:2,ratio:unit.rarity/10};
-        else if(unit.effect==='heal') heal(weakest,Math.round(unit.heal*multiplier));
-        else if(unit.effect==='healAll') living.forEach(ally=>heal(ally,Math.round(unit.heal*multiplier)));
+        else if(unit.effect==='heal')heal(unit,mostInjured(),Math.round(unit.heal*multiplier),unit.skill);
         else {
-          const type=unit.effect.replace('All','');
-          (unit.effect.endsWith('All')?foes:[enemy]).forEach(foe=>strike(foe,unit[type]*multiplier,type));
+          const targets=unit.effect.endsWith('All')?run.foes.filter(foe=>foe.hp>0):[enemy];
+          for(const foe of targets)strike(unit,foe,unit[action]*multiplier,action,unit.skill);
         }
         unit.ct=unit.maxCt;
-      }else if(action==='heal') heal(weakest,unit.heal);
-      else strike(enemy,unit[action],action);
+      }else if(action==='heal')heal(unit,mostInjured(),unit.heal,roles[unit.role]);
+      else strike(unit,enemy,unit[action],action,roles[unit.role]);
     }
   }
   for(const enemy of run.foes.filter(unit=>unit.hp>0)){
     const available=living.filter(unit=>unit.hp>0);
     if(!available.length) break;
     const victim=pick(available,random);
-    actor=enemy;
-    actionName='反撃';
-    changeHp(victim,Math.max(0,victim.hp-Math.max(1,Math.round(enemy.power*(1-(run.guard?.ratio||0))))));
+    const damage=Math.max(1,Math.round(enemy.power*(1-(run.guard?.ratio||0))));
+    changeHp(enemy,victim,Math.max(0,victim.hp-damage),'physical','反撃');
   }
   if(run.guard && --run.guard.turns===0) run.guard=null;
   run.turns++;
