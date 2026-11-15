@@ -76,6 +76,29 @@ function battleUnit(unit,kind){
   update(unit.hp);
   return {tile,update,badge};
 }
+function petSprite(className){
+  const sprite=node('span','',className);
+  sprite.setAttribute('role','img');
+  sprite.setAttribute('aria-label',petData?.petName||'あなたのぺっと');
+  if(!petData?.petHatched){
+    sprite.textContent='🥚';
+    return sprite;
+  }
+  const shop=petData.petShop||{};
+  const equipped={...shop.equipped};
+  delete equipped['pet-frame'];
+  const juvenile=petData.petAdult===false||!petData.petAppearance;
+  sprite.innerHTML=renderPetSVG(juvenile?null:petData.petAppearance,
+    {...shop,equipped},juvenile?'baby':'adult',{background:false});
+  return sprite;
+}
+function partyPet(){
+  const label=node('small');
+  const tile=group('unit party-pet',petSprite('party-pet-art'),node('strong',petData?.petName||'ぺっと'),label);
+  const update=()=>{label.textContent='MP '+run.caster.mp+' / '+run.caster.maxMp;};
+  update();
+  return {tile,update};
+}
 function message(text=''){
   status.textContent=text;
   status.hidden=!text;
@@ -205,7 +228,7 @@ function explore(){
   clear();
   message();
   const {maze}=run;
-  pane.append(node('h2',run.course.name+' · '+run.floor+' / '+run.course.floors+'階'));
+  const title=node('h2',run.course.name+' · '+run.floor+' / '+run.course.floors+'階');
   const hint=node('p','矢印キー・方向ボタン・隣のマスをタップして移動。','walk-hint');
   const map=group('maze-map');
   map.setAttribute('role','group');
@@ -225,15 +248,7 @@ function explore(){
     world.append(tile);
     return tile;
   }));
-  const pet=node('span','','maze-pet');
-  pet.setAttribute('role','img');
-  pet.setAttribute('aria-label','あなたのペット');
-  if(petData?.petHatched){
-    const shop=petData.petShop||{};
-    const equipped={...shop.equipped};
-    delete equipped['pet-frame'];
-    pet.innerHTML=renderPetSVG(petData.petAdult===false?null:petData.petAppearance,{...shop,equipped},'',{background:false});
-  }else pet.textContent='🥚';
+  const pet=petSprite('maze-pet');
   const controls=group('maze-controls',...directions.map(([dx,dy],i)=>{
     const control=button(['↑','→','↓','←'][i],()=>walk(dx,dy));
     control.setAttribute('aria-label',moveLabels[i]+'に移動');
@@ -242,9 +257,10 @@ function explore(){
   const report=node('p','','walk-report');
   report.setAttribute('role','status');
   const exit=maze.bossId?'👑 ボス部屋':'🚪 次の階';
-  pane.append(hint,map,controls,node('small','🧰 宝箱　'+exit),report,
-    group('team',...run.team.map(unit=>unitView(unit,'card'))),
-    button('探索を終了',leave));
+  const navigation=group('maze-navigation',controls,node('small','🧰 宝箱　'+exit),report);
+  const party=group('team party-row',partyPet().tile,...run.team.map(unit=>unitView(unit,'card')));
+  pane.append(group('explore-stage',title,hint,group('maze-layout',map,navigation),party,
+    button('探索を終了',leave,false,'leave-expedition')));
   map.append(pet);
   walkView={world,tiles,report};
   updateMap();
@@ -294,8 +310,10 @@ function walk(dx,dy){
   run.guard=null;
   run.bossFight=event.kind==='boss';
   const title=run.bossFight?run.foes[0].name+' が道をふさいでいる！':'野生のモンスターが現れた！';
-  pane.append(node('h2',title),group('team',...run.foes.map(unit=>unitView(unit,unit.major?'boss':'enemy'))),
-    button('戦う',nextQuestion,false,'primary'));
+  pane.append(group('battle-stage',node('h2',title),
+    group('team battle-enemies',...run.foes.map(unit=>unitView(unit,unit.major?'boss':'enemy'))),
+    group('team party-row',partyPet().tile,...run.team.map(unit=>unitView(unit,'card'))),
+    button('戦う',nextQuestion,false,'primary')));
 }
 function leave(){
   if(!confirm('今回の探索を終了しますか？'))return;
@@ -320,8 +338,7 @@ function nextQuestion(){
 }
 function battle(){
   clear();
-  pane.append(node('h2',run.floor+'階 · バトル'));
-  const stage=group('battle-stage');
+  const stage=group('battle-stage',node('h2',run.floor+'階 · バトル'));
   const views=new Map();
   const enemyRow=group('team battle-enemies');
   for(const [index,foe] of run.foes.entries()){
@@ -332,7 +349,8 @@ function battle(){
     target.append(view.tile);
     enemyRow.append(target);
   }
-  const allies=group('team',...run.team.map(unit=>{
+  const pet=partyPet();
+  const allies=group('team party-row',pet.tile,...run.team.map(unit=>{
     const view=battleUnit(unit,'card');
     views.set(unit,view);
     const {tile}=view;
@@ -346,7 +364,7 @@ function battle(){
     }
     return tile;
   }));
-  const actions=group('choices',...['physical','magic','heal'].map((action,i)=>{
+  const actions=group('choices battle-actions',...['physical','magic','heal'].map((action,i)=>{
     const choice=button(roles[i],()=>{run.action=action;run.selectedSpell=null;battle();});
     choice.setAttribute('aria-pressed',String(action===run.action));
     return choice;
@@ -360,7 +378,7 @@ function battle(){
   log.hidden=!run.battleLog.length;
   const resultArea=group('battle-result',log);
   const controls=group('battle-controls',actions);
-  const resolve=option=>void resolveTurn(option,{stage,views,log,resultArea,controls});
+  const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,controls});
   const timer=node('span','','timer');
   const quiz=group('quiz',group('quiz-title',node('h3',run.quiz.word),timer),
     group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
@@ -370,7 +388,7 @@ function battle(){
     const {caster}=run;
     const spells=mazeSpells.filter(spell=>spell.kind===(run.action==='heal'?'heal':'attack'));
     const options=group('choices');
-    const basic=button('仲間の魔法のみ',()=>{run.selectedSpell=null;battle();});
+    const basic=button('仲間のみ',()=>{run.selectedSpell=null;battle();});
     basic.setAttribute('aria-pressed',String(!run.selectedSpell));
     options.append(basic);
     for(const spell of spells){
@@ -382,9 +400,10 @@ function battle(){
       choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
       options.append(choice);
     }
-    controls.append(group('spell-picker',node('p','ぺっとの魔法　MP '+caster.mp+' / '+caster.maxMp),options));
+    options.setAttribute('aria-label','ぺっとの魔法');
+    controls.append(group('spell-picker',options));
   }
-  controls.append(quiz,button('探索を終了',leave));
+  controls.append(quiz,button('探索を終了',leave,false,'leave-expedition'));
   const tick=()=>{
     const seconds=Math.max(0,Math.ceil((run.deadline-Date.now())/1000));
     timer.textContent=seconds+'秒';
@@ -399,7 +418,7 @@ function addBattleLog(log,text){
   log.prepend(node('li',text));
   log.scrollTop=0;
 }
-async function resolveTurn(answer,{stage,views,log,resultArea,controls}){
+async function resolveTurn(answer,{stage,views,pet,log,resultArea,controls}){
   if(controls.hidden||!stage.isConnected)return;
   clearInterval(clock);
   controls.hidden=true;
@@ -416,19 +435,24 @@ async function resolveTurn(answer,{stage,views,log,resultArea,controls}){
   const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   addBattleLog(log,verdict);
   if(run.cast&&!events.some(event=>event.actor===null&&event.actionName===run.cast)){
-    addBattleLog(log,'ぺっとが'+run.cast+'を唱えた！');
+    pet.update();
+    pet.tile.classList.add('acting');
+    addBattleLog(log,(petData?.petName||'ぺっと')+'が'+run.cast+'を唱えた！');
+    if(!reduced)await delay(360);
+    pet.tile.classList.remove('acting');
   }
   if(!reduced&&events.length)await delay(240);
   for(const {actor,unit,hp,delta,actionName} of events){
     if(!stage.isConnected)return;
-    const source=views.get(actor);
+    const source=actor===null?pet:views.get(actor);
+    if(source===pet)pet.update();
     const {tile,update,badge}=views.get(unit);
     const effect=delta<0?'taking-hit':'being-healed';
     if(source)source.tile.classList.add('acting');
     tile.classList.add(effect);
     badge.textContent=delta>0?'+'+delta:'−'+Math.abs(delta);
     update(hp);
-    addBattleLog(log,(actor?.name||'ぺっと')+'の'+actionName+'！ '+unit.name+
+    addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+
       (delta>0?'がHPを'+delta+'回復':'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':''));
     if(!reduced)await delay(360);
     if(source)source.tile.classList.remove('acting');
