@@ -27,8 +27,7 @@ function seeded(seed=23){
 }
 function run(correctForLevel,seed=11){
   const rng=seeded(seed),session=createSession(),chosen=[];
-  for(let i=0;i<20;i++){
-    assert.equal(isFinished(session),false);
+  for(let i=0;i<MAX_QUESTIONS && !isFinished(session);i++){
     const q=chooseQuestion(session,bank,rng);
     assert.ok(q,'question available');
     const correct=correctForLevel(q);
@@ -76,13 +75,13 @@ test('basic grammar ordering requires every token and accepts the source sentenc
   assert.throws(()=>submitAnswer(probe,order,[0]),/すべての語句/);
   assert.equal(submitAnswer(probe,order,q.tokens.map((_,i)=>i)),true);
 });
-test('all runs finish at exactly 20 with 10 vocabulary and 10 grammar items',()=>{
+test('runs finish within 15 to 25 with alternating, balanced vocabulary and grammar',()=>{
   for(const seed of [1,4,13,31]){
     const {result,chosen}=run(q=>q.level<=6,seed);
-    assert.equal(result.total,20);
-    assert.equal(result.vocabTotal,10);
-    assert.equal(result.grammarTotal,10);
-    assert.equal(new Set(chosen.map(q=>q.id)).size,20);
+    assert.ok(result.total>=MIN_QUESTIONS&&result.total<=MAX_QUESTIONS);
+    assert.equal(result.vocabTotal,Math.ceil(result.total/2));
+    assert.equal(result.grammarTotal,Math.floor(result.total/2));
+    assert.equal(new Set(chosen.map(q=>q.id)).size,result.total);
     assert.ok(chosen.every((q,i)=>q.kind===(i%2===0?'vocab':'grammar')));
     assert.ok(chosen.every(q=>q.source==='order'||(q.options.length===4&&new Set(q.options).size===4)));
   }
@@ -94,7 +93,7 @@ test('grade 2 mastery anchors at 1000 even when higher-level questions are misse
   assert.equal(result.score,1000);
   assert.ok(result.grade2Evidence>=2);
   assert.equal(SCALE_VERSION,'pilot-2-grade2');
-  assert.ok(result.vocabCorrect<=10&&result.grammarCorrect<=10);
+  assert.ok(result.vocabCorrect<=result.vocabTotal&&result.grammarCorrect<=result.grammarTotal);
 });
 test('a single latent ability places 4, 3, pre-2 and 2 in order',()=>{
   const levels=[3,6,9,12];
@@ -111,5 +110,24 @@ test('history is versioned and shows only comparable scores on current trend',()
   assert.match(app,/previousBest=summaryData.assessmentBest\?\.scaleVersion===SCALE_VERSION/);
   assert.match(app,/writeBatch\(db\)/);
   assert.match(html,/id="orderPanel"/);
-  assert.match(html,/20問・単語10問/);
+  assert.match(html,/標準20問（15〜25問）/);
+});
+
+test('precision-based stopping is permitted at 15 with seven of each kind',()=>{
+  const session=createSession();
+  session.weights=session.weights.map((w,i)=>i===8?1:0);
+  for(let i=0;i<14;i++)session.answers.push({id:'synthetic'+i,kind:i%2?'grammar':'vocab',correct:true});
+  assert.equal(isFinished(session),false);
+  session.answers.push({id:'synthetic14',kind:'vocab',correct:true});
+  assert.equal(isFinished(session),true);
+  assert.equal(chooseQuestion(session,bank,seeded(42)),null);
+});
+test('uncertain ability extends past 20 and always stops at 25',()=>{
+  const session=createSession();
+  session.weights=session.weights.map(()=>1/61);
+  for(let i=0;i<24;i++)session.answers.push({id:'synthetic'+i,kind:i%2?'grammar':'vocab',correct:true});
+  assert.equal(isFinished(session),false);
+  session.answers.push({id:'synthetic24',kind:'vocab',correct:true});
+  assert.equal(isFinished(session),true);
+  assert.equal(chooseQuestion(session,bank,seeded(24)),null);
 });
