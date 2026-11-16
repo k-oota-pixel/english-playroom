@@ -8,8 +8,8 @@
   <style id="monstudy-access-lock">body{visibility:hidden!important}html{background:#f3f7fc}</style>
   <script type="module" src="../access-gate.js?v=2.4.37"></script>
   <script src="../shell-bridge.js?v=2.1.1"></script>
-  <link rel="stylesheet" href="./style.css?v=2.4.128">
-  <script type="module" src="./app.js?v=2.4.128"></script>
+  <link rel="stylesheet" href="./style.css?v=2.4.130">
+  <script type="module" src="./app.js?v=2.4.130"></script>
 </head>
 <body>
 <main class="diagnostic">
@@ -24,7 +24,7 @@
       <div class="hero-icon" aria-hidden="true">📊</div>
       <div>
         <h2>いまの力を測ろう</h2>
-        <p>4級レベルからスタート。単語と文法の正誤に合わせて次の問題が変わります。16〜24問・何度でも挑戦できます。</p>
+        <p>4級レベルからスタート。単語10問と語彙文法10問を交互に出題し、解答全体から英語力を推定します。20問・何度でも挑戦できます。</p>
       </div>
     </div>
     <div class="stat-grid">
@@ -50,10 +50,20 @@
       <span id="questionGrade" class="tag">4級</span>
     </div>
     <div class="progress" aria-label="出題進捗"><div id="progressFill"></div></div>
-    <small class="progress-label" id="questionProgress">目安20問・最大24問</small>
+    <small class="progress-label" id="questionProgress">20問・単語10問＋語彙文法10問</small>
     <p class="prompt" id="questionText"></p>
     <div id="choices" class="choices" role="group" aria-label="選択肢"></div>
-    <p class="fine">考えた答えを1つ選んでください。結果は最後にまとめて確認できます。</p>
+    <div id="orderPanel" class="order-panel" hidden>
+      <p class="order-label">並べた語句（タップすると戻せます）</p>
+      <div id="selectedTokens" class="token-zone chosen" aria-label="並べた語句" role="group"></div>
+      <p class="order-label">下の語句をタップして、英文を完成させよう</p>
+      <div id="availableTokens" class="token-zone" aria-label="並べ替える語句" role="group"></div>
+      <div class="order-actions">
+        <button class="secondary" id="orderResetBtn" type="button">最初から並べ直す</button>
+        <button class="primary" id="orderSubmitBtn" type="button" disabled>この語順で回答する</button>
+      </div>
+    </div>
+    <p class="fine">語彙文法では空所補充と並べ替えも出題されます。結果は最後にまとめて確認できます。</p>
     <button class="secondary" id="cancelBtn" type="button">診断を中断する</button>
   </section>
   <section id="result" class="panel" hidden>
@@ -63,8 +73,8 @@
     <p class="level" id="resultGrade"></p>
     <p id="confidence" class="fine"></p>
     <div class="stat-grid">
-      <div class="stat"><small>単語力</small><strong id="vocabScore">—</strong><span id="vocabGrade"></span></div>
-      <div class="stat"><small>文法力</small><strong id="grammarScore">—</strong><span id="grammarGrade"></span></div>
+      <div class="stat"><small>単語（正解数）</small><strong id="vocabScore">—</strong><span id="vocabGrade"></span></div>
+      <div class="stat"><small>語彙文法（正解数）</small><strong id="grammarScore">—</strong><span id="grammarGrade"></span></div>
     </div>
     <p id="difference" class="growth"></p>
     <p id="resultSummary" class="fine"></p>
@@ -73,7 +83,7 @@
     <button id="againBtn" class="primary wide" type="button">もう一度診断する</button>
     <button id="backBtn" class="secondary wide" type="button">履歴とトップに戻る</button>
   </section>
-  <footer>推定スコアは語彙・文法の選択問題に限定した参考値です。英検の合格判定や公式スコアではありません。</footer>
+  <footer>推定スコアは語彙・文法・語順の20問から算出した暫定的な参考値です。1000点は英検2級上位の習熟を基準とし、英検の公式判定ではありません。</footer>
 </main>
 </body>
 </html>

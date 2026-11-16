@@ -52,8 +52,8 @@ test('right and wrong answers drive adaptive posterior in different directions',
   }
   const a=summarize(allRight),b=summarize(allWrong);
   assert.ok(a.score>b.score);
-  assert.ok(a.vocabScore>b.vocabScore);
-  assert.ok(a.grammarScore>b.grammarScore);
+  assert.ok(a.vocabCorrect>b.vocabCorrect);
+  assert.ok(a.grammarCorrect>b.grammarCorrect);
 });
 test('previously seen IDs avoided when other nearby questions remain',()=>{
   const first=bank.vocabByGrade.get('4級')[0];
@@ -65,7 +65,7 @@ test('score never exceeds 1000 and provisional scale label is stable',()=>{
   assert.equal(scoreFromAbility(15),1000);
   assert.equal(scoreFromAbility(12.1),1000);
   assert.equal(scoreFromAbility(0),0);
-  assert.equal(SCALE_VERSION,'pilot-1');
+  assert.equal(SCALE_VERSION,'pilot-2-grade2');
   assert.equal(levelLabel(2),'4級標準');
   assert.equal(levelLabel(14),'準1級程度');
 });
