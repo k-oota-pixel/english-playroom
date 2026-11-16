@@ -5,7 +5,7 @@ import {getAuth} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
   writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
-  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.128';
+  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.130';
 
 const $=id=>document.getElementById(id);
 const app=getMonstudyApp();
