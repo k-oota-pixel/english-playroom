@@ -6,7 +6,7 @@ export function makeDialog(title){
  const header=el('div');header.className='titles-heading';const close=el('button','閉じる');close.type='button';close.addEventListener('click',()=>dialog.close());header.append(el('h2',title),close);dialog.append(header);
  dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});document.body.append(dialog);return dialog;
 }
-function styles(){if(document.getElementById('titleStyles')||document.querySelector('link[rel="stylesheet"][href*="learning-titles.css"]'))return;const link=el('link');link.id='titleStyles';link.rel='stylesheet';link.href=new URL('./learning-titles.css?v=2.4.71',import.meta.url).href;document.head.append(link);}
+function styles(){if(document.getElementById('titleStyles')||document.querySelector('link[rel="stylesheet"][href*="learning-titles.css"]'))return;const link=el('link');link.id='titleStyles';link.rel='stylesheet';link.href=new URL('./learning-titles.css?v=2.4.73',import.meta.url).href;document.head.append(link);}
 export function announceTitles(titles){
  if(!Array.isArray(titles)||!titles.length)return;styles();
  const dialog=makeDialog('🏆 新しい称号を解放！');for(const t of titles){const row=el('article');row.className='title-award';row.append(el('small',t.label),el('h3',t.name),el('p',t.condition));dialog.append(row);}
@@ -39,12 +39,52 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   root.append(list);
   if(state&&Number.isFinite(state.unlockedTitleCount))root.append(el('p','あなたの獲得数：'+state.unlockedTitleCount+'個'));
  }
+ // This static aggregate is published every morning by GitHub Actions.
+ // No per-user Firestore query is involved in rendering popularity.
+ let popularity=null,popularityLoad=null;
+ function popularityText(id){
+  if(!popularity?.titles||!Object.prototype.hasOwnProperty.call(popularity.titles,id))return '';
+  const count=popularity.titles[id],total=popularity.totalRegistered;
+  if(!Number.isSafeInteger(count)||!Number.isSafeInteger(total)||total<1)return '';
+  const percentage=count===0?'0%':count*100/total<0.1?'0.1%未満':(count*100/total).toFixed(1)+'%';
+  return '獲得者：'+count+'人 / '+total+'人（'+percentage+'）';
+ }
+ function updatePopularityCard(card){
+  const value=popularityText(card.dataset.titleId);
+  let info=card.querySelector('.title-popularity');
+  if(!value){info?.remove();return;}
+  if(!info){info=el('p');info.className='title-popularity';card.insertBefore(info,card.querySelector('button'));}
+  info.textContent=value;
+ }
+ function updatePopularityNote(){
+  const note=dialog?.querySelector('[data-popularity-note]');if(!note)return;
+  if(!popularity){note.textContent='称号の獲得率は、全登録者を分母に毎朝1回更新します。';return;}
+  const when=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(popularity.updatedAt));
+  note.textContent='称号獲得率：全登録者'+popularity.totalRegistered+'人 / 最終集計 '+when+
+   (popularity.pendingInitializations?'（称号記録の初期化待ち：'+popularity.pendingInitializations+'人。獲得数は暫定値です）':'');
+ }
+ async function loadPopularity(){
+  if(popularityLoad)return popularityLoad;
+  popularityLoad=(async()=>{
+   try{
+    const response=await fetch(new URL('./title-popularity.json',import.meta.url),{cache:'no-cache'});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    const data=await response.json();
+    if(data?.schemaVersion!==1||!Number.isSafeInteger(data.totalRegistered)||data.totalRegistered<1||
+       !Number.isFinite(Date.parse(data.updatedAt))||!data.titles||typeof data.titles!=='object')return;
+    popularity=data;
+    dialog?.querySelectorAll('.title-award[data-title-id]').forEach(updatePopularityCard);
+    updatePopularityNote();
+   }catch(error){console.warn('Daily title popularity unavailable',error.message);}
+  })();
+  return popularityLoad;
+ }
  function cardForTitle(t){
-  const card=el('article');card.className='title-award'+(t.unlocked?' unlocked':' locked');
+  const card=el('article');card.className='title-award'+(t.unlocked?' unlocked':' locked');card.dataset.titleId=t.id;
   card.append(el('small',t.id===state.selectedId?'表示中':t.unlocked?'解放済み':'未解放'),el('h4',t.name),Object.assign(el('p',t.condition),{className:'title-condition'}));
   if(Number.isFinite(t.done))card.append(Object.assign(el('p',Math.min(t.done,t.need)+' / '+t.need),{className:'title-progress'}));
   const equip=el('button',t.id===state.selectedId?'選択中':'この称号を表示');equip.disabled=busy||!t.unlocked||t.id===state.selectedId;
-  equip.addEventListener('click',()=>select(t.id));card.append(equip);return card;
+  equip.addEventListener('click',()=>select(t.id));card.append(equip);updatePopularityCard(card);return card;
  }
  function render(){
   if(dialog){dialog.close();dialog.remove();}
@@ -58,6 +98,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
    tabs.append(tab);
   }
   dialog.append(tabs);
+  const popularityNote=el('p');popularityNote.className='titles-popularity-note';popularityNote.dataset.popularityNote='1';dialog.append(popularityNote);updatePopularityNote();
   const rankingCard=el('section');rankingCard.className='titles-ranking';rankingCard.dataset.titleRanking='1';rankingCard.setAttribute('aria-label','称号獲得数ランキング');
   dialog.append(rankingCard);renderRanking();
   const clear=el('button','称号を表示しない');clear.disabled=busy||!state.selectedId;clear.className='titles-clear';
@@ -100,7 +141,7 @@ export function mountTitles({root,getUser,request,onSelection=()=>{}}){
   try{
    const data=await request(user,undefined,'collection');
    if(id!==generation||getUser()?.uid!==user.uid)return;
-   state=data;onSelection(state.selectedTitle||'');busy=false;render();
+   state=data;onSelection(state.selectedTitle||'');busy=false;render();void loadPopularity();
    note.textContent=state.selectedTitle?'表示中：ー'+state.selectedTitle+'ー':'称号を選んでランキングに表示できます。';
 
   }catch(error){
