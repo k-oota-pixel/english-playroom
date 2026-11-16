@@ -218,6 +218,8 @@ async function saveResult(){
       assessmentHistoryPreview:preview,assessmentRecentIds:ids};
     lastSaved=record;
     pendingSave=null;
+    $('againBtn').disabled=false;
+    $('backBtn').disabled=false;
     clearHistoryDisplay();
     renderPreview();
     setSavingStatus('診断結果を保存しました。');
@@ -236,6 +238,8 @@ async function finish(){
     correct:results.correct,total:results.total,uncertainty:results.uncertainty,
     scaleVersion:results.scaleVersion};
   pendingSave={record,results};
+  $('againBtn').disabled=true;
+  $('backBtn').disabled=true;
   $('resultScore').textContent=numberFmt(results.score);
   $('resultGrade').textContent=results.grade+'（推定）';
   $('vocabScore').textContent=numberFmt(results.vocabScore)+'点';
