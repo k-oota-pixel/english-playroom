@@ -155,15 +155,17 @@ export function fourChoices(item,bank,rng=Math.random){
   for(const row of shuffle(distractors,rng)){
     const value=String(row[key]);
     if(used.has(normalize(value)))continue;
-    used.add(normalize(value));distinct.push(value);
+    used.add(normalize(value));distinct.push({en:row.en,ja:row.ja});
     if(distinct.length===3)break;
   }
   if(distinct.length!==3)throw Error('選択肢が不足しています: '+item.grade);
-  const options=shuffle([correct,...distinct],rng);
+  const answerPair={en:item.en,ja:item.ja};
+  const optionPairs=shuffle([answerPair,...distinct],rng);
+  const options=optionPairs.map(pair=>String(pair[key]));
   return {id:item.id,kind:'vocab',source:'vocabulary',grade:item.grade,level:item.level,
     direction:englishToJapanese?'英日':'日英',
     prompt:englishToJapanese?'「'+item.en+'」の意味は？':'「'+item.ja+'」に当たる英語は？',
-    options,correctIndex:options.indexOf(correct),guessRate:.25};
+    options,optionPairs,correctIndex:optionPairs.indexOf(answerPair),guessRate:.25};
 }
 function orderQuestion(item,rng){
   const original=item.tokens.map((t,id)=>({id,text:t}));
@@ -223,20 +225,59 @@ function probability(ability,item){
   const chance=Number(item.guessRate)??.25;
   return chance+(1-chance-.02)/(1+Math.exp(-(ability-adjustedDifficulty)/1.24));
 }
-export function submitAnswer(session,question,answer){
-  if(session.lastPrompt!==question)throw Error('回答対象の問題が一致しません。');
-  let correct;
+// null is the explicit "わからない" answer and is scored as incorrect
+// without an artificial guess. This same grader can be reused in review
+// without updating the ability posterior or creating a saved attempt.
+export function evaluateAttempt(question,answer){
+  if(answer===null)return false;
   if(question.source==='order'){
     const tokens=question.tokens||[];
     if(!Array.isArray(answer)||answer.length!==tokens.length||new Set(answer).size!==tokens.length)throw Error('すべての語句を1回ずつ並べてください。');
     const chosen=answer.map(id=>tokens.find(t=>t.id===id)?.text);
     if(chosen.some(x=>!x))throw Error('語句の指定が正しくありません。');
     const completed=normalizedSentence(chosen.join(' '));
-    correct=question.acceptedAnswers.some(v=>normalizedSentence(v)===completed);
-  }else{
-    if(!Number.isInteger(answer)||answer<0||answer>=question.options.length)throw Error('回答が正しくありません。');
-    correct=answer===question.correctIndex;
+    return question.acceptedAnswers.some(v=>normalizedSentence(v)===completed);
   }
+  if(!Number.isInteger(answer)||answer<0||answer>=question.options.length)throw Error('回答が正しくありません。');
+  return answer===question.correctIndex;
+}
+export function modelAnswer(question){
+  if(question.source==='order'){
+    return {correctAnswer:question.acceptedAnswers[0]||'',completedSentence:question.acceptedAnswers[0]||'',
+      optionPairs:[],alternatives:question.acceptedAnswers.slice(1)};
+  }
+  const correctAnswer=question.options[question.correctIndex]||'';
+  let completedSentence='';
+  if(question.source==='potato'){
+    const first=String(question.prompt||'').split('\n')[0];
+    completedSentence=first.replace(/\(\s*\)/,correctAnswer);
+  }else if(question.source==='retry'){
+    const prompt=String(question.prompt||'');
+    if(/_{2,}/.test(prompt))completedSentence=prompt.replace(/_{2,}/,correctAnswer);
+  }
+  return {correctAnswer,completedSentence,
+    optionPairs:question.kind==='vocab'?question.optionPairs.map(pair=>({...pair})):[],
+    alternatives:[]};
+}
+export function selectReviewQuestions(answers,questionsById,max=2){
+  const n=CLAMP(Math.floor(Number(max)||0),0,2);
+  const missed=answers.map((answer,index)=>({...answer,index}))
+    .filter(a=>!a.correct&&questionsById.has(a.id)).reverse();
+  const selected=[];
+  for(const kind of ['vocab','grammar']){
+    if(selected.length>=n)break;
+    const target=missed.find(a=>a.kind===kind&&!selected.some(x=>x.id===a.id));
+    if(target)selected.push(target);
+  }
+  for(const answer of missed){
+    if(selected.length>=n)break;
+    if(!selected.some(x=>x.id===answer.id))selected.push(answer);
+  }
+  return selected.sort((a,b)=>a.index-b.index).map(a=>questionsById.get(a.id));
+}
+export function submitAnswer(session,question,answer){
+  if(session.lastPrompt!==question)throw Error('回答対象の問題が一致しません。');
+  const correct=evaluateAttempt(question,answer);
   const weights=session.weights.map((w,i)=>{
     const p=probability(POINTS[i],question);
     return w*(correct?p:1-p);
@@ -245,7 +286,8 @@ export function submitAnswer(session,question,answer){
   if(!(total>0))throw Error('推定計算に失敗しました。');
   session.weights=weights.map(w=>w/total);
   session.answers.push({id:question.id,kind:question.kind,source:question.source,level:question.level,
-    correct,selected:question.source==='order'?answer:[answer],expected:question.source==='order'?null:question.correctIndex});
+    correct,unknown:answer===null,selected:answer===null?[]:question.source==='order'?answer:[answer],
+    expected:question.source==='order'?null:question.correctIndex});
   session.lastPrompt=null;
   return correct;
 }

@@ -32,3 +32,21 @@ footer{margin:24px auto;text-align:center;color:#78909d;font-size:12px;line-heig
 .token-zone button:focus-visible,.token-zone button:hover{border-color:#268b9e;background:#e7f4f8}
 .order-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
 .order-actions button{flex:1;min-width:170px}
+
+/* Diagnostic feedback and intentional non-guessing */
+.unknown-answer{background:#fbfcff;border-style:dashed;color:#435d74}
+.answer-feedback{margin-top:18px;padding:17px;border:1px solid #b9d9e2;border-radius:14px;background:#f3faff;line-height:1.75}
+.answer-status{font-weight:900;font-size:17px;margin:0 0 7px}
+.answer-status.is-right{color:#13805b}
+.answer-status.is-wrong{color:#a04c45}
+.answer-key{font-weight:850;font-size:17px;color:#1d506e;margin:5px 0;overflow-wrap:anywhere}
+.answer-complete{font-size:14px;margin:7px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.gloss-heading{margin:14px 0 5px;font-weight:850;color:#315b72}
+.gloss-list{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.gloss-list li{padding:7px 10px;border-radius:9px;background:#fff;border:1px solid #dfebf2;overflow-wrap:anywhere}
+.gloss-list .right-pair{background:#e6f6f0;border-color:#9cdec5;font-weight:800}
+.choices button:disabled{opacity:1;cursor:default}
+.choices button.is-correct{border-color:#16a579;background:#e7f8f0}
+.choices button.is-incorrect{border-color:#d17a70;background:#fff0ed}
+.token-zone button:disabled{opacity:1;cursor:default}
+#nextBtn{margin-top:12px}

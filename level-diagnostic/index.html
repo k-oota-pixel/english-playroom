@@ -8,8 +8,8 @@
   <style id="monstudy-access-lock">body{visibility:hidden!important}html{background:#f3f7fc}</style>
   <script type="module" src="../access-gate.js?v=2.4.37"></script>
   <script src="../shell-bridge.js?v=2.1.1"></script>
-  <link rel="stylesheet" href="./style.css?v=2.4.130">
-  <script type="module" src="./app.js?v=2.4.131"></script>
+  <link rel="stylesheet" href="./style.css?v=2.4.132">
+  <script type="module" src="./app.js?v=2.4.132"></script>
 </head>
 <body>
 <main class="diagnostic">
@@ -63,7 +63,17 @@
         <button class="primary" id="orderSubmitBtn" type="button" disabled>この語順で回答する</button>
       </div>
     </div>
-    <p class="fine">語彙文法では空所補充と並べ替えも出題されます。結果は最後にまとめて確認できます。</p>
+    <button class="secondary wide unknown-answer" id="unknownBtn" type="button">わからない</button>
+    <section class="answer-feedback" id="feedback" aria-live="polite" aria-label="模範解答" hidden>
+      <p class="answer-status" id="answerStatus"></p>
+      <p class="answer-key" id="answerCorrect"></p>
+      <p class="answer-complete" id="answerSentence" hidden></p>
+      <p class="answer-complete" id="answerAlternatives" hidden></p>
+      <p class="gloss-heading" id="answerPairsHeading" hidden>選択肢の英語と日本語訳</p>
+      <ol class="gloss-list" id="answerPairs" hidden></ol>
+    </section>
+    <button class="primary wide" id="nextBtn" type="button" hidden>次の問題へ</button>
+    <p class="fine">回答後、すぐに模範解答を確認できます。診断終了後は最大2問を復習します（復習は採点対象外）。</p>
     <button class="secondary" id="cancelBtn" type="button">診断を中断する</button>
   </section>
   <section id="result" class="panel" hidden>
@@ -83,7 +93,7 @@
     <button id="againBtn" class="primary wide" type="button">もう一度診断する</button>
     <button id="backBtn" class="secondary wide" type="button">履歴とトップに戻る</button>
   </section>
-  <footer>推定スコアは語彙・文法・語順の20問から算出した暫定的な参考値です。1000点は英検2級上位の習熟を基準とし、英検の公式判定ではありません。</footer>
+  <footer>推定スコアは単語・語彙文法・語順の15〜25問から算出した暫定的な参考値です。1000点は英検2級上位の習熟を基準とし、英検の公式判定ではありません。</footer>
 </main>
 </body>
 </html>
