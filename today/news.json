@@ -1,13 +1,438 @@
 {
-  "generatedAt": "2026-11-15T01:02:09.557Z",
-  "editionDate": "2026-11-15",
+  "generatedAt": "2026-11-16T01:00:06.187Z",
+  "editionDate": "2026-11-16",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-15"
+    "lastSuccessfulEdition": "2026-11-16"
   },
   "articles": [
+    {
+      "id": "2026-11-16-ai-cad-drawing-search-tool",
+      "date": "2026-11-16",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "AI",
+        "CAD",
+        "software",
+        "business"
+      ],
+      "titleJa": "CAD図面のAI検索",
+      "title": "AI Tool Now Searches CAD Drawings by Text",
+      "summaryJa": "Stock社は、AIナレッジツール「ナレカン」にDWGおよびDXF形式のCADファイルを追加し、図面内のテキスト検索やAI要約の作成を可能にしました。",
+      "sourcePublishedAt": "2026-11-16T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "新しいCAD検索ツールの機能や対応ファイル形式について正確に把握するため。",
+        "followUpJa": "実務でそのツールを使うとき、どのファイル形式に変換する必要がありますか？",
+        "questions": {
+          "5級": "What kind of files can the new AI tool search now?",
+          "4級": "What information in the CAD drawings can the AI tool read?",
+          "3級": "What new feature besides keyword search helps users find correct drawings?",
+          "準2級": "What can the AI tool automatically create for each uploaded CAD file?",
+          "2級": "Why do engineers often spend a lot of time searching through traditional CAD folders?",
+          "準1級": "What specific file conversion step is required if an engineer wants to use Jw_cad files with this updated tool?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New AI Tool for CAD",
+          "text": "A company has a new AI tool. It can help people find CAD files. CAD files have many important pictures and words. Now, the AI can read text inside the files. Users can search with keywords easily. It saves a lot of time for workers every day.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Searching CAD Drawings with AI",
+          "text": "Stock updated its AI knowledge tool called Narekan. Now, it can search DWG and DXF CAD files. Workers use CAD drawings for important manufacturing information. But finding the right file is sometimes very hard. With this update, users can search for names and notes inside drawings. The AI helps people find correct files fast and makes summary articles automatically.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "AI Tool Updates CAD File Search and Summaries",
+          "text": "Stock has announced an important update to its Narekan AI knowledge tool. The system now supports DWG and DXF format CAD files for keyword and AI searches. In manufacturing and design sectors, CAD drawings serve as vital information assets. However, engineers often waste valuable time opening many folders to check file contents. This new feature allows users to search drawings using text like product names and notes. Furthermore, the AI can automatically read drawing text and generate useful summary articles for each file.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Stock Adds CAD File Support to Narekan AI Tool",
+          "text": "Stock has added DWG and DXF format CAD files to its Narekan AI knowledge tool. In many manufacturing companies, CAD drawings contain vital design and manufacturing data. Because these files require special software to view, workers frequently struggle to find the right drawing among countless folders. Responding to customer requests, Stock updated its system so that users can search drawings based on text inside them, such as product names and notes. Additionally, the tool can automatically read drawing text and create a one-article summary for every uploaded file to help teams share corporate knowledge effectively.",
+          "wordCount": 95
+        },
+        "2級": {
+          "title": "Narekan AI Tool Expands Capabilities to CAD Drawings",
+          "text": "Stock has announced a major update to its Narekan AI knowledge tool, integrating support for DWG and DXF format CAD files into its search and summary systems. Traditionally, manufacturing and design sectors rely heavily on CAD drawings as core information assets for production and development. Because these files cannot be previewed without specialized software, engineers often waste valuable time navigating deep folder structures to locate specific documents. To solve this operational challenge, Stock updated the system to enable keyword searches based on text written directly inside the drawings, such as specifications, part names, and notes. Moreover, the tool now features an automated summary function. When a user uploads a file, the AI reads the internal text and generates a concise summary highlighting key points and file overviews. This capability transforms individual CAD drawings into reusable corporate knowledge efficiently, helping teams share vital technical data across the organization without manual searching delays.",
+          "wordCount": 151
+        },
+        "準1級": {
+          "title": "Stock Enhances Narekan AI Platform with Advanced CAD Document Integration",
+          "text": "Stock has significantly expanded the functionality of its Narekan AI knowledge platform by incorporating support for DWG and DXF format CAD files into its keyword and AI search systems. Within engineering and manufacturing environments, CAD drawings serve as indispensable repositories of design and production data. Historically, locating a specific blueprint proved burdensome, as engineers had to open files via dedicated software or manually search through intricate folder hierarchies just to verify contents. Prompted by customer demands for better document discoverability, Stock updated Narekan to index textual elements embedded within drawings, including product names, specifications, and notes. This allows users to execute targeted keyword searches, ask natural language questions regarding specific components, and retrieve exact documents seamlessly. Furthermore, the updated platform introduces an automated summarization feature. Upon file selection, the AI analyzes internal text to compile a structured summary and highlight key technical points, generating one comprehensive article per file to transform raw design data into accessible corporate knowledge. For engineers utilizing other formats such as Jw_cad or SXF, the platform requires converting and exporting the files into DXF format prior to uploading.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "ITmedia AI+",
+          "url": "https://monoist.itmedia.co.jp/mn/articles/2611/16/news016.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-16-f1-diversity-hamilton",
+      "date": "2026-11-16",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Formula 1",
+        "Lewis Hamilton",
+        "Mission 44",
+        "diversity"
+      ],
+      "titleJa": "F1の多様性に課題",
+      "title": "Lewis Hamilton Says Much Still to Do on F1 Diversity",
+      "summaryJa": "F1ドライバーのルイス・ハミルトンが、モータースポーツ界における多様性をさらに高めるため、3つの重要なステップを求めています。",
+      "sourcePublishedAt": "2026-11-16T00:04:45.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "ハミルトンが提案する3つのステップを理解し、F1が取り組むべき最優先課題について自分の意見を持つため。",
+        "followUpJa": "F1が多様性を向上させるために最も重要だと考える対策について話し合ってみましょう。",
+        "questions": {
+          "5級": "Who talks about diversity in F1?",
+          "4級": "What is the name of the charity that Lewis Hamilton established?",
+          "3級": "How many key steps does Lewis Hamilton demand from Formula 1 in his report?",
+          "準2級": "What are the three main recommendations made in the Mission 44 report?",
+          "2級": "Why does the report state that the industry cannot yet measure if diversity efforts are truly succeeding?",
+          "準1級": "What specific financial commitment is the Mission 44 report proposing that F1, the FIA, teams, and sponsors make over the next five years?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Lewis Hamilton Talks About Diversity",
+          "text": "Lewis Hamilton is a famous driver. He races in Formula 1. He wants more diversity in the sport. He says there is much still to do. He sees more women and Black faces now. But he wants the sport to do more. He wants to help more people join F1.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "F1 Diversity Needs More Work",
+          "text": "Lewis Hamilton is a British Formula 1 driver. He says there is still much to do for diversity in the sport. He wants to help more women and people from lower backgrounds join F1. His charity, Mission 44, published a new report. Hamilton wants F1 to measure who joins and who stays. He believes the sport can do better.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Lewis Hamilton Says More Work Is Needed on F1 Diversity",
+          "text": "British Formula 1 driver Lewis Hamilton says there is still much to do for diversity in the sport. Five years after starting his charity, Mission 44, he released a new report. The report states that the sport lacks data to show if diversity efforts are truly working. Hamilton is demanding three key steps from Formula 1. He wants the sport to measure who joins and stays, take people investments out of the cost cap, and publish paid positions every year to help more people build careers.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Lewis Hamilton Calls for Greater Accountability in Formula 1 Diversity",
+          "text": "British Formula 1 driver Lewis Hamilton says there is still much to do to increase diversity in motorsport. Marking the five-year anniversary of his Mission 44 charity, Hamilton released a report demanding three key steps from the sport. Although he sees more women and minority faces in the paddock now, the report notes that the industry lacks clear data to track who enters, progresses, and stays. The report makes three main recommendations: measure workforce participation, exclude people investments from the F1 cost cap to build a talent pipeline, and publish available paid positions annually. Meanwhile, an F1 spokesperson highlighted that over 500,000 young people engaged in STEM and educational programs globally in 2025, and the sport signed its first diversity charter in 2024 to improve access.",
+          "wordCount": 119
+        },
+        "2級": {
+          "title": "Lewis Hamilton Highlights Ongoing Challenges and Calls for Action on F1 Diversity",
+          "text": "Seven-time Formula 1 champion Lewis Hamilton has stated that there is still much work to do regarding diversity within the sport. Speaking on the fifth anniversary of his Mission 44 charity, Hamilton outlined three essential steps to improve the representation of Black people, women, and individuals from lower socio-economic backgrounds. While acknowledging positive visual changes in the paddock, Hamilton emphasized that the sport currently lacks the collated data needed to track whether diversity efforts have genuinely changed who enters, progresses, and remains in motorsport. The Mission 44 report proposes three main recommendations: tracking career progression and recognizing best practices, removing people investments from the F1 cost cap to collectively fund the talent pipeline, and publishing annual figures for paid positions. In response, an F1 spokesperson defended the sport's ongoing initiatives, pointing out that their social impact programs engaged over 500,000 young people globally in 2025 and provided more than 1,000 structured skills development opportunities across the global motorsport community.",
+          "wordCount": 151
+        },
+        "準1級": {
+          "title": "Assessing Progress: Lewis Hamilton Pushes for Accountability and New Investment in F1 Diversity",
+          "text": "Formula 1 legend Lewis Hamilton has asserted that substantial work remains to achieve true diversity within motorsport, utilizing a landmark report from his Mission 44 charity to demand greater accountability. Five years after founding the organization, the seven-time champion noted that while he observes more women and minority faces in the paddock than ever before, the industry fundamentally lacks comprehensive data to measure who enters, progresses, and ultimately stays in the sport. Because there is currently no collated workforce data beyond general activity reach, the report contends it is impossible to evaluate whether diversity initiatives are succeeding. To bridge this gap, Mission 44 proposes three concrete recommendations: tracking career lifecycles to identify best practices, exempting people-focused investments from the F1 cost cap to collectively bolster talent pipelines, and publishing annual data on paid positions. Furthermore, the report suggests that key stakeholders including F1, the governing body FIA, teams, and major sponsors invest at least fifty million pounds in new funding over the next five years to support underrepresented young people. An F1 spokesperson responded by emphasizing the sport's existing commitments, noting that initiatives following the Hamilton Commission recommendations led to a 2024 diversity charter and a 2025 data gathering exercise that engaged over half a million young people worldwide in educational and STEM programs.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/formula1/articles/c52e8kpnje42o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-16-hepco-email-leak-2026",
+      "date": "2026-11-16",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hokkaido Electric Power",
+        "Data Leak",
+        "Security Incident"
+      ],
+      "titleJa": "北電ストアでメルアド流出",
+      "title": "Email Addresses Leaked from Hokkaido Electric Power EC Site",
+      "summaryJa": "北海道電力のECサイト「きらめくストア」で利用している外部メール配信サービスへの不正アクセスにより、顧客のメールアドレス5,664件が外部へ流出しました。",
+      "sourcePublishedAt": "2026-11-13T05:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "不正アクセスの影響を受けた顧客が注意すべき点や、不審なメールへの対策について理解を深めましょう。",
+        "followUpJa": "流出が確認された情報と、顧客が警戒すべき詐欺メールの種類について確認し合ってみましょう。",
+        "questions": {
+          "5級": "What was leaked from the store?",
+          "4級": "What kind of service had illegal access?",
+          "3級": "Which dates were the email addresses registered between?",
+          "準2級": "What information was NOT leaked according to the report?",
+          "2級": "Why is it difficult for Hokkaido Electric Power to contact affected customers individually?",
+          "準1級": "How are the external email services like MakeRepeater and Arara Message connected to the incident?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Basic News",
+          "text": "Hokkaido Electric Power has an online shop. It is called Kirameku Store. Some email addresses went out. A bad person accessed an outer service. The company is very sorry. Please be careful of bad emails now.",
+          "wordCount": 36
+        },
+        "4級": {
+          "title": "Store Data Leak",
+          "text": "Hokkaido Electric Power runs an online shop named Kirameku Store. Recently, some customer email addresses leaked outside. An illegal access happened to an outer mail service used by the shop. The company confirmed that names, passwords, and credit cards are safe. They ask customers to watch out for strange emails and avoid opening unknown links very carefully.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "External Service Incident",
+          "text": "Hokkaido Electric Power announced that an external mail delivery service suffered unauthorized access by a third party. This incident caused the leak of over five thousand email addresses registered on their online shop, Kirameku Store. Fortunately, names, phone numbers, and credit card details are completely safe. The company stopped using the service and warns users to be very careful about potential phishing emails.",
+          "wordCount": 63
+        },
+        "準2級": {
+          "title": "Hokkaido Electric Power Data Incident",
+          "text": "Hokkaido Electric Power reported that an unauthorized access to an external email delivery service resulted in the leakage of customer email addresses. The incident affected their online shop, Kirameku Store, which used the Arara Message service via MakeRepeater. A total of 5,664 email addresses registered between July and October were compromised. The company emphasized that names, addresses, phone numbers, passwords, and credit card information were not affected at all. Because individual notifications are difficult, the company issued a public warning advising users to be cautious of suspicious phishing emails. Furthermore, Hokkaido Electric Power has already stopped the connection with Arara Message and continues to investigate the impact on customers.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "Email Address Leak at Hokkaido Electric Power Online Store",
+          "text": "Hokkaido Electric Power has reported a security incident affecting its e-commerce website, Kirameku Store. An unauthorized third-party access to an external email delivery service, Arara Message, led to the exposure of thousands of customer email addresses. The company clarified that the breach occurred through mail delivery software used for newsletters, while the core shop systems remained uncompromised. A total of 5,664 email addresses collected between July and October were leaked. Crucially, sensitive data such as names, passwords, and credit card details were not exposed in this incident. Because individual email addresses were not explicitly recorded in their direct logs for this batch, direct notification was impossible, prompting a public announcement today. The utility company has already suspended the affected service and strongly advises customers to remain vigilant against potential phishing attempts and unsolicited links.",
+          "wordCount": 133
+        },
+        "準1級": {
+          "title": "Security Breach at Hokkaido Electric Power Exposes Customer Emails",
+          "text": "Hokkaido Electric Power recently disclosed a significant cybersecurity incident involving its e-commerce platform, Kirameku Store. An unauthorized third-party intrusion targeted the web server infrastructure of an external email distribution service known as Arara Message, which was utilized by the store's newsletter management tool, MakeRepeater. Consequently, a total of 5,664 customer email addresses registered between July 1 and October 28 were compromised following the unauthorized access that occurred between October 27 and October 31. In its official statement, the utility provider assured the public that core operational systems of both the Kirameku Store and MakeRepeater remained secure. Furthermore, sensitive personal information including real names, physical addresses, telephone numbers, passwords, and credit card credentials remained entirely unexposed and safe from the breach.\n\nBecause individual email records could not be specifically isolated for direct customer notification based on current reports, the company opted for a transparent public disclosure to alert users effectively. Hokkaido Electric Power has immediately severed all direct connections with the vulnerable Arara Message delivery service and urged all affected customers to exercise extreme vigilance against prospective phishing campaigns, spoofing, and fraudulent communications. The company is actively collaborating with GMO MakeShop and Arara to verify all facts, evaluate ongoing impacts, and ensure appropriate information security management going forward to protect all consumers relying on their platform.",
+          "wordCount": 210
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253239_2073.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-16-horonobe-road-rage-incident",
+      "date": "2026-11-16",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "hokkaido",
+        "road-rage",
+        "police"
+      ],
+      "titleJa": "あおり運転で暴行事件",
+      "title": "Road Rage Incident Leads to Robbery and Injury in Hokkaido",
+      "summaryJa": "北海道幌延町で、大型トレーラーの前をふさいだ男が運転手を殴り、エンジンキーを奪って逃走する事件が発生しました。",
+      "sourcePublishedAt": "2026-11-16T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "この記事を読み、ドライバーとして危険な遭遇を避けるための防犯対策を判断しましょう。",
+        "followUpJa": "もし自分が被害に遭った場合、身を守るためにどのような行動を取るべきか話し合ってみましょう。",
+        "questions": {
+          "5級": "Where did the road rage incident happen?",
+          "4級": "What kind of vehicle was the victim driving?",
+          "3級": "What did the man do after he stopped his car in front of the truck?",
+          "準2級": "What items were stolen from the truck driver by the suspect?",
+          "2級": "How did the police describe the physical appearance of the suspect who escaped?",
+          "準1級": "What specific investigative methods are the police utilizing to pursue the suspect in this robbery-injury case?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Car Trouble",
+          "text": "A bad thing happened in Hokkaido. A man drove a car. He stopped the car. It was in front of a big truck. The driver of the car hit the truck driver. He took the truck key. Then he ran away. Police are looking for the man now.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Bad Driving on Road",
+          "text": "In Hokkaido, a dangerous thing happened on a road. A car stopped suddenly in front of a large truck. The man from the car got out. He walked to the truck and hit the driver on the face. Then he took the engine key and drove away. The truck driver called the police for help. The driver had minor injuries.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Road Rage and Robbery in Hokkaido",
+          "text": "A serious road rage incident happened in Horonobe, Hokkaido. On November 15, a 56-year-old man was driving a large trailer on a bypass road. Suddenly, a passenger car stopped right in front of him and blocked the road completely. The male driver got out of his car, walked to the truck, and punched the worker in the face. After that, he stole the engine key and escaped from the scene. The victim called the police immediately. He had a bleeding injury on his face, but it was light and he did not need to go to the hospital. Police are looking for the suspect now.",
+          "wordCount": 104
+        },
+        "準2級": {
+          "title": "Driver Attacked and Key Stolen in Horonobe",
+          "text": "Police in Hokkaido are searching for a man after a violent road rage incident in Horonobe Town. On the evening of November 15, a large trailer was traveling on the Horofumi Bypass. A passenger car suddenly stopped in front of the truck, blocking its path. The man driving the car approached the truck, punched the 56-year-old driver in the face, and stole the engine key before fleeing the area. The victim suffered facial bleeding and called 110 immediately, though his injuries were minor and did not require hospital transport. The suspect is described as being in his 20s or 30s, of medium build, wearing a black long-sleeved top and gray sweatpants. Authorities are investigating the case as robbery and injury.",
+          "wordCount": 116
+        },
+        "2級": {
+          "title": "Hokkaido Police Investigate Road Rage Robbery",
+          "text": "The Hokkaido police are actively pursuing a suspect involved in a violent road rage and robbery incident in the northern town of Horonobe. The event occurred on the evening of November 15 along the Horofumi Bypass. A 56-year-old company employee from Asahikawa was operating a large trailer when a passenger car abruptly stopped directly in front of him, blocking his route. The driver of the car exited his vehicle, approached the trailer, and struck the victim in the face. The assailant then stole the engine key and fled the scene. The victim managed to place an emergency 110 call, reporting facial bleeding that required no hospital transport. According to police, the suspect is a man in his 20s or 30s of medium build, wearing a black long-sleeved top and gray sweatpants. Investigators are utilizing dashcam footage to examine potential reckless driving as part of a robbery and injury case.",
+          "wordCount": 145
+        },
+        "準1級": {
+          "title": "Violent Road Rage Incident Triggers Robbery Investigation in Northern Hokkaido",
+          "text": "Law enforcement authorities in Hokkaido have launched a comprehensive investigation into a troubling robbery-injury case stemming from an apparent road rage encounter in Horonobe Town. The incident unfolded on the evening of November 15 along the Horofumi Bypass, where a 56-year-old Asahikawa resident was operating a large trailer. According to police reports, a passenger vehicle abruptly maneuvered in front of the commercial truck, coming to a sudden halt to deliberately obstruct its path. The driver of the blocking vehicle exited, approached the trailer, physically assaulted the victim by striking him in the face, and forcibly removed the engine key before escaping. The victim immediately placed an emergency 110 call, reporting facial injuries that, although bleeding, were classified as minor and did not necessitate hospital transport. Investigators noted that the fugitive is estimated to be in his twenties or thirties, possessing a medium build, and was last seen wearing a black long-sleeved top and gray sweatpants. While withholding specific details regarding the suspect's vehicle to protect the integrity of the ongoing investigation, the police are closely analyzing dashboard camera footage. They are evaluating the episode through the dual lenses of dangerous driving obstruction and robbery resulting in injury as they track down the perpetrator.",
+          "wordCount": 201
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63647"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-16-nhk-pickup-news-20261116",
+      "date": "2026-11-16",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NHK",
+        "pickup",
+        "news"
+      ],
+      "titleJa": "1分のニュース動画",
+      "title": "NHK Shares One-Minute Video News",
+      "summaryJa": "NHKがまとめた1分のニュース動画の配信と、注目される深掘りコンテンツの内容を紹介しています。",
+      "sourcePublishedAt": "2026-11-15T21:47:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "NHKのピックアップニュースや深掘りコンテンツで扱われているトピックについて情報を集める。",
+        "followUpJa": "気になった深掘りコンテンツのテーマについて友達と話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the news video time?",
+          "4級": "How long is the NHK news video?",
+          "3級": "What can people watch in the one-minute video?",
+          "準2級": "Which topics are included in the deep-dive contents?",
+          "2級": "What specific subjects are covered in the latest deep-dive contents?",
+          "準1級": "How does NHK structure its latest video updates and deep-dive contents?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "One-Minute Video",
+          "text": "NHK has a new video. It is one minute long. You can watch news in it. Data broadcasting cannot play this video. People can check it online. Many new stories are here. It is easy to watch. Please look at the news today.",
+          "wordCount": 43
+        },
+        "4級": {
+          "title": "NHK News Video",
+          "text": "NHK shares a new video today. The video is one minute long. It gives you the latest news. Please note that data broadcasting cannot show this video. There are also deep-dive stories. You can read about many different things. People can find new videos and weather info on the site. NHK brings useful information to everyone every day. Please check the website to see what is new.",
+          "wordCount": 67
+        },
+        "3級": {
+          "title": "NHK Pickup News and Videos",
+          "text": "NHK presents a new pickup news update. Viewers can watch the latest events in a convenient one-minute video. However, people cannot see this video through data broadcasting services. The website also shares special deep-dive content for interested readers. Readers can explore many different stories and topics there. In addition, users can easily check weather forecasts and disaster prevention information online. The platform helps everyone stay informed about current events every single day.",
+          "wordCount": 72
+        },
+        "準2級": {
+          "title": "NHK Pickup News and Deep-Dive Features",
+          "text": "NHK has released its latest pickup news update, delivering a summary of current events in a convenient one-minute video format. Please note that this video cannot be viewed through data broadcasting services. Alongside the main news update, the platform offers interesting deep-dive content covering a wide range of subjects. Readers can explore diverse stories, including web manga, parenting challenges with artificial intelligence, literature origins, and recent global topics. Visitors can also access weather forecasts and disaster prevention information on the official website. NHK shares this useful information every single day to help people stay well-informed about current events. Please check the official website to explore more deep-dive stories, weather forecasts, and disaster prevention information.",
+          "wordCount": 114
+        },
+        "2級": {
+          "title": "NHK Releases One-Minute Video and Deep-Dive Features",
+          "text": "NHK has published its latest pickup news update, providing a summary of current events through a convenient one-minute video format. Please be aware that this one-minute video cannot be viewed via data broadcasting. In addition to the main broadcast summary, the NHK platform highlights various deep-dive content exploring unique social topics. These special features cover diverse subjects, ranging from web manga and parenting challenges with artificial intelligence to literature origins and international economic trends. Furthermore, users can also access up-to-date weather forecasts and disaster prevention information directly from the NHK platform to remain well-informed. Readers who want to explore these diverse topics can check the official website for all available articles, latest updates, and special features. The organization provides this useful information every single day to ensure that all interested citizens stay completely up to date with major events.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Exploring NHK's Latest Pickup News and Comprehensive Deep-Dive Features",
+          "text": "NHK has officially released its latest pickup news update, providing viewers with a concise and convenient one-minute video summary that encapsulates recent domestic and international developments. While the organization notes that this particular video cannot be accessed through traditional data broadcasting services, the digital platform ensures that interested users can easily explore the content online. Beyond the primary news summary, the service features an extensive array of compelling deep-dive content designed to examine contemporary societal issues and cultural trends in much greater detail. These investigative and analytical pieces explore a remarkably diverse range of subjects, including stories about Japanese women working in Australia's sex industry, the expanding world of web manga featuring unexpected new releases, and the complicated dilemmas that parents face regarding children and artificial intelligence. Additional deep-dive topics include the creative origins of author Keigo Higashino, who described himself as having once been extremely averse to reading, and an economic column examining the backdrop behind French government bond yields reaching their highest levels in twenty-four years. Other featured subjects encompass the growing movement of suspects refusing police interrogations in Japan, the emerging 'text hip' reading boom among young people in South Korea, and the shadow of generative AI appearing behind fraudulent schemes involving fake police officers. Furthermore, the official platform ensures that users stay thoroughly well-informed by providing comprehensive weather forecasts, disaster prevention information, and other new articles every single day.",
+          "wordCount": 233
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261115de76258"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-16-yamasato-praises-madoka-street-skills",
+      "date": "2026-11-16",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Yamasato Ryota",
+        "Madoka Hiroshi",
+        "Kansai TV",
+        "TBS radio"
+      ],
+      "titleJa": "円広志の街ブラ術に山里が衝撃",
+      "title": "Comedian Ryota Yamasato Praises Hiroshi Madoka for Amazing Street Interview Skills",
+      "summaryJa": "南海キャンディーズの山里亮太がラジオ番組で、関西のタレント円広志と一緒に街頭ロケを行った際の驚きを語り、その優れたトーク技術を絶賛しました。",
+      "sourcePublishedAt": "2026-11-16T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事を読んで、山里亮太が円広志のどのような行動や技術に驚いたのかを理解します。",
+        "followUpJa": "円広志が普通のカップルからどのように面白い話を引き出したか、本文から見つけてみましょう。",
+        "questions": {
+          "5級": "What did Madoka talk to at first?",
+          "4級": "How many steps did they walk before stopping?",
+          "3級": "What did Yamasato call Madoka after seeing his skills?",
+          "準2級": "What kind of TV special program is this street walk for?",
+          "2級": "Why was Yamasato so surprised by the conversation with the young couple?",
+          "準1級": "How does Yamasato describe Madoka's unique ability to find and extract interesting stories from ordinary people?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Madoka and Yamasato",
+          "text": "Ryota Yamasato is a comedian. He had a walk on the street with Hiroshi Madoka. Madoka is a star in Kansai. They walked near a TV station. Madoka talked to a young couple. He talked to them easily. Yamasato saw him and was very surprised. Madoka has great skills. Yamasato had a lot of fun on this nice walk today.",
+          "wordCount": 60
+        },
+        "4級": {
+          "title": "A Great Street Walk",
+          "text": "Ryota Yamasato talked about his new work on a radio show. He walked on the street with Hiroshi Madoka for a special TV program. Yamasato has seen many street shows before. But he was shocked by Madoka. They walked only fifteen steps from the TV building. Then, Madoka saw a normal couple waiting for a traffic light. He started to talk to them. The couple told many funny stories. Madoka can make anyone interesting.",
+          "wordCount": 74
+        },
+        "3級": {
+          "title": "Discovering the King of Street Interviews",
+          "text": "Comedian Ryota Yamasato appeared on his radio program to share a story. He recently did a street walking shoot with veteran Kansai entertainer Hiroshi Madoka. They were filming for an upcoming special television program. Yamasato has watched many street interview shows, but this experience blew his mind. Just fifteen steps away from the Kansai TV building, Madoka started talking to a young couple at a crosswalk. To Yamasato's surprise, the ordinary couple shared many hilarious episodes because Madoka knew how to draw out their stories naturally.",
+          "wordCount": 86
+        },
+        "準2級": {
+          "title": "Ryota Yamasato Amazed by Hiroshi Madoka's Street Interview Mastery",
+          "text": "Comedian Ryota Yamasato shared his amazement on a radio show about a street interview shoot with veteran entertainer Hiroshi Madoka. They worked together for an upcoming Kansai TV special program. Yamasato declared that he finally saw the true king of street interviews. Only fifteen steps outside the Kansai TV building, Madoka approached a regular young couple waiting at a pedestrian crossing. By starting a natural conversation, Madoka skillfully drew out one interesting episode after another from the pair, keeping them engaged through multiple traffic light changes. Yamasato was deeply impressed, calling Madoka an alchemist of conversation because he can effortlessly discover and extract humor from anyone he meets during walks.",
+          "wordCount": 110
+        },
+        "2級": {
+          "title": "Comedian Ryota Yamasato Praises Hiroshi Madoka's Street Interview Skills on Radio",
+          "text": "During his TBS radio program, comedian Ryota Yamasato reflected on a recent street recording session with legendary Kansai entertainer Hiroshi Madoka, held for an upcoming television special. Yamasato admitted that despite his extensive experience with street interview shows, he was utterly astonished by Madoka's exceptional talent during their shoot. Just fifteen steps outside the Kansai TV station, Madoka casually approached an ordinary young couple waiting at a traffic light. By initiating a simple conversation, Madoka successfully encouraged the couple to share numerous fascinating and amusing stories, keeping them talking through multiple signal changes. Yamasato marveled at how Madoka could effortlessly elicit rich content from anyone he encountered, regardless of the location or the person. Deeply impressed by this masterclass in communication, Yamasato praised Madoka as an alchemist of conversation, expressing genuine delight in the memorable and enjoyable experience of filming together.",
+          "wordCount": 141
+        },
+        "準1級": {
+          "title": "Ryota Yamasato Extols Veteran Entertainer Hiroshi Madoka as the Ultimate Master of Street Interviews",
+          "text": "On a recent broadcast of his TBS radio program JUNK Ryota Yamasato no Fumou na Giron, comedian Ryota Yamasato recounted a remarkably eye-opening street recording session alongside veteran Kansai personality Hiroshi Madoka, filmed in anticipation of a major upcoming Kansai TV special program. Yamasato, who is no stranger to street-interview programming across his career, confessed that he had finally witnessed the undisputed king of the genre while working with Madoka. Mere steps from the Kansai TV building, Madoka casually engaged an unassuming young couple waiting at a pedestrian crossroad. Through effortless questioning, Madoka coaxed a continuous stream of captivating and humorous anecdotes from the pair, sustaining a lively exchange across multiple traffic light changes. What struck Yamasato most profoundly was that this was not a matter of mere serendipity; Madoka consistently uncovered hidden charm and wit in everyone he crossed paths with, whether through extended conversations or fleeting brief encounters. Overwhelmed by this display of effortless charisma, Yamasato lauded Madoka as an alchemist of conversation, reflecting on a thoroughly rewarding and unforgettable filming experience that left him deeply moved and inspired.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261116-5323579/"
+        }
+      ]
+    },
     {
       "id": "2026-11-15-fiji-did-ireland-a-favour-rugby",
       "date": "2026-11-15",
