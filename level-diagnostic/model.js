@@ -76,7 +76,8 @@ function cleanPotato(groups){
       const level=group.id==='be'?([4,5].includes(Number(q.correctId))?3:1):
         ['have','has','am going','is going','are going'].includes(normalize(correct))?4:3;
       const id='g:potato:'+group.id+':'+index;
-      if(seen.has(id))continue;seen.add(id);
+      const contentKey=normalize(q.english)+'|'+normalize(q.japanese);
+      if(seen.has(contentKey))continue;seen.add(contentKey);
       items.push({id,kind:'grammar',source:'potato',grade:level<=3?'4級':'3級',level,
         question:String(q.english)+'\n'+String(q.japanese),
         choices:choices.map(c=>({number:Number(c.id),text:String(c.text).trim()})),
@@ -266,7 +267,9 @@ export function summarize(session){
   const vocabCorrect=session.answers.filter(a=>a.kind==='vocab'&&a.correct).length;
   const grammarCorrect=session.answers.filter(a=>a.kind==='grammar'&&a.correct).length;
   const grade2=session.answers.filter(a=>a.level>=10&&a.level<=12);
-  const evidence=grade2.length>=2&&grade2.filter(a=>a.correct).length>=2;
+  const higher=session.answers.filter(a=>a.level>=13);
+  const evidence=(grade2.length>=3&&grade2.every(a=>a.correct))||
+    (grade2.length>=2&&higher.filter(a=>a.correct).length>=3);
   const fullScore=scoreFromAbility(estimate.mean);
   // Avoid granting maximum on too little grade-2 evidence.
   const score=fullScore===1000&&!evidence?990:fullScore;
