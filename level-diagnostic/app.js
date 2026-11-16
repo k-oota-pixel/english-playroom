@@ -5,7 +5,8 @@ import {getAuth} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
   writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
-  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.131';
+  evaluateAttempt,modelAnswer,selectReviewQuestions,
+  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.132';
 
 const $=id=>document.getElementById(id);
 const app=getMonstudyApp();
@@ -14,7 +15,8 @@ const auth=getAuth(app),db=getFirestore(app);
 let user=null,bankPromise=null,session=null,currentQuestion=null,lastSaved=null;
 let summaryData={},pendingSave=null,lastHistorySnapshot=null,historyExhausted=false,historyBusy=false;
 const recentLimit=120,previewLimit=12;
-let selectedOrderIds=[];
+let selectedOrderIds=[],answerShown=false;
+let askedQuestions=new Map(),reviewQueue=[],reviewIndex=0,reviewMode=false;
 const fmtDate=atMs=>atMs?new Date(Number(atMs)).toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
 const escapeNumber=n=>Number.isFinite(Number(n))?Number(n):0;
 const show=which=>{
@@ -160,38 +162,47 @@ async function loadBank(){
   return bankPromise;
 }
 function renderOrderChoices(){
-  const panel=$('orderPanel'),available=$('availableTokens'),selected=$('selectedTokens');
+  const available=$('availableTokens'),selected=$('selectedTokens');
   available.replaceChildren();selected.replaceChildren();
   if(!currentQuestion||currentQuestion.source!=='order')return;
   for(const id of selectedOrderIds){
     const token=currentQuestion.tokens.find(t=>t.id===id);
     if(!token)continue;
     const button=document.createElement('button');
-    button.type='button';button.textContent=token.text;
+    button.type='button';button.textContent=token.text;button.disabled=answerShown;
     button.setAttribute('aria-label',token.text+' を並べ替えから戻す');
-    button.addEventListener('click',()=>{selectedOrderIds=selectedOrderIds.filter(n=>n!==id);renderOrderChoices();});
+    button.addEventListener('click',()=>{if(answerShown)return;selectedOrderIds=selectedOrderIds.filter(n=>n!==id);renderOrderChoices();});
     selected.append(button);
   }
   for(const token of currentQuestion.tokens){
     if(selectedOrderIds.includes(token.id))continue;
-    const button=document.createElement('button');button.type='button';
+    const button=document.createElement('button');button.type='button';button.disabled=answerShown;
     button.textContent=token.text;
     button.setAttribute('aria-label',token.text+' を並べ替えに追加');
-    button.addEventListener('click',()=>{selectedOrderIds.push(token.id);renderOrderChoices();});
+    button.addEventListener('click',()=>{if(answerShown)return;selectedOrderIds.push(token.id);renderOrderChoices();});
     available.append(button);
   }
-  $('orderSubmitBtn').disabled=selectedOrderIds.length!==currentQuestion.tokens.length;
-  $('orderResetBtn').disabled=!selectedOrderIds.length;
+  $('orderSubmitBtn').disabled=answerShown||selectedOrderIds.length!==currentQuestion.tokens.length;
+  $('orderResetBtn').disabled=answerShown||!selectedOrderIds.length;
 }
 function renderQuestion(){
   const question=currentQuestion;
   if(!question)return;
-  $('questionKind').textContent=question.kind==='vocab'?'単語 · '+question.direction:'語彙文法 · '+question.direction;
-  $('questionNumber').textContent='第'+(session.answers.length+1)+'問';
+  answerShown=false;
+  $('feedback').hidden=true;
+  $('nextBtn').hidden=true;
+  $('unknownBtn').hidden=false;$('unknownBtn').disabled=false;
+  $('questionKind').textContent=(reviewMode?'復習 · ':'')+(question.kind==='vocab'?'単語 · '+question.direction:'語彙文法 · '+question.direction);
+  $('questionNumber').textContent=reviewMode?
+    '復習 '+(reviewIndex+1)+' / '+reviewQueue.length:
+    '第'+(session.answers.length+1)+'問';
   $('questionGrade').textContent=question.grade;
   $('questionText').textContent=question.prompt;
-  $('progressFill').style.width=(session.answers.length/MAX_QUESTIONS*100)+'%';
-  $('questionProgress').textContent='第'+(session.answers.length+1)+'問・標準'+STANDARD_QUESTIONS+'問（最少'+MIN_QUESTIONS+'問／最大'+MAX_QUESTIONS+'問）';
+  $('progressFill').style.width=(reviewMode?100:session.answers.length/MAX_QUESTIONS*100)+'%';
+  $('questionProgress').textContent=reviewMode?
+    '診断は終了しています。復習の結果はスコアに加算しません。':
+    '第'+(session.answers.length+1)+'問・標準'+STANDARD_QUESTIONS+'問（最少'+MIN_QUESTIONS+'問／最大'+MAX_QUESTIONS+'問）';
+  $('cancelBtn').textContent=reviewMode?'復習を終えて結果を見る':'診断を中断する';
   const choices=$('choices');choices.replaceChildren();
   const ordering=question.source==='order';
   choices.hidden=ordering;$('orderPanel').hidden=!ordering;
@@ -205,19 +216,73 @@ function renderQuestion(){
     choices.append(b);
   }
 }
+function revealModelAnswer(question,selected,correct){
+  const key=modelAnswer(question);
+  const status=$('answerStatus');
+  status.className='answer-status '+(correct?'is-right':'is-wrong');
+  status.textContent=selected===null?'わからない → 模範解答を確認しましょう':correct?'正解！':'不正解';
+  $('answerCorrect').textContent='模範解答：'+key.correctAnswer;
+  $('answerSentence').hidden=!key.completedSentence;
+  $('answerSentence').textContent=key.completedSentence?'完成した英文：'+key.completedSentence:'';
+  const alternatives=key.alternatives||[];
+  $('answerAlternatives').hidden=!alternatives.length;
+  $('answerAlternatives').textContent=alternatives.length?'ほかに認められる語順：'+alternatives.join(' / '):'';
+  const pairs=$('answerPairs');pairs.replaceChildren();
+  $('answerPairsHeading').hidden=key.optionPairs.length===0;
+  pairs.hidden=key.optionPairs.length===0;
+  for(const [index,pair] of key.optionPairs.entries()){
+    const li=document.createElement('li');
+    const marker=String.fromCharCode(65+index);
+    li.textContent=marker+'. '+pair.en+' — '+pair.ja+(index===question.correctIndex?'（正解）':'');
+    if(index===question.correctIndex)li.className='right-pair';
+    pairs.append(li);
+  }
+  for(const [i,b] of [...$('choices').querySelectorAll('button')].entries()){
+    b.disabled=true;
+    if(i===question.correctIndex)b.classList.add('is-correct');
+    else if(i===selected)b.classList.add('is-incorrect');
+  }
+  $('unknownBtn').disabled=true;
+  if(question.source==='order')renderOrderChoices();
+  $('feedback').hidden=false;
+  $('nextBtn').hidden=false;
+  const lastReview=reviewMode&&reviewIndex===reviewQueue.length-1;
+  const lastQuestion=!reviewMode&&isFinished(session);
+  $('nextBtn').textContent=lastReview?'診断結果を見る':
+    reviewMode?'次の復習問題へ':
+    lastQuestion?(session.answers.some(a=>!a.correct)?'間違えた問題を復習する':'診断結果を見る'):'次の問題へ';
+  $('nextBtn').focus();
+}
 function answer(value){
-  if(!session||!currentQuestion)return;
+  if(!session||!currentQuestion||answerShown)return;
   const item=currentQuestion;
-  try{submitAnswer(session,item,value);}
+  let correct;
+  try{correct=reviewMode?evaluateAttempt(item,value):submitAnswer(session,item,value);}
   catch(error){notice(error.message||'回答を確認できませんでした。');return;}
-  currentQuestion=null;
+  if(!reviewMode)askedQuestions.set(item.id,item);
+  answerShown=true;
+  notice('');
+  revealModelAnswer(item,value,correct);
+}
+function showResults(){
+  reviewMode=false;currentQuestion=null;answerShown=false;
+  session.finished=true;show('result');notice('');
+}
+function nextAfterFeedback(){
+  if(!answerShown||!session)return;
+  if(reviewMode){
+    reviewIndex++;
+    if(reviewIndex>=reviewQueue.length){showResults();return;}
+    currentQuestion=reviewQueue[reviewIndex];renderQuestion();
+    return;
+  }
   if(isFinished(session)){void finish();return;}
   try{
     currentQuestion=chooseQuestion(session,window.__diagnosticBank);
     renderQuestion();
   }catch(error){
-    notice('次の問題を選択できませんでした。診断を中断してやり直してください。');
     console.error(error);
+    notice('次の問題を選択できませんでした。診断を中断してやり直してください。');
   }
 }
 function setSavingStatus(text){$('saveStatus').textContent=text;}
@@ -287,9 +352,18 @@ async function finish(){
     ('前回から '+(record.score-Number(last.score)>0?'+':'')+(record.score-Number(last.score))+'点'):
     'この尺度での診断を記録します。';
   session.finished=true;
-  show('result');
-  notice('');
-  await saveResult();
+  reviewQueue=selectReviewQuestions(session.answers,askedQuestions,2);
+  reviewIndex=0;
+  if(reviewQueue.length){
+    reviewMode=true;
+    currentQuestion=reviewQueue[0];
+    show('test');renderQuestion();notice('');
+  }else{
+    showResults();
+  }
+  // Save the diagnostic once at completion, before the unscored review.
+  // Review does not touch Firestore, recorded answers or the ability estimate.
+  void saveResult();
 }
 async function start(){
   if(!user)return;
@@ -299,6 +373,7 @@ async function start(){
     const bank=await loadBank();
     window.__diagnosticBank=bank;
     session=createSession(summaryData.assessmentRecentIds||[]);
+    askedQuestions=new Map();reviewQueue=[];reviewIndex=0;reviewMode=false;answerShown=false;
     currentQuestion=chooseQuestion(session,bank);
     if(!currentQuestion)throw Error('問題を用意できませんでした。');
     show('test');notice('');
@@ -317,13 +392,19 @@ async function init(){
   $('historyBtn').addEventListener('click',showHistory);
   $('moreBtn').addEventListener('click',loadHistoryPage);
   $('orderSubmitBtn').addEventListener('click',()=>answer([...selectedOrderIds]));
-  $('orderResetBtn').addEventListener('click',()=>{selectedOrderIds=[];renderOrderChoices();});
+  $('orderResetBtn').addEventListener('click',()=>{if(answerShown)return;selectedOrderIds=[];renderOrderChoices();});
+  $('unknownBtn').addEventListener('click',()=>answer(null));
+  $('nextBtn').addEventListener('click',nextAfterFeedback);
   $('cancelBtn').addEventListener('click',()=>{
+    if(reviewMode){
+      if(confirm('復習を終了して診断結果を確認しますか？'))showResults();
+      return;
+    }
     if(confirm('診断を中断しますか？ 途中の結果は保存されません。')){
-      session=null;currentQuestion=null;show('entry');notice('');
+      session=null;currentQuestion=null;answerShown=false;show('entry');notice('');
     }
   });
-  globalThis.MonstudyMaterial?.setActivityGuard(()=>Boolean(session&&!session.finished));
+  globalThis.MonstudyMaterial?.setActivityGuard(()=>Boolean(session&&(!session.finished||reviewMode)));
   await auth.authStateReady();
   user=auth.currentUser;
   if(!user||user.isAnonymous){
