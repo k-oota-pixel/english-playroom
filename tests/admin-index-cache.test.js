@@ -17,7 +17,10 @@ test('messaging reads aggregated server pages lazily',()=>{
  const ui=fs.readFileSync('admin-contact-messages.js','utf8');
  assert.match(ui,/api\/admin\/contact-messages/);
  assert.match(ui,/nextPageToken/);
- assert.match(ui,/nextToken&&loadPage\(nextToken\)/);
+ assert.match(ui,/const PAGE_SIZE=6/);
+ assert.match(ui,/pendingItems\.splice\(0,PAGE_SIZE\)/);
+ assert.match(ui,/if\(pendingItems\.length\)renderNextSix\(\);else if\(nextToken\)void loadPage\(nextToken\)/);
+ assert.doesNotMatch(ui,/data-more hidden>次の50件/);
 });
 test('pet creation triggers name index sync',()=>{
  const html=fs.readFileSync('index.html','utf8');
