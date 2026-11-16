@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#183952">
+  <title>もんすた実力診断 | もんすたでぃ</title>
+  <style id="monstudy-access-lock">body{visibility:hidden!important}html{background:#f3f7fc}</style>
+  <script type="module" src="../access-gate.js?v=2.4.37"></script>
+  <script src="../shell-bridge.js?v=2.1.1"></script>
+  <link rel="stylesheet" href="./style.css?v=2.4.128">
+  <script type="module" src="./app.js?v=2.4.128"></script>
+</head>
+<body>
+<main class="diagnostic">
+  <header class="top">
+    <p class="eyebrow">MONSTUDY · LEVEL CHECK</p>
+    <h1>もんすた実力診断</h1>
+    <p>解ける問題に合わせて難易度が変わる、英語力チェック。</p>
+  </header>
+  <p id="notice" class="notice" role="status" aria-live="polite">ログインと学習履歴を確認しています…</p>
+  <section id="entry" class="panel" hidden>
+    <div class="hero">
+      <div class="hero-icon" aria-hidden="true">📊</div>
+      <div>
+        <h2>いまの力を測ろう</h2>
+        <p>4級レベルからスタート。単語と文法の正誤に合わせて次の問題が変わります。16〜24問・何度でも挑戦できます。</p>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><small>前回受験</small><strong id="latestDate">まだ記録がありません</strong><span id="latestSub">初回の診断を始めよう</span></div>
+      <div class="stat"><small>前回スコア</small><strong id="latestScore">—</strong><span id="bestScore">自己ベスト —</span></div>
+    </div>
+    <button class="primary wide" type="button" id="startBtn">実力診断を始める</button>
+    <p class="fine">解答中のFirebase通信はありません。スコアは1000点満点の暫定尺度です。コイン報酬はありません。</p>
+    <section class="history" aria-labelledby="historyTitle">
+      <div class="heading"><h2 id="historyTitle">これまでの成長</h2><span id="historyCount">履歴なし</span></div>
+      <svg id="trend" role="img" aria-label="最近のスコア推移" viewBox="0 0 480 130" preserveAspectRatio="none"></svg>
+      <ol id="previewList" class="history-list"></ol>
+      <button type="button" id="historyBtn" class="secondary wide">すべての受験履歴を見る</button>
+      <div id="fullHistory" hidden>
+        <ol id="fullHistoryList" class="history-list"></ol>
+        <button type="button" id="moreBtn" class="secondary wide" hidden>古い履歴をさらに表示</button>
+      </div>
+    </section>
+  </section>
+  <section id="test" class="panel" hidden>
+    <div class="question-head">
+      <div><p class="eyebrow" id="questionKind">単語力</p><h2 id="questionNumber">第1問</h2></div>
+      <span id="questionGrade" class="tag">4級</span>
+    </div>
+    <div class="progress" aria-label="出題進捗"><div id="progressFill"></div></div>
+    <small class="progress-label" id="questionProgress">目安20問・最大24問</small>
+    <p class="prompt" id="questionText"></p>
+    <div id="choices" class="choices" role="group" aria-label="選択肢"></div>
+    <p class="fine">考えた答えを1つ選んでください。結果は最後にまとめて確認できます。</p>
+    <button class="secondary" id="cancelBtn" type="button">診断を中断する</button>
+  </section>
+  <section id="result" class="panel" hidden>
+    <p class="eyebrow">DIAGNOSTIC RESULT</p>
+    <h2>今回の診断結果</h2>
+    <div class="score"><strong id="resultScore">—</strong><span>/ 1000点</span></div>
+    <p class="level" id="resultGrade"></p>
+    <p id="confidence" class="fine"></p>
+    <div class="stat-grid">
+      <div class="stat"><small>単語力</small><strong id="vocabScore">—</strong><span id="vocabGrade"></span></div>
+      <div class="stat"><small>文法力</small><strong id="grammarScore">—</strong><span id="grammarGrade"></span></div>
+    </div>
+    <p id="difference" class="growth"></p>
+    <p id="resultSummary" class="fine"></p>
+    <p id="saveStatus" class="notice" role="status" aria-live="polite"></p>
+    <button id="retrySaveBtn" class="secondary wide" hidden type="button">保存を再試行</button>
+    <button id="againBtn" class="primary wide" type="button">もう一度診断する</button>
+    <button id="backBtn" class="secondary wide" type="button">履歴とトップに戻る</button>
+  </section>
+  <footer>推定スコアは語彙・文法の選択問題に限定した参考値です。英検の合格判定や公式スコアではありません。</footer>
+</main>
+</body>
+</html>
