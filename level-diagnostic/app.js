@@ -1,4 +1,6 @@
 import {getMonstudyApp,enableAppCheck} from '../firebase-security.js?v=2.4.37';
+import {QUESTION_GROUPS as POTATO_GROUPS} from '../potato-harvest/questions.js';
+import {BASIC_GRAMMAR_STAGES} from './basic-grammar-data.js';
 import {getAuth} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
   writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
@@ -12,6 +14,7 @@ const auth=getAuth(app),db=getFirestore(app);
 let user=null,bankPromise=null,session=null,currentQuestion=null,lastSaved=null;
 let summaryData={},pendingSave=null,lastHistorySnapshot=null,historyExhausted=false,historyBusy=false;
 const recentLimit=120,previewLimit=12;
+let selectedOrderIds=[];
 const fmtDate=atMs=>atMs?new Date(Number(atMs)).toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
 const escapeNumber=n=>Number.isFinite(Number(n))?Number(n):0;
 const show=which=>{
@@ -35,10 +38,10 @@ function renderTrend(rows){
     const y=12+i*27;
     element('line',{x1:15,y1:y,x2:465,y2:y,stroke:'#dce9ef','stroke-width':1});
   }
-  const points=[...rows].filter(r=>Number.isFinite(Number(r?.score))&&r.atMs).sort((a,b)=>a.atMs-b.atMs).slice(-12);
+  const points=[...rows].filter(r=>r?.scaleVersion===SCALE_VERSION&&Number.isFinite(Number(r?.score))&&r.atMs).sort((a,b)=>a.atMs-b.atMs).slice(-12);
   if(!points.length){
     const message=element('text',{x:240,y:67,'text-anchor':'middle','font-size':14,fill:'#79919f'});
-    message.textContent='まだ診断記録がありません';return;
+    message.textContent='現行スコア基準の記録はまだありません';return;
   }
   const coords=points.map((row,i)=>{
     const x=points.length===1?240:24+i*432/(points.length-1);
@@ -60,13 +63,14 @@ function liForRecord(row,previous=null){
   const strong=document.createElement('strong');
   strong.textContent=numberFmt(row.score)+'点';
   right.append(strong);
-  if(previous&&Number.isFinite(Number(previous.score))){
+  if(previous&&row?.scaleVersion===previous?.scaleVersion&&Number.isFinite(Number(previous.score))){
     const diff=Number(row.score)-Number(previous.score);
     const em=document.createElement('em');
     em.textContent=(diff>0?'+':'')+diff+'点';
     if(diff<0)em.className='down';
     right.append(em);
   }
+  if(row?.scaleVersion!==SCALE_VERSION){const old=document.createElement('em');old.className='down';old.textContent='旧基準';right.append(old);}
   li.append(left,right);
   return li;
 }
@@ -75,9 +79,9 @@ function renderPreview(){
   const best=summaryData.assessmentBest||null;
   const preview=Array.isArray(summaryData.assessmentHistoryPreview)?summaryData.assessmentHistoryPreview:[];
   $('latestDate').textContent=latest?fmtDate(latest.atMs):'未受験';
-  $('latestSub').textContent=latest?(latest.grade||'推定レベルを確認できます'):'初回の診断を始めよう';
+  $('latestSub').textContent=latest?(latest.grade+(latest.scaleVersion!==SCALE_VERSION?'（旧基準）':'')):'初回の診断を始めよう';
   $('latestScore').textContent=latest?numberFmt(latest.score)+'点':'—';
-  $('bestScore').textContent=best?'自己ベスト '+numberFmt(best.score)+'点':'自己ベスト —';
+  $('bestScore').textContent=best&&best.scaleVersion===SCALE_VERSION?'自己ベスト '+numberFmt(best.score)+'点':'現行基準のベスト —';
   $('historyCount').textContent=preview.length?('最近の'+preview.length+'回'):'履歴なし';
   const list=$('previewList');list.replaceChildren();
   for(let i=0;i<preview.length;i++)list.append(liForRecord(preview[i],preview[i+1]));
@@ -150,21 +154,49 @@ async function loadBank(){
       ]);
       if(!vocabResponse.ok||!advancedResponse.ok)throw Error('単語データを読み込めません。');
       const [vocab,advanced]=await Promise.all([vocabResponse.json(),advancedResponse.json()]);
-      return buildQuestionBank(vocab,retryRows,advanced);
+      return buildQuestionBank(vocab,retryRows,advanced,{potatoGroups:POTATO_GROUPS,basicGrammarStages:BASIC_GRAMMAR_STAGES});
     })().catch(error=>{bankPromise=null;throw error;});
   }
   return bankPromise;
 }
+function renderOrderChoices(){
+  const panel=$('orderPanel'),available=$('availableTokens'),selected=$('selectedTokens');
+  available.replaceChildren();selected.replaceChildren();
+  if(!currentQuestion||currentQuestion.source!=='order')return;
+  for(const id of selectedOrderIds){
+    const token=currentQuestion.tokens.find(t=>t.id===id);
+    if(!token)continue;
+    const button=document.createElement('button');
+    button.type='button';button.textContent=token.text;
+    button.setAttribute('aria-label',token.text+' を並べ替えから戻す');
+    button.addEventListener('click',()=>{selectedOrderIds=selectedOrderIds.filter(n=>n!==id);renderOrderChoices();});
+    selected.append(button);
+  }
+  for(const token of currentQuestion.tokens){
+    if(selectedOrderIds.includes(token.id))continue;
+    const button=document.createElement('button');button.type='button';
+    button.textContent=token.text;
+    button.setAttribute('aria-label',token.text+' を並べ替えに追加');
+    button.addEventListener('click',()=>{selectedOrderIds.push(token.id);renderOrderChoices();});
+    available.append(button);
+  }
+  $('orderSubmitBtn').disabled=selectedOrderIds.length!==currentQuestion.tokens.length;
+  $('orderResetBtn').disabled=!selectedOrderIds.length;
+}
 function renderQuestion(){
   const question=currentQuestion;
   if(!question)return;
-  $('questionKind').textContent=question.kind==='vocab'?'単語力 · '+question.direction:'文法力 · 語彙・文法';
+  $('questionKind').textContent=question.kind==='vocab'?'単語 · '+question.direction:'語彙文法 · '+question.direction;
   $('questionNumber').textContent='第'+(session.answers.length+1)+'問';
   $('questionGrade').textContent=question.grade;
   $('questionText').textContent=question.prompt;
   $('progressFill').style.width=(session.answers.length/MAX_QUESTIONS*100)+'%';
-  $('questionProgress').textContent=(session.answers.length+1)+'問目／通常'+STANDARD_QUESTIONS+'問（'+MIN_QUESTIONS+'〜'+MAX_QUESTIONS+'問）';
+  $('questionProgress').textContent=(session.answers.length+1)+' / '+STANDARD_QUESTIONS+'問（単語10問・語彙文法10問）';
   const choices=$('choices');choices.replaceChildren();
+  const ordering=question.source==='order';
+  choices.hidden=ordering;$('orderPanel').hidden=!ordering;
+  selectedOrderIds=[];
+  if(ordering){renderOrderChoices();return;}
   for(const [i,label] of question.options.entries()){
     const b=document.createElement('button');b.type='button';
     const letter=document.createElement('b');letter.textContent=String.fromCharCode(65+i);
@@ -173,14 +205,13 @@ function renderQuestion(){
     choices.append(b);
   }
 }
-function answer(index){
+function answer(value){
   if(!session||!currentQuestion)return;
-  const item=currentQuestion;currentQuestion=null;
-  submitAnswer(session,item,index);
-  if(isFinished(session)){
-    void finish();
-    return;
-  }
+  const item=currentQuestion;
+  try{submitAnswer(session,item,value);}
+  catch(error){notice(error.message||'回答を確認できませんでした。');return;}
+  currentQuestion=null;
+  if(isFinished(session)){void finish();return;}
   try{
     currentQuestion=chooseQuestion(session,window.__diagnosticBank);
     renderQuestion();
@@ -201,7 +232,8 @@ async function saveResult(){
     const previous=Array.isArray(summaryData.assessmentHistoryPreview)?summaryData.assessmentHistoryPreview:[];
     const preview=[record,...previous.filter(row=>row.id!==record.id)].slice(0,previewLimit);
     const ids=[...session.answers.map(row=>row.id),...(summaryData.assessmentRecentIds||[])].filter((id,i,all)=>all.indexOf(id)===i).slice(0,recentLimit);
-    const best=Number(record.score)>=Number(summaryData.assessmentBest?.score??-1)?record:summaryData.assessmentBest;
+    const previousBest=summaryData.assessmentBest?.scaleVersion===SCALE_VERSION?summaryData.assessmentBest:null;
+    const best=Number(record.score)>=Number(previousBest?.score??-1)?record:previousBest;
     const batch=writeBatch(db);
     batch.set(doc(historyRef(),record.id),{
       ...record,createdAt:serverTimestamp(),answers:results.answers
@@ -233,8 +265,8 @@ async function finish(){
   const results=summarize(session),atMs=Date.now();
   const id=(globalThis.crypto?.randomUUID?.()||('run-'+atMs+'-'+Math.floor(Math.random()*1e8)));
   const record={id,atMs,score:results.score,grade:results.grade,
-    vocabScore:results.vocabScore,grammarScore:results.grammarScore,
-    vocabGrade:results.vocabGrade,grammarGrade:results.grammarGrade,
+    vocabCorrect:results.vocabCorrect,grammarCorrect:results.grammarCorrect,
+    vocabTotal:results.vocabTotal,grammarTotal:results.grammarTotal,
     correct:results.correct,total:results.total,uncertainty:results.uncertainty,
     scaleVersion:results.scaleVersion};
   pendingSave={record,results};
@@ -242,14 +274,14 @@ async function finish(){
   $('backBtn').disabled=true;
   $('resultScore').textContent=numberFmt(results.score);
   $('resultGrade').textContent=results.grade+'（推定）';
-  $('vocabScore').textContent=numberFmt(results.vocabScore)+'点';
-  $('grammarScore').textContent=numberFmt(results.grammarScore)+'点';
-  $('vocabGrade').textContent=results.vocabGrade+'（推定）';
-  $('grammarGrade').textContent=results.grammarGrade+'（推定）';
+  $('vocabScore').textContent=results.vocabCorrect+' / '+results.vocabTotal+'問';
+  $('grammarScore').textContent=results.grammarCorrect+' / '+results.grammarTotal+'問';
+  $('vocabGrade').textContent='総合能力値の算出に使用';
+  $('grammarGrade').textContent='総合能力値の算出に使用';
   $('confidence').textContent=results.referenceOnly?
     '推定の幅が広いため参考値です。再受験すると傾向を確かめられます。':
     '問題の正誤と難易度をもとにした参考推定です。';
-  $('resultSummary').textContent='全'+results.total+'問中'+results.correct+'問正解。単語'+results.vocabCorrect+'問、文法'+results.grammarCorrect+'問正解。スコアの尺度は暫定版（'+SCALE_VERSION+'）です。';
+  $('resultSummary').textContent='全'+results.total+'問中'+results.correct+'問正解。単語'+results.vocabCorrect+'問、語彙文法'+results.grammarCorrect+'問正解。両方の回答を使い、一つの英語力を推定しました。スコアの尺度は暫定版（'+SCALE_VERSION+'）です。';
   const last=summaryData.assessmentLatest;
   $('difference').textContent=last&&last.scaleVersion===record.scaleVersion?
     ('前回から '+(record.score-Number(last.score)>0?'+':'')+(record.score-Number(last.score))+'点'):
@@ -284,6 +316,8 @@ async function init(){
   $('retrySaveBtn').addEventListener('click',saveResult);
   $('historyBtn').addEventListener('click',showHistory);
   $('moreBtn').addEventListener('click',loadHistoryPage);
+  $('orderSubmitBtn').addEventListener('click',()=>answer([...selectedOrderIds]));
+  $('orderResetBtn').addEventListener('click',()=>{selectedOrderIds=[];renderOrderChoices();});
   $('cancelBtn').addEventListener('click',()=>{
     if(confirm('診断を中断しますか？ 途中の結果は保存されません。')){
       session=null;currentQuestion=null;show('entry');notice('');
