@@ -249,8 +249,8 @@ export function modelAnswer(question){
   const correctAnswer=question.options[question.correctIndex]||'';
   let completedSentence='';
   if(question.source==='potato'){
-    const first=String(question.prompt||'').split('\\n')[0];
-    completedSentence=first.replace(/\\(\\s*\\)/,correctAnswer);
+    const first=String(question.prompt||'').split('\n')[0];
+    completedSentence=first.replace(/\(\s*\)/,correctAnswer);
   }else if(question.source==='retry'){
     const prompt=String(question.prompt||'');
     if(/_{2,}/.test(prompt))completedSentence=prompt.replace(/_{2,}/,correctAnswer);
