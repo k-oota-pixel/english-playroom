@@ -1,9 +1,9 @@
-// Pilot adaptive assessment: one latent English ability, sampled from 10 vocabulary
-// and 10 grammar questions. Not official Eiken / a calibrated IRT examination.
+// Pilot adaptive assessment: one latent English ability, sampled from alternating
+// vocabulary and grammar questions (15–25 total). Not official Eiken or calibrated IRT.
 export const SCALE_VERSION='pilot-2-grade2';
-export const MIN_QUESTIONS=20;
+export const MIN_QUESTIONS=15;
 export const STANDARD_QUESTIONS=20;
-export const MAX_QUESTIONS=20;
+export const MAX_QUESTIONS=25;
 export const GRADES=Object.freeze([
   {name:'4級',key:'4',start:1},
   {name:'3級',key:'3',start:4},
@@ -200,7 +200,7 @@ function desiredSource(session,kind,target){
   return planned;
 }
 export function chooseQuestion(session,bank,rng=Math.random){
-  if(session.answers.length>=MAX_QUESTIONS)return null;
+  if(isFinished(session))return null;
   const kind=session.answers.length%2===0?'vocab':'grammar';
   const target=session.answers.length<2?2:CLAMP(Math.round(abilityEstimate(session).mean),1,15);
   const unused=bank[kind].filter(item=>!session.sessionIds.has(item.id));
@@ -249,7 +249,19 @@ export function submitAnswer(session,question,answer){
   session.lastPrompt=null;
   return correct;
 }
-export function isFinished(session){return session.answers.length===MAX_QUESTIONS;}
+// A fixed 20 questions is the usual outcome. Stop early only when the
+// posterior is exceptionally concentrated; extend uncertain cases up to 25.
+// At least seven examples of each type are required even for a 15-item run.
+export function isFinished(session){
+  const n=session.answers.length;
+  if(n<MIN_QUESTIONS)return false;
+  if(n>=MAX_QUESTIONS)return true;
+  const vocab=session.answers.filter(a=>a.kind==='vocab').length;
+  if(vocab<7||n-vocab<7)return false;
+  const {std}=abilityEstimate(session);
+  if(n<STANDARD_QUESTIONS)return std<=0.60;
+  return std<=0.90;
+}
 export function levelLabel(ability){
   const number=CLAMP(Math.round(ability),1,15);
   const grade=GRADES[Math.floor((number-1)/3)];

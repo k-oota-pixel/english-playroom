@@ -9,7 +9,7 @@
   <script type="module" src="../access-gate.js?v=2.4.37"></script>
   <script src="../shell-bridge.js?v=2.1.1"></script>
   <link rel="stylesheet" href="./style.css?v=2.4.130">
-  <script type="module" src="./app.js?v=2.4.130"></script>
+  <script type="module" src="./app.js?v=2.4.131"></script>
 </head>
 <body>
 <main class="diagnostic">
@@ -24,7 +24,7 @@
       <div class="hero-icon" aria-hidden="true">📊</div>
       <div>
         <h2>いまの力を測ろう</h2>
-        <p>4級レベルからスタート。単語10問と語彙文法10問を交互に出題し、解答全体から英語力を推定します。20問・何度でも挑戦できます。</p>
+        <p>4級レベルからスタート。単語と語彙文法を交互に出題し、解答全体から英語力を推定します。標準20問・最少15問・最大25問。何度でも挑戦できます。</p>
       </div>
     </div>
     <div class="stat-grid">
@@ -50,7 +50,7 @@
       <span id="questionGrade" class="tag">4級</span>
     </div>
     <div class="progress" aria-label="出題進捗"><div id="progressFill"></div></div>
-    <small class="progress-label" id="questionProgress">20問・単語10問＋語彙文法10問</small>
+    <small class="progress-label" id="questionProgress">標準20問（15〜25問）・単語と語彙文法を交互に出題</small>
     <p class="prompt" id="questionText"></p>
     <div id="choices" class="choices" role="group" aria-label="選択肢"></div>
     <div id="orderPanel" class="order-panel" hidden>

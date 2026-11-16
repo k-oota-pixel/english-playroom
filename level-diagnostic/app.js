@@ -5,7 +5,7 @@ import {getAuth} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
   writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
-  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.130';
+  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.131';
 
 const $=id=>document.getElementById(id);
 const app=getMonstudyApp();
@@ -191,7 +191,7 @@ function renderQuestion(){
   $('questionGrade').textContent=question.grade;
   $('questionText').textContent=question.prompt;
   $('progressFill').style.width=(session.answers.length/MAX_QUESTIONS*100)+'%';
-  $('questionProgress').textContent=(session.answers.length+1)+' / '+STANDARD_QUESTIONS+'問（単語10問・語彙文法10問）';
+  $('questionProgress').textContent='第'+(session.answers.length+1)+'問・標準'+STANDARD_QUESTIONS+'問（最少'+MIN_QUESTIONS+'問／最大'+MAX_QUESTIONS+'問）';
   const choices=$('choices');choices.replaceChildren();
   const ordering=question.source==='order';
   choices.hidden=ordering;$('orderPanel').hidden=!ordering;
