@@ -927,15 +927,15 @@ async function initialize(user){
   clear();
   legacyProfile=null;
   walletRef=null;
-  message('管理者権限を確認中…');
+  message('ログイン情報を確認中…');
   try{
     const session=user&&await accountSession(user);
     if(current!==generation)return;
-    if(!session?.admin||session.resetRequired){
-      message('もんすたクエストは管理者向けの先行プレビューです。');
+    if(!session||session.resetRequired){
+      message('もんすたクエストを遊ぶにはログインが必要です。');
       return;
     }
-    // Delay game data reads until an authorized admin clicks the splash screen.
+    // Delay game data reads until a signed-in player clicks the splash screen.
     splash.hidden=false;
     message();
     await new Promise(resolve=>{startButton.onclick=resolve;});

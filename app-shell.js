@@ -59,6 +59,7 @@ function install() {
   }));
   const dungeonItems = [
     {name:'冒険先を選ぶ',url:new URL('pet-adventure/',root)},
+    {name:'もんすたクエスト',url:new URL('monster-maze/',root)},
     {name:'魔王の塔',url:new URL('pet-adventure/?mode=tower',root)},
     {name:'魔物の巣窟',url:new URL('pet-adventure/?mode=dungeon',root)},
     {name:battleEntry.title,url:new URL(battleEntry.path,root)},
