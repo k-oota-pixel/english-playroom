@@ -69,7 +69,7 @@ test('grammar answer key shows completed English for Potato, Retry and word-orde
   assert.equal(retryAnswer.completedSentence,'He has done the project successfully.');
   const order=bank.grammar.find(x=>x.source==='order'&&x.id==='g:order:eigojun-be-001');
   const answerKey=modelAnswer({source:'order',acceptedAnswers:order.acceptedAnswers});
-  assert.equal(answerKey.completedSentence,order.en);
+  assert.equal(answerKey.completedSentence,order.english);
 });
 
 test('unknown works for ordering, and reading/reviewing cannot change the assessment',()=>{
