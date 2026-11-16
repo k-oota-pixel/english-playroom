@@ -10,7 +10,7 @@ const $=key=>root.querySelector('[data-'+key+']');
 let authorized=document.documentElement.dataset.monstudyAdminAuthorized==='true';
 let revision=0,busy=false;
 
-const format=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('ja-JP'):'—';
+const format=n=>n!==null&&n!==undefined&&n!==''&&Number.isFinite(Number(n))?Number(n).toLocaleString('ja-JP'):'—';
 const date=at=>{const d=new Date(at);return !at||Number.isNaN(d.getTime())?'—':
   d.toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});};
 
@@ -32,7 +32,7 @@ function render(summary){
   ['中央値',format(summary.medianScore)+'点'],
   ['最高点',format(summary.maximumScore)+'点'],
   ['最低点',format(summary.minimumScore)+'点'],
-  ['語彙／文法の平均',format(summary.averageVocabScore)+'／'+format(summary.averageGrammarScore)+'点']
+  ['単語／語彙文法の平均正答数',format(summary.averageVocabCorrect)+'／'+format(summary.averageGrammarCorrect)+'問（各10問）']
  ];
  const container=$('metrics');container.replaceChildren();
  for(const [label,value] of stats){
@@ -76,7 +76,7 @@ async function load(method){
   }
   render(response.summary);
   $('state').textContent=method==='POST'?
-   '集計結果を保存しました。以後は「保存済み集計を表示」で1ドキュメントだけ読み取ります。':
+   (response.summary?.source==='unchanged'?'新しい受験結果はありません。集計ドキュメントへのwriteは行っていません。':'集計結果を保存しました。次回は更新された利用者だけ読み取ります。'):
    '保存済みの集計を表示しています。新しい受験結果を反映するには「集計を更新」を押してください。';
  }catch(error){
   if(own===revision&&authorized)$('state').textContent=error?.name==='TimeoutError'?
