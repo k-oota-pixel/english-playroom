@@ -37,6 +37,19 @@ function install() {
     if(count)count.textContent=dungeonCards.querySelectorAll('a.card').length+'教材';
   }
 
+  const diagnosticSection=home.querySelector('#materials-vocabulary-grammar');
+  const diagnosticCards=diagnosticSection?.querySelector('.cards');
+  if(diagnosticCards&&!diagnosticCards.querySelector('[data-adaptive-diagnostic-card]')){
+    const card=document.createElement('a');
+    card.className='card';
+    card.dataset.adaptiveDiagnosticCard='1';
+    card.href=new URL('level-diagnostic/',root).href;
+    card.innerHTML='<div class="eyebrow">ADAPTIVE ENGLISH CHECK</div><div class="title">もんすた実力診断</div><div class="desc">4級からスタート。単語力・文法力を16〜24問で推定し、1000点満点の成長記録を残そう。</div><div class="chips"><span class="chip">難易度が自動で変わる</span><span class="chip">過去のスコア</span><span class="chip">コイン付与なし</span></div><div class="open-note">英語力を測ってみる</div>';
+    diagnosticCards.prepend(card);
+    const count=diagnosticSection.querySelector('.material-group-head>span');
+    if(count)count.textContent=diagnosticCards.querySelectorAll('a.card').length+'教材';
+  }
+
   const groups = [...home.querySelectorAll('.material-group')].map(group => ({
     name:group.querySelector('h2').textContent,
     items:[...group.querySelectorAll('a.card')].map(card => {
