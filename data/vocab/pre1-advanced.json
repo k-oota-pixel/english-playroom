@@ -1,0 +1,3625 @@
+{
+  "schemaVersion": 1,
+  "deck": "pre1Advanced",
+  "label": "準1級程度・上位難度語彙",
+  "count": 399,
+  "source": {
+    "deck": "target1900",
+    "range": [
+      1501,
+      1900
+    ],
+    "sourceCount": 400,
+    "omittedDuplicates": [
+      {
+        "no": 1636,
+        "en": "drown"
+      }
+    ]
+  },
+  "levelTag": "pre1_approx",
+  "calibration": "provisional; book order is not empirically calibrated",
+  "notes": "ターゲット1900後半から抽出。日本語訳・品詞は診断問題作成用の独自付与で、正式な英検準1級出題語彙とは限らない。代表的な意味を1つ付与しており、公開前に多義語と選択肢のレビューが必要。",
+  "fields": [
+    "id",
+    "no",
+    "en",
+    "ja",
+    "pos",
+    "sourceId",
+    "levelTag"
+  ],
+  "entries": [
+    {
+      "id": "pre1_t1900_1501",
+      "no": 1501,
+      "en": "bless",
+      "ja": "祝福する",
+      "pos": "v",
+      "sourceId": "t1900_1501",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1502",
+      "no": 1502,
+      "en": "regain",
+      "ja": "取り戻す",
+      "pos": "v",
+      "sourceId": "t1900_1502",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1503",
+      "no": 1503,
+      "en": "confirm",
+      "ja": "確認する",
+      "pos": "v",
+      "sourceId": "t1900_1503",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1504",
+      "no": 1504,
+      "en": "enroll",
+      "ja": "登録する",
+      "pos": "v",
+      "sourceId": "t1900_1504",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1505",
+      "no": 1505,
+      "en": "entitle",
+      "ja": "権利を与える",
+      "pos": "v",
+      "sourceId": "t1900_1505",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1506",
+      "no": 1506,
+      "en": "halt",
+      "ja": "停止させる",
+      "pos": "v",
+      "sourceId": "t1900_1506",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1507",
+      "no": 1507,
+      "en": "provoke",
+      "ja": "引き起こす",
+      "pos": "v",
+      "sourceId": "t1900_1507",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1508",
+      "no": 1508,
+      "en": "invade",
+      "ja": "侵略する",
+      "pos": "v",
+      "sourceId": "t1900_1508",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1509",
+      "no": 1509,
+      "en": "squeeze",
+      "ja": "絞る",
+      "pos": "v",
+      "sourceId": "t1900_1509",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1510",
+      "no": 1510,
+      "en": "crawl",
+      "ja": "はう",
+      "pos": "v",
+      "sourceId": "t1900_1510",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1511",
+      "no": 1511,
+      "en": "digest",
+      "ja": "消化する",
+      "pos": "v",
+      "sourceId": "t1900_1511",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1512",
+      "no": 1512,
+      "en": "utter",
+      "ja": "発する",
+      "pos": "v",
+      "sourceId": "t1900_1512",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1513",
+      "no": 1513,
+      "en": "refrain",
+      "ja": "控える",
+      "pos": "v",
+      "sourceId": "t1900_1513",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1514",
+      "no": 1514,
+      "en": "populate",
+      "ja": "（場所に）居住する",
+      "pos": "v",
+      "sourceId": "t1900_1514",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1515",
+      "no": 1515,
+      "en": "accommodate",
+      "ja": "収容する",
+      "pos": "v",
+      "sourceId": "t1900_1515",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1516",
+      "no": 1516,
+      "en": "steer",
+      "ja": "操縦する",
+      "pos": "v",
+      "sourceId": "t1900_1516",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1517",
+      "no": 1517,
+      "en": "drown",
+      "ja": "溺れる",
+      "pos": "v",
+      "sourceId": "t1900_1517",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1518",
+      "no": 1518,
+      "en": "dip",
+      "ja": "さっと浸す",
+      "pos": "v",
+      "sourceId": "t1900_1518",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1519",
+      "no": 1519,
+      "en": "soak",
+      "ja": "浸しておく",
+      "pos": "v",
+      "sourceId": "t1900_1519",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1520",
+      "no": 1520,
+      "en": "stir",
+      "ja": "かき混ぜる",
+      "pos": "v",
+      "sourceId": "t1900_1520",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1521",
+      "no": 1521,
+      "en": "transplant",
+      "ja": "移植する",
+      "pos": "v",
+      "sourceId": "t1900_1521",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1522",
+      "no": 1522,
+      "en": "reassure",
+      "ja": "安心させる",
+      "pos": "v",
+      "sourceId": "t1900_1522",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1523",
+      "no": 1523,
+      "en": "resume",
+      "ja": "再開する",
+      "pos": "v",
+      "sourceId": "t1900_1523",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1524",
+      "no": 1524,
+      "en": "speculate",
+      "ja": "推測する",
+      "pos": "v",
+      "sourceId": "t1900_1524",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1525",
+      "no": 1525,
+      "en": "surpass",
+      "ja": "上回る",
+      "pos": "v",
+      "sourceId": "t1900_1525",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1526",
+      "no": 1526,
+      "en": "appoint",
+      "ja": "任命する",
+      "pos": "v",
+      "sourceId": "t1900_1526",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1527",
+      "no": 1527,
+      "en": "intrigue",
+      "ja": "興味をそそる",
+      "pos": "v",
+      "sourceId": "t1900_1527",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1528",
+      "no": 1528,
+      "en": "decay",
+      "ja": "腐敗する",
+      "pos": "v",
+      "sourceId": "t1900_1528",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1529",
+      "no": 1529,
+      "en": "contaminate",
+      "ja": "汚染する",
+      "pos": "v",
+      "sourceId": "t1900_1529",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1530",
+      "no": 1530,
+      "en": "swell",
+      "ja": "膨張する",
+      "pos": "v",
+      "sourceId": "t1900_1530",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1531",
+      "no": 1531,
+      "en": "delete",
+      "ja": "削除する",
+      "pos": "v",
+      "sourceId": "t1900_1531",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1532",
+      "no": 1532,
+      "en": "tolerate",
+      "ja": "我慢する",
+      "pos": "v",
+      "sourceId": "t1900_1532",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1533",
+      "no": 1533,
+      "en": "envy",
+      "ja": "うらやむ",
+      "pos": "v",
+      "sourceId": "t1900_1533",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1534",
+      "no": 1534,
+      "en": "pray",
+      "ja": "祈る",
+      "pos": "v",
+      "sourceId": "t1900_1534",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1535",
+      "no": 1535,
+      "en": "confess",
+      "ja": "告白する",
+      "pos": "v",
+      "sourceId": "t1900_1535",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1536",
+      "no": 1536,
+      "en": "resign",
+      "ja": "辞任する",
+      "pos": "v",
+      "sourceId": "t1900_1536",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1537",
+      "no": 1537,
+      "en": "dissolve",
+      "ja": "溶解する",
+      "pos": "v",
+      "sourceId": "t1900_1537",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1538",
+      "no": 1538,
+      "en": "unfold",
+      "ja": "展開する",
+      "pos": "v",
+      "sourceId": "t1900_1538",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1539",
+      "no": 1539,
+      "en": "awaken",
+      "ja": "目覚めさせる",
+      "pos": "v",
+      "sourceId": "t1900_1539",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1540",
+      "no": 1540,
+      "en": "conceive",
+      "ja": "思いつく",
+      "pos": "v",
+      "sourceId": "t1900_1540",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1541",
+      "no": 1541,
+      "en": "entrepreneur",
+      "ja": "起業家",
+      "pos": "n",
+      "sourceId": "t1900_1541",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1542",
+      "no": 1542,
+      "en": "stake",
+      "ja": "賭け金",
+      "pos": "n",
+      "sourceId": "t1900_1542",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1543",
+      "no": 1543,
+      "en": "surplus",
+      "ja": "余剰",
+      "pos": "n",
+      "sourceId": "t1900_1543",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1544",
+      "no": 1544,
+      "en": "inflation",
+      "ja": "物価上昇",
+      "pos": "n",
+      "sourceId": "t1900_1544",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1545",
+      "no": 1545,
+      "en": "sweatshop",
+      "ja": "劣悪な労働条件の工場",
+      "pos": "n",
+      "sourceId": "t1900_1545",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1546",
+      "no": 1546,
+      "en": "clash",
+      "ja": "衝突",
+      "pos": "n",
+      "sourceId": "t1900_1546",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1547",
+      "no": 1547,
+      "en": "sociology",
+      "ja": "社会学",
+      "pos": "n",
+      "sourceId": "t1900_1547",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1548",
+      "no": 1548,
+      "en": "ideology",
+      "ja": "思想体系",
+      "pos": "n",
+      "sourceId": "t1900_1548",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1549",
+      "no": 1549,
+      "en": "margin",
+      "ja": "余白",
+      "pos": "n",
+      "sourceId": "t1900_1549",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1550",
+      "no": 1550,
+      "en": "realm",
+      "ja": "領域",
+      "pos": "n",
+      "sourceId": "t1900_1550",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1551",
+      "no": 1551,
+      "en": "domain",
+      "ja": "分野",
+      "pos": "n",
+      "sourceId": "t1900_1551",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1552",
+      "no": 1552,
+      "en": "algorithm",
+      "ja": "アルゴリズム",
+      "pos": "n",
+      "sourceId": "t1900_1552",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1553",
+      "no": 1553,
+      "en": "prairie",
+      "ja": "大草原",
+      "pos": "n",
+      "sourceId": "t1900_1553",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1554",
+      "no": 1554,
+      "en": "frontier",
+      "ja": "開拓地",
+      "pos": "n",
+      "sourceId": "t1900_1554",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1555",
+      "no": 1555,
+      "en": "bullet",
+      "ja": "銃弾",
+      "pos": "n",
+      "sourceId": "t1900_1555",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1556",
+      "no": 1556,
+      "en": "shield",
+      "ja": "盾",
+      "pos": "n",
+      "sourceId": "t1900_1556",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1557",
+      "no": 1557,
+      "en": "despair",
+      "ja": "絶望",
+      "pos": "n",
+      "sourceId": "t1900_1557",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1558",
+      "no": 1558,
+      "en": "radiation",
+      "ja": "放射線",
+      "pos": "n",
+      "sourceId": "t1900_1558",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1559",
+      "no": 1559,
+      "en": "placebo",
+      "ja": "偽薬",
+      "pos": "n",
+      "sourceId": "t1900_1559",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1560",
+      "no": 1560,
+      "en": "nursery",
+      "ja": "保育所",
+      "pos": "n",
+      "sourceId": "t1900_1560",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1561",
+      "no": 1561,
+      "en": "spouse",
+      "ja": "配偶者",
+      "pos": "n",
+      "sourceId": "t1900_1561",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1562",
+      "no": 1562,
+      "en": "makeup",
+      "ja": "化粧",
+      "pos": "n",
+      "sourceId": "t1900_1562",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1563",
+      "no": 1563,
+      "en": "mummy",
+      "ja": "ミイラ",
+      "pos": "n",
+      "sourceId": "t1900_1563",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1564",
+      "no": 1564,
+      "en": "flesh",
+      "ja": "肉",
+      "pos": "n",
+      "sourceId": "t1900_1564",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1565",
+      "no": 1565,
+      "en": "limb",
+      "ja": "手足",
+      "pos": "n",
+      "sourceId": "t1900_1565",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1566",
+      "no": 1566,
+      "en": "odor",
+      "ja": "におい",
+      "pos": "n",
+      "sourceId": "t1900_1566",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1567",
+      "no": 1567,
+      "en": "laundry",
+      "ja": "洗濯物",
+      "pos": "n",
+      "sourceId": "t1900_1567",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1568",
+      "no": 1568,
+      "en": "tide",
+      "ja": "潮",
+      "pos": "n",
+      "sourceId": "t1900_1568",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1569",
+      "no": 1569,
+      "en": "questionnaire",
+      "ja": "質問票",
+      "pos": "n",
+      "sourceId": "t1900_1569",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1570",
+      "no": 1570,
+      "en": "nonsense",
+      "ja": "無意味なこと",
+      "pos": "n",
+      "sourceId": "t1900_1570",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1571",
+      "no": 1571,
+      "en": "revenge",
+      "ja": "復讐",
+      "pos": "n",
+      "sourceId": "t1900_1571",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1572",
+      "no": 1572,
+      "en": "intellect",
+      "ja": "知性",
+      "pos": "n",
+      "sourceId": "t1900_1572",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1573",
+      "no": 1573,
+      "en": "hospitality",
+      "ja": "もてなし",
+      "pos": "n",
+      "sourceId": "t1900_1573",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1574",
+      "no": 1574,
+      "en": "librarian",
+      "ja": "司書",
+      "pos": "n",
+      "sourceId": "t1900_1574",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1575",
+      "no": 1575,
+      "en": "manuscript",
+      "ja": "原稿",
+      "pos": "n",
+      "sourceId": "t1900_1575",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1576",
+      "no": 1576,
+      "en": "obsession",
+      "ja": "強迫観念",
+      "pos": "n",
+      "sourceId": "t1900_1576",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1577",
+      "no": 1577,
+      "en": "hygiene",
+      "ja": "衛生",
+      "pos": "n",
+      "sourceId": "t1900_1577",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1578",
+      "no": 1578,
+      "en": "paradigm",
+      "ja": "思考の枠組み",
+      "pos": "n",
+      "sourceId": "t1900_1578",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1579",
+      "no": 1579,
+      "en": "legitimate",
+      "ja": "正当な",
+      "pos": "adj",
+      "sourceId": "t1900_1579",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1580",
+      "no": 1580,
+      "en": "authentic",
+      "ja": "本物の",
+      "pos": "adj",
+      "sourceId": "t1900_1580",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1581",
+      "no": 1581,
+      "en": "empirical",
+      "ja": "実証的な",
+      "pos": "adj",
+      "sourceId": "t1900_1581",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1582",
+      "no": 1582,
+      "en": "immense",
+      "ja": "巨大な",
+      "pos": "adj",
+      "sourceId": "t1900_1582",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1583",
+      "no": 1583,
+      "en": "absurd",
+      "ja": "ばかげた",
+      "pos": "adj",
+      "sourceId": "t1900_1583",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1584",
+      "no": 1584,
+      "en": "weird",
+      "ja": "奇妙な",
+      "pos": "adj",
+      "sourceId": "t1900_1584",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1585",
+      "no": 1585,
+      "en": "accidental",
+      "ja": "偶然の",
+      "pos": "adj",
+      "sourceId": "t1900_1585",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1586",
+      "no": 1586,
+      "en": "uneasy",
+      "ja": "不安な",
+      "pos": "adj",
+      "sourceId": "t1900_1586",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1587",
+      "no": 1587,
+      "en": "jealous",
+      "ja": "嫉妬深い",
+      "pos": "adj",
+      "sourceId": "t1900_1587",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1588",
+      "no": 1588,
+      "en": "feminine",
+      "ja": "女性的な",
+      "pos": "adj",
+      "sourceId": "t1900_1588",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1589",
+      "no": 1589,
+      "en": "swift",
+      "ja": "迅速な",
+      "pos": "adj",
+      "sourceId": "t1900_1589",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1590",
+      "no": 1590,
+      "en": "hollow",
+      "ja": "中が空洞の",
+      "pos": "adj",
+      "sourceId": "t1900_1590",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1591",
+      "no": 1591,
+      "en": "crude",
+      "ja": "粗雑な",
+      "pos": "adj",
+      "sourceId": "t1900_1591",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1592",
+      "no": 1592,
+      "en": "sore",
+      "ja": "痛い",
+      "pos": "adj",
+      "sourceId": "t1900_1592",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1593",
+      "no": 1593,
+      "en": "pessimistic",
+      "ja": "悲観的な",
+      "pos": "adj",
+      "sourceId": "t1900_1593",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1594",
+      "no": 1594,
+      "en": "vain",
+      "ja": "うぬぼれた",
+      "pos": "adj",
+      "sourceId": "t1900_1594",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1595",
+      "no": 1595,
+      "en": "susceptible",
+      "ja": "影響を受けやすい",
+      "pos": "adj",
+      "sourceId": "t1900_1595",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1596",
+      "no": 1596,
+      "en": "edible",
+      "ja": "食べられる",
+      "pos": "adj",
+      "sourceId": "t1900_1596",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1597",
+      "no": 1597,
+      "en": "sheer",
+      "ja": "まったくの",
+      "pos": "adj",
+      "sourceId": "t1900_1597",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1598",
+      "no": 1598,
+      "en": "explicit",
+      "ja": "明示的な",
+      "pos": "adj",
+      "sourceId": "t1900_1598",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1599",
+      "no": 1599,
+      "en": "prone",
+      "ja": "～しがちな",
+      "pos": "adj",
+      "sourceId": "t1900_1599",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1600",
+      "no": 1600,
+      "en": "affluent",
+      "ja": "裕福な",
+      "pos": "adj",
+      "sourceId": "t1900_1600",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1601",
+      "no": 1601,
+      "en": "collaborate",
+      "ja": "協力する",
+      "pos": "v",
+      "sourceId": "t1900_1601",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1602",
+      "no": 1602,
+      "en": "exert",
+      "ja": "発揮する",
+      "pos": "v",
+      "sourceId": "t1900_1602",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1603",
+      "no": 1603,
+      "en": "excel",
+      "ja": "秀でる",
+      "pos": "v",
+      "sourceId": "t1900_1603",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1604",
+      "no": 1604,
+      "en": "prosper",
+      "ja": "繁栄する",
+      "pos": "v",
+      "sourceId": "t1900_1604",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1605",
+      "no": 1605,
+      "en": "surge",
+      "ja": "急増する",
+      "pos": "v",
+      "sourceId": "t1900_1605",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1606",
+      "no": 1606,
+      "en": "intervene",
+      "ja": "介入する",
+      "pos": "v",
+      "sourceId": "t1900_1606",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1607",
+      "no": 1607,
+      "en": "insert",
+      "ja": "挿入する",
+      "pos": "v",
+      "sourceId": "t1900_1607",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1608",
+      "no": 1608,
+      "en": "overtake",
+      "ja": "追い越す",
+      "pos": "v",
+      "sourceId": "t1900_1608",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1609",
+      "no": 1609,
+      "en": "snap",
+      "ja": "ぽきっと折れる",
+      "pos": "v",
+      "sourceId": "t1900_1609",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1610",
+      "no": 1610,
+      "en": "carve",
+      "ja": "彫る",
+      "pos": "v",
+      "sourceId": "t1900_1610",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1611",
+      "no": 1611,
+      "en": "addict",
+      "ja": "中毒にする",
+      "pos": "v",
+      "sourceId": "t1900_1611",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1612",
+      "no": 1612,
+      "en": "condemn",
+      "ja": "非難する",
+      "pos": "v",
+      "sourceId": "t1900_1612",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1613",
+      "no": 1613,
+      "en": "convict",
+      "ja": "有罪とする",
+      "pos": "v",
+      "sourceId": "t1900_1613",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1614",
+      "no": 1614,
+      "en": "dictate",
+      "ja": "命令する",
+      "pos": "v",
+      "sourceId": "t1900_1614",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1615",
+      "no": 1615,
+      "en": "prescribe",
+      "ja": "処方する",
+      "pos": "v",
+      "sourceId": "t1900_1615",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1616",
+      "no": 1616,
+      "en": "inhibit",
+      "ja": "抑制する",
+      "pos": "v",
+      "sourceId": "t1900_1616",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1617",
+      "no": 1617,
+      "en": "stray",
+      "ja": "それる",
+      "pos": "v",
+      "sourceId": "t1900_1617",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1618",
+      "no": 1618,
+      "en": "roam",
+      "ja": "歩き回る",
+      "pos": "v",
+      "sourceId": "t1900_1618",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1619",
+      "no": 1619,
+      "en": "enclose",
+      "ja": "囲む",
+      "pos": "v",
+      "sourceId": "t1900_1619",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1620",
+      "no": 1620,
+      "en": "execute",
+      "ja": "実行する",
+      "pos": "v",
+      "sourceId": "t1900_1620",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1621",
+      "no": 1621,
+      "en": "coincide",
+      "ja": "同時に起こる",
+      "pos": "v",
+      "sourceId": "t1900_1621",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1622",
+      "no": 1622,
+      "en": "lag",
+      "ja": "遅れる",
+      "pos": "v",
+      "sourceId": "t1900_1622",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1623",
+      "no": 1623,
+      "en": "cling",
+      "ja": "しがみつく",
+      "pos": "v",
+      "sourceId": "t1900_1623",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1624",
+      "no": 1624,
+      "en": "erase",
+      "ja": "消し去る",
+      "pos": "v",
+      "sourceId": "t1900_1624",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1625",
+      "no": 1625,
+      "en": "grind",
+      "ja": "すりつぶす",
+      "pos": "v",
+      "sourceId": "t1900_1625",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1626",
+      "no": 1626,
+      "en": "knit",
+      "ja": "編む",
+      "pos": "v",
+      "sourceId": "t1900_1626",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1627",
+      "no": 1627,
+      "en": "inquire",
+      "ja": "問い合わせる",
+      "pos": "v",
+      "sourceId": "t1900_1627",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1628",
+      "no": 1628,
+      "en": "betray",
+      "ja": "裏切る",
+      "pos": "v",
+      "sourceId": "t1900_1628",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1629",
+      "no": 1629,
+      "en": "leak",
+      "ja": "漏れる",
+      "pos": "v",
+      "sourceId": "t1900_1629",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1630",
+      "no": 1630,
+      "en": "smash",
+      "ja": "粉砕する",
+      "pos": "v",
+      "sourceId": "t1900_1630",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1631",
+      "no": 1631,
+      "en": "bounce",
+      "ja": "跳ね返る",
+      "pos": "v",
+      "sourceId": "t1900_1631",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1632",
+      "no": 1632,
+      "en": "sprawl",
+      "ja": "無秩序に広がる",
+      "pos": "v",
+      "sourceId": "t1900_1632",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1633",
+      "no": 1633,
+      "en": "converse",
+      "ja": "会話する",
+      "pos": "v",
+      "sourceId": "t1900_1633",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1634",
+      "no": 1634,
+      "en": "recite",
+      "ja": "暗唱する",
+      "pos": "v",
+      "sourceId": "t1900_1634",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1635",
+      "no": 1635,
+      "en": "disregard",
+      "ja": "無視する",
+      "pos": "v",
+      "sourceId": "t1900_1635",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1637",
+      "no": 1637,
+      "en": "evoke",
+      "ja": "呼び起こす",
+      "pos": "v",
+      "sourceId": "t1900_1637",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1638",
+      "no": 1638,
+      "en": "pledge",
+      "ja": "誓う",
+      "pos": "v",
+      "sourceId": "t1900_1638",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1639",
+      "no": 1639,
+      "en": "aspire",
+      "ja": "熱望する",
+      "pos": "v",
+      "sourceId": "t1900_1639",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1640",
+      "no": 1640,
+      "en": "contemplate",
+      "ja": "熟考する",
+      "pos": "v",
+      "sourceId": "t1900_1640",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1641",
+      "no": 1641,
+      "en": "grace",
+      "ja": "優雅さ",
+      "pos": "n",
+      "sourceId": "t1900_1641",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1642",
+      "no": 1642,
+      "en": "enlightenment",
+      "ja": "啓蒙",
+      "pos": "n",
+      "sourceId": "t1900_1642",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1643",
+      "no": 1643,
+      "en": "commerce",
+      "ja": "商業",
+      "pos": "n",
+      "sourceId": "t1900_1643",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1644",
+      "no": 1644,
+      "en": "draft",
+      "ja": "草案",
+      "pos": "n",
+      "sourceId": "t1900_1644",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1645",
+      "no": 1645,
+      "en": "barrel",
+      "ja": "たる",
+      "pos": "n",
+      "sourceId": "t1900_1645",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1646",
+      "no": 1646,
+      "en": "timber",
+      "ja": "木材",
+      "pos": "n",
+      "sourceId": "t1900_1646",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1647",
+      "no": 1647,
+      "en": "garment",
+      "ja": "衣服",
+      "pos": "n",
+      "sourceId": "t1900_1647",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1648",
+      "no": 1648,
+      "en": "thread",
+      "ja": "糸",
+      "pos": "n",
+      "sourceId": "t1900_1648",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1649",
+      "no": 1649,
+      "en": "cabinet",
+      "ja": "内閣",
+      "pos": "n",
+      "sourceId": "t1900_1649",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1650",
+      "no": 1650,
+      "en": "bureau",
+      "ja": "局",
+      "pos": "n",
+      "sourceId": "t1900_1650",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1651",
+      "no": 1651,
+      "en": "autonomy",
+      "ja": "自治",
+      "pos": "n",
+      "sourceId": "t1900_1651",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1652",
+      "no": 1652,
+      "en": "toll",
+      "ja": "通行料",
+      "pos": "n",
+      "sourceId": "t1900_1652",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1653",
+      "no": 1653,
+      "en": "discourse",
+      "ja": "論述",
+      "pos": "n",
+      "sourceId": "t1900_1653",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1654",
+      "no": 1654,
+      "en": "superstition",
+      "ja": "迷信",
+      "pos": "n",
+      "sourceId": "t1900_1654",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1655",
+      "no": 1655,
+      "en": "glimpse",
+      "ja": "ちらりと見ること",
+      "pos": "n",
+      "sourceId": "t1900_1655",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1656",
+      "no": 1656,
+      "en": "arithmetic",
+      "ja": "算術",
+      "pos": "n",
+      "sourceId": "t1900_1656",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1657",
+      "no": 1657,
+      "en": "glossary",
+      "ja": "用語集",
+      "pos": "n",
+      "sourceId": "t1900_1657",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1658",
+      "no": 1658,
+      "en": "archive",
+      "ja": "記録保管所",
+      "pos": "n",
+      "sourceId": "t1900_1658",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1659",
+      "no": 1659,
+      "en": "legacy",
+      "ja": "遺産",
+      "pos": "n",
+      "sourceId": "t1900_1659",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1660",
+      "no": 1660,
+      "en": "anthropology",
+      "ja": "人類学",
+      "pos": "n",
+      "sourceId": "t1900_1660",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1661",
+      "no": 1661,
+      "en": "rage",
+      "ja": "激怒",
+      "pos": "n",
+      "sourceId": "t1900_1661",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1662",
+      "no": 1662,
+      "en": "sorrow",
+      "ja": "悲しみ",
+      "pos": "n",
+      "sourceId": "t1900_1662",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1663",
+      "no": 1663,
+      "en": "psychiatrist",
+      "ja": "精神科医",
+      "pos": "n",
+      "sourceId": "t1900_1663",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1664",
+      "no": 1664,
+      "en": "ward",
+      "ja": "病棟",
+      "pos": "n",
+      "sourceId": "t1900_1664",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1665",
+      "no": 1665,
+      "en": "stall",
+      "ja": "露店",
+      "pos": "n",
+      "sourceId": "t1900_1665",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1666",
+      "no": 1666,
+      "en": "flame",
+      "ja": "炎",
+      "pos": "n",
+      "sourceId": "t1900_1666",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1667",
+      "no": 1667,
+      "en": "moisture",
+      "ja": "水分",
+      "pos": "n",
+      "sourceId": "t1900_1667",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1668",
+      "no": 1668,
+      "en": "irony",
+      "ja": "皮肉",
+      "pos": "n",
+      "sourceId": "t1900_1668",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1669",
+      "no": 1669,
+      "en": "warrior",
+      "ja": "戦士",
+      "pos": "n",
+      "sourceId": "t1900_1669",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1670",
+      "no": 1670,
+      "en": "astronomy",
+      "ja": "天文学",
+      "pos": "n",
+      "sourceId": "t1900_1670",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1671",
+      "no": 1671,
+      "en": "probe",
+      "ja": "探査機",
+      "pos": "n",
+      "sourceId": "t1900_1671",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1672",
+      "no": 1672,
+      "en": "altitude",
+      "ja": "高度",
+      "pos": "n",
+      "sourceId": "t1900_1672",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1673",
+      "no": 1673,
+      "en": "tumor",
+      "ja": "腫瘍",
+      "pos": "n",
+      "sourceId": "t1900_1673",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1674",
+      "no": 1674,
+      "en": "defect",
+      "ja": "欠陥",
+      "pos": "n",
+      "sourceId": "t1900_1674",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1675",
+      "no": 1675,
+      "en": "sanitation",
+      "ja": "公衆衛生",
+      "pos": "n",
+      "sourceId": "t1900_1675",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1676",
+      "no": 1676,
+      "en": "longevity",
+      "ja": "長寿",
+      "pos": "n",
+      "sourceId": "t1900_1676",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1677",
+      "no": 1677,
+      "en": "scope",
+      "ja": "範囲",
+      "pos": "n",
+      "sourceId": "t1900_1677",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1678",
+      "no": 1678,
+      "en": "sentiment",
+      "ja": "感情",
+      "pos": "n",
+      "sourceId": "t1900_1678",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1679",
+      "no": 1679,
+      "en": "plausible",
+      "ja": "もっともらしい",
+      "pos": "adj",
+      "sourceId": "t1900_1679",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1680",
+      "no": 1680,
+      "en": "vigorous",
+      "ja": "活発な",
+      "pos": "adj",
+      "sourceId": "t1900_1680",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1681",
+      "no": 1681,
+      "en": "masculine",
+      "ja": "男性的な",
+      "pos": "adj",
+      "sourceId": "t1900_1681",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1682",
+      "no": 1682,
+      "en": "rigid",
+      "ja": "硬直した",
+      "pos": "adj",
+      "sourceId": "t1900_1682",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1683",
+      "no": 1683,
+      "en": "adverse",
+      "ja": "不利な",
+      "pos": "adj",
+      "sourceId": "t1900_1683",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1684",
+      "no": 1684,
+      "en": "coherent",
+      "ja": "一貫した",
+      "pos": "adj",
+      "sourceId": "t1900_1684",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1685",
+      "no": 1685,
+      "en": "literal",
+      "ja": "文字どおりの",
+      "pos": "adj",
+      "sourceId": "t1900_1685",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1686",
+      "no": 1686,
+      "en": "arbitrary",
+      "ja": "恣意的な",
+      "pos": "adj",
+      "sourceId": "t1900_1686",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1687",
+      "no": 1687,
+      "en": "anonymous",
+      "ja": "匿名の",
+      "pos": "adj",
+      "sourceId": "t1900_1687",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1688",
+      "no": 1688,
+      "en": "antique",
+      "ja": "骨董の",
+      "pos": "adj",
+      "sourceId": "t1900_1688",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1689",
+      "no": 1689,
+      "en": "eternal",
+      "ja": "永遠の",
+      "pos": "adj",
+      "sourceId": "t1900_1689",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1690",
+      "no": 1690,
+      "en": "intermediate",
+      "ja": "中級の",
+      "pos": "adj",
+      "sourceId": "t1900_1690",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1691",
+      "no": 1691,
+      "en": "subordinate",
+      "ja": "下位の",
+      "pos": "adj",
+      "sourceId": "t1900_1691",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1692",
+      "no": 1692,
+      "en": "gloomy",
+      "ja": "陰気な",
+      "pos": "adj",
+      "sourceId": "t1900_1692",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1693",
+      "no": 1693,
+      "en": "thermal",
+      "ja": "熱の",
+      "pos": "adj",
+      "sourceId": "t1900_1693",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1694",
+      "no": 1694,
+      "en": "faint",
+      "ja": "かすかな",
+      "pos": "adj",
+      "sourceId": "t1900_1694",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1695",
+      "no": 1695,
+      "en": "naive",
+      "ja": "世間知らずの",
+      "pos": "adj",
+      "sourceId": "t1900_1695",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1696",
+      "no": 1696,
+      "en": "apt",
+      "ja": "適切な",
+      "pos": "adj",
+      "sourceId": "t1900_1696",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1697",
+      "no": 1697,
+      "en": "arrogant",
+      "ja": "傲慢な",
+      "pos": "adj",
+      "sourceId": "t1900_1697",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1698",
+      "no": 1698,
+      "en": "extrovert",
+      "ja": "外向的な人",
+      "pos": "n",
+      "sourceId": "t1900_1698",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1699",
+      "no": 1699,
+      "en": "conspicuous",
+      "ja": "目立つ",
+      "pos": "adj",
+      "sourceId": "t1900_1699",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1700",
+      "no": 1700,
+      "en": "intact",
+      "ja": "無傷の",
+      "pos": "adj",
+      "sourceId": "t1900_1700",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1701",
+      "no": 1701,
+      "en": "embody",
+      "ja": "具体化する",
+      "pos": "v",
+      "sourceId": "t1900_1701",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1702",
+      "no": 1702,
+      "en": "illuminate",
+      "ja": "照らす",
+      "pos": "v",
+      "sourceId": "t1900_1702",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1703",
+      "no": 1703,
+      "en": "console",
+      "ja": "慰める",
+      "pos": "v",
+      "sourceId": "t1900_1703",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1704",
+      "no": 1704,
+      "en": "verify",
+      "ja": "検証する",
+      "pos": "v",
+      "sourceId": "t1900_1704",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1705",
+      "no": 1705,
+      "en": "disclose",
+      "ja": "明らかにする",
+      "pos": "v",
+      "sourceId": "t1900_1705",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1706",
+      "no": 1706,
+      "en": "stack",
+      "ja": "積み重ねる",
+      "pos": "v",
+      "sourceId": "t1900_1706",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1707",
+      "no": 1707,
+      "en": "rotate",
+      "ja": "回転させる",
+      "pos": "v",
+      "sourceId": "t1900_1707",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1708",
+      "no": 1708,
+      "en": "constrain",
+      "ja": "制約する",
+      "pos": "v",
+      "sourceId": "t1900_1708",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1709",
+      "no": 1709,
+      "en": "hinder",
+      "ja": "妨げる",
+      "pos": "v",
+      "sourceId": "t1900_1709",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1710",
+      "no": 1710,
+      "en": "withstand",
+      "ja": "耐える",
+      "pos": "v",
+      "sourceId": "t1900_1710",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1711",
+      "no": 1711,
+      "en": "tweet",
+      "ja": "つぶやく",
+      "pos": "v",
+      "sourceId": "t1900_1711",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1712",
+      "no": 1712,
+      "en": "sneeze",
+      "ja": "くしゃみをする",
+      "pos": "v",
+      "sourceId": "t1900_1712",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1713",
+      "no": 1713,
+      "en": "erupt",
+      "ja": "噴火する",
+      "pos": "v",
+      "sourceId": "t1900_1713",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1714",
+      "no": 1714,
+      "en": "blur",
+      "ja": "ぼやけさせる",
+      "pos": "v",
+      "sourceId": "t1900_1714",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1715",
+      "no": 1715,
+      "en": "overlap",
+      "ja": "重なる",
+      "pos": "v",
+      "sourceId": "t1900_1715",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1716",
+      "no": 1716,
+      "en": "embed",
+      "ja": "埋め込む",
+      "pos": "v",
+      "sourceId": "t1900_1716",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1717",
+      "no": 1717,
+      "en": "displace",
+      "ja": "追い出す",
+      "pos": "v",
+      "sourceId": "t1900_1717",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1718",
+      "no": 1718,
+      "en": "render",
+      "ja": "ある状態にする",
+      "pos": "v",
+      "sourceId": "t1900_1718",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1719",
+      "no": 1719,
+      "en": "plunge",
+      "ja": "飛び込む",
+      "pos": "v",
+      "sourceId": "t1900_1719",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1720",
+      "no": 1720,
+      "en": "surrender",
+      "ja": "降伏する",
+      "pos": "v",
+      "sourceId": "t1900_1720",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1721",
+      "no": 1721,
+      "en": "plug",
+      "ja": "栓をする",
+      "pos": "v",
+      "sourceId": "t1900_1721",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1722",
+      "no": 1722,
+      "en": "suck",
+      "ja": "吸う",
+      "pos": "v",
+      "sourceId": "t1900_1722",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1723",
+      "no": 1723,
+      "en": "mock",
+      "ja": "あざける",
+      "pos": "v",
+      "sourceId": "t1900_1723",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1724",
+      "no": 1724,
+      "en": "tease",
+      "ja": "からかう",
+      "pos": "v",
+      "sourceId": "t1900_1724",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1725",
+      "no": 1725,
+      "en": "soothe",
+      "ja": "なだめる",
+      "pos": "v",
+      "sourceId": "t1900_1725",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1726",
+      "no": 1726,
+      "en": "stain",
+      "ja": "染みをつける",
+      "pos": "v",
+      "sourceId": "t1900_1726",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1727",
+      "no": 1727,
+      "en": "shun",
+      "ja": "避ける",
+      "pos": "v",
+      "sourceId": "t1900_1727",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1728",
+      "no": 1728,
+      "en": "stumble",
+      "ja": "つまずく",
+      "pos": "v",
+      "sourceId": "t1900_1728",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1729",
+      "no": 1729,
+      "en": "flush",
+      "ja": "水で流す",
+      "pos": "v",
+      "sourceId": "t1900_1729",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1730",
+      "no": 1730,
+      "en": "impair",
+      "ja": "損なう",
+      "pos": "v",
+      "sourceId": "t1900_1730",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1731",
+      "no": 1731,
+      "en": "presume",
+      "ja": "推定する",
+      "pos": "v",
+      "sourceId": "t1900_1731",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1732",
+      "no": 1732,
+      "en": "contend",
+      "ja": "主張する",
+      "pos": "v",
+      "sourceId": "t1900_1732",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1733",
+      "no": 1733,
+      "en": "roar",
+      "ja": "ほえる",
+      "pos": "v",
+      "sourceId": "t1900_1733",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1734",
+      "no": 1734,
+      "en": "haunt",
+      "ja": "つきまとう",
+      "pos": "v",
+      "sourceId": "t1900_1734",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1735",
+      "no": 1735,
+      "en": "divert",
+      "ja": "そらす",
+      "pos": "v",
+      "sourceId": "t1900_1735",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1736",
+      "no": 1736,
+      "en": "await",
+      "ja": "待ち受ける",
+      "pos": "v",
+      "sourceId": "t1900_1736",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1737",
+      "no": 1737,
+      "en": "fetch",
+      "ja": "取ってくる",
+      "pos": "v",
+      "sourceId": "t1900_1737",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1738",
+      "no": 1738,
+      "en": "unify",
+      "ja": "統一する",
+      "pos": "v",
+      "sourceId": "t1900_1738",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1739",
+      "no": 1739,
+      "en": "inspect",
+      "ja": "点検する",
+      "pos": "v",
+      "sourceId": "t1900_1739",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1740",
+      "no": 1740,
+      "en": "entail",
+      "ja": "伴う",
+      "pos": "v",
+      "sourceId": "t1900_1740",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1741",
+      "no": 1741,
+      "en": "tactics",
+      "ja": "戦術",
+      "pos": "n",
+      "sourceId": "t1900_1741",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1742",
+      "no": 1742,
+      "en": "feat",
+      "ja": "偉業",
+      "pos": "n",
+      "sourceId": "t1900_1742",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1743",
+      "no": 1743,
+      "en": "prestige",
+      "ja": "名声",
+      "pos": "n",
+      "sourceId": "t1900_1743",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1744",
+      "no": 1744,
+      "en": "analogy",
+      "ja": "類推",
+      "pos": "n",
+      "sourceId": "t1900_1744",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1745",
+      "no": 1745,
+      "en": "conscience",
+      "ja": "良心",
+      "pos": "n",
+      "sourceId": "t1900_1745",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1746",
+      "no": 1746,
+      "en": "textile",
+      "ja": "織物",
+      "pos": "n",
+      "sourceId": "t1900_1746",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1747",
+      "no": 1747,
+      "en": "deficit",
+      "ja": "赤字",
+      "pos": "n",
+      "sourceId": "t1900_1747",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1748",
+      "no": 1748,
+      "en": "plague",
+      "ja": "疫病",
+      "pos": "n",
+      "sourceId": "t1900_1748",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1749",
+      "no": 1749,
+      "en": "hazard",
+      "ja": "危険",
+      "pos": "n",
+      "sourceId": "t1900_1749",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1750",
+      "no": 1750,
+      "en": "metabolism",
+      "ja": "代謝",
+      "pos": "n",
+      "sourceId": "t1900_1750",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1751",
+      "no": 1751,
+      "en": "paralysis",
+      "ja": "麻痺",
+      "pos": "n",
+      "sourceId": "t1900_1751",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1752",
+      "no": 1752,
+      "en": "grid",
+      "ja": "格子",
+      "pos": "n",
+      "sourceId": "t1900_1752",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1753",
+      "no": 1753,
+      "en": "carriage",
+      "ja": "馬車",
+      "pos": "n",
+      "sourceId": "t1900_1753",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1754",
+      "no": 1754,
+      "en": "friction",
+      "ja": "摩擦",
+      "pos": "n",
+      "sourceId": "t1900_1754",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1755",
+      "no": 1755,
+      "en": "rebel",
+      "ja": "反逆者",
+      "pos": "n",
+      "sourceId": "t1900_1755",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1756",
+      "no": 1756,
+      "en": "regime",
+      "ja": "政権",
+      "pos": "n",
+      "sourceId": "t1900_1756",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1757",
+      "no": 1757,
+      "en": "monopoly",
+      "ja": "独占",
+      "pos": "n",
+      "sourceId": "t1900_1757",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1758",
+      "no": 1758,
+      "en": "staple",
+      "ja": "主要産物",
+      "pos": "n",
+      "sourceId": "t1900_1758",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1759",
+      "no": 1759,
+      "en": "merchandise",
+      "ja": "商品",
+      "pos": "n",
+      "sourceId": "t1900_1759",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1760",
+      "no": 1760,
+      "en": "vendor",
+      "ja": "販売業者",
+      "pos": "n",
+      "sourceId": "t1900_1760",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1761",
+      "no": 1761,
+      "en": "supervisor",
+      "ja": "監督者",
+      "pos": "n",
+      "sourceId": "t1900_1761",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1762",
+      "no": 1762,
+      "en": "predecessor",
+      "ja": "前任者",
+      "pos": "n",
+      "sourceId": "t1900_1762",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1763",
+      "no": 1763,
+      "en": "personnel",
+      "ja": "人員",
+      "pos": "n",
+      "sourceId": "t1900_1763",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1764",
+      "no": 1764,
+      "en": "vessel",
+      "ja": "船舶",
+      "pos": "n",
+      "sourceId": "t1900_1764",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1765",
+      "no": 1765,
+      "en": "liver",
+      "ja": "肝臓",
+      "pos": "n",
+      "sourceId": "t1900_1765",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1766",
+      "no": 1766,
+      "en": "duration",
+      "ja": "期間",
+      "pos": "n",
+      "sourceId": "t1900_1766",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1767",
+      "no": 1767,
+      "en": "certificate",
+      "ja": "証明書",
+      "pos": "n",
+      "sourceId": "t1900_1767",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1768",
+      "no": 1768,
+      "en": "geometry",
+      "ja": "幾何学",
+      "pos": "n",
+      "sourceId": "t1900_1768",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1769",
+      "no": 1769,
+      "en": "symmetry",
+      "ja": "対称性",
+      "pos": "n",
+      "sourceId": "t1900_1769",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1770",
+      "no": 1770,
+      "en": "biography",
+      "ja": "伝記",
+      "pos": "n",
+      "sourceId": "t1900_1770",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1771",
+      "no": 1771,
+      "en": "masterpiece",
+      "ja": "傑作",
+      "pos": "n",
+      "sourceId": "t1900_1771",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1772",
+      "no": 1772,
+      "en": "rhyme",
+      "ja": "韻",
+      "pos": "n",
+      "sourceId": "t1900_1772",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1773",
+      "no": 1773,
+      "en": "premium",
+      "ja": "割増料金",
+      "pos": "n",
+      "sourceId": "t1900_1773",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1774",
+      "no": 1774,
+      "en": "breakdown",
+      "ja": "故障",
+      "pos": "n",
+      "sourceId": "t1900_1774",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1775",
+      "no": 1775,
+      "en": "courtesy",
+      "ja": "礼儀",
+      "pos": "n",
+      "sourceId": "t1900_1775",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1776",
+      "no": 1776,
+      "en": "protocol",
+      "ja": "手順",
+      "pos": "n",
+      "sourceId": "t1900_1776",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1777",
+      "no": 1777,
+      "en": "specimen",
+      "ja": "標本",
+      "pos": "n",
+      "sourceId": "t1900_1777",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1778",
+      "no": 1778,
+      "en": "thesis",
+      "ja": "論文",
+      "pos": "n",
+      "sourceId": "t1900_1778",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1779",
+      "no": 1779,
+      "en": "eligible",
+      "ja": "資格がある",
+      "pos": "adj",
+      "sourceId": "t1900_1779",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1780",
+      "no": 1780,
+      "en": "intrinsic",
+      "ja": "本質的な",
+      "pos": "adj",
+      "sourceId": "t1900_1780",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1781",
+      "no": 1781,
+      "en": "diligent",
+      "ja": "勤勉な",
+      "pos": "adj",
+      "sourceId": "t1900_1781",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1782",
+      "no": 1782,
+      "en": "vocational",
+      "ja": "職業の",
+      "pos": "adj",
+      "sourceId": "t1900_1782",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1783",
+      "no": 1783,
+      "en": "bankrupt",
+      "ja": "破産した",
+      "pos": "adj",
+      "sourceId": "t1900_1783",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1784",
+      "no": 1784,
+      "en": "stern",
+      "ja": "厳格な",
+      "pos": "adj",
+      "sourceId": "t1900_1784",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1785",
+      "no": 1785,
+      "en": "stubborn",
+      "ja": "頑固な",
+      "pos": "adj",
+      "sourceId": "t1900_1785",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1786",
+      "no": 1786,
+      "en": "maternal",
+      "ja": "母親の",
+      "pos": "adj",
+      "sourceId": "t1900_1786",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1787",
+      "no": 1787,
+      "en": "fertile",
+      "ja": "肥沃な",
+      "pos": "adj",
+      "sourceId": "t1900_1787",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1788",
+      "no": 1788,
+      "en": "ripe",
+      "ja": "熟した",
+      "pos": "adj",
+      "sourceId": "t1900_1788",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1789",
+      "no": 1789,
+      "en": "stiff",
+      "ja": "こわばった",
+      "pos": "adj",
+      "sourceId": "t1900_1789",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1790",
+      "no": 1790,
+      "en": "obsolete",
+      "ja": "時代遅れの",
+      "pos": "adj",
+      "sourceId": "t1900_1790",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1791",
+      "no": 1791,
+      "en": "vacant",
+      "ja": "空いている",
+      "pos": "adj",
+      "sourceId": "t1900_1791",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1792",
+      "no": 1792,
+      "en": "acoustic",
+      "ja": "音響の",
+      "pos": "adj",
+      "sourceId": "t1900_1792",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1793",
+      "no": 1793,
+      "en": "preliminary",
+      "ja": "予備的な",
+      "pos": "adj",
+      "sourceId": "t1900_1793",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1794",
+      "no": 1794,
+      "en": "approximate",
+      "ja": "おおよその",
+      "pos": "adj",
+      "sourceId": "t1900_1794",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1795",
+      "no": 1795,
+      "en": "implicit",
+      "ja": "暗黙の",
+      "pos": "adj",
+      "sourceId": "t1900_1795",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1796",
+      "no": 1796,
+      "en": "punctual",
+      "ja": "時間に正確な",
+      "pos": "adj",
+      "sourceId": "t1900_1796",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1797",
+      "no": 1797,
+      "en": "compatible",
+      "ja": "互換性のある",
+      "pos": "adj",
+      "sourceId": "t1900_1797",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1798",
+      "no": 1798,
+      "en": "ample",
+      "ja": "十分な",
+      "pos": "adj",
+      "sourceId": "t1900_1798",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1799",
+      "no": 1799,
+      "en": "pervasive",
+      "ja": "広く行き渡った",
+      "pos": "adj",
+      "sourceId": "t1900_1799",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1800",
+      "no": 1800,
+      "en": "ubiquitous",
+      "ja": "至る所にある",
+      "pos": "adj",
+      "sourceId": "t1900_1800",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1801",
+      "no": 1801,
+      "en": "deduce",
+      "ja": "推論する",
+      "pos": "v",
+      "sourceId": "t1900_1801",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1802",
+      "no": 1802,
+      "en": "simulate",
+      "ja": "模擬する",
+      "pos": "v",
+      "sourceId": "t1900_1802",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1803",
+      "no": 1803,
+      "en": "merge",
+      "ja": "合併する",
+      "pos": "v",
+      "sourceId": "t1900_1803",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1804",
+      "no": 1804,
+      "en": "penetrate",
+      "ja": "貫通する",
+      "pos": "v",
+      "sourceId": "t1900_1804",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1805",
+      "no": 1805,
+      "en": "cater",
+      "ja": "需要に応じる",
+      "pos": "v",
+      "sourceId": "t1900_1805",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1806",
+      "no": 1806,
+      "en": "assault",
+      "ja": "襲撃する",
+      "pos": "v",
+      "sourceId": "t1900_1806",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1807",
+      "no": 1807,
+      "en": "torture",
+      "ja": "拷問する",
+      "pos": "v",
+      "sourceId": "t1900_1807",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1808",
+      "no": 1808,
+      "en": "bleed",
+      "ja": "出血する",
+      "pos": "v",
+      "sourceId": "t1900_1808",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1809",
+      "no": 1809,
+      "en": "erect",
+      "ja": "建てる",
+      "pos": "v",
+      "sourceId": "t1900_1809",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1810",
+      "no": 1810,
+      "en": "cherish",
+      "ja": "大切にする",
+      "pos": "v",
+      "sourceId": "t1900_1810",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1811",
+      "no": 1811,
+      "en": "arouse",
+      "ja": "喚起する",
+      "pos": "v",
+      "sourceId": "t1900_1811",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1812",
+      "no": 1812,
+      "en": "doom",
+      "ja": "破滅させる",
+      "pos": "v",
+      "sourceId": "t1900_1812",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1813",
+      "no": 1813,
+      "en": "mourn",
+      "ja": "悼む",
+      "pos": "v",
+      "sourceId": "t1900_1813",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1814",
+      "no": 1814,
+      "en": "dread",
+      "ja": "恐れる",
+      "pos": "v",
+      "sourceId": "t1900_1814",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1815",
+      "no": 1815,
+      "en": "nourish",
+      "ja": "養う",
+      "pos": "v",
+      "sourceId": "t1900_1815",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1816",
+      "no": 1816,
+      "en": "inject",
+      "ja": "注射する",
+      "pos": "v",
+      "sourceId": "t1900_1816",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1817",
+      "no": 1817,
+      "en": "swear",
+      "ja": "悪態をつく",
+      "pos": "v",
+      "sourceId": "t1900_1817",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1818",
+      "no": 1818,
+      "en": "bid",
+      "ja": "入札する",
+      "pos": "v",
+      "sourceId": "t1900_1818",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1819",
+      "no": 1819,
+      "en": "corrupt",
+      "ja": "堕落させる",
+      "pos": "v",
+      "sourceId": "t1900_1819",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1820",
+      "no": 1820,
+      "en": "preoccupy",
+      "ja": "頭をいっぱいにする",
+      "pos": "v",
+      "sourceId": "t1900_1820",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1821",
+      "no": 1821,
+      "en": "browse",
+      "ja": "閲覧する",
+      "pos": "v",
+      "sourceId": "t1900_1821",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1822",
+      "no": 1822,
+      "en": "compile",
+      "ja": "編集する",
+      "pos": "v",
+      "sourceId": "t1900_1822",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1823",
+      "no": 1823,
+      "en": "allocate",
+      "ja": "割り当てる",
+      "pos": "v",
+      "sourceId": "t1900_1823",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1824",
+      "no": 1824,
+      "en": "offset",
+      "ja": "相殺する",
+      "pos": "v",
+      "sourceId": "t1900_1824",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1825",
+      "no": 1825,
+      "en": "restrain",
+      "ja": "抑える",
+      "pos": "v",
+      "sourceId": "t1900_1825",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1826",
+      "no": 1826,
+      "en": "comply",
+      "ja": "従う",
+      "pos": "v",
+      "sourceId": "t1900_1826",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1827",
+      "no": 1827,
+      "en": "expire",
+      "ja": "期限が切れる",
+      "pos": "v",
+      "sourceId": "t1900_1827",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1828",
+      "no": 1828,
+      "en": "embark",
+      "ja": "乗船する",
+      "pos": "v",
+      "sourceId": "t1900_1828",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1829",
+      "no": 1829,
+      "en": "flap",
+      "ja": "羽ばたく",
+      "pos": "v",
+      "sourceId": "t1900_1829",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1830",
+      "no": 1830,
+      "en": "furnish",
+      "ja": "備え付ける",
+      "pos": "v",
+      "sourceId": "t1900_1830",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1831",
+      "no": 1831,
+      "en": "forge",
+      "ja": "偽造する",
+      "pos": "v",
+      "sourceId": "t1900_1831",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1832",
+      "no": 1832,
+      "en": "thrust",
+      "ja": "押し込む",
+      "pos": "v",
+      "sourceId": "t1900_1832",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1833",
+      "no": 1833,
+      "en": "dispatch",
+      "ja": "派遣する",
+      "pos": "v",
+      "sourceId": "t1900_1833",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1834",
+      "no": 1834,
+      "en": "resent",
+      "ja": "憤慨する",
+      "pos": "v",
+      "sourceId": "t1900_1834",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1835",
+      "no": 1835,
+      "en": "reconcile",
+      "ja": "和解させる",
+      "pos": "v",
+      "sourceId": "t1900_1835",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1836",
+      "no": 1836,
+      "en": "allege",
+      "ja": "申し立てる",
+      "pos": "v",
+      "sourceId": "t1900_1836",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1837",
+      "no": 1837,
+      "en": "oppress",
+      "ja": "抑圧する",
+      "pos": "v",
+      "sourceId": "t1900_1837",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1838",
+      "no": 1838,
+      "en": "expel",
+      "ja": "追放する",
+      "pos": "v",
+      "sourceId": "t1900_1838",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1839",
+      "no": 1839,
+      "en": "ascend",
+      "ja": "上昇する",
+      "pos": "v",
+      "sourceId": "t1900_1839",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1840",
+      "no": 1840,
+      "en": "commence",
+      "ja": "開始する",
+      "pos": "v",
+      "sourceId": "t1900_1840",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1841",
+      "no": 1841,
+      "en": "advent",
+      "ja": "到来",
+      "pos": "n",
+      "sourceId": "t1900_1841",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1842",
+      "no": 1842,
+      "en": "reign",
+      "ja": "治世",
+      "pos": "n",
+      "sourceId": "t1900_1842",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1843",
+      "no": 1843,
+      "en": "diplomacy",
+      "ja": "外交",
+      "pos": "n",
+      "sourceId": "t1900_1843",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1844",
+      "no": 1844,
+      "en": "embassy",
+      "ja": "大使館",
+      "pos": "n",
+      "sourceId": "t1900_1844",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1845",
+      "no": 1845,
+      "en": "exile",
+      "ja": "追放",
+      "pos": "n",
+      "sourceId": "t1900_1845",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1846",
+      "no": 1846,
+      "en": "refuge",
+      "ja": "避難場所",
+      "pos": "n",
+      "sourceId": "t1900_1846",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1847",
+      "no": 1847,
+      "en": "plight",
+      "ja": "苦境",
+      "pos": "n",
+      "sourceId": "t1900_1847",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1848",
+      "no": 1848,
+      "en": "solitude",
+      "ja": "孤独",
+      "pos": "n",
+      "sourceId": "t1900_1848",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1849",
+      "no": 1849,
+      "en": "fallacy",
+      "ja": "誤った考え",
+      "pos": "n",
+      "sourceId": "t1900_1849",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1850",
+      "no": 1850,
+      "en": "latitude",
+      "ja": "緯度",
+      "pos": "n",
+      "sourceId": "t1900_1850",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1851",
+      "no": 1851,
+      "en": "eclipse",
+      "ja": "日食・月食",
+      "pos": "n",
+      "sourceId": "t1900_1851",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1852",
+      "no": 1852,
+      "en": "basin",
+      "ja": "盆地",
+      "pos": "n",
+      "sourceId": "t1900_1852",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1853",
+      "no": 1853,
+      "en": "erosion",
+      "ja": "浸食",
+      "pos": "n",
+      "sourceId": "t1900_1853",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1854",
+      "no": 1854,
+      "en": "archaeology",
+      "ja": "考古学",
+      "pos": "n",
+      "sourceId": "t1900_1854",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1855",
+      "no": 1855,
+      "en": "errand",
+      "ja": "使い走り",
+      "pos": "n",
+      "sourceId": "t1900_1855",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1856",
+      "no": 1856,
+      "en": "mercy",
+      "ja": "慈悲",
+      "pos": "n",
+      "sourceId": "t1900_1856",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1857",
+      "no": 1857,
+      "en": "rhetoric",
+      "ja": "修辞法",
+      "pos": "n",
+      "sourceId": "t1900_1857",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1858",
+      "no": 1858,
+      "en": "verse",
+      "ja": "詩の一節",
+      "pos": "n",
+      "sourceId": "t1900_1858",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1859",
+      "no": 1859,
+      "en": "congestion",
+      "ja": "混雑",
+      "pos": "n",
+      "sourceId": "t1900_1859",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1860",
+      "no": 1860,
+      "en": "sewage",
+      "ja": "下水",
+      "pos": "n",
+      "sourceId": "t1900_1860",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1861",
+      "no": 1861,
+      "en": "complement",
+      "ja": "補完物",
+      "pos": "n",
+      "sourceId": "t1900_1861",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1862",
+      "no": 1862,
+      "en": "subsidy",
+      "ja": "補助金",
+      "pos": "n",
+      "sourceId": "t1900_1862",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1863",
+      "no": 1863,
+      "en": "mortgage",
+      "ja": "住宅ローン",
+      "pos": "n",
+      "sourceId": "t1900_1863",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1864",
+      "no": 1864,
+      "en": "attorney",
+      "ja": "弁護士",
+      "pos": "n",
+      "sourceId": "t1900_1864",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1865",
+      "no": 1865,
+      "en": "outfit",
+      "ja": "衣装一式",
+      "pos": "n",
+      "sourceId": "t1900_1865",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1866",
+      "no": 1866,
+      "en": "bulk",
+      "ja": "大部分",
+      "pos": "n",
+      "sourceId": "t1900_1866",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1867",
+      "no": 1867,
+      "en": "reunion",
+      "ja": "再会",
+      "pos": "n",
+      "sourceId": "t1900_1867",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1868",
+      "no": 1868,
+      "en": "synthesis",
+      "ja": "統合",
+      "pos": "n",
+      "sourceId": "t1900_1868",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1869",
+      "no": 1869,
+      "en": "mold",
+      "ja": "型",
+      "pos": "n",
+      "sourceId": "t1900_1869",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1870",
+      "no": 1870,
+      "en": "thirst",
+      "ja": "渇き",
+      "pos": "n",
+      "sourceId": "t1900_1870",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1871",
+      "no": 1871,
+      "en": "greed",
+      "ja": "強欲",
+      "pos": "n",
+      "sourceId": "t1900_1871",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1872",
+      "no": 1872,
+      "en": "bribe",
+      "ja": "賄賂",
+      "pos": "n",
+      "sourceId": "t1900_1872",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1873",
+      "no": 1873,
+      "en": "contempt",
+      "ja": "軽蔑",
+      "pos": "n",
+      "sourceId": "t1900_1873",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1874",
+      "no": 1874,
+      "en": "texture",
+      "ja": "手触り",
+      "pos": "n",
+      "sourceId": "t1900_1874",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1875",
+      "no": 1875,
+      "en": "orphan",
+      "ja": "孤児",
+      "pos": "n",
+      "sourceId": "t1900_1875",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1876",
+      "no": 1876,
+      "en": "harassment",
+      "ja": "嫌がらせ",
+      "pos": "n",
+      "sourceId": "t1900_1876",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1877",
+      "no": 1877,
+      "en": "hay",
+      "ja": "干し草",
+      "pos": "n",
+      "sourceId": "t1900_1877",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1878",
+      "no": 1878,
+      "en": "doctrine",
+      "ja": "教義",
+      "pos": "n",
+      "sourceId": "t1900_1878",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1879",
+      "no": 1879,
+      "en": "holistic",
+      "ja": "全体論的な",
+      "pos": "adj",
+      "sourceId": "t1900_1879",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1880",
+      "no": 1880,
+      "en": "liable",
+      "ja": "法的責任がある",
+      "pos": "adj",
+      "sourceId": "t1900_1880",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1881",
+      "no": 1881,
+      "en": "earnest",
+      "ja": "真剣な",
+      "pos": "adj",
+      "sourceId": "t1900_1881",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1882",
+      "no": 1882,
+      "en": "intelligible",
+      "ja": "理解できる",
+      "pos": "adj",
+      "sourceId": "t1900_1882",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1883",
+      "no": 1883,
+      "en": "abrupt",
+      "ja": "突然の",
+      "pos": "adj",
+      "sourceId": "t1900_1883",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1884",
+      "no": 1884,
+      "en": "reckless",
+      "ja": "無謀な",
+      "pos": "adj",
+      "sourceId": "t1900_1884",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1885",
+      "no": 1885,
+      "en": "furious",
+      "ja": "激怒した",
+      "pos": "adj",
+      "sourceId": "t1900_1885",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1886",
+      "no": 1886,
+      "en": "eloquent",
+      "ja": "雄弁な",
+      "pos": "adj",
+      "sourceId": "t1900_1886",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1887",
+      "no": 1887,
+      "en": "juvenile",
+      "ja": "少年の",
+      "pos": "adj",
+      "sourceId": "t1900_1887",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1888",
+      "no": 1888,
+      "en": "notorious",
+      "ja": "悪名高い",
+      "pos": "adj",
+      "sourceId": "t1900_1888",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1889",
+      "no": 1889,
+      "en": "timid",
+      "ja": "臆病な",
+      "pos": "adj",
+      "sourceId": "t1900_1889",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1890",
+      "no": 1890,
+      "en": "humid",
+      "ja": "湿気の多い",
+      "pos": "adj",
+      "sourceId": "t1900_1890",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1891",
+      "no": 1891,
+      "en": "contagious",
+      "ja": "伝染性の",
+      "pos": "adj",
+      "sourceId": "t1900_1891",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1892",
+      "no": 1892,
+      "en": "cynical",
+      "ja": "冷笑的な",
+      "pos": "adj",
+      "sourceId": "t1900_1892",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1893",
+      "no": 1893,
+      "en": "dumb",
+      "ja": "話せない",
+      "pos": "adj",
+      "sourceId": "t1900_1893",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1894",
+      "no": 1894,
+      "en": "monotonous",
+      "ja": "単調な",
+      "pos": "adj",
+      "sourceId": "t1900_1894",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1895",
+      "no": 1895,
+      "en": "perpetual",
+      "ja": "永続的な",
+      "pos": "adj",
+      "sourceId": "t1900_1895",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1896",
+      "no": 1896,
+      "en": "dizzy",
+      "ja": "めまいがする",
+      "pos": "adj",
+      "sourceId": "t1900_1896",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1897",
+      "no": 1897,
+      "en": "weary",
+      "ja": "疲れ果てた",
+      "pos": "adj",
+      "sourceId": "t1900_1897",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1898",
+      "no": 1898,
+      "en": "numb",
+      "ja": "感覚のない",
+      "pos": "adj",
+      "sourceId": "t1900_1898",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1899",
+      "no": 1899,
+      "en": "mortal",
+      "ja": "死すべき",
+      "pos": "adj",
+      "sourceId": "t1900_1899",
+      "levelTag": "pre1_approx"
+    },
+    {
+      "id": "pre1_t1900_1900",
+      "no": 1900,
+      "en": "zealous",
+      "ja": "熱心な",
+      "pos": "adj",
+      "sourceId": "t1900_1900",
+      "levelTag": "pre1_approx"
+    }
+  ]
+}
