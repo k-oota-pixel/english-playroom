@@ -279,7 +279,7 @@ async function finish(){
   $('vocabGrade').textContent='総合能力値の算出に使用';
   $('grammarGrade').textContent='総合能力値の算出に使用';
   $('confidence').textContent=results.referenceOnly?
-    '推定の幅が広いため参考値です。再受験すると傾向を確かめられます。':
+    '推定の幅が広い、または2級の習熟を確認する問題が不足しているため、参考値として表示しています。':
     '問題の正誤と難易度をもとにした参考推定です。';
   $('resultSummary').textContent='全'+results.total+'問中'+results.correct+'問正解。単語'+results.vocabCorrect+'問、語彙文法'+results.grammarCorrect+'問正解。両方の回答を使い、一つの英語力を推定しました。スコアの尺度は暫定版（'+SCALE_VERSION+'）です。';
   const last=summaryData.assessmentLatest;
