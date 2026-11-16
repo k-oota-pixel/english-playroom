@@ -2,6 +2,14 @@ name: TODAY daily news
 
 # The backend selection policy is Japan-first by default (5 Japan-related stories + 1 WORLD story).
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/today-daily.yml'
+      - 'today/update-title-popularity.mjs'
+      - 'tests/title-popularity-update.test.js'
+      - 'learning-titles.js'
+      - 'learning-titles.css'
+      - 'index.html'
   schedule:
     - cron: '10 21,7 * * *' # 06:10 JST, plus 16:10 JST after Gemini daily quota reset
   workflow_dispatch:
@@ -35,7 +43,7 @@ concurrency:
 
 jobs:
   validate:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,10 +55,11 @@ jobs:
           node --check today/update-online-rankings.mjs
           node --check today/update-online-accuracy.mjs
           node --check today/update-title-popularity.mjs
+          node --check learning-titles.js
           node --test tests/title-popularity-update.test.js
           node --test tests/today-daily-update.test.js
   update:
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -80,7 +89,7 @@ jobs:
 
   # Separate job: a failure to generate TODAY news must never block rankings.
   rankings:
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -93,7 +102,7 @@ jobs:
 
   # Separate once-daily export. Static JSON means zero Firestore reads per page view.
   titlePopularity:
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -127,6 +136,7 @@ jobs:
   # code release too, then 06:10 JST daily. A failed export never commits an
   # empty or fabricated accuracy snapshot.
   accuracy:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
