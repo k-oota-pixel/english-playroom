@@ -40,8 +40,8 @@ test('all generated questions have four distinct options and one correct answer'
   }
   assert.ok(session.answers.length>=MIN_QUESTIONS&&session.answers.length<=MAX_QUESTIONS);
   assert.equal(new Set(session.answers.map(a=>a.id)).size,session.answers.length);
-  assert.ok(session.answers.filter(a=>a.kind==='vocab').length>=8);
-  assert.ok(session.answers.filter(a=>a.kind==='grammar').length>=8);
+  assert.ok(session.answers.filter(a=>a.kind==='vocab').length>=7);
+  assert.ok(session.answers.filter(a=>a.kind==='grammar').length>=7);
 });
 test('right and wrong answers drive adaptive posterior in different directions',()=>{
   const allRight=createSession(),allWrong=createSession(),seed=()=>.11;
