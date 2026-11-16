@@ -87,7 +87,7 @@ function cleanPotato(groups){
 }
 function cleanReordering(stages){
   const items=[],seen=new Set();
-  const grammarStages={1:1,2:2,3:2,4:3,5:4,6:5,7:5,8:6,9:6,10:7,11:7,12:8};
+  const grammarStages={1:1,2:2,3:2,4:5,5:5,6:5,7:6,8:3,9:6,10:8,11:6,12:6};
   for(const stage of stages||[]){
     const level=grammarStages[Number(stage?.number)];
     if(!level)continue;
@@ -133,7 +133,13 @@ function shuffle(items,rng){
 }
 export function fourChoices(item,bank,rng=Math.random){
   if(item.kind==='grammar'){
-    const candidates=shuffle(item.choices,rng);
+    let candidates=shuffle(item.choices,rng);
+    if(item.source==='potato'){
+      const correct=candidates.find(c=>c.number===item.answer_number);
+      const distractors=candidates.filter(c=>c.number!==item.answer_number).slice(0,3);
+      if(!correct||distractors.length!==3)throw Error('ポテトマンの選択肢が不足しています。');
+      candidates=shuffle([correct,...distractors],rng);
+    }
     return {id:item.id,kind:'grammar',source:item.source,grade:item.grade,level:item.level,
       prompt:item.question,direction:item.source==='potato'?'ポテトマン · 空所補充':'語彙・文法',
       options:candidates.map(c=>c.text),correctIndex:candidates.findIndex(c=>c.number===item.answer_number),guessRate:.25};
