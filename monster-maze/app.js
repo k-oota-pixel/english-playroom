@@ -215,7 +215,7 @@ function worldMap(){
   const instructions=node('p','迷宮の入口にカーソルを合わせると対応する英検級がわかります。入口を選ぶと探索を開始します。','world-map-instructions');
   const frame=group('world-map-frame');
   const mapImage=node('img');
-  mapImage.src='./art/monsta-kingdom-map.webp?v=2.4.127';
+  mapImage.src='./art/monsta-kingdom-map.webp?v=2.4.134';
   mapImage.alt='もんすた王国の地図。はじまりの森、きらめきの洞窟、文法の試練、魔獣たちの火山、魔王の影の5つの迷宮';
   mapImage.width=1448;
   mapImage.height=1086;
@@ -225,11 +225,34 @@ function worldMap(){
   // If the optional artwork has not been installed yet, the list below remains operable.
   mapImage.addEventListener('error',()=>frame.classList.add('world-map-art-unavailable'),{once:true});
   frame.append(mapImage);
-  const tooltip=group('world-map-tooltip',node('strong','迷宮を選ぼう'),node('span','入口にカーソルを合わせると英検の級を表示します。'));
-  tooltip.setAttribute('role','status');
-  tooltip.setAttribute('aria-live','polite');
-  const present=(entry,course,index)=>{
-    tooltip.replaceChildren(node('strong','Lv.'+(index+1)+' '+entry.name),node('span',course.name+' · '+('★'.repeat(index+1)+'☆'.repeat(4-index))),node('small',floorCount+'階 · 宝箱'+course.chests+'個 · '+course.coins+'コイン'));
+  // Only show the tooltip while pointing at (or focusing) a maze entrance.
+  // Its position follows the pointer and is kept within the world map bounds.
+  const tooltip=group('world-map-tooltip');
+  tooltip.id='world-map-dungeon-tooltip';
+  tooltip.setAttribute('role','tooltip');
+  tooltip.hidden=true;
+  const hideTooltip=()=>{tooltip.hidden=true;};
+  const placeTooltip=(clientX,clientY)=>{
+    if(tooltip.hidden)return;
+    const rect=frame.getBoundingClientRect();
+    const x=clientX-rect.left,y=clientY-rect.top;
+    const gap=14,pad=8,w=tooltip.offsetWidth,h=tooltip.offsetHeight;
+    let left=x+gap,top=y+gap;
+    if(left+w>rect.width-pad)left=x-w-gap;
+    if(top+h>rect.height-pad)top=y-h-gap;
+    left=Math.max(pad,Math.min(left,rect.width-w-pad));
+    top=Math.max(pad,Math.min(top,rect.height-h-pad));
+    tooltip.style.left=left+'px';
+    tooltip.style.top=top+'px';
+  };
+  const present=(entry,course,index,clientX,clientY)=>{
+    tooltip.replaceChildren(
+      node('strong','Lv.'+(index+1)+' '+entry.name),
+      node('span',course.name+' · '+('★'.repeat(index+1)+'☆'.repeat(4-index))),
+      node('small',course.coins+'コイン')
+    );
+    tooltip.hidden=false;
+    placeTooltip(clientX,clientY);
   };
   const hotspotButtons=[];
   courses.forEach((course,index)=>{
@@ -237,18 +260,22 @@ function worldMap(){
     const target=button('Lv.'+(index+1)+' '+entry.name+'（'+course.name+'）',()=>start(course),false,'world-map-hotspot');
     target.style.setProperty('--left',entry.x+'%');
     target.style.setProperty('--top',entry.y+'%');
-    target.setAttribute('aria-label','レベル'+(index+1)+' '+entry.name+' '+course.name+'。探索を開始');
-    target.addEventListener('mouseenter',()=>present(entry,course,index));
-    target.addEventListener('focus',()=>present(entry,course,index));
+    target.setAttribute('aria-label','レベル'+(index+1)+' '+entry.name+'。'+course.name+'、難易度'+(index+1)+'つ星、'+course.coins+'コイン。探索を開始');
+    target.setAttribute('aria-describedby',tooltip.id);
+    target.addEventListener('mouseenter',event=>present(entry,course,index,event.clientX,event.clientY));
+    target.addEventListener('mousemove',event=>placeTooltip(event.clientX,event.clientY));
+    target.addEventListener('mouseleave',hideTooltip);
+    target.addEventListener('focus',()=>{
+      const rect=target.getBoundingClientRect();
+      present(entry,course,index,rect.left+rect.width/2,rect.top+rect.height/2);
+    });
+    target.addEventListener('blur',hideTooltip);
     hotspotButtons.push(target);
   });
   frame.append(...hotspotButtons,tooltip);
   const list=group('world-map-course-list',...courses.map((course,index)=>{
     const entry=WORLD_MAP_ENTRIES[index];
-    const item=button('Lv.'+(index+1)+' '+entry.name+' · '+course.name+' · '+('★'.repeat(index+1)+'☆'.repeat(4-index)),()=>start(course),false,'world-map-course');
-    item.addEventListener('mouseenter',()=>present(entry,course,index));
-    item.addEventListener('focus',()=>present(entry,course,index));
-    return item;
+    return button('Lv.'+(index+1)+' '+entry.name+' · '+course.name+' · '+('★'.repeat(index+1)+'☆'.repeat(4-index))+' · '+course.coins+'コイン',()=>start(course),false,'world-map-course');
   }));
   pane.append(group('world-map-screen',group('world-map-heading',title,button('← 探索隊に戻る',lobby)),instructions,frame,list));
 }
