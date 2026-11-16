@@ -17,7 +17,7 @@ const normalize = text=>String(text||'').normalize('NFKC').trim().toLowerCase();
 const rnd = rng=>CLAMP(Number(rng())||0,0,0.999999999);
 
 function gradeSpec(name){
-  return GRADES.find(g=>g.name===name||g.key===name);
+  return GRADES.find(g=>g.name===name||g.key===name||(name==='準1級'&&g.key==='pre1'));
 }
 function vocabBand(word,grade,no){
   if(grade.key==='pre1')return CLAMP(13+Math.floor((Number(no)-1501)/134),13,15);
