@@ -40,7 +40,7 @@ body{margin:0;background:#f5f7f3;color:var(--ink);font-family:system-ui,-apple-s
 <script type="module">
 import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37';
-import {getFirestore,doc,getDoc,updateDoc,increment,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+import {getFirestore,doc,getDoc,updateDoc,runTransaction,increment,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
 import {GRAMMAR_BANK,GRAMMAR_DUMMIES,pickGrammarQuestion,grammarJapanese} from './grammar-mode.js';
@@ -48,6 +48,7 @@ import {loadFishingEikenBank,pickFishingEikenQuestion} from './question-bank.js'
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().length?getApp():initializeApp(cfg);enableAppCheck(app);const auth=getAuth(app),db=getFirestore(app);
 const TITLE_API='https://task-quest.onrender.com/api/learning/title-event';
+const DAILY_COIN_LEADERBOARD_API='https://task-quest.onrender.com/api/coins/leaderboard';
 const $=id=>document.getElementById(id);let player=null,petData={},fishing={collection:{},maxSizes:{},totalCatches:0},busy=false,awaitingChoice=false,questions=[],lastQuestionId='',roundToken=0,roundTimers=[],finishReviewWait=null,selectedCourse='',eikenAvailable=false;
 const sessionId='fishing-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
 const session={coinDelta:0,totalCatchDelta:0,catchDelta:{},maxSizeUpdates:{},lastCatch:'',plays:0,dirty:false,currentStreak:0,maxStreak:0,titleSynced:false,id:sessionId};
@@ -63,6 +64,8 @@ const C=[
 ];
 const EXTRA_DUMMIES=['apple','future','river','quickly','happy','during','return','weather','possible','borrow','decide','important','answer','travel','simple','careful','museum','market','quiet','strong','choose','arrive','different','nature','provide','increase','instead','although','experience','avoid','ancient','require','likely','recognize','maintain','perspective','approximately','significant','ordinary','improve','continue','prepare','protect','discover','support','create','include','reduce','local','recent','common','public','energy','culture','history','environment','service','message','project','reason','chance','result','practice','language','knowledge','community','available','probably','especially','actually','however','therefore'];
 function ref(){return doc(db,'users',player.uid,'apps','english-playroom')}
+function todayKey(){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const value=Object.fromEntries(parts.map(part=>[part.type,part.value]));return `${value.year}-${value.month}-${value.day}`}
+function notifyDailyCoinLeaderboard(){if(!player)return;void (async()=>{try{const token=await player.getIdToken();const response=await fetch(DAILY_COIN_LEADERBOARD_API,{method:'POST',headers:{Authorization:'Bearer '+token},cache:'no-store',keepalive:true});if(!response.ok)throw Error('HTTP '+response.status)}catch(error){console.warn('PET FISHING daily coin leaderboard update deferred',error)}})()}
 function clean(v){const collection={},maxSizes={};for(const c of C){collection[c.id]=Math.max(0,Math.floor(Number(v?.collection?.[c.id])||0));const size=Number(v?.maxSizes?.[c.id]);if(Number.isFinite(size)&&size>0)maxSizes[c.id]=Math.round(size*10)/10}return {collection,maxSizes,totalCatches:Math.max(0,Math.floor(Number(v?.totalCatches)||0)),lastCatch:String(v?.lastCatch||'')}}
 function setStatus(t,k=''){const e=$('status');e.textContent=t;e.className='status'+(k?' '+k:'')}
 function label(c){return c.name||c.id}
@@ -94,7 +97,40 @@ function buildRushItems(q){const wrong=q.answers.filter(a=>!a.correct),unrelated
 function spawnBubble(text,correct,token,onSuccess,onMiss,onWrong){if(token!==roundToken)return;const b=document.createElement('button');b.type='button';const long=String(text).length>11||String(text).trim().split(/\s+/).length>1;b.className='word-bubble'+(long?' long':'');b.textContent=text;b.dataset.correct=correct?'1':'0';const p=choosePos(long);b.style.left=p.left+'%';b.style.top=p.top+'%';$('bubbleLayer').append(b);let done=false;const expire=later(()=>{if(done||token!==roundToken)return;done=true;b.classList.add('vanish');later(()=>{b.remove();if(correct)onMiss()},100)},4000);b.onclick=()=>{if(done||token!==roundToken)return;if(correct){done=true;clearTimeout(expire);onSuccess(b)}else{done=true;clearTimeout(expire);b.classList.add('wrong');onWrong();later(()=>{b.classList.add('vanish');later(()=>b.remove(),100)},300)}}}
 function spendCoinLocal(){const now=Math.max(0,Math.floor(Number(petData.coins)||0));if(now<1)throw Error('コインが足りません。');petData={...petData,coins:now-1};session.coinDelta-=1;session.plays+=1;session.dirty=true;session.titleSynced=false;hud()}
 function registerCatchLocal(c,size){const before=fishing.collection[c.id]||0,isNew=before===0,beforeMax=Number(fishing.maxSizes[c.id])||0,isRecord=size.value>beforeMax;fishing={...fishing,collection:{...fishing.collection,[c.id]:before+1},maxSizes:{...fishing.maxSizes,[c.id]:Math.max(beforeMax,size.value)},totalCatches:fishing.totalCatches+1,lastCatch:c.id};petData={...petData,coins:Math.max(0,Math.floor(Number(petData.coins)||0))+3};session.coinDelta+=3;session.totalCatchDelta+=1;session.catchDelta[c.id]=(session.catchDelta[c.id]||0)+1;if(isRecord)session.maxSizeUpdates[c.id]=size.value;session.lastCatch=c.id;session.currentStreak+=1;session.maxStreak=Math.max(session.maxStreak,session.currentStreak);session.dirty=true;session.titleSynced=false;renderBook();hud();return {isNew,isRecord}}
-async function saveSession(){if(!session.dirty)return;const updates={coins:increment(session.coinDelta),petFishingLastAttemptAt:serverTimestamp(),petFishingUpdatedAt:serverTimestamp()};if(session.totalCatchDelta>0){updates['petFishing.totalCatches']=increment(session.totalCatchDelta);updates['petFishing.lastCatch']=session.lastCatch;for(const [id,n] of Object.entries(session.catchDelta)){if(n>0)updates[`petFishing.collection.${id}`]=increment(n)}for(const [id,size] of Object.entries(session.maxSizeUpdates)){if(size>0)updates[`petFishing.maxSizes.${id}`]=Number(size)}}await updateDoc(ref(),updates);session.dirty=false}
+async function saveSession(){
+  if(!session.dirty)return;
+  const earnedCoins=session.totalCatchDelta*3;
+  const updates={coins:increment(session.coinDelta),petFishingLastAttemptAt:serverTimestamp(),petFishingUpdatedAt:serverTimestamp()};
+  if(session.totalCatchDelta>0){
+    updates['petFishing.totalCatches']=increment(session.totalCatchDelta);
+    updates['petFishing.lastCatch']=session.lastCatch;
+    for(const [id,n] of Object.entries(session.catchDelta)){if(n>0)updates[`petFishing.collection.${id}`]=increment(n)}
+    for(const [id,size] of Object.entries(session.maxSizeUpdates)){if(size>0)updates[`petFishing.maxSizes.${id}`]=Number(size)}
+  }
+  if(earnedCoins>0){
+    const today=todayKey();
+    Object.assign(updates,{coinEarnedDate:today,coinUpdatedAt:serverTimestamp(),coinSchemaVersion:1});
+    if(petData.coinEarnedDate===today){
+      // The initial wallet read already confirmed today's date: one atomic write, no additional read.
+      updates.coinsEarnedToday=increment(earnedCoins);
+      await updateDoc(ref(),updates);
+    }else{
+      // On the first reward of a new day, read once to preserve earnings from other tabs.
+      const wallet=ref();
+      await runTransaction(db,async tx=>{
+        const snap=await tx.get(wallet);
+        if(!snap.exists())throw Error('PETデータが見つかりません。');
+        const data=snap.data()||{};
+        const prior=data.coinEarnedDate===today?Math.max(0,Math.floor(Number(data.coinsEarnedToday)||0)):0;
+        tx.update(wallet,{...updates,coinsEarnedToday:prior+earnedCoins});
+      });
+    }
+  }else{
+    await updateDoc(ref(),updates);
+  }
+  session.dirty=false;
+  if(earnedCoins>0)notifyDailyCoinLeaderboard();
+}
 async function saveTitleProgress(){if(session.titleSynced||session.plays<1)return [];const token=await player.getIdToken(),caughtIds=C.filter(c=>(fishing.collection[c.id]||0)>0).map(c=>c.id),event={eventId:session.id+'-result',kind:'run',sessionId:session.id,score:session.totalCatchDelta,total:Math.max(0,Math.floor(Number(fishing.totalCatches)||0)),combo:session.maxStreak,caughtIds};const r=await fetch(TITLE_API,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({appId:'pet-fishing',batchId:session.id+'-batch',events:[event]}),cache:'no-store',signal:AbortSignal.timeout(45000)});let data={};try{data=await r.json()}catch{}if(!r.ok)throw Error(data.error||'称号を保存できませんでした。');session.titleSynced=true;return Array.isArray(data.freshTitles)?data.freshTitles:[]}
 function showTitleAwards(titles){if(!titles.length)return Promise.resolve();return new Promise(resolve=>{const d=document.createElement('dialog');d.className='award';d.innerHTML=`<div class="award-inner"><div class="eyebrow">TITLE UNLOCKED</div><h2>🏆 新しい称号を解放！</h2><div class="award-list">${titles.map(t=>`<div class="award-card"><small>PET FISHING</small><strong>${plain(t.name)}</strong><p>${plain(t.condition)}</p></div>`).join('')}</div><div class="award-actions"><button type="button">もんすたでぃへ戻る</button></div></div>`;document.body.append(d);const done=()=>{d.remove();resolve()};d.querySelector('button').onclick=()=>d.close();d.addEventListener('close',done,{once:true});d.showModal()})}
 function showResult({success,c,isNew=false,isRecord=false,size=null,q}){$('new').hidden=!success||!isNew;$('record').hidden=!success||!isRecord;$('catchIcon').innerHTML=success?visual(c):'💨';$('catchTitle').textContent=success?'FISHING SUCCESS!':'THE FISH GOT AWAY...';$('catchName').textContent=success?label(c):'逃げられた！';$('catchJa').textContent=success?c.ja:'正解を時間内に捕まえられませんでした';$('catchRarity').textContent=success?`${c.r} · ${size.tier} SIZE ${formatSize(size.value)}`:'TRY AGAIN';$('catchAnswer').textContent=success?`正解：${q.correct.text}　🪙 +3${isRecord?'　🏆 最大サイズ更新！':''}`:`正解：${q.correct.text}`;$('catch').classList.add('show');awaitingChoice=true;hud()}
