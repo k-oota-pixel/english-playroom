@@ -17,8 +17,18 @@ test('PvP has battle tabs, visible HP and MP and confirmed action effects',()=>{
  for(const tab of ['attack','magic','items'])assert.match(html,new RegExp('data-battle-tab="'+tab+'"'));
  assert.match(js,/hp-meter/);
  assert.match(js,/mp-meter/);
- assert.match(js,/playBattleEffect\(message\)/);
+ assert.match(js,/battleActions/);
+ assert.match(js,/playBattleEffect\(action\)/);
  assert.match(js,/reviveTarget:selectedReviveTarget/);
  assert.match(html,/id="battle-forfeit"/);
  assert.match(js,/type:'forfeit'/);
+});
+
+test('fallen pets can be selected for revival and magic options stay compact',()=>{
+ assert.match(js,/selectedReviveTarget=own\?\.units\.findIndex\(u=>u\.hp===0\)/);
+ assert.match(js,/filter\(\(\{u\}\)=>u\.hp===0\)/);
+ assert.match(js,/caster-options/);
+ assert.match(js,/spell-options/);
+ assert.match(theme,/#battle \.battle-panel\{[\s\S]*height:calc\(100dvh - 10px\)/);
+ assert.match(theme,/#battle \.quiz\{[\s\S]*overflow-y:auto/);
 });
