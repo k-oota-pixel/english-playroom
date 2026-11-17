@@ -3,6 +3,7 @@ import {getFirestore,doc,getDoc,runTransaction} from 'https://www.gstatic.com/fi
 import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.4.37';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
+import {recordLearningActivity} from '../coin-reward.js?v=2.5.19';
 import {EIKEN_QUESTIONS_URL,loadFishingEikenBank} from '../pet-fishing/question-bank.js';
 import {loadVocabulary} from '../data/vocab/index.js';
 import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
@@ -1334,7 +1335,7 @@ function results(saved=false){
     const itemDelta=itemChanges.length?Object.fromEntries(itemChanges.map(key=>
       [key,run.inventory[key]-run.initialInventory[key]])):null;
     const label=reward.coins||reward.crystals||counts.size||items.length?'報酬を受け取る':'探索結果を保存';
-    pane.append(button(label,()=>save(next=>{addReward(next,id,reward);addQuestAchievements(next,achievement);},()=>results(true),
+    pane.append(button(label,()=>save(next=>{addReward(next,id,reward);addQuestAchievements(next,achievement);},()=>{void recordLearningActivity('monster-maze');results(true);},
       {id,delta:reward.coins,itemDelta}),false,'primary'));
   }
 }
