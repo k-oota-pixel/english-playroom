@@ -48,7 +48,10 @@ export function normalizeState(raw){
     state.values[i]={label:cleanText(v.label,60),weight:integer(v.weight,1,5,3)};
     const o=raw.options?.[i]||{};
     state.options[i]={kind:Object.hasOwn(CHOICES,o.kind)?o.kind:'faculty',name:cleanText(o.name,60)};
-    for(let j=0;j<4;j++)state.ratings[i][j]=integer(raw.ratings?.[i]?.[j],0,5,0);
+    for(let j=0;j<4;j++){
+      const cell=Array.isArray(raw.ratings?.[i])?raw.ratings[i][j]:raw.ratings?.[i*4+j];
+      state.ratings[i][j]=integer(cell,0,5,0);
+    }
   }
   state.updatedAt=Number.isFinite(raw.updatedAt)&&raw.updatedAt>0?raw.updatedAt:0;
   return state;
