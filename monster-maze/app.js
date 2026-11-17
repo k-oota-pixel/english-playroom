@@ -9,8 +9,8 @@ import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,revivalSpells,normalizeProfile,stats,specialDescription,materialCost,maxUpgradeMaterialCount,previewUpgradeBatch,applyUpgradeBatch,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,correctOrdering,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=2.5.12';
+  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,spellLearned,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,correctOrdering,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=2.5.13';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -89,7 +89,8 @@ function unitView(unit,kind){
   hp.max=unit.maxHp;
   hp.value=unit.hp;
   hp.setAttribute('aria-label',unit.name+' HP');
-  const tile=group('unit'+(unit.hp===0?' down':''),(kind==='card'?cardArt(unit.id):art(kind,unit.id)),node('strong',unit.name),hp,node('small',unit.hp+' / '+unit.maxHp));
+  const tile=group('unit'+(unit.hp===0?' down':''),(kind==='card'?cardArt(unit.id):art(kind,unit.id)),node('strong',unit.name),hp,
+    node('small',unit.hp+' / '+unit.maxHp+(unit.role>0?' · MP '+unit.mp+' / '+unit.maxMp:'')));
   return kind==='card'?rankedCard(tile,unit.rarity):tile;
 }
 function battleUnit(unit,portrait){
@@ -108,8 +109,12 @@ function battleUnit(unit,portrait){
     number.textContent=hp+' / '+unit.maxHp;
     tile.classList.toggle('down',hp===0);
   };
+  const mpLabel=unit.role>0?node('small','','battle-mp'):null;
+  if(mpLabel)tile.append(mpLabel);
+  const updateMp=()=>{if(mpLabel)mpLabel.textContent='MP '+unit.mp+' / '+unit.maxMp;};
   update(unit.hp);
-  return {tile,update,badge};
+  updateMp();
+  return {tile,update,updateMp,badge};
 }
 function petSprite(className){
   const sprite=node('span','',className);
@@ -186,8 +191,7 @@ async function save(change,onSuccess,{id,delta=0,itemDelta=null,onFailure}={}){
   }
 }
 function companionStats(unit){
-  const roleStats=[['物理攻撃',unit.physical],['魔法攻撃',unit.magic],['回復力',unit.heal]];
-  return [['最大HP',unit.maxHp],roleStats[unit.role]];
+  return [['最大HP',unit.maxHp],unit.role===0?['物理攻撃',unit.physical]:['最大MP',unit.maxMp]];
 }
 function statList(entries,className){
   const list=node('dl','',className);
@@ -402,6 +406,11 @@ function cardPortrait(card,key,rank,unit){
   return group('card-preview',portrait,details);
 }
 function skillInfo(unit){
+  if(unit.role>0){
+    const learned=mazeSpells.filter(spell=>spellLearned(unit,spell));
+    return group('roster-spells',node('strong','使用魔法'),
+      ...learned.map(spell=>node('small',spell.name+' · MP '+spell.mpCost)));
+  }
   const detail=node('span',specialDescription(unit),'skill-detail');
   detail.id='skill-'+unit.key;
   const toggle=button(unit.skill,()=>{
@@ -726,7 +735,7 @@ function start(course){
   const initialInventory=normalizeDungeonInventory(petData.petDungeonItems);
   run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],foundItems:{},mistakes:new Map(),chestPlan:planChests(course),
     initialInventory,inventory:{...initialInventory},
-    caster:createCaster(petData),maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
+    caster:createCaster(petData),spellCasterKey:null,maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
   explore();
 }
 const moveLabels=['上','右','下','左'];
@@ -817,26 +826,33 @@ function openSupplies(kind,inBattle=false){
       },!canUseItem(run,item)));
     }
   }else{
-    for(const spell of mazeSpells.filter(spell=>
-      (spell.kind==='heal'||spell.kind==='revive')&&run.caster.level>=spell.level)){
-      if(spell.kind==='heal'){
-        options.push(button(spell.name+' · MP '+spell.mpCost,()=>{
-          const healed=healWhileWalking(run,spell);
-          if(healed)report=spell.name+'で '+healed.unit.name+'のHPが'+healed.amount+'回復した。';
-          dialog.close();
-        },!spellAvailable(run.caster,spell)||!injuredAlly(run)));
-      }else{
-        const targets=fallenAllies(run);
-        if(!targets.length){
-          options.push(button(spell.name+' · 戦闘不能の仲間なし',()=>{},true));
-        }else{
-          for(const unit of targets)options.push(button(spell.name+' → '+unit.name+' · MP '+spell.mpCost,()=>{
-            const result=reviveAlly(run,spell,unit);
-            if(result)report=spell.name+'で '+unit.name+(result.success?'がHP'+result.amount+'で復活した！':'の蘇生に失敗した。');
+    for(const caster of [run.caster,...run.team]){
+      const known=mazeSpells.filter(spell=>(spell.kind==='heal'||spell.kind==='revive')&&spellLearned(caster,spell));
+      if(!known.length)continue;
+      const row=group('supply-caster-row',node('strong',caster.name+' · MP '+caster.mp+' / '+caster.maxMp));
+      for(const spell of known){
+        if(spell.kind==='heal'){
+          row.append(button(spell.name+' · MP '+spell.mpCost,()=>{
+            const healed=healWhileWalking(run,spell,Math.random,caster);
+            if(healed){
+              const extra=healed.assists.map(x=>x.actor.name+'が'+x.unit.name+'を'+x.amount+'回復').join('、');
+              report=caster.name+'の'+spell.name+'で '+healed.unit.name+'のHPが'+healed.amount+'回復した。'+
+                (extra?' 連携：'+extra:'');
+            }
             dialog.close();
-          },!spellAvailable(run.caster,spell)));
+          },!spellAvailable(caster,spell)||!injuredAlly(run)));
+        }else{
+          const targets=fallenAllies(run);
+          if(!targets.length)row.append(button(spell.name+' · 蘇生対象なし',()=>{},true));
+          for(const unit of targets)row.append(button(spell.name+' → '+unit.name+' · MP '+spell.mpCost,()=>{
+            const result=reviveAlly(run,spell,unit,Math.random,caster);
+            if(result)report=caster.name+'の'+spell.name+'で '+unit.name+
+              (result.success?'がHP'+result.amount+'で復活した！':'の蘇生に失敗した。');
+            dialog.close();
+          },!spellAvailable(caster,spell)));
         }
       }
+      options.push(row);
     }
   }
   dialog.append(title,node('p','HP '+run.caster.hp+' / '+run.caster.maxHp+'　MP '+run.caster.mp+' / '+run.caster.maxMp));
@@ -915,9 +931,11 @@ function nextQuestion(continuing=false){
   const current=question(questions[run.course.grade],run.quiz?.id);
   run.quiz=current;
   const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
-  if(continuing!==true||!spell||!spellAvailable(run.caster,spell)||
+  const chosenCaster=run.spellCasterKey?run.team.find(unit=>unit.key===run.spellCasterKey):run.caster;
+  if(continuing!==true||!spell||!spellAvailable(chosenCaster,spell)||
      (spell.kind==='revive'&&!fallenAllies(run).length)){
     run.selectedSpell=null;
+    run.spellCasterKey=null;
     if(continuing!==true||run.action==='heal'||run.action==='revive')run.action='physical';
   }
   if(continuing!==true||!(run.foes[run.target]?.hp>0)){
@@ -1018,7 +1036,7 @@ function battle(){
     const view=battleUnit(unit,cardArt(unit.id));
     views.set(unit,view);
     const tile=rankedCard(view.tile,unit.rarity);
-    if(unit.rarity){
+    if(unit.rarity&&unit.role===0){
       const special=button(unit.skill+' · '+(unit.ct?'CT '+unit.ct:'発動可'),()=>{
         run.special=run.special===unit.key?null:unit.key;
         battle();
@@ -1029,10 +1047,11 @@ function battle(){
     return tile;
   }));
   const selectedReviveKey=()=>fallenAllies(run).find(unit=>unit.key===run.reviveTarget)?.key??fallenAllies(run)[0]?.key;
-  const chooseAction=(action,spell=null)=>{
+  const chooseAction=(action,spell=null,casterKey=null)=>{
     if(action!==run.action)run.special=null;
     run.action=action;
     run.selectedSpell=spell;
+    run.spellCasterKey=casterKey;
     if(action==='revive'&&!fallenAllies(run).some(unit=>unit.key===run.reviveTarget)){
       run.reviveTarget=fallenAllies(run)[0]?.key??null;
     }
@@ -1070,18 +1089,27 @@ function battle(){
   stage.append(enemyRow,allies,resultArea,controls);
   pane.append(stage);
   if(run.action!=='physical'){
-    const {caster}=run;
-    const options=group('choices');
-    const allyMagic=button('仲間の攻撃魔法',()=>chooseAction('magic'),!run.team.some(unit=>canJoinAction(unit,'magic')));
-    allyMagic.setAttribute('aria-pressed',String(run.action==='magic'&&!run.selectedSpell));
-    options.append(allyMagic);
-    for(const spell of mazeSpells){
-      const action=spell.kind==='attack'?'magic':spell.kind;
-      const lock=caster.hp===0?' · 戦闘不能':caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':spell.kind==='revive'&&!fallenAllies(run).length?' · 蘇生対象なし':'';
-      const choice=button(spell.name+' · MP '+spell.mpCost+lock,()=>chooseAction(action,spell.id),
-        !spellAvailable(caster,spell)||(spell.kind==='revive'&&!fallenAllies(run).length));
-      choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
-      options.append(choice);
+    const options=group('spell-owner-list');
+    const ordered=['mimuros','mimurose','mirogoro','mirogoron','meinon','meinoora']
+      .map(id=>mazeSpells.find(spell=>spell.id===id)).filter(Boolean);
+    for(const caster of [run.caster,...run.team]){
+      const casterKey=caster===run.caster?null:caster.key;
+      const spells=group('spell-owner-spells');
+      for(const spell of ordered){
+        const spellAction=spell.kind==='attack'?'magic':spell.kind;
+        const learned=spellLearned(caster,spell);
+        const ready=spellAvailable(caster,spell);
+        const targetReady=spell.kind!=='revive'||fallenAllies(run).length>0;
+        const lock=!learned?'未習得':caster.hp===0?'戦闘不能':caster.mp<spell.mpCost?'MP不足':!targetReady?'蘇生対象なし':'';
+        const choice=button(spell.name,()=>chooseAction(spellAction,spell.id,casterKey),!ready||!targetReady,'spell-choice');
+        choice.title=caster.name+' · MP '+spell.mpCost+(lock?' · '+lock:'');
+        choice.setAttribute('aria-label',choice.title);
+        choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id&&
+          run.spellCasterKey===casterKey));
+        spells.append(choice);
+      }
+      options.append(group('spell-owner-row',
+        node('span',caster.name+' · MP '+caster.mp+' / '+caster.maxMp,'spell-owner-name'),spells));
     }
     if(run.action==='revive'&&run.selectedSpell){
       options.append(node('small','蘇生させる仲間を選んでください。','revive-instruction'));
@@ -1094,7 +1122,7 @@ function battle(){
         options.append(target);
       }
     }
-    options.setAttribute('aria-label','魔法を選ぶ');
+    options.setAttribute('aria-label','魔法を使うキャラクターと魔法を選ぶ');
     controls.append(group('spell-picker',options));
   }
   controls.append(quiz,button('探索を終了',leave,false,'leave-expedition'));
@@ -1164,7 +1192,7 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
     if(!stage.isConnected)return;
     const source=views.get(actor);
     const view=views.get(unit);
-    if(source===pet)pet.updateMp();
+    source?.updateMp?.();
     if(kind==='reviveFail'){
       addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+'の蘇生に失敗した。');
       continue;
