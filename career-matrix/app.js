@@ -2,6 +2,7 @@ import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/f
 import {getAuth,onAuthStateChanged} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {VALUE_PRESETS,CHOICES,blankState,normalizeState,calculate,sampleState} from './model.js?v=1.0.0';
+import {createReflectionUI} from './reflection.js?v=2.5.15';
 
 const firebaseConfig={
   apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',
@@ -21,6 +22,10 @@ let state=blankState();
 let revision=0;
 let loading=false;
 let saving=false;
+const reflection=createReflectionUI({
+  getMatrix:()=>normalizeState(state),isReady:()=>calculate(state).ready,getUser:()=>currentUser,
+  onEdit:()=>{revision++;},onSave:()=>$('saveButton').click()
+});
 // Whether the user has explicitly opened a free-text input (UI-only, no database writes).
 const customValueSlots=new Set();
 const customOptionSlots=new Set();
@@ -185,10 +190,10 @@ function renderCounters(){
     'あと '+(16-result.filled)+' か所の評価を入力しよう';
 }
 function renderAll(){
-  renderValues();renderOptions();renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
+  renderValues();renderOptions();renderMatrix();renderMobileEvaluator();renderResults();renderCounters();reflection.render();
 }
 function updateAfterInput(){
-  renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
+  renderMatrix();renderMobileEvaluator();renderResults();renderCounters();reflection.render();
 }
 
 $('valuesEditor').addEventListener('input',event=>{
@@ -233,7 +238,7 @@ $('valuesEditor').addEventListener('click',event=>{
   const i=Number(button.dataset.index),weight=Number(button.dataset.weight);
   if(state.values[i].weight===weight)return;
   state.values[i].weight=weight;
-  markChanged();renderValues();renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
+  markChanged();renderValues();renderMatrix();renderMobileEvaluator();renderResults();renderCounters();reflection.render();
 });
 $('optionsEditor').addEventListener('click',event=>{
   const button=event.target.closest('button[data-action="kind"]');
@@ -249,7 +254,7 @@ function onRatingClick(event){
   const i=Number(button.dataset.row),j=Number(button.dataset.col),value=Number(button.dataset.score);
   state.ratings[i][j]=state.ratings[i][j]===value?0:value;
   markChanged();
-  renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
+  renderMatrix();renderMobileEvaluator();renderResults();renderCounters();reflection.render();
 }
 $('matrixTable').addEventListener('click',onRatingClick);
 $('mobileEvaluation').addEventListener('click',onRatingClick);
@@ -291,12 +296,14 @@ $('saveButton').addEventListener('click',async()=>{
   const payload=normalizeState(state);
   try{
     await setDoc(doc(db,'users',currentUser.uid,'apps','career-matrix'),{
-      matrix:{...payload,ratings:payload.ratings.flat()},updatedAt:serverTimestamp()
+      matrix:{...payload,ratings:payload.ratings.flat()},reflection:reflection.cloudPayload(),updatedAt:serverTimestamp()
     },{merge:true});
+    reflection.notifySave(revision===writeRevision);
     notice(revision===writeRevision?'アカウントに保存しました。別の端末でも同じ内容を開けます。':
       '保存操作時点の内容を保存しました。その後の変更は、もう一度保存してください。','success');
   }catch(error){
     console.warn('[career-matrix] cloud save failed',error);
+    reflection.notifySave(false);
     notice('クラウド保存に失敗しました。入力内容はこの端末に残っています。通信状態や権限を確認して再度保存してください。','error');
   }finally{
     saving=false;button.disabled=false;button.textContent='この内容を保存する';
@@ -304,6 +311,7 @@ $('saveButton').addEventListener('click',async()=>{
 });
 async function start(user){
   currentUser=user;
+  reflection.attachUser(user);
   loading=true;
   state=normalizeState(safeRead(storageKey(user.uid)));
   const startingRevision=revision;
@@ -318,6 +326,7 @@ async function start(user){
       }else if(state.updatedAt){
         notice('この端末の入力内容を復元しました。変更をアカウントにも残す場合は保存してください。');
       }
+      reflection.mergeRemote(snap.data().reflection);
     }
   }catch(error){
     console.warn('[career-matrix] cloud load failed',error);
