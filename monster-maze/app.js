@@ -1368,13 +1368,18 @@ async function initialize(user){
       message('もんすたクエストを遊ぶにはログインが必要です。');
       return;
     }
-    // Delay game data reads until a signed-in player clicks the splash screen.
-    splash.hidden=false;
-    message();
-    await new Promise(resolve=>{startButton.onclick=resolve;});
-    if(current!==generation)return;
-    startButton.onclick=null;
-    splash.hidden=true;
+    // Direct-URL online plaza embeds only the established card editor.
+    // All the same login checks still run; no admin-only feature gate.
+    const openingEditor=new URLSearchParams(location.search).get('screen')==='collection';
+    if(!openingEditor){
+      // Delay game data reads until a signed-in player clicks the splash screen.
+      splash.hidden=false;
+      message();
+      await new Promise(resolve=>{startButton.onclick=resolve;});
+      if(current!==generation)return;
+      startButton.onclick=null;
+      splash.hidden=true;
+    }
     message('冒険の準備中…');
     const wordBank=fetch('../pet-adventure/online-battle-vocab.json').then(response=>{
       if(!response.ok)throw Error('問題データを取得できませんでした。');
@@ -1404,6 +1409,7 @@ async function initialize(user){
     pane.hidden=false;
     message();
     lobby();
+    if(openingEditor)collection();
   }catch(error){
     if(current!==generation)return;
     message('読み込めませんでした。'+error.message);
