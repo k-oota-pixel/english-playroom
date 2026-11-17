@@ -76,6 +76,43 @@ const enemyCountOdds=[[80,20,0],[40,60,0],[20,80,0],[10,70,20],[5,40,55]];
 const baseStats = [[104,22,11,9],[79,10,24,10],[86,8,12,20]];
 const maxMaterials = 99999;
 const integer = (value,min,max) => Number.isSafeInteger(value) ? Math.max(min,Math.min(max,value)) : min;
+const QUEST_GRADES=Object.freeze(['4','3','pre2','2','pre1']);
+export function normalizeQuestAchievements(value){
+ const raw=value&&typeof value==='object'?value:{};
+ const clearsByGrade=Object.fromEntries(QUEST_GRADES.map(grade=>[grade,integer(raw.clearsByGrade?.[grade],0,1000000)]));
+ return {
+  clearsByGrade,clears:Math.max(integer(raw.clears,0,10000000),Object.values(clearsByGrade).reduce((a,b)=>a+b,0)),
+  defeats:integer(raw.defeats,0,10000000),chestsOpened:integer(raw.chestsOpened,0,10000000),
+  correctAnswers:integer(raw.correctAnswers,0,10000000),
+  perfectRuns:integer(raw.perfectRuns,0,1000000),revivals:integer(raw.revivals,0,1000000),
+  allAliveClears:integer(raw.allAliveClears,0,1000000)
+ };
+}
+// Determine milestone crossings in memory: no title API read for ordinary runs.
+export function questMilestoneCount(profile){
+ const a=normalizeQuestAchievements(profile?.achievements),g=a.clearsByGrade;
+ return QUEST_GRADES.filter(key=>g[key]>0).length
+  +Number(QUEST_GRADES.every(key=>g[key]>0))
+  +Number(a.clears>=10)+Number(a.clears>=50)
+  +Number(a.defeats>=50)+Number(a.defeats>=200)
+  +Number(a.chestsOpened>=20)+Number(a.correctAnswers>=100)
+  +Number(a.perfectRuns>=1)+Number(a.revivals>=1)+Number(a.allAliveClears>=1);
+}
+// Run counters are settled once within the existing wallet transaction.
+export function addQuestAchievements(profile,summary={}){
+ const a=normalizeQuestAchievements(profile.achievements);
+ const cleared=summary.cleared===true&&QUEST_GRADES.includes(summary.grade);
+ if(cleared){a.clearsByGrade[summary.grade]++;a.clears++;}
+ a.defeats=Math.min(10000000,a.defeats+integer(summary.defeats,0,100000));
+ a.chestsOpened=Math.min(10000000,a.chestsOpened+integer(summary.chestsOpened,0,100000));
+ const turns=integer(summary.turns,0,100000),correct=integer(summary.correct,0,turns);
+ a.correctAnswers=Math.min(10000000,a.correctAnswers+correct);
+ if(turns>=10&&correct===turns)a.perfectRuns++;
+ a.revivals=Math.min(1000000,a.revivals+integer(summary.revivals,0,100000));
+ if(cleared&&summary.allAlive===true)a.allAliveClears++;
+ profile.achievements=a;
+ return a;
+}
 export function normalizeProfile(value){
   const owned = {};
   for(const {id} of cards){
@@ -90,6 +127,7 @@ export function normalizeProfile(value){
     ? [...new Set(value.team.filter(key=>typeof key==='string' && owned[key]))].slice(0,3) : [];
   return {
     owned,team:team.length===3?team:[...starters],
+    achievements:normalizeQuestAchievements(value?.achievements),
     crystals:integer(value?.crystals,0,maxMaterials),
     recentRuns:Array.isArray(value?.recentRuns)?value.recentRuns.filter(id=>typeof id==='string').slice(-25):[]
   };

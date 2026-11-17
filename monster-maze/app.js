@@ -9,8 +9,8 @@ import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,revivalSpells,normalizeProfile,stats,specialDescription,materialCost,maxUpgradeMaterialCount,previewUpgradeBatch,applyUpgradeBatch,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,spellLearned,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,correctOrdering,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=2.5.13';
+  addReward,addQuestAchievements,questMilestoneCount,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,spellLearned,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,correctOrdering,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=2.5.18';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -145,6 +145,22 @@ function message(text=''){
   status.textContent=text;
   status.hidden=!text;
 }
+// The server signs new titles only after this run's wallet reward has been saved.
+async function synchronizeQuestTitles(){
+ try{
+  const user=auth.currentUser;
+  if(!user)return;
+  const response=await fetch('https://task-quest.onrender.com/api/learning/titles?action=quest-sync',{
+   method:'POST',headers:{Authorization:'Bearer '+await user.getIdToken(),'Content-Type':'application/json'},body:'{}'
+  });
+  if(!response.ok)throw Error('HTTP '+response.status);
+  const payload=await response.json();
+  if(Array.isArray(payload.freshTitles)&&payload.freshTitles.length){
+   const {announceTitles}=await import('../learning-titles.js?v=2.5.18');
+   announceTitles(payload.freshTitles);
+  }
+ }catch(error){console.warn('Quest title sync deferred; the titles collection can retry.',error);}
+}
 async function save(change,onSuccess,{id,delta=0,itemDelta=null,onFailure}={}){
   if(busy||!walletRef)return;
   busy=true;
@@ -160,12 +176,14 @@ async function save(change,onSuccess,{id,delta=0,itemDelta=null,onFailure}={}){
       const inventory=data.petDungeonItems;
       if(id&&next.recentRuns.includes(id))return {next,balance,inventory};
       if(balance+delta<0)return {next,balance,inventory,insufficient:true};
+      const priorMilestones=questMilestoneCount(next);
       if(change(next)===false)throw Error('最新の所持カードや素材を確認してください。');
+      const questTitleChanged=questMilestoneCount(next)>priorMilestones;
       const patch={monsterMaze:next};
       if(delta)patch.coins=balance+delta;
       if(itemDelta)patch.petDungeonItems=settleItems(inventory,itemDelta);
       tx.set(wallet,patch,{merge:true});
-      return {next,balance:balance+delta,inventory:patch.petDungeonItems??inventory};
+      return {next,balance:balance+delta,inventory:patch.petDungeonItems??inventory,questTitleChanged};
     });
     if(current!==generation)return;
     profile=updated.next;
@@ -178,6 +196,7 @@ async function save(change,onSuccess,{id,delta=0,itemDelta=null,onFailure}={}){
     }
     message('保存しました。');
     onSuccess();
+    if(updated.questTitleChanged)void synchronizeQuestTitles();
   }catch(error){
     if(current!==generation)return;
     const detail='保存できませんでした。'+error.message;
@@ -733,7 +752,7 @@ function collection(){
 function start(course){
   message();
   const initialInventory=normalizeDungeonInventory(petData.petDungeonItems);
-  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,crystals:0,found:[],foundItems:{},mistakes:new Map(),chestPlan:planChests(course),
+  run={id:crypto.randomUUID(),course,floor:1,turns:0,correct:0,defeats:0,chestsOpened:0,revivals:0,crystals:0,found:[],foundItems:{},mistakes:new Map(),chestPlan:planChests(course),
     initialInventory,inventory:{...initialInventory},
     caster:createCaster(petData),spellCasterKey:null,maze:generateMaze(1,course),team:profile.team.map(key=>stats(key,profile.owned[key]))};
   explore();
@@ -846,6 +865,7 @@ function openSupplies(kind,inBattle=false){
           if(!targets.length)row.append(button(spell.name+' · 蘇生対象なし',()=>{},true));
           for(const unit of targets)row.append(button(spell.name+' → '+unit.name+' · MP '+spell.mpCost,()=>{
             const result=reviveAlly(run,spell,unit,Math.random,caster);
+            if(result?.success)run.revivals++;
             if(result)report=caster.name+'の'+spell.name+'で '+unit.name+
               (result.success?'がHP'+result.amount+'で復活した！':'の蘇生に失敗した。');
             dialog.close();
@@ -882,6 +902,7 @@ function walk(dx,dy){
   walkView=null;
   clear();
   if(event.kind==='chest'){
+    run.chestsOpened++;
     const {card,item}=drawChest(run.course);
     pane.append(node('h2','宝箱を開けた！'));
     if(card){
@@ -1182,7 +1203,10 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
   }
   timer.textContent='行動中';
   const events=[];
+  const livingFoes=run.foes.filter(foe=>foe.hp>0);
   const result=playTurn(run,correct,run.action,run.target,run.special,Math.random,event=>events.push(event));
+  run.defeats+=livingFoes.filter(foe=>foe.hp===0).length;
+  run.revivals+=events.filter(event=>event.kind==='revive').length;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   if(!reduced&&events.length)await delay(240);
@@ -1285,8 +1309,14 @@ function reviewMistakes(mistakes,index=0){
 function results(saved=false){
   clear();
   const {id,reward,correct,turns,floor}=run;
+  const achievement={
+    grade:run.course.grade,cleared:run.cleared,
+    correct,turns,defeats:run.defeats,chestsOpened:run.chestsOpened,revivals:run.revivals,
+    allAlive:run.cleared&&run.team.length===3&&run.caster.hp>0&&run.team.every(ally=>ally.hp>0)
+  };
   pane.append(node('h2',run.cleared?'迷宮クリア！':'探索終了'),
     node('p',floor+'階 · '+turns+'ターン · 正解率 '+Math.round(100*correct/Math.max(1,turns))+'%'));
+  pane.append(node('p','討伐 '+run.defeats+'体 · 宝箱 '+run.chestsOpened+'個 · 蘇生成功 '+run.revivals+'回'));
   if(reward.coins)pane.append(node('p','クリア報酬 '+reward.coins+'コイン'));
   if(reward.crystals) pane.append(node('p','経験の結晶 ×'+reward.crystals));
   const counts=new Map();
@@ -1298,13 +1328,13 @@ function results(saved=false){
   if(items.length)pane.append(node('h3','見つけたアイテム'),
     ...items.map(item=>node('p',item.icon+' '+item.name+' ×'+run.foundItems[item.id])));
   const itemChanges=Object.keys(run.inventory).filter(key=>run.inventory[key]!==run.initialInventory[key]);
-  if(saved||(!reward.coins&&!reward.crystals&&!counts.size&&!itemChanges.length)){
+  if(saved){
     pane.append(button('探索に戻る',lobby,false,'primary'));
   }else{
     const itemDelta=itemChanges.length?Object.fromEntries(itemChanges.map(key=>
       [key,run.inventory[key]-run.initialInventory[key]])):null;
     const label=reward.coins||reward.crystals||counts.size||items.length?'報酬を受け取る':'探索結果を保存';
-    pane.append(button(label,()=>save(next=>addReward(next,id,reward),()=>results(true),
+    pane.append(button(label,()=>save(next=>{addReward(next,id,reward);addQuestAchievements(next,achievement);},()=>results(true),
       {id,delta:reward.coins,itemDelta}),false,'primary'));
   }
 }
