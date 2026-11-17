@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {
-  buildQuestionBank,createSession,submitAnswer,evaluateAttempt,modelAnswer,
+  buildQuestionBank,createSession,chooseQuestion,submitAnswer,evaluateAttempt,modelAnswer,
   selectReviewQuestions,fourChoices,SCALE_VERSION
 } from '../level-diagnostic/model.js';
 import {QUESTION_GROUPS} from '../potato-harvest/questions.js';
@@ -113,4 +113,17 @@ test('page offers unknown, model answer and next buttons; review does not add Fi
   assert.match(app,/void saveResult\(\)/);
   assert.match(app,/session.finished=true/);
   assert.equal((app.match(/writeBatch\(db\)/g)||[]).length,1);
+});
+
+test('diagnostic word-order choices hide capitals and trailing punctuation without changing grading',()=>{
+  const item=bank.grammar.find(q=>q.source==='order'&&/^[A-Z]/.test(q.tokens[0])&&/[.!?]$/.test(q.tokens.at(-1)));
+  assert.ok(item,'a sentence with an initial capital and closing punctuation is available');
+  const session=createSession();
+  session.answers.push({id:'previous-vocab',kind:'vocab',correct:true});
+  const q=chooseQuestion(session,{grammar:[item]},()=>.3);
+  assert.equal(q.source,'order');
+  assert.ok(q.tokens.every(t=>t.text===t.text.toLowerCase()));
+  assert.ok(q.tokens.every(t=>!/[.!?]$/.test(t.text)||t.id!==item.tokens.length-1));
+  assert.equal(evaluateAttempt(q,q.tokens.map(t=>t.id).sort((a,b)=>a-b)),true);
+  assert.equal(modelAnswer(q).completedSentence,item.acceptedAnswers[0]);
 });
