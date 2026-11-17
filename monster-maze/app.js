@@ -1221,17 +1221,19 @@ function finish(cleared){
 function reviewMistakes(mistakes,index=0){
   clear();
   const quiz=mistakes[index];
-  const options=shuffle(quiz.options);
   const prompt=quizPrompt(quiz.prompt);
   prompt.tabIndex=-1;
   const feedback=group('review-feedback');
   feedback.setAttribute('aria-live','polite');
-  const answers=group('choices answers',...options.map(option=>button(option,()=>{
-    const correct=option===quiz.answer;
-    for(const choice of answers.children){
+  let answers;
+  const check=answer=>{
+    const correct=quiz.type==='ordering'?correctOrdering(quiz,answer):answer===quiz.answer;
+    for(const choice of answers.querySelectorAll('button')){
       choice.disabled=true;
-      if(choice.textContent===quiz.answer)choice.classList.add('answer-correct');
-      else if(choice.textContent===option)choice.classList.add('answer-incorrect');
+      if(quiz.type!=='ordering'){
+        if(choice.textContent===quiz.answer)choice.classList.add('answer-correct');
+        else if(choice.textContent===answer)choice.classList.add('answer-incorrect');
+      }
     }
     feedback.append(node('h3',correct?'正解！':'解説を確認して、もう一度'),answerExplanation(quiz));
     const last=index+1===mistakes.length;
@@ -1240,7 +1242,16 @@ function reviewMistakes(mistakes,index=0){
       :button('もう一度答える',()=>reviewMistakes(mistakes,index),false,'primary');
     feedback.append(next);
     next.focus();
-  },false,'primary')));
+  };
+  if(quiz.type==='ordering'){
+    // The review is a new attempt, not the answer assembled during battle.
+    quiz.orderPieces=null;
+    quiz.orderSelected=[];
+    answers=orderingControls(quiz,check);
+  }else{
+    answers=group('choices answers',...shuffle(quiz.options).map(option=>
+      button(option,()=>check(option),false,'primary')));
+  }
   pane.append(group('battle-stage review-stage',node('h2','探索の復習'),
     group('quiz',node('p',(index+1)+' / '+mistakes.length+' 問','review-progress'),prompt,answers,feedback)));
   prompt.focus();
