@@ -2,7 +2,7 @@ import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/f
 import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.4.37';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
-import {clampCamera,centeredCamera,followCamera} from './camera-math.js?v=2.5.22';
+import {clampCamera,centeredCamera,followCamera,flingTarget} from './camera-math.js?v=2.5.23';
 
 const app=getApps().find(x=>x.name==='[DEFAULT]')||initializeApp({
  apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',
@@ -87,11 +87,12 @@ function removePlayer(id){
  players.delete(id);elements.get(id)?.remove();elements.delete(id);updateNearby();
 }
 // Camera moves independently of the pet. Most steps only animate the pet tile.
-const camera={ready:false,manual:false,left:0,top:0,frame:0,lastFrame:0};
+const camera={ready:false,manual:false,left:0,top:0,frame:0,lastFrame:0,inertiaFrame:0};
 const prefersLessMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
 function stopCamera(){
  if(camera.frame)cancelAnimationFrame(camera.frame);
- camera.frame=0;camera.lastFrame=0;
+ if(camera.inertiaFrame)cancelAnimationFrame(camera.inertiaFrame);
+ camera.frame=0;camera.inertiaFrame=0;camera.lastFrame=0;
 }
 function cameraStep(now){
  camera.frame=0;
@@ -107,6 +108,8 @@ function cameraStep(now){
  camera.frame=requestAnimationFrame(cameraStep);
 }
 function setCamera(left,top,immediate=false){
+ // A recenter or auto-follow interrupts any still-running swipe inertia.
+ if(camera.inertiaFrame){cancelAnimationFrame(camera.inertiaFrame);camera.inertiaFrame=0;}
  const view=els.viewport;
  const next=clampCamera(left,top,view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
  camera.left=next.left;camera.top=next.top;
@@ -133,13 +136,37 @@ function returnToMyPet(immediate=false){
  camera.ready=true;
  setCamera(target.left,target.top,immediate);
 }
+// Momentum is local viewport motion only; no positional network updates.
+function animateFling(target){
+ stopCamera();
+ const view=els.viewport;
+ const startLeft=view.scrollLeft,startTop=view.scrollTop;
+ const leftDelta=target.left-startLeft,topDelta=target.top-startTop;
+ if(Math.abs(leftDelta)<1&&Math.abs(topDelta)<1)return;
+ const started=performance.now(),duration=480;
+ const frame=now=>{
+  const progress=Math.min(1,Math.max(0,(now-started)/duration));
+  const eased=1-Math.pow(1-progress,3);
+  view.scrollLeft=startLeft+leftDelta*eased;
+  view.scrollTop=startTop+topDelta*eased;
+  if(progress<1)camera.inertiaFrame=requestAnimationFrame(frame);
+  else{camera.inertiaFrame=0;view.scrollLeft=target.left;view.scrollTop=target.top;}
+ };
+ camera.inertiaFrame=requestAnimationFrame(frame);
+}
 // Pan with mouse or touch; only moves beyond a click threshold count as dragging.
 let drag=null,suppressPlayerClickUntil=0;
 els.viewport.addEventListener('pointerdown',event=>{
  if(event.pointerType==='mouse'&&event.button!==0)return;
  if(drag||!els.modal.hidden||!els.battle.hidden||!$('formation-panel').hidden)return;
+ // New touches stop the previous fling immediately instead of jumping.
+ if(camera.inertiaFrame){
+  stopCamera();camera.left=els.viewport.scrollLeft;camera.top=els.viewport.scrollTop;
+ }
  drag={id:event.pointerId,x:event.clientX,y:event.clientY,
-  left:els.viewport.scrollLeft,top:els.viewport.scrollTop,active:false};
+  left:els.viewport.scrollLeft,top:els.viewport.scrollTop,
+  pointerType:event.pointerType,scale:event.pointerType==='touch'?1.85:1,
+  samples:[{x:event.clientX,y:event.clientY,t:performance.now()}],active:false};
 });
 els.viewport.addEventListener('pointermove',event=>{
  if(!drag||drag.id!==event.pointerId)return;
@@ -151,14 +178,34 @@ els.viewport.addEventListener('pointermove',event=>{
   try{els.viewport.setPointerCapture(event.pointerId);}catch{}
  }
  event.preventDefault();
- const next=clampCamera(drag.left-dx,drag.top-dy,
+ const now=performance.now();
+ drag.samples.push({x:event.clientX,y:event.clientY,t:now});
+ // Keep only the last ~100ms to estimate the speed of a short flick.
+ while(drag.samples.length>2&&drag.samples[1].t<now-100)drag.samples.shift();
+ const next=clampCamera(drag.left-dx*drag.scale,drag.top-dy*drag.scale,
   els.viewport.clientWidth,els.viewport.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
  camera.left=next.left;camera.top=next.top;
  els.viewport.scrollLeft=next.left;els.viewport.scrollTop=next.top;
 });
 function finishDrag(event){
  if(!drag||(event&&drag.id!==event.pointerId))return;
- if(drag.active)suppressPlayerClickUntil=performance.now()+450;
+ if(drag.active){
+  suppressPlayerClickUntil=performance.now()+450;
+  if(event?.type==='pointerup'&&drag.pointerType==='touch'&&!prefersLessMotion){
+   const samples=drag.samples,first=samples[0],last=samples.at(-1);
+   // Holding still before lifting must not start a delayed fling.
+   if(last&&performance.now()-last.t<85){
+    const ms=Math.max(16,last.t-first.t);
+    const vx=-(last.x-first.x)*drag.scale/ms;
+    const vy=-(last.y-first.y)*drag.scale/ms;
+    const v=els.viewport;
+    const target=flingTarget(v.scrollLeft,v.scrollTop,vx,vy,
+     v.clientWidth,v.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
+    camera.left=target.left;camera.top=target.top;
+    animateFling(target);
+   }
+  }
+ }
  drag=null;els.viewport.classList.remove('is-panning');
 }
 els.viewport.addEventListener('pointerup',finishDrag);
