@@ -76,7 +76,7 @@ function playFeeding(visual,kind,food){
   later(()=>{remaining=3-bite;drawFood();},bite*550+475);
  }
  let feedback;
- later(()=>{finished=true;open=false;drawFood();attach();visual.dataset.careReacting=kind;emitCareEffects(visual,kind);feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');feedback.textContent=`満腹度 +${food.price}`;host.append(feedback);},2280;
+ later(()=>{finished=true;open=false;drawFood();attach();visual.dataset.careReacting=kind;emitCareEffects(visual,kind);feedback=document.createElement('span');feedback.className='pet-care-feedback';feedback.setAttribute('role','status');feedback.textContent=`満腹度 +${food.price}`;host.append(feedback);},2280);
  const run={stop(){timers.forEach(clearTimeout);observer.disconnect();visual.querySelectorAll('[data-feeding-open]').forEach(el=>el.removeAttribute('data-feeding-open'));plate.remove();feedback?.remove();visual.querySelectorAll('.pet-eating-mouth').forEach(m=>m.remove());const ending=walkPhases(visual);visual.querySelectorAll('.pet-care-motion-layer').forEach(l=>l.replaceWith(...l.childNodes));delete visual.dataset.careReacting;restoreWalk(ending);if(active===run)active=null;}};
  active=run;later(()=>run.stop(),4600);
 }
