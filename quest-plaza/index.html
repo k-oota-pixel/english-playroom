@@ -7,8 +7,8 @@
 <meta name="theme-color" content="#17273b">
 <title>もんすた王国・オンライン広場</title>
 <link rel="icon" href="../favicon.svg">
-<link rel="stylesheet" href="./style.css?v=2.5.21">
-<script type="module" src="./app.js?v=2.5.21"></script>
+<link rel="stylesheet" href="./style.css?v=2.5.22">
+<script type="module" src="./app.js?v=2.5.22"></script>
 </head>
 <body>
 <header class="bar">
@@ -22,7 +22,7 @@
 <main>
  <div id="notice" role="status" aria-live="polite" class="notice">ログイン情報を確認中…</div>
  <section class="scene" aria-label="もんすた王国の共通広場">
-  <div id="viewport" class="viewport" tabindex="0" aria-label="広場。方向キー、WASD、画面下の十字キーで移動">
+  <div id="viewport" class="viewport" tabindex="0" aria-label="広場。矢印キーかWASD、十字キーで移動。マウスドラッグや指のスワイプでマップを見回せます">
    <div id="world" class="world" aria-label="48マスかける32マスの広場">
     <div class="plaza-floor"></div>
     <div class="fountain"><div class="water">✦</div></div>
@@ -30,6 +30,7 @@
     <div id="players"></div>
    </div>
   </div>
+  <button id="recenter-camera" type="button" class="camera-recenter" aria-label="カメラを自分のぺっとの位置に戻す" title="自分の位置へ戻る">◎ 自分の位置</button>
   <div class="scene-bottom">
    <div class="guide"><strong id="nearest">近くのプレイヤーを探そう</strong><span>隣のマスに近づくと対戦を申し込めます</span></div>
    <div class="pad" aria-label="移動">
@@ -40,7 +41,7 @@
    </div>
   </div>
  </section>
- <p class="foot">方向キー / WASD / 十字キーで移動・プレイヤー同士はすり抜け可能・対戦は相手の承認後に開始</p>
+ <p class="foot">方向キー / WASD / 十字キーで移動・ドラッグ / スワイプで見回す・対戦は相手の承認後に開始</p>
 </main>
 <div id="modal" class="overlay" hidden>
  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
