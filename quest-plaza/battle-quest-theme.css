@@ -1,0 +1,194 @@
+/* Monster Quest PvP: reusable rarity card visual rules from the original quest */
+.ranked-card{position:relative;--rank-border:#77717e;--rank-ink:#e0dbe3;--rank-panel:#34313d;--rank-bg:#292633;--rank-trim:transparent;border:1px solid transparent;background:linear-gradient(var(--rank-bg),#231e31) padding-box,var(--rank-border) border-box;box-shadow:inset 0 0 0 2px var(--rank-trim)}
+.card-portrait{position:relative;display:grid;place-items:center;width:100%;min-height:5rem;padding:.8rem .2rem .2rem;border-radius:.5rem;background:var(--rank-panel)}
+.card-art{position:relative;width:min(100%,7.7rem);aspect-ratio:1;display:grid;place-items:center;isolation:isolate}
+.unit .card-art img{width:100%}
+.party-row .card-art{width:min(100%,3.7rem)}
+.card-rank{position:absolute;z-index:2;top:.25rem;left:.25rem;padding:.09rem .31rem;border:1px solid currentColor;border-radius:.25rem;background:#211b2e;color:var(--rank-ink);font-size:.66rem;font-weight:800;line-height:1.25;pointer-events:none}
+.rarity-r{--rank-border:#62c9ee;--rank-ink:#c7f2ff;--rank-panel:#263d4c;--rank-bg:#253745}
+.rarity-sr{
+  --rank-border:linear-gradient(118deg,#89501b 4%,#e2a342 18%,#fff4bd 29%,#ae601b 40%,#f7c763 54%,#fffbe4 63%,#c6822d 76%,#f6ce70 88%,#955121);
+  --rank-ink:#fff0b0;--rank-panel:radial-gradient(ellipse at 30% 10%,#8d602c,#4e2935 65%);
+  --rank-bg:#573641;--rank-trim:#ffe09ab0;
+  border-width:2px;
+  background-size:100% 100%,220% 220%;
+  animation:foil-rim 4.8s ease-in-out infinite alternate;
+}
+.rarity-sr .card-art::before{
+  content:'';position:absolute;inset:0;z-index:1;border-radius:.35rem;pointer-events:none;
+  mix-blend-mode:screen;
+  background:linear-gradient(128deg,transparent 24%,#ec9a2420 38%,#ffd67094 46%,#fff6c9d6 49%,#ffdd7766 52%,transparent 65%) 65% 50%/210% 100%;
+  animation:foil-sweep 4.8s ease-in-out infinite alternate;
+}
+.rarity-ssr{
+  --rank-ink:#fff0fb;--rank-panel:radial-gradient(ellipse at 35% 18%,#765d91,#273b55 78%);
+  --rank-trim:#fff1fea8;isolation:isolate;border-width:3px;
+  background:
+    linear-gradient(125deg,transparent 12%,#ed9dfa45 27%,#75ecff55 36%,#ffffff94 44%,#ffea8c5c 49%,transparent 64%,#b792ff46 81%,transparent) padding-box,
+    repeating-linear-gradient(128deg,#e4e3ff16 0 1px,transparent 1px 6px) padding-box,
+    linear-gradient(140deg,#55456c,#24243b 75%) padding-box,
+    linear-gradient(132deg,#fff7ff,#9aa4c8 12%,#7cdcff 19%,#ae91ff 27%,#fff 36%,#ffe58d 44%,#f399ed 56%,#7cfbef 67%,#fff 75%,#d8a0ff 84%,#9bacca) border-box;
+  background-size:230% 170%,100% 100%,100% 100%,225% 180%;
+  background-position:59% 50%,center,center,65% 48%;
+  box-shadow:inset 0 0 0 1px #f5d5ff,0 0 .5rem #bd8bf796;
+  animation:holo-rim 3.8s ease-in-out infinite alternate;
+}
+.rarity-ssr .card-art img{filter:drop-shadow(0 0 .35rem #efc5ffc9)}
+.rarity-ssr .card-art::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:.4rem;
+  mix-blend-mode:screen;
+  background:linear-gradient(127deg,
+    transparent 16%,#af72ff36 23%,#88e1ff9e 28%,#fffde9d1 31%,#6ff5b7b0 35%,#fff66fa9 39%,#ffc4f18a 43%,transparent 47%,
+    transparent 52%,#9bb4ff78 55%,#ffffffd5 58%,#91efff9c 61%,#f49aff79 64%,transparent 70%) 54% 50%/205% 100%;
+  animation:foil-sweep 3.8s ease-in-out infinite alternate;
+}
+.rarity-ssr .card-art::after{
+  content:'';position:absolute;z-index:2;top:13%;right:10%;width:26%;aspect-ratio:1;pointer-events:none;
+  background:radial-gradient(#fff 20%,#fff8de 42%,#9de6ff 66%,#e7adff);
+  clip-path:polygon(50% 0,59% 39%,100% 50%,59% 61%,50% 100%,41% 61%,0 50%,41% 39%);
+  animation:rarity-twinkle 3.8s ease-in-out infinite alternate;
+}
+.rarity-ssr.down .card-art img{filter:grayscale(1)}
+.rarity-sr.down .card-art::before,.rarity-ssr.down .card-art::before,.rarity-ssr.down .card-art::after{display:none}
+@keyframes foil-rim{from{background-position:0 0,12% 28%}to{background-position:0 0,87% 74%}}
+@keyframes holo-rim{from{background-position:19% 35%,center,center,14% 20%}to{background-position:83% 65%,center,center,89% 78%}}
+@keyframes foil-sweep{from{background-position:15% 50%}to{background-position:86% 50%}}
+@keyframes rarity-twinkle{0%,50%{opacity:.5;transform:scale(.65)}75%,100%{opacity:1;transform:scale(1.12)}}
+@media(prefers-reduced-motion:reduce){
+  .rarity-sr,.rarity-ssr,.rarity-sr .card-art::before,.rarity-ssr .card-art::before,.rarity-ssr .card-art::after{animation:none}
+}
+@media(max-width:520px){.owned-cards{grid-template-columns:repeat(auto-fill,minmax(min(100%,8.3rem),1fr))}.card-art{width:min(100%,6rem)}}
+
+
+
+/* Shared Quest battle visual language: original rarity art styles above copied
+   unchanged from monster-maze/style.css (same class names and art assets).
+   Only layout is adapted for 4-v-4 PvP. */
+#battle{
+ --muted:#d1c0d9;--gold:#ffd48a;--edge:#695475;
+ color:#f6edf8;background:rgba(12,9,22,.92);
+}
+#battle .battle-panel{
+ position:relative;isolation:isolate;width:min(100%,950px);
+ background:radial-gradient(ellipse at 50% 0,#342b50,#211a30 58%,#181326);
+ color:#f6edf8;border:1px solid #8a6b96;
+ padding:clamp(9px,2vw,20px);border-radius:16px;
+}
+#battle .battle-header{background:none;color:#ffe0a1;border:0;border-bottom:1px solid #65516f;
+ display:flex;align-items:center;gap:10px;justify-content:space-between;padding:4px 2px 12px;flex-wrap:wrap}
+#battle .battle-header strong{font-size:clamp(12px,2.4vw,17px);letter-spacing:.035em}
+#battle #battle-forfeit{margin-left:auto;padding:5px 10px;min-height:32px;
+ border:1px solid #867399;background:#3b2c4a;color:#ffe7e4;font-size:12px;border-radius:10px}
+#battle #battle-forfeit:hover{background:#633e56}
+#battle .battle-teams{display:grid;grid-template-columns:1fr;gap:11px;margin:10px 0 0}
+#battle .team{margin:0;padding:0;background:none;min-width:0}
+#battle .team h3{margin:0 0 6px;font-size:clamp(11px,2vw,14px);font-weight:800;color:#ffe4b0}
+#battle .team-foe{max-width:100%}
+#battle .team-mine{max-width:100%}
+#battle .unit-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(4px,1vw,9px)}
+#battle .battle-unit{
+ cursor:default;appearance:none;position:relative;display:flex;flex-direction:column;align-items:center;
+ justify-content:flex-start;gap:4px;width:100%;min-height:128px;min-width:0;overflow:visible;
+ border:1px solid var(--edge);border-radius:12px;padding:8px 5px;
+ background:#29243a;color:#f6edf8;box-shadow:none;
+}
+#battle .battle-unit.ranked-card{background:linear-gradient(var(--rank-bg),#231e31) padding-box,var(--rank-border) border-box;
+ box-shadow:inset 0 0 0 2px var(--rank-trim);border:1px solid transparent}
+#battle .battle-unit.rarity-sr{border-width:2px;background-size:100% 100%,220% 220%;
+ animation:foil-rim 4.8s ease-in-out infinite alternate}
+#battle .battle-unit.rarity-ssr{isolation:isolate;border-width:3px;
+ background:linear-gradient(125deg,transparent 12%,#ed9dfa45 27%,#75ecff55 36%,#ffffff94 44%,#ffea8c5c 49%,transparent 64%,#b792ff46 81%,transparent) padding-box,
+ repeating-linear-gradient(128deg,#e4e3ff16 0 1px,transparent 1px 6px) padding-box,
+ linear-gradient(140deg,#55456c,#24243b 75%) padding-box,
+ linear-gradient(132deg,#fff7ff,#9aa4c8 12%,#7cdcff 19%,#ae91ff 27%,#fff 36%,#ffe58d 44%,#f399ed 56%,#7cfbef 67%,#fff 75%,#d8a0ff 84%,#9bacca) border-box;
+ background-size:230% 170%,100% 100%,100% 100%,225% 180%;
+ background-position:59% 50%,center,center,65% 48%;
+ box-shadow:inset 0 0 0 1px #f5d5ff,0 0 .5rem #bd8bf796;
+ animation:holo-rim 3.8s ease-in-out infinite alternate}
+#battle .battle-unit.party-pet{border-color:#79688d;background:#2b2c43}
+#battle .battle-unit.picked{outline:2px solid #ffd48a;outline-offset:-2px;box-shadow:0 0 0 2px #d9ad77}
+#battle .battle-unit.dead{opacity:.6}
+#battle .battle-unit.dead .card-art img,#battle .battle-unit.dead .battle-pet{filter:grayscale(1);opacity:.55}
+#battle .battle-unit .card-art{width:min(100%,64px);height:64px;min-height:0;flex:0 0 64px;margin:0 auto}
+#battle .battle-unit .card-art img{display:block;width:100%;height:100%;object-fit:contain}
+#battle .battle-unit .battle-pet{display:grid;place-items:center;flex:0 0 64px;width:64px;height:64px;margin:0 auto;font-size:37px}
+#battle .battle-unit .battle-pet svg{width:100%;height:100%;overflow:visible}
+#battle .battle-unit strong{margin:0;font-size:clamp(10px,2.25vw,14px);font-weight:850;
+ max-width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#battle .battle-unit .card-rank{z-index:4}
+#battle .hp-meter,#battle .mp-meter{height:7px;min-height:7px;width:94%;background:#201628;
+ border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px #655873}
+#battle .hp-fill,#battle .mp-fill{height:100%;display:block;transform-origin:left center;transition:transform .25s ease-out}
+#battle .hp-fill{background:#83dcb7}
+#battle .mp-fill{background:#7bbaf6}
+#battle .battle-hp,#battle .battle-mp{font-size:clamp(10px,2vw,13px);color:#fff3fb;
+ white-space:nowrap;font-variant-numeric:tabular-nums;line-height:1.15}
+#battle .battle-mp{color:#b5dbff}
+#battle .battle-unit .battle-ct{font-size:10px;color:#f0d6ff;margin-top:auto}
+#battle .battle-unit .battle-delta{position:absolute;z-index:8;top:30%;left:50%;transform:translateX(-50%);
+ font-weight:900;color:#ff9baa;text-shadow:0 2px 4px #130b1d}
+#battle .battle-unit.taking-hit{box-shadow:0 0 0 2px #fa7e82}
+#battle .battle-unit.being-healed{box-shadow:0 0 0 2px #84e6ba}
+#battle .battle-unit.taking-hit .card-art,#battle .battle-unit.taking-hit .battle-pet{animation:pvp-hit .3s ease-out}
+@keyframes pvp-hit{25%{transform:translateX(-4px);filter:brightness(1.35)}65%{transform:translateX(4px)}}
+#battle .battle-fx{pointer-events:none;position:absolute;inset:0;z-index:6;overflow:hidden;border-radius:16px}
+#battle .battle-energy{position:absolute;z-index:7;pointer-events:none;width:22px;height:22px;border-radius:50%;
+ background:radial-gradient(circle,#fff 8%,var(--energy) 50%,transparent 77%);
+ box-shadow:0 0 .8rem .15rem var(--energy)}
+#battle .energy-physical{--energy:#ff515d}
+#battle .energy-magic{--energy:#c774ff}
+#battle .energy-heal{--energy:#65dfff}
+#battle .energy-revive{--energy:#ffe47d}
+#battle .battle-log{margin:10px 0 9px;min-height:42px;max-height:66px;overflow:auto;
+ padding:9px 12px;background:#211a30;border:1px solid #65516f;border-radius:10px;
+ color:#ecd1a5;font-size:12px;line-height:1.5}
+#battle .battle-control{background:transparent;padding:0}
+#battle .battle-main-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0}
+#battle .battle-main-actions button{min-height:45px;background:#3a2e50;border:1px solid #79658d;
+ border-radius:11px;color:#f6edf8;font-size:clamp(12px,2.2vw,15px);font-weight:850}
+#battle .battle-main-actions button[aria-pressed="true"]{background:#63464c;border-color:#ffd48a;color:#fff2c9}
+#battle .battle-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));
+ gap:7px;margin:8px 0 0;padding:0}
+#battle .battle-actions[hidden]{display:none!important}
+#battle .battle-actions button{background:#322843;border:1px solid #76628b;color:#f5eaf7;
+ border-radius:9px;padding:9px 8px;font-size:12px;text-align:left;white-space:normal}
+#battle .battle-actions button[aria-pressed="true"]{background:#694e61;border-color:#ffcf81;color:#fff2dc}
+#battle .battle-actions button:disabled{opacity:.43}
+#battle .battle-actions .command-section{grid-column:1/-1;padding:7px 10px;
+ background:#2c213c;border:1px solid #57466e;border-radius:10px;display:grid;gap:7px}
+#battle .command-section strong{color:#ffe1ac;font-size:12px}
+#battle .command-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:6px}
+#battle .battle-action-hint{font-size:11px;margin:7px 0 4px;color:#f6deac}
+#battle .quiz{margin:7px 0 0;padding:clamp(10px,2.2vw,17px);background:#252036;
+ border:1px solid #79658d;border-radius:12px;color:#f6edf8}
+#battle .quiz small{color:#efc989}
+#battle .quiz h3{margin:7px 0 14px;color:#ffe0a4;font-size:clamp(17px,3vw,24px);line-height:1.55}
+#battle .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#battle .choices button,#battle .order-submit{background:#63464c;border:1px solid #f0cc83;
+ border-radius:10px;min-height:46px;font-weight:800;color:#fff8e9}
+#battle .choices button:hover,#battle .order-submit:hover{background:#7a555d}
+#battle .quiz-feedback{min-height:0}
+#battle .battle-finished{margin-top:12px;background:#322540;border:1px solid #837192}
+#battle .battle-finished button{background:#63464c;border:1px solid #f0cc83}
+@media(max-width:600px){
+ #battle .battle-panel{padding:8px}
+ #battle .battle-teams{gap:8px}
+ #battle .team h3{font-size:11px}
+ #battle .unit-row{gap:3px}
+ #battle .battle-unit{padding:4px 2px;min-height:109px;gap:3px;border-radius:9px}
+ #battle .battle-unit .card-art,#battle .battle-unit .battle-pet{height:39px;width:39px;flex-basis:39px}
+ #battle .battle-unit .battle-pet{font-size:29px}
+ #battle .battle-unit strong{font-size:9px}
+ #battle .battle-hp,#battle .battle-mp{font-size:9px}
+ #battle .battle-unit .battle-ct{font-size:9px}
+ #battle .hp-meter,#battle .mp-meter{height:5px;min-height:5px}
+ #battle .battle-log{margin:7px 0;font-size:10px;min-height:27px}
+ #battle .battle-main-actions button{min-height:40px}
+ #battle .battle-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #battle .quiz{margin-top:5px;padding:8px}
+ #battle .quiz h3{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ #battle .battle-unit .card-art::before,#battle .battle-unit .card-art::after,
+ #battle .battle-unit.taking-hit .card-art,#battle .battle-unit.taking-hit .battle-pet{animation:none}
+}
