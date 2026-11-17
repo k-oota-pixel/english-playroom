@@ -1,13 +1,443 @@
 {
-  "generatedAt": "2026-11-16T01:00:06.187Z",
-  "editionDate": "2026-11-16",
+  "generatedAt": "2026-11-17T03:47:54.536Z",
+  "editionDate": "2026-11-17",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-16"
+    "lastSuccessfulEdition": "2026-11-17"
   },
   "articles": [
+    {
+      "id": "2026-11-17-anthropic-governance-five-stocks-ipo",
+      "date": "2026-11-17",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Anthropic",
+        "IPO",
+        "governance",
+        "PBC",
+        "stocks"
+      ],
+      "titleJa": "アンソロピックの株構造",
+      "title": "Anthropic Unveils Unique Governance and Five Stock Types for IPO",
+      "summaryJa": "人工知能大手のアンソロピックは、新規株式公開（IPO）に向けて公益性を重視した独特なガバナンス構造を発表しました。",
+      "sourcePublishedAt": "2026-11-17T06:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "アンソロピックが導入する5種類の株の特徴を理解し、投資や経営の意思決定にどう影響するかを考える。",
+        "followUpJa": "どの株に議決権があり、どの株に経済的権利があるのか確認してみましょう。",
+        "questions": {
+          "5級": "What company has five stock types?",
+          "4級": "What kind of company is Anthropic as a business form?",
+          "3級": "Why does Anthropic use a public benefit corporation structure?",
+          "準2級": "How do the voting rights and economic rights differ among Anthropic's five stock types?",
+          "2級": "What specific public benefit is written in Anthropic's corporate charter?",
+          "準1級": "Why might fulfilling Anthropic's public benefit purpose sometimes negatively affect its stock price?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "Anthropic is a big AI company. It wants to make a new stock. The company has five types of shares. These shares help keep public benefits. The special structure is very different from other companies in the market today.",
+          "wordCount": 39
+        },
+        "4級": {
+          "title": "Elementary Level",
+          "text": "Anthropic is preparing for a huge public stock offering. The company operates as a public benefit corporation. This means it must help society, not just make money. To protect this goal, Anthropic created five different kinds of stocks for its IPO. These special shares separate voting power from economic rights carefully to balance profits and societal benefits in the market.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Intermediate Level",
+          "text": "American artificial intelligence leader Anthropic is preparing for a major initial public offering. Unlike regular companies, Anthropic operates as a public benefit corporation. Its charter states that it aims to develop advanced AI responsibly for humanity's long-term interests. To build this unique governance, the firm issued five different types of stocks, separating voting rights from economic rights. This system helps the company protect its public mission.",
+          "wordCount": 66
+        },
+        "準2級": {
+          "title": "Upper Intermediate Level",
+          "text": "As artificial intelligence giant Anthropic prepares for its massive initial public offering, it has revealed a unique governance structure. Operating as a public benefit corporation, Anthropic is legally required to balance profits with specific societal benefits, such as responsibly developing and maintaining advanced AI for humanity's long-term interests. To protect this important mission, the company has issued five distinct types of stock: A, F, T, E, and N shares. This system deliberately separates voting power from economic rights. For instance, general investors hold A shares with both rights, while other classes possess only voting power or only economic rights. This setup differs significantly from standard corporate governance models and helps the firm balance broader impacts against commercial success in the market.",
+          "wordCount": 121
+        },
+        "2級": {
+          "title": "Advanced Level",
+          "text": "In its IPO prospectus, AI giant Anthropic outlines a carefully designed governance structure based on its status as a public benefit corporation. By operating under this business form, the company is legally obligated to pursue specific public benefits, explicitly aiming to develop and maintain advanced AI responsibly for humanity's long-term interests. To manage this mission and prevent risks, Anthropic has established five different classes of stock for its initial public offering, namely A, F, T, E, and N shares. A key characteristic of this system is the separation of voting rights from economic rights. While general investors holding A shares receive both rights, other categories feature only voting power or solely economic rights. This ensures that public benefit remains prioritized even though fulfilling such obligations can sometimes adversely affect stock prices in the market.",
+          "wordCount": 134
+        },
+        "準1級": {
+          "title": "Anthropic Unveils Unique Governance and Five Stock Types for IPO",
+          "text": "As American artificial intelligence pioneer Anthropic advances toward its massive initial public offering, its twelve-page prospectus details a complex and unconventional corporate governance framework. Operating as a public benefit corporation, Anthropic is legally bound to ensure its business activities benefit society, specifically striving to develop and maintain advanced AI responsibly for humanity's long-term interests. To safeguard this mission, the company has introduced five distinct stock categories—designated as A, F, T, E, and N shares—that deliberately decouple voting power from economic rights. While general investors hold A shares equipped with both rights, other specific classes possess solely voting power or solely economic rights. This sophisticated arrangement allows the board of directors to weigh broader societal impacts against commercial success, though fulfilling these public benefit obligations remains a declared risk factor that could potentially influence stock valuations in the market, as noted in the official prospectus materials. American artificial intelligence pioneer Anthropic notes that its unique corporate governance and capital structure have been carefully designed and differ significantly from other publicly traded corporations in the modern market.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964649?display=b"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-17-hokkaido-weather-nov-17",
+      "date": "2026-11-17",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hokkaido",
+        "weather",
+        "forecast"
+      ],
+      "titleJa": "北海道の天気 晴れは今日まで",
+      "title": "Hokkaido Weather Forecast: Enjoy the Sunny Afternoon Today",
+      "summaryJa": "北海道の天気予報をお伝えします。きょう午後は晴れるところが多いですが、あす以降は天気予報が崩れ、週末にかけて荒れた天気や大雪に注意が必要です。",
+      "sourcePublishedAt": "2026-11-17T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "外の用事をいつ済ませるべきか、気象情報を基に判断しましょう。",
+        "followUpJa": "あなたの週末の予定を北海道の天気予報に合わせてどのように調整しますか？",
+        "questions": {
+          "5級": "When is it good to do outdoor work today?",
+          "4級": "What kind of weather is expected for Hokkaido this afternoon?",
+          "3級": "Why should people finish outdoor tasks today according to the weather forecast?",
+          "準2級": "What specific weather changes are expected across Hokkaido from Wednesday through Friday?",
+          "2級": "How do temperatures and road conditions change tonight, and what warnings apply later in the week?",
+          "準1級": "Based on the weekly forecast and regional differences, what specific hazards must residents prepare for from Thursday to Friday?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Sunny Afternoon",
+          "text": "Today is Tuesday, November 17. The afternoon is mostly sunny in Hokkaido. You can enjoy the sunshine today. Please do your outdoor work today. Do you like sunny days? Tonight, clouds will come out. Be careful of ice on roads tonight. Have a safe and warm evening.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "Enjoy Today's Sun",
+          "text": "Today is Tuesday, November 17, in Hokkaido. The afternoon will be mostly sunny in many places. It is a good idea to finish your outdoor tasks and shopping today. However, clouds will gradually cover the sky tonight. Expected high temperatures are a little lower than yesterday. Please watch out for frozen roads at night when you go out.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "Weather Changes Soon",
+          "text": "On Tuesday, November 17, Hokkaido enjoys sunny weather during the afternoon. Weather experts suggest finishing outdoor cleaning and shopping today because clouds will increase tonight. Maximum temperatures will be lower than yesterday by about three degrees. Furthermore, night roads might freeze, so people must be careful. From tomorrow, the weather will change completely across the region, bringing rain and snow in various areas as the week goes on.",
+          "wordCount": 67
+        },
+        "準2級": {
+          "title": "Hokkaido Weather Turns Rough",
+          "text": "On Tuesday, November 17, Hokkaido experiences mostly sunny skies through the afternoon, making it an ideal time for outdoor chores and shopping before clouds arrive tonight. Temperatures will drop slightly compared to yesterday. However, the weekly forecast indicates a major shift starting Wednesday, November 18. Rain will begin in southern and central areas, while interior Tokachi may see wet snow. From Thursday night into Friday, a strong winter pressure pattern will bring stormy conditions, high winds along coastal areas, and heavy snow in Sorachi and northern regions, before the three-day weekend becomes calmer.",
+          "wordCount": 91
+        },
+        "2級": {
+          "title": "Prepare for Stormy Weather Ahead",
+          "text": "The weather forecast for Hokkaido on Tuesday, November 17, indicates that many areas will enjoy sunny skies through the afternoon. Weather experts advise residents to finish outdoor tasks, such as leaf cleanup and shopping, today while conditions remain favorable. By tonight, clouds will gradually spread across the region, and expected maximum temperatures will generally drop by about three degrees compared to yesterday, with lows ranging between three and seven degrees in most districts. Drivers and pedestrians must also remain cautious of icy road surfaces during the night. However, this peaceful weather is short-lived. Starting Wednesday, November 18, precipitation will arrive, bringing rain to areas from Tomakomai to Hakodate in the morning and Sapporo by evening, while interior Tokachi may see damp snow. Conditions will deteriorate further on Thursday and Friday as a strong winter pressure pattern develops, causing severe gales along coastal areas and heavy snowfall in Sorachi and northern Hokkaido before the three-day weekend gradually turns calmer toward its conclusion.",
+          "wordCount": 159
+        },
+        "準1級": {
+          "title": "Navigating Hokkaido's Dramatic Weather Transitions",
+          "text": "According to the UHB Hokkaido News weather briefing on Tuesday, November 17, residents across the region can expect predominantly sunny skies through the afternoon, providing an ideal window to complete outdoor chores such as leaf cleanup and shopping before conditions deteriorate. Maximum temperatures are projected to be roughly three degrees lower than yesterday, with northern districts reaching three to four degrees and other regions anticipating five to seven degrees. Motorists and pedestrians must remain vigilant regarding frozen road surfaces after dark as clouds progressively increase tonight. This calm interlude precedes a significant atmospheric shift starting Wednesday, November 18. Precipitation will impact the prefecture early, with rain developing from Tomakomai to Hakodate during the morning and reaching Sapporo by evening, while interior Tokachi experiences light, damp snowfall. The weather escalates sharply from Thursday afternoon through Friday due to a strengthening winter pressure pattern. Coastal locations must prepare for severe gales and stormy hazards, while inland regions such as Sorachi and northern Hokkaido face heavy snowfall warnings. Fortunately, the upcoming three-day weekend is expected to see progressively calmer and more stable weather conditions toward its latter half, offering relief after the severe cold snap.",
+          "wordCount": 190
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63679"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-17-meguro-ren-regza-event-2026",
+      "date": "2026-11-17",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Snow Man",
+        "Meguro Ren",
+        "Regza",
+        "event"
+      ],
+      "titleJa": "目黒蓮が語るファンの大切さ",
+      "title": "Meguro Ren Appears at Regza Event and Shares Plans for Fans",
+      "summaryJa": "Snow Manの目黒蓮さんが都内で行われたレグザのイベントに登壇し、2026年残り期間の抱負やファンへの思いを語りました。",
+      "sourcePublishedAt": "2026-11-17T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "目黒蓮さんのファンイベントやコンサートでの熱意を知り、推し活の工夫やイベントの楽しみ方を考えてみよう。",
+        "followUpJa": "あなたの好きなアーティストやタレントとの交流方法について話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the popular star at the Regza event?",
+          "4級": "What did Meguro Ren say he wants to cherish for the rest of 2026?",
+          "3級": "Why did Meguro Ren train his arms in Canada according to the article?",
+          "準2級": "How did Meguro Ren react when the host asked him to wave to the audience?",
+          "2級": "What new communication word and product strategy did TVS REGZA introduce at the event?",
+          "準1級": "How does Meguro Ren balance his ongoing tour schedule with his dedication to connecting with his fans?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Meguro Ren at the Event",
+          "text": "Ren Meguro goes to a big event in Tokyo today. He is a star in Japan. He talks about his fans. He wants to be with his fans. He is very happy. He likes to wave to people. It is a nice day for everyone there.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "Ren Meguro Talks About Fans",
+          "text": "On November 17, a special Regza event takes place in Tokyo. Ren Meguro, a popular star from Snow Man, attends as a special guest. He talks about his plans for the end of 2026. He says he wants to value the time he spends with his fans. He is currently on a live concert tour. He wants to wave to his supporters a lot and jokes that he trained his arms in Canada for it.",
+          "wordCount": 73
+        },
+        "3級": {
+          "title": "Ren Meguro Shares His Goals",
+          "text": "On November 17, a special event for Regza takes place in Tokyo. Ren Meguro, a popular member of Snow Man, attends the event as a special guest. During the talk, he shares his thoughts about the rest of 2026. He says he wants to value the time he spends with his fans this year and next year. He is currently on a live tour and wants to wave to everyone. He even jokes that he trained his arms in Canada just to keep waving without getting tired.",
+          "wordCount": 85
+        },
+        "準2級": {
+          "title": "Ren Meguro Appears at Regza Event",
+          "text": "On November 17, the Regza brand strategy and new product presentation is held in Tokyo. Ren Meguro, a member of the popular group Snow Man, appears as a special guest. When asked about his goals for the rest of 2026, Meguro explains that he wants to cherish the time he spends with his fans for both this year and next year. Since he is currently on a concert tour, he expresses his strong desire to wave to his supporters as much as possible. With a gentle smile, he jokes that he even trained his arms in Canada so he can keep waving without getting tired.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Ren Meguro Appears at the Regza Product Presentation in Tokyo",
+          "text": "On November 17, TVS REGZA held its brand strategy and new product presentation in Tokyo, featuring Snow Man member Ren Meguro as a special guest speaker. During the event, Meguro discussed his plans and aspirations for the remainder of 2026. He strongly emphasized his desire to prioritize time spent with his supporters, noting that he wanted to cherish these important moments both for the rest of this year and also into next year. Because he is currently traveling and performing on a concert tour, he expressed his specific wish to wave to his fans as much as possible. He humorously remarked that he had even trained his arms in Canada so he could continue waving continuously even if his arms reached their physical limit. Meanwhile, the company also introduced its new communication word Pure RGB to clearly promote its advanced RGB Mini LED display technology within the domestic market.",
+          "wordCount": 147
+        },
+        "準1級": {
+          "title": "Ren Meguro Shares Fan Dedication at the TVS REGZA Launch Event",
+          "text": "On November 17, Tokyo played host to the official Regza brand strategy and new product presentation hosted by TVS REGZA, where popular entertainer Ren Meguro of the idol group Snow Man made a special appearance as an invited guest. Speaking during the latter half of the presentation about his schedule and personal goals for the remainder of 2026, Meguro emphasized his deep commitment to his supporters. He stated his clear intention to cherish every single moment with his fans, both for the rest of the current calendar year and moving smoothly into the next year. Currently in the middle of a demanding concert tour, Meguro expressed his eager desire to wave back to the crowds of attendees, lightheartedly mentioning that he even conditioned his arms in Canada to ensure he could keep waving continuously even if his arms reached their absolute physical limit. In addition to the high-profile celebrity appearance, TVS REGZA introduced its new communication concept Pure RGB to explicitly highlight its advanced RGB Mini LED display technology and deliver an overwhelming visual experience to Japanese consumers.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261117-5343701/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-17-nvidia-dgx-spark-developer-kit",
+      "date": "2026-11-17",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "NVIDIA",
+        "AI",
+        "supercomputer",
+        "hardware"
+      ],
+      "titleJa": "小型AIスパコンの新キット",
+      "title": "NVIDIA Announces DGX Spark Developer Kit to Connect Four Small Supercomputers",
+      "summaryJa": "NVIDIAが小型AIスーパーコンピューター「DGX Spark」を4台つなげてメモリ容量512GBを実現する新しい開発キットを発表しました。",
+      "sourcePublishedAt": "2026-11-17T03:37:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "NVIDIAの新開発キットの仕様や接続方法を確認し、ローカルAI開発における特徴を把握しましょう。",
+        "followUpJa": "開発キットの導入や特徴について、記事の詳細を振り返ってみましょう。",
+        "questions": {
+          "5級": "How many DGX Spark computers can you connect in this new kit?",
+          "4級": "What is the total memory capacity when you connect four DGX Spark systems together?",
+          "3級": "Do you need to buy a separate network switch to connect the four computers?",
+          "準2級": "What system is used to connect the four DGX Spark units together without a network switch?",
+          "2級": "What is the maximum parameter size for AI models that can be run locally using this developer kit?",
+          "準1級": "How does the integration of four DGX Spark systems via ConnectX-7 eliminate network switch requirements while facilitating large local model execution?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Basic News",
+          "text": "NVIDIA has a new computer. It is very small. You can put it on a desk. NVIDIA makes four small computers work together. They can run big AI models now. Many people like this new machine very much. It helps researchers do great work every day.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "New Developer Kit",
+          "text": "NVIDIA has announced a new developer kit. It connects four small AI supercomputers together. Each small computer has one hundred twenty-eight gigabytes of memory. When four systems work as one cluster, the total memory becomes five hundred twelve gigabytes. This allows developers to run big AI models right on their desks without expensive cloud servers.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Connecting Small AI Supercomputers",
+          "text": "NVIDIA recently announced the DGX Spark Developer Kit. This system allows users to connect up to four small DGX Spark computers in a ring configuration. The computers use NVIDIA ConnectX-7 technology to link together directly. Because of this connection method, users do not need to buy any separate network switch. The entire cluster provides five hundred twelve gigabytes of memory and twenty terabytes of storage, which makes local artificial intelligence development much easier for researchers everywhere.",
+          "wordCount": 76
+        },
+        "準2級": {
+          "title": "NVIDIA DGX Spark Developer Kit Overview",
+          "text": "NVIDIA has introduced the DGX Spark Developer Kit, a powerful system that connects four small DGX Spark computers to form a single AI cluster. Each individual DGX Spark is a compact PC equipped with an NVIDIA GB10 Grace Blackwell Superchip and one hundred twenty-eight gigabytes of memory. By connecting four units using NVIDIA ConnectX-7 technology without requiring any separate network switch, the cluster achieves a total memory capacity of five hundred twelve gigabytes and twenty terabytes of storage. This setup allows researchers, academics, and developers to run large models like DeepSeek-V4.1 locally with up to seven hundred billion parameters.",
+          "wordCount": 98
+        },
+        "2級": {
+          "title": "Supercomputing Lab on Your Desk",
+          "text": "At the SC26 supercomputing conference in Chicago, NVIDIA unveiled the DGX Spark Developer Kit, bringing a desktop-sized supercomputing lab directly to researchers, academics, and developers around the world. The new hardware system links four compact DGX Spark computers into a unified artificial intelligence cluster using NVIDIA ConnectX-7 network connections in a ring configuration, completely eliminating the need to purchase any separate network switch during deployment. Each individual unit features the advanced NVIDIA GB10 Grace Blackwell Superchip equipped with one hundred twenty-eight gigabytes of memory. Combined together, the four-system cluster reaches a total memory capacity of five hundred twelve gigabytes and twenty terabytes of storage. This powerful hardware configuration empowers users to execute massive artificial intelligence models containing up to seven hundred billion parameters, including DeepSeek-V4.1, directly within their local desktop environments without relying entirely on external cloud infrastructure.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "Expanding Local AI Horizons with the DGX Spark Developer Kit",
+          "text": "NVIDIA has further advanced desktop artificial intelligence capabilities by formally revealing the DGX Spark Developer Kit at the SC26 supercomputing conference in Chicago, bringing unprecedented high-performance computing capabilities directly to academic researchers, software developers, and scientists around the world. Designed specifically to support advanced local operations, the innovative kit enables the seamless interconnection of up to four compact DGX Spark systems to form a single high-performance cluster without adding unnecessary infrastructure complexity. Each individual unit operates as a powerful standalone machine driven by the NVIDIA GB10 Grace Blackwell Superchip, featuring one hundred twenty-eight gigabytes of memory dedicated to intensive computing tasks. By leveraging specialized NVIDIA ConnectX-7 technology, the four units link directly together in a ring topology, completely circumventing the requirement for an external network switch during the entire deployment process. This robust integration yields a formidable hardware cluster boasting five hundred twelve gigabytes of total memory capacity alongside twenty terabytes of high-speed storage. Consequently, professionals are fully equipped to execute complex local artificial intelligence models containing up to seven hundred billion parameters, such as DeepSeek-V4.1, right from their personal desks without depending on remote cloud infrastructure.",
+          "wordCount": 185
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261117-dgx-spark-developer-kit/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-17-scotland-football-pocognoli-struggles",
+      "date": "2026-11-17",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Scotland",
+        "football",
+        "Sebastien Pocognoli",
+        "BBC Sport"
+      ],
+      "titleJa": "スコットランド監督の危機",
+      "title": "Scotland Football Manager Faces Pressure After Heavy Defeat",
+      "summaryJa": "スコットランド代表監督セバスティアン・ポコニョリへの批判が高まっており、チームの将来が懸念されています。",
+      "sourcePublishedAt": "2026-11-17T00:19:58.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "スコットランド代表の現状を踏まえ、監督を解任すべきかどうか判断するための情報を集める。",
+        "followUpJa": "チームの成績やサポーターの反応をもとに、自分ならどうするか考えてみましょう。",
+        "questions": {
+          "5級": "Is Scotland winning many games now?",
+          "4級": "Who is the head coach of the Scotland team?",
+          "3級": "What was the score of the match against Switzerland?",
+          "準2級": "Why are fans and experts feeling worried about the Scotland team under the coach?",
+          "2級": "What specific tactical issues are making the team look disjointed and weak?",
+          "準1級": "How do financial concerns regarding major tournament qualifications complicate the SFA's position on the manager?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Scotland Loses",
+          "text": "The Scotland football team has a big problem. They can not win games now. Fans are very sad. Switzerland beat them four to zero. The coach is Sebastien Pocognoli. People want a good team. But the players look lost on the field. Can he fix this fast?",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Coach Under Pressure",
+          "text": "The Scotland football team is having a hard time. Sebastien Pocognoli is the head coach. Recently, Switzerland beat Scotland four to zero in a match. Fans and experts are very worried about this team. They see no good style of play or progress. The coach wants more time, but people say international football has no time. Leaders at the association must feel very nervous now.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Trouble for Scotland",
+          "text": "The Scotland national football team is facing serious trouble today. After a heavy four-to-zero defeat against Switzerland, pressure is growing on head coach Sebastien Pocognoli. A few months ago, the Scottish Football Association chose him with great confidence after a worldwide search. However, the team has scored only five goals in six games, and two of them were penalties. Fans and experts see a team on the slide. The coach asks for patience, but supporters feel they do not have time for this.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Scotland Manager Faces Severe Criticism",
+          "text": "The Scotland football team is experiencing a worrying sense of drift under head coach Sebastien Pocognoli. Following a dismal four-to-zero defeat against Switzerland, criticism from fans and experts is reaching a peak. When the Scottish Football Association appointed him after a worldwide search, they believed he was the ideal choice. However, the team has struggled significantly on the pitch, scoring only five goals in six games, with two coming from penalties. Although the coach asks for patience, supporters argue that international football does not afford that luxury. With major tournament qualifications vital for financial stability, leaders at the association are under intense pressure to address these growing problems.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "Growing Pressure on Scotland Head Coach",
+          "text": "The Scotland national football team is currently enduring an alarming period of poor performance under the leadership of head coach Sebastien Pocognoli. Following a heavy four-to-zero defeat against Switzerland, the pressure on the Belgian manager has intensified dramatically. When the Scottish Football Association appointed him after a worldwide search, they hailed it as a major success. Yet, the team has produced very little evidence of progress on the pitch. In six games, they have managed only five goals, two of which were penalties. Critics point out that his tactical system leaves players looking disjointed and vulnerable, failing to execute the high-intensity pressing he demands. While Pocognoli appeals for time to implement his ideas, observers argue that international football offers no such luxury. Furthermore, missing out on major international tournaments carries severe financial implications for grassroots development, leaving association leaders increasingly nervous about the team's alarming downward trajectory.",
+          "wordCount": 147
+        },
+        "準1級": {
+          "title": "Uncertainty Surrounds Scotland's Managerial Crisis",
+          "text": "A palpable sense of stagnation has enveloped the Scotland national football team, casting severe doubt over the tenure of head coach Sebastien Pocognoli. The recent four-to-zero drubbing at the hands of Switzerland has only amplified the chorus of discontent among fans and pundits alike, turning early optimism into widespread frustration. When the Scottish Football Association orchestrated his appointment following an exhaustive global search, they presented him as a visionary choice capable of modernizing the squad. Instead, the team's on-field displays have degenerated into a disjointed spectacle, characterized by structural indiscipline and a glaring inability to sustain the high-intensity pressing the manager demands. With a paltry return of just five goals in six matches—two of which were converted penalties—decent players frequently appear bewildered within his tactical framework. Although Pocognoli repeatedly appeals for patience, critics rightly emphasize that the unforgiving nature of international football affords no such grace period. Compounding the issue are the high stakes of qualification; missing out on major championships threatens crucial financial windfalls essential for grassroots football development. Consequently, association executives find themselves under mounting scrutiny, forced to weigh whether persisting with an out-of-depth coach is a risk worth taking as public confidence rapidly erodes.",
+          "wordCount": 199
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/crgqx1zz94d4o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-17-yutaka-enatsu-passes-away-at-78",
+      "date": "2026-11-17",
+      "scope": "japan",
+      "category": "world",
+      "categories": [
+        "sports"
+      ],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "Yutaka Enatsu",
+        "baseball",
+        "NPB",
+        "obituary"
+      ],
+      "titleJa": "野球の江夏豊さん死去",
+      "title": "Legendary Japanese Pitcher Yutaka Enatsu Passes Away at 78",
+      "summaryJa": "プロ野球の阪神や広島などで名ピッチャーとして活躍した江夏豊さんが78歳で亡くなりました。",
+      "sourcePublishedAt": "2026-11-17T03:39:57.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "江夏豊さんのプロ野球における功績や所属チームに関する情報を本文から探す。",
+        "followUpJa": "江夏さんが日本のプロ野球史に残した印象的な活躍について話し合いましょう。",
+        "questions": {
+          "5級": "Who is Yutaka Enatsu?",
+          "4級": "How old was Yutaka Enatsu when he passed away?",
+          "3級": "Which baseball teams did Yutaka Enatsu play for in Japan?",
+          "準2級": "Who announced the passing of Yutaka Enatsu to the public?",
+          "2級": "What position did Yutaka Enatsu play during his professional baseball career?",
+          "準1級": "Where was Yutaka Enatsu originally from according to the announcement details?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Yutaka Enatsu Passes Away",
+          "text": "Yutaka Enatsu is dead. He was a baseball player in Japan. He was seventy-eight years old. He played for teams like Hanshin and Hiroshima. Many people knew him well. He was a great pitcher. The Meikyukai announced this sad news today. Rest in peace.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Famous Pitcher Yutaka Enatsu Passes Away at 78 in Japan",
+          "text": "Yutaka Enatsu passed away at the age of seventy-eight. He was a very famous professional baseball pitcher in Japan. He played for several major teams, including Hanshin and Hiroshima. The professional baseball Meikyukai announced his death on November seventeenth. Many baseball fans across the country are very sad today because he was a true legend.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Japanese Baseball Legend Yutaka Enatsu Passes Away at 78",
+          "text": "Yutaka Enatsu, a legendary Japanese professional baseball pitcher, has passed away at the age of seventy-eight. The official news was announced by the professional baseball Meikyukai on November seventeenth. Enatsu was originally from Hyogo Prefecture and went to Osaka Gakuin University High School. He played as a pitcher for several major teams, including Hanshin and Hiroshima, where he achieved great success. Baseball fans across the country remember his amazing career as a top player.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Remembering Yutaka Enatsu: Professional Baseball Great Dies at 78",
+          "text": "Yutaka Enatsu, widely celebrated as one of the greatest pitchers in Japanese professional baseball history, has passed away at the age of seventy-eight. The announcement regarding his death was made by the professional baseball Meikyukai on November seventeenth. Enatsu was born in Hyogo Prefecture and attended Osaka Gakuin University High School before starting his remarkable career in sports. During his time in professional baseball, he played a crucial role as a pitcher for prominent teams such as Hanshin and Hiroshima. His exceptional skills on the mound captivated fans and left a lasting legacy in Japanese baseball.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "Legendary Japanese Pitcher Yutaka Enatsu Passes Away at 78",
+          "text": "Yutaka Enatsu, a legendary figure in Japanese professional baseball, has passed away at the age of seventy-eight. The official announcement regarding the passing of Yutaka Enatsu was made public on November seventeenth by the professional baseball Meikyukai organization. Yutaka Enatsu originally came from Hyogo Prefecture and went to Osaka Gakuin University High School before starting a remarkable career in sports. During his professional baseball career, Yutaka Enatsu worked as a pitcher and achieved great success while playing for several major teams, including Hanshin and Hiroshima. Because Yutaka Enatsu showed amazing skills on the mound, baseball fans across the country respected his talent. The professional baseball Meikyukai and baseball enthusiasts everywhere remember the legacy of Yutaka Enatsu following this sad news. People in Japan continue to look back at the historic career of Yutaka Enatsu with deep respect and sorrow as the sports world mourns his death today.",
+          "wordCount": 147
+        },
+        "準1級": {
+          "title": "Japanese Professional Baseball Mourns the Passing of Legendary Pitcher Yutaka Enatsu at 78",
+          "text": "Japanese professional baseball is currently in deep mourning following the official announcement regarding the passing of Yutaka Enatsu, a legendary figure whose remarkable athletic career left an indelible mark on the sport. The professional baseball Meikyukai organization formally announced on November seventeenth that Yutaka Enatsu had passed away at the age of seventy-eight. Originally born in Hyogo Prefecture, Yutaka Enatsu spent his formative academic and athletic years attending Osaka Gakuin University High School before embarking on a professional journey that would permanently captivate the entire nation. Over the course of his celebrated career, Yutaka Enatsu showcased his exceptional pitching prowess while representing several prominent professional teams, most notably Hanshin and Hiroshima, where he achieved extraordinary success as a pitcher. Known widely for his competitive spirit and outstanding abilities on the mound, Yutaka Enatsu achieved legendary status among fans, analysts, and fellow peers alike. His numerous contributions to Japanese professional baseball continue to be remembered and celebrated with great respect, and his passing marks the solemn end of an era for the sport as countless devoted supporters across the country reflect upon his historic accomplishments.",
+          "wordCount": 184
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261117de77026"
+        }
+      ]
+    },
     {
       "id": "2026-11-16-ai-cad-drawing-search-tool",
       "date": "2026-11-16",
