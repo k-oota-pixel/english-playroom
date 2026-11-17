@@ -1,7 +1,13 @@
 import {DUNGEON_ITEMS,MAGIC_SPELLS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.96';
 import {strengthLevel,strengthStatsFromAllocation} from '../pet-strength-model.js?v=2.3.23';
 
-export const mazeSpells=MAGIC_SPELLS.filter(spell=>spell.kind==='attack'||spell.kind==='heal');
+// These spells are exclusive to Monster Quest; other battle modes do not support reviving companions.
+export const revivalSpells=Object.freeze([
+  {id:'meinon',name:'メイノン',level:30,kind:'revive',mpCost:8,successRate:0.5,minHpPercent:25,maxHpPercent:35,description:'戦闘不能の仲間1体を50%の確率で蘇生（HP25〜35%）'},
+  {id:'meinoora',name:'メイノーラ',level:45,kind:'revive',mpCost:20,successRate:1,minHpPercent:65,maxHpPercent:80,description:'戦闘不能の仲間1体を確実に蘇生（HP65〜80%）'}
+]);
+export const mazeSpells=[...MAGIC_SPELLS.filter(spell=>spell.kind==='attack'||spell.kind==='heal'),...revivalSpells]
+  .sort((a,b)=>a.level-b.level);
 export function createCaster(data={}){
   const level=strengthLevel(data.petStrengthLevelPoints,data.petStrength);
   const {hp,mp,attack}=strengthStatsFromAllocation(data.petStrength,data.petBaseStats,{
@@ -367,6 +373,25 @@ export function injuredAlly(run){
   const target=mostInjured([run.caster,...run.team]);
   return target&&target.hp<target.maxHp?target:null;
 }
+export function fallenAllies(run){
+  return run.team.filter(unit=>unit.hp===0);
+}
+export function selectedFallenAlly(run){
+  const fallen=fallenAllies(run);
+  return fallen.find(unit=>unit.key===run.reviveTarget)||fallen[0]||null;
+}
+export function reviveAlly(run,spell,target,random=Math.random){
+  if(spell.kind!=='revive'||!spellAvailable(run.caster,spell)||
+     !target||target.hp!==0||!run.team.includes(target))return null;
+  // An attempt costs MP even if it fails, with no additional Firebase writes.
+  run.caster.mp-=spell.mpCost;
+  if(random()>=spell.successRate)return {unit:target,success:false,amount:0};
+  const min=spell.minHpPercent,max=spell.maxHpPercent;
+  const rate=min+Math.floor(Math.min(0.999999,Math.max(0,random()))*(max-min+1));
+  const amount=Math.max(1,Math.min(target.maxHp,Math.round(target.maxHp*rate/100)));
+  target.hp=amount;
+  return {unit:target,success:true,amount,rate};
+}
 export function healWhileWalking(run,spell,random=Math.random){
   if(spell.kind!=='heal'||!spellAvailable(run.caster,spell))return null;
   const unit=injuredAlly(run);
@@ -419,14 +444,24 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
     }
     let petCast=false;
     const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
-    if(spell && (spell.kind==='heal'?'heal':'magic')===action && spellAvailable(run.caster,spell)){
-      const recipient=action==='heal'?mostInjured(party):enemyTarget();
+    if(spell && (spell.kind==='attack'?'magic':spell.kind)===action && spellAvailable(run.caster,spell)){
+      const recipient=action==='heal'?mostInjured(party):action==='revive'?selectedFallenAlly(run):enemyTarget();
       if(recipient){
         petCast=true;
-        run.caster.mp-=spell.mpCost;
-        const amount=rollMagicAmount(spell.base,random);
-        if(action==='heal')heal(run.caster,recipient,amount,spell.name);
-        else strike(run.caster,recipient,amount,action,spell.name);
+        if(action==='revive'){
+          const result=reviveAlly(run,spell,recipient,random);
+          if(result.success){
+            party.push(recipient);
+            report({actor:run.caster,unit:recipient,hp:recipient.hp,delta:result.amount,kind:'revive',actionName:spell.name});
+          }else{
+            report({actor:run.caster,unit:recipient,hp:0,delta:0,kind:'reviveFail',actionName:spell.name});
+          }
+        }else{
+          run.caster.mp-=spell.mpCost;
+          const amount=rollMagicAmount(spell.base,random);
+          if(action==='heal')heal(run.caster,recipient,amount,spell.name);
+          else strike(run.caster,recipient,amount,action,spell.name);
+        }
       }
     }
     const acting=action==='heal'&&!petCast?[]:living.filter(ally=>canJoinAction(ally,action));

@@ -8,9 +8,9 @@ import {loadVocabulary} from '../data/vocab/index.js';
 import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
-  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,materialCost,maxUpgradeMaterialCount,previewUpgradeBatch,applyUpgradeBatch,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=2.5.10';
+  cards,roles,rarities,levelCaps,courses,enemies,bosses,revivalSpells,normalizeProfile,stats,specialDescription,materialCost,maxUpgradeMaterialCount,previewUpgradeBatch,applyUpgradeBatch,
+  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=2.5.11';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -204,7 +204,7 @@ function lobby(){
   walkView=null;
   clear();
   const pet=createCaster(petData);
-  const learned=unlockedMagic(pet.level);
+  const learned=[...unlockedMagic(pet.level),...revivalSpells.filter(spell=>pet.level>=spell.level)].sort((a,b)=>a.level-b.level);
   const spellList=group('roster-spells',node('strong','習得魔法'),...(learned.length
     ?learned.map(spell=>node('small',spell.name+' · MP '+spell.mpCost+
       (mazeSpells.includes(spell)?'':'（迷宮では使用不可）')))
@@ -765,7 +765,7 @@ function explore(){
   const exit=maze.bossId?'👑 ボス部屋':'🚪 次の階';
   const navigation=group('maze-navigation',controls,node('small','🧰 宝箱　'+exit),report);
   const party=group('team party-row',partyPet().tile,...run.team.map(unit=>unitView(unit,'card')));
-  const tools=group('choices',button('回復魔法',()=>openSupplies('heal'),run.caster.hp<=0),
+  const tools=group('choices',button('回復・蘇生魔法',()=>openSupplies('heal'),run.caster.hp<=0),
     button('アイテム',()=>openSupplies('items')),button('探索を終了',leave,false,'leave-expedition'));
   pane.append(group('explore-stage',title,hint,group('maze-layout',map,navigation),party,tools));
   map.append(pet);
@@ -803,24 +803,45 @@ function openSupplies(kind,inBattle=false){
   if(inBattle&&remaining<=0)return;
   if(inBattle)clearInterval(clock);
   const dialog=node('dialog','','review-dialog supply-dialog');
-  const title=node('h2',itemMenu?'アイテム':'回復魔法');
+  const title=node('h2',itemMenu?'アイテム':'回復・蘇生魔法');
   title.id='maze-supplies';
   dialog.setAttribute('aria-labelledby',title.id);
   let report='';
-  const options=itemMenu?DUNGEON_ITEMS.map(item=>
-    button(item.icon+' '+item.name+' · '+item.description+' · '+run.inventory[item.id]+'個',()=>{
-      const restored=useItem(run,item);
-      if(restored)report=item.name+'で '+run.caster.name+'の'+item.kind.toUpperCase()+'が'+restored+'回復した。';
-      dialog.close();
-    },!canUseItem(run,item))):mazeSpells.filter(spell=>spell.kind==='heal'&&run.caster.level>=spell.level).map(spell=>
-    button(spell.name+' · MP '+spell.mpCost,()=>{
-      const healed=healWhileWalking(run,spell);
-      if(healed)report=spell.name+'で '+healed.unit.name+'のHPが'+healed.amount+'回復した。';
-      dialog.close();
-    },!spellAvailable(run.caster,spell)||!injuredAlly(run)));
+  const options=[];
+  if(itemMenu){
+    for(const item of DUNGEON_ITEMS){
+      options.push(button(item.icon+' '+item.name+' · '+item.description+' · '+run.inventory[item.id]+'個',()=>{
+        const restored=useItem(run,item);
+        if(restored)report=item.name+'で '+run.caster.name+'の'+item.kind.toUpperCase()+'が'+restored+'回復した。';
+        dialog.close();
+      },!canUseItem(run,item)));
+    }
+  }else{
+    for(const spell of mazeSpells.filter(spell=>
+      (spell.kind==='heal'||spell.kind==='revive')&&run.caster.level>=spell.level)){
+      if(spell.kind==='heal'){
+        options.push(button(spell.name+' · MP '+spell.mpCost,()=>{
+          const healed=healWhileWalking(run,spell);
+          if(healed)report=spell.name+'で '+healed.unit.name+'のHPが'+healed.amount+'回復した。';
+          dialog.close();
+        },!spellAvailable(run.caster,spell)||!injuredAlly(run)));
+      }else{
+        const targets=fallenAllies(run);
+        if(!targets.length){
+          options.push(button(spell.name+' · 戦闘不能の仲間なし',()=>{},true));
+        }else{
+          for(const unit of targets)options.push(button(spell.name+' → '+unit.name+' · MP '+spell.mpCost,()=>{
+            const result=reviveAlly(run,spell,unit);
+            if(result)report=spell.name+'で '+unit.name+(result.success?'がHP'+result.amount+'で復活した！':'の蘇生に失敗した。');
+            dialog.close();
+          },!spellAvailable(run.caster,spell)));
+        }
+      }
+    }
+  }
   dialog.append(title,node('p','HP '+run.caster.hp+' / '+run.caster.maxHp+'　MP '+run.caster.mp+' / '+run.caster.maxMp));
   if(options.length)dialog.append(group('choices supply-options',...options));
-  else dialog.append(node('p','回復魔法をまだ覚えていません。'));
+  else dialog.append(node('p','回復・蘇生魔法をまだ覚えていません。'));
   dialog.append(button('閉じる',()=>dialog.close()));
   dialog.addEventListener('close',()=>{
     dialog.remove();
@@ -894,9 +915,10 @@ function nextQuestion(continuing=false){
   const current=question(questions[run.course.grade],run.quiz?.id);
   run.quiz=current;
   const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
-  if(continuing!==true||!spell||!spellAvailable(run.caster,spell)){
+  if(continuing!==true||!spell||!spellAvailable(run.caster,spell)||
+     (spell.kind==='revive'&&!fallenAllies(run).length)){
     run.selectedSpell=null;
-    if(continuing!==true||run.action==='heal')run.action='physical';
+    if(continuing!==true||run.action==='heal'||run.action==='revive')run.action='physical';
   }
   if(continuing!==true||!(run.foes[run.target]?.hp>0)){
     run.target=run.foes.findIndex(foe=>foe.hp>0);
@@ -966,10 +988,14 @@ function battle(){
     }
     return tile;
   }));
+  const selectedReviveKey=()=>fallenAllies(run).find(unit=>unit.key===run.reviveTarget)?.key??fallenAllies(run)[0]?.key;
   const chooseAction=(action,spell=null)=>{
     if(action!==run.action)run.special=null;
     run.action=action;
     run.selectedSpell=spell;
+    if(action==='revive'&&!fallenAllies(run).some(unit=>unit.key===run.reviveTarget)){
+      run.reviveTarget=fallenAllies(run)[0]?.key??null;
+    }
     battle();
   };
   const attack=button('攻撃',()=>chooseAction('physical'));
@@ -1004,12 +1030,23 @@ function battle(){
     allyMagic.setAttribute('aria-pressed',String(run.action==='magic'&&!run.selectedSpell));
     options.append(allyMagic);
     for(const spell of mazeSpells){
-      const action=spell.kind==='heal'?'heal':'magic';
-      const lock=caster.hp===0?' · 戦闘不能':caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':'';
+      const action=spell.kind==='attack'?'magic':spell.kind;
+      const lock=caster.hp===0?' · 戦闘不能':caster.level<spell.level?' · Lv.'+spell.level+'で習得':caster.mp<spell.mpCost?' · MP不足':spell.kind==='revive'&&!fallenAllies(run).length?' · 蘇生対象なし':'';
       const choice=button(spell.name+' · MP '+spell.mpCost+lock,()=>chooseAction(action,spell.id),
-        !spellAvailable(caster,spell));
+        !spellAvailable(caster,spell)||(spell.kind==='revive'&&!fallenAllies(run).length));
       choice.setAttribute('aria-pressed',String(run.selectedSpell===spell.id));
       options.append(choice);
+    }
+    if(run.action==='revive'&&run.selectedSpell){
+      options.append(node('small','蘇生させる仲間を選んでください。','revive-instruction'));
+      for(const unit of fallenAllies(run)){
+        const target=button(unit.name+'（戦闘不能）',()=>{
+          run.reviveTarget=unit.key;
+          battle();
+        },false,'revive-target');
+        target.setAttribute('aria-pressed',String(selectedReviveKey()===unit.key));
+        options.append(target);
+      }
     }
     options.setAttribute('aria-label','魔法を選ぶ');
     controls.append(group('spell-picker',options));
@@ -1080,17 +1117,26 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
   for(const {actor,unit,hp,delta,kind,actionName} of events){
     if(!stage.isConnected)return;
     const source=views.get(actor);
-    const {tile,update,badge}=views.get(unit);
-    const effect=kind==='heal'?'being-healed':'taking-hit';
-    if(source)source.tile.classList.add('acting');
-    if(!reduced&&source)await launchEnergy(stage,source.tile,tile,kind);
-    if(!stage.isConnected)return;
+    const view=views.get(unit);
     if(source===pet)pet.updateMp();
+    if(kind==='reviveFail'){
+      addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+'の蘇生に失敗した。');
+      continue;
+    }
+    const {tile,update,badge}=view;
+    const restoring=kind==='heal'||kind==='revive';
+    const effect=restoring?'being-healed':'taking-hit';
+    if(source)source.tile.classList.add('acting');
+    if(!reduced&&source)await launchEnergy(stage,source.tile,tile,restoring?'heal':kind);
+    if(!stage.isConnected)return;
     tile.classList.add(effect);
-    badge.textContent=(kind==='heal'?'＋':'−')+Math.abs(delta)+' HP';
+    badge.textContent=(restoring?'＋':'−')+Math.abs(delta)+' HP';
     update(hp);
-    addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+
-      (kind==='heal'?(delta?'がHPを'+delta+'回復':'のHPは満タン'):'に'+Math.abs(delta)+'ダメージ')+(hp===0?' · 撃破':''));
+    const detail=kind==='revive'?'がHP'+hp+'で復活した！':
+      kind==='heal'?(delta?'がHPを'+delta+'回復':'のHPは満タン'):
+      'に'+Math.abs(delta)+'ダメージ';
+    addBattleLog(log,(actor?.name||petData?.petName||'ぺっと')+'の'+actionName+'！ '+unit.name+detail+
+      (hp===0&&kind!=='revive'?' · 撃破':''));
     if(!reduced)await delay(360);
     if(source)source.tile.classList.remove('acting');
     tile.classList.remove(effect);
