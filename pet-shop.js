@@ -1,9 +1,9 @@
 import {injectionPatch} from './pet-health-model.js?v=1.8.1';
-import { foodArt } from './pet-food-art.js?v=1.8.0';
+import { foodArt } from './pet-food-art.js?v=2.5.29';
 import { prepareCleaning } from './pet-clean-animation.js?v=1';
 import { wasteState, cleanWaste } from './pet-waste-model.js?v=1';
-import { playCareReaction } from './pet-care-animation.js?v=1.9.4';
-import { FOODS, careState, feedReward, happyDay } from './pet-care-model.js?v=1.7.8';
+import { playCareReaction } from './pet-care-animation.js?v=2.5.29';
+import { FOODS, careState, feedReward, happyDay } from './pet-care-model.js?v=2.5.29';
 import { getApps, getApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
@@ -300,7 +300,19 @@ function installCareUI(wallet) {
   const shop=wallet.querySelector('#petShopOpen');
   shop.insertAdjacentHTML('afterend','<button id="petFeed" class="pet-shop-open" type="button" disabled>FEED</button><button id="petClean" class="pet-shop-open" type="button" disabled>CLEAN</button><div id="petHappy" class="pet-happy" hidden><div class="pet-happy-heading"><span>おなかの満腹度</span><span id="petHappyValue" aria-live="polite"></span></div><div id="petHungerMessage" class="pet-hunger-message" aria-live="polite"></div><div id="petHappyGauge" class="pet-happy-track" role="progressbar" aria-label="おなかの満腹度" aria-valuemin="0" aria-valuemax="10"><span id="petHappyFill"></span></div><div class="pet-happy-scale"><span>😟 HUNGRY</span><span>FULL 😋</span></div></div>');
   const dialog=document.createElement('dialog');dialog.id='petFeedDialog';dialog.className='pet-shop-confirm-dialog';
-  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2 id="petFeedTitle">I’m hungry…</h2><p id="petFeedPrompt" class="pet-feed-message">Please feed me!</p><p id="petFeedBalance"></p>${FOODS.map(f=>`<button type="button" class="pet-food-choice" data-food="${f.id}"><span class="pet-food-picture">${foodArt(f.id)}</span><span class="pet-food-copy"><strong>${f.name}</strong><small>満腹度 +${f.price}</small></span><span class="pet-food-price">🪙 ${f.price}<small>コイン</small></span></button>`).join('')}<p id="petFeedStatus" role="status"></p></div>`;
+  const foodOptions=[1,2,5,10].map(price=>{
+    const options=FOODS.filter(food=>food.price===price).map(food=>
+      '<button type="button" class="pet-food-choice" data-food="'+food.id+'">'+
+      '<span class="pet-food-picture">'+foodArt(food.id,4)+'</span>'+
+      '<span class="pet-food-copy"><strong>'+food.name+'</strong><small>満腹度 +'+food.price+'</small></span>'+
+      '<span class="pet-food-price">🪙 '+food.price+'<small>コイン</small></span>'+
+      '</button>'
+    ).join('');
+    return '<section class="pet-food-tier" aria-label="'+price+'コインのエサ">'+
+      '<h3 class="pet-food-tier-title">🪙 '+price+'コイン ／ 満腹度 +'+price+'</h3>'+
+      '<div class="pet-food-grid">'+options+'</div></section>';
+  }).join('');
+  dialog.innerHTML=`<div class="pet-shop-confirm-card pet-feed-card"><button class="pet-shop-close" type="button" aria-label="閉じる">×</button><h2 id="petFeedTitle">I’m hungry…</h2><p id="petFeedPrompt" class="pet-feed-message">Please feed me!</p><p id="petFeedBalance"></p>${foodOptions}<p id="petFeedStatus" role="status"></p></div>`;
   document.body.append(dialog);
   dialog.querySelector('.pet-shop-close').onclick=()=>dialog.close();
   dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();const id=event.target.closest('[data-food]')?.dataset.food;if(id)performCare(id);});
@@ -344,7 +356,14 @@ function renderCare() {
   const balance=document.getElementById('petFeedBalance');if(balance)balance.textContent=`🪙 ${coinsOf(currentData)} コイン`;
   const title=document.getElementById('petFeedTitle');if(title)title.textContent=state.happy>=10?'I’m full!':'I’m hungry…';
   const prompt=document.getElementById('petFeedPrompt');if(prompt)prompt.textContent=state.happy>=10?'You’re full for today.':state.happy<=5?'Please feed me!':'I’m getting full!';
-  document.querySelectorAll('[data-food]').forEach(button=>{button.disabled=!enabled||state.happy>=10||coinsOf(currentData)<FOODS.find(f=>f.id===button.dataset.food).price;});
+  document.querySelectorAll('[data-food]').forEach(button=>{
+    const food=FOODS.find(f=>f.id===button.dataset.food);
+    const gap=10-state.happy;
+    const insufficient=!!food&&coinsOf(currentData)<food.price;
+    const overfull=!!food&&food.price>gap;
+    button.disabled=!enabled||!food||insufficient||overfull;
+    button.title=insufficient?'コインが足りません':overfull?'満腹度の空きが足りません':'';
+  });
   if(!currentUser)document.getElementById('petFeedDialog')?.close();
 }
 async function performCare(foodId) {
