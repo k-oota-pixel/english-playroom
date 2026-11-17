@@ -2,6 +2,7 @@ import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/f
 import {getAuth,onAuthStateChanged,accountSession} from '../auth-session.js?v=2.4.37';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.4.3';
+import {clampCamera,centeredCamera,followCamera} from './camera-math.js?v=2.5.22';
 
 const app=getApps().find(x=>x.name==='[DEFAULT]')||initializeApp({
  apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',
@@ -11,6 +12,7 @@ const app=getApps().find(x=>x.name==='[DEFAULT]')||initializeApp({
 enableAppCheck(app);
 const auth=getAuth(app);
 const API='wss://task-quest.onrender.com/ws/quest-plaza',CELL=36;
+const WORLD_WIDTH=48*CELL,WORLD_HEIGHT=32*CELL;
 const $=id=>document.getElementById(id);
 const els={notice:$('notice'),connection:$('connection'),capacity:$('capacity'),viewport:$('viewport'),
  world:$('world'),players:$('players'),nearest:$('nearest'),modal:$('modal'),
@@ -47,12 +49,18 @@ function send(message){
  if(!connected||!socket||socket.readyState!==WebSocket.OPEN)return false;
  socket.send(JSON.stringify(message));return true;
 }
+// Don't draw the shop pet frame in the plaza, but preserve owned visual effects.
+function plazaShop(p){
+ const equipped={...(p.shop?.equipped||{})};
+ delete equipped['pet-frame'];
+ return {equipped,ownedItems:Array.isArray(p.shop?.ownedItems)?p.shop.ownedItems:[]};
+}
 function sprite(p){
  const wrap=node('span','','avatar');
  if(!p.hatched){wrap.textContent='🥚';return wrap;}
  try{
-  const juvenile=p.adult===false||!p.appearance,shop={equipped:p.shop?.equipped||{}};
-  wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,shop,juvenile?'baby':'adult',{background:false});
+  const juvenile=p.adult===false||!p.appearance;
+  wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,plazaShop(p),juvenile?'baby':'adult',{background:false});
  }catch{wrap.textContent='🐣';}
  return wrap;
 }
@@ -64,7 +72,7 @@ function putPlayer(p){
   tile=button('',()=>visitPlayer(p.id),'player');
   tile.dataset.id=p.id;tile.append(sprite(merged),node('span',merged.petName||merged.nickname,'name'));
   els.players.append(tile);elements.set(p.id,tile);
- }else if((old?.appearance!==merged.appearance||old?.petName!==merged.petName||old?.hatched!==merged.hatched||old?.adult!==merged.adult)&&p.appearance!==undefined){
+ }else if((old?.appearance!==merged.appearance||old?.petName!==merged.petName||old?.hatched!==merged.hatched||old?.adult!==merged.adult||old?.shop!==merged.shop)&&p.appearance!==undefined){
   tile.replaceChildren(sprite(merged),node('span',merged.petName||merged.nickname,'name'));
  }
  tile.style.left=(merged.x*CELL+CELL/2)+'px';
@@ -72,18 +80,95 @@ function putPlayer(p){
  tile.classList.toggle('mine',p.id===clientId);
  tile.classList.toggle('busy',merged.status==='battle');
  tile.setAttribute('aria-label',(merged.nickname||'冒険者')+' のぺっと '+(merged.petName||'ぺっと')+(merged.status==='battle'?'（対戦中）':''));
- if(p.id===clientId)centerCamera(merged.x,merged.y);
+ if(p.id===clientId&&camera.ready&&old&&(merged.x!==old.x||merged.y!==old.y))followMyPet(merged.x,merged.y);
  updateNearby();
 }
 function removePlayer(id){
  players.delete(id);elements.get(id)?.remove();elements.delete(id);updateNearby();
 }
-function centerCamera(x,y){
- const view=els.viewport;
- const left=Math.max(0,Math.min(48*CELL-view.clientWidth,x*CELL+CELL/2-view.clientWidth/2));
- const top=Math.max(0,Math.min(32*CELL-view.clientHeight,y*CELL+CELL/2-view.clientHeight/2));
- view.scrollLeft=left;view.scrollTop=top;
+// Camera moves independently of the pet. Most steps only animate the pet tile.
+const camera={ready:false,manual:false,left:0,top:0,frame:0,lastFrame:0};
+const prefersLessMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
+function stopCamera(){
+ if(camera.frame)cancelAnimationFrame(camera.frame);
+ camera.frame=0;camera.lastFrame=0;
 }
+function cameraStep(now){
+ camera.frame=0;
+ const elapsed=camera.lastFrame?Math.min(45,now-camera.lastFrame):16;
+ camera.lastFrame=now;
+ const view=els.viewport,alpha=1-Math.exp(-elapsed/95);
+ const dx=camera.left-view.scrollLeft,dy=camera.top-view.scrollTop;
+ if(Math.abs(dx)<.6&&Math.abs(dy)<.6){
+  view.scrollLeft=camera.left;view.scrollTop=camera.top;
+  camera.lastFrame=0;return;
+ }
+ view.scrollLeft+=dx*alpha;view.scrollTop+=dy*alpha;
+ camera.frame=requestAnimationFrame(cameraStep);
+}
+function setCamera(left,top,immediate=false){
+ const view=els.viewport;
+ const next=clampCamera(left,top,view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
+ camera.left=next.left;camera.top=next.top;
+ if(immediate||prefersLessMotion){
+  stopCamera();view.scrollLeft=next.left;view.scrollTop=next.top;
+  return;
+ }
+ if(!camera.frame)camera.frame=requestAnimationFrame(cameraStep);
+}
+function followMyPet(x,y){
+ if(!camera.ready||camera.manual)return;
+ const view=els.viewport;
+ const next=followCamera(x*CELL+CELL/2,y*CELL+CELL/2,
+  camera.left,camera.top,view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
+ if(next.left!==camera.left||next.top!==camera.top)setCamera(next.left,next.top);
+}
+function returnToMyPet(immediate=false){
+ const player=players.get(clientId);
+ if(!player)return;
+ camera.manual=false;
+ const view=els.viewport;
+ const target=centeredCamera(player.x*CELL+CELL/2,player.y*CELL+CELL/2,
+  view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
+ camera.ready=true;
+ setCamera(target.left,target.top,immediate);
+}
+// Pan with mouse or touch; only moves beyond a click threshold count as dragging.
+let drag=null,suppressPlayerClickUntil=0;
+els.viewport.addEventListener('pointerdown',event=>{
+ if(event.pointerType==='mouse'&&event.button!==0)return;
+ if(drag||!els.modal.hidden||!els.battle.hidden||!$('formation-panel').hidden)return;
+ drag={id:event.pointerId,x:event.clientX,y:event.clientY,
+  left:els.viewport.scrollLeft,top:els.viewport.scrollTop,active:false};
+});
+els.viewport.addEventListener('pointermove',event=>{
+ if(!drag||drag.id!==event.pointerId)return;
+ const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+ if(!drag.active&&Math.hypot(dx,dy)<9)return;
+ if(!drag.active){
+  drag.active=true;camera.manual=true;stopCamera();
+  els.viewport.classList.add('is-panning');
+  try{els.viewport.setPointerCapture(event.pointerId);}catch{}
+ }
+ event.preventDefault();
+ const next=clampCamera(drag.left-dx,drag.top-dy,
+  els.viewport.clientWidth,els.viewport.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
+ camera.left=next.left;camera.top=next.top;
+ els.viewport.scrollLeft=next.left;els.viewport.scrollTop=next.top;
+});
+function finishDrag(event){
+ if(!drag||(event&&drag.id!==event.pointerId))return;
+ if(drag.active)suppressPlayerClickUntil=performance.now()+450;
+ drag=null;els.viewport.classList.remove('is-panning');
+}
+els.viewport.addEventListener('pointerup',finishDrag);
+els.viewport.addEventListener('pointercancel',finishDrag);
+els.viewport.addEventListener('lostpointercapture',finishDrag);
+els.viewport.addEventListener('click',event=>{
+ if(performance.now()>=suppressPlayerClickUntil)return;
+ event.preventDefault();event.stopImmediatePropagation();
+},true);
+$('recenter-camera').addEventListener('click',()=>returnToMyPet());
 function updateNearby(){
  const me=players.get(clientId);
  if(!me){nearbyId=null;return;}
@@ -160,7 +245,7 @@ function paintTeam(team,mine){
    const p=players.get(team.id);const wrap=node('span','','battle-pet');
    if(p?.hatched){try{
     const juvenile=p.adult===false||!p.appearance;
-    wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,{equipped:p.shop?.equipped||{}},juvenile?'baby':'adult',{background:false});
+    wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,plazaShop(p),juvenile?'baby':'adult',{background:false});
    }catch{wrap.textContent='🐣';}}
    else wrap.textContent='🥚';
    tile.append(wrap);
@@ -286,7 +371,9 @@ function receive(message){
   case 'welcome':
    clientId=message.self;closeModal();els.battle.hidden=true;els.finish.hidden=true;battleState=null;question=null;answerPending=false;players.clear();
    for(const tile of elements.values())tile.remove();elements.clear();
+   camera.ready=false;camera.manual=false;stopCamera();
    for(const p of message.players||[])putPlayer(p);
+   returnToMyPet(true);
    els.capacity.textContent=players.size+' / '+message.maxPlayers+' 人';
    els.connection.classList.add('connected');els.connection.textContent='● 接続中';
    note('広場に接続しました。ほかのプレイヤーに近づいてみよう。');
@@ -373,7 +460,13 @@ $('close-formation').addEventListener('click',()=>{
  $('formation-panel').hidden=true;frame.src='about:blank';send({type:'refresh'});
 });
 window.addEventListener('resize',()=>{
- const p=players.get(clientId);if(p)centerCamera(p.x,p.y);
+ if(!camera.ready)return;
+ const v=els.viewport;
+ if(camera.manual)setCamera(v.scrollLeft,v.scrollTop,true);
+ else {
+  const p=players.get(clientId);
+  if(p)followMyPet(p.x,p.y);
+ }
 });
 window.addEventListener('pagehide',()=>{clearTimeout(retryTimer);socket?.close(1000,'leaving');});
 setInterval(updateClock,150);
