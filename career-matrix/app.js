@@ -65,7 +65,7 @@ function renderValues(){
     const stars=[1,2,3,4,5].map(weight=>
       '<button type="button" class="star'+(weight<=value.weight?' selected':'')+'" data-action="weight" data-index="'+i+'" data-weight="'+weight+'" aria-label="判断基準'+(i+1)+'の重要度を'+weight+'にする" aria-pressed="'+(weight===value.weight)+'">★</button>'
     ).join('');
-    return '<div class="edit-card">'+
+    return '<div class="edit-card'+(value.label?' is-filled':'')+'">'+
       '<div class="edit-title"><span><b>'+(i+1)+'</b> 判断基準 '+(i+1)+'</span></div>'+
       '<div class="field"><label for="valueSelect'+i+'">大切にしたいこと</label>'+
       '<select id="valueSelect'+i+'" data-role="value-select" data-index="'+i+'">'+choices+'</select></div>'+
@@ -86,7 +86,7 @@ function renderOptions(){
     const choices='<option value="">'+esc(config.label)+'を選択</option>'+
       config.examples.map(name=>'<option value="'+esc(name)+'"'+(selected===name?' selected':'')+'>'+esc(name)+'</option>').join('')+
       '<option value="__custom"'+(selected==='__custom'?' selected':'')+'>その他（自由記述）</option>';
-    return '<div class="edit-card">'+
+    return '<div class="edit-card'+(option.name?' is-filled':'')+'">'+
       '<div class="edit-title"><span><b>'+(i+1)+'</b> 比較候補 '+(i+1)+'</span><span class="count">'+esc(config.label)+'</span></div>'+
       '<div class="kinds" role="group" aria-label="比較候補'+(i+1)+'の種類">'+kinds+'</div>'+
       '<div class="option-fields"><div class="field"><label for="optionSelect'+i+'">詳しい'+esc(config.label)+'を選ぶ</label>'+
@@ -117,6 +117,29 @@ function renderMatrix(){
     result.options.map(item=>'<td class="total-cell">'+item.score+'<small>'+item.completed+' / 4 項目を評価</small></td>').join('')+
     '</tr></tfoot>';
   $('matrixTable').innerHTML=header+body+foot;
+}
+function renderMobileEvaluator(){
+  const result=calculate(state);
+  $('mobileEvaluation').innerHTML=state.options.map((option,j)=>{
+    const label=showIfEmpty(option.name,'比較候補 '+(j+1));
+    const rows=state.values.map((value,i)=>{
+      const rating=state.ratings[i][j];
+      const weighted=result.rows[i][j];
+      const descriptor=showIfEmpty(value.label,'判断基準 '+(i+1));
+      const buttons=[1,2,3,4,5].map(n=>
+        '<button type="button" class="rate'+(n===rating?' active':'')+'" data-action="rate" data-row="'+i+'" data-col="'+j+'" data-score="'+n+'" aria-label="'+esc(label)+'：'+esc(descriptor)+'の評価を'+n+'にする" aria-pressed="'+(rating===n)+'">'+n+'</button>'
+      ).join('');
+      return '<div class="mobile-score-row"><div class="mobile-score-top"><strong>'+esc(descriptor)+'</strong>'+
+        '<span aria-label="重要度'+value.weight+'">'+('★'.repeat(value.weight))+('☆'.repeat(5-value.weight))+'</span></div>'+
+        '<div class="mobile-score-controls"><div class="rater" role="group" aria-label="'+esc(descriptor)+'の5段階評価">'+buttons+'</div>'+
+        '<div class="calc">'+(rating?rating+' × '+value.weight+' = <strong>'+weighted+'</strong>':'未評価')+'</div></div></div>';
+    }).join('');
+    return '<section class="mobile-option" aria-label="'+esc(label)+'の評価">'+
+      '<div class="mobile-option-head"><div><div class="mobile-option-label">'+esc(label)+'</div>'+
+      '<div class="mobile-option-meta">'+esc(CHOICES[option.kind].label)+' · '+result.options[j].completed+'/4 評価</div></div>'+
+      '<div class="mobile-option-score" aria-label="現在の合計'+result.options[j].score+'点">'+result.options[j].score+'<span style="font-size:10px;font-weight:600;color:#738878"> / '+result.maxPoints+'</span></div></div>'+
+      rows+'</section>';
+  }).join('');
 }
 function renderResults(){
   const result=calculate(state);
@@ -157,10 +180,10 @@ function renderCounters(){
     'あと '+(16-result.filled)+' か所の評価を入力しよう';
 }
 function renderAll(){
-  renderValues();renderOptions();renderMatrix();renderResults();renderCounters();
+  renderValues();renderOptions();renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
 }
 function updateAfterInput(){
-  renderMatrix();renderResults();renderCounters();
+  renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
 }
 
 $('valuesEditor').addEventListener('input',event=>{
@@ -201,7 +224,7 @@ $('valuesEditor').addEventListener('click',event=>{
   const i=Number(button.dataset.index),weight=Number(button.dataset.weight);
   if(state.values[i].weight===weight)return;
   state.values[i].weight=weight;
-  markChanged();renderValues();renderMatrix();renderResults();renderCounters();
+  markChanged();renderValues();renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
 });
 $('optionsEditor').addEventListener('click',event=>{
   const button=event.target.closest('button[data-action="kind"]');
@@ -211,13 +234,22 @@ $('optionsEditor').addEventListener('click',event=>{
   state.options[i]={kind,name:''};clearColumn(i);
   markChanged();renderAll();
 });
-$('matrixTable').addEventListener('click',event=>{
+function onRatingClick(event){
   const button=event.target.closest('button[data-action="rate"]');
   if(!button)return;
   const i=Number(button.dataset.row),j=Number(button.dataset.col),value=Number(button.dataset.score);
   state.ratings[i][j]=state.ratings[i][j]===value?0:value;
   markChanged();
-  renderMatrix();renderResults();renderCounters();
+  renderMatrix();renderMobileEvaluator();renderResults();renderCounters();
+}
+$('matrixTable').addEventListener('click',onRatingClick);
+$('mobileEvaluation').addEventListener('click',onRatingClick);
+$('tableToggle').addEventListener('click',()=>{
+  const table=$('desktopMatrix');
+  const show=!table.classList.contains('force-show');
+  table.classList.toggle('force-show',show);
+  $('tableToggle').setAttribute('aria-expanded',String(show));
+  $('tableToggle').textContent=show?'一覧表を閉じる −':'一覧表でも見る ＋';
 });
 function confirmReplace(){
   return !calculate(state).enteredValues&&!calculate(state).enteredOptions&&!calculate(state).filled ||
