@@ -32,3 +32,11 @@ test('fallen pets can be selected for revival and magic options stay compact',()
  assert.match(theme,/#battle \.battle-panel\{[\s\S]*height:calc\(100dvh - 10px\)/);
  assert.match(theme,/#battle \.quiz\{[\s\S]*overflow-y:auto/);
 });
+
+test('no visible PvP countdown, and pending answers can request resync',()=>{
+ assert.doesNotMatch(html,/id="battle-clock"/);
+ assert.doesNotMatch(js,/id='quiz-time'|残り時間|battleEndAt/);
+ assert.match(js,/pendingRecoveryTimer=setInterval/);
+ assert.match(js,/type:'syncQuestion'/);
+ assert.match(js,/function stopPendingRecovery/);
+});
