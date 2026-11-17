@@ -8,9 +8,9 @@ import {loadVocabulary} from '../data/vocab/index.js';
 import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
-  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,canUseCardAsMaterial,upgradeWithMaterial,
+  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,materialCost,maxUpgradeMaterialCount,previewUpgradeBatch,applyUpgradeBatch,
   addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=2.5.9';
+} from './model.js?v=2.5.10';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -20,6 +20,28 @@ const pane=document.querySelector('#game'); const splash=document.querySelector(
 const status=document.querySelector('#status');
 let profile,legacyProfile,petData,walletRef,questions,run,walkView,busy=false,clock,generation=0;
 let collectionDismissAbort=null;
+let editSession=null;
+const hasUnsavedEdits=()=>Boolean(editSession&&(editSession.operations.length||editSession.team.join()!==profile?.team.join()));
+// The parent shell uses this guard before navigating away from unsaved edits.
+if(window.MonstudyMaterial?.setActivityGuard)window.MonstudyMaterial.setActivityGuard(hasUnsavedEdits);
+else if(!window.MonstudyMaterial)window.MonstudyMaterial={isActive:hasUnsavedEdits,setPaused(){}};
+function ensureEditSession(){
+  if(!editSession)editSession={working:normalizeProfile(profile),team:[...profile.team],operations:[]};
+  return editSession;
+}
+function rebuildEditSession(session){
+  const working=normalizeProfile(profile);
+  for(const operation of session.operations){
+    if(!applyUpgradeBatch(working,operation.targetKey,operation.selections,session.team))return false;
+  }
+  session.working=working;
+  return true;
+}
+function discardCollectionEdits(){
+  if(hasUnsavedEdits()&&!confirm('未保存の編成・強化を破棄して探索に戻りますか？'))return;
+  editSession=null;
+  lobby();
+}
 
 function node(tag,content='',cls=''){
   const el=document.createElement(tag);
@@ -408,73 +430,161 @@ function rewardCards(counts){
   return group('collection owned-cards reward-cards',...[...counts].map(([key,count])=>
     companionCard(key,{level:1},' · 獲得 '+count+'枚').tile));
 }
-function materialCardOptions(targetKey,draft){
-  return Object.entries(profile.owned).flatMap(([materialKey,materialEntry])=>{
-    if(!canUseCardAsMaterial(profile,targetKey,materialKey,draft))return [];
-    const [id,rarity]=materialKey.split('-').map(Number);
-    const card=cards[id-1];
-    if(!card||!rarities[rarity])return [];
-    return [{key:materialKey,entry:materialEntry,card,rarity,usesOriginal:materialEntry.copies===0}];
-  }).sort((a,b)=>Number(a.usesOriginal)-Number(b.usesOriginal)||a.rarity-b.rarity||a.card.id-b.card.id);
+function materialCardOptions(targetKey,session){
+  const working=session.working;
+  const rarity=Number(targetKey.split('-')[1]);
+  const options=[];
+  if(working.crystals>0){
+    options.push({key:'crystal',name:'経験の結晶',rank:'結晶',available:working.crystals,cost:1,remainingOriginal:false});
+  }
+  for(const [materialKey,materialEntry] of Object.entries(working.owned)){
+    const [id,sourceRarity]=materialKey.split('-').map(Number);
+    const cost=materialCost(rarity,sourceRarity);
+    if(cost===null)continue;
+    const available=maxUpgradeMaterialCount(working,targetKey,materialKey,session.team);
+    if(!available)continue;
+    options.push({key:materialKey,name:cards[id-1].name,rank:rarities[sourceRarity],available,cost,
+      remainingOriginal:available>materialEntry.copies,duplicates:materialEntry.copies});
+  }
+  return options.sort((a,b)=>{
+    if(a.key==='crystal')return -1;
+    if(b.key==='crystal')return 1;
+    const aRarity=Number(a.key.split('-')[1]),bRarity=Number(b.key.split('-')[1]);
+    return bRarity-aRarity||Number(a.remainingOriginal)-Number(b.remainingOriginal)||a.name.localeCompare(b.name,'ja');
+  });
 }
-function openCardUpgrade(card,key,entry,draft){
-  const dialog=node('dialog','','card-upgrade');
-  const title=node('h3',card.name+'を強化');
-  title.id='card-upgrade-title';
-  dialog.setAttribute('aria-labelledby',title.id);
-  const close=button('閉じる',()=>dialog.close());
-  const spend=useCopy=>{
-    dialog.close();
-    void save(next=>upgrade(next,key,useCopy),()=>collection(draft));
-  };
-  const materials=materialCardOptions(key,draft);
-  const showInitial=()=>{
-    dialog.replaceChildren(title,node('p','素材を1つ使ってLv.を1上げます。'),
-      group('choices',
-        button('結晶で強化（'+profile.crystals+'個）',()=>spend(false),!profile.crystals),
-        button('同種の重複カード（'+entry.copies+'枚）',()=>spend(true),!entry.copies),
-        button('ほかのカードを素材にする（'+materials.length+'種類）',showMaterials,!materials.length)),
-      close);
-  };
-  const showMaterials=()=>{
-    const list=group('material-card-list');
-    for(const material of materials){
-      const pick=button('',()=>confirmMaterial(material),false,'material-option');
-      pick.append(node('span',rarities[material.rarity],'material-option-rarity'),
-        node('span',material.card.name,'material-option-name'),
-        node('span',material.usesOriginal?'最後の1枚 · 消失':'重複 '+material.entry.copies+'枚','material-option-quantity'));
-      if(material.usesOriginal)pick.classList.add('last-copy');
-      list.append(pick);
-    }
-    dialog.replaceChildren(title,
-      node('p','素材を1枚選択してください。重複があれば重複から消費し、最後の1枚を選ぶと所持カードそのものがなくなります。'),
-      node('p','編成中のカードと初期配布カードの本体は消費できません。','material-caution'),
-      list,group('choices',button('戻る',showInitial),close));
-  };
-  const confirmMaterial=material=>{
-    const original=material.usesOriginal;
-    const source=rarities[material.rarity]+' '+material.card.name;
-    const detail=original
-      ?'このカードは所持一覧から消え、元には戻せません。'
-      :'このカードの重複分を1枚消費します。元の所持カードは残ります。';
-    dialog.replaceChildren(title,node('p','強化先：'+card.name+'　Lv.'+entry.level+' → Lv.'+(entry.level+1)),
-      node('p','素材：'+source+'（'+(original?'最後の1枚':'重複カード')+'）'),
-      node('p',detail,'material-caution'),
-      group('choices',
-        button('このカードを使って強化',()=>{
-          dialog.close();
-          // The shared user document is rechecked atomically at save time.
-          void save(next=>upgradeWithMaterial(next,key,material.key,draft),()=>collection(draft));
-        },false,'primary'),
-        button('素材選択に戻る',showMaterials),
-        close));
-  };
-  showInitial();
+function compareCardStats(key,beforeLevel,afterLevel,working){
+  const oldEntry={...working.owned[key],level:beforeLevel};
+  const newerEntry={...oldEntry,level:afterLevel};
+  const oldStats=companionStats(stats(key,oldEntry));
+  const newStats=new Map(companionStats(stats(key,newerEntry)));
+  const board=group('upgrade-stat-comparison');
+  const head=group('upgrade-comparison-head',
+    node('strong','強化前'),node('span','→'),node('strong','強化後'));
+  board.append(head);
+  for(const [label,oldValue] of oldStats){
+    const newValue=newStats.get(label);
+    board.append(group('upgrade-comparison-row',
+      node('span',label),node('span',String(oldValue),'upgrade-before'),
+      node('span',String(newValue)+(newValue>oldValue?'  (+'+(newValue-oldValue)+')':''),'upgrade-after')));
+  }
+  return board;
+}
+function showUpgradeSuccess(card,key,oldLevel,newLevel,working,materials){
+  const dialog=node('dialog','','card-upgrade upgrade-success');
+  const title=node('h3','✨ 強化成功！');
+  const sourceText=Object.entries(materials).map(([materialKey,count])=>{
+    if(materialKey==='crystal')return '経験の結晶 ×'+count;
+    const [id,rarity]=materialKey.split('-').map(Number);
+    return rarities[rarity]+' '+cards[id-1].name+' ×'+count;
+  }).join('、');
+  dialog.append(title,
+    node('p',card.name+'　Lv.'+oldLevel+' → Lv.'+newLevel),
+    compareCardStats(key,oldLevel,newLevel,{owned:{[key]:{...working.owned[key]}}}),
+    node('small','使用素材：'+sourceText),
+    node('p','※ まだ保存されていません。「編成・強化を保存」で確定します。','material-caution'),
+    group('choices',
+      button('続けて強化',()=>{dialog.close();if(editSession?.working.owned[key])openCardUpgrade(card,key);}),
+      button('一覧へ戻る',()=>dialog.close(),false,'primary')));
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});
   pane.append(dialog);
   dialog.showModal();
 }
-function collection(draft=[...profile.team]){
+function openCardUpgrade(card,key){
+  const session=ensureEditSession();
+  const working=session.working;
+  const entry=working.owned[key];
+  if(!entry)return;
+  const cap=levelCaps[Number(key.split('-')[1])];
+  if(entry.level>=cap)return;
+  const dialog=node('dialog','','card-upgrade bulk-upgrade');
+  const title=node('h3',card.name+'を強化');
+  title.id='card-upgrade-title';
+  dialog.setAttribute('aria-labelledby',title.id);
+  const options=materialCardOptions(key,session);
+  const selections={};
+  const list=group('material-card-list bulk-material-list');
+  const preview=group('bulk-upgrade-preview');
+  const submit=button('まとめて強化する',()=>commit(),true,'primary');
+  for(const option of options){
+    const input=node('input');
+    input.type='number';input.min='0';input.max=String(option.available);
+    input.step='1';input.value='0';input.inputMode='numeric';
+    input.setAttribute('aria-label',option.rank+' '+option.name+' の使用枚数');
+    const minus=button('−',()=>{input.value=String(Math.max(0,(Number(input.value)||0)-1));change();},false,'material-quantity-step');
+    const plus=button('＋',()=>{input.value=String(Math.min(option.available,(Number(input.value)||0)+1));change();},false,'material-quantity-step');
+    const change=()=>{
+      const n=Math.min(option.available,Math.max(0,Math.trunc(Number(input.value)||0)));
+      input.value=String(n);
+      if(n)selections[option.key]=n;else delete selections[option.key];
+      row.classList.toggle('selected',Boolean(n));
+      updatePreview();
+    };
+    input.addEventListener('change',change);
+    input.addEventListener('input',()=>{
+      const n=Math.min(option.available,Math.max(0,Math.trunc(Number(input.value)||0)));
+      if(n)selections[option.key]=n;else delete selections[option.key];
+      row.classList.toggle('selected',Boolean(n));
+      updatePreview();
+    });
+    const sourceInfo=group('bulk-material-info',
+      node('strong',option.rank+' '+option.name),
+      node('small','所持 '+option.available+'枚　／　1Lv分 '+option.cost+'枚'));
+    if(option.remainingOriginal)sourceInfo.append(node('small','最後の1枚はカード本体を消費','material-original-warning'));
+    const row=group('bulk-material-row',sourceInfo,group('material-quantity',minus,input,plus));
+    list.append(row);
+  }
+  function updatePreview(){
+    const result=previewUpgradeBatch(working,key,selections,session.team);
+    const afterLevel=Math.min(cap,entry.level+result.levels);
+    const difference=result.points-result.levels*result.unit;
+    let explanation='素材を選んでください。';
+    if(result.invalid)explanation='選択した素材枚数を確認してください。';
+    else if(result.points>0&&result.levels<1)explanation='あと'+(result.unit-result.points)+'ポイントで1レベル分になります。';
+    else if(result.levels>result.maxLevels)explanation='最大Lv.'+cap+'を超えています。素材を減らしてください。';
+    else if(difference)explanation='強化ポイントが'+difference+'余っています。端数がなくなるよう調整してください。';
+    else if(result.valid)explanation='この内容で'+result.levels+'レベル一括強化できます。';
+    preview.replaceChildren(
+      node('p','Lv.'+entry.level+' → Lv.'+afterLevel+'　（'+(afterLevel-entry.level)+'レベルUP）','bulk-upgrade-level'),
+      node('p','素材換算 '+result.points+'ポイント　／　1Lv '+result.unit+'ポイント','bulk-upgrade-points'),
+      compareCardStats(key,entry.level,afterLevel,working),
+      node('p',explanation,result.valid?'bulk-upgrade-valid':'material-caution'));
+    submit.disabled=!result.valid;
+  }
+  function commit(){
+    const result=previewUpgradeBatch(working,key,selections,session.team);
+    if(!result.valid)return;
+    const countMap={...selections};
+    const originals=Object.entries(countMap).filter(([materialKey,count])=>
+      materialKey!=='crystal'&&materialKey!==key&&count>working.owned[materialKey]?.copies);
+    if(originals.length){
+      const names=originals.map(([materialKey])=>{
+        const [id,rarity]=materialKey.split('-').map(Number);
+        return rarities[rarity]+' '+cards[id-1].name;
+      }).join('、');
+      if(!confirm('次のカードの最後の1枚が消費され、所持一覧から消えます。\n'+names+'\nこの素材で強化しますか？'))return;
+    }
+    const before=entry.level;
+    if(!applyUpgradeBatch(working,key,countMap,session.team))return;
+    session.operations.push({targetKey:key,selections:countMap});
+    const after=working.owned[key].level;
+    dialog.close();
+    collection();
+    showUpgradeSuccess(card,key,before,after,working,countMap);
+  }
+  dialog.append(title,
+    node('p','素材をまとめて選べます。違う種類・レアリティも合算できます。'),
+    node('p','SSRなら同レア1枚、SR3枚、R6枚、N12枚がそれぞれ1レベル分です。','bulk-upgrade-hint'),
+    list,preview,group('choices',submit,button('閉じる',()=>dialog.close())));
+  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  pane.append(dialog);
+  updatePreview();
+  dialog.showModal();
+}
+function collection(){
+  const session=ensureEditSession();
+  const working=session.working;
+  const draft=session.team;
   clear();
   const dismissController=new AbortController();
   collectionDismissAbort=dismissController;
@@ -502,17 +612,59 @@ function collection(draft=[...profile.team]){
       event.stopPropagation();
     }
   },{signal:dismissController.signal});
-  pane.append(node('h2','仲間カード編成'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
-    group('choices',button('探索に戻る',lobby),button('編成を保存',()=>save(next=>{
-      if(!draft.every(key=>next.owned[key]))return false;
-      next.team=[...draft];
-    },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
+  const teamChanged=draft.join()!==profile.team.join();
+  const modified=hasUnsavedEdits();
+  const saveChanges=()=>{
+    const operations=session.operations.map(op=>({targetKey:op.targetKey,selections:{...op.selections}}));
+    const selectedTeam=[...session.team];
+    void save(next=>{
+      // Reject stale materials if another device changed cards during editing.
+      const touched=new Set(operations.flatMap(op=>[op.targetKey,
+        ...Object.keys(op.selections).filter(key=>key!=='crystal')]));
+      for(const key of touched){
+        const oldEntry=profile.owned[key],live=next.owned[key];
+        if(!oldEntry||!live||oldEntry.level!==live.level||oldEntry.copies!==live.copies)return false;
+      }
+      if(operations.some(op=>op.selections.crystal)&&next.crystals!==profile.crystals)return false;
+      if(next.team.join()!==profile.team.join())return false;
+      for(const op of operations){
+        if(!applyUpgradeBatch(next,op.targetKey,op.selections,selectedTeam))return false;
+      }
+      if(selectedTeam.length!==3||new Set(selectedTeam).size!==3||!selectedTeam.every(key=>next.owned[key]))return false;
+      next.team=selectedTeam;
+    },()=>{editSession=null;lobby();});
+  };
+  const restore=()=>{
+    if(!confirm('保存前の編成・強化をすべて取り消しますか？'))return;
+    editSession=null;
+    collection();
+  };
+  const undoLast=()=>{
+    const op=session.operations.pop();
+    if(!op)return;
+    if(!rebuildEditSession(session)){
+      session.operations.push(op);
+      rebuildEditSession(session);
+      message('取り消しできませんでした。');
+      return;
+    }
+    collection();
+  };
+  pane.append(node('h2','仲間カード編成'),
+    node('p','編成 '+draft.length+' / 3　経験の結晶 '+working.crystals+
+      (modified?'　● 保存待ち'+(session.operations.length?'（強化'+session.operations.length+'件）':''):''),
+      'collection-save-status'),
+    group('choices',
+      button('探索に戻る',discardCollectionEdits),
+      button('最後の強化を取り消す',undoLast,!session.operations.length),
+      button('変更をすべて取り消す',restore,!modified),
+      button('編成・強化を保存',saveChanges,!modified||draft.length!==3,'primary')));
   for(const [role,label] of roles.entries()){
     const section=group('collection owned-cards compact-owned-cards');
     for(const card of cards.filter(item=>item.role===role)){
       for(const [rarity,rank] of rarities.entries()){
         const key=card.id+'-'+rarity;
-        const entry=profile.owned[key];
+        const entry=working.owned[key];
         if(!entry)continue;
         const unit=stats(key,entry);
         const picked=draft.includes(key);
@@ -545,13 +697,19 @@ function collection(draft=[...profile.team]){
           mark.setAttribute('aria-hidden','true');
           tile.append(mark);
         }
-        const teamToggle=button(picked?'はずす':'いれる',
-          ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
+        const teamToggle=button(picked?'はずす':'いれる',()=>{
+          session.team=picked?draft.filter(id=>id!==key):[...draft,key];
+          collection();
+        },!picked&&draft.length>=3);
+        teamToggle.setAttribute('aria-pressed',String(picked));
         teamToggle.setAttribute('aria-label',card.name+' '+rank+(picked?'を編成からはずす':'を編成にいれる'));
         const atCap=entry.level>=levelCaps[rarity];
-        const hasMaterials=!atCap&&materialCardOptions(key,draft).length>0;
-        const strengthen=button(atCap?'最大Lv.':'強化',()=>openCardUpgrade(card,key,entry,draft),
-          atCap||(!profile.crystals&&!entry.copies&&!hasMaterials));
+        const hasMaterials=!atCap&&(
+          working.crystals>0||
+          Object.keys(working.owned).some(materialKey=>
+            maxUpgradeMaterialCount(working,key,materialKey,session.team)>0));
+        const strengthen=button(atCap?'最大Lv.':'強化',()=>openCardUpgrade(card,key),
+          atCap||!hasMaterials);
         const menu=group('compact-card-menu',node('strong',unit.name+' · '+rank),
           node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+'　HP '+unit.maxHp+'　重複 '+entry.copies),
           group('compact-card-actions',teamToggle,strengthen));
@@ -1041,6 +1199,7 @@ async function initialize(user){
   clear();
   legacyProfile=null;
   walletRef=null;
+  editSession=null;
   message('ログイン情報を確認中…');
   try{
     const session=user&&await accountSession(user);

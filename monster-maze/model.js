@@ -91,37 +91,76 @@ export function stats(key,entry){
     maxCt:Math.max(1,card.ct-(rarity===3?1:0)),ct:rarity?Math.max(1,card.ct-(rarity===3?1:0)):0
   };
 }
-export function upgrade(profile,key,useCopy){
-  const entry = profile.owned[key];
-  if(!entry || entry.level>=levelCaps[Number(key.split('-')[1])]) return false;
-  if(useCopy ? !entry.copies : !profile.crystals) return false;
-  if(useCopy) entry.copies--;
-  else profile.crystals--;
-  entry.level++;
-  return true;
+// Number of cards needed for one level. Higher-rarity materials cannot be used.
+export const upgradeMaterialCosts=[
+  [1,null,null,null],
+  [2,1,null,null],
+  [4,2,1,null],
+  [12,6,3,1]
+];
+export function materialCost(targetRarity,materialRarity){
+  return upgradeMaterialCosts[targetRarity]?.[materialRarity]??null;
 }
-// A different companion can be used as a one-level upgrade material.
-// Spare duplicates are consumed first. The original (last) card is never
-// consumed while assigned to a saved or draft party. Starter originals
-// are protected because normalizeProfile always grants those cards.
-export function canUseCardAsMaterial(profile,targetKey,materialKey,draft=[]){
+export function maxUpgradeMaterialCount(profile,targetKey,materialKey,draft=[]){
   const target=profile?.owned?.[targetKey];
-  const material=profile?.owned?.[materialKey];
-  const rarity=Number(targetKey.split('-')[1]);
-  if(!target||!material||targetKey===materialKey||!levelCaps[rarity]||target.level>=levelCaps[rarity])return false;
-  if(material.copies>0)return true;
-  return !starters.includes(materialKey)
+  if(!target||target.level>=levelCaps[Number(targetKey.split('-')[1])])return 0;
+  if(materialKey==='crystal')return profile.crystals||0;
+  const material=profile.owned?.[materialKey];
+  if(!material||materialCost(Number(targetKey.split('-')[1]),Number(materialKey.split('-')[1]))===null)return 0;
+  if(materialKey===targetKey)return material.copies; // Never consume the target original.
+  const originalAllowed=!starters.includes(materialKey)
     && !profile.team?.includes(materialKey)
     && !draft.includes(materialKey);
+  return material.copies+(originalAllowed?1:0);
 }
-export function upgradeWithMaterial(profile,targetKey,materialKey,draft=[]){
-  if(!canUseCardAsMaterial(profile,targetKey,materialKey,draft))return false;
-  const material=profile.owned[materialKey];
-  if(material.copies>0)material.copies--;
-  else delete profile.owned[materialKey];
-  profile.owned[targetKey].level++;
+export function canUseCardAsMaterial(profile,targetKey,materialKey,draft=[]){
+  return materialKey!==targetKey&&maxUpgradeMaterialCount(profile,targetKey,materialKey,draft)>0;
+}
+export function previewUpgradeBatch(profile,targetKey,selections,draft=[]){
+  const entry=profile?.owned?.[targetKey];
+  const rarity=Number(targetKey.split('-')[1]);
+  const unit=upgradeMaterialCosts[rarity]?.[0];
+  if(!entry||!unit||entry.level>=levelCaps[rarity])
+    return {valid:false,points:0,unit:unit||1,levels:0,remainder:0,maxLevels:0};
+  let points=0,selected=0,invalid=false;
+  for(const [materialKey,count] of Object.entries(selections||{})){
+    if(!Number.isSafeInteger(count)||count<1||count>maxUpgradeMaterialCount(profile,targetKey,materialKey,draft)){
+      invalid=true;break;
+    }
+    const cost=materialKey==='crystal'?1:materialCost(rarity,Number(materialKey.split('-')[1]));
+    if(!cost){invalid=true;break;}
+    points+=count*(unit/cost);
+    selected+=count;
+  }
+  const levels=Math.floor(points/unit),remainder=points%unit,maxLevels=levelCaps[rarity]-entry.level;
+  return {valid:!invalid&&selected>0&&levels>0&&levels<=maxLevels&&remainder===0,
+    points,unit,levels,remainder,maxLevels,invalid};
+}
+// Applies a mixed-rarity material basket atomically in memory; no Firebase calls.
+export function applyUpgradeBatch(profile,targetKey,selections,draft=[]){
+  const check=previewUpgradeBatch(profile,targetKey,selections,draft);
+  if(!check.valid)return false;
+  for(const [materialKey,count] of Object.entries(selections)){
+    if(materialKey==='crystal'){
+      profile.crystals-=count;
+      continue;
+    }
+    const material=profile.owned[materialKey];
+    if(count<=material.copies)material.copies-=count;
+    else delete profile.owned[materialKey]; // The last unprotected original was consumed.
+  }
+  profile.owned[targetKey].level+=check.levels;
   return true;
 }
+// Legacy one-step entry points retain their old public signatures.
+export function upgrade(profile,key,useCopy){
+  return applyUpgradeBatch(profile,key,{[useCopy?key:'crystal']:1});
+}
+export function upgradeWithMaterial(profile,targetKey,materialKey,draft=[]){
+  const cost=materialCost(Number(targetKey.split('-')[1]),Number(materialKey.split('-')[1]));
+  return cost!==null&&applyUpgradeBatch(profile,targetKey,{[materialKey]:cost},draft);
+}
+
 export function addReward(profile,round,reward){
   if(profile.recentRuns.includes(round)) return;
   profile.recentRuns = [...profile.recentRuns.slice(-24),round];
