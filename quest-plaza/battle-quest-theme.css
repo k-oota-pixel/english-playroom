@@ -192,3 +192,10 @@
  #battle .battle-unit .card-art::before,#battle .battle-unit .card-art::after,
  #battle .battle-unit.taking-hit .card-art,#battle .battle-unit.taking-hit .battle-pet{animation:none}
 }
+
+/* Own cards are non-interactive but retain full Quest color/shine. */
+#battle .battle-unit:disabled{opacity:1;color:inherit;cursor:default}
+#battle .battle-unit.dead:disabled{opacity:.62}
+#battle .battle-unit.party-pet .battle-pet{filter:none}
+#battle .battle-unit.dead.party-pet .battle-pet{filter:grayscale(1)}
+#battle .battle-unit .card-art img{pointer-events:none}
