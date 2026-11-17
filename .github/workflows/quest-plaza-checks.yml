@@ -1,0 +1,24 @@
+name: Hidden quest plaza checks
+on:
+  push:
+    paths:
+      - 'quest-plaza/**'
+      - 'monster-maze/app.js'
+      - '.github/workflows/quest-plaza-checks.yml'
+  pull_request:
+    paths:
+      - 'quest-plaza/**'
+      - 'monster-maze/app.js'
+  workflow_dispatch:
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser module syntax
+        run: node --check quest-plaza/app.js && node --check monster-maze/app.js
+      - name: Verify standalone route
+        run: test -s quest-plaza/index.html && test -s quest-plaza/style.css
