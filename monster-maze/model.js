@@ -339,7 +339,7 @@ function idiomQuestion(rows,previous,random){
 }
 // 並べ替え問題は原教材と同じ語分割を使用。文頭大文字と文末記号をヒントとして見せない。
 export function orderTokens(sentence){
-  return sentence.match(/(?:Mr|Mrs|Ms|Miss|Dr|Prof)\\.\\s+[A-Z][A-Za-z'’-]*|(?:[A-Za-z]\\.){2,}|[A-Za-z]+(?:[-'’][A-Za-z]+)*|\\d+(?:\\.\\d+)?(?:th|st|nd|rd)?/g)||[];
+  return sentence.match(/(?:Mr|Mrs|Ms|Miss|Dr|Prof)\.\s+[A-Z][A-Za-z'’-]*|(?:[A-Za-z]\.){2,}|[A-Za-z]+(?:[-'’][A-Za-z]+)*|\d+(?:\.\d+)?(?:th|st|nd|rd)?/g)||[];
 }
 const normalizedOrder=sentence=>orderTokens(sentence).join(' ').replace(/[’]/g,"'").normalize('NFKC').toLowerCase();
 export function correctOrdering(quiz,answer){
