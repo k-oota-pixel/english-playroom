@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {clampCamera,centeredCamera,followCamera,flingTarget} from './camera-math.js';
@@ -30,4 +31,20 @@ test('slow touch drags stop precisely without unwanted inertia',()=>{
 test('a powerful flick is bounded and never scrolls beyond the map',()=>{
  assert.deepEqual(flingTarget(1100,800,20,30,...dimensions),{left:1248,top:832});
  assert.deepEqual(flingTarget(100,100,-20,-30,...dimensions),{left:0,top:0});
+});
+
+test('smartphone map uses native touch events and a composited camera, not scroll layout',()=>{
+ const app=readFileSync(new URL('./app.js',import.meta.url),'utf8');
+ const css=readFileSync(new URL('./style.css',import.meta.url),'utf8');
+ const cameraSource=app.slice(app.indexOf('const camera={'),app.indexOf('function updateNearby(){'));
+ assert.match(cameraSource,/translate3d\(/);
+ assert.match(cameraSource,/touchstart/);
+ assert.match(cameraSource,/touchmove/);
+ assert.match(cameraSource,/touchend/);
+ assert.match(cameraSource,/\{passive:false\}/);
+ assert.match(cameraSource,/pointerType==='touch'/);
+ assert.match(cameraSource,/Math\.hypot\(dx,dy\)<6/);
+ assert.doesNotMatch(cameraSource,/\.scrollLeft|\.scrollTop/);
+ assert.match(css,/will-change:transform/);
+ assert.match(css,/touch-action:none/);
 });
