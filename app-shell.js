@@ -44,7 +44,7 @@ function install() {
     card.className='card';
     card.dataset.adaptiveDiagnosticCard='1';
     card.href=new URL('level-diagnostic/',root).href;
-    card.innerHTML='<div class="eyebrow">ADAPTIVE ENGLISH CHECK</div><div class="title">もんすた実力診断</div><div class="desc">4級からスタート。単語力・文法力を16〜24問で推定し、1000点満点の成長記録を残そう。</div><div class="chips"><span class="chip">難易度が自動で変わる</span><span class="chip">過去のスコア</span><span class="chip">コイン付与なし</span></div><div class="open-note">英語力を測ってみる</div>';
+    card.innerHTML='<div class="eyebrow">ADAPTIVE ENGLISH CHECK</div><div class="title">もんすた実力診断</div><div class="desc">4級からスタート。単語力・文法力を15〜25問（標準20問）で測定し、1000点満点の成長を記録しよう。</div><div class="chips"><span class="chip">難易度が自動で変わる</span><span class="chip">1日何度でも</span><span class="chip">完了ごとに3コイン</span></div><div class="open-note">英語力を測ってみる</div>';
     diagnosticCards.prepend(card);
     const count=diagnosticSection.querySelector('.material-group-head>span');
     if(count)count.textContent=diagnosticCards.querySelectorAll('a.card').length+'教材';
