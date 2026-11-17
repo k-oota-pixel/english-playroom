@@ -5,7 +5,7 @@ import {renderPetSVG} from '../pet-art.js?v=2.4.3';
 
 const app=getApps().find(x=>x.name==='[DEFAULT]')||initializeApp({
  apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',
- storageBucket:'eiken-retr.firebasestorage.app',messagingSenderId:'231308672297',
+ storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',
  appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'
 });
 enableAppCheck(app);
@@ -190,7 +190,7 @@ function drawActions(){
  attack.setAttribute('aria-pressed',String(selectedAction.kind==='attack'));wrap.append(attack);
  const spellOwnerAllowed=(u,s)=>{
   if(u.hp<=0||u.mp<s.mp)return false;
-  if(u.role===-1)return true; // Server checks pet's level, which the client does not receive.
+  if(u.role===-1)return (u.level||1)>=s.level;
   if(u.role===0)return false;
   if(u.role===1)return ['mirogoro',...(u.rarity>=2?['mirogoron']:[])].includes(s.id);
   return ['mimuros',...(u.rarity>=2?['mimurose','meinon']:[]),...(u.rarity>=3?['meinoora']:[])].includes(s.id);
@@ -270,7 +270,7 @@ $('back-to-plaza').addEventListener('click',()=>{
 function receive(message){
  switch(message.type){
   case 'welcome':
-   clientId=message.self;players.clear();
+   clientId=message.self;closeModal();els.battle.hidden=true;els.finish.hidden=true;battleState=null;question=null;answerPending=false;players.clear();
    for(const tile of elements.values())tile.remove();elements.clear();
    for(const p of message.players||[])putPlayer(p);
    els.capacity.textContent=players.size+' / '+message.maxPlayers+' 人';
