@@ -19,6 +19,7 @@ const auth=getAuth(app),db=getFirestore(app);
 const pane=document.querySelector('#game'); const splash=document.querySelector('#quest-splash'); const startButton=document.querySelector('#quest-start');
 const status=document.querySelector('#status');
 let profile,legacyProfile,petData,walletRef,questions,run,walkView,busy=false,clock,generation=0;
+let collectionDismissAbort=null;
 
 function node(tag,content='',cls=''){
   const el=document.createElement(tag);
@@ -35,6 +36,8 @@ function button(label,handler,disabled=false,cls=''){
 }
 function clear(){
   clearInterval(clock);
+  collectionDismissAbort?.abort();
+  collectionDismissAbort=null;
   pane.replaceChildren();
 }
 function group(cls,...children){
@@ -425,32 +428,90 @@ function openCardUpgrade(card,key,entry,draft){
 }
 function collection(draft=[...profile.team]){
   clear();
+  const dismissController=new AbortController();
+  collectionDismissAbort=dismissController;
+  let activeCard=null;
+  const closeMenu=()=>{
+    if(!activeCard)return;
+    activeCard.classList.remove('is-open');
+    const trigger=activeCard.querySelector('.compact-card-trigger');
+    trigger?.setAttribute('aria-expanded','false');
+    activeCard=null;
+  };
+  const placeOverlay=tile=>{
+    const rect=tile.getBoundingClientRect();
+    tile.classList.toggle('overlay-right',rect.left+218>window.innerWidth-10);
+    tile.classList.toggle('overlay-up',rect.bottom+175>window.innerHeight-8&&rect.top>175);
+  };
+  document.addEventListener('pointerdown',event=>{
+    if(activeCard&&!activeCard.contains(event.target))closeMenu();
+  },{signal:dismissController.signal});
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&activeCard){
+      const trigger=activeCard.querySelector('.compact-card-trigger');
+      closeMenu();
+      trigger?.focus();
+      event.stopPropagation();
+    }
+  },{signal:dismissController.signal});
   pane.append(node('h2','仲間カード編成'),node('p','編成 '+draft.length+' / 3　経験の結晶 '+profile.crystals),
     group('choices',button('探索に戻る',lobby),button('編成を保存',()=>save(next=>{
       if(!draft.every(key=>next.owned[key]))return false;
       next.team=[...draft];
     },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
   for(const [role,label] of roles.entries()){
-    const section=group('collection owned-cards');
+    const section=group('collection owned-cards compact-owned-cards');
     for(const card of cards.filter(item=>item.role===role)){
       for(const [rarity,rank] of rarities.entries()){
         const key=card.id+'-'+rarity;
         const entry=profile.owned[key];
         if(!entry)continue;
+        const unit=stats(key,entry);
         const picked=draft.includes(key);
-        const {tile,line}=companionCard(key,entry,' · 重複 '+entry.copies);
+        const tile=rankedCard(group('unit compact-owned-card'),rarity);
+        if(picked)tile.classList.add('is-equipped');
+        const menuId='compact-card-menu-'+key;
+        const trigger=button('',()=>{
+          placeOverlay(tile);
+          const alreadyOpen=activeCard===tile;
+          closeMenu();
+          if(!alreadyOpen){
+            tile.classList.add('is-open');
+            trigger.setAttribute('aria-expanded','true');
+            activeCard=tile;
+          }
+        },false,'compact-card-trigger');
+        trigger.setAttribute('aria-expanded','false');
+        trigger.setAttribute('aria-controls',menuId);
+        trigger.setAttribute('aria-label',rank+' '+unit.name+' レベル'+entry.level+' 最大HP'+unit.maxHp+'。クリックで操作メニュー');
+        trigger.append(cardArt(unit.id),node('span',unit.name,'compact-card-name'));
+        trigger.addEventListener('pointerenter',()=>placeOverlay(tile));
+        trigger.addEventListener('focus',()=>placeOverlay(tile));
+        const values=[['レベル',entry.level+' / '+levelCaps[rarity]],...companionStats(unit),['重複',entry.copies]];
+        if(rarity)values.push(['スキル',unit.skill+' · CT '+unit.maxCt]);
+        const tip=group('compact-card-tooltip',node('strong',unit.name+' · '+rank),
+          node('small',roles[unit.role]),statList(values,'compact-stat-list'));
+        tip.setAttribute('role','tooltip');
+        if(picked){
+          const mark=node('span','✓','compact-card-equipped');
+          mark.setAttribute('aria-hidden','true');
+          tile.append(mark);
+        }
         const teamToggle=button(picked?'はずす':'いれる',
           ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
-        teamToggle.setAttribute('aria-pressed',String(picked));
         teamToggle.setAttribute('aria-label',card.name+' '+rank+(picked?'を編成からはずす':'を編成にいれる'));
         const atCap=entry.level>=levelCaps[rarity];
         const strengthen=button(atCap?'最大Lv.':'強化',()=>openCardUpgrade(card,key,entry,draft),
           atCap||(!profile.crystals&&!entry.copies));
-        line.append(group('card-actions',teamToggle,strengthen));
+        const menu=group('compact-card-menu',node('strong',unit.name+' · '+rank),
+          node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+'　HP '+unit.maxHp+'　重複 '+entry.copies),
+          group('compact-card-actions',teamToggle,strengthen));
+        menu.id=menuId;
+        tile.append(trigger,tip,menu);
         section.append(tile);
       }
     }
-    if(section.childElementCount) pane.append(node('h3',label),section);
+    if(section.childElementCount)pane.append(node('h3',label),section);
   }
 }
 function start(course){

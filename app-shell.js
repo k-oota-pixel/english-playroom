@@ -1,6 +1,6 @@
 import {scheduledBattleEntry} from './online-battle-schedule.js?v=2.4.89';
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.5.6';
+const MATERIAL_RELEASE='2.5.8';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']

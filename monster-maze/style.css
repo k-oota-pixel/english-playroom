@@ -427,3 +427,119 @@ body{
   background:radial-gradient(ellipse at 50% 0,#39305a,transparent 55%) #18162b!important;
   background-attachment:fixed!important;
 }
+
+/* Compact microSD-sized companion inventory. Gacha rewards and battle cards retain their sizes. */
+.collection.owned-cards.compact-owned-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(74px,78px));
+  gap:.42rem;
+  overflow:visible;
+}
+.compact-owned-cards .compact-owned-card{
+  position:relative;
+  isolation:isolate;
+  width:100%;
+  height:100px;
+  min-width:0;
+  padding:.24rem;
+  border-radius:.55rem;
+  gap:0;
+  overflow:visible;
+  align-content:stretch;
+  justify-items:stretch;
+  box-shadow:inset 0 0 0 1px var(--rank-trim);
+}
+.compact-owned-card.is-equipped{outline:2px solid #f6cc79;outline-offset:1px}
+.compact-owned-card:is(:hover,:focus-within,.is-open){z-index:30}
+.compact-owned-card button.compact-card-trigger{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  min-height:0;
+  padding:.7rem .05rem .06rem;
+  gap:.14rem;
+  border:0;
+  border-radius:.3rem;
+  background:transparent;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.compact-owned-card button.compact-card-trigger:hover{background:#ffffff12}
+.compact-owned-card .card-rank{top:.12rem;left:.12rem;font-size:.59rem;padding:.05rem .24rem}
+.compact-owned-card .card-art{width:min(100%,3.7rem);flex:0 0 auto}
+.compact-owned-card .card-art img{width:100%;max-height:100%;object-fit:contain}
+.compact-card-name{
+  display:block;
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#f9f2ff;
+  font-size:.6rem;
+  font-weight:750;
+  line-height:1.25;
+}
+.compact-card-equipped{
+  position:absolute;
+  z-index:3;
+  top:.1rem;
+  right:.12rem;
+  display:grid;
+  place-items:center;
+  width:1.05rem;
+  height:1.05rem;
+  border-radius:50%;
+  border:1px solid #fff0be;
+  background:#246347;
+  color:#fff;
+  font-size:.76rem;
+  font-weight:900;
+  pointer-events:none;
+}
+.compact-card-tooltip,.compact-card-menu{
+  position:absolute;
+  top:calc(100% + .35rem);
+  left:0;
+  width:212px;
+  max-width:calc(100vw - 1.5rem);
+  padding:.6rem .65rem;
+  border:1px solid #aa91bc;
+  border-radius:.6rem;
+  background:#20192e;
+  color:#faf7ff;
+  box-shadow:0 .5rem 1.1rem #090511d9;
+  text-align:left;
+  line-height:1.4;
+}
+.compact-card-tooltip{
+  visibility:hidden;
+  pointer-events:none;
+  z-index:35;
+}
+.compact-card-tooltip strong,.compact-card-menu strong{display:block;font-size:.82rem;color:#ffe3aa}
+.compact-card-tooltip small,.compact-card-menu small{display:block;font-size:.7rem;color:#e8dff0;line-height:1.45}
+.compact-stat-list{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .5rem;margin:.4rem 0 0;font-size:.72rem}
+.compact-stat-list dt{color:#ede6f5;min-width:0}
+.compact-stat-list dd{margin:0;color:#ffe7b4;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+@media(hover:hover){
+  .compact-owned-card:not(.is-open):hover .compact-card-tooltip{visibility:visible}
+}
+.compact-owned-card:not(.is-open) .compact-card-trigger:focus-visible ~ .compact-card-tooltip{visibility:visible}
+.compact-card-menu{display:none;z-index:40}
+.compact-owned-card.is-open .compact-card-menu{display:block}
+.compact-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem;margin-top:.5rem}
+.compact-owned-card .compact-card-actions button{
+  min-height:2.1rem;
+  padding:.3rem .25rem;
+  font-size:.78rem;
+}
+.compact-owned-card.overlay-right :is(.compact-card-tooltip,.compact-card-menu){left:auto;right:0}
+.compact-owned-card.overlay-up :is(.compact-card-tooltip,.compact-card-menu){top:auto;bottom:calc(100% + .35rem)}
+@media(max-width:520px){
+  .collection.owned-cards.compact-owned-cards{grid-template-columns:repeat(auto-fill,minmax(68px,74px));gap:.35rem}
+  .compact-owned-cards .compact-owned-card{height:94px}
+  .compact-owned-card .card-art{width:min(100%,3.4rem)}
+}
