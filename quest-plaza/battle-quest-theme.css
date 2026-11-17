@@ -199,3 +199,84 @@
 #battle .battle-unit.party-pet .battle-pet{filter:none}
 #battle .battle-unit.dead.party-pet .battle-pet{filter:grayscale(1)}
 #battle .battle-unit .card-art img{pointer-events:none}
+
+
+/* 2.5.25: Fit the battle into the device viewport while allowing the quiz
+   itself to scroll on exceptionally short devices. Command menus never push
+   the question below the screen. */
+#battle{padding:5px;overflow:hidden}
+#battle .battle-panel{
+ display:flex;flex-direction:column;min-height:0;
+ height:calc(100dvh - 10px);max-height:calc(100dvh - 10px);
+ width:min(100%,970px);overflow:hidden;padding:clamp(5px,1.1vh,10px);
+}
+#battle .battle-header{flex:0 0 auto;padding:2px 1px 6px}
+#battle .battle-header strong{font-size:clamp(11px,1.8vw,14px)}
+#battle .battle-teams{flex:0 0 auto;gap:4px;margin:3px 0}
+#battle .team h3{font-size:clamp(10px,1.75vw,12px);margin:0 0 3px}
+#battle .unit-row{gap:clamp(2px,.7vw,7px)}
+#battle .battle-unit{min-height:0;gap:2px;padding:4px 2px;border-radius:8px}
+#battle .battle-unit .card-art,#battle .battle-unit .battle-pet{
+ width:clamp(30px,6vh,49px);height:clamp(30px,6vh,49px);
+ flex-basis:clamp(30px,6vh,49px);margin:0 auto
+}
+#battle .battle-unit strong{font-size:clamp(9px,1.65vh,12px)}
+#battle .battle-hp,#battle .battle-mp,#battle .battle-unit .battle-ct{
+ font-size:clamp(9px,1.4vh,11px);line-height:1.15
+}
+#battle .hp-meter,#battle .mp-meter{height:5px;min-height:5px}
+#battle .battle-unit .card-rank{top:2px;left:2px;font-size:9px}
+#battle .battle-log{
+ flex:0 0 auto;margin:3px 0;min-height:23px;max-height:36px;
+ padding:4px 7px;font-size:clamp(10px,1.5vh,12px);line-height:1.35
+}
+#battle .battle-control{
+ display:flex;flex:1 1 0;min-height:0;flex-direction:column;
+ overflow:hidden;padding:0
+}
+#battle .battle-main-actions{flex:0 0 auto;gap:5px}
+#battle .battle-main-actions button{min-height:34px;padding:5px 6px;font-size:clamp(12px,1.9vh,14px)}
+#battle .battle-actions{
+ display:flex;flex-wrap:wrap;align-content:flex-start;align-items:center;
+ flex:0 1 auto;min-height:0;max-height:min(17dvh,124px);
+ overflow:auto;overscroll-behavior:contain;gap:5px;margin:4px 0 0;padding:1px 2px;
+}
+#battle .battle-actions button{min-height:30px;padding:6px 8px;font-size:clamp(10px,1.55vh,12px)}
+#battle .caster-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));
+ width:100%;gap:4px}
+#battle .spell-options,#battle .revive-options{display:flex;flex-wrap:wrap;gap:5px;width:100%;align-items:center}
+#battle .caster-options button{padding:4px 6px;min-height:28px;font-weight:800}
+#battle .spell-options button,#battle .revive-options button{min-height:30px}
+#battle .caster-hint{color:#f5d396;font-size:11px}
+#battle .battle-action-hint{flex:0 0 auto;font-size:10px;line-height:1.2;margin:3px 0 1px}
+#battle .quiz{
+ display:flex;flex-direction:column;
+ flex:1 1 0;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+ margin:3px 0 0;padding:8px 10px;
+}
+#battle .quiz h3{flex:0 0 auto;margin:4px 0 8px;font-size:clamp(15px,2.65vh,21px)}
+#battle .quiz .choices{flex:1 0 auto;gap:5px;align-content:stretch}
+#battle .quiz .choices button{min-height:33px;padding:6px;font-size:clamp(12px,1.8vh,15px)}
+#battle .quiz .quiz-feedback{margin:0}
+#battle .battle-finished{flex:1 1 auto;min-height:0;overflow:auto}
+#battle .energy-guard{--energy:#ffdf92}
+@media(min-width:800px) and (max-height:740px){
+ #battle .battle-teams{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #battle .unit-row{gap:3px}
+ #battle .battle-unit .card-art,#battle .battle-unit .battle-pet{
+  width:clamp(28px,7vh,47px);height:clamp(28px,7vh,47px);flex-basis:clamp(28px,7vh,47px)
+ }
+ #battle .battle-unit{padding:3px 1px}
+}
+@media(max-width:600px){
+ #battle .battle-panel{padding:5px}
+ #battle .battle-teams{gap:4px}
+ #battle .battle-unit{padding:3px 1px}
+ #battle .battle-unit .card-art,#battle .battle-unit .battle-pet{
+  width:clamp(27px,5.5vh,38px);height:clamp(27px,5.5vh,38px);flex-basis:clamp(27px,5.5vh,38px)
+ }
+ #battle .battle-hp,#battle .battle-mp{font-size:9px}
+ #battle .battle-main-actions button{min-height:32px}
+ #battle .battle-actions{max-height:min(16dvh,110px)}
+ #battle .quiz{padding:5px 7px}
+}
