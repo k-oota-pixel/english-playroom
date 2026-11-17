@@ -7,8 +7,9 @@
 <meta name="theme-color" content="#17273b">
 <title>もんすた王国・オンライン広場</title>
 <link rel="icon" href="../favicon.svg">
-<link rel="stylesheet" href="./style.css?v=2.5.23">
-<script type="module" src="./app.js?v=2.5.23"></script>
+<link rel="stylesheet" href="./style.css?v=2.5.24">
+<link rel="stylesheet" href="./battle-quest-theme.css?v=2.5.24">
+<script type="module" src="./app.js?v=2.5.24"></script>
 </head>
 <body>
 <header class="bar">
@@ -49,16 +50,29 @@
  </section>
 </div>
 <div id="battle" class="battle-overlay" hidden>
- <div class="battle-panel">
-  <div class="battle-header"><strong>⚔ REALTIME BATTLE</strong><span id="battle-grade"></span><span id="battle-clock">05:00</span></div>
+ <div id="battle-panel" class="battle-panel battle-stage" aria-label="もんすたクエスト・リアルタイム対戦">
+  <div class="battle-header">
+   <strong>⚔ REALTIME BATTLE</strong>
+   <span id="battle-grade"></span>
+   <span id="battle-clock">05:00</span>
+   <button id="battle-forfeit" type="button">対戦を終了する</button>
+  </div>
   <div id="battle-teams" class="battle-teams"></div>
+  <div id="battle-fx" class="battle-fx" aria-hidden="true"></div>
   <div id="battle-log" class="battle-log" aria-live="polite"></div>
   <div id="battle-control" class="battle-control">
-    <div id="battle-actions" class="battle-actions"></div>
-    <div id="quiz" class="quiz"></div>
+   <nav id="battle-tabs" class="battle-main-actions" aria-label="戦闘コマンド">
+    <button type="button" data-battle-tab="attack" aria-pressed="true">攻撃</button>
+    <button type="button" data-battle-tab="magic" aria-pressed="false">魔法</button>
+    <button type="button" data-battle-tab="items" aria-pressed="false">アイテム</button>
+   </nav>
+   <div id="battle-actions" class="battle-actions"></div>
+   <p id="battle-action-hint" class="battle-action-hint">通常攻撃を選択中</p>
+   <div id="quiz" class="quiz"></div>
   </div>
   <div id="battle-finished" class="battle-finished" hidden>
-   <h2 id="battle-outcome"></h2><button id="back-to-plaza" type="button">広場に戻る</button>
+   <h2 id="battle-outcome"></h2>
+   <button id="back-to-plaza" type="button">広場に戻る</button>
   </div>
  </div>
 </div>
