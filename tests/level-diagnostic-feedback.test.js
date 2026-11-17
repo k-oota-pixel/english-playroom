@@ -112,7 +112,7 @@ test('page offers unknown, model answer and next buttons; review does not add Fi
   assert.match(app,/reviewQueue=selectReviewQuestions\(session.answers,askedQuestions,2\)/);
   assert.match(app,/void saveResult\(\)/);
   assert.match(app,/session.finished=true/);
-  assert.equal((app.match(/runTransaction\(db\)/g)||[]).length,1);
+  assert.equal((app.match(/runTransaction\(db,/g)||[]).length,1);
 });
 
 test('diagnostic word-order choices hide capitals and trailing punctuation without changing grading',()=>{
