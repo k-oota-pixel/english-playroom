@@ -176,7 +176,7 @@ function drawTeams(){
  const own=battleState.teams.find(t=>t.id===clientId),foe=battleState.teams.find(t=>t.id!==clientId);
  if(!own||!foe)return;
  els.teams.replaceChildren(paintTeam(own,true),paintTeam(foe,false));
- els.battleLog.textContent=battleState.log.slice(-2).join('　｜　');
+ els.battleLog.textContent=battleState.log.slice(-2).join('　｜　')+(feedback?'　｜　'+feedback:'');
  els.grade.textContent='英検'+(gradeNames[battleState.grade]||battleState.grade);
  if(!question||answerPending)return;
  drawActions();
@@ -211,7 +211,7 @@ function drawActions(){
  });
 }
 function showQuiz(q){
- question=q;answerPending=false;feedback='';
+ question=q;answerPending=false;
  const box=els.quiz;box.replaceChildren();
  const title=node('small',q.label+' · 残り時間 ');
  const remaining=node('span','','countdown');remaining.id='quiz-time';title.append(remaining);
@@ -235,10 +235,11 @@ function showQuiz(q){
   for(const option of q.options||[])choiceBox.append(button(option,()=>answer(option)));
   box.append(choiceBox);
  }
+ drawActions();
 }
 function answer(value){
  if(!question||answerPending)return;
- const q=question;answerPending=true;
+ const q=question;answerPending=true;feedback='';
  const request={type:'answer',seq:q.seq,value,target:selectedTarget,action:{...selectedAction,target:selectedTarget}};
  if(!send(request)){answerPending=false;note('通信が切れています。再接続します。');return;}
  for(const b of els.quiz.querySelectorAll('button'))b.disabled=true;
@@ -296,7 +297,8 @@ function receive(message){
   case 'question':showQuiz(message);return;
   case 'feedback':
    feedback=message.correct?'正解！ 攻撃・行動成功':'不正解！ 味方全員に10％ダメージ';
-   note(feedback+'　正解：'+message.answer);return;
+   feedback+='　正解：'+message.answer;
+   note(feedback);if(battleState)drawTeams();return;
   case 'battleEnd':battleFinished(message);return;
  }
 }
