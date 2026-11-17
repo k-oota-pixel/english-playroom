@@ -25,7 +25,7 @@ function install(){
     body[data-screen-theme="dark"] #monstudyMaterialReturn :is(button,a.ms-material-home){background:#2f4638;color:#ebf6ec;border-color:#719382}
     #monstudyMaterialReturn :is(button,a.ms-material-home):focus-visible{outline:3px solid #dfb54d;outline-offset:2px}
     #monstudyShell.ms-showing-material .ms-material{height:calc(100% - 44px)}
-    @media(max-width:800px){#monstudyMaterialReturn{height:40px;padding:5px 10px}#monstudyMaterialReturn button{font-size:11px;padding:6px 10px}#monstudyShell.ms-showing-material .ms-material{height:calc(100% - 40px)}}
+    @media(max-width:800px){#monstudyMaterialReturn{height:40px;padding:5px 10px}#monstudyMaterialReturn :is(button,a.ms-material-home){font-size:11px;padding:6px 10px}#monstudyShell.ms-showing-material .ms-material{height:calc(100% - 40px)}}
   `;
   document.head.append(style);
 
