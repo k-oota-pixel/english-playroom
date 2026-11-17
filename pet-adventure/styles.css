@@ -111,7 +111,7 @@
 #battleView .boss-battle #battleStatus{color:#efd3ab}
 #battleView .boss-battle .enemy-visual{filter:drop-shadow(0 5px 8px #ba4b8d50)}
 
-/* Three adventure destinations: wide desktop grid, then tablet and mobile layouts. */
+/* Four adventure destinations: balanced desktop, tablet and mobile grids. */
 body:not(.battle-mode) .app-shell{width:min(1100px,100%)}
 .adventure-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .adventure-card{display:flex;flex-direction:column;min-width:0}
@@ -191,7 +191,7 @@ body:not(.battle-mode) .app-shell{width:min(1240px,100%);padding:18px clamp(12px
 .dungeon-hub-eyebrow{display:block;font-size:11px;letter-spacing:.25em;color:#ebca82;font-weight:950}
 .dungeon-hub-header h1{margin:3px 0 5px!important;font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;font-weight:1000;color:#ffd67e!important;font-size:clamp(30px,5.2vw,56px)!important;line-height:1.25;letter-spacing:.04em;text-shadow:0 4px #4d2819,0 6px 0 #142238,0 0 20px #f9c86355;-webkit-text-stroke:.6px #713e18}
 .dungeon-hub .select-intro{margin:0;font-size:clamp(12px,1.5vw,16px);line-height:1.55;color:#fff8e7;font-weight:850;text-shadow:0 2px 4px #091921}
-.dungeon-hub .adventure-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0}
+.dungeon-hub .adventure-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:0}
 .dungeon-hub .adventure-choice{display:flex;flex-direction:column;gap:10px;min-width:0;width:auto;grid-column:auto;justify-self:stretch}
 .dungeon-hub .adventure-card{display:flex;flex:1;flex-direction:column;overflow:hidden;border:5px solid #6d5240;border-radius:19px;background:linear-gradient(180deg,#ffe7b6 0%,#eed0a1 70%,#e6c18b 100%);color:#34251b;box-shadow:0 0 0 2px #d4a76f,0 9px 0 #19212d,0 16px 22px #02091388;transition:transform .16s,box-shadow .16s}
 .dungeon-hub .adventure-card:hover{transform:translateY(-3px);box-shadow:0 0 0 2px #ffda91,0 12px 0 #19212d,0 18px 30px #02091399}
@@ -212,6 +212,13 @@ body:not(.battle-mode) .app-shell{width:min(1240px,100%);padding:18px clamp(12px
 .dungeon-hub .online-battle-link{display:inline-flex;justify-content:center;align-items:center;width:min(100%,460px);min-height:56px;padding:10px 22px;border-radius:13px;border:2px solid #a0c0df;text-decoration:none;font-size:clamp(14px,2vw,18px);font-weight:950;color:#fff;background:linear-gradient(#3e7ca8,#234a75);box-shadow:0 5px #101d35,0 10px 18px #07142275;text-shadow:0 2px #102c4c}
 .dungeon-hub .footnote{color:#d6d3c8;font-size:11px;margin-top:19px}
 .dungeon-hub .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;clip:rect(0,0,0,0);white-space:nowrap;overflow:hidden}
-@media(max-width:860px){.dungeon-hub .adventure-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.dungeon-hub .adventure-choice:last-child{grid-column:1/-1;width:min(100%,420px);justify-self:center}.dungeon-hub .adventure-copy p{font-size:12px}.dungeon-hub .adventure-copy .adventure-cta{font-size:15px}}
-@media(max-width:600px){.dungeon-hub .adventure-cards{grid-template-columns:minmax(0,1fr);gap:20px}.dungeon-hub .adventure-choice:last-child{grid-column:auto;width:100%}.dungeon-hub .adventure-copy{padding:13px}.dungeon-hub .adventure-copy p{min-height:42px}.dungeon-hub .dungeon-mode-info li{font-size:12px}.dungeon-hub .adventure-copy .adventure-cta{font-size:16px}.dungeon-hub .dungeon-hub-header{margin-bottom:18px}}
+@media(max-width:860px){.dungeon-hub .adventure-cards{gap:14px}.dungeon-hub .adventure-choice{grid-column:auto;width:auto;justify-self:stretch}.dungeon-hub .adventure-copy p{font-size:12px}.dungeon-hub .adventure-copy .adventure-cta{font-size:15px}}
+@media(max-width:600px){.dungeon-hub .adventure-cards{grid-template-columns:minmax(0,1fr);gap:20px}.dungeon-hub .adventure-choice{grid-column:auto;width:100%;justify-self:stretch}.dungeon-hub .adventure-copy{padding:13px}.dungeon-hub .adventure-copy p{min-height:42px}.dungeon-hub .dungeon-mode-info li{font-size:12px}.dungeon-hub .adventure-copy .adventure-cta{font-size:16px}.dungeon-hub .dungeon-hub-header{margin-bottom:18px}}
 @media(prefers-reduced-motion:reduce){.dungeon-hub .adventure-card{transition:none}}
+
+/* Monster Quest shares the same destination-card proportions and ranking alignment. */
+.dungeon-hub .quest-card .dungeon-card-art{background:linear-gradient(135deg,#261e45,#4e3071)}
+.dungeon-hub .quest-card .dungeon-card-art img{object-fit:cover;object-position:center 40%}
+.dungeon-hub .quest-card .adventure-cta{border-color:#285a76;background:linear-gradient(#4fa3c4,#245d85);box-shadow:inset 0 2px 1px #d5f3ff99,0 4px #1b4665}
+.dungeon-hub .adventure-ranking-button.quest-ranking-pending:disabled{opacity:.72;cursor:not-allowed;filter:none;box-shadow:0 3px #22323f;color:#7b6b55}
+.dungeon-hub .adventure-ranking-button.quest-ranking-pending:disabled:hover{filter:none;transform:none}
