@@ -21,6 +21,9 @@ let state=blankState();
 let revision=0;
 let loading=false;
 let saving=false;
+// Whether the user has explicitly opened a free-text input (UI-only, no database writes).
+const customValueSlots=new Set();
+const customOptionSlots=new Set();
 
 function notice(message,tone=''){
   const node=$('notice');
@@ -58,7 +61,8 @@ function updateOption(i,text){
 function renderValues(){
   $('valuesEditor').innerHTML=state.values.map((value,i)=>{
     const isPreset=VALUE_PRESETS.includes(value.label);
-    const selected=isPreset?value.label:(value.label?'__custom':'');
+    const isCustom=customValueSlots.has(i)||(!isPreset&&Boolean(value.label));
+    const selected=isCustom?'__custom':(isPreset?value.label:'');
     const choices='<option value="">価値観を選択</option>'+
       VALUE_PRESETS.map(label=>'<option value="'+esc(label)+'"'+(selected===label?' selected':'')+'>'+esc(label)+'</option>').join('')+
       '<option value="__custom"'+(selected==='__custom'?' selected':'')+'>自由記述する</option>';
@@ -69,7 +73,7 @@ function renderValues(){
       '<div class="edit-title"><span><b>'+(i+1)+'</b> 判断基準 '+(i+1)+'</span></div>'+
       '<div class="field"><label for="valueSelect'+i+'">大切にしたいこと</label>'+
       '<select id="valueSelect'+i+'" data-role="value-select" data-index="'+i+'">'+choices+'</select></div>'+
-      '<div class="field" style="margin-top:8px"><label for="valueInput'+i+'">自由記述（候補にない場合）</label>'+
+      '<div class="field custom-field"'+(isCustom?'':' hidden')+' style="margin-top:8px"><label for="valueInput'+i+'">あなたの言葉で入力</label>'+
       '<input id="valueInput'+i+'" data-role="value-input" data-index="'+i+'" type="text" maxlength="60" value="'+esc(isPreset?'':value.label)+'" placeholder="例：家族との時間を確保したい"></div>'+
       '<div class="weight-line"><span>あなたにとっての重要度</span><div class="stars" role="group" aria-label="重要度">'+stars+'</div><span class="star-count">'+value.weight+' / 5</span></div>'+
       '</div>';
@@ -79,7 +83,8 @@ function renderOptions(){
   $('optionsEditor').innerHTML=state.options.map((option,i)=>{
     const config=CHOICES[option.kind];
     const isPreset=config.examples.includes(option.name);
-    const selected=isPreset?option.name:(option.name?'__custom':'');
+    const isCustom=customOptionSlots.has(i)||(!isPreset&&Boolean(option.name));
+    const selected=isCustom?'__custom':(isPreset?option.name:'');
     const kinds=Object.entries(CHOICES).map(([key,value])=>
       '<button class="kind'+(option.kind===key?' active':'')+'" type="button" data-action="kind" data-index="'+i+'" data-kind="'+key+'" aria-pressed="'+(option.kind===key)+'">'+esc(value.label)+'</button>'
     ).join('');
@@ -91,7 +96,7 @@ function renderOptions(){
       '<div class="kinds" role="group" aria-label="比較候補'+(i+1)+'の種類">'+kinds+'</div>'+
       '<div class="option-fields"><div class="field"><label for="optionSelect'+i+'">詳しい'+esc(config.label)+'を選ぶ</label>'+
       '<select id="optionSelect'+i+'" data-role="option-select" data-index="'+i+'">'+choices+'</select></div>'+
-      '<div class="field"><label for="optionInput'+i+'">候補にない場合は自由記述</label>'+
+      '<div class="field custom-field"'+(isCustom?'':' hidden')+'><label for="optionInput'+i+'">候補にない場合は自由記述</label>'+
       '<input type="text" id="optionInput'+i+'" data-role="option-input" data-index="'+i+'" value="'+esc(isPreset?'':option.name)+'" maxlength="60" placeholder="例：地域創生学部"></div></div>'+
       '<p class="custom-tip">別の候補に変えると、この候補の評価4か所は未評価に戻ります。</p></div>';
   }).join('');
@@ -196,9 +201,11 @@ $('valuesEditor').addEventListener('change',event=>{
   const target=event.target;
   const i=Number(target.dataset.index);
   if(target.dataset.role==='value-select'){
-    updateValue(i,target.value==='__custom'?'':target.value);
+    const custom=target.value==='__custom';
+    if(custom)customValueSlots.add(i);else customValueSlots.delete(i);
+    updateValue(i,custom?'':target.value);
     renderAll();
-    if(target.value==='__custom')$('valueInput'+i)?.focus();
+    if(custom)$('valueInput'+i)?.focus();
   }
   if(target.dataset.role==='value-input')renderValues();
 });
@@ -212,9 +219,11 @@ $('optionsEditor').addEventListener('change',event=>{
   const target=event.target;
   const i=Number(target.dataset.index);
   if(target.dataset.role==='option-select'){
-    updateOption(i,target.value==='__custom'?'':target.value);
+    const custom=target.value==='__custom';
+    if(custom)customOptionSlots.add(i);else customOptionSlots.delete(i);
+    updateOption(i,custom?'':target.value);
     renderAll();
-    if(target.value==='__custom')$('optionInput'+i)?.focus();
+    if(custom)$('optionInput'+i)?.focus();
   }
   if(target.dataset.role==='option-input')renderOptions();
 });
@@ -231,7 +240,7 @@ $('optionsEditor').addEventListener('click',event=>{
   if(!button)return;
   const i=Number(button.dataset.index),kind=button.dataset.kind;
   if(state.options[i].kind===kind)return;
-  state.options[i]={kind,name:''};clearColumn(i);
+  state.options[i]={kind,name:''};clearColumn(i);customOptionSlots.delete(i);
   markChanged();renderAll();
 });
 function onRatingClick(event){
@@ -257,11 +266,13 @@ function confirmReplace(){
 }
 $('sampleButton').addEventListener('click',()=>{
   if(!confirmReplace())return;
+  customValueSlots.clear();customOptionSlots.clear();
   state=sampleState();markChanged();renderAll();
   notice('添付画像と同じサンプルを表示しました。点数や価値観を変えて試せます。');
 });
 $('resetButton').addEventListener('click',()=>{
   if(!confirmReplace())return;
+  customValueSlots.clear();customOptionSlots.clear();
   state=blankState();markChanged();renderAll();
   notice('新しい表にしました。この端末に仮保存されています。');
 });
