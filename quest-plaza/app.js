@@ -505,7 +505,7 @@ function showQuiz(q){
 function answer(value){
  if(!question||answerPending)return;
  const q=question;answerPending=true;feedback='';
- const request={type:'answer',seq:q.seq,value,target:selectedTarget,action:{...selectedAction,target:selectedTarget}};
+ const request={type:'answer',seq:q.seq,value,action:{...selectedAction,target:selectedTarget,reviveTarget:selectedReviveTarget}};
  if(!send(request)){answerPending=false;note('通信が切れています。再接続します。');return;}
  for(const b of els.quiz.querySelectorAll('button'))b.disabled=true;
  const msg=$('quiz-feedback');if(msg)msg.textContent='判定中…';
@@ -514,7 +514,11 @@ function startBattle(data){
  closeModal();els.battle.hidden=false;els.finish.hidden=true;els.quiz.hidden=false;els.battleActions.hidden=false;
  els.grade.textContent='英検'+(gradeNames[data.grade]||data.grade);
  els.quiz.replaceChildren(node('p','対戦問題を読み込んでいます…'));
- selectedAction={kind:'attack'};selectedTarget=0;question=null;answerPending=false;battleState=null;
+ selectedAction={kind:'attack'};selectedTab='attack';selectedReviveTarget=-1;
+ selectedTarget=0;question=null;answerPending=false;battleState=null;feedback='';
+ $('battle-tabs').hidden=false;$('battle-action-hint').hidden=false;
+ $('battle-forfeit').hidden=false;$('battle-forfeit').disabled=false;
+ $('battle-fx').replaceChildren();
 }
 function updateClock(){
  if(els.battle.hidden||!battleEndAt)return;
@@ -527,11 +531,23 @@ function updateClock(){
 }
 function battleFinished(message){
  question=null;answerPending=true;els.finish.hidden=false;els.quiz.hidden=true;els.battleActions.hidden=true;
+ $('battle-tabs').hidden=true;$('battle-action-hint').hidden=true;$('battle-forfeit').hidden=true;
  $('battle-outcome').textContent=(message.winner===clientId?'勝利！':message.winner?'敗北':'引き分け')+'　'+message.reason;
 }
 $('back-to-plaza').addEventListener('click',()=>{
  els.battle.hidden=true;els.quiz.hidden=false;els.battleActions.hidden=false;els.finish.hidden=true;
- battleState=null;question=null;selectedAction={kind:'attack'};updateNearby();
+ $('battle-tabs').hidden=false;$('battle-action-hint').hidden=false;
+ $('battle-forfeit').hidden=false;
+ $('battle-fx').replaceChildren();
+ battleState=null;question=null;selectedAction={kind:'attack'};selectedTab='attack';updateNearby();
+});
+$('battle-forfeit').addEventListener('click',()=>{
+ if(!battleState||els.finish.hidden===false)return;
+ if(!confirm('対戦を終了しますか？\n終了すると敗北となり、相手の勝利になります。'))return;
+ if(send({type:'forfeit'})){
+  $('battle-forfeit').disabled=true;
+  note('対戦の終了をリクエストしました。');
+ }
 });
 function receive(message){
  switch(message.type){
@@ -561,6 +577,7 @@ function receive(message){
   case 'invite':showInvite(message);return;
   case 'battleStart':startBattle(message);return;
   case 'battleState':battleState=message;battleEndAt=Date.now()+message.remaining;drawTeams();updateClock();return;
+  case 'battleAction':playBattleEffect(message);return;
   case 'question':showQuiz(message);return;
   case 'feedback':
    feedback=message.correct?'正解！ 攻撃・行動成功':'不正解！ 味方全員に10％ダメージ';
