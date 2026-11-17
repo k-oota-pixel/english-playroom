@@ -219,7 +219,7 @@ function lobby(){
   const allies=profile.team.map(key=>{
     const entry=profile.owned[key];
     const unit=stats(key,entry);
-    const special=unit.rarity?skillInfo(unit):null;
+    const special=(unit.role>0||unit.rarity)?skillInfo(unit):null;
     return rankedCard(rosterCard(cardArt(unit.id),unit.name,roles[unit.role]+' · Lv.'+entry.level,
       companionStats(unit),special),unit.rarity);
   });
@@ -1059,9 +1059,7 @@ function battle(){
   };
   const attack=button('攻撃',()=>chooseAction('physical'));
   attack.setAttribute('aria-pressed',String(run.action==='physical'));
-  const magic=button('魔法',()=>{
-    if(run.action==='physical')chooseAction('magic');
-  });
+  const magic=button('魔法',()=>chooseAction('magic'));
   magic.setAttribute('aria-pressed',String(run.action!=='physical'));
   const actions=group('choices battle-actions',attack,magic,button('アイテム',()=>openSupplies('items',true)));
   const log=node('ol','','battle-log');
