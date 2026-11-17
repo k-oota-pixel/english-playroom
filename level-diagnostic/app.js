@@ -6,7 +6,7 @@ import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfte
   writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
   evaluateAttempt,modelAnswer,selectReviewQuestions,
-  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.132';
+  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.136';
 
 const $=id=>document.getElementById(id);
 const app=getMonstudyApp();
@@ -21,6 +21,8 @@ const fmtDate=atMs=>atMs?new Date(Number(atMs)).toLocaleString('ja-JP',{year:'nu
 const escapeNumber=n=>Number.isFinite(Number(n))?Number(n):0;
 const show=which=>{
   for(const key of ['entry','test','result'])$(key).hidden=key!==which;
+  document.body.classList.toggle('playing-diagnostic',which==='test');
+  if(which==='test')window.scrollTo(0,0);
 };
 const notice=text=>{$('notice').textContent=text;$('notice').hidden=!text;};
 const walletRef=()=>doc(db,'users',user.uid,'apps','english-playroom');
@@ -189,6 +191,8 @@ function renderQuestion(){
   const question=currentQuestion;
   if(!question)return;
   answerShown=false;
+  $('test').classList.remove('answered');
+  $('questionWorkspace').scrollTop=0;
   $('feedback').hidden=true;
   $('nextBtn').hidden=true;
   $('unknownBtn').hidden=false;$('unknownBtn').disabled=false;
@@ -242,7 +246,8 @@ function revealModelAnswer(question,selected,correct){
     if(i===question.correctIndex)b.classList.add('is-correct');
     else if(i===selected)b.classList.add('is-incorrect');
   }
-  $('unknownBtn').disabled=true;
+  $('unknownBtn').hidden=true;$('unknownBtn').disabled=true;
+  $('test').classList.add('answered');
   if(question.source==='order')renderOrderChoices();
   $('feedback').hidden=false;
   $('nextBtn').hidden=false;
@@ -251,7 +256,7 @@ function revealModelAnswer(question,selected,correct){
   $('nextBtn').textContent=lastReview?'診断結果を見る':
     reviewMode?'次の復習問題へ':
     lastQuestion?(session.answers.some(a=>!a.correct)?'間違えた問題を復習する':'診断結果を見る'):'次の問題へ';
-  $('nextBtn').focus();
+  // Avoid moving focus here: browser auto-scrolling used to hide the question.
 }
 function answer(value){
   if(!session||!currentQuestion||answerShown)return;

@@ -50,3 +50,50 @@ footer{margin:24px auto;text-align:center;color:#78909d;font-size:12px;line-heig
 .choices button.is-incorrect{border-color:#d17a70;background:#fff0ed}
 .token-zone button:disabled{opacity:1;cursor:default}
 #nextBtn{margin-top:12px}
+
+/* The test takes one viewport. Only its question area scrolls; the answer
+   controls stay in the same place before and after submission. */
+body.playing-diagnostic .diagnostic{width:min(100%,920px);padding:8px 12px}
+body.playing-diagnostic .top,body.playing-diagnostic footer{display:none}
+body.playing-diagnostic #notice:not([hidden]){position:fixed;z-index:20;top:10px;left:50%;transform:translateX(-50%);width:min(90vw,620px);box-shadow:0 4px 20px #1d456330}
+#test{min-height:0}
+body.playing-diagnostic #test{height:calc(100dvh - 16px);display:flex;flex-direction:column;overflow:hidden;padding:clamp(14px,2vw,22px)}
+body.playing-diagnostic #test .question-head,
+body.playing-diagnostic #test .progress,
+body.playing-diagnostic #test .progress-label{flex:none}
+.question-workspace{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:3px}
+#test .prompt{margin:16px 0 19px;line-height:1.55}
+#test.answered .prompt{margin-bottom:12px}
+#test.answered .choices button{min-height:50px;padding:10px 12px}
+.question-actions{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;margin-top:9px;padding-top:10px;border-top:1px solid #dfebf2}
+.question-actions #unknownBtn,.question-actions #nextBtn{grid-column:1;grid-row:1;min-height:48px;margin:0}
+.question-actions #cancelBtn{grid-column:2;grid-row:1;min-height:48px;margin:0;padding:9px 13px;font-size:13px}
+#test .answer-feedback{display:flex;flex-direction:column;gap:2px;max-height:clamp(135px,31dvh,240px);overflow:hidden;margin-top:12px;padding:11px 13px;line-height:1.5}
+#test .answer-summary{flex:none}
+#test .answer-status{font-size:15px;margin:0 0 3px}
+#test .answer-key{font-size:15px;margin:2px 0}
+#test .answer-details{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#test .answer-complete{font-size:13px;margin:5px 0}
+#test .gloss-heading{font-size:12px;margin:6px 0 5px}
+#test .gloss-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#test .gloss-list li{font-size:12px;padding:5px 7px}
+@media(max-width:520px){
+  body.playing-diagnostic .diagnostic{padding:5px}
+  body.playing-diagnostic #test{height:calc(100dvh - 10px);padding:12px;border-radius:14px}
+  #test .prompt{font-size:clamp(17px,5vw,22px);margin:12px 0;line-height:1.5}
+  #test .choices button{min-height:56px;padding:11px 12px}
+  #test.answered .choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  #test.answered .choices button{min-height:42px;padding:7px;font-size:14px}
+  .question-actions #cancelBtn{font-size:11px;padding:9px 8px}
+  #test .answer-feedback{max-height:clamp(130px,30dvh,210px);padding:9px 10px}
+  #test .gloss-list{grid-template-columns:1fr}
+}
+@media(max-height:570px){
+  body.playing-diagnostic #test{padding:10px}
+  #test .question-head h2{margin:2px 0 4px}
+  #test .progress-label{font-size:11px}
+  #test .prompt{margin:9px 0}
+  #test .answer-feedback{max-height:clamp(95px,29dvh,180px)}
+  .question-actions{margin-top:5px;padding-top:6px}
+}
+

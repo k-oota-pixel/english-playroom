@@ -8,8 +8,8 @@
   <style id="monstudy-access-lock">body{visibility:hidden!important}html{background:#f3f7fc}</style>
   <script type="module" src="../access-gate.js?v=2.4.37"></script>
   <script src="../shell-bridge.js?v=2.1.1"></script>
-  <link rel="stylesheet" href="./style.css?v=2.4.132">
-  <script type="module" src="./app.js?v=2.4.132"></script>
+  <link rel="stylesheet" href="./style.css?v=2.4.136">
+  <script type="module" src="./app.js?v=2.4.136"></script>
 </head>
 <body>
 <main class="diagnostic">
@@ -51,30 +51,37 @@
     </div>
     <div class="progress" aria-label="出題進捗"><div id="progressFill"></div></div>
     <small class="progress-label" id="questionProgress">標準20問（15〜25問）・単語と語彙文法を交互に出題</small>
-    <p class="prompt" id="questionText"></p>
-    <div id="choices" class="choices" role="group" aria-label="選択肢"></div>
-    <div id="orderPanel" class="order-panel" hidden>
-      <p class="order-label">並べた語句（タップすると戻せます）</p>
-      <div id="selectedTokens" class="token-zone chosen" aria-label="並べた語句" role="group"></div>
-      <p class="order-label">下の語句をタップして、英文を完成させよう</p>
-      <div id="availableTokens" class="token-zone" aria-label="並べ替える語句" role="group"></div>
-      <div class="order-actions">
-        <button class="secondary" id="orderResetBtn" type="button">最初から並べ直す</button>
-        <button class="primary" id="orderSubmitBtn" type="button" disabled>この語順で回答する</button>
+    <div id="questionWorkspace" class="question-workspace">
+      <p class="prompt" id="questionText"></p>
+      <div id="choices" class="choices" role="group" aria-label="選択肢"></div>
+      <div id="orderPanel" class="order-panel" hidden>
+        <p class="order-label">並べた語句（タップすると戻せます）</p>
+        <div id="selectedTokens" class="token-zone chosen" aria-label="並べた語句" role="group"></div>
+        <p class="order-label">下の語句をタップして、英文を完成させよう</p>
+        <div id="availableTokens" class="token-zone" aria-label="並べ替える語句" role="group"></div>
+        <div class="order-actions">
+          <button class="secondary" id="orderResetBtn" type="button">最初から並べ直す</button>
+          <button class="primary" id="orderSubmitBtn" type="button" disabled>この語順で回答する</button>
+        </div>
       </div>
+      <section class="answer-feedback" id="feedback" aria-live="polite" aria-label="模範解答" hidden>
+        <div class="answer-summary">
+          <p class="answer-status" id="answerStatus"></p>
+          <p class="answer-key" id="answerCorrect"></p>
+        </div>
+        <div class="answer-details">
+          <p class="answer-complete" id="answerSentence" hidden></p>
+          <p class="answer-complete" id="answerAlternatives" hidden></p>
+          <p class="gloss-heading" id="answerPairsHeading" hidden>選択肢の英語と日本語訳</p>
+          <ol class="gloss-list" id="answerPairs" hidden></ol>
+        </div>
+      </section>
     </div>
-    <button class="secondary wide unknown-answer" id="unknownBtn" type="button">わからない</button>
-    <section class="answer-feedback" id="feedback" aria-live="polite" aria-label="模範解答" hidden>
-      <p class="answer-status" id="answerStatus"></p>
-      <p class="answer-key" id="answerCorrect"></p>
-      <p class="answer-complete" id="answerSentence" hidden></p>
-      <p class="answer-complete" id="answerAlternatives" hidden></p>
-      <p class="gloss-heading" id="answerPairsHeading" hidden>選択肢の英語と日本語訳</p>
-      <ol class="gloss-list" id="answerPairs" hidden></ol>
-    </section>
-    <button class="primary wide" id="nextBtn" type="button" hidden>次の問題へ</button>
-    <p class="fine">回答後、すぐに模範解答を確認できます。診断終了後は最大2問を復習します（復習は採点対象外）。</p>
-    <button class="secondary" id="cancelBtn" type="button">診断を中断する</button>
+    <div class="question-actions">
+      <button class="secondary wide unknown-answer" id="unknownBtn" type="button">わからない</button>
+      <button class="primary wide" id="nextBtn" type="button" hidden>次の問題へ</button>
+      <button class="secondary" id="cancelBtn" type="button">診断を中断する</button>
+    </div>
   </section>
   <section id="result" class="panel" hidden>
     <p class="eyebrow">DIAGNOSTIC RESULT</p>
