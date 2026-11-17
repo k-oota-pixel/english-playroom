@@ -269,18 +269,6 @@ function updateNearby(){
   els.nearest.append(button('⚔ '+near.nickname+' と対戦',()=>openRequest(near.id)));
  }else els.nearest.textContent='近くのプレイヤーを探そう';
 }
-function initDecor(){
- const root=$('decorations');
- const placements=[
-  ...[[1,1],[4,1],[7,2],[41,1],[45,2],[2,27],[6,29],[43,28],[46,27],
-   [1,9],[1,19],[46,8],[46,21],[10,1],[37,1],[11,30],[38,30]].map(([x,y])=>[x,y,'🌳','tree']),
-  ...[[17,2],[19,3],[28,3],[29,29],[18,29],[35,29],[8,10],[39,11],[39,23],[8,23]].map(([x,y])=>[x,y,'🌸','flower']),
-  ...[[17,12],[28,19],[29,12],[17,20]].map(([x,y])=>[x,y,'🪑','bench'])
- ];
- for(const [x,y,emoji,cls] of placements){
-  const el=node('span',emoji,'decoration '+cls);el.style.left=(x*CELL)+'px';el.style.top=(y*CELL)+'px';root.append(el);
- }
-}
 function openModal(title,body,actions){
  els.modalTitle.textContent=title;els.modalBody.replaceChildren(...body);els.modalActions.replaceChildren(...actions);els.modal.hidden=false;
 }
@@ -719,7 +707,7 @@ window.addEventListener('resize',()=>{
  }
 });
 window.addEventListener('pagehide',()=>{stopPendingRecovery();clearTimeout(retryTimer);socket?.close(1000,'leaving');});
-initDecor();
+
 onAuthStateChanged(auth,async user=>{
  if(!user){note('ログインが必要です。');return;}
  try{await accountSession(user);authUser=user;void connect();}
