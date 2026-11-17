@@ -9,8 +9,8 @@ import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
   cards,roles,rarities,levelCaps,courses,enemies,bosses,revivalSpells,normalizeProfile,stats,specialDescription,materialCost,maxUpgradeMaterialCount,previewUpgradeBatch,applyUpgradeBatch,
-  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=2.5.11';
+  addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,correctOrdering,playTurn,injuredAlly,fallenAllies,reviveAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
+} from './model.js?v=2.5.12';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -924,7 +924,10 @@ function nextQuestion(continuing=false){
     run.target=run.foes.findIndex(foe=>foe.hp>0);
   }
   run.special=null;
-  run.deadline=Date.now()+(current.type==='grammar'||current.type==='idiom'||run.course.grade==='pre1'?25000:15000);
+  const seconds=current.type==='ordering'
+    ?Math.min(75,Math.max(40,current.tokens.length*4))
+    :(current.type==='grammar'||current.type==='idiom'||current.type==='potato'||run.course.grade==='pre1'?25:15);
+  run.deadline=Date.now()+seconds*1000;
   battle();
 }
 function quizPrompt(text){
@@ -958,6 +961,43 @@ function pauseForExplanation(quiz,title,selected){
     pane.append(dialog);
     dialog.showModal();
   });
+}
+function orderingControls(quiz,resolve){
+  // Keep draft order during action, target, and spell selections; a fresh question starts fresh.
+  if(!quiz.orderPieces)quiz.orderPieces=shuffle(quiz.tokens.map((word,id)=>({id,word})));
+  if(!quiz.orderSelected)quiz.orderSelected=[];
+  const chosen=group('order-chosen');
+  chosen.setAttribute('aria-label','並べた単語。押すと取り消せます');
+  const available=group('choices order-available');
+  available.setAttribute('aria-label','使える単語');
+  const submit=button('この語順で解答',()=>resolve(quiz.orderSelected.map(id=>quiz.tokens[id]).join(' ')),true,'primary');
+  const reset=button('並べ直す',()=>{quiz.orderSelected.length=0;render();},false);
+  const render=()=>{
+    chosen.replaceChildren();
+    available.replaceChildren();
+    const used=new Set(quiz.orderSelected);
+    if(!quiz.orderSelected.length)chosen.append(node('span','単語を順番に選んでください','order-placeholder'));
+    for(const id of quiz.orderSelected){
+      const piece=button(quiz.tokens[id],()=>{
+        const position=quiz.orderSelected.indexOf(id);
+        if(position!==-1)quiz.orderSelected.splice(position,1);
+        render();
+      },false,'order-word order-picked');
+      piece.setAttribute('aria-label',quiz.tokens[id]+' を戻す');
+      chosen.append(piece);
+    }
+    for(const piece of quiz.orderPieces){
+      if(used.has(piece.id))continue;
+      const tile=button(piece.word,()=>{quiz.orderSelected.push(piece.id);render();},false,'order-word');
+      tile.setAttribute('aria-label',piece.word+' を並べる');
+      available.append(tile);
+    }
+    submit.disabled=quiz.orderSelected.length!==quiz.tokens.length;
+    reset.disabled=!quiz.orderSelected.length;
+  };
+  render();
+  return group('order-question',node('p','単語を並べて英文を完成させよう（大文字・句読点はヒントになりません）','order-guide'),
+    chosen,available,group('choices order-actions',submit,reset));
 }
 function battle(){
   clear();
@@ -1016,11 +1056,17 @@ function battle(){
   const controls=group('battle-controls',actions);
   const timer=node('span','','timer');
   const resolve=option=>void resolveTurn(option,{stage,views,pet,log,resultArea,timer});
-  const quizLabel=run.quiz.type==='idiom'?'熟語 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語'):run.quiz.type==='grammar'?'語彙・文法問題':'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
+  const quizLabel=run.quiz.type==='ordering'?'並べ替え · '+run.quiz.source
+    :run.quiz.type==='potato'?'ポテトマン · 文法問題'
+    :run.quiz.type==='idiom'?'熟語 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語')
+    :run.quiz.type==='grammar'?'語彙・文法問題'
+    :'単語問題 · '+(run.quiz.direction==='ja-en'?'日本語 → 英語':'英語 → 日本語');
+  const answerArea=run.quiz.type==='ordering'?orderingControls(run.quiz,resolve)
+    :group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary')));
   const quiz=group('quiz',
     group('quiz-title',node('small',quizLabel),timer),
     quizPrompt(run.quiz.prompt),
-    group('choices answers',...run.quiz.options.map(option=>button(option,()=>resolve(option),false,'primary'))));
+    answerArea);
   stage.append(enemyRow,allies,resultArea,controls);
   pane.append(stage);
   if(run.action!=='physical'){
@@ -1094,7 +1140,7 @@ async function resolveTurn(answer,{stage,views,pet,log,resultArea,timer}){
   clearInterval(clock);
   const timely=Date.now()<run.deadline;
   const quiz=run.quiz;
-  const correct=timely&&answer===quiz.answer;
+  const correct=timely&&(quiz.type==='ordering'?correctOrdering(quiz,answer):answer===quiz.answer);
   for(const el of stage.querySelectorAll('button'))el.disabled=true;
   for(const choice of stage.querySelectorAll('.answers button')){
     if(choice.textContent===quiz.answer)choice.classList.add('answer-correct');
@@ -1266,10 +1312,16 @@ async function initialize(user){
       if(!response.ok)throw Error('問題データを取得できませんでした。');
       return response.json();
     });
+    // Supplementary questions are static JSON; fetching adds no Firestore reads/writes.
+    const supplemental=fetch('./supplemental-question-bank.json?v=2.5.11').then(response=>{
+      if(!response.ok)throw Error('追加問題の読み込みに失敗しました。');
+      return response.json();
+    }).catch(error=>{console.warn(error);return {grades:{}};});
     const wallet=doc(db,'users',user.uid,'apps','english-playroom');
-    const [data,retryRows,meanings,pet,idiomData]=await Promise.all([
+    const [data,retryRows,meanings,pet,idiomData,supplementalData]=await Promise.all([
       wordBank,loadFishingEikenBank(),loadRetryChoiceMeanings(),getDoc(wallet),
-      loadVocabulary('target1000').catch(error=>{console.warn('Target 1000 offline',error);return {entries:[]};})
+      loadVocabulary('target1000').catch(error=>{console.warn('Target 1000 offline',error);return {entries:[]};}),
+      supplemental
     ]);
     if(current!==generation)return;
     const userData=pet.data()||{};
@@ -1278,7 +1330,7 @@ async function initialize(user){
     legacyProfile=oldProfile?.data();
     walletRef=wallet;
     const idioms=buildBilingualIdiomBank(idiomData.entries);
-    questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows,idioms);
+    questions=prepareQuestions({...data.grades,pre1:{words:retryVocabulary(retryRows,meanings,'準1級')}},retryRows,idioms,supplementalData);
     petData=userData;
     profile=normalizeProfile(userData.monsterMaze??legacyProfile);
     pane.hidden=false;
