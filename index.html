@@ -167,7 +167,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
 <body>
 <main class="home">
   <div class="topbar">
-    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.5.27">ver2.5.27</span></div>
+    <div class="logo" data-version-badge-installed="1">もんすたでぃ<span class="app-version-badge" aria-label="version 2.5.28">ver2.5.28</span></div>
     <div class="auth-area"><a href="./account.html?v=2.3.8" style="font-size:11px;color:#246a57">コード登録</a>
       <button id="loginBtn" class="auth-btn" type="button" disabled>
         <span id="authDot" class="auth-dot busy"></span><span id="authLabel">認証準備中…</span>
@@ -481,7 +481,7 @@ body[data-screen-theme="dark"] #coinRankDialog .coin-rank-note{color:#cddfd3}
   <p class="foot">タッチ・クリックで操作できます。</p>
 </main>
 <script type="module">
-import {recordLearningActivity} from "./coin-reward.js?v=2.5.27";
+import {recordLearningActivity} from "./coin-reward.js?v=2.5.28";
 import {enableAppCheck,apiHeaders} from './firebase-security.js?v=2.4.37';
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
@@ -499,7 +499,7 @@ import {loginProgress,readyToHatch,hasPet,validAppearance,normalizePetName,valid
 import {renderPetSVG,renderPetVisual,appearanceLabel} from './pet-art.js?v=2.4.3';
 import {createPetMaker,createPetNameDialog} from './pet-maker.js?v=1.10.8';
 import './pet-shop.js?v=2.4.79';
-import './pet-gifts.js?v=2.5.27';
+import './pet-gifts.js?v=2.5.28';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ",
@@ -1029,11 +1029,11 @@ window.addEventListener('focus',()=>{if(!petSyncRetry.hidden)retryPetSync();});
 
 <script type="module" src="./learning-challenges.js?v=2.4.51"></script>
 <script type="module" src="./monster-fortune.js?v=2.4.37"></script>
-<script type="module" src="./pet-friends.js?v=2.5.27"></script>
-<script type="module" src='./version-badge-v176.js?v=2.5.27'></script>
+<script type="module" src="./pet-friends.js?v=2.5.28"></script>
+<script type="module" src='./version-badge-v176.js?v=2.5.28'></script>
 <script>
 (() => {
-  const version = '2.5.27';
+  const version = '2.5.28';
   const logo = document.querySelector('.logo');
   if (!logo) return;
   const enforceVersion = () => {
