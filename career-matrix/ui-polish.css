@@ -155,8 +155,8 @@ input::placeholder{color:#a0ada4}
   .step-link strong{font-size:11px}
   .step-link small{font-size:9px}
 }
-@media(max-width:760px){
-  .wrap{width:min(100% - 26px,620px)}
+@media(max-width:860px){
+  .wrap{width:min(100% - 26px,770px)}
   .topbar{padding:16px 0}
   .topnote{font-size:9px}
   .hero{grid-template-columns:1fr;padding:27px 24px;min-height:0;gap:23px}
