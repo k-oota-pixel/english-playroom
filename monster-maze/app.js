@@ -8,9 +8,9 @@ import {loadVocabulary} from '../data/vocab/index.js';
 import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
-  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,
+  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,canUseCardAsMaterial,upgradeWithMaterial,
   addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=2.5.3';
+} from './model.js?v=2.5.9';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -408,20 +408,68 @@ function rewardCards(counts){
   return group('collection owned-cards reward-cards',...[...counts].map(([key,count])=>
     companionCard(key,{level:1},' · 獲得 '+count+'枚').tile));
 }
+function materialCardOptions(targetKey,draft){
+  return Object.entries(profile.owned).flatMap(([materialKey,materialEntry])=>{
+    if(!canUseCardAsMaterial(profile,targetKey,materialKey,draft))return [];
+    const [id,rarity]=materialKey.split('-').map(Number);
+    const card=cards[id-1];
+    if(!card||!rarities[rarity])return [];
+    return [{key:materialKey,entry:materialEntry,card,rarity,usesOriginal:materialEntry.copies===0}];
+  }).sort((a,b)=>Number(a.usesOriginal)-Number(b.usesOriginal)||a.rarity-b.rarity||a.card.id-b.card.id);
+}
 function openCardUpgrade(card,key,entry,draft){
   const dialog=node('dialog','','card-upgrade');
   const title=node('h3',card.name+'を強化');
   title.id='card-upgrade-title';
   dialog.setAttribute('aria-labelledby',title.id);
+  const close=button('閉じる',()=>dialog.close());
   const spend=useCopy=>{
     dialog.close();
     void save(next=>upgrade(next,key,useCopy),()=>collection(draft));
   };
-  dialog.append(title,node('p','素材を1つ使ってLv.を1上げます。'),
-    group('choices',
-      button('結晶で強化（'+profile.crystals+'個）',()=>spend(false),!profile.crystals),
-      button('重複カードで強化（'+entry.copies+'枚）',()=>spend(true),!entry.copies)),
-    button('閉じる',()=>dialog.close()));
+  const materials=materialCardOptions(key,draft);
+  const showInitial=()=>{
+    dialog.replaceChildren(title,node('p','素材を1つ使ってLv.を1上げます。'),
+      group('choices',
+        button('結晶で強化（'+profile.crystals+'個）',()=>spend(false),!profile.crystals),
+        button('同種の重複カード（'+entry.copies+'枚）',()=>spend(true),!entry.copies),
+        button('ほかのカードを素材にする（'+materials.length+'種類）',showMaterials,!materials.length)),
+      close);
+  };
+  const showMaterials=()=>{
+    const list=group('material-card-list');
+    for(const material of materials){
+      const pick=button('',()=>confirmMaterial(material),false,'material-option');
+      pick.append(node('span',rarities[material.rarity],'material-option-rarity'),
+        node('span',material.card.name,'material-option-name'),
+        node('span',material.usesOriginal?'最後の1枚 · 消失':'重複 '+material.entry.copies+'枚','material-option-quantity'));
+      if(material.usesOriginal)pick.classList.add('last-copy');
+      list.append(pick);
+    }
+    dialog.replaceChildren(title,
+      node('p','素材を1枚選択してください。重複があれば重複から消費し、最後の1枚を選ぶと所持カードそのものがなくなります。'),
+      node('p','編成中のカードと初期配布カードの本体は消費できません。','material-caution'),
+      list,group('choices',button('戻る',showInitial),close));
+  };
+  const confirmMaterial=material=>{
+    const original=material.usesOriginal;
+    const source=rarities[material.rarity]+' '+material.card.name;
+    const detail=original
+      ?'このカードは所持一覧から消え、元には戻せません。'
+      :'このカードの重複分を1枚消費します。元の所持カードは残ります。';
+    dialog.replaceChildren(title,node('p','強化先：'+card.name+'　Lv.'+entry.level+' → Lv.'+(entry.level+1)),
+      node('p','素材：'+source+'（'+(original?'最後の1枚':'重複カード')+'）'),
+      node('p',detail,'material-caution'),
+      group('choices',
+        button('このカードを使って強化',()=>{
+          dialog.close();
+          // The shared user document is rechecked atomically at save time.
+          void save(next=>upgradeWithMaterial(next,key,material.key,draft),()=>collection(draft));
+        },false,'primary'),
+        button('素材選択に戻る',showMaterials),
+        close));
+  };
+  showInitial();
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});
   pane.append(dialog);
   dialog.showModal();
@@ -501,8 +549,9 @@ function collection(draft=[...profile.team]){
           ()=>collection(picked?draft.filter(id=>id!==key):[...draft,key]),!picked&&draft.length>=3);
         teamToggle.setAttribute('aria-label',card.name+' '+rank+(picked?'を編成からはずす':'を編成にいれる'));
         const atCap=entry.level>=levelCaps[rarity];
+        const hasMaterials=!atCap&&materialCardOptions(key,draft).length>0;
         const strengthen=button(atCap?'最大Lv.':'強化',()=>openCardUpgrade(card,key,entry,draft),
-          atCap||(!profile.crystals&&!entry.copies));
+          atCap||(!profile.crystals&&!entry.copies&&!hasMaterials));
         const menu=group('compact-card-menu',node('strong',unit.name+' · '+rank),
           node('small','Lv.'+entry.level+' / '+levelCaps[rarity]+'　HP '+unit.maxHp+'　重複 '+entry.copies),
           group('compact-card-actions',teamToggle,strengthen));

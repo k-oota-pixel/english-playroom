@@ -543,3 +543,51 @@ body{
   .compact-owned-cards .compact-owned-card{height:94px}
   .compact-owned-card .card-art{width:min(100%,3.4rem)}
 }
+
+/* Cross-card upgrade materials: selected locally, committed in one existing transaction. */
+.card-upgrade .material-caution{
+  padding:.42rem .55rem;
+  border-left:3px solid #f1c776;
+  border-radius:.2rem;
+  background:#3b2d40;
+  color:#ffe9bd;
+  font-size:.79rem;
+  line-height:1.5;
+}
+.card-upgrade .material-card-list{
+  display:grid;
+  gap:.38rem;
+  max-height:min(48vh,22rem);
+  overflow-y:auto;
+  padding:.12rem;
+  margin:.5rem 0 .7rem;
+}
+.card-upgrade button.material-option{
+  display:grid;
+  grid-template-columns:2.5rem minmax(0,1fr) auto;
+  align-items:center;
+  gap:.45rem;
+  width:100%;
+  min-height:2.8rem;
+  padding:.35rem .5rem;
+  border:1px solid #736482;
+  border-radius:.5rem;
+  text-align:left;
+  background:#332b45;
+  color:#f9f5ff;
+}
+.card-upgrade button.material-option:hover{background:#4b3a5b;border-color:#e2c893}
+.card-upgrade .material-option-rarity{
+  font-weight:900;
+  text-align:center;
+  color:#ffe3aa;
+  font-size:.75rem;
+}
+.card-upgrade .material-option-name{font-weight:750;font-size:.78rem;overflow-wrap:anywhere}
+.card-upgrade .material-option-quantity{font-size:.7rem;color:#d8efdc;white-space:nowrap}
+.card-upgrade button.material-option.last-copy{border-color:#b67d79}
+.card-upgrade .last-copy .material-option-quantity{color:#ffc4ae}
+@media(max-width:440px){
+  .card-upgrade button.material-option{grid-template-columns:2rem minmax(0,1fr);gap:.28rem}
+  .card-upgrade .material-option-quantity{grid-column:2;white-space:normal}
+}

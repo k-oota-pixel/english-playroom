@@ -100,6 +100,28 @@ export function upgrade(profile,key,useCopy){
   entry.level++;
   return true;
 }
+// A different companion can be used as a one-level upgrade material.
+// Spare duplicates are consumed first. The original (last) card is never
+// consumed while assigned to a saved or draft party. Starter originals
+// are protected because normalizeProfile always grants those cards.
+export function canUseCardAsMaterial(profile,targetKey,materialKey,draft=[]){
+  const target=profile?.owned?.[targetKey];
+  const material=profile?.owned?.[materialKey];
+  const rarity=Number(targetKey.split('-')[1]);
+  if(!target||!material||targetKey===materialKey||!levelCaps[rarity]||target.level>=levelCaps[rarity])return false;
+  if(material.copies>0)return true;
+  return !starters.includes(materialKey)
+    && !profile.team?.includes(materialKey)
+    && !draft.includes(materialKey);
+}
+export function upgradeWithMaterial(profile,targetKey,materialKey,draft=[]){
+  if(!canUseCardAsMaterial(profile,targetKey,materialKey,draft))return false;
+  const material=profile.owned[materialKey];
+  if(material.copies>0)material.copies--;
+  else delete profile.owned[materialKey];
+  profile.owned[targetKey].level++;
+  return true;
+}
 export function addReward(profile,round,reward){
   if(profile.recentRuns.includes(round)) return;
   profile.recentRuns = [...profile.recentRuns.slice(-24),round];
