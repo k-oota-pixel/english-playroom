@@ -108,7 +108,7 @@ test('history is versioned and shows only comparable scores on current trend',()
   assert.match(app,/assessmentScaleVersion:SCALE_VERSION/);
   assert.match(app,/r\?\.scaleVersion===SCALE_VERSION/);
   assert.match(app,/previousBest=summaryData.assessmentBest\?\.scaleVersion===SCALE_VERSION/);
-  assert.match(app,/writeBatch\(db\)/);
+  assert.match(app,/runTransaction\(db\)/);
   assert.match(html,/id="orderPanel"/);
   assert.match(html,/標準20問（15〜25問）/);
 });

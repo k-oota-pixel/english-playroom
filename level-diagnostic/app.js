@@ -3,10 +3,12 @@ import {QUESTION_GROUPS as POTATO_GROUPS} from '../potato-harvest/questions.js';
 import {BASIC_GRAMMAR_STAGES} from './basic-grammar-data.js';
 import {getAuth} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
-  writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+  runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
   evaluateAttempt,modelAnswer,selectReviewQuestions,
   MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.137';
+
+import {DIAGNOSTIC_REWARD_COINS,japanTodayKey,diagnosticCoinFields} from './reward-model.js?v=2.5.15';
 
 const $=id=>document.getElementById(id);
 const app=getMonstudyApp();
@@ -292,46 +294,80 @@ function nextAfterFeedback(){
 }
 function setSavingStatus(text){$('saveStatus').textContent=text;}
 let saveBusy=false;
+async function notifyDiagnosticCoinLeaderboard(player){
+  try{
+    const token=await player.getIdToken();
+    const response=await fetch('https://task-quest.onrender.com/api/coins/leaderboard',{
+      method:'POST',headers:{Authorization:'Bearer '+token},cache:'no-store',keepalive:true
+    });
+    if(!response.ok)throw Error('HTTP '+response.status);
+  }catch(error){console.warn('Daily coin leaderboard update deferred',error);}
+}
 async function saveResult(){
   if(!pendingSave||saveBusy||!user)return;
   saveBusy=true;$('retrySaveBtn').hidden=true;
-  setSavingStatus('今回の診断結果を保存しています…');
+  setSavingStatus('診断結果の保存と3コインの付与を行っています…');
   try{
-    if(auth.currentUser?.uid!==user.uid)throw Error('ログインしている利用者が変わりました。');
-    const {record,results}=pendingSave;
-    const previous=Array.isArray(summaryData.assessmentHistoryPreview)?summaryData.assessmentHistoryPreview:[];
-    const preview=[record,...previous.filter(row=>row.id!==record.id)].slice(0,previewLimit);
-    const ids=[...session.answers.map(row=>row.id),...(summaryData.assessmentRecentIds||[])].filter((id,i,all)=>all.indexOf(id)===i).slice(0,recentLimit);
-    const previousBest=summaryData.assessmentBest?.scaleVersion===SCALE_VERSION?summaryData.assessmentBest:null;
-    const best=Number(record.score)>=Number(previousBest?.score??-1)?record:previousBest;
-    const batch=writeBatch(db);
-    batch.set(doc(historyRef(),record.id),{
-      ...record,createdAt:serverTimestamp(),answers:results.answers
+    const player=user;
+    if(auth.currentUser?.uid!==player.uid)throw Error('ログインしている利用者が変わりました。');
+    const {record,results,recentIds}=pendingSave;
+    // The attempt history document acts as an idempotency receipt.
+    // Firestore retries this callback on conflicts, but never pays one attempt twice.
+    const saved=await runTransaction(db,async tx=>{
+      const historyDocument=doc(historyRef(),record.id);
+      const existing=await tx.get(historyDocument);
+      if(existing.exists())return {awarded:false,amount:Number(existing.data()?.rewardCoins)||0};
+      const wallet=walletRef(),walletSnap=await tx.get(wallet);
+      const data=walletSnap.exists()?(walletSnap.data()||{}):{};
+      const previous=Array.isArray(data.assessmentHistoryPreview)?data.assessmentHistoryPreview:[];
+      const preview=[record,...previous.filter(row=>row.id!==record.id)]
+        .sort((a,b)=>Number(b.atMs||0)-Number(a.atMs||0)).slice(0,previewLimit);
+      const latest=preview[0]||record;
+      const allIds=[...recentIds,...(data.assessmentRecentIds||[])]
+        .filter((id,i,ids)=>ids.indexOf(id)===i).slice(0,recentLimit);
+      const previousBest=data.assessmentBest?.scaleVersion===SCALE_VERSION?data.assessmentBest:null;
+      const best=Number(record.score)>=Number(previousBest?.score??-1)?record:previousBest;
+      const summaryPatch={
+        assessmentLatest:latest,assessmentBest:best,assessmentHistoryPreview:preview,
+        assessmentRecentIds:allIds,assessmentScaleVersion:SCALE_VERSION,
+        assessmentUpdatedAt:serverTimestamp()
+      };
+      tx.set(historyDocument,{
+        ...record,createdAt:serverTimestamp(),answers:results.answers,
+        rewardCoins:DIAGNOSTIC_REWARD_COINS,rewardedAt:serverTimestamp()
+      });
+      tx.set(wallet,{
+        ...summaryPatch,...diagnosticCoinFields(data,japanTodayKey()),
+        coinUpdatedAt:serverTimestamp()
+      },{merge:true});
+      return {awarded:true,amount:DIAGNOSTIC_REWARD_COINS,summaryPatch};
     });
-    batch.set(walletRef(),{
-      assessmentLatest:record,assessmentBest:best,
-      assessmentHistoryPreview:preview,
-      assessmentRecentIds:ids,
-      assessmentScaleVersion:SCALE_VERSION,
-      assessmentUpdatedAt:serverTimestamp()
-    },{merge:true});
-    await batch.commit();
-    summaryData={...summaryData,assessmentLatest:record,assessmentBest:best,
-      assessmentHistoryPreview:preview,assessmentRecentIds:ids};
+    if(auth.currentUser?.uid!==player.uid)throw Error('ログインしている利用者が変わりました。');
+    if(saved.summaryPatch)summaryData={...summaryData,...saved.summaryPatch};
+    else{
+      // A lost commit acknowledgement can cause a retry of an already-paid attempt.
+      const previous=Array.isArray(summaryData.assessmentHistoryPreview)?summaryData.assessmentHistoryPreview:[];
+      summaryData={...summaryData,assessmentLatest:record,
+        assessmentHistoryPreview:[record,...previous.filter(row=>row.id!==record.id)].slice(0,previewLimit)};
+    }
     lastSaved=record;
     pendingSave=null;
     $('againBtn').disabled=false;
     $('backBtn').disabled=false;
     clearHistoryDisplay();
     renderPreview();
-    setSavingStatus('診断結果を保存しました。');
+    setSavingStatus(saved.amount===DIAGNOSTIC_REWARD_COINS?
+      '診断完了！ 🪙 3コイン獲得しました！':
+      '診断結果を保存しました。（この記録は既に保存済みです）');
+    if(saved.awarded)void notifyDiagnosticCoinLeaderboard(player);
   }catch(error){
-    console.error('実力診断 保存失敗',error);
-    setSavingStatus('保存できませんでした。通信状況を確認して再試行してください。');
+    console.error('実力診断 保存・コイン付与失敗',error);
+    setSavingStatus('診断結果と3コインを保存できませんでした。通信状況を確認して再試行してください。');
     $('retrySaveBtn').hidden=false;
   }finally{saveBusy=false;}
 }
 async function finish(){
+  if(!session||session.finished||pendingSave)return;
   const results=summarize(session),atMs=Date.now();
   const id=(globalThis.crypto?.randomUUID?.()||('run-'+atMs+'-'+Math.floor(Math.random()*1e8)));
   const record={id,atMs,score:results.score,grade:results.grade,
@@ -339,7 +375,7 @@ async function finish(){
     vocabTotal:results.vocabTotal,grammarTotal:results.grammarTotal,
     correct:results.correct,total:results.total,uncertainty:results.uncertainty,
     scaleVersion:results.scaleVersion};
-  pendingSave={record,results};
+  pendingSave={record,results,recentIds:session.answers.map(row=>row.id)};
   $('againBtn').disabled=true;
   $('backBtn').disabled=true;
   $('resultScore').textContent=numberFmt(results.score);

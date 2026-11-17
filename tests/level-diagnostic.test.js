@@ -77,6 +77,6 @@ test('diagnostic is linked from the shell and keeps actual data separate from Fi
   assert.match(shell,/level-diagnostic\//);
   assert.match(html,/もんすた実力診断/);
   assert.match(app,/assessmentHistoryPreview/);
-  assert.match(app,/writeBatch\(db\)/);
+  assert.match(app,/runTransaction\(db\)/);
   assert.match(app,/https:\/\/k-oota-pixel\.github\.io\/eiken-retry\/assets\/question-data\.js/);
 });
