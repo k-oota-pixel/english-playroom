@@ -83,6 +83,9 @@ body{
 .edit-title b{height:30px;width:30px;background:#e7f0e8;color:#25644a;font-size:12px;margin-right:5px}
 .edit-card .count{font-size:10px;padding:4px 8px}
 .field{gap:7px}
+.custom-field[hidden]{display:none!important}
+.custom-field:not([hidden]){animation:reveal-input .18s ease-out}
+@keyframes reveal-input{from{opacity:.4;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .field label{font-size:11px;color:#4e6859}
 input[type=text],select{
   border:1px solid #d6e1d8;background:#fff;border-radius:12px;
