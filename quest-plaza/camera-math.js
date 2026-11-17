@@ -21,3 +21,14 @@ export function followCamera(x,y,left,top,viewWidth,viewHeight,worldWidth,worldH
  else if(y>top+viewHeight*(1-m))nextTop=y-viewHeight*(1-m);
  return clampCamera(nextLeft,nextTop,viewWidth,viewHeight,worldWidth,worldHeight);
 }
+
+// Estimate a fling's endpoint from the last touch movement (pixels/ms).
+// Clamp both each projected axis and the final position to the map.
+export function flingTarget(left,top,velocityX,velocityY,
+ viewWidth,viewHeight,worldWidth,worldHeight,{duration=245,maxDistance=700,minSpeed=.38}={}){
+ const speed=Math.hypot(finite(velocityX),finite(velocityY));
+ if(speed<minSpeed)return clampCamera(left,top,viewWidth,viewHeight,worldWidth,worldHeight);
+ const deltaX=Math.max(-maxDistance,Math.min(maxDistance,velocityX*duration));
+ const deltaY=Math.max(-maxDistance,Math.min(maxDistance,velocityY*duration));
+ return clampCamera(left+deltaX,top+deltaY,viewWidth,viewHeight,worldWidth,worldHeight);
+}
