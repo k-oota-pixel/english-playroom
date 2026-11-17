@@ -33,7 +33,8 @@ const itemNames={bandage:'🩹 ばんそうこう',medicine:'🧴 きずぐす�
  'inter-prescription':'📄 インターの処方箋',
  'date-water':'💧 だてのみず','yoteizan-water':'🏔️ ようていざんのみず'};
 let socket=null,authUser=null,clientId='',connected=false,retryTimer=null,battleState=null,battleEndAt=0,question=null;
-let selectedAction={kind:'attack'},selectedTarget=0,nearbyId=null,answerPending=false,feedback='';
+let selectedAction={kind:'attack'},selectedTab='attack',selectedTarget=0,selectedReviveTarget=-1,
+ nearbyId=null,answerPending=false,feedback='';
 const players=new Map(),elements=new Map();
 const button=(label,action,cls='')=>{
  const el=document.createElement('button');el.type='button';el.textContent=label;if(cls)el.className=cls;
@@ -281,31 +282,56 @@ function showInvite(message){
  const delay=Math.max(0,Math.min(10000,message.expires-Date.now()));
  setTimeout(()=>{if(!els.modal.hidden&&els.modalTitle.textContent==='対戦の申し込み')closeModal();},delay);
 }
+// Reuse the Monster Quest unit structure/classes so the same card effects,
+ // rarity badges, HP/MP meters and energy projectile language carry into PvP.
 function paintTeam(team,mine){
- const section=node('section','','team');section.append(node('h3',team.nickname+(mine?'（自分）':'（相手）')));
+ const section=node('section','','team '+(mine?'team-mine':'team-foe'));
+ section.append(node('h3',(mine?'自分の編成：':'対戦相手：')+team.nickname));
  const units=node('div','','unit-row');
  team.units.forEach((unit,index)=>{
-  const tile=button('',()=>{if(!mine){selectedTarget=index;drawTeams();}},'battle-unit');
+  const tile=button('',()=>{
+   if(!mine&&unit.hp>0){selectedTarget=index;drawTeams();}
+  },'unit battle-unit');
+  tile.dataset.player=team.id;
+  tile.dataset.unitIndex=String(index);
   if(!mine&&selectedTarget===index)tile.classList.add('picked');
   if(unit.hp===0)tile.classList.add('dead');
   if(index===0){
-   const p=players.get(team.id);const wrap=node('span','','battle-pet');
-   if(p?.hatched){try{
-    const juvenile=p.adult===false||!p.appearance;
-    wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,plazaShop(p),juvenile?'baby':'adult',{background:false});
-   }catch{wrap.textContent='🐣';}}
-   else wrap.textContent='🥚';
+   tile.classList.add('party-pet');
+   const p=players.get(team.id),wrap=node('span','','battle-pet');
+   if(p?.hatched){
+    try{
+     const juvenile=p.adult===false||!p.appearance;
+     wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,
+      plazaShop(p),juvenile?'baby':'adult',{background:false});
+    }catch{wrap.textContent='🐣';}
+   }else wrap.textContent='🥚';
    tile.append(wrap);
   }else{
-   const image=document.createElement('img');image.src='../monster-maze/art/card-'+unit.id+'.webp';
-   image.alt='';image.loading='lazy';tile.append(image);
+   const rarity=['n','r','sr','ssr'][unit.rarity]||'n';
+   tile.classList.add('ranked-card','rarity-'+rarity);
+   tile.append(node('span',rarity.toUpperCase(),'card-rank'));
+   const art=node('span','','card-art'),image=document.createElement('img');
+   image.src='../monster-maze/art/card-'+unit.id+'.webp'+([1,6].includes(unit.id)?'?v=2':'');
+   image.alt='';image.decoding='async';art.append(image);tile.append(art);
   }
   tile.append(node('strong',unit.name));
-  const meter=node('div','','meter'),fill=node('span');fill.style.width=Math.max(0,unit.hp/Math.max(unit.maxHp,1)*100)+'%';
-  meter.append(fill);tile.append(meter,node('small',unit.hp+'/'+unit.maxHp));
-  if(unit.maxMp>0)tile.append(node('small','MP '+unit.mp+'/'+unit.maxMp));
-  if(mine&&unit.rarity>0&&unit.role===0)tile.append(node('small','CT '+Math.ceil(unit.ct||0)));
-  if(mine)tile.disabled=true;
+  const meter=node('span','','hp-meter'),fill=node('span','','hp-fill');
+  fill.style.transform='scaleX('+Math.max(0,unit.hp/Math.max(1,unit.maxHp))+')';
+  meter.setAttribute('role','progressbar');meter.setAttribute('aria-label',unit.name+' HP');
+  meter.setAttribute('aria-valuemin','0');meter.setAttribute('aria-valuemax',String(unit.maxHp));
+  meter.setAttribute('aria-valuenow',String(unit.hp));
+  meter.append(fill);tile.append(meter,node('small',unit.hp+' / '+unit.maxHp,'battle-hp'));
+  if(unit.maxMp>0){
+   const mpMeter=node('span','','mp-meter'),mpFill=node('span','','mp-fill');
+   mpFill.style.transform='scaleX('+Math.max(0,unit.mp/Math.max(1,unit.maxMp))+')';
+   mpMeter.setAttribute('role','progressbar');mpMeter.setAttribute('aria-label',unit.name+' MP');
+   mpMeter.setAttribute('aria-valuemin','0');mpMeter.setAttribute('aria-valuemax',String(unit.maxMp));
+   mpMeter.setAttribute('aria-valuenow',String(unit.mp));mpMeter.append(mpFill);
+   tile.append(mpMeter,node('small','MP '+unit.mp+' / '+unit.maxMp,'battle-mp'));
+  }
+  if(unit.role===0&&unit.rarity>0)tile.append(node('small','特技 · CT '+Math.ceil(unit.ct||0),'battle-ct'));
+  tile.disabled=mine||unit.hp===0;
   units.append(tile);
  });
  section.append(units);return section;
@@ -314,46 +340,140 @@ function drawTeams(){
  if(!battleState)return;
  const own=battleState.teams.find(t=>t.id===clientId),foe=battleState.teams.find(t=>t.id!==clientId);
  if(!own||!foe)return;
- els.teams.replaceChildren(paintTeam(own,true),paintTeam(foe,false));
- els.battleLog.textContent=battleState.log.slice(-2).join('　｜　')+(feedback?'　｜　'+feedback:'');
+ if(!foe.units[selectedTarget]||foe.units[selectedTarget].hp<=0)selectedTarget=foe.units.findIndex(u=>u.hp>0);
+ els.teams.replaceChildren(paintTeam(foe,false),paintTeam(own,true));
+ els.battleLog.textContent=battleState.log.slice(-3).join('　｜　')+(feedback?'　｜　'+feedback:'');
  els.grade.textContent='英検'+(gradeNames[battleState.grade]||battleState.grade);
- if(!question||answerPending)return;
+ if(question&&!answerPending)drawActions();
+}
+const spellKnown=(u,s)=>{
+ if(u.role===-1)return (u.level||1)>=s.level;
+ if(u.role===0)return false;
+ if(u.role===1)return ['mirogoro',...(u.rarity>=2?['mirogoron']:[])].includes(s.id);
+ return ['mimuros',...(u.rarity>=2?['mimurose','meinon']:[]),...(u.rarity>=3?['meinoora']:[])].includes(s.id);
+};
+function setBattleTab(tab){
+ if(!['attack','magic','items'].includes(tab))return;
+ selectedTab=tab;
+ if(tab!=='magic')selectedAction={kind:'attack'};
  drawActions();
 }
-function selectAction(action){selectedAction=action;drawActions();}
+for(const tabButton of document.querySelectorAll('[data-battle-tab]')){
+ tabButton.addEventListener('click',()=>setBattleTab(tabButton.dataset.battleTab));
+}
+function selectAction(action){
+ selectedAction=action;
+ selectedTab=action.kind==='magic'?'magic':'attack';
+ if(action.spell==='meinon'||action.spell==='meinoora'){
+  const own=battleState?.teams.find(t=>t.id===clientId);
+  if(!own?.units[selectedReviveTarget]||own.units[selectedReviveTarget].hp>0)
+   selectedReviveTarget=own?.units.findIndex((u,i)=>i>0&&u.hp===0)??-1;
+ }
+ drawActions();
+}
 function drawActions(){
  if(!battleState||!question)return;
- const own=battleState.teams.find(t=>t.id===clientId);if(!own)return;
+ const own=battleState.teams.find(t=>t.id===clientId);
+ if(!own)return;
  const wrap=els.battleActions;wrap.replaceChildren();
- const attack=button('⚔ 通常攻撃',()=>selectAction({kind:'attack'}));
- attack.setAttribute('aria-pressed',String(selectedAction.kind==='attack'));wrap.append(attack);
- const spellOwnerAllowed=(u,s)=>{
-  if(u.hp<=0||u.mp<s.mp)return false;
-  if(u.role===-1)return (u.level||1)>=s.level;
-  if(u.role===0)return false;
-  if(u.role===1)return ['mirogoro',...(u.rarity>=2?['mirogoron']:[])].includes(s.id);
-  return ['mimuros',...(u.rarity>=2?['mimurose','meinon']:[]),...(u.rarity>=3?['meinoora']:[])].includes(s.id);
- };
- own.units.forEach((unit,i)=>{
-  for(const s of spells){
-   if(!spellOwnerAllowed(unit,s))continue;
-   const label=(i===0?'ぺっと':unit.name)+' '+s.name+' (MP'+s.mp+')';
-   const el=button(label,()=>selectAction({kind:'magic',owner:i,spell:s.id}));
-   el.setAttribute('aria-pressed',String(selectedAction.kind==='magic'&&selectedAction.owner===i&&selectedAction.spell===s.id));
-   wrap.append(el);
-  }
-  if(i>0&&unit.role===0&&unit.rarity>0&&unit.hp>0&&unit.ct<=0){
-   const el=button('★ '+unit.name+' 特技',()=>selectAction({kind:'attack',special:unit.key}));
-   el.setAttribute('aria-pressed',String(selectedAction.special===unit.key));
-   wrap.append(el);
-  }
- });
- for(const [id,count] of Object.entries(battleState.inventory||{})){
-  if(!itemNames[id]||count<1)continue;
-  const tile=button(itemNames[id]+' ×'+count,()=>send({type:'item',id}));
-  tile.setAttribute('aria-label',itemNames[id]+' 使用。残り'+count+'個');
-  wrap.append(tile);
+ for(const tab of document.querySelectorAll('[data-battle-tab]')){
+  tab.setAttribute('aria-pressed',String(tab.dataset.battleTab===selectedTab));
  }
+ const summary=$('battle-action-hint');
+ const addOption=(container,label,action,chosen=false,disabled=false)=>{
+  const el=button(label,action);
+  el.disabled=disabled;
+  el.setAttribute('aria-pressed',String(chosen));
+  container.append(el);return el;
+ };
+ if(selectedTab==='attack'){
+  addOption(wrap,'⚔ 通常攻撃',()=>selectAction({kind:'attack'}),
+   selectedAction.kind==='attack'&&!selectedAction.special);
+  const specials=own.units.filter((u,i)=>i>0&&u.role===0&&u.rarity>0&&u.hp>0);
+  for(const unit of specials){
+   addOption(wrap,'★ '+unit.name+'の特技 · CT '+Math.ceil(unit.ct||0),
+    ()=>selectAction({kind:'attack',special:unit.key}),
+    selectedAction.special===unit.key,unit.ct>0);
+  }
+  summary.textContent=selectedAction.special?'特技を選択中。正解すると発動します。':'通常攻撃を選択中。正解すると攻撃します。';
+ }else if(selectedTab==='magic'){
+  const fallen=own.units.map((u,i)=>({u,i})).filter(({u,i})=>i>0&&u.hp===0);
+  for(const [index,unit] of own.units.entries()){
+   const known=spells.filter(s=>spellKnown(unit,s));
+   if(!known.length)continue;
+   const section=node('section','','command-section');
+   section.append(node('strong',unit.name+'　MP '+unit.mp+' / '+unit.maxMp));
+   const options=node('div','','command-items');
+   for(const spell of known){
+    const revive=spell.kind==='revive';
+    const usable=unit.hp>0&&unit.mp>=spell.mp&&(!revive||fallen.length>0);
+    addOption(options,spell.name+' · MP '+spell.mp+
+       (!usable?revive&&!fallen.length?'（蘇生対象なし）':'（使用不可）':''),
+      ()=>selectAction({kind:'magic',owner:index,spell:spell.id}),
+      selectedAction.kind==='magic'&&selectedAction.owner===index&&selectedAction.spell===spell.id,
+      !usable);
+   }
+   section.append(options);wrap.append(section);
+  }
+  if(selectedAction.kind==='magic'&&['meinon','meinoora'].includes(selectedAction.spell)&&fallen.length){
+   const section=node('section','','command-section');
+   section.append(node('strong','蘇生する仲間を選択'));
+   const options=node('div','','command-items');
+   for(const {u,i} of fallen){
+    addOption(options,u.name+'（HP 0）',()=>{selectedReviveTarget=i;drawActions();},
+      selectedReviveTarget===i);
+   }
+   section.append(options);wrap.append(section);
+  }
+  summary.textContent=selectedAction.kind==='magic'
+   ?'魔法を選択中。正解すると発動します。'
+   :'魔法を選んでください。選ばない場合は通常攻撃になります。';
+ }else{
+  for(const [id,count] of Object.entries(battleState.inventory||{})){
+   if(!itemNames[id]||count<1)continue;
+   addOption(wrap,itemNames[id]+' ×'+count,()=>{
+    if(send({type:'item',id}))note(itemNames[id]+' を使います。');
+   });
+  }
+  if(!wrap.childElementCount)wrap.append(node('p','使用できるアイテムがありません。'));
+  summary.textContent='アイテムは押した時点で使用。英語問題の解答は続けられます。';
+ }
+}
+// Copy the original Quest's animated energy orb trajectory. The server decides
+// which attack actually happened; clients only animate an authoritative event.
+function playBattleEffect(event){
+ if(els.battle.hidden||!event)return;
+ const tiles=[...els.teams.querySelectorAll('.battle-unit')];
+ const lookup=(uid,i)=>tiles.find(el=>el.dataset.player===uid&&el.dataset.unitIndex===String(i));
+ const flash=(el,cls)=>{
+  if(!el)return;
+  el.classList.remove('taking-hit','being-healed');
+  void el.offsetWidth;el.classList.add(cls);
+  setTimeout(()=>el.classList.remove(cls),450);
+ };
+ if(event.kind==='mistake'){
+  for(const tile of tiles.filter(el=>el.dataset.player===event.actor))flash(tile,'taking-hit');
+  return;
+ }
+ const source=lookup(event.actor,event.sourceIndex);
+ const receiver=lookup(event.receiver,event.targetIndex);
+ if(!source||!receiver)return;
+ const healing=event.kind==='heal'||event.kind==='revive';
+ if(healing)flash(receiver,'being-healed');
+ else flash(receiver,'taking-hit');
+ if(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
+ const fx=$('battle-fx');
+ const orb=node('span','','battle-energy energy-'+event.kind);
+ const base=fx.getBoundingClientRect(),from=source.getBoundingClientRect(),to=receiver.getBoundingClientRect();
+ const x=from.left+from.width/2-base.left,y=from.top+from.height*.35-base.top;
+ const dx=to.left+to.width/2-base.left-x,dy=to.top+to.height*.48-base.top-y;
+ orb.style.left=x+'px';orb.style.top=y+'px';fx.append(orb);
+ if(typeof orb.animate!=='function'){orb.remove();return;}
+ orb.animate([
+  {opacity:.25,transform:'translate(-50%,-50%) scale(.25)'},
+  {opacity:1,transform:'translate(-50%,-50%) scale(1.15)',offset:.42},
+  {opacity:1,transform:'translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(.75)'}
+ ],{duration:390,easing:'ease-in-out'}).finished.catch(()=>{}).finally(()=>orb.remove());
 }
 function showQuiz(q){
  question=q;answerPending=false;
