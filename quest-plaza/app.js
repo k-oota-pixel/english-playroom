@@ -363,7 +363,11 @@ $('formation').addEventListener('click',()=>{
  $('formation-panel').hidden=false;
 });
 $('close-formation').addEventListener('click',()=>{
- $('formation-panel').hidden=true;$('formation-frame').src='about:blank';send({type:'refresh'});
+ const frame=$('formation-frame');
+ try{
+  if(frame.contentWindow?.MonstudyMaterial?.isActive?.()&&!confirm('未保存の編成・強化があります。保存せずに広場へ戻りますか？'))return;
+ }catch{}
+ $('formation-panel').hidden=true;frame.src='about:blank';send({type:'refresh'});
 });
 window.addEventListener('resize',()=>{
  const p=players.get(clientId);if(p)centerCamera(p.x,p.y);
