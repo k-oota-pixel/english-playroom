@@ -18,18 +18,6 @@ enableAppCheck(app);
 const auth=getAuth(app),db=getFirestore(app);
 const pane=document.querySelector('#game'); const splash=document.querySelector('#quest-splash'); const startButton=document.querySelector('#quest-start');
 const status=document.querySelector('#status');
-// Return through the parent shell rather than loading the home page into this iframe.
-// target="_top" on the link is a safe standalone/failure fallback.
-document.querySelector('#quest-home-link')?.addEventListener('click',event=>{
-  try{
-    const shell=window!==window.parent?window.parent.MonstudyShell:null;
-    const home=new URL('../',location.href);
-    if(shell?.canOpen(home)){
-      event.preventDefault();
-      shell.navigate(home);
-    }
-  }catch(error){console.warn('Quest return fallback',error);}
-});
 let profile,legacyProfile,petData,walletRef,questions,run,walkView,busy=false,clock,generation=0;
 
 function node(tag,content='',cls=''){
