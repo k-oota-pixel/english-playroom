@@ -659,3 +659,15 @@ body{
   .card-upgrade .material-quantity input{width:2.6rem}
   .card-upgrade button.material-quantity-step{min-width:1.65rem}
 }
+
+/* Grade-matched word-order questions: clear, tappable tiles on desktop and mobile. */
+.order-question{display:grid;gap:.4rem;margin-top:.5rem}
+.order-guide{margin:0;color:var(--muted);font-size:.84rem;line-height:1.5}
+.order-chosen{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;min-height:3rem;padding:.5rem;border:1px solid #9980bb;border-radius:.6rem;background:#1d192e}
+.order-placeholder{color:#e2ccef;font-size:.86rem}
+.order-available{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0}
+.order-question .order-word{flex:0 1 auto;min-width:2.8rem;min-height:2.7rem;padding:.55rem .7rem;font-size:clamp(.82rem,2.7vw,1rem);line-height:1.25;overflow-wrap:anywhere}
+.order-question .order-picked{background:#4b385f;border-color:#ab87c8;color:#fff}
+.order-question .order-actions{margin:.2rem 0 0}
+.order-actions button:first-child{flex:2 1 10rem}
+@media(max-width:520px){.order-chosen{padding:.4rem}.order-question .order-word{min-height:2.6rem;padding:.48rem .58rem}}

@@ -301,7 +301,7 @@ export function retryVocabulary(rows,meanings,grade){
   }
   return [...words.values()];
 }
-export function prepareQuestions(wordBank,retryRows,idiomQuestions=[]){
+export function prepareQuestions(wordBank,retryRows,idiomQuestions=[],supplemental={}){
   return Object.fromEntries(courses.map(course=>{
     const grade=course.name.slice(2);
     // 文法枠はリトライノートの「語彙・文法」4択を全問使用する。
@@ -312,7 +312,10 @@ export function prepareQuestions(wordBank,retryRows,idiomQuestions=[]){
     })).filter(row=>new Set(row.options).size===4&&row.options.includes(row.answer));
     const words=wordBank[course.grade]?.words;
     if(grammar.length<2||!Array.isArray(words)||words.length<5)throw Error(course.name+'の出題データが不足しています。');
-    return [course.grade,{words,grammar,idioms:course.grade==='2'?idiomQuestions:[]}];
+    const extra=supplemental.grades?.[course.grade]||{};
+    return [course.grade,{words,grammar,idioms:course.grade==='2'?idiomQuestions:[],
+      ordering:Array.isArray(extra.ordering)?extra.ordering:[],
+      potato:Array.isArray(extra.potato)?extra.potato:[]}];
   }));
 }
 function idiomQuestion(rows,previous,random){
@@ -340,12 +343,35 @@ function idiomQuestion(rows,previous,random){
   }
   throw Error('熟語の4択を作れる問題が見つかりません。');
 }
+// 並べ替え問題は原教材と同じ語分割を使用。文頭大文字と文末記号をヒントとして見せない。
+export function orderTokens(sentence){
+  return sentence.match(/(?:Mr|Mrs|Ms|Miss|Dr|Prof)\.\s+[A-Z][A-Za-z'’-]*|(?:[A-Za-z]\.){2,}|[A-Za-z]+(?:[-'’][A-Za-z]+)*|\d+(?:\.\d+)?(?:th|st|nd|rd)?/g)||[];
+}
+const normalizedOrder=sentence=>orderTokens(sentence).join(' ').replace(/[.!?,]/g,'').replace(/[’]/g,"'").normalize('NFKC').toLowerCase();
+export function correctOrdering(quiz,answer){
+  if(quiz?.type!=='ordering'||!answer)return false;
+  const value=normalizedOrder(answer);
+  return [quiz.answer,...(quiz.acceptedAnswers||[])].some(expected=>normalizedOrder(expected)===value);
+}
 export function question(bank,previous,random=Math.random){
-  // 英検2級のみ: 単語 / 語彙・文法 / 熟語の3種を均等抽選。
-  const hasIdioms=Array.isArray(bank.idioms)&&bank.idioms.length>=4;
-  const kind=Math.floor(random()*(hasIdioms?3:2));
-  if(kind===0)return vocabularyQuestion(bank.words,previous,random()<0.5,random);
-  if(kind===2)return idiomQuestion(bank.idioms,previous,random);
+  // 各問題形式を均等に抽選。問題は読み込み済みの静的データから選ぶためFirestore通信は発生しない。
+  const kinds=['vocabulary','grammar'];
+  if(Array.isArray(bank.idioms)&&bank.idioms.length>=4)kinds.push('idiom');
+  if(Array.isArray(bank.ordering)&&bank.ordering.length)kinds.push('ordering');
+  if(Array.isArray(bank.potato)&&bank.potato.length)kinds.push('potato');
+  const kind=kinds[Math.floor(random()*kinds.length)];
+  if(kind==='vocabulary')return vocabularyQuestion(bank.words,previous,random()<0.5,random);
+  if(kind==='idiom')return idiomQuestion(bank.idioms,previous,random);
+  if(kind==='ordering'){
+    const pool=bank.ordering.filter(item=>item.id!==previous);
+    const item=pick(pool.length?pool:bank.ordering,random);
+    return {...item,type:'ordering',tokens:orderTokens(item.answer).map(token=>token.toLowerCase())};
+  }
+  if(kind==='potato'){
+    const pool=bank.potato.filter(item=>item.id!==previous);
+    const item=pick(pool.length?pool:bank.potato,random);
+    return {...item,type:'potato',options:shuffle(item.options,random)};
+  }
   const pool=bank.grammar.filter(item=>item.id!==previous);
   return {...pick(pool.length?pool:bank.grammar,random),type:'grammar'};
 }
