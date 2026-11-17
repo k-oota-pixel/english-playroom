@@ -24,3 +24,11 @@ body[data-screen-theme] #monstudyShell.ms-quest-background .ms-workspace{
   background-color:#18162b!important;
   background-image:none!important;
 }
+
+/* Hide the SHOP wallpaper painted on the parent BODY while Quest is active.
+   The old workspace-only override did not cover the page canvas. */
+body.ms-quest-active,
+body.ms-quest-active[data-screen-theme]{
+  background-color:#18162b!important;
+  background-image:none!important;
+}

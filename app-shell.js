@@ -1,6 +1,6 @@
 import {scheduledBattleEntry} from './online-battle-schedule.js?v=2.4.89';
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.5.10';
+const MATERIAL_RELEASE='2.5.17';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']
@@ -368,7 +368,11 @@ function install() {
     departingVersion++;
     current=next;
     shell.classList.toggle('ms-showing-material',!!current);
-    shell.classList.toggle('ms-quest-background',!!current&&isQuestMaterial(u.pathname));
+    const questActive=!!current&&isQuestMaterial(u.pathname);
+    shell.classList.toggle('ms-quest-background',questActive);
+    // SHOP wallpapers are also painted on the parent document body.
+    // Suspend them only while Quest is visible; leave the saved selection untouched.
+    document.body.classList.toggle('ms-quest-active',questActive);
     shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
     syncTitle(u);
     home.hidden=!!current; frame.hidden=!current;
