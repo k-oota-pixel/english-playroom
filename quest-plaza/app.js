@@ -49,10 +49,10 @@ function send(message){
 }
 function sprite(p){
  const wrap=node('span','','avatar');
- if(!p.appearance){wrap.textContent='🥚';return wrap;}
+ if(!p.hatched){wrap.textContent='🥚';return wrap;}
  try{
-  const appearance=p.appearance,shop={equipped:p.shop?.equipped||{}};
-  wrap.innerHTML=renderPetSVG(appearance,shop,'adult',{background:false});
+  const juvenile=p.adult===false||!p.appearance,shop={equipped:p.shop?.equipped||{}};
+  wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,shop,juvenile?'baby':'adult',{background:false});
  }catch{wrap.textContent='🐣';}
  return wrap;
 }
@@ -64,7 +64,7 @@ function putPlayer(p){
   tile=button('',()=>visitPlayer(p.id),'player');
   tile.dataset.id=p.id;tile.append(sprite(merged),node('span',merged.petName||merged.nickname,'name'));
   els.players.append(tile);elements.set(p.id,tile);
- }else if((old?.appearance!==merged.appearance||old?.petName!==merged.petName)&&p.appearance!==undefined){
+ }else if((old?.appearance!==merged.appearance||old?.petName!==merged.petName||old?.hatched!==merged.hatched||old?.adult!==merged.adult)&&p.appearance!==undefined){
   tile.replaceChildren(sprite(merged),node('span',merged.petName||merged.nickname,'name'));
  }
  tile.style.left=(merged.x*CELL+CELL/2)+'px';
@@ -158,7 +158,10 @@ function paintTeam(team,mine){
   if(unit.hp===0)tile.classList.add('dead');
   if(index===0){
    const p=players.get(team.id);const wrap=node('span','','battle-pet');
-   if(p?.appearance){try{wrap.innerHTML=renderPetSVG(p.appearance,{equipped:p.shop?.equipped||{}},'adult',{background:false});}catch{wrap.textContent='🐣';}}
+   if(p?.hatched){try{
+    const juvenile=p.adult===false||!p.appearance;
+    wrap.innerHTML=renderPetSVG(juvenile?null:p.appearance,{equipped:p.shop?.equipped||{}},juvenile?'baby':'adult',{background:false});
+   }catch{wrap.textContent='🐣';}}
    else wrap.textContent='🥚';
    tile.append(wrap);
   }else{
