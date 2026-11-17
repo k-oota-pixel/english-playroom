@@ -43,6 +43,7 @@ import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english
 import {getFirestore,doc,getDoc,updateDoc,runTransaction,increment,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {enableAppCheck} from '../firebase-security.js?v=2.1.9';
 import {renderPetSVG} from '../pet-art.js?v=2.3.8';
+import {recordLearningActivity} from '../coin-reward.js?v=2.5.19';
 import {GRAMMAR_BANK,GRAMMAR_DUMMIES,pickGrammarQuestion,grammarJapanese} from './grammar-mode.js';
 import {loadFishingEikenBank,pickFishingEikenQuestion} from './question-bank.js';
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
@@ -129,6 +130,8 @@ async function saveSession(){
     await updateDoc(ref(),updates);
   }
   session.dirty=false;
+  // One activity record per saved fishing session, never per question.
+  if(session.plays>0)void recordLearningActivity('pet-fishing');
   if(earnedCoins>0)notifyDailyCoinLeaderboard();
 }
 async function saveTitleProgress(){if(session.titleSynced||session.plays<1)return [];const token=await player.getIdToken(),caughtIds=C.filter(c=>(fishing.collection[c.id]||0)>0).map(c=>c.id),event={eventId:session.id+'-result',kind:'run',sessionId:session.id,score:session.totalCatchDelta,total:Math.max(0,Math.floor(Number(fishing.totalCatches)||0)),combo:session.maxStreak,caughtIds};const r=await fetch(TITLE_API,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({appId:'pet-fishing',batchId:session.id+'-batch',events:[event]}),cache:'no-store',signal:AbortSignal.timeout(45000)});let data={};try{data=await r.json()}catch{}if(!r.ok)throw Error(data.error||'称号を保存できませんでした。');session.titleSynced=true;return Array.isArray(data.freshTitles)?data.freshTitles:[]}
