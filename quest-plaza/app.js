@@ -18,7 +18,7 @@ const els={notice:$('notice'),connection:$('connection'),capacity:$('capacity'),
  world:$('world'),players:$('players'),nearest:$('nearest'),modal:$('modal'),
  modalTitle:$('modal-title'),modalBody:$('modal-body'),modalActions:$('modal-actions'),
  battle:$('battle'),teams:$('battle-teams'),battleLog:$('battle-log'),grade:$('battle-grade'),
- battleClock:$('battle-clock'),battleActions:$('battle-actions'),quiz:$('quiz'),finish:$('battle-finished')};
+ battleActions:$('battle-actions'),quiz:$('quiz'),finish:$('battle-finished')};
 const gradeNames={'4':'4級','3':'3級','pre2':'準2級','2':'2級'};
 const spells=[
  {id:'mimuros',name:'ミムロス',level:5,kind:'heal',mp:4},
@@ -32,7 +32,7 @@ const itemNames={bandage:'🩹 ばんそうこう',medicine:'🧴 きずぐす�
  'date-hospital-prescription':'📄 伊達医院の処方箋',
  'inter-prescription':'📄 インターの処方箋',
  'date-water':'💧 だてのみず','yoteizan-water':'🏔️ ようていざんのみず'};
-let socket=null,authUser=null,clientId='',connected=false,retryTimer=null,battleState=null,battleEndAt=0,question=null;
+let socket=null,authUser=null,clientId='',connected=false,retryTimer=null,battleState=null,question=null,pendingRecoveryTimer=null;
 let selectedAction={kind:'attack'},selectedTab='attack',selectedCasterIndex=0,selectedTarget=0,selectedReviveTarget=-1,
  nearbyId=null,answerPending=false,feedback='';
 const players=new Map(),elements=new Map();
@@ -489,12 +489,14 @@ function playBattleEffect(event){
   {opacity:1,transform:'translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(.75)'}
  ],{duration:390,easing:'ease-in-out'}).finished.catch(()=>{}).finally(()=>orb.remove());
 }
+function stopPendingRecovery(){
+ if(pendingRecoveryTimer!==null){clearInterval(pendingRecoveryTimer);pendingRecoveryTimer=null;}
+}
 function showQuiz(q){
+ stopPendingRecovery();
  question=q;answerPending=false;
  const box=els.quiz;box.replaceChildren();
- const title=node('small',q.label+' · 残り時間 ');
- const remaining=node('span','','countdown');remaining.id='quiz-time';title.append(remaining);
- box.append(title,node('h3',q.prompt));
+ box.append(node('small',q.label),node('h3',q.prompt));
  const message=node('p','','quiz-feedback');message.id='quiz-feedback';box.append(message);
  if(q.kind==='ordering'){
   const picked=[],chosen=node('div','','order-chosen'),tiles=node('div','','word-tiles');
@@ -523,27 +525,30 @@ function answer(value){
  if(!send(request)){answerPending=false;note('通信が切れています。再接続します。');return;}
  for(const b of els.quiz.querySelectorAll('button'))b.disabled=true;
  const msg=$('quiz-feedback');if(msg)msg.textContent='判定中…';
+ // Missing acknowledgements or mismatched question numbers must not lock the
+ // client. Ask for authoritative battle state + current question until restored.
+ stopPendingRecovery();
+ pendingRecoveryTimer=setInterval(()=>{
+  if(!answerPending||els.battle.hidden||!els.finish.hidden){stopPendingRecovery();return;}
+  if(!connected)return;
+  send({type:'syncQuestion'});
+  const info=$('quiz-feedback');
+  if(info)info.textContent='通信確認中… 問題を同期しています';
+ },4000);
 }
 function startBattle(data){
  closeModal();els.battle.hidden=false;els.finish.hidden=true;els.quiz.hidden=false;els.battleActions.hidden=false;
  els.grade.textContent='英検'+(gradeNames[data.grade]||data.grade);
  els.quiz.replaceChildren(node('p','対戦問題を読み込んでいます…'));
  selectedAction={kind:'attack'};selectedTab='attack';selectedCasterIndex=0;selectedReviveTarget=-1;
+ stopPendingRecovery();
  selectedTarget=0;question=null;answerPending=false;battleState=null;feedback='';
  $('battle-tabs').hidden=false;$('battle-action-hint').hidden=false;
  $('battle-forfeit').hidden=false;$('battle-forfeit').disabled=false;
  $('battle-fx').replaceChildren();
 }
-function updateClock(){
- if(els.battle.hidden||!battleEndAt)return;
- const seconds=Math.max(0,Math.ceil((battleEndAt-Date.now())/1000));
- els.battleClock.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
- if(question){
-  const timer=$('quiz-time');
-  if(timer)timer.textContent=Math.max(0,Math.ceil((question.deadline-Date.now())/1000))+'秒';
- }
-}
 function battleFinished(message){
+ stopPendingRecovery();
  question=null;answerPending=true;els.finish.hidden=false;els.quiz.hidden=true;els.battleActions.hidden=true;
  $('battle-tabs').hidden=true;$('battle-action-hint').hidden=true;$('battle-forfeit').hidden=true;
  $('battle-outcome').textContent=(message.winner===clientId?'勝利！':message.winner?'敗北':'引き分け')+'　'+message.reason;
@@ -553,6 +558,7 @@ $('back-to-plaza').addEventListener('click',()=>{
  $('battle-tabs').hidden=false;$('battle-action-hint').hidden=false;
  $('battle-forfeit').hidden=false;
  $('battle-fx').replaceChildren();
+ stopPendingRecovery();
  battleState=null;question=null;selectedAction={kind:'attack'};selectedTab='attack';updateNearby();
 });
 $('battle-forfeit').addEventListener('click',()=>{
@@ -566,6 +572,7 @@ $('battle-forfeit').addEventListener('click',()=>{
 function receive(message){
  switch(message.type){
   case 'welcome':
+   stopPendingRecovery();
    clientId=message.self;closeModal();els.battle.hidden=true;els.finish.hidden=true;battleState=null;question=null;answerPending=false;players.clear();
    for(const tile of elements.values())tile.remove();elements.clear();
    camera.ready=false;camera.manual=false;stopCamera();
@@ -590,7 +597,7 @@ function receive(message){
   case 'error':note(message.message||'接続できませんでした。');return;
   case 'invite':showInvite(message);return;
   case 'battleStart':startBattle(message);return;
-  case 'battleState':battleState=message;battleEndAt=Date.now()+message.remaining;drawTeams();updateClock();return;
+  case 'battleState':battleState=message;drawTeams();return;
   case 'battleActions':
    (message.events||[]).slice(0,16).forEach((action,i)=>setTimeout(()=>playBattleEffect(action),i*165));return;
   case 'battleAction':playBattleEffect(message);return;
@@ -598,7 +605,9 @@ function receive(message){
   case 'feedback':
    feedback=message.correct?'正解！ 攻撃・行動成功':'不正解！ 味方全員に10％ダメージ';
    feedback+='　正解：'+message.answer;
-   note(feedback);if(battleState)drawTeams();return;
+   note(feedback);
+   const pendingMessage=$('quiz-feedback');if(pendingMessage)pendingMessage.textContent=feedback;
+   if(battleState)drawTeams();return;
   case 'battleEnd':battleFinished(message);return;
  }
 }
@@ -668,8 +677,7 @@ window.addEventListener('resize',()=>{
   if(p)followMyPet(p.x,p.y);
  }
 });
-window.addEventListener('pagehide',()=>{clearTimeout(retryTimer);socket?.close(1000,'leaving');});
-setInterval(updateClock,150);
+window.addEventListener('pagehide',()=>{stopPendingRecovery();clearTimeout(retryTimer);socket?.close(1000,'leaving');});
 initDecor();
 onAuthStateChanged(auth,async user=>{
  if(!user){note('ログインが必要です。');return;}
