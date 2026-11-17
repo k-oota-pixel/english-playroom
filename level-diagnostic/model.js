@@ -168,7 +168,11 @@ export function fourChoices(item,bank,rng=Math.random){
     options,optionPairs,correctIndex:optionPairs.indexOf(answerPair),guessRate:.25};
 }
 function orderQuestion(item,rng){
-  const original=item.tokens.map((t,id)=>({id,text:t}));
+  // Choices reveal neither sentence-initial capitals nor the sentence-final mark.
+  // Keep acceptedAnswers unchanged so the correct model sentence remains natural.
+  const original=item.tokens.map((t,id)=>({
+    id,text:(id===item.tokens.length-1?t.replace(/[.!?。！？]+$/,''):t).toLowerCase()
+  }));
   let scrambled=shuffle(original,rng);
   if(scrambled.every((t,i)=>t.id===i)){
     scrambled=[...scrambled.slice(1),scrambled[0]];
