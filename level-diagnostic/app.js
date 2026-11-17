@@ -2,9 +2,9 @@ import {getMonstudyApp,enableAppCheck} from '../firebase-security.js?v=2.4.37';
 import {QUESTION_GROUPS as POTATO_GROUPS} from '../potato-harvest/questions.js';
 import {BASIC_GRAMMAR_STAGES} from './basic-grammar-data.js';
 import {getAuth} from '../auth-session.js?v=2.4.37';
-import {recordLearningActivity} from '../coin-reward.js?v=2.5.19';
+
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
-  runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
+  runTransaction,serverTimestamp,increment} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
   evaluateAttempt,modelAnswer,selectReviewQuestions,
   MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.137';
@@ -341,6 +341,18 @@ async function saveResult(){
         ...summaryPatch,...diagnosticCoinFields(data,japanTodayKey()),
         coinUpdatedAt:serverTimestamp()
       },{merge:true});
+      // Atomic marker in a top-level collection: one additional document write,
+      // no extra read and no index configuration. The summary and this marker
+      // either both commit or neither does, preventing missed retakes.
+      tx.set(doc(db,'learning_activity',player.uid),{
+        uid:player.uid,
+        lastLearningAt:serverTimestamp(),
+        lastLearningAppId:'level-diagnostic',
+        assessmentUpdatedAt:serverTimestamp(),
+        contents:{'level-diagnostic':{
+          lastLearningAt:serverTimestamp(),titleCount:increment(1)
+        }}
+      },{merge:true});
       return {awarded:true,amount:DIAGNOSTIC_REWARD_COINS,summaryPatch};
     });
     if(auth.currentUser?.uid!==player.uid)throw Error('ログインしている利用者が変わりました。');
@@ -353,7 +365,7 @@ async function saveResult(){
     }
     lastSaved=record;
     // Report a completed diagnostic without modifying its reward transaction.
-    if(saved.awarded)void recordLearningActivity('level-diagnostic');
+    // Activity and diagnostic are committed together above.
     pendingSave=null;
     $('againBtn').disabled=false;
     $('backBtn').disabled=false;
