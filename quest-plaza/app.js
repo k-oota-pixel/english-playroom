@@ -33,7 +33,7 @@ const itemNames={bandage:'🩹 ばんそうこう',medicine:'🧴 きずぐす�
  'inter-prescription':'📄 インターの処方箋',
  'date-water':'💧 だてのみず','yoteizan-water':'🏔️ ようていざんのみず'};
 let socket=null,authUser=null,clientId='',connected=false,retryTimer=null,battleState=null,battleEndAt=0,question=null;
-let selectedAction={kind:'attack'},selectedTab='attack',selectedTarget=0,selectedReviveTarget=-1,
+let selectedAction={kind:'attack'},selectedTab='attack',selectedCasterIndex=0,selectedTarget=0,selectedReviveTarget=-1,
  nearbyId=null,answerPending=false,feedback='';
 const players=new Map(),elements=new Map();
 const button=(label,action,cls='')=>{
@@ -367,7 +367,7 @@ function selectAction(action){
  if(action.spell==='meinon'||action.spell==='meinoora'){
   const own=battleState?.teams.find(t=>t.id===clientId);
   if(!own?.units[selectedReviveTarget]||own.units[selectedReviveTarget].hp>0)
-   selectedReviveTarget=own?.units.findIndex((u,i)=>i>0&&u.hp===0)??-1;
+   selectedReviveTarget=own?.units.findIndex(u=>u.hp===0)??-1;
  }
  drawActions();
 }
@@ -397,37 +397,51 @@ function drawActions(){
   }
   summary.textContent=selectedAction.special?'特技を選択中。正解すると発動します。':'通常攻撃を選択中。正解すると攻撃します。';
  }else if(selectedTab==='magic'){
-  const fallen=own.units.map((u,i)=>({u,i})).filter(({u,i})=>i>0&&u.hp===0);
-  for(const [index,unit] of own.units.entries()){
-   const known=spells.filter(s=>spellKnown(unit,s));
-   if(!known.length)continue;
-   const section=node('section','','command-section');
-   section.append(node('strong',unit.name+'　MP '+unit.mp+' / '+unit.maxMp));
-   const options=node('div','','command-items');
-   for(const spell of known){
+  // Select a single caster, just as Quest exposes one spell picker at a time.
+  // Fallen pets may be revived by living companions, so include index 0.
+  const fallen=own.units.map((u,i)=>({u,i})).filter(({u})=>u.hp===0);
+  const casters=own.units.map((u,i)=>({u,i,known:spells.filter(s=>spellKnown(u,s))}))
+   .filter(({known,u})=>u.hp>0&&known.length);
+  if(!casters.length){
+   wrap.append(node('p','魔法を使用できるキャラクターがいません。'));
+  }else{
+   if(!casters.some(row=>row.i===selectedCasterIndex))
+    selectedCasterIndex=selectedAction.kind==='magic'&&casters.some(row=>row.i===selectedAction.owner)
+     ?selectedAction.owner:casters[0].i;
+   const picker=node('div','','caster-options');
+   for(const {u,i} of casters){
+    addOption(picker,u.name+' · MP '+u.mp+'/'+u.maxMp,()=>{
+     selectedCasterIndex=i;
+     if(selectedAction.kind==='magic'&&selectedAction.owner!==i)selectedAction={kind:'attack'};
+     drawActions();
+    },selectedCasterIndex===i);
+   }
+   wrap.append(picker);
+   const caster=casters.find(row=>row.i===selectedCasterIndex);
+   const spellRow=node('div','','spell-options');
+   for(const spell of caster.known){
     const revive=spell.kind==='revive';
-    const usable=unit.hp>0&&unit.mp>=spell.mp&&(!revive||fallen.length>0);
-    addOption(options,spell.name+' · MP '+spell.mp+
-       (!usable?revive&&!fallen.length?'（蘇生対象なし）':'（使用不可）':''),
-      ()=>selectAction({kind:'magic',owner:index,spell:spell.id}),
-      selectedAction.kind==='magic'&&selectedAction.owner===index&&selectedAction.spell===spell.id,
+    const usable=caster.u.mp>=spell.mp&&(!revive||fallen.length>0);
+    const suffix=!usable?(revive&&!fallen.length?' · 蘇生対象なし':' · MP不足'):'';
+    addOption(spellRow,spell.name+' · '+spell.mp+'MP'+suffix,
+      ()=>selectAction({kind:'magic',owner:caster.i,spell:spell.id}),
+      selectedAction.kind==='magic'&&selectedAction.owner===caster.i&&selectedAction.spell===spell.id,
       !usable);
    }
-   section.append(options);wrap.append(section);
-  }
-  if(selectedAction.kind==='magic'&&['meinon','meinoora'].includes(selectedAction.spell)&&fallen.length){
-   const section=node('section','','command-section');
-   section.append(node('strong','蘇生する仲間を選択'));
-   const options=node('div','','command-items');
-   for(const {u,i} of fallen){
-    addOption(options,u.name+'（HP 0）',()=>{selectedReviveTarget=i;drawActions();},
-      selectedReviveTarget===i);
+   wrap.append(spellRow);
+   if(selectedAction.kind==='magic'&&selectedAction.owner===caster.i&&
+      ['meinon','meinoora'].includes(selectedAction.spell)&&fallen.length){
+    const targets=node('div','','revive-options');
+    targets.append(node('span','蘇生：','caster-hint'));
+    for(const {u,i} of fallen){
+     addOption(targets,u.name+'（HP 0）',()=>{selectedReviveTarget=i;drawActions();},selectedReviveTarget===i);
+    }
+    wrap.append(targets);
    }
-   section.append(options);wrap.append(section);
   }
   summary.textContent=selectedAction.kind==='magic'
-   ?'魔法を選択中。正解すると発動します。'
-   :'魔法を選んでください。選ばない場合は通常攻撃になります。';
+   ?'選択した魔法は正解時に発動（選択対象も反映）。'
+   :'使用者と魔法を選択。未選択なら通常攻撃。';
  }else{
   for(const [id,count] of Object.entries(battleState.inventory||{})){
    if(!itemNames[id]||count<1)continue;
@@ -514,7 +528,7 @@ function startBattle(data){
  closeModal();els.battle.hidden=false;els.finish.hidden=true;els.quiz.hidden=false;els.battleActions.hidden=false;
  els.grade.textContent='英検'+(gradeNames[data.grade]||data.grade);
  els.quiz.replaceChildren(node('p','対戦問題を読み込んでいます…'));
- selectedAction={kind:'attack'};selectedTab='attack';selectedReviveTarget=-1;
+ selectedAction={kind:'attack'};selectedTab='attack';selectedCasterIndex=0;selectedReviveTarget=-1;
  selectedTarget=0;question=null;answerPending=false;battleState=null;feedback='';
  $('battle-tabs').hidden=false;$('battle-action-hint').hidden=false;
  $('battle-forfeit').hidden=false;$('battle-forfeit').disabled=false;
@@ -577,6 +591,8 @@ function receive(message){
   case 'invite':showInvite(message);return;
   case 'battleStart':startBattle(message);return;
   case 'battleState':battleState=message;battleEndAt=Date.now()+message.remaining;drawTeams();updateClock();return;
+  case 'battleActions':
+   (message.events||[]).slice(0,16).forEach((action,i)=>setTimeout(()=>playBattleEffect(action),i*110));return;
   case 'battleAction':playBattleEffect(message);return;
   case 'question':showQuiz(message);return;
   case 'feedback':
