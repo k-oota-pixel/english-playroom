@@ -347,7 +347,7 @@ function idiomQuestion(rows,previous,random){
 export function orderTokens(sentence){
   return sentence.match(/(?:Mr|Mrs|Ms|Miss|Dr|Prof)\.\s+[A-Z][A-Za-z'’-]*|(?:[A-Za-z]\.){2,}|[A-Za-z]+(?:[-'’][A-Za-z]+)*|\d+(?:\.\d+)?(?:th|st|nd|rd)?/g)||[];
 }
-const normalizedOrder=sentence=>orderTokens(sentence).join(' ').replace(/[’]/g,"'").normalize('NFKC').toLowerCase();
+const normalizedOrder=sentence=>orderTokens(sentence).join(' ').replace(/[.!?,]/g,'').replace(/[’]/g,"'").normalize('NFKC').toLowerCase();
 export function correctOrdering(quiz,answer){
   if(quiz?.type!=='ordering'||!answer)return false;
   const value=normalizedOrder(answer);
