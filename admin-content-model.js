@@ -39,6 +39,9 @@ export function adminContentRows(apps={},activity={}){
 const RECENT_MATERIAL_LABELS=Object.freeze({
  'adventure-tower':'魔王の塔','adventure-dungeon':'魔物の巣窟',
  'eigo-meter':'エイゴメーター','word-wolf':'ワードウルフ',
+ 'level-diagnostic':'英語レベル判定','monster-maze':'もんすたクエスト',
+ 'eiken-grade3-interview':'英検3級面接（Q2・Q3）',
+ 'eiken-grade3-interview-q45':'英検3級面接（Q4・Q5）',
  'pet-chat':'ペットと英会話','pet-instructions':'指示表現の学習',
  'pet-typing-defense-easy':'もんすた城の防衛（イージー）',
  'pet-typing-defense-normal':'もんすた城の防衛（ノーマル）',
