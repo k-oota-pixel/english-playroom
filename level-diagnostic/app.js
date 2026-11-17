@@ -2,6 +2,7 @@ import {getMonstudyApp,enableAppCheck} from '../firebase-security.js?v=2.4.37';
 import {QUESTION_GROUPS as POTATO_GROUPS} from '../potato-harvest/questions.js';
 import {BASIC_GRAMMAR_STAGES} from './basic-grammar-data.js';
 import {getAuth} from '../auth-session.js?v=2.4.37';
+import {recordLearningActivity} from '../coin-reward.js?v=2.5.19';
 import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfter,
   runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
@@ -351,6 +352,8 @@ async function saveResult(){
         assessmentHistoryPreview:[record,...previous.filter(row=>row.id!==record.id)].slice(0,previewLimit)};
     }
     lastSaved=record;
+    // Report a completed diagnostic without modifying its reward transaction.
+    if(saved.awarded)void recordLearningActivity('level-diagnostic');
     pendingSave=null;
     $('againBtn').disabled=false;
     $('backBtn').disabled=false;
