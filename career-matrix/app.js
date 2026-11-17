@@ -2,7 +2,7 @@ import {getApps,initializeApp} from 'https://www.gstatic.com/firebasejs/13.0.0/f
 import {getAuth,onAuthStateChanged} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {VALUE_PRESETS,CHOICES,blankState,normalizeState,calculate,sampleState} from './model.js?v=1.0.0';
-import {createReflectionUI} from './reflection.js?v=2.5.15';
+import {createReflectionUI} from './reflection.js?v=2.5.16';
 
 const firebaseConfig={
   apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',
