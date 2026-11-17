@@ -248,7 +248,7 @@ $('saveButton').addEventListener('click',async()=>{
   const payload=normalizeState(state);
   try{
     await setDoc(doc(db,'users',currentUser.uid,'apps','career-matrix'),{
-      matrix:payload,updatedAt:serverTimestamp()
+      matrix:{...payload,ratings:payload.ratings.flat()},updatedAt:serverTimestamp()
     },{merge:true});
     notice(revision===writeRevision?'アカウントに保存しました。別の端末でも同じ内容を開けます。':
       '保存操作時点の内容を保存しました。その後の変更は、もう一度保存してください。','success');
