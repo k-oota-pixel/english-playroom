@@ -88,8 +88,13 @@ function removePlayer(id){
  players.delete(id);elements.get(id)?.remove();elements.delete(id);updateNearby();
 }
 // Camera moves independently of the pet. Most steps only animate the pet tile.
-const camera={ready:false,manual:false,left:0,top:0,frame:0,lastFrame:0,inertiaFrame:0};
+// The map uses a GPU-composited transform instead of scrollLeft/scrollTop:
+// Safari and Chrome can then repaint a stationary viewport smoothly.
+const camera={ready:false,manual:false,left:0,top:0,targetLeft:0,targetTop:0,frame:0,lastFrame:0,inertiaFrame:0};
 const prefersLessMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
+function paintCamera(){
+ els.world.style.transform='translate3d('+(-camera.left)+'px,'+(-camera.top)+'px,0)';
+}
 function stopCamera(){
  if(camera.frame)cancelAnimationFrame(camera.frame);
  if(camera.inertiaFrame)cancelAnimationFrame(camera.inertiaFrame);
@@ -97,35 +102,32 @@ function stopCamera(){
 }
 function cameraStep(now){
  camera.frame=0;
- const elapsed=camera.lastFrame?Math.min(45,now-camera.lastFrame):16;
+ const elapsed=camera.lastFrame?Math.min(48,now-camera.lastFrame):16;
  camera.lastFrame=now;
- const view=els.viewport,alpha=1-Math.exp(-elapsed/95);
- const dx=camera.left-view.scrollLeft,dy=camera.top-view.scrollTop;
- if(Math.abs(dx)<.6&&Math.abs(dy)<.6){
-  view.scrollLeft=camera.left;view.scrollTop=camera.top;
-  camera.lastFrame=0;return;
+ const alpha=1-Math.exp(-elapsed/100);
+ const dx=camera.targetLeft-camera.left,dy=camera.targetTop-camera.top;
+ if(Math.abs(dx)<.5&&Math.abs(dy)<.5){
+  camera.left=camera.targetLeft;camera.top=camera.targetTop;
+  paintCamera();camera.lastFrame=0;return;
  }
- view.scrollLeft+=dx*alpha;view.scrollTop+=dy*alpha;
- camera.frame=requestAnimationFrame(cameraStep);
+ camera.left+=dx*alpha;camera.top+=dy*alpha;
+ paintCamera();camera.frame=requestAnimationFrame(cameraStep);
 }
 function setCamera(left,top,immediate=false){
- // A recenter or auto-follow interrupts any still-running swipe inertia.
- if(camera.inertiaFrame){cancelAnimationFrame(camera.inertiaFrame);camera.inertiaFrame=0;}
  const view=els.viewport;
  const next=clampCamera(left,top,view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
- camera.left=next.left;camera.top=next.top;
+ if(camera.inertiaFrame){cancelAnimationFrame(camera.inertiaFrame);camera.inertiaFrame=0;}
+ camera.targetLeft=next.left;camera.targetTop=next.top;
  if(immediate||prefersLessMotion){
-  stopCamera();view.scrollLeft=next.left;view.scrollTop=next.top;
-  return;
- }
- if(!camera.frame)camera.frame=requestAnimationFrame(cameraStep);
+  stopCamera();camera.left=next.left;camera.top=next.top;paintCamera();
+ }else if(!camera.frame)camera.frame=requestAnimationFrame(cameraStep);
 }
 function followMyPet(x,y){
  if(!camera.ready||camera.manual)return;
  const view=els.viewport;
  const next=followCamera(x*CELL+CELL/2,y*CELL+CELL/2,
-  camera.left,camera.top,view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
- if(next.left!==camera.left||next.top!==camera.top)setCamera(next.left,next.top);
+  camera.targetLeft,camera.targetTop,view.clientWidth,view.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
+ if(next.left!==camera.targetLeft||next.top!==camera.targetTop)setCamera(next.left,next.top);
 }
 function returnToMyPet(immediate=false){
  const player=players.get(clientId);
@@ -137,86 +139,125 @@ function returnToMyPet(immediate=false){
  camera.ready=true;
  setCamera(target.left,target.top,immediate);
 }
-// Momentum is local viewport motion only; no positional network updates.
+// A short natural coast after a quick swipe, not a long fixed-distance jump.
+// Every frame is composited; no page scrolling and no network traffic.
 function animateFling(target){
  stopCamera();
- const view=els.viewport;
- const startLeft=view.scrollLeft,startTop=view.scrollTop;
- const leftDelta=target.left-startLeft,topDelta=target.top-startTop;
- if(Math.abs(leftDelta)<1&&Math.abs(topDelta)<1)return;
- const started=performance.now(),duration=480;
- const frame=now=>{
+ const startLeft=camera.left,startTop=camera.top;
+ const dx=target.left-startLeft,dy=target.top-startTop;
+ if(Math.abs(dx)<.5&&Math.abs(dy)<.5)return;
+ const duration=350,started=performance.now();
+ const step=now=>{
   const progress=Math.min(1,Math.max(0,(now-started)/duration));
   const eased=1-Math.pow(1-progress,3);
-  view.scrollLeft=startLeft+leftDelta*eased;
-  view.scrollTop=startTop+topDelta*eased;
-  if(progress<1)camera.inertiaFrame=requestAnimationFrame(frame);
-  else{camera.inertiaFrame=0;view.scrollLeft=target.left;view.scrollTop=target.top;}
+  camera.left=startLeft+dx*eased;camera.top=startTop+dy*eased;
+  paintCamera();
+  if(progress<1)camera.inertiaFrame=requestAnimationFrame(step);
+  else{
+   camera.inertiaFrame=0;
+   camera.left=target.left;camera.top=target.top;
+   camera.targetLeft=target.left;camera.targetTop=target.top;
+   paintCamera();
+  }
  };
- camera.inertiaFrame=requestAnimationFrame(frame);
+ camera.inertiaFrame=requestAnimationFrame(step);
 }
-// Pan with mouse or touch; only moves beyond a click threshold count as dragging.
 let drag=null,suppressPlayerClickUntil=0;
-els.viewport.addEventListener('pointerdown',event=>{
- if(event.pointerType==='mouse'&&event.button!==0)return;
- if(drag||!els.modal.hidden||!els.battle.hidden||!$('formation-panel').hidden)return;
- // New touches stop the previous fling immediately instead of jumping.
- if(camera.inertiaFrame){
-  stopCamera();camera.left=els.viewport.scrollLeft;camera.top=els.viewport.scrollTop;
- }
- drag={id:event.pointerId,x:event.clientX,y:event.clientY,
-  left:els.viewport.scrollLeft,top:els.viewport.scrollTop,
-  pointerType:event.pointerType,scale:event.pointerType==='touch'?1.85:1,
-  samples:[{x:event.clientX,y:event.clientY,t:performance.now()}],active:false};
-});
-els.viewport.addEventListener('pointermove',event=>{
- if(!drag||drag.id!==event.pointerId)return;
- const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
- if(!drag.active&&Math.hypot(dx,dy)<9)return;
+function beginPan(id,type,x,y){
+ if(drag||!camera.ready||!els.modal.hidden||!els.battle.hidden||!$('formation-panel').hidden)return;
+ // Interrupt any animation at its CURRENT painted position without snapping.
+ stopCamera();
+ camera.targetLeft=camera.left;camera.targetTop=camera.top;
+ const t=performance.now();
+ drag={id,type,startX:x,startY:y,startLeft:camera.left,startTop:camera.top,
+  active:false,samples:[{x,y,t}]};
+}
+function panTo(id,x,y,event){
+ if(!drag||drag.id!==id)return false;
+ const dx=x-drag.startX,dy=y-drag.startY;
+ if(!drag.active&&Math.hypot(dx,dy)<6)return false;
  if(!drag.active){
-  drag.active=true;camera.manual=true;stopCamera();
+  drag.active=true;camera.manual=true;
   els.viewport.classList.add('is-panning');
-  try{els.viewport.setPointerCapture(event.pointerId);}catch{}
  }
- event.preventDefault();
- const now=performance.now();
- drag.samples.push({x:event.clientX,y:event.clientY,t:now});
- // Keep only the last ~100ms to estimate the speed of a short flick.
- while(drag.samples.length>2&&drag.samples[1].t<now-100)drag.samples.shift();
- const next=clampCamera(drag.left-dx*drag.scale,drag.top-dy*drag.scale,
+ if(event?.cancelable)event.preventDefault();
+ // Direct manipulation (1:1). The inertia is applied only after release.
+ // Using a CSS transform avoids expensive scroll layout in mobile Safari.
+ const next=clampCamera(drag.startLeft-dx,drag.startTop-dy,
   els.viewport.clientWidth,els.viewport.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
  camera.left=next.left;camera.top=next.top;
- els.viewport.scrollLeft=next.left;els.viewport.scrollTop=next.top;
-});
-function finishDrag(event){
- if(!drag||(event&&drag.id!==event.pointerId))return;
- if(drag.active){
-  suppressPlayerClickUntil=performance.now()+450;
-  if(event?.type==='pointerup'&&drag.pointerType==='touch'&&!prefersLessMotion){
-   const samples=drag.samples,first=samples[0],last=samples.at(-1);
-   // Holding still before lifting must not start a delayed fling.
-   if(last&&performance.now()-last.t<85){
-    const ms=Math.max(16,last.t-first.t);
-    const vx=-(last.x-first.x)*drag.scale/ms;
-    const vy=-(last.y-first.y)*drag.scale/ms;
-    const v=els.viewport;
-    const target=flingTarget(v.scrollLeft,v.scrollTop,vx,vy,
-     v.clientWidth,v.clientHeight,WORLD_WIDTH,WORLD_HEIGHT);
-    camera.left=target.left;camera.top=target.top;
-    animateFling(target);
-   }
+ camera.targetLeft=next.left;camera.targetTop=next.top;
+ paintCamera();
+ const now=performance.now();
+ drag.samples.push({x,y,t:now});
+ while(drag.samples.length>2&&drag.samples[1].t<now-110)drag.samples.shift();
+ return true;
+}
+function finishPan(id,cancelled=false){
+ if(!drag||drag.id!==id)return false;
+ const gesture=drag;drag=null;
+ els.viewport.classList.remove('is-panning');
+ if(!gesture.active)return false;
+ suppressPlayerClickUntil=performance.now()+450;
+ if(!cancelled&&gesture.type==='touch'&&!prefersLessMotion){
+  const samples=gesture.samples,first=samples[0],last=samples.at(-1);
+  // No momentum after holding still: avoid an unexpected map jump on release.
+  if(last&&performance.now()-last.t<90){
+   const elapsed=Math.max(16,last.t-first.t);
+   const vx=-(last.x-first.x)/elapsed,vy=-(last.y-first.y)/elapsed;
+   const v=els.viewport;
+   const target=flingTarget(camera.left,camera.top,vx,vy,
+    v.clientWidth,v.clientHeight,WORLD_WIDTH,WORLD_HEIGHT,
+    {duration:270,maxDistance:560,minSpeed:.25});
+   animateFling(target);
   }
  }
- drag=null;els.viewport.classList.remove('is-panning');
+ return true;
 }
-els.viewport.addEventListener('pointerup',finishDrag);
-els.viewport.addEventListener('pointercancel',finishDrag);
-els.viewport.addEventListener('lostpointercapture',finishDrag);
+// Use native touch events on iOS Safari instead of mixing PointerCapture with
+// the platform's touch synthesis; mouse/pen use pointer events separately.
+els.viewport.addEventListener('touchstart',event=>{
+ if(event.touches.length!==1)return;
+ const t=event.changedTouches[0];
+ beginPan(t.identifier,'touch',t.clientX,t.clientY);
+},{passive:true});
+els.viewport.addEventListener('touchmove',event=>{
+ if(!drag||drag.type!=='touch')return;
+ if(event.touches.length!==1){finishPan(drag.id,true);return;}
+ const t=Array.from(event.changedTouches).find(t=>t.identifier===drag.id);
+ if(t)panTo(drag.id,t.clientX,t.clientY,event);
+},{passive:false});
+els.viewport.addEventListener('touchend',event=>{
+ if(!drag||drag.type!=='touch')return;
+ const t=Array.from(event.changedTouches).find(t=>t.identifier===drag.id);
+ if(t&&finishPan(drag.id)&&event.cancelable)event.preventDefault();
+},{passive:false});
+els.viewport.addEventListener('touchcancel',event=>{
+ if(drag?.type==='touch')finishPan(drag.id,true);
+},{passive:false});
+els.viewport.addEventListener('pointerdown',event=>{
+ if(event.pointerType==='touch'||event.button!==0)return;
+ beginPan(event.pointerId,'mouse',event.clientX,event.clientY);
+});
+window.addEventListener('pointermove',event=>{
+ if(drag?.type==='mouse'&&event.pointerId===drag.id)
+  panTo(drag.id,event.clientX,event.clientY,event);
+});
+window.addEventListener('pointerup',event=>{
+ if(drag?.type==='mouse')finishPan(event.pointerId);
+});
+window.addEventListener('pointercancel',event=>{
+ if(drag?.type==='mouse')finishPan(event.pointerId,true);
+});
 els.viewport.addEventListener('click',event=>{
  if(performance.now()>=suppressPlayerClickUntil)return;
  event.preventDefault();event.stopImmediatePropagation();
 },true);
+els.viewport.addEventListener('contextmenu',event=>{
+ if(drag?.active)event.preventDefault();
+});
 $('recenter-camera').addEventListener('click',()=>returnToMyPet());
+
 function updateNearby(){
  const me=players.get(clientId);
  if(!me){nearbyId=null;return;}
@@ -671,7 +712,7 @@ $('close-formation').addEventListener('click',()=>{
 window.addEventListener('resize',()=>{
  if(!camera.ready)return;
  const v=els.viewport;
- if(camera.manual)setCamera(v.scrollLeft,v.scrollTop,true);
+ if(camera.manual)setCamera(camera.left,camera.top,true);
  else {
   const p=players.get(clientId);
   if(p)followMyPet(p.x,p.y);
