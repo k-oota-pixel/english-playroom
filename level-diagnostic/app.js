@@ -6,7 +6,7 @@ import {getFirestore,doc,collection,getDoc,getDocs,query,orderBy,limit,startAfte
   writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {buildQuestionBank,createSession,chooseQuestion,submitAnswer,isFinished,summarize,
   evaluateAttempt,modelAnswer,selectReviewQuestions,
-  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.136';
+  MIN_QUESTIONS,STANDARD_QUESTIONS,MAX_QUESTIONS,SCALE_VERSION} from './model.js?v=2.4.137';
 
 const $=id=>document.getElementById(id);
 const app=getMonstudyApp();
