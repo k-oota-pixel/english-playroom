@@ -57,3 +57,12 @@ test('four detailed category dictionaries are available',()=>{
   assert.deepEqual(Object.keys(CHOICES),['faculty','field','industry','job']);
   assert.ok(Object.values(CHOICES).every(category=>category.examples.length>=30));
 });
+
+test('Firestore-safe flattened ratings restore the original four by four grid',()=>{
+  const sample=sampleState();
+  const cloud={...sample,ratings:sample.ratings.flat()};
+  assert.equal(cloud.ratings.length,16);
+  assert.equal(cloud.ratings.every(Number.isInteger),true);
+  assert.deepEqual(normalizeState(cloud).ratings,sample.ratings);
+  assert.deepEqual(calculate(cloud).options.map(item=>item.score),[27,25,31,23]);
+});
