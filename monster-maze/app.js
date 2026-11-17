@@ -473,7 +473,7 @@ function explore(){
   message();
   const {maze}=run;
   const title=node('h2',run.course.name+' · '+run.floor+' / '+floorCount+'階');
-  const hint=node('p','矢印キー・方向ボタン・隣のマスをタップして移動。','walk-hint');
+  const hint=node('p','矢印キー・WASDキー・方向ボタン・隣のマスをタップして移動。','walk-hint');
   const map=group('maze-map');
   map.setAttribute('role','group');
   map.setAttribute('aria-label','迷宮マップ');
@@ -612,9 +612,19 @@ function leave(){
   walkView=null;
   finish(false);
 }
+// Arrow keys and WASD share the same movement flow. Avoid hijacking text
+// entry and IME composition; while a modal is open, exploration is paused.
+const moveKeyIndex=Object.freeze({
+  ArrowUp:0,ArrowRight:1,ArrowDown:2,ArrowLeft:3,
+  KeyW:0,KeyD:1,KeyS:2,KeyA:3,
+  w:0,d:1,s:2,a:3
+});
 document.addEventListener('keydown',event=>{
-  const i=['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].indexOf(event.key);
-  if(!walkView||i<0||pane.querySelector('dialog[open]')||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+  const i=moveKeyIndex[event.code]??moveKeyIndex[event.key]??moveKeyIndex[event.key?.toLowerCase()]??-1;
+  if(!walkView||i<0||pane.querySelector('dialog[open]')||
+    event.altKey||event.ctrlKey||event.metaKey||event.shiftKey||
+    event.isComposing||event.keyCode===229||
+    event.target?.closest?.('input,textarea,select,[contenteditable="true"],[role="textbox"]'))return;
   event.preventDefault();
   walk(...directions[i]);
 });
