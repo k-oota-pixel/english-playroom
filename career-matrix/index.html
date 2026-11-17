@@ -97,6 +97,7 @@ select{appearance:auto}
 @media(max-width:520px){.wrap{width:min(100% - 24px,1150px)}.topbar{padding:12px 0}.hero{padding:20px;border-radius:19px}.hero h1{font-size:32px}.panel{padding:15px;border-radius:17px}.heading h2{font-size:18px}.edit-card{padding:12px}.kind{padding:8px 5px}.star{width:32px}.btn{font-size:11px;padding:9px 12px}.matrix th,.matrix td{padding:12px 6px}.matrix th:first-child{min-width:154px;max-width:154px}}
 @media print{body{background:#fff}.topbar,.toolbar,.notice,.editor-grid,.helper,.foot,.hero-stat{display:none!important}.wrap{width:100%}.hero,.panel{box-shadow:none;border:0;padding:8px 0;margin:8px 0}.hero{display:block}.hero h1{font-size:26px}.hero p{font-size:10px}.heading{margin:8px 0}.matrix{min-width:0}.matrix th:first-child{position:static;min-width:110px}.scroll{overflow:visible}.matrix th,.matrix td{padding:5px 2px}.rater{display:none}.calc{font-size:10px;color:#000}.results{grid-template-columns:repeat(4,1fr);gap:6px}.result{padding:8px}.result h3{font-size:12px}.scoreline strong{font-size:22px}.bar{display:none}}
 </style>
+<link rel="stylesheet" href="./ui-polish.css?v=2.5.13">
 </head>
 <body>
 <header class="topbar wrap"><a href="../" class="brand"><span class="brandmark">◈</span> もんすたでぃ</a><span class="topnote">CAREER DESIGN TOOL · 試験公開</span></header>
@@ -105,28 +106,37 @@ select{appearance:auto}
     <div><span class="kicker">MY VALUES × MY FUTURE</span><h1>総合評価表<span>CAREER MATRIX</span></h1><p>進路選びで大切にしたいことを4つ決め、気になる進路を4つ比べてみよう。<br>あなた自身の価値観で考えるための、進路の比較ノートです。</p></div>
     <div class="hero-stat"><span class="small">入力の進み具合</span><strong id="progressCount">0 / 24</strong><div class="progress"><i id="progressBar" style="width:0%"></i></div><span class="small" id="progressText">判断基準と進路候補を選ぼう</span></div>
   </section>
+  <nav class="step-nav" aria-label="進路比較の4ステップ">
+    <a class="step-link" href="#valuesStage"><span class="step-number">01</span><span><strong>価値観を選ぶ</strong><small>大切なことを4つ</small></span></a>
+    <a class="step-link" href="#optionsStage"><span class="step-number">02</span><span><strong>進路を選ぶ</strong><small>比較する候補を4つ</small></span></a>
+    <a class="step-link" href="#ratingStage"><span class="step-number">03</span><span><strong>5段階で評価</strong><small>当てはまる度合い</small></span></a>
+    <a class="step-link" href="#resultsStage"><span class="step-number">04</span><span><strong>結果を見る</strong><small>合計点と理由を確認</small></span></a>
+  </nav>
   <div class="toolbar"><div class="toolbar-group"><button class="btn" type="button" id="sampleButton">サンプルで試す</button><button class="btn" type="button" id="resetButton">最初から</button><button class="btn" type="button" id="printButton">印刷する</button></div><button class="btn primary" id="saveButton" type="button">この内容を保存する</button></div>
   <p class="notice" id="notice" role="status" aria-live="polite">入力中の内容はこの端末に仮保存されます。保存ボタンでアカウントへの保存を試みます。</p>
-  <section class="panel" aria-labelledby="valuesHeading">
+  <section class="panel" id="valuesStage" aria-labelledby="valuesHeading">
     <div class="heading"><div class="heading-left"><span class="step">01</span><div><h2 id="valuesHeading">大切にしたい価値観を4つ</h2><p>候補から選んでも、自由に書いてもOK。選ぶときに、★の数で重要度も決めよう。</p></div></div><span class="count" id="valueCount">0 / 4</span></div>
     <div class="editor-grid" id="valuesEditor"></div>
   </section>
-  <section class="panel" aria-labelledby="optionsHeading">
+  <section class="panel" id="optionsStage" aria-labelledby="optionsHeading">
     <div class="heading"><div class="heading-left"><span class="step">02</span><div><h2 id="optionsHeading">比較したい進路を4つ</h2><p>学部・分野・業界・職種のボタンで切り替え、詳細を選ぼう。4つの種類を混ぜてもOK。</p></div></div><span class="count" id="optionCount">0 / 4</span></div>
     <div class="editor-grid" id="optionsEditor"></div>
   </section>
-  <section class="panel" aria-labelledby="matrixHeading">
+  <section class="panel" id="ratingStage" aria-labelledby="matrixHeading">
     <div class="heading"><div class="heading-left"><span class="step">03</span><div><h2 id="matrixHeading">5段階で評価しよう</h2><p>1＝当てはまらない、3＝どちらともいえない、5＝とても当てはまる。迷ったらあとから変えられます。</p></div></div><span class="count" id="ratingCount">0 / 16</span></div>
-    <div class="scroll" tabindex="0" aria-label="評価表。スマートフォンでは左右にスクロールできます"><table class="matrix" id="matrixTable"></table></div>
+    <div class="score-guide" aria-label="評価の目安"><span><b>1</b> 当てはまらない</span><span><b>2</b> あまり</span><span><b>3</b> どちらとも</span><span><b>4</b> かなり</span><span><b>5</b> とても</span></div>
+    <div class="mobile-evaluator" id="mobileEvaluation" aria-label="スマートフォン用評価カード"></div>
+    <button class="table-view-toggle" id="tableToggle" type="button" aria-controls="desktopMatrix" aria-expanded="false">一覧表でも見る ＋</button>
+    <div class="scroll desktop-matrix" id="desktopMatrix" tabindex="0" aria-label="4×4の評価表。スマートフォンでは左右にスクロールできます"><table class="matrix" id="matrixTable"></table></div>
     <p class="helper">計算方法：各評価（1〜5）× 価値観の重要度（★1〜5）＝加重点。4項目の加重点を合計します。スマートフォンでは表を左右にスクロールできます。</p>
   </section>
-  <section class="panel" aria-labelledby="resultsHeading">
+  <section class="panel" id="resultsStage" aria-labelledby="resultsHeading">
     <div class="heading"><div class="heading-left"><span class="step">04</span><div><h2 id="resultsHeading">比較した結果</h2><p id="resultDescription">16か所すべて評価すると、点数順の結果が表示されます。</p></div></div><span class="count">MY CHOICE</span></div>
     <div class="results" id="results"></div>
     <p class="helper">この得点は、あなたが設定した判断基準に基づくものです。進路の客観的な優劣ではありません。なぜその点数をつけたのか、理由を言葉にすると進路理解が深まります。</p>
   </section>
   <footer class="foot"><span>もんすたでぃ · 総合評価表マトリクス</span><span>※ 試験公開中。メインページからのリンクはありません。</span></footer>
 </main>
-<script type="module" src="./app.js?v=1.0.0"></script>
+<script type="module" src="./app.js?v=2.5.13"></script>
 </body>
 </html>
