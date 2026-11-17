@@ -8,9 +8,9 @@ import {loadVocabulary} from '../data/vocab/index.js';
 import {buildBilingualIdiomBank} from '../data/vocab/target1000-bilingual.js';
 import {DUNGEON_ITEMS,normalizeDungeonInventory,unlockedMagic} from '../pet-dungeons-model.js?v=2.4.96';
 import {
-  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,sampleCardKeys,grantRaritySamples,
+  cards,roles,rarities,levelCaps,courses,enemies,bosses,normalizeProfile,stats,specialDescription,upgrade,
   addReward,directions,floorCount,planChests,generateMaze,movePet,makeFoes,mazeSpells,createCaster,spellAvailable,canJoinAction,retryVocabulary,prepareQuestions,question,shuffle,playTurn,injuredAlly,healWhileWalking,canUseItem,useItem,settleItems,drawChest,drawReward,gacha as gachaRules,drawGacha
-} from './model.js?v=25';
+} from './model.js?v=2.5.3';
 
 const cfg={apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'};
 const app=getApps().find(entry=>entry.name==='[DEFAULT]')||initializeApp(cfg);
@@ -430,12 +430,6 @@ function collection(draft=[...profile.team]){
       if(!draft.every(key=>next.owned[key]))return false;
       next.team=[...draft];
     },lobby),draft.length!==3||draft.join()===profile.team.join(),'primary')));
-  if(sampleCardKeys.some(key=>!profile.owned[key])){
-    pane.append(button('比較用の鉄甲ガメルを受け取る',()=>save(grantRaritySamples,()=>{
-      message('鉄甲ガメルのN・R・SR・SSRがそろいました。');
-      collection(draft);
-    })));
-  }
   for(const [role,label] of roles.entries()){
     const section=group('collection owned-cards');
     for(const card of cards.filter(item=>item.role===role)){
