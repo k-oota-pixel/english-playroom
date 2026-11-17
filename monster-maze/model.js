@@ -15,8 +15,19 @@ export function createCaster(data={}){
   });
   return {name:data.petName||'ぺっと',level,hp,maxHp:hp,mp,maxMp:mp,attack};
 }
+export function companionSpellIds(unit){
+  if(!unit||unit.role===0)return [];
+  if(unit.role===1)return unit.rarity>=2?['mirogoro','mirogoron']:['mirogoro'];
+  if(unit.role===2)return unit.rarity>=3?['mimuros','mimurose','meinon','meinoora']
+    :unit.rarity===2?['mimuros','mimurose','meinon']:['mimuros'];
+  return [];
+}
+export function spellLearned(caster,spell){
+  return !!caster&&!!spell&&(Number.isInteger(caster.role)
+    ?companionSpellIds(caster).includes(spell.id):caster.level>=spell.level);
+}
 export function spellAvailable(caster,spell){
-  return !!caster&&caster.hp>0&&caster.level>=spell.level&&caster.mp>=spell.mpCost;
+  return !!caster&&caster.hp>0&&spellLearned(caster,spell)&&caster.mp>=spell.mpCost;
 }
 
 const names = [
@@ -89,8 +100,9 @@ export function stats(key,entry){
   const [hp,physical,magic,heal] = baseStats[card.role];
   const scale = 1+(entry.level-1)*0.045+rarity*0.17;
   const maxHp = Math.round((hp+(id%6)*3)*scale*hpMultipliers[rarity]);
+  const maxMp=card.role===0?0:[18,36,64,94][rarity]+Math.floor((entry.level-1)/3);
   return {
-    ...card,key,rarity,maxHp,hp:maxHp,
+    ...card,key,rarity,maxHp,hp:maxHp,maxMp,mp:maxMp,
     physical:Math.round((physical+id%3)*scale),
     magic:Math.round((magic+(id+1)%3)*scale),
     heal:Math.round((heal+id%2)*scale),
@@ -389,7 +401,7 @@ export function specialDescription(unit){
 }
 const actionRoles=['physical','magic','heal'];
 export function canJoinAction(unit,action){
-  return unit.hp>0&&actionRoles[unit.role]===action;
+  return unit.hp>0&&unit.role===0&&action==='physical';
 }
 function mostInjured(party){
   return party.filter(unit=>unit.hp>0).reduce((lowest,unit)=>
@@ -406,11 +418,11 @@ export function selectedFallenAlly(run){
   const fallen=fallenAllies(run);
   return fallen.find(unit=>unit.key===run.reviveTarget)||fallen[0]||null;
 }
-export function reviveAlly(run,spell,target,random=Math.random){
-  if(spell.kind!=='revive'||!spellAvailable(run.caster,spell)||
+export function reviveAlly(run,spell,target,random=Math.random,caster=run.caster){
+  if(spell.kind!=='revive'||!spellAvailable(caster,spell)||
      !target||target.hp!==0||!run.team.includes(target))return null;
-  // An attempt costs MP even if it fails, with no additional Firebase writes.
-  run.caster.mp-=spell.mpCost;
+  // An attempt costs only the selected caster's MP, even if it fails.
+  caster.mp-=spell.mpCost;
   if(random()>=spell.successRate)return {unit:target,success:false,amount:0};
   const min=spell.minHpPercent,max=spell.maxHpPercent;
   const rate=min+Math.floor(Math.min(0.999999,Math.max(0,random()))*(max-min+1));
@@ -418,14 +430,26 @@ export function reviveAlly(run,spell,target,random=Math.random){
   target.hp=amount;
   return {unit:target,success:true,amount,rate};
 }
-export function healWhileWalking(run,spell,random=Math.random){
-  if(spell.kind!=='heal'||!spellAvailable(run.caster,spell))return null;
+export function healWhileWalking(run,spell,random=Math.random,caster=run.caster){
+  if(spell.kind!=='heal'||!spellAvailable(caster,spell))return null;
   const unit=injuredAlly(run);
   if(!unit)return null;
-  const amount=Math.min(unit.maxHp-unit.hp,rollMagicAmount(spell.base,random));
-  run.caster.mp-=spell.mpCost;
+  const amount=Math.min(unit.maxHp-unit.hp,Math.round(rollMagicAmount(spell.base,random)*(caster===run.caster?1:1.2)));
+  caster.mp-=spell.mpCost;
   unit.hp+=amount;
-  return {unit,amount};
+  const assists=[];
+  if(caster!==run.caster){
+    for(const actor of [run.caster,...run.team]){
+      if(actor===caster||actor.hp<=0||!spellLearned(actor,spell))continue;
+      const injured=injuredAlly(run);
+      if(!injured)break;
+      const extra=Math.min(injured.maxHp-injured.hp,
+        Math.round(rollMagicAmount(spell.base,random)*(actor===run.caster?1:1.2)));
+      injured.hp+=extra;
+      assists.push({actor,unit:injured,amount:extra});
+    }
+  }
+  return {unit,amount,assists};
 }
 export function canUseItem(run,item){
   const pet=run.caster;
@@ -464,47 +488,58 @@ export function playTurn(run,correct,action,target,specialKey,random=Math.random
   const strike=(actor,enemy,power,kind,name)=>changeHp(actor,enemy,
     Math.max(0,enemy.hp-Math.round(power*(enemy.weak===kind?1.25:0.9))),kind,name);
   if(correct){
-    if(action==='physical'&&run.caster.hp>0){
-      const enemy=enemyTarget();
-      if(enemy)strike(run.caster,enemy,run.caster.attack,action,roles[0]);
-    }
-    let petCast=false;
-    const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
-    if(spell && (spell.kind==='attack'?'magic':spell.kind)===action && spellAvailable(run.caster,spell)){
-      const recipient=action==='heal'?mostInjured(party):action==='revive'?selectedFallenAlly(run):enemyTarget();
-      if(recipient){
-        petCast=true;
+    if(action==='physical'){
+      if(run.caster.hp>0){
+        const enemy=enemyTarget();
+        if(enemy)strike(run.caster,enemy,run.caster.attack,'physical',roles[0]);
+      }
+      for(const unit of living.filter(ally=>canJoinAction(ally,'physical'))){
+        const enemy=enemyTarget();
+        if(!enemy)break;
+        if(unit===special){
+          const multiplier=specialPower(unit.rarity);
+          if(unit.effect==='guard')run.guard=guardEffect(unit.rarity);
+          else {
+            const targets=unit.effect.endsWith('All')?run.foes.filter(foe=>foe.hp>0):[enemy];
+            for(const foe of targets)strike(unit,foe,unit.physical*multiplier,'physical',unit.skill);
+          }
+          unit.ct=unit.maxCt;
+        }else strike(unit,enemy,unit.physical,'physical',roles[unit.role]);
+      }
+    }else{
+      const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
+      const caster=run.spellCasterKey?run.team.find(unit=>unit.key===run.spellCasterKey):run.caster;
+      if(spell&&(spell.kind==='attack'?'magic':spell.kind)===action&&spellAvailable(caster,spell)){
         if(action==='revive'){
-          const result=reviveAlly(run,spell,recipient,random);
-          if(result.success){
-            party.push(recipient);
-            report({actor:run.caster,unit:recipient,hp:recipient.hp,delta:result.amount,kind:'revive',actionName:spell.name});
-          }else{
-            report({actor:run.caster,unit:recipient,hp:0,delta:0,kind:'reviveFail',actionName:spell.name});
+          const recipient=selectedFallenAlly(run);
+          if(recipient){
+            const result=reviveAlly(run,spell,recipient,random,caster);
+            if(result.success){
+              party.push(recipient);
+              report({actor:caster,unit:recipient,hp:recipient.hp,delta:result.amount,kind:'revive',actionName:spell.name});
+            }else report({actor:caster,unit:recipient,hp:0,delta:0,kind:'reviveFail',actionName:spell.name});
           }
         }else{
-          run.caster.mp-=spell.mpCost;
-          const amount=rollMagicAmount(spell.base,random);
-          if(action==='heal')heal(run.caster,recipient,amount,spell.name);
-          else strike(run.caster,recipient,amount,action,spell.name);
+          const recipient=action==='heal'?mostInjured(party):enemyTarget();
+          if(recipient){
+            caster.mp-=spell.mpCost;
+            const cast=(actor)=>{
+              const targetUnit=action==='heal'?mostInjured(party):enemyTarget();
+              if(!targetUnit)return;
+              const amount=Math.round(rollMagicAmount(spell.base,random)*(actor===run.caster?1:1.2));
+              if(action==='heal')heal(actor,targetUnit,amount,spell.name);
+              else strike(actor,targetUnit,amount,'magic',spell.name);
+            };
+            cast(caster);
+            // Each other living owner of the spell follows up once without spending MP.
+            if(caster!==run.caster){
+              for(const actor of [run.caster,...run.team]){
+                if(actor!==caster&&actor.hp>0&&spellLearned(actor,spell))cast(actor);
+              }
+            }
+          }
         }
       }
-    }
-    const acting=action==='heal'&&!petCast?[]:living.filter(ally=>canJoinAction(ally,action));
-    for(const unit of acting){
-      const enemy=enemyTarget();
-      if(!enemy)break;
-      if(unit===special){
-        const multiplier=specialPower(unit.rarity);
-        if(unit.effect==='guard') run.guard=guardEffect(unit.rarity);
-        else if(unit.effect==='heal')heal(unit,mostInjured(party),Math.round(unit.heal*multiplier),unit.skill);
-        else {
-          const targets=unit.effect.endsWith('All')?run.foes.filter(foe=>foe.hp>0):[enemy];
-          for(const foe of targets)strike(unit,foe,unit[action]*multiplier,action,unit.skill);
-        }
-        unit.ct=unit.maxCt;
-      }else if(action==='heal')heal(unit,mostInjured(party),unit.heal,roles[unit.role]);
-      else strike(unit,enemy,unit[action],action,roles[unit.role]);
     }
   }
   for(const enemy of run.foes.filter(unit=>unit.hp>0)){

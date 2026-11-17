@@ -671,3 +671,16 @@ body{
 .order-question .order-actions{margin:.2rem 0 0}
 .order-actions button:first-child{flex:2 1 10rem}
 @media(max-width:520px){.order-chosen{padding:.4rem}.order-question .order-word{min-height:2.6rem;padding:.48rem .58rem}}
+
+/* One horizontal spell row per party member; swipe within a row on narrow screens. */
+.spell-owner-list{display:grid;gap:.45rem}
+.spell-owner-row{display:flex;align-items:center;gap:.55rem;min-width:0}
+.spell-owner-name{flex:0 0 clamp(7.3rem,24%,11rem);font-size:.8rem;color:#f7dfb1;overflow-wrap:anywhere}
+.spell-owner-spells{display:flex;gap:.3rem;overflow-x:auto;min-width:0;flex:1;padding:.13rem 0}
+.spell-picker .spell-owner-spells button{flex:0 0 auto;min-width:5rem;padding:.45rem .55rem;font-size:.76rem;white-space:nowrap}
+.spell-picker .spell-owner-spells button:disabled{opacity:.35;filter:grayscale(.6)}
+.spell-picker .spell-owner-spells button[aria-pressed=true]{border-color:#efc987;box-shadow:0 0 0 1px #efc987}
+.supply-options{display:grid;grid-template-columns:minmax(0,1fr)}
+.supply-caster-row{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;border-bottom:1px solid #51425f;padding:.35rem 0}
+.supply-caster-row strong{width:100%;color:#f7dfb1}
+@media(max-width:600px){.spell-owner-row{display:block}.spell-owner-name{display:block;margin:.15rem 0}.spell-picker .spell-owner-spells button{min-width:4.6rem}}
