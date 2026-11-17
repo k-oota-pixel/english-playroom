@@ -1,5 +1,5 @@
 import {createMaterialUsagePanel} from './admin-material-usage.js?v=1.9.9';
-import {adminContentRows,adminMaterialLabel} from './admin-content-model.js?v=2.4.83';
+import {adminContentRows,adminMaterialLabel} from './admin-content-model.js?v=2.5.19';
 import {enableAppCheck} from './firebase-security.js?v=2.1.2';
 import { initializeApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,setPersistence,browserLocalPersistence,ensureRenderReady,timeoutSignal} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
@@ -71,7 +71,7 @@ async function load(index=pageIndex,force=false){
   allUsers=[...(data.users||[])].sort((a,b)=>Number(b.lastLearningAt||0)-Number(a.lastLearningAt||0)||Number(b.createdAt||0)-Number(a.createdAt||0));pageIndex=index;nextToken=data.nextPageToken;fetchedAt=data.fetchedAt||Date.now();expandedUid='';
   cursors=cursors.slice(0,index+1);if(nextToken)cursors.push(nextToken);$('panel').hidden=false;
   restorePageMeta();
-  setStatus('一覧は最終学習日時が新しい順に6人ずつ表示します。名前は検索用データから表示し、コイン残高は利用者を開いたときだけ取得します。','ok');render();
+  setStatus('一覧は学習記録が保存された時刻の新しい順です。ログイン・ペット操作だけでは更新されません。名前は検索用データから表示し、コイン残高は詳細を開いたときだけ取得します。','ok');render();
  }catch(e){if(own===generation)setStatus(e.message,'error');}
  finally{if(own===generation){busy=false;updateRefresh();if(!searchQuery())restorePageMeta();}}
 }
