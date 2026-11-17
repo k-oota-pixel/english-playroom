@@ -460,7 +460,7 @@ function compareCardStats(key,beforeLevel,afterLevel,working){
   const newStats=new Map(companionStats(stats(key,newerEntry)));
   const board=group('upgrade-stat-comparison');
   const head=group('upgrade-comparison-head',
-    node('strong','強化前'),node('span','→'),node('strong','強化後'));
+    node('span','能力'),node('strong','強化前'),node('strong','強化後'));
   board.append(head);
   for(const [label,oldValue] of oldStats){
     const newValue=newStats.get(label);

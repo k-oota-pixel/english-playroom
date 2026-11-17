@@ -641,10 +641,9 @@ body{
   background:#292138;font-variant-numeric:tabular-nums;
 }
 .card-upgrade .upgrade-comparison-head{
-  display:grid;grid-template-columns:1fr auto 1fr;
-  align-items:center;gap:.5rem;color:#e9def0;font-size:.74rem;text-align:right;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(3rem,auto) minmax(5rem,auto);
+  align-items:center;gap:.45rem;color:#e9def0;font-size:.74rem;text-align:right;
 }
-.card-upgrade .upgrade-comparison-head strong:first-child{grid-column:2}
 .card-upgrade .upgrade-comparison-row{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(3rem,auto) minmax(5rem,auto);
   gap:.45rem;font-size:.78rem;align-items:center;
