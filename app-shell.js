@@ -1,6 +1,6 @@
 import {scheduledBattleEntry} from './online-battle-schedule.js?v=2.4.89';
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.1.35';
+const MATERIAL_RELEASE='2.5.4';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']
@@ -390,6 +390,22 @@ function install() {
     document.querySelectorAll('dialog[open]').forEach(d=>d.close());
   });
   window.MonstudyShell={canOpen,navigate,owns:win=>win===frame.contentWindow,updateScreenTheme(theme){sharedScreenTheme=theme&&theme.color?{theme:theme.theme,color:theme.color,textColor:theme.textColor,pattern:theme.pattern||null,patternSize:theme.patternSize||null,patternRepeat:theme.patternRepeat||null,patternPosition:theme.patternPosition||null}:null;updateMaterialPresentation();},materialReady(win){if(win!==frame.contentWindow)return;status.hidden=true;updateMaterialPresentation();syncPause();}};
+  // Capture shared-shell links before unrelated page handlers can swallow their clicks.
+  // This also keeps the parent navigation responsive while a game iframe is active.
+  shell.addEventListener('click',e=>{
+    if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
+    const link=e.target.closest?.('.ms-header a[href],.ms-sidebar a[href]');
+    if(!link||link===title||link.hasAttribute('download'))return;
+    const u=new URL(link.href,root);
+    if(!canOpen(u))return;
+    e.preventDefault();e.stopPropagation();
+    try{
+      if(navigate(u))document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+    }catch(error){
+      console.error('Shared navigation failed; using full-page fallback',error);
+      location.assign(routeURL(u));
+    }
+  },true);
   document.addEventListener('click',e=>{
     if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
     const a=e.target.closest('a[href]');if(!a||a.hasAttribute('download'))return;
