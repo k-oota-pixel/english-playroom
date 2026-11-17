@@ -1,6 +1,6 @@
 import {scheduledBattleEntry} from './online-battle-schedule.js?v=2.4.89';
 const root = new URL('./', import.meta.url);
-const MATERIAL_RELEASE='2.5.5';
+const MATERIAL_RELEASE='2.5.6';
 const features = [
   ['ショップ','#petShopOpen'],['ペット強化','#petStrengthOpen'],
   ['称号','[data-titles-open]'],['チャレンジ','[data-challenge-refresh]'],['ランキング','#coinRankRefresh'],['おともだち','#monstudyFriendsOpen']
@@ -74,6 +74,8 @@ function install() {
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));
   const homePath = root.pathname;
   const immersiveMaterialPath = new URL('../eiken-retry/',root).pathname;
+  const questMaterialPath = new URL('monster-maze/',root).pathname;
+  const isQuestMaterial = pathname => pathname===questMaterialPath || pathname===questMaterialPath+'index.html';
   function canOpen(value) {
     const u=new URL(value,root);
     return u.origin===root.origin && (allowed.has(canonical(u.pathname)) || canonical(u.pathname)===homePath);
@@ -237,7 +239,14 @@ function install() {
       const doc=frame.contentDocument;
       if(!doc?.documentElement)return;
       let style=doc.getElementById('monstudy-shared-screen-theme');
-      if(!sharedScreenTheme){doc.documentElement.removeAttribute('data-monstudy-screen-theme');style?.remove();restoreThemedSurfaces();return;}
+      // Monster Quest has its own original purple theme. Never inject SHOP wallpaper
+      // or run the shared-theme surface scanner in this particular material.
+      if(!sharedScreenTheme || isQuestMaterial(doc.location?.pathname)){
+        doc.documentElement.removeAttribute('data-monstudy-screen-theme');
+        style?.remove();
+        restoreThemedSurfaces();
+        return;
+      }
       if(!style){style=doc.createElement('style');style.id='monstudy-shared-screen-theme';(doc.head||doc.documentElement).append(style);}
       const color=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.color||'')?sharedScreenTheme.color:'#f6f5ef';
       const foreground=/^#[0-9a-f]{6}$/i.test(sharedScreenTheme.textColor||'')?sharedScreenTheme.textColor:'#193d38';
@@ -359,6 +368,7 @@ function install() {
     departingVersion++;
     current=next;
     shell.classList.toggle('ms-showing-material',!!current);
+    shell.classList.toggle('ms-quest-background',!!current&&isQuestMaterial(u.pathname));
     shell.classList.toggle('ms-retry-header-hidden',!!current&&u.pathname===immersiveMaterialPath);
     syncTitle(u);
     home.hidden=!!current; frame.hidden=!current;
