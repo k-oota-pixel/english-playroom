@@ -472,7 +472,7 @@ function playBattleEffect(event){
  const source=lookup(event.actor,event.sourceIndex);
  const receiver=lookup(event.receiver,event.targetIndex);
  if(!source||!receiver)return;
- const healing=event.kind==='heal'||event.kind==='revive';
+ const healing=['heal','revive','guard'].includes(event.kind);
  if(healing)flash(receiver,'being-healed');
  else flash(receiver,'taking-hit');
  if(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
@@ -592,7 +592,7 @@ function receive(message){
   case 'battleStart':startBattle(message);return;
   case 'battleState':battleState=message;battleEndAt=Date.now()+message.remaining;drawTeams();updateClock();return;
   case 'battleActions':
-   (message.events||[]).slice(0,16).forEach((action,i)=>setTimeout(()=>playBattleEffect(action),i*110));return;
+   (message.events||[]).slice(0,16).forEach((action,i)=>setTimeout(()=>playBattleEffect(action),i*165));return;
   case 'battleAction':playBattleEffect(message);return;
   case 'question':showQuiz(message);return;
   case 'feedback':
