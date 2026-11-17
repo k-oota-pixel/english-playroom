@@ -13,8 +13,8 @@ function install(){
   style.textContent=`
     #monstudyMaterialReturn{box-sizing:border-box;height:44px;display:flex;align-items:center;padding:6px 14px;background:#fffdf8;border-bottom:1px solid #dce5da;position:relative;z-index:20}
     #monstudyMaterialReturn[hidden]{display:none!important}
-    #monstudyMaterialReturn button{appearance:none;border:1px solid #d5e0d7;background:#fff;color:#285c4c;border-radius:999px;padding:7px 12px;font:800 12px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 2px 8px #173d3508}
-    #monstudyMaterialReturn button:hover{background:#edf5ef}
+    #monstudyMaterialReturn :is(button,a.ms-material-home){appearance:none;display:inline-flex;align-items:center;border:1px solid #d5e0d7;background:#fff;color:#285c4c;border-radius:999px;padding:7px 12px;font:800 12px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 2px 8px #173d3508;text-decoration:none}
+    #monstudyMaterialReturn :is(button,a.ms-material-home):hover{background:#edf5ef}
     #monstudyMaterialReturn button[hidden]{display:none!important}
     #monstudyMaterialReturn .ms-material-rank-open{margin-left:auto;background:#eff8f1;color:#236145;border-color:#bdd3c4}
     #monstudyMaterialReturn .ms-defense-rank-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
@@ -22,8 +22,8 @@ function install(){
     #monstudyMaterialReturn .ms-defense-rank-actions button{background:#eff8f1;color:#236145;border-color:#bdd3c4;font-weight:900}
     @media(max-width:480px){#monstudyMaterialReturn .ms-defense-rank-actions{gap:4px}#monstudyMaterialReturn .ms-defense-rank-actions button{font-size:10px;padding:6px 7px}}
     body[data-screen-theme="dark"] #monstudyMaterialReturn{background:#1d3026;border-color:#416450}
-    body[data-screen-theme="dark"] #monstudyMaterialReturn button{background:#2f4638;color:#ebf6ec;border-color:#719382}
-    #monstudyMaterialReturn button:focus-visible{outline:3px solid #dfb54d;outline-offset:2px}
+    body[data-screen-theme="dark"] #monstudyMaterialReturn :is(button,a.ms-material-home){background:#2f4638;color:#ebf6ec;border-color:#719382}
+    #monstudyMaterialReturn :is(button,a.ms-material-home):focus-visible{outline:3px solid #dfb54d;outline-offset:2px}
     #monstudyShell.ms-showing-material .ms-material{height:calc(100% - 44px)}
     @media(max-width:800px){#monstudyMaterialReturn{height:40px;padding:5px 10px}#monstudyMaterialReturn button{font-size:11px;padding:6px 10px}#monstudyShell.ms-showing-material .ms-material{height:calc(100% - 40px)}}
   `;
@@ -32,11 +32,44 @@ function install(){
   const bar=document.createElement('div');
   bar.id='monstudyMaterialReturn';
   bar.hidden=true;
-  const back=document.createElement('button');
-  back.type='button';
+  // A real link works even if the shell's JavaScript navigation is unavailable.
+  // Use the SPA transition first to avoid unnecessarily reloading user data.
+  const back=document.createElement('a');
+  back.className='ms-material-home';
+  back.href=HOME.href;
   back.textContent='← もんすたでぃに戻る';
   back.setAttribute('aria-label','もんすたでぃのメイン画面に戻る');
-  back.addEventListener('click',()=>window.MonstudyShell?.navigate(HOME));
+  back.addEventListener('click',event=>{
+    if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+    const router=window.MonstudyShell;
+    if(!router?.navigate)return; // Let the link navigate normally.
+    try{
+      const accepted=router.navigate(HOME);
+      if(accepted===false&&router.canOpen?.(HOME)){
+        // A material may have a leave-confirmation dialog; honor cancellation.
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      if(accepted!==true){
+        event.stopPropagation();
+        return; // Use the native link as a safe fallback.
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      // Some materials perform asynchronous cleanup on departure.
+      // If the router accepted navigation but the view stayed stuck,
+      // recover via a real page load rather than leaving an inert button.
+      setTimeout(()=>{
+        if(shell.classList.contains('ms-showing-material')&&!new URL(location.href).searchParams.has('material')){
+          location.replace(HOME.href);
+        }
+      },2600);
+    }catch(error){
+      console.error('Return-to-home navigation failed; following normal link',error);
+      event.stopPropagation();
+    }
+  });
   bar.append(back);
   const rankingBtn=document.createElement('button');rankingBtn.type='button';rankingBtn.className='ms-material-rank-open';rankingBtn.textContent='🏆 本日のランキング';
   rankingBtn.addEventListener('click',()=>{const id=materialRankingAppId(frame.src);if(id)void openMaterialRanking(id);});
