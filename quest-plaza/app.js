@@ -26,6 +26,10 @@ const spells=[
  {id:'meinon',name:'メイノン',level:30,kind:'revive',mp:8},
  {id:'meinoora',name:'メイノーラ',level:45,kind:'revive',mp:20}
 ];
+const itemNames={bandage:'🩹 ばんそうこう',medicine:'🧴 きずぐすり',
+ 'date-hospital-prescription':'📄 伊達医院の処方箋',
+ 'inter-prescription':'📄 インターの処方箋',
+ 'date-water':'💧 だてのみず','yoteizan-water':'🏔️ ようていざんのみず'};
 let socket=null,authUser=null,clientId='',connected=false,retryTimer=null,battleState=null,battleEndAt=0,question=null;
 let selectedAction={kind:'attack'},selectedTarget=0,nearbyId=null,answerPending=false,feedback='';
 const players=new Map(),elements=new Map();
@@ -209,6 +213,12 @@ function drawActions(){
    wrap.append(el);
   }
  });
+ for(const [id,count] of Object.entries(battleState.inventory||{})){
+  if(!itemNames[id]||count<1)continue;
+  const tile=button(itemNames[id]+' ×'+count,()=>send({type:'item',id}));
+  tile.setAttribute('aria-label',itemNames[id]+' 使用。残り'+count+'個');
+  wrap.append(tile);
+ }
 }
 function showQuiz(q){
  question=q;answerPending=false;
