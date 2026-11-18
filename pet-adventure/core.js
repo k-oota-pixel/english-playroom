@@ -41,8 +41,8 @@ export function towerCardLevelIndexes(stage){
 
 export function dungeonGradesForStage(stage){
   const n=Math.max(1,Math.floor(Number(stage)||1));
-  const grades=['4級','3級','準2級','2級','準1級'];
-  if(n>=41)return Array(4).fill('準1級');
+  const grades=['4級','3級','準2級','2級'];
+  if(n>=31)return Array(4).fill('2級');
   const band=Math.floor((n-1)/10),lower=grades[band],upper=grades[band+1];
   return (n-1)%10<5?[lower,lower,lower,upper]:[lower,lower,upper,upper];
 }
