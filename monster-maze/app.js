@@ -527,6 +527,10 @@ function openCardUpgrade(card,key){
   const cap=levelCaps[Number(key.split('-')[1])];
   if(entry.level>=cap)return;
   const dialog=node('dialog','','card-upgrade bulk-upgrade');
+  dialog.addEventListener('selectstart',event=>{
+    if(event.target?.closest?.('input,textarea,[contenteditable="true"]'))return;
+    event.preventDefault();
+  });
   const title=node('h3',card.name+'を強化');
   title.id='card-upgrade-title';
   dialog.setAttribute('aria-labelledby',title.id);
@@ -542,6 +546,11 @@ function openCardUpgrade(card,key){
     input.setAttribute('aria-label',option.rank+' '+option.name+' の使用枚数');
     const minus=button('−',()=>{input.value=String(Math.max(0,(Number(input.value)||0)-1));change();},false,'material-quantity-step');
     const plus=button('＋',()=>{input.value=String(Math.min(option.available,(Number(input.value)||0)+1));change();},false,'material-quantity-step');
+    // Do not let rapid material step clicks select surrounding text.
+    for(const step of [minus,plus]){
+      step.addEventListener('mousedown',event=>event.preventDefault());
+      step.addEventListener('dblclick',event=>event.preventDefault());
+    }
     const change=()=>{
       const n=Math.min(option.available,Math.max(0,Math.trunc(Number(input.value)||0)));
       input.value=String(n);
