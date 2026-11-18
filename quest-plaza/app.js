@@ -15,7 +15,7 @@ const API='wss://task-quest.onrender.com/ws/quest-plaza',CELL=36;
 const WORLD_WIDTH=48*CELL,WORLD_HEIGHT=32*CELL;
 const $=id=>document.getElementById(id);
 const els={notice:$('notice'),connection:$('connection'),capacity:$('capacity'),viewport:$('viewport'),
- world:$('world'),players:$('players'),nearest:$('nearest'),modal:$('modal'),
+ world:$('world'),players:$('players'),emoteMenu:$('emote-menu'),nearest:$('nearest'),modal:$('modal'),
  modalTitle:$('modal-title'),modalBody:$('modal-body'),modalActions:$('modal-actions'),
  battle:$('battle'),teams:$('battle-teams'),battleLog:$('battle-log'),grade:$('battle-grade'),
  battleActions:$('battle-actions'),quiz:$('quiz'),finish:$('battle-finished')};
@@ -35,7 +35,9 @@ const itemNames={bandage:'🩹 ばんそうこう',medicine:'🧴 きずぐす�
 let socket=null,authUser=null,clientId='',connected=false,retryTimer=null,battleState=null,question=null,pendingRecoveryTimer=null;
 let selectedAction={kind:'attack'},selectedTab='attack',selectedCasterIndex=0,selectedTarget=0,selectedReviveTarget=-1,
  nearbyId=null,answerPending=false,feedback='';
-const players=new Map(),elements=new Map();
+const players=new Map(),elements=new Map(),emoteTimers=new Map();
+const emoteKinds=new Set(['jump','heart','sparkle','spin']);
+let lastEmoteRequestedAt=0;
 const button=(label,action,cls='')=>{
  const el=document.createElement('button');el.type='button';el.textContent=label;if(cls)el.className=cls;
  if(action)el.addEventListener('click',action);return el;
@@ -80,11 +82,21 @@ function putPlayer(p){
  tile.style.top=(merged.y*CELL+CELL/2)+'px';
  tile.classList.toggle('mine',p.id===clientId);
  tile.classList.toggle('busy',merged.status==='battle');
- tile.setAttribute('aria-label',(merged.nickname||'冒険者')+' のぺっと '+(merged.petName||'ぺっと')+(merged.status==='battle'?'（対戦中）':''));
+ tile.setAttribute('aria-label',(merged.nickname||'冒険者')+' のぺっと '+(merged.petName||'ぺっと')+(merged.status==='battle'?'（対戦中）':'')+(p.id===clientId?'。エモートを開く':''));
+ if(p.id===clientId){
+  tile.setAttribute('aria-haspopup','true');
+  tile.setAttribute('aria-controls','emote-menu');
+  tile.setAttribute('aria-expanded',String(!els.emoteMenu.hidden));
+  if(merged.status==='battle')hideEmoteMenu();
+  else positionEmoteMenu();
+ }
  if(p.id===clientId&&camera.ready&&old&&(merged.x!==old.x||merged.y!==old.y))followMyPet(merged.x,merged.y);
  updateNearby();
 }
 function removePlayer(id){
+ const timer=emoteTimers.get(id);
+ if(timer){clearTimeout(timer);emoteTimers.delete(id);}
+ if(id===clientId)hideEmoteMenu();
  players.delete(id);elements.get(id)?.remove();elements.delete(id);updateNearby();
 }
 // Camera moves independently of the pet. Most steps only animate the pet tile.
@@ -94,6 +106,7 @@ const camera={ready:false,manual:false,left:0,top:0,targetLeft:0,targetTop:0,fra
 const prefersLessMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
 function paintCamera(){
  els.world.style.transform='translate3d('+(-camera.left)+'px,'+(-camera.top)+'px,0)';
+ positionEmoteMenu();
 }
 function stopCamera(){
  if(camera.frame)cancelAnimationFrame(camera.frame);
@@ -178,6 +191,7 @@ function panTo(id,x,y,event){
  if(!drag.active&&Math.hypot(dx,dy)<6)return false;
  if(!drag.active){
   drag.active=true;camera.manual=true;
+  hideEmoteMenu();
   els.viewport.classList.add('is-panning');
  }
  if(event?.cancelable)event.preventDefault();
@@ -217,6 +231,7 @@ function finishPan(id,cancelled=false){
 // Use native touch events on iOS Safari instead of mixing PointerCapture with
 // the platform's touch synthesis; mouse/pen use pointer events separately.
 els.viewport.addEventListener('touchstart',event=>{
+ if(event.target?.closest?.('#emote-menu'))return;
  if(event.touches.length!==1)return;
  const t=event.changedTouches[0];
  beginPan(t.identifier,'touch',t.clientX,t.clientY);
@@ -236,6 +251,7 @@ els.viewport.addEventListener('touchcancel',event=>{
  if(drag?.type==='touch')finishPan(drag.id,true);
 },{passive:false});
 els.viewport.addEventListener('pointerdown',event=>{
+ if(event.target?.closest?.('#emote-menu'))return;
  if(event.pointerType==='touch'||event.button!==0)return;
  beginPan(event.pointerId,'mouse',event.clientX,event.clientY);
 });
@@ -257,6 +273,73 @@ els.viewport.addEventListener('contextmenu',event=>{
  if(drag?.active)event.preventDefault();
 });
 $('recenter-camera').addEventListener('click',()=>returnToMyPet());
+
+
+function positionEmoteMenu(){
+ const menu=els.emoteMenu,pet=players.get(clientId);
+ if(menu.hidden||!pet)return;
+ const view=els.viewport;
+ const w=menu.offsetWidth||222,h=menu.offsetHeight||52;
+ const x=pet.x*CELL+CELL/2-camera.left;
+ const y=pet.y*CELL+CELL/2-camera.top;
+ // Keep the controls visible even when the pet is next to the screen edge.
+ menu.style.left=Math.max(6,Math.min(view.clientWidth-w-6,x-w/2))+'px';
+ menu.style.top=Math.max(6,Math.min(view.clientHeight-h-6,y-h-62))+'px';
+}
+function hideEmoteMenu(){
+ els.emoteMenu.hidden=true;
+ elements.get(clientId)?.setAttribute('aria-expanded','false');
+}
+function toggleEmoteMenu(){
+ const p=players.get(clientId);
+ if(!p||p.status==='battle'||!els.battle.hidden||!els.modal.hidden||!$('formation-panel').hidden)return;
+ const shouldOpen=els.emoteMenu.hidden;
+ hideEmoteMenu();
+ if(!shouldOpen)return;
+ els.emoteMenu.hidden=false;
+ elements.get(clientId)?.setAttribute('aria-expanded','true');
+ positionEmoteMenu();
+}
+function showEmote(id,kind){
+ if(!emoteKinds.has(kind))return;
+ const tile=elements.get(id);
+ if(!tile)return;
+ const existing=emoteTimers.get(id);
+ if(existing)clearTimeout(existing);
+ tile.classList.remove('emote-active','emote-jump','emote-heart','emote-sparkle','emote-spin');
+ tile.querySelector('.emote-burst')?.remove();
+ // Reset animation to permit replay on consecutive permitted events.
+ void tile.offsetWidth;
+ tile.classList.add('emote-active','emote-'+kind);
+ if(kind==='heart'||kind==='sparkle'){
+  const burst=node('span',kind==='heart'?'❤️':'✨','emote-burst');
+  burst.setAttribute('aria-hidden','true');
+  tile.append(burst);
+ }
+ emoteTimers.set(id,setTimeout(()=>{
+  tile.classList.remove('emote-active','emote-jump','emote-heart','emote-sparkle','emote-spin');
+  tile.querySelector('.emote-burst')?.remove();
+  emoteTimers.delete(id);
+ },1600));
+}
+for(const b of els.emoteMenu.querySelectorAll('[data-emote]')){
+ b.addEventListener('click',()=>{
+  const kind=b.dataset.emote;
+  hideEmoteMenu();
+  if(!emoteKinds.has(kind)||!connected)return;
+  const now=Date.now();
+  if(now-lastEmoteRequestedAt<2000){note('エモートは2秒ごとに使えます。');return;}
+  if(send({type:'emote',kind}))lastEmoteRequestedAt=now;
+ });
+}
+document.addEventListener('click',event=>{
+ if(els.emoteMenu.hidden)return;
+ if(event.target?.closest?.('#emote-menu,.player.mine'))return;
+ hideEmoteMenu();
+});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape')hideEmoteMenu();
+});
 
 function updateNearby(){
  const me=players.get(clientId);
@@ -295,7 +378,8 @@ function openRequest(id){
  ]);
 }
 function visitPlayer(id){
- if(id===clientId)return;
+ if(id===clientId){toggleEmoteMenu();return;}
+ hideEmoteMenu();
  openRequest(id);
 }
 function showInvite(message){
@@ -566,6 +650,7 @@ function answer(value){
  },4000);
 }
 function startBattle(data){
+ hideEmoteMenu();
  closeModal();els.battle.hidden=false;els.finish.hidden=true;els.quiz.hidden=false;els.battleActions.hidden=false;
  els.grade.textContent='英検'+(gradeNames[data.grade]||data.grade);
  els.quiz.replaceChildren(node('p','対戦問題を読み込んでいます…'));
@@ -601,6 +686,9 @@ $('battle-forfeit').addEventListener('click',()=>{
 function receive(message){
  switch(message.type){
   case 'welcome':
+   hideEmoteMenu();
+   for(const timer of emoteTimers.values())clearTimeout(timer);
+   emoteTimers.clear();
    stopPendingRecovery();
    clientId=message.self;closeModal();els.battle.hidden=true;els.finish.hidden=true;battleState=null;question=null;answerPending=false;players.clear();
    for(const tile of elements.values())tile.remove();elements.clear();
@@ -622,6 +710,7 @@ function receive(message){
    return;
   case 'left':
    removePlayer(message.id);els.capacity.textContent=players.size+' / 40 人';return;
+  case 'emote':showEmote(message.id,message.kind);return;
   case 'notice':note(message.message||'');return;
   case 'error':note(message.message||'接続できませんでした。');return;
   case 'invite':showInvite(message);return;
@@ -653,6 +742,7 @@ async function connect(){
   });
   ws.addEventListener('close',()=>{
    if(socket!==ws)return;
+   hideEmoteMenu();
    connected=false;els.connection.classList.remove('connected');els.connection.textContent='再接続中…';
    note('通信が切れました。再接続します。');
    clearTimeout(retryTimer);retryTimer=setTimeout(()=>{if(authUser)void connect();},2500);
@@ -698,6 +788,7 @@ $('close-formation').addEventListener('click',()=>{
  $('formation-panel').hidden=true;frame.src='about:blank';send({type:'refresh'});
 });
 window.addEventListener('resize',()=>{
+ positionEmoteMenu();
  if(!camera.ready)return;
  const v=els.viewport;
  if(camera.manual)setCamera(camera.left,camera.top,true);
