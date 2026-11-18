@@ -38,6 +38,15 @@ function cumulativeLoginPatch(data,today){
 }
 
 function previousDateKey(dateKey){const d=new Date(dateKey+'T12:00:00');d.setDate(d.getDate()-1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+// A departed pet leaves an egg that hatches on the next calendar day the owner visits.
+function readyForRebirth(data,today){
+  const last=data.petLastDeparture;
+  return data.petHatched===false&&generationOf(data)>1
+    && Number(last?.generation)===generationOf(data)-1
+    && typeof last?.departedDate==='string'
+    && /^\\d{4}-\\d{2}-\\d{2}$/.test(last.departedDate)
+    && today>last.departedDate;
+}
 function loginStreakPatch(data,today){
   const last=typeof data.loginStreakLastDate==='string'?data.loginStreakLastDate:'';
   const current=Math.max(0,Math.min(7,int(data.loginStreakDay,0)));
@@ -78,6 +87,10 @@ function advanceLifecycle(source,today,uid){
   }
 
   let merged={...data,...patch};
+  if(readyForRebirth(merged,today)){
+    Object.assign(patch,hatchPatch(today,merged.petLoginDays));
+    return {patch,data:{...data,...patch},event:'reborn'};
+  }
   if(hasPet(merged)&&counted&&(health.fatal||(days>=6&&merged.petLastLifeCheckDate!==today))){
     patch.petLastLifeCheckDate=today;
     const newlySick=health.patch.petHealth?.sick&&!source.petHealth?.sick;
@@ -258,7 +271,7 @@ async function synchronize(user,source=currentData){
   const result=await runTransaction(db,async transaction=>{
     const ref=dataRef(user),snap=await transaction.get(ref),source=snap.exists()?(snap.data()||{}):{};
     const advanced=advanceLifecycle(source,today,user.uid);
-    if(Object.keys(advanced.patch).length)transaction.set(ref,{...advanced.patch,petUpdatedAt:serverTimestamp()},{merge:true});
+    if(Object.keys(advanced.patch).length)transaction.set(ref,{...advanced.patch,...(advanced.event==='reborn'?{petHatchedAt:serverTimestamp()}:{}),petUpdatedAt:serverTimestamp()},{merge:true});
     return advanced;
   });
   currentData=result.data;applyUi(result.data);
