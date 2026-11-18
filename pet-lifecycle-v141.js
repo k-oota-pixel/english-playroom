@@ -44,7 +44,7 @@ function readyForRebirth(data,today){
   return data.petHatched===false&&generationOf(data)>1
     && Number(last?.generation)===generationOf(data)-1
     && typeof last?.departedDate==='string'
-    && /^\\d{4}-\\d{2}-\\d{2}$/.test(last.departedDate)
+    && /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(last.departedDate)
     && today>last.departedDate;
 }
 function loginStreakPatch(data,today){
