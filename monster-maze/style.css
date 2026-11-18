@@ -592,6 +592,21 @@ body{
   .card-upgrade .material-option-quantity{grid-column:2;white-space:normal}
 }
 
+/* Prevent text selection while repeatedly changing upgrade quantities. */
+.card-upgrade.bulk-upgrade{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+.card-upgrade.bulk-upgrade .material-quantity input{
+  -webkit-user-select:text;
+  user-select:text;
+  -webkit-touch-callout:default;
+}
+.card-upgrade.bulk-upgrade button.material-quantity-step{
+  touch-action:manipulation;
+}
+
 /* Bulk companion upgrade: many different card materials, one local preview. */
 .card-upgrade.bulk-upgrade{
   width:min(calc(100% - 1.5rem),32rem);
