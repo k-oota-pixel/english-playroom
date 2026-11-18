@@ -4,13 +4,13 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {chanceFor,departureChance,shouldDepart} from '../pet-lifetime-model.js';
 import {previousHappy,yesterdayKey,feedReward,careState} from '../pet-care-model.js';
-import {growthPatch} from '../pet-growth.js';
+import {growthPatch,hatchPatch} from '../pet-growth.js';
 import {advanceHealth} from '../pet-health-model.js';
 import {hasPet,normalizePetName,validPetName} from '../pet-model.js';
 const today='2026-10-19',yesterday='2026-10-18';
 const saved=happy=>({petCare:{happy,happyDate:yesterday}});
 const source=fs.readFileSync(new URL('../pet-lifecycle-v141.js',import.meta.url),'utf8');
-const ctx=vm.createContext({advanceHealth,growthPatch,hasPet,normalizePetName,validPetName,chanceFor,shouldDepart,LIFECYCLE_VERSION:141,MAX_MEMORIES:40});
+const ctx=vm.createContext({advanceHealth,growthPatch,hatchPatch,hasPet,normalizePetName,validPetName,chanceFor,shouldDepart,LIFECYCLE_VERSION:141,MAX_MEMORIES:40});
 vm.runInContext(source.slice(source.indexOf('function localDateKey'),source.indexOf('function ensureStyles')),ctx);
 const advance=ctx.advanceLifecycle;
 const pet=(days=45)=>({petHatched:true,petAdult:true,petAppearance:{species:'cat',bodyColor:'cream',eyes:'round',feature:'classic',pattern:'none',baseBackground:'ivory'},petName:'ふわ',petLifeDays:days,petLoginDays:100,petLastLoginDate:yesterday,petLastLifeLoginDate:yesterday,petLastLifeCheckDate:yesterday,petLifecycleVersion:141,petGrowthVersion:1428,petGeneration:2,coins:30,petShop:{ownedItems:['crown'],equipped:{head:'crown'}},petWaste:{count:2,day:20744}});
@@ -103,4 +103,35 @@ test('26+ without yesterday full can survive; relief never changes illness death
   const data={...pet(3),petHealth:{generation:2,checkedDate:yesterday,sick:true,sickDays:days}};
   assert.deepEqual(advanceHealth({...data,...saved(0)},today,'illness'),advanceHealth({...data,...saved(10)},today,'illness'));
  }
+});
+
+test('a departed pet stays an egg on death day, then automatically hatches into a baby at next login',()=>{
+ const departureDate='2026-10-19',followingDate='2026-10-20';
+ const egg={petHatched:false,petAdult:false,petGeneration:3,petLifeDays:0,petLoginDays:102,
+  petLastLoginDate:departureDate,petLastLifeLoginDate:departureDate,
+  petLifecycleVersion:141,petGrowthVersion:1428,
+  petLastDeparture:{generation:2,departedDate:departureDate}};
+ const sameDay=advance(egg,departureDate,'reincarnation');
+ assert.equal(sameDay.data.petHatched,false);
+ assert.equal(sameDay.event,'');
+ const nextDay=advance(egg,followingDate,'reincarnation');
+ assert.equal(nextDay.event,'reborn');
+ assert.equal(nextDay.data.petHatched,true);
+ assert.equal(nextDay.data.petAdult,false);
+ assert.equal(nextDay.data.petHatchDate,followingDate);
+ assert.equal(nextDay.data.petHatchLoginDays,103);
+ assert.equal(nextDay.data.petLifeDays,1);
+ assert.equal(nextDay.data.petGeneration,3);
+ const repeated=advance(nextDay.data,followingDate,'reincarnation');
+ assert.equal(repeated.event,'');
+ assert.equal(repeated.patch.petHatched,undefined);
+});
+
+test('the first egg still uses its original two-login hatching process',()=>{
+ const egg={petHatched:false,petGeneration:1,petLifeDays:1,petLoginDays:1,
+  petLastLoginDate:today,petLastLifeLoginDate:today,petLifecycleVersion:141,petGrowthVersion:1428};
+ const result=advance(egg,'2026-10-20','first-egg');
+ assert.equal(result.event,'');
+ assert.equal(result.data.petHatched,false);
+ assert.equal(result.data.petLifeDays,2);
 });
