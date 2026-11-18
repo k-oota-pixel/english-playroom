@@ -1,5 +1,5 @@
 // The cave uses the full Retry Notebook question bank. Keep draws distinct until each grade's deck is exhausted.
-export const EIKEN_GRADES=Object.freeze(['4級','3級','準2級','2級','準1級']);
+export const EIKEN_GRADES=Object.freeze(['4級','3級','準2級','2級']);
 
 export function buildEikenQuestionBank(rows,{minimumPerGrade=20}={}){
   if(!Array.isArray(rows))throw new Error('Retry Notebook question bank is missing');
