@@ -35,6 +35,7 @@
  font-size:46px;line-height:1.1;text-shadow:0 2px 8px #182a4090;
  transform:translateX(-50%);animation:plaza-emote-float 1.45s ease-out both;
 }
+.player.emote-heart .emote-burst{font-size:48px}
 .player.emote-sparkle .emote-burst{top:-36px;font-size:39px}
 .player.emote-sparkle .emote-burst::before,
 .player.emote-sparkle .emote-burst::after{
