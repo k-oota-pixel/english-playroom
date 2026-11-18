@@ -593,7 +593,8 @@ body{
 }
 
 /* Prevent text selection while repeatedly changing upgrade quantities. */
-.card-upgrade.bulk-upgrade{
+.card-upgrade.bulk-upgrade,
+.card-upgrade.bulk-upgrade *:not(input):not(textarea){
   -webkit-user-select:none;
   user-select:none;
   -webkit-touch-callout:none;
