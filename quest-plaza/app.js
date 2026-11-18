@@ -779,7 +779,7 @@ for(const pad of document.querySelectorAll('.pad button')){
 $('formation').addEventListener('click',()=>{
  if(!clientId||!connected)return note('広場に接続してから編成してください。');
  if(!els.battle.hidden)return note('対戦中は編成を変更できません。');
- $('formation-frame').src='../monster-maze/?screen=collection&embed=1';
+ $('formation-frame').src='../monster-maze/?screen=collection&embed=1&v=2.5.33';
  $('formation-panel').hidden=false;
 });
 $('close-formation').addEventListener('click',()=>{
