@@ -1,13 +1,445 @@
 {
-  "generatedAt": "2026-11-17T03:47:54.536Z",
-  "editionDate": "2026-11-17",
+  "generatedAt": "2026-11-18T02:54:07.575Z",
+  "editionDate": "2026-11-18",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-17"
+    "lastSuccessfulEdition": "2026-11-18"
   },
   "articles": [
+    {
+      "id": "2026-11-18-apple-samsung-dram-long-term-deal",
+      "date": "2026-11-18",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Apple",
+        "Samsung",
+        "DRAM",
+        "AI"
+      ],
+      "titleJa": "アップルがサムスンと異例の…",
+      "title": "Apple to Sign Rare Long-Term DRAM Deal With Samsung",
+      "summaryJa": "AIデータセンターの普及による世界的なメモリ不足を背景に、アップルがサムスン電子と4年間の長期供給契約を結ぶ見通しとなりました。",
+      "sourcePublishedAt": "2026-11-18T02:49:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "AIの普及とメモリ不足によって、アップルと部品メーカーの関係がどのように変化しているかを読み解きます。",
+        "followUpJa": "メモリ市場の力関係の変化がデバイス生産に与える影響について話し合ってみましょう。",
+        "questions": {
+          "5級": "Can Apple buy memory easily now?",
+          "4級": "Why do companies need a lot of memory now?",
+          "3級": "What kind of contract are Apple and Samsung making?",
+          "準2級": "How has the relationship between Apple and memory makers changed because of AI?",
+          "2級": "What specific terms are included in the new contract between Apple and Samsung?",
+          "準1級": "How does the shift in supplier dynamics reflect broader industry trends like chipflation?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Apple and Samsung",
+          "text": "Apple makes iPhones. Samsung makes chips. There is a memory shortage now. Apple needs help. Apple can make a big deal with Samsung. They want chips for phones. This is a new way for Apple.",
+          "wordCount": 35
+        },
+        "4級": {
+          "title": "A New Deal for Apple",
+          "text": "Apple is famous for using its strong power to buy parts cheaply. Now, the world has a big memory shortage because AI needs many data centers. Because of this, Apple is making a four-year deal with Samsung. They want to get enough memory for iPhones and other devices.",
+          "wordCount": 48
+        },
+        "3級": {
+          "title": "Apple Changes Its Strategy for Memory",
+          "text": "Apple usually uses its strong power to lower prices from suppliers. However, the global memory market is changing because of AI. Tech companies need more DRAM for data centers. Therefore, Apple is making an unusual four-year supply contract with Samsung. Securing enough parts is now much more important than lowering prices for them. This shift shows how much the market has changed.",
+          "wordCount": 62
+        },
+        "準2級": {
+          "title": "Apple and Samsung Plan Long-Term Contract",
+          "text": "Due to a severe global memory shortage caused by the rise of AI data centers, Apple is reportedly making a four-year long-term DRAM supply contract with Samsung. Apple normally has strong price negotiation power and demands lower costs from suppliers. However, memory makers are now focusing on server products. To secure enough components for iPhones and MacBooks, Apple must accept terms that favor memory makers. This agreement shows a big change in the market, putting suppliers in a stronger position. The new arrangement includes purchase quotas and cancellation penalties, marking a major departure from past practices where Apple held the upper hand in component pricing discussions across its global supply chain operations.",
+          "wordCount": 112
+        },
+        "2級": {
+          "title": "Apple Enters Rare Long-Term DRAM Agreement Amid Global Shortage",
+          "text": "As a severe global memory shortage continues due to the rapid construction of artificial intelligence data centers, Apple is finalizing a four-year long-term DRAM supply contract with Samsung. Historically, Apple has leveraged its massive purchasing power to secure short-term contracts and demand price cuts from suppliers across its global supply chain. However, the rise of artificial intelligence has shifted market dynamics significantly. Memory manufacturers are redirecting production capacity toward high-bandwidth memory and server products. Consequently, securing a stable supply of mobile DRAM for devices like the iPhone has become Apple's top priority, leading to this unusual agreement. The arrangement includes purchase quotas and cancellation penalties that favor memory manufacturers. Industry reports indicate that Apple has also arranged similar long-term agreements with SK hynix, demonstrating how supplier leverage has grown across the technology sector as companies compete for scarce resources.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Apple and Samsung Approach Rare Long-Term DRAM Agreement Amid Global Shortage",
+          "text": "Driven by an acute global memory shortage caused by the explosive growth of artificial intelligence data centers, Apple is reportedly finalizing an unprecedented four-year long-term DRAM supply contract with Samsung Electronics. Traditionally, Apple exerted dominant pricing power over its component suppliers, utilizing frequent short-term contract renewals to drive down costs across its global supply chain operations. Today, however, market dynamics have flipped significantly. Massive industry investments in artificial intelligence infrastructure have redirected manufacturing capacity toward high-bandwidth memory and server products, severely squeezing the availability of mobile DRAM for consumer devices. For Apple, securing guaranteed component quantities to sustain production schedules for iPhones and MacBooks has superseded price reduction as the top corporate priority. This unusual agreement includes purchase quotas, cancellation penalties, and conditions that favor memory manufacturers, marking a dramatic departure from historical practices. Apple has reportedly arranged similar long-term agreements with SK hynix as well. Industry reports indicate that memory manufacturers benefit from locking in large-scale orders with Apple as a safeguard against potential slowdowns in artificial intelligence infrastructure spending. Meanwhile, this overarching market shift underscores a broader industry phenomenon where soaring hardware costs and elevated supplier leverage drive continuous price inflation across electronic devices as manufacturers compete fiercely for scarce semiconductor resources.",
+          "wordCount": 204
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261118-apple-samsung-dram/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-18-fire-at-shimbashi-building",
+      "date": "2026-11-18",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "fire",
+        "tokyo",
+        "shimbashi",
+        "nhk"
+      ],
+      "titleJa": "新橋駅前ビルで火事",
+      "title": "Fire Breaks Out at a Building Near JR Shimbashi Station",
+      "summaryJa": "18日午前11時前、東京・港区新橋のビル1階の店舗で火事が発生し、東京消防庁が消火活動を続けています。",
+      "sourcePublishedAt": "2026-11-18T02:48:08.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "新橋の火事に関する情報を正確に把握し、被害状況や現在の対応を確認する。",
+        "followUpJa": "周囲の安全確保や今後の防災対策についてクラスで話し合いましょう。",
+        "questions": {
+          "5級": "Where is the fire?",
+          "4級": "What time did the fire happen?",
+          "3級": "Which floor of the building has the fire?",
+          "準2級": "Who is working to put out the fire right now?",
+          "2級": "What are the police and fire department checking at the scene?",
+          "準1級": "According to the Tokyo Fire Department, what ongoing operation is currently taking place at the Shimbashi building?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Fire in Tokyo",
+          "text": "There is a fire in Tokyo. It is near JR Shimbashi Station. A shop has a fire on the first floor. The fire department is working hard now. They want to put out the fire safely.",
+          "wordCount": 36
+        },
+        "4級": {
+          "title": "Fire Breaks Out Near Shimbashi Station",
+          "text": "On November 18, a fire happened in Tokyo. It started before 11 in the morning. The fire is at a shop on the first floor of a building near JR Shimbashi Station. The Tokyo Fire Department is still working to put it out right now. Police and firefighters are checking for injured people carefully.",
+          "wordCount": 52
+        },
+        "3級": {
+          "title": "Fire Breaks Out Near JR Shimbashi Station",
+          "text": "A fire broke out in Tokyo on November 18. The incident happened just before 11 a.m. at a shop located on the first floor of a building near JR Shimbashi Station in Minato Ward. The Tokyo Fire Department is currently continuing its firefighting operations at the scene. Meanwhile, police and firefighters are working together to check whether anyone is injured or trapped inside the building.",
+          "wordCount": 64
+        },
+        "準2級": {
+          "title": "Fire Destroys Shop on First Floor Near Shimbashi Station",
+          "text": "On the morning of November 18, just before 11 o'clock, a fire broke out in Tokyo. The fire occurred at a retail shop situated on the first floor of a building in Minato Ward, right near JR Shimbashi Station. At this moment, firefighters from the Tokyo Fire Department are still continuing their operations to extinguish the flames completely. Local police officers and fire officials are actively working to confirm whether there are any injured individuals or anyone who failed to escape safely from the building in time. Authorities are closely monitoring the situation as emergency responses continue at the busy urban location.",
+          "wordCount": 100
+        },
+        "2級": {
+          "title": "Ongoing Firefighting Efforts After Shop Fire Near JR Shimbashi Station",
+          "text": "According to official announcements released by the Tokyo Fire Department, a serious fire broke out at a commercial shop located directly on the first floor of a building in Minato Ward, Tokyo, just before 11 a.m. on November 18. Firefighters remain deployed at the scene near JR Shimbashi Station, and active firefighting operations are currently continuing without interruption to bring the dangerous situation under control. Meanwhile, the Metropolitan Police Department and the Tokyo Fire Department are working closely together to investigate the scene carefully and confirm whether any injuries have occurred during the incident, or if anyone was left behind or failed to evacuate safely during the emergency evacuation process. The sudden incident has drawn significant attention from the public due to its location in a busy urban area, where emergency personnel are prioritizing public safety and managing the ongoing situation carefully every single hour.",
+          "wordCount": 144
+        },
+        "準1級": {
+          "title": "Comprehensive Emergency Response Underway Following Morning Commercial Fire Near JR Shimbashi Station",
+          "text": "According to official announcements released by the Tokyo Fire Department, an unexpected fire broke out shortly before eleven in the morning on November 18 inside a commercial shop located on the first floor of a building in Minato Ward, Tokyo. The incident, situated directly near JR Shimbashi Station, has prompted an extensive emergency response from local authorities, with firefighting activities still actively continuing at the scene as dedicated crews work tirelessly to control the situation. In close coordination with local authorities, the Metropolitan Police Department and the Tokyo Fire Department are currently proceeding with thorough confirmations to determine whether any individuals have sustained injuries during the unfortunate incident, or if anyone was unable to evacuate the premises in a timely manner. Emergency personnel remain heavily deployed around the surrounding urban area as they work diligently to address the sudden hazards and secure the overall safety of the environment during this ongoing incident. The Tokyo Fire Department continues to monitor all developments closely while ongoing operations remain active at the scene of the fire near JR Shimbashi Station in Minato Ward, Tokyo, on this November day.",
+          "wordCount": 184
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261118de77596"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-18-mizukami-500-futsal-games",
+      "date": "2026-11-18",
+      "scope": "japan",
+      "category": "life",
+      "categories": [
+        "sports"
+      ],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "futsal",
+        "record",
+        "hokkaido"
+      ],
+      "titleJa": "水上選手が500試合出場",
+      "title": "Mizukami Reaches 500 Futsal Games",
+      "summaryJa": "エスポラーダ北海道の水上玄太選手が、Fリーグ史上初となる通算500試合出場を達成しました。",
+      "sourcePublishedAt": "2026-11-18T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "水上選手が感謝を伝えた対象やこれまでの思いを確認し、その背景を読み解きます。",
+        "followUpJa": "水上選手のコメントを振り返り、あなたならどのように彼の挑戦を応援するか考えてみましょう。",
+        "questions": {
+          "5級": "水上選手は何試合に出場しましたか？",
+          "4級": "水上選手が所属しているチームの名前は何ですか？",
+          "3級": "水上選手はファンやサポーターのほかに、誰に感謝の気持ちを伝えていますか？",
+          "準2級": "水上選手がフットサルをここまで続けられた一番の理由は何だと語っていますか？",
+          "2級": "水上選手はFリーグが開幕した2007年当時、500試合出場についてどう思っていたと述べていますか？",
+          "準1級": "水上選手が500試合という節目を達成したことについて、数字に対する思いや今後の決意をどのように表現しているか説明してください。"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "Genta Mizukami plays futsal. He plays for Esporaida Hokkaido. On November 17, 2026, he played in a big game. He played his 500th game in the F League. This is a very special record. He is the first player to do this in the league.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Elementary Level",
+          "text": "Genta Mizukami plays futsal for Esporaida Hokkaido. On November 17, 2026, he played a match against Shinagawa City. This match was his 500th game in the F League. He is the first player in history to reach this amazing record. Mizukami said thank you to his fans, sponsors, and family for their great support over many years.",
+          "wordCount": 54
+        },
+        "3級": {
+          "title": "Pre-Intermediate Level",
+          "text": "Genta Mizukami of Esporaida Hokkaido made futsal history on November 17, 2026. He played in his 500th F League match against Shinagawa City. He is the very first player to reach this major milestone. Mizukami expressed deep gratitude to his family, fans, and sponsors. He never thought he would play this long when the league started in 2007. He wants to keep working hard for the future of futsal and his team.",
+          "wordCount": 68
+        },
+        "準2級": {
+          "title": "Intermediate Level",
+          "text": "On November 17, 2026, futsal player Genta Mizukami of Esporaida Hokkaido achieved a historic milestone. During a match against Shinagawa City, he played his 500th F League game, becoming the first player ever to reach this number. Mizukami expressed heartfelt thanks to his family, fans, and sponsors who have supported him since his early days with Stellamigo Iwate Hanamaki. He admitted that when the F League began in 2007, he never imagined playing for so long. Despite facing challenges, his love for futsal kept him going. Mizukami stated that he wants to continue playing hard to help futsal grow and to give fans a reason to be proud of him.",
+          "wordCount": 106
+        },
+        "2級": {
+          "title": "Upper-Intermediate Level",
+          "text": "Futsal player Genta Mizukami of Esporaida Hokkaido reached an unprecedented milestone on November 17, 2026. Playing in an F League match against Shinagawa City at Komazawa Olympic Park, Mizukami recorded his 500th career appearance, making him the first player in league history to achieve this feat. Following the match, the veteran player shared his deep appreciation for everyone who supported him, including his current club, sponsors, fans, and his former team, Stellamigo Iwate Hanamaki. He also thanked his family for being closest to him through every challenge. Reflecting on the league launch in 2007, Mizukami noted that he never expected to enjoy such a long career or reach this specific number. While his journey had difficult moments, his passion for the sport motivated him to persevere. Looking ahead, Mizukami promised to keep running and working to ensure futsal continues to expand and inspire new fans.",
+          "wordCount": 141
+        },
+        "準1級": {
+          "title": "Advanced Level",
+          "text": "Genta Mizukami etched his name into the history books of Japanese futsal on November 17, 2026, by reaching a landmark achievement. Representing Esporaida Hokkaido in an F League fixture against Shinagawa City at the Komazawa Olympic Park venue, Mizukami stepped onto the court to contest his 500th career league match, setting an unmatched record as the first player in competition history to attain this figure. In an emotional statement released through his club, Mizukami conveyed profound appreciation to the supporters, corporate sponsors, and his family who have sustained him since the league's inception in 2007, along with his former team, Stellamigo Iwate Hanamaki. He confessed that reaching five hundred appearances felt genuinely surreal, given that longevity of this scale was entirely beyond his imagination when the professional division first commenced. Although his athletic journey has encountered obstacles, his enduring affection for futsal has propelled him forward. Mizukami emphasized that this milestone is merely a station along his ongoing path, and he remains fully committed to elevating the sport's profile while rewarding the faith of those who have cheered for him.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63683"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-18-northern-ireland-nations-league-promotion-2026",
+      "date": "2026-11-18",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "football",
+        "nations-league",
+        "northern-ireland",
+        "hungary"
+      ],
+      "titleJa": "北アイルランド昇格",
+      "title": "Northern Ireland Secure Nations League Promotion",
+      "summaryJa": "北アイルランド代表はハンガリーと引き分け、ネーションズリーグのリーグA昇格を決めました。",
+      "sourcePublishedAt": "2026-11-17T23:49:31.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "北アイルランド代表の逆境を乗り越えた試合から、困難な状況でチームを立て直す方法を学びます。",
+        "followUpJa": "どのような選手交代やメンタルが試合の立て直しに役立ったか考えてみましょう。",
+        "questions": {
+          "5級": "Who scored the goal for Northern Ireland?",
+          "4級": "What did Northern Ireland need against Hungary to win promotion?",
+          "3級": "How did the manager change the team at half-time?",
+          "準2級": "Why did Northern Ireland have to chase a game for the first time in the campaign?",
+          "2級": "What specific qualities did manager Michael O'Neill praise about his young squad after the match?",
+          "準1級": "How did the substitutes and tactical adjustments influence the second-half performance according to the report?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Northern Ireland Play Well",
+          "text": "Northern Ireland played against Hungary. Hungary scored a goal first. But Northern Ireland did not give up. Justin Devenny scored a brilliant goal. The game ended in a draw. This is a very happy day for the team. They got promotion to League A.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Northern Ireland Secure Promotion",
+          "text": "Northern Ireland travelled to Budapest to play Hungary in an important football match. They only needed a draw to win promotion to League A. Hungary scored a goal in the first half through Barnabas Varga. This meant Northern Ireland had to chase the game for the first time. In the second half, Justin Devenny scored a wonderful equaliser for his team. The match finished one to one. The players achieved their big goal and celebrated happily together.",
+          "wordCount": 77
+        },
+        "3級": {
+          "title": "Nations League Success for Northern Ireland",
+          "text": "Northern Ireland recently secured historic promotion to Nations League A after a hard-fought draw against Hungary in Budapest. Barnabas Varga scored first for the hosts in the first half at the Puskas Arena. However, Michael O'Neill's team showed great mental strength after going behind in the match. Justin Devenny scored a brilliant equaliser in the second half to earn the vital point for his country. Manager O'Neill praised the strong belief and tactical maturity of his young squad during this successful campaign.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Northern Ireland Reach New Heights with Promotion",
+          "text": "Northern Ireland achieved a historic promotion to Nations League A after securing a crucial draw against Hungary in Budapest. Entering the match needing only one point to top their group, the visitors fell behind when Barnabas Varga scored in the thirty-fifth minute. For the first time in the campaign, manager Michael O'Neill's side had to chase a deficit in a big stadium. Thanks to tactical changes, substitutes like Josh Magennis, and Justin Devenny's brilliant second-half equaliser, they secured the necessary point. O'Neill later praised the physical, tactical, and mental maturity of his young squad.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "Belief and Bench Help Northern Ireland Scale New Heights",
+          "text": "Northern Ireland secured promotion to UEFA Nations League A for the first time following a hard-fought draw against Hungary in Budapest. Michael O'Neill's side travelled knowing a single point would guarantee top spot in League B2. However, the task became difficult when Barnabas Varga opened the scoring for Hungary in the thirty-fifth minute at the Puskas Arena. Facing a deficit for the first time in the campaign, Northern Ireland responded with incredible resilience against a dominant home side that enjoyed significant possession in the first half.\n\nManager O'Neill utilised his bench effectively at half-time, introducing veteran striker Josh Magennis and other substitutes to inject much-needed freshness and energy into the team. Justin Devenny scored a brilliant equaliser in the second half, sealing the historic promotion and prompting jubilant celebrations among the players and staff at the end of the match. O'Neill later praised the physical, tactical, and mental maturity of his young squad, highlighting the strong belief that allowed them to overcome the difficult atmosphere and achieve their ultimate goal.",
+          "wordCount": 169
+        },
+        "準1級": {
+          "title": "Northern Ireland Secure Historic Nations League Promotion Through Resilience",
+          "text": "Northern Ireland scaled new heights by securing promotion to Nations League A for the first time, earning the necessary point through a resilient draw against Hungary in Budapest. Having maintained an impressive defensive record earlier in the campaign without conceding for five hundred minutes, Michael O'Neill's side faced an unfamiliar challenge when Barnabas Varga gave the hosts a thirty-fifth minute lead at the Puskas Arena. Conceding the opening goal forced the visitors to chase a match for the first time, exposing them to a hostile atmosphere and a dominant Hungarian side that enjoyed more than seventy percent possession during the opening period, during which Liverpool star Dominik Szoboszlai even struck the base of the post.\n\nDemonstrating remarkable maturity, Northern Ireland rallied effectively after the interval. O'Neill made crucial tactical adjustments from the bench, introducing substitutes such as Josh Magennis and Kieran Morrison whose energy and impact shifted the momentum significantly. Justin Devenny's superb equaliser crowned a disciplined team effort, validating the manager's immense faith in the squad's physical, tactical, and mental development throughout an unbeaten campaign that culminated in unforgettable scenes of celebration.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/cwp9dxr80p3po?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-18-sugasawa-dam-water-recovery",
+      "date": "2026-11-18",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "environment"
+      ],
+      "careerTags": [
+        "engineering"
+      ],
+      "tags": [
+        "dam",
+        "tottori",
+        "water-shortage",
+        "weather"
+      ],
+      "titleJa": "ダムの異様な光景",
+      "title": "The Strange Sight at Tottori's Biggest Dam",
+      "summaryJa": "鳥取県最大級の菅沢ダムで、貯水率が短期間に急回復した謎の現象が現地調査されました。",
+      "sourcePublishedAt": "2026-11-18T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "ダムの貯水率が短期間で急回復した理由を探るため、記事から重要な事実を読み解きましょう。",
+        "followUpJa": "天候以外の要因について、どのようなことが考えられるか話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the dam in Tottori?",
+          "4級": "How low did the water level drop in the summer?",
+          "3級": "Why did the water level recover so fast without heavy rain?",
+          "準2級": "What strange sight did visitors see at the Sugasawa Dam?",
+          "2級": "How did the dam manage to recover its water level in such a short time?",
+          "準1級": "What does the sudden recovery of the Sugasawa Dam reveal about regional weather and water management in Japan?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Low Water Level",
+          "text": "Tottori has a big dam. The name is Sugasawa Dam. In the summer, the water level was very low. It was only six percent. People were worried. But the water came back fast. It is a strange thing. We can see the dry lake. The view is very scary for us.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "The Recovery of Sugasawa Dam",
+          "text": "Tottori has the Sugasawa Dam. It is one of the biggest dams in the prefecture. This summer, the water rate was very low at six percent. However, the water level recovered quickly in just a few days. There was no heavy rain. Why did this happen? Writers visited the site to check the strange and dry lake. People felt scared when they saw the low water surface far below.",
+          "wordCount": 69
+        },
+        "3級": {
+          "title": "Exploring the Sugasawa Dam",
+          "text": "Japan experiences big weather differences between regions. In Tottori prefecture, the Sugasawa Dam faced a serious situation this summer. The water storage rate dropped to a dangerous 6.7 percent. Surprisingly, the water level recovered rapidly in just a short period without any heavy rain. A writer visited the local area to investigate this strange phenomenon. Even though the official storage rate was forty-four percent later, the water surface looked very far below. This unusual sight of a dried-up lake made visitors feel nervous and amazed.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "Inside Tottori's Largest Dam Mystery",
+          "text": "Regional weather differences are becoming much greater across Japan. In Tottori prefecture, the Sugasawa Dam, which is one of the largest in the region, faced a critical water shortage this past summer. The storage rate plummeted to a mere 6.7 percent, creating a very dangerous situation. However, something unusual happened. The water level recovered dramatically in just a short time, and this recovery occurred without any heavy rain falling in the area. A writer visited the location to uncover the truth behind this hidden reality. Standing at the site, visitors could see a strange sight: even when the official storage rate was reported at forty-four percent, the actual water surface was located far below. This dried-up lake appearance made people feel dizzy and shocked by the sheer scale of the environment.",
+          "wordCount": 130
+        },
+        "2級": {
+          "title": "Unraveling the Rapid Recovery of Sugasawa Dam and Its Hidden Reality",
+          "text": "Japan continues to experience significant weather variations across different regions. In Tottori prefecture, the largest reservoir known as the Sugasawa Dam recently faced an alarming crisis when its water storage rate dropped to a critically low 6.7 percent during the summer months. Yet, in an astonishing turn of events, the water level managed to stage a rapid recovery within just a few days. Interestingly, this dramatic change happened even though there was no heavy rainfall to replenish the system. Driven by curiosity, a freelance writer visited the location to investigate the true and hidden appearance of the dam. The local scenery presented a strange and striking contrast for anyone who came to observe the site. Even when the official storage rate reached forty-four percent, the actual water surface remained far below, creating the eerie impression of a dried-up lake. This unusual phenomenon made visitors hold their breath and look down in awe at the sheer scale of the environment.",
+          "wordCount": 158
+        },
+        "準1級": {
+          "title": "The Enigma of Tottori's Sugasawa Dam Recovery and the Dried-Up Lake",
+          "text": "As regional weather anomalies become increasingly pronounced throughout Japan, unique environmental challenges emerge in unexpected places across the country. Tottori prefecture's largest reservoir, the Sugasawa Dam, recently drew significant attention following a severe drought-like crisis that saw its water storage rate plummet to a critical 6.7 percent during the summer months. What baffled observers and experts alike, however, was the subsequent miraculous turnaround. The water level experienced a sharp and rapid recovery within a matter of days, completely independent of any heavy rainfall in the immediate area. Intrigued by this meteorological and hydrological mystery, a freelance writer traveled directly to the site to examine the dam's lesser-known reality firsthand. Upon arrival, visitors were greeted by a bizarre and striking spectacle that challenged their expectations of infrastructure management. Even with the official storage rate standing at a seemingly moderate forty-four percent, the actual water surface appeared astonishingly far below, leaving a vast expanse that strongly resembled a dried-up lake. This dizzying and alien landscape provided a stark reminder of the complex dynamics governing regional water resources, prompting profound reflection on how modern facilities handle severe environmental fluctuations.",
+          "wordCount": 185
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964752"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-18-yamato-nadeshiko-2000-drama-charm",
+      "date": "2026-11-18",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Yamato Nadeshiko",
+        "Nanako Matsushima",
+        "Fuji TV",
+        "drama",
+        "retro"
+      ],
+      "titleJa": "名作ドラマの魅力",
+      "title": "The Enduring Appeal of the 2000 Drama 'Yamato Nadeshiko'",
+      "summaryJa": "2000年に放送された名作ドラマ「やまとなでしこ」の魅力と、松嶋菜々子演じる主人公の鮮烈なキャラクターについて解説します。",
+      "sourcePublishedAt": "2026-11-18T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "ドラマ『やまとなでしこ』の主人公の生き方や物語の特徴を理解し、視聴する価値があるかを判断する。",
+        "followUpJa": "もしあなたがこのドラマを見るなら、主人公のどのような側面に最も注目したいですか？",
+        "questions": {
+          "5級": "Who is the main actress in Yamato Nadeshiko?",
+          "4級": "What is the main character's biggest dislike in the story?",
+          "3級": "How does the main character use her beauty to find rich men?",
+          "準2級": "What makes the opening sequence of the first episode surprising and fast-paced?",
+          "2級": "Why did viewers feel refreshed rather than annoyed by the heroine's greedy personality?",
+          "準1級": "How did the 2000 drama foreshadow modern viewing styles through its rapid storytelling?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Popular Old Drama",
+          "text": "Yamato Nadeshiko is a famous Japanese TV drama. It was on TV in the year 2000. Nanako Matsushima is the main star. She plays a beautiful flight attendant. Many people still love this show today. They watch it when the cold winter comes.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "A Story About a Smart Woman",
+          "text": "The famous drama Yamato Nadeshiko stars Nanako Matsushima. She plays Sakurako, a flight attendant who loves money and hates poverty. The story moves very fast from her poor childhood in Toyama to her new life in Tokyo. Even though her character is very greedy, viewers love her charm. Many people still enjoy watching this wonderful show today during the cold season.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Looking Back at Yamato Nadeshiko",
+          "text": "The classic 2000 Fuji TV drama Yamato Nadeshiko remains very popular today. Nanako Matsushima plays the unforgettable heroine, Sakurako. The story starts quickly, showing her poor past before she becomes a flight attendant in Tokyo. Sakurako is very honest about wanting wealth and using her beauty to find rich men. Because Matsushima plays her so well, audiences feel refreshed instead of angry. Her bold character and fast-paced storytelling feel remarkably modern even now, captivating viewers who love retro shows.",
+          "wordCount": 78
+        },
+        "準2級": {
+          "title": "The Timeless Appeal of a 2000 Hit",
+          "text": "As the weather turns cold, many fans remember the autumn 2000 Fuji TV drama Yamato Nadeshiko. Starring Nanako Matsushima as Sakurako, the show features a striking heroine who openly declares her hatred of poverty. In the very fast opening sequence, Sakurako moves to Tokyo with very little money and quickly becomes a flight attendant. She uses her beauty to find wealthy men, attending singles parties and making bold choices. Although her character is extremely greedy and calculating, Matsushima's wonderful performance prevents viewers from feeling any real dislike. Instead, audiences find her refreshing honesty surprisingly delightful, proving why the series remains beloved today.",
+          "wordCount": 101
+        },
+        "2級": {
+          "title": "Rediscovering Yamato Nadeshiko and Its Bold Heroine",
+          "text": "Whenever the chilly autumn season arrives, many Japanese television fans recall the hit 2000 Fuji TV drama Yamato Nadeshiko. Nanako Matsushima delivered an unforgettable performance as Sakurako, a flight attendant whose striking character and memorable storyline still resonate today. The drama begins with an astonishingly fast sequence that jumps from her difficult childhood in snowy Toyama to her arrival in Tokyo with very little savings. With remarkable speed, she transforms into a flight attendant and immediately sets out to find wealthy men using her beauty as her only weapon. She attends group dates, scans passenger belongings, and makes clever moves to secure her future. Despite her unapologetic greed and calculated approach to romance, Matsushima's charming portrayal prevented viewers from feeling disgust, turning a potentially unlikable character into a refreshing heroine whose rapid storytelling seems to have anticipated modern viewing habits.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "The Advanced Visionary Narrative of Yamato Nadeshiko",
+          "text": "Long before the era of rapid streaming content, the autumn 2000 Fuji TV drama Yamato Nadeshiko demonstrated an extraordinary narrative pace that feels remarkably ahead of its time. Starring Nanako Matsushima as the fiercely ambitious Sakurako, the series wastes no time establishing its premise for viewers who appreciate classic television. Within the first four minutes, the story transitions swiftly from her impoverished childhood in snowy Toyama to her arrival in Tokyo as a young woman determined to escape poverty through beauty and wealth. Sakurako unabashedly uses her position as a flight attendant to hunt for affluent partners, deploying calculated charm and bold pickup lines during singles parties. Remarkably, despite her transparent materialism and unabashed greed, Matsushima's charismatic execution prevented the audience from feeling any genuine aversion. Instead of drawing criticism, her unapologetic ambition was received with refreshing amusement, cementing her status as an iconic television heroine. Decades later, as co-stars pursue new projects, the undeniable appeal of Yamato Nadeshiko continues to captivate audiences who look back at its surprisingly modern storytelling style with enduring fondness and nostalgia.",
+          "wordCount": 176
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261118-5343659/"
+        }
+      ]
+    },
     {
       "id": "2026-11-17-anthropic-governance-five-stocks-ipo",
       "date": "2026-11-17",
