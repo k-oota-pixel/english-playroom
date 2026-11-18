@@ -311,8 +311,10 @@ function showEmote(id,kind){
  // Reset animation to permit replay on consecutive permitted events.
  void tile.offsetWidth;
  tile.classList.add('emote-active','emote-'+kind);
- if(kind==='heart'||kind==='sparkle'){
-  const burst=node('span',kind==='heart'?'❤️':'✨','emote-burst');
+ const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
+ if(kind==='heart'||kind==='sparkle'||reduced){
+  const icon={jump:'⬆️',heart:'❤️',sparkle:'✨',spin:'🔄'}[kind];
+  const burst=node('span',icon,'emote-burst');
   burst.setAttribute('aria-hidden','true');
   tile.append(burst);
  }
