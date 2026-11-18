@@ -78,8 +78,16 @@ function putPlayer(p){
  }else if((old?.appearance!==merged.appearance||old?.petName!==merged.petName||old?.hatched!==merged.hatched||old?.adult!==merged.adult||old?.shop!==merged.shop)&&p.appearance!==undefined){
   tile.replaceChildren(sprite(merged),node('span',merged.petName||merged.nickname,'name'));
  }
- tile.style.left=(merged.x*CELL+CELL/2)+'px';
- tile.style.top=(merged.y*CELL+CELL/2)+'px';
+ // Grid coordinates stay authoritative; only the displayed sprite is interpolated.
+ if(!old||merged.x!==old.x||merged.y!==old.y){
+  const adjacent=old&&Math.abs(merged.x-old.x)+Math.abs(merged.y-old.y)===1;
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The server publishes positions every 250ms. Overlap successive transitions
+  // slightly so a held direction does not visibly stop between grid steps.
+  tile.style.transition=adjacent&&!reduced?'transform 300ms linear':'none';
+  tile.style.transform='translate3d('+(merged.x*CELL+CELL/2)+'px,'+(merged.y*CELL+CELL/2)+'px,0) translate(-50%,-62%)';
+  if(old&&p.id===clientId)hideEmoteMenu();
+ }
  tile.classList.toggle('mine',p.id===clientId);
  tile.classList.toggle('busy',merged.status==='battle');
  tile.setAttribute('aria-label',(merged.nickname||'冒険者')+' のぺっと '+(merged.petName||'ぺっと')+(merged.status==='battle'?'（対戦中）':'')+(p.id===clientId?'。エモートを開く':''));
@@ -355,7 +363,7 @@ function updateNearby(){
  }else els.nearest.textContent='近くのプレイヤーを探そう';
 }
 function openModal(title,body,actions){
- els.modalTitle.textContent=title;els.modalBody.replaceChildren(...body);els.modalActions.replaceChildren(...actions);els.modal.hidden=false;
+ clearMovement();els.modalTitle.textContent=title;els.modalBody.replaceChildren(...body);els.modalActions.replaceChildren(...actions);els.modal.hidden=false;
 }
 function closeModal(){els.modal.hidden=true;}
 function openRequest(id){
@@ -691,7 +699,7 @@ function receive(message){
    hideEmoteMenu();
    for(const timer of emoteTimers.values())clearTimeout(timer);
    emoteTimers.clear();
-   stopPendingRecovery();
+   stopPendingRecovery();clearMovement();
    clientId=message.self;closeModal();els.battle.hidden=true;els.finish.hidden=true;battleState=null;question=null;answerPending=false;players.clear();
    for(const tile of elements.values())tile.remove();elements.clear();
    camera.ready=false;camera.manual=false;stopCamera();
@@ -744,7 +752,7 @@ async function connect(){
   });
   ws.addEventListener('close',()=>{
    if(socket!==ws)return;
-   hideEmoteMenu();
+   hideEmoteMenu();clearMovement();
    connected=false;els.connection.classList.remove('connected');els.connection.textContent='再接続中…';
    note('通信が切れました。再接続します。');
    clearTimeout(retryTimer);retryTimer=setTimeout(()=>{if(authUser)void connect();},2500);
@@ -752,10 +760,39 @@ async function connect(){
   ws.addEventListener('error',()=>{note('オンライン広場への通信が不安定です。');});
  }catch(error){note('通信を開始できませんでした。'+error.message);}
 }
+// Keep the existing pad cadence; keyboard repeat no longer depends on OS timing.
+const MOVE_CADENCE=275;
+const heldMovement=new Map();
+let movementTimer=null;
+function canMove(){
+ return connected&&Boolean(clientId)&&players.has(clientId)&&els.battle.hidden&&els.modal.hidden&&$('formation-panel').hidden;
+}
+function clearMovement(){
+ clearTimeout(movementTimer);movementTimer=null;heldMovement.clear();
+}
 function move(dx,dy){
- if(!connected||!clientId||!els.battle.hidden||!els.modal.hidden||!$('formation-panel').hidden)return;
- if(Date.now()-(move.last||0)<250)return;
- move.last=Date.now();send({type:'move',dx,dy});
+ if(!canMove()||Date.now()-(move.last||0)<250)return false;
+ if(!send({type:'move',dx,dy}))return false;
+ move.last=Date.now();return true;
+}
+function pumpMovement(){
+ clearTimeout(movementTimer);movementTimer=null;
+ if(!heldMovement.size)return;
+ if(!canMove()){clearMovement();return;}
+ const wait=MOVE_CADENCE-(Date.now()-(move.last||0));
+ if(wait>0){movementTimer=setTimeout(pumpMovement,wait);return;}
+ const direction=[...heldMovement.values()].at(-1);
+ move(...direction);
+ movementTimer=setTimeout(pumpMovement,MOVE_CADENCE);
+}
+function pressMovement(id,direction){
+ if(!canMove()||heldMovement.has(id))return;
+ heldMovement.set(id,direction);pumpMovement();
+}
+function releaseMovement(id){
+ if(!heldMovement.delete(id))return;
+ if(!heldMovement.size){clearTimeout(movementTimer);movementTimer=null;}
+ else pumpMovement();
 }
 const keys={ArrowUp:[0,-1],ArrowRight:[1,0],ArrowDown:[0,1],ArrowLeft:[-1,0],
  KeyW:[0,-1],KeyD:[1,0],KeyS:[0,1],KeyA:[-1,0]};
@@ -763,24 +800,26 @@ document.addEventListener('keydown',event=>{
  const direction=keys[event.code]||keys[event.key];
  if(!direction||event.altKey||event.ctrlKey||event.metaKey||event.isComposing||
     event.target?.closest?.('input,textarea,select,[contenteditable]'))return;
- if(!els.battle.hidden||!els.modal.hidden||!$('formation-panel').hidden)return;
- event.preventDefault();move(...direction);
+ if(!canMove())return;
+ event.preventDefault();
+ if(!event.repeat)pressMovement('key:'+(event.code||event.key),direction);
 });
+document.addEventListener('keyup',event=>releaseMovement('key:'+(event.code||event.key)));
+window.addEventListener('blur',clearMovement);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)clearMovement();});
 for(const pad of document.querySelectorAll('.pad button')){
- let timer;
- const stop=()=>{clearInterval(timer);timer=null;};
+ const id=event=>'pointer:'+event.pointerId;
  pad.addEventListener('pointerdown',event=>{
   event.preventDefault();pad.setPointerCapture?.(event.pointerId);
-  move(Number(pad.dataset.dx),Number(pad.dataset.dy));
-  stop();timer=setInterval(()=>move(Number(pad.dataset.dx),Number(pad.dataset.dy)),275);
+  pressMovement(id(event),[Number(pad.dataset.dx),Number(pad.dataset.dy)]);
  });
- for(const name of ['pointerup','pointercancel','lostpointercapture'])pad.addEventListener(name,stop);
+ for(const name of ['pointerup','pointercancel','lostpointercapture'])pad.addEventListener(name,event=>releaseMovement(id(event)));
 }
 $('formation').addEventListener('click',()=>{
  if(!clientId||!connected)return note('広場に接続してから編成してください。');
  if(!els.battle.hidden)return note('対戦中は編成を変更できません。');
  $('formation-frame').src='../monster-maze/?screen=collection&embed=1&v=2.5.33';
- $('formation-panel').hidden=false;
+ clearMovement();$('formation-panel').hidden=false;
 });
 $('close-formation').addEventListener('click',()=>{
  const frame=$('formation-frame');
@@ -799,7 +838,7 @@ window.addEventListener('resize',()=>{
   if(p)followMyPet(p.x,p.y);
  }
 });
-window.addEventListener('pagehide',()=>{stopPendingRecovery();clearTimeout(retryTimer);socket?.close(1000,'leaving');});
+window.addEventListener('pagehide',()=>{clearMovement();stopPendingRecovery();clearTimeout(retryTimer);socket?.close(1000,'leaving');});
 
 onAuthStateChanged(auth,async user=>{
  if(!user){note('ログインが必要です。');return;}
