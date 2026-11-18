@@ -21,6 +21,6 @@ jobs:
       - name: Check browser module syntax
         run: node --check quest-plaza/app.js && node --check quest-plaza/camera-math.js && node --check monster-maze/app.js
       - name: Test camera dead zone and map boundaries
-        run: node --test quest-plaza/camera-math.test.mjs quest-plaza/battle-ui-reuse.test.mjs quest-plaza/map.test.mjs
+        run: node --test quest-plaza/camera-math.test.mjs quest-plaza/battle-ui-reuse.test.mjs quest-plaza/map.test.mjs quest-plaza/emote.test.mjs
       - name: Verify standalone route
         run: test -s quest-plaza/index.html && test -s quest-plaza/style.css
