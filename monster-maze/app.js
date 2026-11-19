@@ -183,7 +183,12 @@ async function save(change,onSuccess,{id,delta=0,itemDelta=null,onFailure}={}){
       const patch={monsterMaze:next};
       if(delta)patch.coins=balance+delta;
       if(itemDelta)patch.petDungeonItems=settleItems(inventory,itemDelta);
-      tx.set(wallet,patch,{merge:true});
+      // Replace the quest map so deleted material cards cannot survive a recursive merge.
+      // Keep the existing per-item merge behavior for shared dungeon inventory.
+      const mergeFields=['monsterMaze'];
+      if(delta)mergeFields.push('coins');
+      if(itemDelta)mergeFields.push(...Object.keys(patch.petDungeonItems).map(key=>'petDungeonItems.'+key));
+      tx.set(wallet,patch,{mergeFields});
       return {next,balance:balance+delta,inventory:patch.petDungeonItems??inventory,questTitleChanged};
     });
     if(current!==generation)return;
