@@ -1,13 +1,440 @@
 {
-  "generatedAt": "2026-11-18T02:54:07.575Z",
-  "editionDate": "2026-11-18",
+  "generatedAt": "2026-11-19T02:33:57.087Z",
+  "editionDate": "2026-11-19",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-18"
+    "lastSuccessfulEdition": "2026-11-19"
   },
   "articles": [
+    {
+      "id": "2026-11-19-akko-ni-omakase-special-2027",
+      "date": "2026-11-19",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Akko ni Omakase",
+        "Akiko Wada",
+        "TBS",
+        "television"
+      ],
+      "titleJa": "アッコにおまかせ",
+      "title": "Popular TV Show Akko ni Omakase Returns for One-Night Special",
+      "summaryJa": "今年3月に終了したバラエティ番組「アッコにおまかせ！」が、2027年1月に1日限りの特番として復活することが発表されました。",
+      "sourcePublishedAt": "2026-11-19T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "番組の復活に向けて、あなたならどのような特別企画を提案するか考えよう。",
+        "followUpJa": "実際の特番でどのような企画が見たいか、友達と話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the TV show that will return?",
+          "4級": "When will the special TV program broadcast?",
+          "3級": "How many months after the regular show ended is this return?",
+          "準2級": "Who is the main host of the show who expressed her surprise and happiness?",
+          "2級": "What special group of people besides the main hosts will gather in the studio again?",
+          "準1級": "Based on Akiko Wada's comments, what specific details about the cast and content remain unknown as of the announcement?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Popular TV Show Returns",
+          "text": "A famous TV show can come back. The name is Akko ni Omakase. It ended in March. But it will return for one day. It is a special show. The date is January 10, 2027. Akiko Wada is very happy. She will see the viewers again. Many people like this show very much.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "Akko ni Omakase Comes Back for One Day",
+          "text": "A popular Japanese TV show will return next year. Akko ni Omakase ended its long regular broadcast in March. However, it will come back as a special program on January 10, 2027. The main host, Akiko Wada, was very surprised. She said she did not think she could see everyone so soon. Fans are excited to watch the familiar members together again.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Famous TV Program Akko ni Omakase Announces Special Return",
+          "text": "The famous information variety show Akko ni Omakase will return for a one-night special program on January 10, 2027. The regular broadcast ended in March after about forty and a half years of history. However, thanks to many viewers, it will come back after about ten months. Main host Akiko Wada expressed her surprise and joy about the quick return. Familiar co-hosts and regular guests will gather in the studio again. Details about the special project will be announced later.",
+          "wordCount": 78
+        },
+        "準2級": {
+          "title": "TBS Variety Show Akko ni Omakase Set for Surprise One-Day Revival",
+          "text": "The popular TBS information variety show Akko ni Omakase, which ended its historic forty-year run last March, is set to return for a one-night special on January 10, 2027. This comeback happens about ten months after the regular broadcast ended. Main host Akiko Wada and regular co-host Ryuta Mine will appear alongside announcers and familiar semi-regular guests. Wada expressed great surprise and gratitude upon hearing the news, stating she never expected to meet the audience again so quickly. While full details of the special project remain unannounced, fans can look forward to a nostalgic gathering. Wada encouraged everyone to enjoy Sunday lunchtime together once more.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Beloved Sunday Program Akko ni Omakase Announces Surprise 2027 Special",
+          "text": "Akko ni Omakase, a long-running Sunday lunchtime staple that concluded its regular broadcasts in March after roughly forty and a half years, will return for a single-day special program on January 10, 2027. Following overwhelming viewer support, the show will come back about ten months after its final regular episode. The broadcast will feature main host Akiko Wada, co-host Ryuta Mine, announcers Junna Yamagata and Futo Kumazaki, and various semi-regulars who will gather in the studio again. Wada admitted she was astonished by how soon the revival would happen, expressing deep gratitude for the opportunity to see everyone. Although specific programming details and guest lineups are still under wraps, Wada urged fans to tune in and enjoy the Sunday broadcast together, creating fresh excitement among loyal viewers nationwide. Furthermore, she expressed great excitement about which members would reunite in the studio for this special broadcast, noting that she was looking forward to the wonderful gathering.",
+          "wordCount": 153
+        },
+        "準1級": {
+          "title": "Historic Sunday Variety Show Akko ni Omakase Confirms Surprise One-Night Revival in January",
+          "text": "In a surprising announcement that has delighted television audiences across Japan, the iconic TBS information variety show Akko ni Omakase is slated for a one-night revival on January 10, 2027. The program, which had concluded its remarkable forty-and-a-half-year regular broadcast history this past March, is returning in response to persistent fan enthusiasm just about ten months after the final episode. Veteran host Akiko Wada voiced astonishment and delight at the swift comeback, noting she never anticipated reuniting with viewers so soon after the series finale. Alongside Wada and long-time co-host Ryuta Mine, the broadcast will feature announcers Junna Yamagata and Futo Kumazaki, accompanied by a gathering of the program's signature semi-regular contributors in the studio once again. While organizers have indicated that special collaborative projects and unique planning are underway, comprehensive details regarding the final guest lineup and specific broadcast segments remain unconfirmed at this stage, with Wada herself noting she is still unsure which exact members will ultimately assemble. Wada enthusiastically called upon fans to join her in reviving the cherished Sunday lunchtime tradition for one memorable afternoon, expressing her genuine excitement and gratitude for the upcoming opportunity to bring laughter and entertainment back to viewers nationwide.",
+          "wordCount": 196
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261119-5358676/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-19-anker-maggo-power-bank-2-pro-review",
+      "date": "2026-11-19",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Anker",
+        "MagGo",
+        "battery",
+        "Qi2"
+      ],
+      "titleJa": "Anker新モバイルバッテ…",
+      "title": "Anker Releases New MagGo Power Bank 2 Pro with Qi2 and Cooling Fan",
+      "summaryJa": "Ankerは最大25Wの急速充電と冷却ファンを搭載したモバイルバッテリー「Anker MagGo Power Bank 2 Pro」を発売しました。",
+      "sourcePublishedAt": "2026-11-19T02:25:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "新しいモバイルバッテリーの特徴や機能を把握し、自分にとって魅力的かどうかを判断する。",
+        "followUpJa": "このバッテリーの冷却機能や充電速度についてクラスメイトと話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the new item from Anker?",
+          "4級": "When did Anker release the new mobile battery?",
+          "3級": "What maximum wireless charging wattage does the Qi2 support?",
+          "準2級": "What feature helps prevent the smartphone and battery from getting too hot during charging?",
+          "2級": "What top rank did the battery receive in SGS comprehensive evaluations for rapid charging and heat dissipation?",
+          "準1級": "How does the built-in monitor enhance user convenience regarding battery operation and mode switching?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Battery from Anker",
+          "text": "Anker has a new mobile battery. The name is Anker MagGo Power Bank 2 Pro. It is a good device. It can charge your phone fast. You can buy it now. It has a cooling fan. It is very useful for your phone and other devices every day.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Anker Launches New Power Bank",
+          "text": "Anker released a new mobile battery on November 19, 2026. It is called the Anker MagGo Power Bank 2 Pro. This battery supports Qi2 wireless charging. It can charge at up to 25 watts. It also has a built-in cooling fan. This fan keeps your phone cool and safe. You can check the battery level on a small monitor on the side of the device.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Anker MagGo Power Bank 2 Pro Features",
+          "text": "On November 19, 2026, Anker released a new mobile battery called the Anker MagGo Power Bank 2 Pro. This device supports the Qi2 standard and provides fast wireless charging up to 25 watts. It features a unique cooling fan to keep smartphones from getting too hot during use. Users can easily check the battery percentage and temperature on a digital monitor located on the side. The battery also includes a convenient foldable stand, which makes it very easy to charge your phone while watching videos or working at your desk every day.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Exploring Anker's MagGo Power Bank 2 Pro",
+          "text": "Anker has introduced the Anker MagGo Power Bank 2 Pro, a new mobile battery designed for fast and safe charging. Released on November 19, 2026, it supports next-generation Qi2 wireless charging up to 25 watts and cable charging up to 45 watts. One of its most important features is a built-in cooling fan that regulates temperature and prevents connected devices from overheating. The battery also features a convenient side monitor to display remaining power and operational modes, such as a quiet mode and a cooling mode. Furthermore, it comes with a foldable stand to support magnetic wireless charging.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Reviewing the Anker MagGo Power Bank 2 Pro",
+          "text": "Anker officially launched the Anker MagGo Power Bank 2 Pro on November 19, 2026, combining high-speed charging with advanced safety features. The new device supports Qi2 wireless charging up to 25 watts and wired cable charging up to 45 watts. To address the issue of heat accumulation during fast charging, Anker integrated a specialized cooling fan that keeps both the battery and the connected smartphone at optimal temperatures. Users can easily switch between cooling and silent modes using the power button, while the built-in side monitor displays real-time status updates including battery levels and operating temperatures. Additionally, the device comes with a foldable stand for effortless magnetic wireless charging and enhanced portability. Notably, it earned the highest A-plus rank in SGS comprehensive evaluations for rapid charging and heat dissipation performance, making it a powerful and reliable accessory for everyday mobile device use.",
+          "wordCount": 136
+        },
+        "準1級": {
+          "title": "Anker MagGo Power Bank 2 Pro Review: Qi2, Cooling, and Performance",
+          "text": "On November 19, 2026, Anker officially released a new mobile battery called the Anker MagGo Power Bank 2 Pro, combining high-speed charging performance with advanced thermal management. The Anker MagGo Power Bank 2 Pro supports the next-generation Qi2 wireless charging standard, delivering a maximum wireless output of 25 watts. In addition to wireless capabilities, the Anker MagGo Power Bank 2 Pro provides cable charging up to 45 watts through a USB-C port. To address the common issue of heat buildup during rapid charging, Anker integrated a specialized cooling fan into the Anker MagGo Power Bank 2 Pro. This built-in cooling fan regulates temperature and prevents connected devices from becoming too hot during use. Users can monitor the operating temperature, remaining battery percentage, and active charging status using a convenient digital side monitor on the Anker MagGo Power Bank 2 Pro. Furthermore, pressing the power button twice allows users to switch easily between a cooling mode and a silent mode. The Anker MagGo Power Bank 2 Pro also features a practical foldable stand on the back, supporting magnetic wireless charging while keeping the smartphone upright. Notably, the Anker MagGo Power Bank 2 Pro earned the highest A-plus rank in SGS comprehensive evaluations for rapid charging and heat dissipation performance, establishing the Anker MagGo Power Bank 2 Pro as a reliable accessory for daily mobile use.",
+          "wordCount": 211
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261119-anker-maggo-power-bank-2-pro/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-19-kumamoto-earthquake-shindo-5-minus",
+      "date": "2026-11-19",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "earthquake",
+        "kumamoto",
+        "japan",
+        "jma",
+        "safety"
+      ],
+      "titleJa": "熊本で震度5弱",
+      "title": "Kumamoto Hit by Magnitude 5-Minus Earthquake",
+      "summaryJa": "11月19日未明、熊本県で震度5弱を観測する地震がありました。気象庁は今後1週間程度は同程度の地震に注意するよう呼びかけています。",
+      "sourcePublishedAt": "2026-11-19T02:13:13.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "地震発生後の注意点について学び、自分が取るべき行動を考えます。",
+        "followUpJa": "今後の生活でどのように安全を確保するか話し合ってみましょう。",
+        "questions": {
+          "5級": "What happened in Kumamoto?",
+          "4級": "When did the earthquake happen in Kumamoto?",
+          "3級": "How long does the Japan Meteorological Agency ask people to be careful about more earthquakes?",
+          "準2級": "Which past earthquake series is this recent event linked to, according to the Meteorological Agency?",
+          "2級": "What specific advisory was issued regarding the seismic intensity expected over the next week?",
+          "準1級": "Explain the potential risks and precautionary measures communicated following the initial quake in Kumamoto."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Basic Earthquake News",
+          "text": "An earthquake happened in Kumamoto. It was on November 19. The shaking was shindo 5-minus. Many people felt it. The Japan Meteorological Agency tells people to be careful. More shakes can come. Please check your safety now. Stay away from dangerous things. Be safe every day.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Earthquake Hits Kumamoto",
+          "text": "On November 19, an earthquake hit Kumamoto Prefecture. The seismic intensity was shindo 5-minus. It happened around 2:22 in the morning. The Japan Meteorological Agency says this is part of the Kumamoto earthquake series from July. People must be careful for about one week. There could be more strong shakes. Please check your home and stay safe.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Kumamoto Experiences Shindo 5-Minus",
+          "text": "An earthquake with a lower 5 intensity on the Japanese seismic scale struck Kumamoto Prefecture on November 19. The event occurred around 2:22 in the morning. The Japan Meteorological Agency announced that this activity is connected to the Kumamoto earthquakes from July. Authorities are warning residents to remain cautious for about one week because similar strong shakes might happen again. People should check their surroundings and prepare for possible aftershocks to keep themselves and their families safe.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Earthquake Strikes Kumamoto Prefecture",
+          "text": "Early on the morning of November 19, specifically around 2:22 AM, an earthquake measuring lower 5 on the Japanese seismic intensity scale was recorded in Kumamoto Prefecture. The Japan Meteorological Agency reported that this seismic event is part of the ongoing activity related to the Kumamoto earthquakes that occurred earlier this year in July. Officials have urged residents living in the affected regions to exercise caution for approximately one week. During this period, people should prepare for potential earthquakes reaching a similar lower 5 intensity and remain vigilant against even stronger tremors that could follow.",
+          "wordCount": 91
+        },
+        "2級": {
+          "title": "Kumamoto Prefecture Hit by Lower 5 Intensity Earthquake",
+          "text": "On November 19, an earthquake that registered a lower 5 on the Japanese seismic intensity scale struck Kumamoto Prefecture at approximately 2:22 in the morning, waking residents and prompting immediate concern across the region. According to official announcements made by the Japan Meteorological Agency, this seismic activity is officially considered part of the ongoing series stemming from the Kumamoto earthquakes recorded in July of this year. In response to the unexpected tremor, the agency has issued a clear and urgent advisory urging residents living throughout the affected region to remain extremely vigilant over the coming week. Officials emphasize that people should stay well-prepared for potential earthquakes reaching a maximum lower 5 intensity, while also watching out carefully for the possibility of even more powerful shaking in the near future across the area. Local authorities are continuing to monitor conditions closely to ensure public safety.",
+          "wordCount": 140
+        },
+        "準1級": {
+          "title": "JMA Issues Warning Following Lower 5 Earthquake in Kumamoto",
+          "text": "In the early hours of November 19, specifically around 2:22 AM, Kumamoto Prefecture experienced a significant tremor registering a lower 5 on the Japanese seismic intensity scale, causing widespread concern among local residents and communities throughout the region. The Japan Meteorological Agency promptly addressed the public, identifying this seismic occurrence as a direct and continuous extension of the recurring activity linked to the Kumamoto earthquakes observed earlier this year in July. Consequently, meteorological authorities have issued a comprehensive advisory cautioning residents to maintain heightened vigilance over the forthcoming week. The public is strongly advised to anticipate potential earthquakes reaching a maximum intensity of lower 5 and to prepare adequately for the serious risk of further intensified shaking that could follow unexpectedly. Local communities, municipal organizations, and relevant disaster prevention offices are actively encouraged to review established safety protocols, remain continuously aware of ongoing developments, and stay updated with official announcements from national authorities to mitigate potential risks associated with these active seismic conditions. The Japan Meteorological Agency emphasizes that residents should remain cautious and prepared for similar tremors during this period.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261119de78097"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-19-man-utd-paz-transfer-gossip",
+      "date": "2026-11-19",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Manchester United",
+        "Nico Paz",
+        "transfer gossip",
+        "Premier League"
+      ],
+      "titleJa": "マンU、パス獲得へ",
+      "title": "Manchester United Pursues Como Midfielder Nico Paz",
+      "summaryJa": "マンチェスター・ユナイテッドがコモのMFニコ・パスの獲得を目指していることが報じられています。",
+      "sourcePublishedAt": "2026-11-18T22:34:05.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "移籍の噂がある選手の中から、獲得の可能性やチームの状況について判断するために読みましょう。",
+        "followUpJa": "どの選手にどのクラブが注目しているか、状況を整理してみましょう。",
+        "questions": {
+          "5級": "Who does Manchester United want to get?",
+          "4級": "Which team does Nico Paz play for now?",
+          "3級": "What option does Real Madrid have regarding Nico Paz?",
+          "準2級": "How might the arrival of Mauricio Pochettino affect Manchester United's pursuit of Nico Paz?",
+          "2級": "What are the potential complications surrounding Manchester United's interest in Nico Paz and other targets like Vangelis Pavlidis?",
+          "準1級": "Analyze the strategic implications of Mauricio Pochettino's arrival on Manchester United's transfer strategy, particularly regarding Nico Paz and Vangelis Pavlidis."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Manchester United wants Nico Paz",
+          "text": "Manchester United wants a new player. His name is Nico Paz. He is twenty-two years old. He plays for Como. United can try to get him. Real Madrid can also buy him back later. Fans are very excited about this news today.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Manchester United Pursues Como Midfielder Nico Paz",
+          "text": "Manchester United is pursuing Como midfielder Nico Paz. The twenty-two-year-old player is a main target for the team. The arrival of manager Mauricio Pochettino could help this move happen soon. However, Real Madrid has an option to re-sign him from Como in the year two thousand twenty-seven. Other clubs in Europe are also watching transfer news very carefully today.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Manchester United Targets Nico Paz and Other Transfer News",
+          "text": "Manchester United is reportedly pursuing Como midfielder Nico Paz. The arrival of manager Mauricio Pochettino could help them secure the twenty-two-year-old player. Still, Real Madrid retains an eighty million euro option to re-sign the midfielder from Como in two thousand twenty-seven. Meanwhile, other clubs are also planning January moves, while teams like Barcelona prepare for different roster decisions. Fans and experts across Europe are watching these updates very closely every single day.",
+          "wordCount": 72
+        },
+        "準2級": {
+          "title": "Manchester United Pursues Nico Paz Amid Busy Transfer Speculation",
+          "text": "Recent football gossip links Manchester United with Como midfielder Nico Paz. The arrival of Mauricio Pochettino as manager could assist their pursuit of the twenty-two-year-old player, although Real Madrid retains an eighty million euro option to re-sign the midfielder in two thousand twenty-seven. Additionally, Besiktas is plotting a significant January move for Amad Diallo, while Liverpool and United are both tracking Barcelona defender Alejandro Balde, despite the Spanish club being reluctant to sell him. Vangelis Pavlidis is another target on Pochettino's radar, though Tottenham and Barcelona also show strong interest in the striker. Clubs across Europe are actively preparing for important squad changes and winter market windows.",
+          "wordCount": 107
+        },
+        "2級": {
+          "title": "Manchester United Leads Chase for Nico Paz Amid Busy Transfer Rumors",
+          "text": "Manchester United is actively pursuing twenty-two-year-old Como midfielder Nico Paz in the current transfer market. The recent appointment of Mauricio Pochettino as manager could facilitate this transfer, although complications remain because Real Madrid holds an eighty million euro option to re-sign the Argentine player in two thousand twenty-seven. Transfer discussions extend far beyond Paz in the current market. Besiktas is reportedly planning a significant January offer for Manchester United winger Amad Diallo. Furthermore, Liverpool and Manchester United are both monitoring Barcelona defender Alejandro Balde, though the Spanish club is reluctant to sell the left-back. Meanwhile, Vangelis Pavlidis is another target on Pochettino's radar, though Tottenham and Barcelona also show strong interest in the Benfica striker. Other clubs across Europe are actively preparing for important squad changes, while Arsenal tracks targets like Antonio Nusa and Kevin Schade to strengthen their team for upcoming matches.",
+          "wordCount": 143
+        },
+        "準1級": {
+          "title": "European Transfer Roundup: Manchester United Targets Nico Paz and Wider Market Dynamics",
+          "text": "As the winter transfer window approaches, European football is swirling with speculation and strategic planning among elite clubs. Manchester United, under the influence of new manager Mauricio Pochettino, is reportedly pursuing Como midfielder Nico Paz. While the twenty-two-year-old Argentina international presents an exciting prospect for the Premier League side, Manchester United must navigate Real Madrid's eighty million euro buy-back option set for two thousand twenty-seven. Transfer activities at Old Trafford do not stop there, because Besiktas is preparing a substantial January offer for winger Amad Diallo, and Manchester United, alongside Liverpool, is monitoring Barcelona defender Alejandro Balde, despite the Catalan club's firm stance against a sale. Concurrently, Mauricio Pochettino is reportedly eyeing Benfica striker Vangelis Pavlidis, who is also courted by Tottenham and Barcelona. Across the continent, clubs like Arsenal are assessing long-term targets such as Antonio Nusa and Kevin Schade, illustrating a complex web of competitive maneuvering among elite teams. Furthermore, Juventus midfielder Weston McKennie is unlikely to move to the Premier League, while Arsenal continues monitoring Club Brugge winger Carlos Forbs. Meanwhile, Barcelona has renewed its pursuit of Brighton and Hove Albion centre-back Luka Vuskovic, and Middlesbrough is confident that Will Lankshear will stay. Former Arsenal defender Rob Holding is also available as a free agent, attracting interest from multiple clubs.",
+          "wordCount": 213
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/cxnv4q2qnvjvo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-19-otaru-stalking-arrest-2026",
+      "date": "2026-11-19",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "police",
+        "arrest",
+        "otaru",
+        "hokkaido"
+      ],
+      "titleJa": "コンビニにつきまとい容疑で…",
+      "title": "Man Arrested in Otaru for Repeated Stalking at Convenience Store",
+      "summaryJa": "北海道小樽市で、10代後半の女性に対しコンビニでの待ち伏せやつきまといを繰り返したとして、33歳の無職の男が逮捕されました。",
+      "sourcePublishedAt": "2026-11-19T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "安全な生活を送るために、不審な被害に遭った際の適切な対処法を考えます。",
+        "followUpJa": "もし自分が同じような被害に遭ったら、どのように行動すべきか話し合ってみましょう。",
+        "questions": {
+          "5級": "What did the woman do after the incident?",
+          "4級": "Where did the man wait for the young woman?",
+          "3級": "How did the police find the suspect in this case?",
+          "準2級": "What specific actions did the suspect take repeatedly at the convenience store?",
+          "2級": "When did the victim first report the incident, and what did she suspect happened?",
+          "準1級": "Explain the sequence of events leading from the victim's initial report to the suspect's arrest."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Man is Arrested",
+          "text": "A man is in trouble. He is thirty-three years old. He does not have a job. Police in Otaru catch him. He follows a young woman. He waits at a store many times. The woman is scared. She tells the police. The police put the man in jail now. They look at his devices.",
+          "wordCount": 54
+        },
+        "4級": {
+          "title": "Stalking Arrest in Otaru",
+          "text": "Police in Otaru, Hokkaido, arrested a thirty-three-year-old man. He has no job. Between October and November, he followed a teenage woman. He waited for her at a local convenience store many times. He also walked close behind her. The woman reported the incident to the police. Officers checked security cameras and found the suspect. The man admitted to the crime.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Man Arrested for Stalking Woman in Otaru",
+          "text": "A thirty-three-year-old unemployed man was arrested in Otaru, Hokkaido, for stalking a teenage woman. Between October and November, the suspect repeatedly waited for the victim at a local convenience store. He also approached her from behind multiple times. The victim had reported to the police in October that she might have been secretly photographed. Officers used security cameras and the victim's statement to identify the man. They arrested him on November 18. The suspect admitted to the charges. Police are now investigating his electronic devices for potential illegal filming.",
+          "wordCount": 88
+        },
+        "準2級": {
+          "title": "Unemployed Man Arrested for Stalking in Otaru",
+          "text": "Police in Otaru, Hokkaido, have arrested a thirty-three-year-old unemployed man on suspicion of violating the Hokkaido Nuisance Prevention Ordinance. Between October 16 and November 6, the suspect allegedly stalked a teenage woman by waiting for her and approaching her from behind multiple times at a convenience store in Otaru. The investigation began after the victim reported to the police on October 17 that she believed she was secretly photographed. Using her statement and security camera footage, the police identified and arrested the suspect on November 18. The man has admitted to the allegations. Authorities are currently examining his electronic devices to investigate potential voyeurism charges.",
+          "wordCount": 101
+        },
+        "2級": {
+          "title": "Man Arrested in Otaru for Repeated Convenience Store Stalking",
+          "text": "The Otaru Police Station of the Hokkaido Prefectural Police has arrested a thirty-three-year-old unemployed local resident on suspicion of violating the Hokkaido Nuisance Prevention Ordinance. Investigators stated that the man repeatedly targeted a teenage woman between October 16 and November 6. He allegedly waited for her at a convenience store in Otaru on multiple occasions and approached her from behind. The case came to light when the victim, a teenager living within the Shiribeshi General Subprefectural Bureau jurisdiction, contacted the police on October 17 to report that she suspected she might have been secretly photographed without her consent. Following her report, officers carefully analyzed security camera footage and gathered witness testimony to successfully identify the suspect. He was formally arrested on November 18 and has fully admitted to the accusations during police questioning. Furthermore, authorities have seized his electronic devices and are conducting a thorough investigation to determine whether he also committed illegal filming offenses.",
+          "wordCount": 151
+        },
+        "準1級": {
+          "title": "Hokkaido Police Arrest Otaru Man for Stalking and Potential Voyeurism",
+          "text": "Law enforcement officials in Hokkaido have officially apprehended a thirty-three-year-old unemployed resident living in Otaru on suspicion of violating the regional nuisance prevention ordinance following a distressing series of stalking incidents. According to investigators from the Otaru Police Station of the Hokkaido Prefectural Police, the suspect systematically targeted a late-teenage woman over an extended period between October 16 and November 6. During these weeks, he repeatedly lied in wait for her at a local convenience store within Otaru and closed in on her from behind on multiple occasions. The unfolding legal case was first initiated on October 17, when the victim, who resides within the jurisdiction of the Shiribeshi General Subprefectural Bureau, came forward to report that she strongly suspected she had been secretly photographed without her consent. Armed with the detailed statement provided by the victim and crucial visual evidence gathered from meticulous security camera analyses, the police successfully identified the perpetrator and formally executed his arrest on November 18. During subsequent police questioning, the suspect readily admitted to the allegations, confirming that the charges against him were entirely accurate. Furthermore, authorities have confiscated several electronic devices belonging to the man and are currently performing comprehensive forensic examinations to determine whether he also committed illegal filming offenses.",
+          "wordCount": 204
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63721"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-19-shinkin-bank-restructuring-2026",
+      "date": "2026-11-19",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "shinkin banks",
+        "regional banks",
+        "mergers",
+        "finance"
+      ],
+      "titleJa": "信金再編が新局面へ",
+      "title": "Shinkin Banks Enter New Phase of Mergers",
+      "summaryJa": "金利上昇や人口減少により厳しい経営環境にある信用金庫や信用組合の間で、地方銀行との統合など業態の壁を超えた再編の動きが浮上しています。",
+      "sourcePublishedAt": "2026-11-18T21:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "地域金融機関の再編が進む背景と今後の動きを正しく理解し、自分の地域やビジネスにどのような影響があるかを考える。",
+        "followUpJa": "金融機関の統合が地域経済に与えるメリットや懸念点について、さらに深く調べてみましょう。",
+        "questions": {
+          "5級": "What kind of financial groups face hard times now?",
+          "4級": "Why do some shinkin banks and credit unions need to change?",
+          "3級": "What new law helps banks and shinkin groups merge across business types?",
+          "準2級": "What financial problems are making the management environment difficult for shinkin banks?",
+          "2級": "How does government support through the amended Financial Function Strengthening Act encourage cross-industry mergers?",
+          "準1級": "What underlying structural pressures and strategic motivations are driving regional financial institutions to transcend traditional industry barriers?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Basic Shinkin Banks",
+          "text": "Shinkin banks and credit unions have hard times now. Population is going down. Interest rates go up. Many groups have money problems. They can think about new mergers with regional banks to get strong. People want to keep local money safe.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "Changes in Regional Finance",
+          "text": "Regional financial groups face a difficult time today. Shinkin banks and credit unions have fewer deposits because of population decline. Also, interest rate competition makes things harder. Now, people talk about crossing business boundaries. Some regional banks and credit unions might merge to make their foundations stronger and keep local financial systems stable.",
+          "wordCount": 53
+        },
+        "3級": {
+          "title": "New Mergers Beyond Boundaries",
+          "text": "Financial institutions in local areas are facing severe business environments due to falling populations and rising interest rates. Because of these money troubles, a new trend is appearing in the financial sector. Regional banks, shinkin banks, and credit unions are starting to discuss mergers that cross traditional industry walls. The government supports this idea with a revised law to maintain local financial functions and solve overbanking problems.",
+          "wordCount": 67
+        },
+        "準2級": {
+          "title": "Cross-Industry Bank Restructuring",
+          "text": "Japan's regional financial institutions, including shinkin banks and credit unions, are entering a new phase of restructuring that crosses traditional industry barriers. Many institutions suffer from deposit outflows and unrealized losses on securities amid rising interest rates and population decline. To address this, a revised law enacted in June provides government subsidies to cover integration costs when banks and shinkin groups merge across different business types. Toyokeizai analysis highlights potential candidates for these groundbreaking cross-industry mergers, including possible reverse mergers where smaller entities absorb larger ones, aiming to stabilize local financial systems and maintain regional services.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "The Strategic Shift in Regional Banking",
+          "text": "A notable topic among financial experts is the restructuring of regional financial institutions across traditional industry boundaries. The catalyst for this discussion is the revision of the Financial Function Strengthening Act. Under the revised law and related regulations implemented in June, the government offers subsidies covering merger-related expenses for banks, shinkin banks, and credit unions that combine across different business sectors. With many shinkin banks and credit unions struggling with decreasing deposits, intensified interest rate competition, and unrealized losses on securities, such vertical integration aims to stabilize regional financial systems and eliminate overbanking. Based on financial data analysis and exclusive reporting, Toyokeizai has identified candidate pairs for these unprecedented mergers, including potential reverse mergers where cooperative financial entities could absorb regional banks, reflecting a shifting landscape in Japanese finance today.",
+          "wordCount": 130
+        },
+        "準1級": {
+          "title": "Transcending Industry Barriers in Regional Finance",
+          "text": "A transformative wave is reshaping Japan's regional financial ecosystem as regional financial institutions, including shinkin banks and credit unions, confront mounting operational headwinds across the country. Driven by demographic contraction, persistent interest rate competition, deposit outflows, and substantial unrealized losses on securities portfolios, numerous local financial entities find their traditional business models increasingly unsustainable. A pivotal catalyst accelerating this consolidation trend is the recent legislative amendment concerning the Financial Function Strengthening Act. Enacted in June, this regulatory framework incentivizes cross-industry integration by subsidizing half of the merger expenses when regional banks and cooperative financial institutions amalgamate across different sectors. This strategic push by authorities aims to preemptively mitigate overbanking and fortify regional financial infrastructure while maintaining local financial services. Through rigorous financial data analysis and proprietary reporting, Toyokeizai has pinpointed compelling restructuring candidates, encompassing intricate configurations such as reverse mergers where shinkin institutions could potentially absorb regional banks, signaling a profound paradigm shift in regional banking across the nation. Financial experts note that local financial institutions face severe operational challenges as falling populations and rising interest rates strain balance sheets. By crossing traditional industry walls, regional banks, shinkin banks, and credit unions are starting to discuss mergers that can stabilize local financial systems and solve overbanking problems. The government actively supports this idea with the revised law to maintain local financial functions, ensuring that regional services remain protected while institutions adapt to changing economic realities and demographic pressures in communities nationwide.",
+          "wordCount": 241
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/965135?display=b"
+        }
+      ]
+    },
     {
       "id": "2026-11-18-apple-samsung-dram-long-term-deal",
       "date": "2026-11-18",
