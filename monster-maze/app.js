@@ -959,7 +959,9 @@ document.addEventListener('keydown',event=>{
   walk(...directions[i]);
 });
 function nextQuestion(continuing=false){
-  const current=question(questions[run.course.grade],run.quiz?.id);
+  const bank=questions[run.course.grade];
+  // Lv.1 (英検4級) の迷宮では並べ替え問題を出題しない。他の級・対戦には影響させない。
+  const current=question(run.course.grade==='4'?{...bank,ordering:[]}:bank,run.quiz?.id);
   run.quiz=current;
   const spell=mazeSpells.find(item=>item.id===run.selectedSpell);
   const chosenCaster=run.spellCasterKey?run.team.find(unit=>unit.key===run.spellCasterKey):run.caster;
