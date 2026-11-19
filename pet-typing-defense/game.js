@@ -4,6 +4,7 @@ const $=id=>document.getElementById(id);
 const FACES=['👾','🦇','👹','🐙','🧟'];
 const TOTAL=TOTAL_QUESTIONS;
 let campaign=null,run=null,frame=0,shownQuestion=null,shownQuestionAt=0,wordReveal='';
+let lastAcceptedTyping='';
 const MAX_HP=6,ENEMY_START_X=970,CASTLE_X=155;
 function setFeedback(message,type=''){
  $('feedback').textContent=message;
@@ -63,7 +64,7 @@ function showQuestion(){
  const enemy=currentEnemy();
  if(!enemy){
   if(shownQuestion!==null){
-   shownQuestion=null;$('typing').value='';$('typing').disabled=true;
+   shownQuestion=null;$('typing').value='';lastAcceptedTyping='';$('typing').disabled=true;
    $('answerBar').style.width='0%';
    $('wordMeaning').hidden=true;
    $('wordChoices').hidden=true;
@@ -80,7 +81,7 @@ function showQuestion(){
  shownQuestion=enemy.q.id;
  shownQuestionAt=performance.now();
  wordReveal=null;
- $('typing').value='';$('typing').disabled=false;$('typing').classList.remove('wrong');
+ $('typing').value='';lastAcceptedTyping='';$('typing').disabled=false;$('typing').classList.remove('wrong');
  const isWordStage=stageIndex()===0,hardSentence=run.mode==='hard'&&!isWordStage;
  $('wordMeaning').hidden=false;
  $('wordMeaning').textContent=isWordStage?enemy.q.hint:enemy.q.ja;
@@ -148,7 +149,7 @@ function openPhase(){
  $('enemyLayer').replaceChildren();$('effects').replaceChildren();
  run.enemies=questions.map(q=>({q,x:ENEMY_START_X,spawned:false,resolved:false,node:null,spawnedAt:0,deadlineAt:0}));
  run.active=true;shownQuestion=null;shownQuestionAt=0;wordReveal=null;
- $('typing').value='';$('typing').disabled=true;$('typing').classList.remove('wrong');
+ $('typing').value='';lastAcceptedTyping='';$('typing').disabled=true;$('typing').classList.remove('wrong');
  $('wordMeaning').hidden=true;
  $('wordChoices').hidden=true;
  $('questionTemplate').hidden=false;
@@ -356,7 +357,70 @@ if(adventureLink)adventureLink.addEventListener('click',event=>{
  event.preventDefault();
  interruptPlay('冒険先に戻る',()=>{location.href=adventureLink.href});
 });
-$('typing').addEventListener('input',onType);
+// Protect only the displayed questions and typing answer field.
+function installTypingProtection(){
+ const input=$('typing');
+ const protectedNodes=['wordMeaning','questionTemplate','wordChoices'].map($);
+ const warning='コピー＆ペーストはできません。自分の力で英語を入力して、もんすた城を守ろう！';
+ let warningTimer=0,previousFeedback=null;
+ function showWarning(){
+  if(!run?.active||input.disabled)return;
+  const feedback=$('feedback');
+  if(feedback.textContent!==warning)previousFeedback={text:feedback.textContent,className:feedback.className,question:shownQuestion};
+  setFeedback(warning,'error');
+  clearTimeout(warningTimer);
+  warningTimer=setTimeout(()=>{
+   if(previousFeedback&&previousFeedback.question===shownQuestion&&feedback.textContent===warning){
+    feedback.textContent=previousFeedback.text;feedback.className=previousFeedback.className;
+   }
+   previousFeedback=null;
+  },2500);
+ }
+ for(const node of protectedNodes){
+  node.style.setProperty('user-select','none');
+  node.style.setProperty('-webkit-user-select','none');
+  node.style.setProperty('-webkit-touch-callout','none');
+  for(const type of ['copy','cut','contextmenu','selectstart','dragstart']){
+   node.addEventListener(type,event=>event.preventDefault());
+  }
+ }
+ // Also block copying a selection that spans a question and adjacent text.
+ document.addEventListener('copy',event=>{
+  const selection=window.getSelection();
+  if(!selection||selection.isCollapsed)return;
+  for(let i=0;i<selection.rangeCount;i++){
+   const range=selection.getRangeAt(i);
+   if(protectedNodes.some(node=>!node.hidden&&range.intersectsNode(node))){
+    event.preventDefault();return;
+   }
+  }
+ });
+ const isBlockedInput=type=>['insertFromPaste','insertFromPasteAsQuotation','insertFromDrop','insertFromYank'].includes(type);
+ function reject(event){
+  event.preventDefault();
+  showWarning();
+ }
+ input.addEventListener('paste',reject);
+ input.addEventListener('drop',reject);
+ input.addEventListener('beforeinput',event=>{
+  if(isBlockedInput(event.inputType)){
+   lastAcceptedTyping=input.value;
+   reject(event);
+  }
+ });
+ input.addEventListener('input',event=>{
+  // Some mobile browsers emit a non-cancelable beforeinput. Restore the
+  // last accepted text before onType can evaluate or award a hit.
+  if(isBlockedInput(event.inputType)){
+   input.value=lastAcceptedTyping;
+   showWarning();
+   return;
+  }
+  lastAcceptedTyping=input.value;
+  onType();
+ });
+}
+installTypingProtection();
 $('typing').addEventListener('keydown',event=>{
  if(event.key==='Enter'){
   event.preventDefault();
