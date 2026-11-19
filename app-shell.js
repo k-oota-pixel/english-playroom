@@ -68,7 +68,7 @@ function install() {
   const dungeonGroup = groups.find(group => group.name === 'エイゴダンジョンズ');
   if (dungeonGroup) dungeonGroup.items = dungeonItems;
   else groups.push({name:'エイゴダンジョンズ',items:dungeonItems});
-  const hiddenMaterials=[{name:'オンライン対戦（単語）',url:new URL('pet-adventure/online-battle.html',root)},{name:'オンライン対戦（問題）',url:new URL('pet-adventure/online-battle-questions.html',root)},{name:'ぺっとのおへや',url:new URL('pet-room/room-v4.html',root)},{name:'WebPベッド試験版',url:new URL('pet-room/room-webp-v1.html',root)},{name:'ぺっとのおへや・ほっこり版',url:new URL('pet-room/room-cozy.html',root)},{name:'ペットのおへや（旧トップビュー版）',url:new URL('pet-room/topview.html',root)},{name:'ペットのおへや（旧アイソメ版）',url:new URL('pet-room/v5.html',root)}];
+  const hiddenMaterials=[{name:'オンライン対戦（単語）',url:new URL('pet-adventure/online-battle.html',root)},{name:'オンライン対戦（問題）',url:new URL('pet-adventure/online-battle-questions.html',root)}];
   const canonical = path => path.replace(/index\.html$/, '');
   const allMaterials=[...groups.flatMap(g=>g.items),...hiddenMaterials];
   const allowed = new Set(allMaterials.map(i=>canonical(i.url.pathname)));

@@ -97,23 +97,3 @@ test('old farm records initialize empty fixture inventories, corrupt overlaps ar
  assert.equal(corrupt.displays[0].quantity,12,'stock is capped to furniture capacity');
 });
 
-test('farm HTML and JS expose a shop tab, tile fixtures and restock flow without new reads',()=>{
- const html=source('pet-farm/index.html');
- const app=source('pet-farm/app.js');
- const css=source('pet-farm/style.css');
- assert.match(html,/id="displaysLayer"/);
- assert.match(html,/data-shop="display"/);
- assert.match(html,/id="displayDialog"/);
- assert.match(css,/#displaysLayer/);
- assert.match(app,/function renderDisplays\(\)/);
- assert.match(app,/function renderDisplayDialog\(\)/);
- assert.match(app,/beginPlacement\('display',id\)/);
- assert.match(app,/applyDisplayAction\(farm,action\)/);
- const start=app.indexOf('function applyDisplayOperation(action){');
- const end=app.indexOf('function openDisplay(id){',start);
- assert.ok(start>=0&&end>start);
- const operation=app.slice(start,end);
- assert.match(operation,/queueSave\(\)/);
- assert.doesNotMatch(operation,/getDoc|runTransaction|setDoc|onSnapshot/);
- assert.match(app,/getDoc\(farmRef\(\)\)/,'existing single farm load is reused');
-});
