@@ -4,13 +4,13 @@ import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
 import {renderDogArt} from './pet-dog-art.js?v=1.8.30';
 import {renderDragonArt} from './pet-dragon-art.js?v=1.8.30';
 if(typeof window!=='undefined')import('./nickname-profile.js?v=2.2.2');
-import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=2.1.25';
+import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=2.5.34';
 
 const outline='#40564e';
-const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon'];
+const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon','tree','cake'];
 const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};
 // `panda` remains the persisted stable ID for backward compatibility, but is now the lion species.
-const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン'};
+const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン',tree:'き',cake:'ケーキ'};
 const EYE_STYLES=['round','gentle','watery','smile','sleepy','sparkle','oyoyo','mugyu','kiri','punsuka'];
 const EYE_LABELS={round:'まんまる',gentle:'たれ目',watery:'うるうる',smile:'にっこり',sleepy:'ねむねむ',sparkle:'きらきら',oyoyo:'およよ',mugyu:'むぎゅ',kiri:'きりっ',punsuka:'ぷんすか'};
 const BACKGROUND_LABELS={ivory:'おうち',sky:'青空',leaf:'お庭',rose:'花畑'};
@@ -171,6 +171,13 @@ function petFrameLayer(shop){
   return '<g aria-hidden="true" pointer-events="none" class="'+motion+'">'+outer+inner+decor+'</g>';
 }
 
+
+function renderNovelPetArt(species,color,eyes,eyeStyle){
+  const tree='<path d="M107 145 L101 182 Q91 188 77 194 Q73 204 94 202 L120 195 L146 202 Q167 204 163 194 L139 182 L133 145Z" fill="#c69469"/><path d="M113 164 L110 184 M126 172 L129 187" fill="none" stroke="#a57451" stroke-width="3"/><path d="M65 151 Q38 144 43 119 Q39 94 63 84 Q66 57 91 57 Q104 35 124 47 Q145 35 160 59 Q187 57 190 85 Q212 96 199 122 Q205 147 178 156 Q153 168 120 158 Q89 168 65 151Z" fill="'+color+'"/><path d="M62 90 Q69 73 83 72 M112 58 Q120 53 129 58" stroke="#fff" opacity=".48" stroke-width="6" fill="none"/><path d="M174 77 Q190 60 201 69 Q197 85 174 77Z" fill="#b6de96" stroke-width="3"/>';
+  const cake='<path d="M81 181 Q66 199 89 202 Q104 203 108 185 M132 185 Q136 203 151 202 Q174 199 159 181" fill="'+color+'"/><path d="M55 135 Q35 131 36 148 Q40 160 56 158 M185 135 Q205 131 204 148 Q200 160 184 158" fill="#fff4df"/><rect x="53" y="83" width="134" height="109" rx="25" fill="'+color+'"/><path d="M55 155 Q120 163 185 155 L185 167 Q120 176 55 167Z" fill="#ef9da9" stroke="none"/><path d="M53 94 Q48 81 60 74 Q74 66 87 71 Q102 57 116 70 Q132 56 147 71 Q166 65 180 75 Q192 82 187 94 Q180 107 167 96 Q156 87 145 95 Q131 109 120 98 Q110 88 98 96 Q84 108 74 96 Q62 107 53 94Z" fill="#fff9ee"/><path d="M102 66 Q88 53 100 42 Q110 31 120 35 Q130 31 140 42 Q152 53 138 66 Q120 81 102 66Z" fill="#ea7e85"/><path d="M105 38 L112 27 L120 34 L129 26 L135 39 Q120 45 105 38Z" fill="#86bd86" stroke-width="3"/><g fill="#fff0be" stroke="none"><ellipse cx="110" cy="51" rx="2" ry="3"/><ellipse cx="127" cy="48" rx="2" ry="3"/><ellipse cx="121" cy="61" rx="2" ry="3"/></g>';
+  return '<g data-pet-novel-art="'+species+'" stroke="'+outline+'" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">'+(species==='tree'?tree:cake)+'<g data-pet-eyes="1" data-pet-eye-style="'+eyeStyle+'" fill="'+outline+'">'+eyes+'</g><g fill="#e69c9c" opacity=".6" stroke="none"><ellipse cx="77" cy="139" rx="11" ry="7"/><ellipse cx="163" cy="139" rx="11" ry="7"/></g><path d="M113 135 Q120 144 127 135" fill="none" stroke-width="3.5"/></g>';
+}
+
 export function renderPetSVG(value,shop={},stage='',{background=true}={}){
   if(!value)return renderMysterySVG(shop,background);
   const a=resolvedAppearance(value),layers=equippedLayers(shop,a.species),resolved=resolvedStage(stage),color=bodyColor(a),bg=backgroundColor(a),details=speciesDetails(a,color,resolved),anatomy=anatomyFor(a,color,resolved),eyes=eyesFor(a,resolved),body=BODIES[resolved][a.species]||BODIES[resolved].cat;
@@ -181,6 +188,8 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
     ? renderDogArt(color,a.eyeStyle)
     : a.species==='dragon'
     ? renderDragonArt(color,a.eyeStyle)
+    : (a.species==='tree'||a.species==='cake')
+    ? renderNovelPetArt(a.species,color,eyes,a.eyeStyle)
     : `<g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${anatomy}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}${details.wings}<g data-pet-eyes="1" data-pet-eye-style="${a.eyeStyle}" fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>`;
   const theme=layers.backgrounds?'':backgroundTheme(a.baseBackground);
   const scenery=background?`<rect width="240" height="240" rx="32" fill="${bg}"/>${theme}${layers.backgrounds}`:'';
@@ -189,7 +198,7 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
-if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.3.58').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
+if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.5.34').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
 function renderMysterySVG(shop,background=true){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物">'+(background?'<rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds:'')+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+petFrameLayer(shop)+'</svg>';}
 
 // Keep the render key on the SVG so cloned markup and module copies share it.

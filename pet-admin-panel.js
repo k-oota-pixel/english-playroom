@@ -1,13 +1,13 @@
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,accountSession} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=2.1.25';
-import {renderPetSVG} from './pet-art.js?v=2.1.25';
+import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=2.5.34';
+import {renderPetSVG} from './pet-art.js?v=2.5.34';
 
-const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin'];
+const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','tree','cake'];
 const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'oyoyo',label:'およよ'},{id:'mugyu',label:'むぎゅ'},{id:'kiri',label:'きりっ'},{id:'punsuka',label:'ぷんすか'}];
 const BACKGROUNDS=[{id:'ivory',label:'おうち'},{id:'sky',label:'青空'},{id:'leaf',label:'お庭'},{id:'rose',label:'花畑'}];
-const GROUPS=[['species','動物の種類'],['bodyColor','からだの色'],['eyeStyle','目'],['baseBackground','背景テーマ']];
+const GROUPS=[['species','ぺっとの種類'],['bodyColor','からだの色'],['eyeStyle','目'],['baseBackground','背景テーマ']];
 
 let auth=null,db=null,currentUser=null,adminVerified=false,button=null,dialog=null,currentData=null,draft=null,previewStage='baby';
 
