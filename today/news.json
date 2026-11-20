@@ -1,13 +1,438 @@
 {
-  "generatedAt": "2026-11-19T02:33:57.087Z",
-  "editionDate": "2026-11-19",
+  "generatedAt": "2026-11-20T02:17:49.388Z",
+  "editionDate": "2026-11-20",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-19"
+    "lastSuccessfulEdition": "2026-11-20"
   },
   "articles": [
+    {
+      "id": "2026-11-20-arsenal-lyon-champions-league",
+      "date": "2026-11-20",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Arsenal",
+        "Lyon",
+        "Champions League",
+        "football"
+      ],
+      "titleJa": "アーセナルがリヨンに敗北",
+      "title": "Arsenal Lose to Lyon in Champions League",
+      "summaryJa": "アーセナルは女子チャンピオンズリーグでフランスの強豪リヨンに敗れ、欧州トップとの差を実感しました。",
+      "sourcePublishedAt": "2026-11-19T23:57:54.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "アーセナルがヨーロッパの頂点に立つために、今後どのような改善が必要かを判断しましょう。",
+        "followUpJa": "リヨン戦で明らかになったアーセナルの課題について話し合ってみましょう。",
+        "questions": {
+          "5級": "Did Arsenal win the game against Lyon?",
+          "4級": "What was the final score of the game between Arsenal and Lyon?",
+          "3級": "How many goals did Lyon score against Arsenal, and who scored them?",
+          "準2級": "Why do the top teams in Europe seem much harder to beat this season according to the report?",
+          "2級": "What specific differences in play style and physical ability did manager Renee Slegers and defender Leah Williamson point out after the match?",
+          "準1級": "How has Jonatan Giraldez's management transformed Lyon since June 2025, and what does this mean for Arsenal's Champions League ambitions?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Arsenal Play Lyon",
+          "text": "Arsenal play a football game against Lyon. Lyon is a very good team from France. Arsenal try hard. Goalkeeper Misa Rodriguez makes six saves. But Lyon is strong. Lyon scores two goals. Arsenal cannot score. Lyon wins the game. Arsenal must work hard now. They want to be a top team.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "Arsenal Lose to Lyon",
+          "text": "Arsenal played a football match against French team Lyon in the Women's Champions League. Arsenal fought hard, but Lyon played very well. Lyon scored two goals during the match. Jule Brand and Melchie Dumornay scored for Lyon. Arsenal goalkeeper Misa Rodriguez made six good saves. However, Arsenal lost the game two to zero. The team knows they must improve to win.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Arsenal Face Strong Lyon Team in Europe",
+          "text": "Arsenal recently played against French giants Lyon in the Women's Champions League at Meadow Park. The English team tried their best, but Lyon proved to be much stronger. Jule Brand scored the first goal in the first half. Later, Melchie Dumornay added a second goal with a powerful strike after the break. Although Arsenal goalkeeper Misa Rodriguez made six important saves, Arsenal lost the match two to zero. Manager Renee Slegers said the team must work harder to reach the elite level in European football.",
+          "wordCount": 85
+        },
+        "準2級": {
+          "title": "Arsenal See the Gap After Lyon Defeat",
+          "text": "Arsenal experienced a difficult defeat in the Women's Champions League, losing two to zero against French giants Lyon at Meadow Park. Jule Brand opened the scoring for Lyon in the first half, and Melchie Dumornay secured the victory with a strong shot in the second half. Arsenal goalkeeper Misa Rodriguez made six impressive saves, but it was not enough to stop the dominant French side. Manager Renee Slegers noted that Lyon has exceptional individual quality and physical superiority compared to last year. This loss showed Arsenal the large gap they must bridge if they want to compete successfully for the European title again.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Arsenal Recognise European Gap After Defeat by Lyon",
+          "text": "Arsenal were reminded of the challenging gap they must bridge in European football following a two to zero defeat by French giants Lyon in the Women's Champions League. Although Arsenal tasted European glory eighteen months ago, this season's performances suggest that elite continental teams have advanced to another level. At Meadow Park, Lyon demonstrated their superiority across every department. German international Jule Brand gave the visitors a lead midway through the first half, before Melchie Dumornay secured the win with a powerful strike after the break. Arsenal goalkeeper Misa Rodriguez made six vital saves, but Lyon registered twenty-three shots and dominated the play throughout the match. Manager Renee Slegers highlighted the clear differences in physical ability and individual quality, noting that Lyon has improved significantly under the guidance of former Barcelona manager Jonatan Giraldez.",
+          "wordCount": 134
+        },
+        "準1級": {
+          "title": "Arsenal Confronted with European Reality After Comprehensive Defeat by Lyon",
+          "text": "Only eighteen months after their memorable European triumph, Arsenal have been forced to confront the stark reality of how far they currently trail Europe's elite. This sobering realization was crystallized during a comprehensive two to zero defeat at the hands of French giants Lyon in the Women's Champions League. Following a resilient draw against Barcelona at Camp Nou, the Gunners were thoroughly outplayed at Meadow Park by an exceptional Lyon side that appeared superior in every statistical department. Vibrant Germany international Jule Brand opened the scoring in the first half, and midfielder Melchie Dumornay sealed the victory with an emphatic strike shortly after the restart. While Arsenal goalkeeper Misa Rodriguez performed heroically with six crucial saves, Lyon produced twenty-three shots and maintained immense tactical pressure throughout the contest. Post-match reflections from manager Renee Slegers and defender Leah Williamson candidly acknowledged Lyon's physical dominance and extraordinary individual quality. Lyon's formidable form stems from the tactical philosophy instilled by former Barcelona manager Jonatan Giraldez, who assumed leadership in June 2025. With a refined style and immense depth, Lyon have elevated their standards, leaving Arsenal with significant strategic work if they aspire to reclaim their status among Europe's premier clubs.",
+          "wordCount": 196
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/cm4gnxz8dvx1o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-20-gifu-shooting-first-trial",
+      "date": "2026-11-20",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "court",
+        "trial",
+        "japan"
+      ],
+      "titleJa": "自衛隊射撃場事件の初公判",
+      "title": "First Trial Held for Gifu Self-Defense Forces Shooting Case",
+      "summaryJa": "3年前に岐阜市の陸上自衛隊射撃場で起きた3人殺傷事件の初公判が開かれ、弁護士が無罪を主張しました。",
+      "sourcePublishedAt": "2026-11-20T02:08:23.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "裁判での被告側の主張と事件の概要を正確に把握する。",
+        "followUpJa": "弁護士の主張と事件が行われた場所を確認しましょう。",
+        "questions": {
+          "5級": "Where did the shooting happen?",
+          "4級": "When did this shooting case happen?",
+          "3級": "How many people were hurt or killed in the shooting at the firing range?",
+          "準2級": "What did the lawyer claim in the first trial at the Gifu District Court?",
+          "2級": "What specific charges is the former Self-Defense Forces candidate facing?",
+          "準1級": "How did the former candidate respond to the charges read in court during the opening trial?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Trial Starts in Japan",
+          "text": "A trial starts in Japan. It is about a bad event. Three people were hurt at a firing range. Two people died. One person was badly hurt. This happened three years ago. A former candidate is on trial. A lawyer says he is not guilty now.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "First Trial for Shooting Case",
+          "text": "A first trial started at the Gifu District Court. It is about a shooting case from three years ago. The event happened at a Ground Self-Defense Force firing range in Gifu City. Three members were shot with a rifle. Two members died, and one was hurt badly. A former candidate faces charges like robbery and murder. In court, his lawyer claimed he was not guilty.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Lawyer Claims Not Guilty at First Trial for Gifu Shooting",
+          "text": "The first trial for a serious shooting case opened at the Gifu District Court today. Three years ago, three members were shot at a Ground Self-Defense Force firing range located in Gifu City. Two members died from the attack, and one person was badly injured. The former candidate for the Self-Defense Forces faces serious charges including robbery and murder. During the first trial proceedings, his defense lawyer argued that the defendant was not guilty of the charges brought against him by the prosecutors.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Defense Claims Not Guilty in Gifu Firing Range Shooting Trial",
+          "text": "The first trial for a tragic shooting incident that occurred three years ago at a Ground Self-Defense Force firing range in Gifu City finally opened at the Gifu District Court. Three personnel were shot with a rifle during the incident, resulting in two tragic deaths and one severe injury. The former Self-Defense Forces candidate is facing multiple criminal charges, including robbery and murder for the attack. During the court proceedings, the defense lawyer claimed that the defendant was not guilty of the charges. This important case has drawn significant public attention regarding military safety and justice systems across Japan.",
+          "wordCount": 99
+        },
+        "2級": {
+          "title": "First Trial Opens for Deadly Gifu Firing Range Shooting Incident Involving Former Candidate",
+          "text": "The Gifu District Court has officially opened the first trial for a high-profile shooting incident that took place three years ago at a Ground Self-Defense Force firing range located in Gifu City. In that tragic event, three personnel were shot with a rifle, leading to the deaths of two individuals and serious injuries to a third person. The former Self-Defense Forces candidate involved is currently facing serious criminal charges, including robbery and murder. During the opening session of the court proceedings, the defense lawyer formally claimed that the defendant was not guilty of the accusations brought against him. This initial hearing marks a crucial step in a deeply concerning case that has raised critical questions within the defense sector and society regarding safety protocols, weapons management, institutional supervision, and legal accountability across Japan as the judicial process moves forward.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Defense Lawyer Argues Not Guilty at First Trial for Gifu Self-Defense Forces Shooting Incident",
+          "text": "The Gifu District Court has officially commenced the long-awaited first trial concerning a fatal shooting incident that unfolded three years ago at a Ground Self-Defense Force firing range situated in Gifu City. During the tragic event, three military personnel were struck by rifle fire, resulting in two fatalities and severe injuries sustained by a third individual. The former Self-Defense Forces candidate standing trial faces grave accusations, including formal criminal charges of robbery and murder brought against the defendant by prosecutors. As the legal proceedings got underway in the courtroom, the defense attorney formally asserted the defendant's innocence, entering a claim of not guilty regarding the alleged offenses presented by the prosecution. This opening courtroom session marks a critical legal milestone in a case that has profoundly impacted public safety awareness, military protocols, and institutional oversight within Japan's defense framework. Legal experts, government officials, and citizens alike continue to monitor the proceedings closely as judicial deliberations progress toward a thorough resolution, ensuring transparency and strict adherence to proper legal standards throughout the entire judicial process at the Gifu District Court.",
+          "wordCount": 179
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261120de78822"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-20-lovable-apps-data-exposure-2026",
+      "date": "2026-11-20",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Lovable",
+        "AI",
+        "Data Leak",
+        "Security"
+      ],
+      "titleJa": "AIアプリで情報流出か",
+      "title": "AI Platform Lovable Exposes User Data",
+      "summaryJa": "AIで作られた一部のアプリでパスポート情報やプライベートなメッセージがログインなしで閲覧できたと報告されました。",
+      "sourcePublishedAt": "2026-11-20T02:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "AIツール「Lovable」におけるセキュリティ問題の具体的な詳細と原因を正確に把握する。",
+        "followUpJa": "アプリのセキュリティを守るために開発者が気をつけるべき点について話し合ってみましょう。",
+        "questions": {
+          "5級": "What is the name of the AI service?",
+          "4級": "What kind of data was exposed in some apps?",
+          "3級": "Who reported that some apps exposed sensitive user data?",
+          "準2級": "What database service was used by the projects that Crissy Field investigated?",
+          "2級": "What security setting did Lovable's security chief say was insufficient for these apps?",
+          "準1級": "How does Lovable plan to handle published apps that have severe privacy or data protection issues moving forward?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "AI App Problem",
+          "text": "A new AI service has a big problem. People can make apps easily. But some apps are not safe. Users can see private messages. They do not need to log in. German experts found this issue. The company is working to fix it now. Security is very important for everyone using apps.",
+          "wordCount": 52
+        },
+        "4級": {
+          "title": "AI Service Data Exposure",
+          "text": "An AI service lets people build web apps without special programming skills. Recently, security experts reported a serious problem. Some apps created on this platform exposed sensitive data. Users could view passport information and private messages without logging in. German security researchers and a business newspaper shared this news. The company explained that row-level security was not strong enough.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Security Issue Found in AI Platform Lovable",
+          "text": "A German security firm and a business newspaper reported a major issue with apps built on the AI platform Lovable. Without any login, people could view passport details and over two hundred thousand private messages from certain apps. Researchers checked thousands of projects that used a specific database service. The company's security head explained that the row-level security settings were insufficient. Lovable is now introducing automatic security checks and plans to temporarily limit apps that fail to fix their serious privacy problems quickly today.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "Sensitive Data Exposed in Apps Built with AI Platform Lovable",
+          "text": "Security researchers and a German economic newspaper recently reported a major vulnerability affecting web applications built with the AI-powered development service Lovable. Investigators found that certain apps allowed anyone to access passport information and more than two hundred thousand private messages without requiring a login. Out of roughly sixteen thousand projects, researchers examined thirty-five thousand database-linked applications and discovered unprotected records. Lovable's security chief explained that the root cause was insufficient row-level security. To address this issue, the platform now provides automatic security testing before applications go public. Furthermore, the company is considering implementing a system to temporarily restrict uncompliant apps that fail to resolve their data protection vulnerabilities within a set deadline successfully.",
+          "wordCount": 114
+        },
+        "2級": {
+          "title": "Major Security Vulnerability Discovered in AI-Generated Applications on Lovable",
+          "text": "A joint investigation by a German security firm and a prominent business newspaper has revealed that numerous web applications created through the AI development platform Lovable suffered from critical data exposure. Researchers discovered that sensitive information, including passport details and over two hundred thousand private messages, could be accessed by unauthorized individuals without requiring any login credentials. Out of approximately sixteen thousand total projects, investigators focused on thirty-five thousand applications utilizing a specific database service, uncovering unprotected personal records. In response to these findings, Lovable's security chief acknowledged that the underlying issue stemmed from inadequate row-level security settings across the affected applications. To prevent future incidents, the platform has introduced automated security inspections prior to deployment. Additionally, management is evaluating new measures to temporarily restrict operational privileges for published applications that fail to address severe privacy risks after receiving formal notification and a warning deadline from the company.",
+          "wordCount": 148
+        },
+        "準1級": {
+          "title": "Critical Security Flaws Expose Sensitive User Data Across Applications Developed via AI Platform Lovable",
+          "text": "A comprehensive investigation conducted by a German security firm in collaboration with a major economic publication has brought to light alarming security vulnerabilities affecting web applications generated through the AI development platform Lovable. According to the findings, unauthorized users were able to bypass authentication entirely, gaining unhindered access to sensitive personal documents, including passport details and over two hundred thousand private messages originating from specific applications. Out of approximately one hundred sixty thousand projects on the platform, researchers closely analyzed thirty-five thousand database-backed applications, successfully retrieving unencrypted personal records without logging in. The company's security chief subsequently addressed the incident publicly, attributing the widespread exposure to insufficient row-level security mechanisms that failed to adequately restrict data viewing and editing permissions per database record. Emphasizing proactive remediation, Lovable announced that it now conducts automated pre-publication security assessments to assist creators in identifying and resolving vulnerabilities before launch. Furthermore, leadership is exploring enforcement protocols for already deployed applications exhibiting critical privacy risks, which would involve issuing formal correction deadlines followed by temporary operational restrictions for operators who fail to comply with these essential security standards.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261120-lovable-apps-data-exposure/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-20-meoto-biyori-episode-6-drama-review",
+      "date": "2026-11-20",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "MeotoBiyori",
+        "Fujitv",
+        "JapaneseDrama",
+        "KyokoYoshine"
+      ],
+      "titleJa": "人気ドラマの夫婦キスに反響",
+      "title": "Popular Japanese TV Drama Shows Two Couples and Their Special Moments",
+      "summaryJa": "フジテレビのドラマ「波うららかに、めおと日和」第6話の放送で、2組の夫婦の対照的なキスシーンが話題を集めました。",
+      "sourcePublishedAt": "2026-11-20T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "ドラマの登場人物たちの感情や決断について考え、適切なアドバイスを行うため。",
+        "followUpJa": "あなたなら、遠くへ行く大切な人にどう声をかけますか？",
+        "questions": {
+          "5級": "Who are the actors in the drama?",
+          "4級": "Where is Takimasa going to move for his work?",
+          "3級": "How do Natsumi and Takimasa feel about moving to Kure together?",
+          "準2級": "What kind of scenes between the two couples got a lot of attention on social media?",
+          "2級": "What did Machida ask Natsumi and Takimasa to do before he left the town?",
+          "準1級": "How do the viewers balance the warm daily life portrayed in the drama with the underlying historical anxiety of the pre-war setting?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Story",
+          "text": "A popular Japanese drama is on TV. It is called Meoto Biyori. Two young couples are in the story. They have sweet moments together. Many people watch the show. They like the warm stories. Fans talk about the scenes on the internet. It makes them very happy every week.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Junior High Story",
+          "text": "A famous Japanese television drama named Meoto Biyori showed its sixth episode. The story is about two young couples. Natsumi and Takimasa decided to move to Kure. Another couple, Ryunosuke and Fumiko, spent a quiet morning together. Viewers on social media talked about their special romantic scenes. People love the warm and gentle daily lives shown in the show.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Advanced Junior High Story",
+          "text": "The popular Japanese television drama Meoto Biyori broadcasted its sixth episode recently. In the story, Natsumi and Takimasa decided to move to Kure together after talking honestly with each other. Meanwhile, another newly married couple, Ryunosuke and Fumiko, enjoyed a peaceful morning together in their home. Fans on social media shared their happiness about the different romantic scenes between the two couples. However, some viewers also felt a little bit of sadness because of the pre-war setting in the background. (102 words)",
+          "wordCount": 81
+        },
+        "準2級": {
+          "title": "High School Story",
+          "text": "The Fuji Television drama series Meoto Biyori recently aired its sixth episode, attracting significant attention from viewers online. The story follows two young couples whose gentle daily lives are depicted with warmth. Natsumi and Takimasa decided to move to Kure after an honest conversation about their future. At the same time, newlyweds Ryunosuke and Fumiko shared a quiet and affectionate morning together. On social media, fans expressed joy over the contrasting romantic scenes of both couples in the episode. While many praised the comforting atmosphere of the show, others noted a subtle sense of anxiety about the impending historical background of the pre-war era. (149 words)",
+          "wordCount": 105
+        },
+        "2級": {
+          "title": "Advanced High School Story",
+          "text": "The popular Fuji Television drama series Meoto Biyori recently broadcasted its sixth episode, drawing warm responses and lively discussions across social media platforms in Japan. The series charmingly portrays the daily lives and deepening romance of two distinct couples, highlighting both innocent shyness and mature elegance. After an honest and necessary conversation prompted by Machida, Natsumi resolved her hesitation and decided to accompany her husband, Takimasa, to Kure, showing strong determination to face the future together as partners. Meanwhile, the newlyweds Ryunosuke and Fumiko shared a quiet, affectionate morning that underscored their mature relationship. Viewers took to the internet to celebrate the contrasting romantic and kissing scenes between the two couples, praising the authentic emotional connection. Although the heartwarming episodes provide great comfort to the audience, some fans have expressed underlying concerns about the approaching pre-war historical context that quietly looms over the characters' everyday lives.",
+          "wordCount": 146
+        },
+        "準1級": {
+          "title": "Nuanced Prose Story",
+          "text": "The recent broadcast of the sixth episode of the Fuji Television drama series Meoto Biyori has once again captured the hearts of audiences across Japan, sparking widespread discussion on social media. The narrative delicately explores the quiet yet profound intimacy shared by two distinct couples living within a gentle domestic sphere. Following an honest and necessary conversation encouraged by Machida, Natsumi resolved her initial hesitations and firmly committed to moving to Kure alongside Takimasa, demonstrating a steadfast emotional bond and a resolute willingness to support her husband as a partner. Concurrently, the newlywed couple Ryunosuke and Fumiko shared a tender, serene morning that highlighted a more mature romantic dynamic. Viewers quickly flooded online platforms to discuss the contrasting romantic encounters of both pairs, praising the show's remarkable ability to balance youthful shyness with sophisticated adult allure. Yet, amidst the overwhelmingly comforting atmosphere and the soothing depiction of everyday warmth, some attentive viewers voiced a quiet apprehension, deeply mindful of the subtle historical shadow of the pre-war era that quietly threatens to disrupt their fragile and cherished peace.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261120-5365845/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-20-ruined-housing-complex-full",
+      "date": "2026-11-20",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "housing complex",
+        "rent",
+        "renovation",
+        "kitakyushu"
+      ],
+      "titleJa": "家賃1万円の団地満室",
+      "title": "Abandoned Housing Complex with 10,000 Yen Rent Becomes Fully Occupied",
+      "summaryJa": "北九州市にある家賃1万円の古い団地が満室になり、残置物が残る部屋をあえて借りた37歳女性の選択が注目を集めています。",
+      "sourcePublishedAt": "2026-11-20T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "この格安物件がなぜ人気を集めたのか、その魅力を読者が発見できるようにする。",
+        "followUpJa": "もしあなたが家賃1万円の古い団地に住むとしたら、どのような工夫をしますか？",
+        "questions": {
+          "5級": "What is the rent of the housing complex in Kitakyushu?",
+          "4級": "Why do some people want to rent this old housing complex?",
+          "3級": "What did the 37-year-old woman find attractive about the abandoned room?",
+          "準2級": "How did the unique features of the room influence the tenant's decision to rent it?",
+          "2級": "What specific elements of the abandoned housing complex contributed to its full occupancy?",
+          "準1級": "Analyze the psychological appeal of using abandoned spaces with remaining items as described by the tenant."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Cheap Rent in Kitakyushu",
+          "text": "An old housing complex stands on a hill in Kitakyushu. It looks like a ruin. The rent is ten thousand yen. Now the building is completely full. Many people want to live in this cheap place. A thirty-seven-year-old woman chose to rent a room there. She likes using things that other people have already used before. Her unique choice is very interesting to many people today. This old complex is now popular.",
+          "wordCount": 72
+        },
+        "4級": {
+          "title": "The 10,000 Yen Ruined Complex",
+          "text": "An old housing complex stands on a hill in Kitakyushu city. It looks very old, like a ruin. However, all the rooms are now full. The monthly rent is just 10,000 yen. A thirty-seven-year-old woman decided to rent a room full of old belongings. She says she feels a special attraction to things that other people have already used. Her unique choice shows a new way of thinking about living spaces today in Japan.",
+          "wordCount": 73
+        },
+        "3級": {
+          "title": "Why People Choose the Abandoned Housing Complex",
+          "text": "In Kitakyushu city, an old housing complex that looks like ruins has become fully occupied. The monthly rent is only 10,000 yen, but its popularity is growing. A thirty-seven-year-old woman chose to rent a room filled with leftover items from the past. She explains that she is attracted to things that are already used. Instead of seeing the ruined condition as a negative point, she finds unique charm in it. Her lifestyle choice gives us a fresh perspective on cheap and unusual housing options in Japan.",
+          "wordCount": 85
+        },
+        "準2級": {
+          "title": "Full Occupancy at an Affordable Housing Complex",
+          "text": "High on a hill in Kitakyushu city, an old housing complex resembling a ruin has achieved full occupancy. Despite its run-down appearance, the monthly rent of 10,000 yen attracts much attention. A thirty-seven-year-old woman made the bold decision to rent a room completely filled with leftover belongings from previous occupants. When asked about her choice, she stated that she feels a strong attraction toward used items and spaces with history. Rather than demanding a clean, modern renovation, she embraces the original condition of the room. Her story highlights how changing perspectives can turn an abandoned-looking building into a desirable place to live for unique individuals.",
+          "wordCount": 104
+        },
+        "2級": {
+          "title": "Turning an Abandoned Housing Complex into a Popular Home",
+          "text": "An old housing complex located on a hill in Kitakyushu city has successfully achieved full occupancy, surprising many people. The building closely resembles a ruin, and the monthly rent is set at an astonishingly low 10,000 yen. What makes this situation even more interesting is the profile of the tenants. A thirty-seven-year-old woman recently chose to rent a room that was still full of leftover items from previous occupants. While most people would prefer a completely cleared and renovated space, she openly admitted that she is naturally drawn to used items and environments with a strong sense of prior habitation. Her deliberate choice to live in a room cluttered with leftover belongings sheds light on a fascinating trend. It demonstrates how spaces once considered undesirable due to their ruined state can appeal to modern tenants looking for character, affordability, and a unique connection to the past.",
+          "wordCount": 145
+        },
+        "準1級": {
+          "title": "The Surprising Appeal of a Ruined Housing Complex in Kitakyushu",
+          "text": "In Kitakyushu city, a weathered housing complex perched on a hill has achieved complete occupancy, defying conventional real estate expectations. Visually resembling a ruin and carrying a remarkably low monthly rent of 10,000 yen, the property has sparked widespread curiosity regarding what drives its unexpected popularity among contemporary renters. Central to this fascinating phenomenon is a thirty-seven-year-old female tenant who intentionally chose to rent a room overflowing with leftover belongings from past occupants, rather than demanding a completely modernized or sterilized living space. While standard rental practices dictate thorough cleaning and the removal of all previous personal effects before leasing, this resident expressed a distinct psychological attraction to used items and spaces saturated with the tangible traces of previous lives. Rather than viewing the cluttered and deteriorated environment as an unacceptable drawback, she found profound charm in its untouched authenticity and historical character. Her deliberate decision underscores a broader cultural shift among certain renters who prioritize unique character, personal history, and radical affordability over pristine, cookie-cutter living conditions, effectively transforming a neglected architectural relic into a fully occupied community. As observers continue to analyze this trend, questions arise about how modern residents define comfort and value in alternative housing markets.",
+          "wordCount": 199
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964848"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-20-sapporo-tire-detachment-incident",
+      "date": "2026-11-20",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "tire",
+        "safety",
+        "sapporo",
+        "police"
+      ],
+      "titleJa": "札幌で走行中タイヤ脱輪事故",
+      "title": "Car Tire Detaches in Sapporo, Hits Beauty Salon Wall",
+      "summaryJa": "札幌市南区で走行中の軽自動車の左前輪が外れ、美容院の壁に衝突する事故が発生しました。ケガ人はいませんでしたが、運転手は1週間前からハンドルの違和感を覚えて修理を依頼中でした。",
+      "sourcePublishedAt": "2026-11-20T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "タイヤ交換後のトラブルを防ぐための適切な行動を考える",
+        "followUpJa": "タイヤ交換後に違和感を覚えた場合、どのような点に注意して行動すべきか話し合ってみましょう。",
+        "questions": {
+          "5級": "What part of the car came off?",
+          "4級": "Where did the detached tire hit?",
+          "3級": "How long before the accident did the driver feel something was wrong with the steering wheel?",
+          "準2級": "Why was the car being driven even though the driver had already asked a shop for repairs?",
+          "2級": "What specific details did the driver notice about the car just before the tire detached?",
+          "準1級": "Considering the sequence of events leading up to this accident, what crucial safety measures do police recommend drivers take following a tire change?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Tire Comes Off",
+          "text": "A car is on a road in Sapporo. The left front tire comes off the car. It rolls for 70 meters. It hits a wall of a beauty shop. No people get hurt. The driver is a woman in her 70s. She is safe today. Police tell drivers to check car wheels.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Car Tire Rolls into Wall",
+          "text": "On November 19, a strange accident happens in Sapporo. A light car drives down a road. Suddenly, the left front tire flies off the car. The tire rolls about 70 meters. It goes over a sidewalk and hits a beauty shop wall. Luckily, no one is hurt. The driver called the police right after it happened. Police ask people to check their car tires carefully after changing them.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Driver Was Waiting for Repairs",
+          "text": "In Sapporo on November 19, a frightening accident occurs when a light car loses its left front tire while driving. The tire rolls seventy meters across a sidewalk before crashing into a beauty salon's wall. Fortunately, no pedestrians or workers are injured in the incident. The 70-year-old female driver explains that she changed to winter tires two weeks earlier. She felt strange movements in the steering wheel for a week and had already asked a repair shop for help. Police urge all drivers to check tire nuts regularly after changes.",
+          "wordCount": 89
+        },
+        "準2級": {
+          "title": "Tire Detaches During Drive After Repair Shop Visit",
+          "text": "On November 19, a minor car accident occurs in Sapporo when a light vehicle loses its left front wheel. The incident takes place on a national route in Minami Ward when a 70-year-old woman calls the police. The detached tire rolls approximately 70 meters, crosses the sidewalk, and collides with the exhaust hood of a local beauty salon. No injuries are reported. According to the driver, she replaced her tires with winter tires two weeks prior with family and friends. After noticing unusual steering feedback for about a week, she requested a checkup from a repair service. The accident happens right after she retrieves her vehicle from the shop, while the steering wheel is shaking. Police remind motorists to frequently check wheel nuts after seasonal tire replacements.",
+          "wordCount": 125
+        },
+        "2級": {
+          "title": "Tire Flies Off Car After Recent Inspection",
+          "text": "A startling traffic incident unfolds in Sapporo on November 19, when a light vehicle suddenly sheds its left front wheel while traveling along a busy road in Minami Ward. The runaway tire travels roughly 70 meters, breaches a sidewalk, and crashes into the exterior wall of a beauty salon after hitting an exhaust hood. Miraculously, no bystanders or passengers sustain injuries. The 70-year-old driver tells authorities that she and her family swapped her regular tires for winter tires two weeks earlier. Having experienced steering irregularities for the past week, she had already commissioned a professional inspection from a repair shop. The wheel detachment occurs shortly after she picks the car up from the shop, while the steering wheel is noticeably rattling. In response to this event, local police strongly advise drivers to conduct routine checks on wheel nut tightness following any tire change to ensure safety on the road.",
+          "wordCount": 147
+        },
+        "準1級": {
+          "title": "Wheel Detachment Incident Prompts Safety Warnings in Sapporo",
+          "text": "An alarming vehicular mishap occurs in Sapporo on November 19, highlighting the critical importance of post-maintenance safety checks. A light vehicle navigating a prominent route in Minami Ward experiences a sudden mechanical failure when its left front tire completely detaches from the chassis while in motion. The runaway tire traverses approximately 70 meters, crosses a pedestrian walkway, and ultimately impacts the exterior exhaust hood of a local beauty salon. Fortunately, no injuries are recorded among pedestrians or the vehicle's occupant during this frightening event. The 70-year-old female driver reveals that she and her acquaintances had installed winter tires two weeks prior to the incident. Having perceived abnormalities in the steering mechanism for a week, she proactively enlisted a professional repair shop to examine the vehicle. The catastrophic separation occurs almost immediately after she retrieves the automobile from the shop, moments after she notices persistent rattling in the steering column while driving. Law enforcement authorities reiterate their seasonal advisory, strongly urging all motorists to perform periodic inspections of wheel nut torque following any tire replacement to prevent similar accidents from happening on public roads.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63749"
+        }
+      ]
+    },
     {
       "id": "2026-11-19-akko-ni-omakase-special-2027",
       "date": "2026-11-19",
