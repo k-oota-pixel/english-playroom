@@ -25,9 +25,72 @@ export function createFarm3D(host,api){
  function updatePet(){const source=api.petSource();if(!source||source===spriteURL)return;spriteURL=source;const stamp=++petSerial;const root=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;root.setAttribute('width','384');root.setAttribute('height','384');root.querySelectorAll('.pet-frame-motion,.pet-shadow').forEach(n=>n.remove());const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(root)],{type:'image/svg+xml'}));const image=new Image();image.onload=()=>{URL.revokeObjectURL(url);if(stamp!==petSerial)return;const c=document.createElement('canvas');c.width=c.height=384;const ctx=c.getContext('2d');ctx.drawImage(image,0,0,384,384);const pixels=ctx.getImageData(0,0,384,384).data;let x0=384,y0=384,x1=0,y1=0;for(let y=0;y<384;y++)for(let x=0;x<384;x++)if(pixels[(y*384+x)*4+3]>12){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)}if(x1<=x0||y1<=y0)return;const crop=document.createElement('canvas');crop.width=x1-x0+1;crop.height=y1-y0+1;crop.getContext('2d').drawImage(c,x0,y0,crop.width,crop.height,0,0,crop.width,crop.height);const tex=new T.CanvasTexture(crop);tex.colorSpace=T.SRGBColorSpace;pet.children.slice().forEach(o=>{pet.remove(o);if(o.isSprite){o.material.map?.dispose();o.material.dispose()}});const s=new T.Sprite(new T.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));s.center.set(.5,0);s.scale.set(1.1*crop.width/crop.height,1.1,1);pet.add(s)};image.onerror=()=>URL.revokeObjectURL(url);image.src=url}
  const color={lettuce:0x8dcc4e,carrot:0xe88e3d,pumpkin:0xe5a53e,strawberry:0xf55b6a,melon:0xaece72,tomato:0xd95349,potato:0xc4a06b,pepper:0xdb5340};
  function crop(g,p,x,z,phase){if(!p)return;const tall=phase==='sprout'?.15:phase==='growing'?.34:.53;const leaf=0x5a9e46;for(const [dx,dz] of [[-.23,-.18],[.22,-.15],[0,.22]]){g.add(cyl(.025,.035,tall,leaf,x+dx,tall/2+.1,z+dz));const a=ball(tall*.4,leaf,x+dx,tall+.07,z+dz);a.scale.set(1.2,.65,1.1);g.add(a);if(phase==='ready'){const fruit=ball(p.crop==='pumpkin'||p.crop==='melon'?.22:.15,color[p.crop]||0x88b950,x+dx,tall*.55+.13,z+dz);if(p.crop==='carrot')fruit.scale.set(.65,1.6,.65);g.add(fruit)}}}
- let sig='';function redraw(){const farm=api.farm(),now=Date.now();const next=JSON.stringify([farm.fields,farm.roads,farm.flowers,farm.displays,Object.entries(farm.plots).map(([k,p])=>[k,p.crop,growthPhase(p,now),!!p.wateredAt])]);if(sig===next)return;sig=next;dynamic.traverse(o=>{if(o.isSprite){o.material.map?.dispose();o.material.dispose()}});dynamic.clear();
+ // Individual botanical silhouettes; instance batches share geometry and material.
+ function renderFlowerBeds(flowers){
+  const batches=new Map(),shape=geo('flower-unit',()=>new T.IcosahedronGeometry(1,1)),stemShape=geo('flower-stem',()=>new T.CylinderGeometry(1,1,1,7));
+  const temp=new T.Object3D(),local=new T.Object3D();
+  function part(root,g,c,x,y,z,sx,sy,sz,rx=0,ry=0,rz=0){
+   local.position.set(x,y,z);local.rotation.set(rx,ry,rz);local.scale.set(sx,sy,sz);local.updateMatrix();
+   const matrix=new T.Matrix4().multiplyMatrices(root,local.matrix),key=g.uuid+':'+c;
+   if(!batches.has(key))batches.set(key,{g,c,matrices:[]});batches.get(key).matrices.push(matrix);
+  }
+  const round=(root,c,x,y,z,sx,sy,sz,rx=0,ry=0,rz=0)=>part(root,shape,c,x,y,z,sx,sy,sz,rx,ry,rz);
+  function bloomRoot(root,y,tilt=0){temp.position.set(0,y,0);temp.rotation.set(tilt,0,0);temp.scale.set(1,1,1);temp.updateMatrix();return new T.Matrix4().multiplyMatrices(root,temp.matrix)}
+  function ring(root,n,r,y,c,radial,width,height,turn=0,tilt=0){
+   for(let i=0;i<n;i++){const a=turn+i*Math.PI*2/n;round(root,c,Math.cos(a)*r,y,Math.sin(a)*r,radial,height,width,0,-a,tilt)}
+  }
+  function plant(type,root){
+   const heights={rose:.34,sunflower:.66,lavender:.43,hydrangea:.27,marigold:.25,tulip:.43},h=heights[type]||.3;
+   part(root,stemShape,0x467846,0,h/2,0,.018,h,.018);
+   const leaf=type==='lavender'?0x799a72:0x569c4c;
+   round(root,leaf,-.065,h*.36,0,.11,.026,.045,0,0,-.42);
+   round(root,0x75ad57,.06,h*.58,.02,.105,.025,.046,0,-.3,.48);
+   if(type==='rose'){
+    const b=bloomRoot(root,h,.16);
+    ring(b,6,.075,.005,0xb32f50,.077,.043,.048,0,.48);
+    ring(b,5,.052,.038,0xe05872,.062,.035,.04,.4,.52);
+    ring(b,4,.027,.066,0xf18499,.042,.025,.03,.8,.56);
+    round(b,0xa92c4c,0,.075,0,.032,.027,.031);
+   }else if(type==='sunflower'){
+    const b=bloomRoot(root,h,.68);
+    ring(b,11,.126,0,0xe8a829,.091,.036,.025,0,.05);
+    ring(b,11,.115,.018,0xffd64e,.083,.029,.024,.24,.05);
+    round(b,0x63432c,0,.026,0,.089,.04,.089);
+    round(b,0x95643a,0,.059,0,.064,.015,.064);
+   }else if(type==='lavender'){
+    for(let i=0;i<5;i++){const r=.045-i*.006;for(let j=0;j<3;j++){const a=j*2.094+i*.65;round(root,i%2?0xa48bd1:0x8561b4,Math.cos(a)*r,h-.09+i*.048,Math.sin(a)*r,.037,.045,.037)}}
+    round(root,0xc0a3e6,0,h+.15,0,.025,.045,.025);
+   }else if(type==='hydrangea'){
+    const b=bloomRoot(root,h,.08);
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;const x=Math.cos(a)*.09,z=Math.sin(a)*.09;for(let j=0;j<4;j++){const q=j*Math.PI/2+a;round(b,i%2?0x8eb9e6:0x749cd8,x+Math.cos(q)*.026,.047,z+Math.sin(q)*.026,.035,.024,.035)}}
+    for(let j=0;j<5;j++){const a=j*Math.PI*2/5;round(b,0xb3d1f2,Math.cos(a)*.04,.1,Math.sin(a)*.04,.045,.03,.045)}
+   }else if(type==='marigold'){
+    const b=bloomRoot(root,h,0);
+    ring(b,8,.075,.01,0xd77b20,.065,.045,.047,0,.26);
+    ring(b,7,.061,.05,0xf3a52d,.065,.043,.041,.42,.36);
+    ring(b,5,.036,.087,0xffcd59,.049,.038,.037,.2,.35);
+    round(b,0xf09a23,0,.09,0,.045,.038,.043);
+   }else if(type==='tulip'){
+    const b=bloomRoot(root,h,.09);
+    round(b,0xc95b85,0,.015,0,.071,.045,.071);
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;round(b,i%2?0xf7a5c0:0xe77eaa,Math.cos(a)*.043,.073,Math.sin(a)*.043,.054,.094,.039,0,-a,-.25)}
+    round(b,0xe1a354,0,.061,0,.03,.026,.03);
+   }
+  }
+  for(const f of flowers){
+   for(const [i,[dx,dz]] of [[.23,.23],[.73,.27],[.28,.73],[.72,.72]].entries()){
+    const n=(Math.imul(f.x+13,73856093)^Math.imul(f.y+17,19349663)^Math.imul(i+1,83492791))>>>0;
+    const scale=.88+(n%25)/100,angle=(n%360)*Math.PI/180;
+    temp.position.set(f.x+dx+((n%7)-3)*.008,0,f.y+dz+(((n>>>4)%7)-3)*.008);temp.rotation.set(0,angle,0);temp.scale.set(scale,scale,scale);temp.updateMatrix();plant(f.type,temp.matrix.clone());
+   }
+  }
+  for(const {g,c,matrices} of batches.values()){
+   const mesh=new T.InstancedMesh(g,mat(c),matrices.length);matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;mesh.computeBoundingSphere();dynamic.add(mesh);
+  }
+ }
+ let sig='';function redraw(){const farm=api.farm(),now=Date.now();const next=JSON.stringify([farm.fields,farm.roads,farm.flowers,farm.displays,Object.entries(farm.plots).map(([k,p])=>[k,p.crop,growthPhase(p,now),!!p.wateredAt])]);if(sig===next)return;sig=next;dynamic.traverse(o=>{if(o.isInstancedMesh)o.dispose();if(o.isSprite){o.material.map?.dispose();o.material.dispose()}});dynamic.clear();
  for(const key of farm.roads){const [x,z]=key.split(',').map(Number);dynamic.add(box(1,.04,1,0xd7b78a,x+.5,.025,z+.5))}
- for(const f of farm.flowers){const c={rose:0xdb5164,sunflower:0xeec342,lavender:0x9975c5,hydrangea:0x75b5dc,marigold:0xe8a339,tulip:0xf19db8}[f.type];for(const [dx,dz] of [[.24,.25],[.7,.3],[.48,.73]]){dynamic.add(cyl(.026,.035,.28,0x52954d,f.x+dx,.14,f.y+dz),ball(.125,c||0xef9db6,f.x+dx,.32,f.y+dz))}}
+ renderFlowerBeds(farm.flowers);
  for(const field of farm.fields){const sh=FIELD_TYPES[field.size];if(!sh)continue;for(let i=0;i<sh.w*sh.h;i++){const x=field.x+i%sh.w+.5,z=field.y+Math.floor(i/sh.w)+.5,p=farm.plots[plotKey(field.id,i)];dynamic.add(box(.94,.14,.94,p?.wateredAt?0x80563a:0xa77952,x,.07,z));for(const dz of [-.28,0,.28])dynamic.add(box(.82,.025,.035,0x7a5438,x,.147,z+dz));crop(dynamic,p,x,z,growthPhase(p,now))}const l=label(field.name,Math.max(1.65,sh.w*.8));l.position.set(field.x+sh.w/2,1.08,field.y-.15);dynamic.add(l)}
  for(const d of farm.displays){const s=DISPLAY_TYPES[d.type];if(!s)continue;const x=d.x+s.w/2,z=d.y+s.h/2;dynamic.add(box(s.w-.12,.65,s.h-.12,d.type==='cooler'?0xa2c6d3:0x9d7147,x,.325,z),box(s.w-.16,.09,s.h-.16,0xeac89b,x,.7,z));for(let i=0;i<Math.min(8,d.quantity||0);i++)dynamic.add(ball(.15,color[d.crop]||0x7ea754,x-.65+(i%4)*.43,.89,z-.23+Math.floor(i/4)*.46));const l=label(s.name+' '+d.quantity+'/'+s.capacity,2.3);l.position.set(x,1.42,z);dynamic.add(l)}
  }

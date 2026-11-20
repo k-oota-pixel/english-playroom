@@ -1,4 +1,4 @@
-import {createFarm3D} from './scene.js?v=1';
+import {createFarm3D} from './scene.js?v=2';
 import {initializeApp,getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getAuth,onAuthStateChanged} from '../auth-session.js?v=2.4.37';
 import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
