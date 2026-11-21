@@ -1,13 +1,444 @@
 {
-  "generatedAt": "2026-11-21T02:10:33.222Z",
-  "editionDate": "2026-11-21",
+  "generatedAt": "2026-11-21T15:18:53.552Z",
+  "editionDate": "2026-11-22",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-21"
+    "lastSuccessfulEdition": "2026-11-22"
   },
   "articles": [
+    {
+      "id": "2026-11-22-drunk-driving-arrest-hokuryu-2026",
+      "date": "2026-11-22",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "drunk driving",
+        "hokkaido",
+        "arrest",
+        "car accident"
+      ],
+      "titleJa": "酒酔い運転で男を逮捕",
+      "title": "Man Arrested for Drunk Driving After Hokkaido Crash",
+      "summaryJa": "北海道北竜町で朝の交差点事故後、基準値を超えるアルコールが検出され41歳の男が酒酔い運転で現行犯逮捕されました。",
+      "sourcePublishedAt": "2026-11-21T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "事故を起こした男の主張と警察の検査結果を踏まえ、当時の状況について正しく理解する。",
+        "followUpJa": "もしあなたが警察官なら、容疑者が「酒は飲んでいない」と否認している場合、他にどのような証拠を集めるべきか考えてみましょう。",
+        "questions": {
+          "5級": "What kind of car accident happened in the morning?",
+          "4級": "What did the police officer smell when arriving at the accident scene?",
+          "3級": "How much alcohol was found in the man's breath during the test?",
+          "準2級": "Why did the police officer decide to test the 41-year-old man for alcohol?",
+          "2級": "What specific response did the suspect give when he was questioned by the police after the arrest?",
+          "準1級": "How did the incident initially come to the attention of the police authorities in Hokkaido?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Car Accident",
+          "text": "A man drove a car. He had a car accident at a crossing in the morning. He had much alcohol. The police came to the place. They found alcohol in his breath. The police arrested the man. He is forty-one years old now. He says he did not drink.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Drunk Driving Arrest",
+          "text": "A forty-one-year-old company worker had a car accident at a crossing in the morning. The other driver called the police. When police officers arrived, they smelled alcohol from the man. They tested his breath and found a high level of alcohol. The police arrested the man for drunk driving. However, the man denies the charge and says he did not drink any alcohol.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Man Arrested After Morning Crash",
+          "text": "A forty-one-year-old company employee living in Takikawa was arrested by police in Hokuryu town. He drove his car after drinking too much alcohol on a national highway. In the morning before nine o'clock, his car crashed into another vehicle at a road intersection. The victim who was driving the other car called the police right away. When officers arrived at the scene, they noticed the smell of alcohol on the man. A breath test showed alcohol well above the legal limit. The man was arrested immediately, but he denies the crime.",
+          "wordCount": 91
+        },
+        "準2級": {
+          "title": "Driver Arrested for Drunk Driving in Hokkaido",
+          "text": "A forty-one-year-old male company worker living in Takikawa, Hokkaido, has been arrested for suspected drunk driving. Just before nine o'clock in the morning on November twenty-first, his car was involved in a collision with another vehicle at an intersection on a national highway in Hokuryu town. The driver of the other vehicle involved in the crash contacted the police immediately. When officers arrived at the scene to investigate the accident, they noticed the smell of alcohol coming from the man. A subsequent breath test detected alcohol exceeding the legal standard. The police arrested him on the spot, but the suspect denies the allegations, stating that he did not drink any alcohol.",
+          "wordCount": 111
+        },
+        "2級": {
+          "title": "Hokkaido Man Denies Drunk Driving Charge After Intersection Collision",
+          "text": "A forty-one-year-old company employee residing in Takikawa City, Hokkaido, was arrested on the spot for suspected drunk driving following a morning traffic incident. According to local police, the incident occurred shortly before nine o'clock in the morning on November twenty-first, where the suspect's passenger car collided with another vehicle at a road intersection on a national highway in Hokuryu town. The driver of the other car involved in the collision placed an emergency call to the police. Upon arriving at the scene, responding officers detected the scent of alcohol while speaking with the man. They administered a breath test, which revealed an alcohol concentration exceeding the legal limit. Consequently, the man was arrested for violating road traffic laws. During subsequent questioning, the suspect denied the charges, claiming that he had not consumed any alcohol, and police are continuing to investigate the surrounding circumstances.",
+          "wordCount": 143
+        },
+        "準1級": {
+          "title": "Hokkaido Police Arrest Driver for Severe Drunk Driving Following Morning Collision",
+          "text": "A forty-one-year-old company employee residing in Takikawa City, Hokkaido, has been arrested by local authorities under suspicion of driving a passenger car while under the influence of alcohol in violation of road traffic laws. The incident unfolded shortly before nine o'clock in the morning on November twenty-first, along a national highway located in Hokuryu town, where the suspect's vehicle was involved in a collision at an intersection with another car. Following the crash, the driver of the impacted vehicle contacted the police to report the traffic accident. Responding officers who arrived at the scene to handle the situation noticed a distinct smell of alcohol coming from the suspect during their initial investigation. A subsequent breath alcohol test administered at the scene revealed an amount exceeding the legal limit by a significant margin, prompting officers to make an immediate arrest for apparent drunk driving. During questioning by investigators regarding the circumstances of the incident, the suspect firmly denied the allegations, claiming repeatedly that he had not consumed any alcohol prior to driving. Meanwhile, the police department is carefully examining the details of the case and investigating the exact timeline surrounding the morning collision.",
+          "wordCount": 192
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63795"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-22-gold-bars-stolen-hyogo",
+      "date": "2026-11-22",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "crime",
+        "hyogo",
+        "nishinomiya",
+        "gold",
+        "theft"
+      ],
+      "titleJa": "西宮で金塊盗難事件",
+      "title": "Gold Bars and Cash Stolen from Home in Hyogo",
+      "summaryJa": "兵庫県西宮市の住宅で、金塊約20キロや現金約2500万円などが盗まれる事件が発生し、警察が捜査しています。",
+      "sourcePublishedAt": "2026-11-21T15:03:25.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "事件の詳細を読み取り、盗まれた財産の規模や発生場所を確認する。",
+        "followUpJa": "被害額や発生状況についてさらに詳しく調べてみましょう。",
+        "questions": {
+          "5級": "What was stolen from the house in Hyogo?",
+          "4級": "Where did the theft happen on November 21?",
+          "3級": "How much money and how many gold bars were stolen?",
+          "準2級": "What is the estimated value of the twenty kilograms of gold?",
+          "2級": "What kind of business owner's home was targeted in Nishinomiya, and what are police investigating?",
+          "準1級": "How are investigators treating the incident involving the company executive's residence, and what specific details highlight the magnitude of the theft?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Gold Stolen in Japan",
+          "text": "Someone took gold and money from a house. The house is in Hyogo. The gold is twenty kilos. The money is twenty-five million yen. The police are looking for the bad person now. It is a big crime.",
+          "wordCount": 38
+        },
+        "4級": {
+          "title": "Gold Bars Stolen from Home in Hyogo",
+          "text": "On November twenty-first, someone entered a house in Nishinomiya, Hyogo. The home belongs to a company owner. The thief took about twenty kilograms of gold bars. They also took about twenty-five million yen in cash. The gold is worth about four hundred million yen. Police are investigating the theft of these valuable items from the house.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Gold Bars and Cash Taken in Nishinomiya",
+          "text": "Early in the morning on November twenty-first, a serious crime happened in Hyogo Prefecture. Someone broke into the home of a company executive in Nishinomiya City. The intruder stole about twenty kilograms of gold bars and around twenty-five million yen in cash. Today, twenty kilograms of gold is worth about four hundred million yen. The local police are now investigating the case as a theft.",
+          "wordCount": 65
+        },
+        "準2級": {
+          "title": "Major Theft at Executive Home in Nishinomiya",
+          "text": "Early on the morning of November twenty-first, a residential burglary occurred in Nishinomiya City, Hyogo Prefecture, targeting the home of a local company executive. An unidentified person or persons broke into the residence and stole approximately twenty kilograms of gold bars, along with roughly twenty-five million yen in cash. Based on current market prices, the stolen twenty kilograms of gold is estimated to be worth around four hundred million yen in total value. Local law enforcement authorities are currently investigating the incident as a major theft case, gathering evidence and working to track down the suspects involved in the crime.",
+          "wordCount": 100
+        },
+        "2級": {
+          "title": "Police in Hyogo Investigate Major Theft of Gold Bars and Cash",
+          "text": "Authorities in Hyogo Prefecture are conducting a comprehensive investigation following a major residential burglary that took place during the early morning hours of November twenty-first. According to local law enforcement reports, an unidentified intruder or multiple individuals managed to break into the private residence of a company executive located in Nishinomiya City. During the course of the unauthorized intrusion, the perpetrator or perpetrators made off with approximately twenty kilograms of gold bars alongside roughly twenty-five million yen in domestic currency and other valuables. Investigators emphasized that the stolen twenty kilograms of gold amounts to an estimated four hundred million yen based on prevailing precious metal market prices. Police officials are currently treating the incident as a serious theft case, diligently gathering physical evidence from the crime scene, reviewing potential surveillance footage, and pursuing all available leads in an effort to identify, locate, and apprehend those responsible for the audacious crime.",
+          "wordCount": 150
+        },
+        "準1級": {
+          "title": "Authorities Launch Intensive Investigation After High-Value Burglary at Executive Residence in Nishinomiya",
+          "text": "Law enforcement officials in Hyogo Prefecture have initiated a rigorous and sweeping investigation following a high-value residential burglary reported during the early morning hours of November twenty-first. According to details released by investigators, an unidentified perpetrator successfully infiltrated the private home of a company executive situated within Nishinomiya City while the residence was targeted under the cover of darkness. The intruder systematically searched the property and made off with approximately twenty kilograms of gold bars, in addition to roughly twenty-five million yen in cash and various other valuables. Current precious metal market valuations indicate that the stolen twenty kilograms of gold represents an astonishing four hundred million yen in equivalent economic value. Detectives and forensic teams are currently scouring the crime scene for forensic evidence, analyzing neighborhood surveillance footage, and coordinating broader investigative efforts to track down the suspects responsible for this brazen heist and recover the substantial stolen assets. Law enforcement authorities in Hyogo Prefecture confirmed that the investigation remains fully active as police officers continue gathering clues to solve the case and apprehend the criminals.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261121de79776"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-22-lewis-moody-england-haka",
+      "date": "2026-11-22",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "England",
+        "New Zealand",
+        "rugby",
+        "Lewis Moody",
+        "haka"
+      ],
+      "titleJa": "元主将ムーディがハカに対峙",
+      "title": "Ex-captain Moody joins England side to face haka",
+      "summaryJa": "元イングランド代表主将のルイス・ムーディが、ニュージーランド戦のハカにチームと一緒に立ち向かいました。",
+      "sourcePublishedAt": "2026-11-21T15:03:48.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "難病と闘う元キャプテンを応援するため、チームがどのように支え合っているかを知る",
+        "followUpJa": "アスリートが社会貢献や病気啓発活動に参加することの意義について話し合ってみましょう。",
+        "questions": {
+          "5級": "Who joined the England team to face the haka?",
+          "4級": "Where did Lewis Moody stand when facing the haka?",
+          "3級": "What special shape did the England players form after facing the haka?",
+          "準2級": "Why are England players wearing boots with the Front Up to MND logo?",
+          "2級": "How did Lewis Moody participate in the match besides joining the line-up for the haka?",
+          "準1級": "What specific fundraising goal and campaign initiative are associated with Lewis Moody's presence at the match?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Lewis Moody Joins England",
+          "text": "Former England captain Lewis Moody joined the team. He stood with the players. They faced the New Zealand haka at Allianz Stadium. Moody has a disease. The team showed great support for him. They stood together proudly before the big rugby match.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Ex-Captain Faces the Haka",
+          "text": "Former England captain Lewis Moody joined the current players. They faced New Zealand's haka at Allianz Stadium. Moody stood in the centre of the line-up. He stood between captain Maro Itoje and vice-captain Ellis Genge. The team formed a V shape. Moody also delivered the match ball. All England players wore boots with his campaign logo.",
+          "wordCount": 56
+        },
+        "3級": {
+          "title": "Moody Supports England Against New Zealand",
+          "text": "Former England captain Lewis Moody joined the current team to face New Zealand's famous haka at Allianz Stadium. Moody stood right in the centre of the line-up between captain Maro Itoje and vice-captain Ellis Genge. After facing the haka, the team formed a V shape. Moody, who revealed his motor neurone disease diagnosis last year, also delivered the match ball. All England players wore special boots to support his Front Up to MND campaign, which aims to raise money for disease research.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Lewis Moody Stands with England Team to Face Haka",
+          "text": "Former England captain Lewis Moody joined the current squad to face New Zealand's traditional haka at Allianz Stadium in an emotional start to the match. Diagnosed with motor neurone disease last year, Moody stood proudly in the centre of the line-up between captain Maro Itoje and vice-captain Ellis Genge. Following the challenge, the players advanced to form a V shape, mirroring previous famous formations. Moody also delivered the match ball before the game. England players wore boots featuring the logo of Moody's Front Up to MND campaign, which aims to raise over one million pounds for medical research through events like a coastal walk.",
+          "wordCount": 104
+        },
+        "2級": {
+          "title": "Former England Captain Lewis Moody Faces Haka for MND Campaign",
+          "text": "In an emotional start to Saturday's international Test match at Allianz Stadium, former England rugby captain Lewis Moody joined the current squad to face New Zealand's traditional haka. Moody, who was diagnosed with motor neurone disease last year, stood proudly at the heart of England's line-up between captain Maro Itoje and vice-captain Ellis Genge as they faced the pre-match challenge. Following this impressive stand, the team moved forward to form a distinctive V shape, echoing famous formations from previous matches. Moody also performed the ceremonial duty of delivering the match ball before kickoff. To demonstrate solidarity and raise awareness, all England players wore boots emblazoned with the logo of Moody's Front Up to MND campaign. Furthermore, signed warm-up and match-worn shirts will be generously donated to the cause, which seeks to raise over one million pounds through a mass coastal walk in June to fund crucial ongoing medical research into the disease.",
+          "wordCount": 152
+        },
+        "準1級": {
+          "title": "Lewis Moody Joins England Squad to Face Haka in Emotional MND Awareness Showcase",
+          "text": "Saturday's international rugby Test match at Allianz Stadium featured a deeply emotional and memorable opening moment as former England captain Lewis Moody joined the current squad to face New Zealand's formidable haka. Moody, who publicly revealed his diagnosis of motor neurone disease last year, occupied a central position in the line-up flanked by captain Maro Itoje and vice-captain Ellis Genge during the traditional pre-match challenge. After facing the haka, the team advanced into a distinctive V-shaped formation, echoing past tactical displays against the All Blacks. Beyond standing shoulder-to-shoulder with the players, Moody performed the important ceremonial duty of delivering the match ball. The team's participation extended far beyond simple symbolism: every single England player wore boots featuring the prominent logo of Moody's Front Up to MND campaign. Moreover, match-worn and warm-up shirts will be donated to support vital fundraising efforts, headlined by a major mass-participation coastal walk scheduled for June which aims to secure over one million pounds for ongoing medical research into the condition, demonstrating rugby's deep commitment to standing alongside those affected by the disease.",
+          "wordCount": 177
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c5vg2ppp90w8o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-22-ore-tachi-no-hakone-ekiden-episode-7",
+      "date": "2026-11-22",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "Hakone Ekiden",
+        "drama",
+        "Mynavi News",
+        "television"
+      ],
+      "titleJa": "箱根駅伝ドラマで10人決定",
+      "title": "Student Runners Chosen for Hakone Ekiden TV Drama",
+      "summaryJa": "人気ドラマ「俺たちの箱根駅伝」の第7話で、学生連合チームの本選を走る10人の区間ランナーが発表されました。",
+      "sourcePublishedAt": "2026-11-21T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "ドラマの中で学生連合チームが目指している順位を確認し、チームの目標を把握する。",
+        "followUpJa": "学習者は友達とチームの目標について話し合うことができます。",
+        "questions": {
+          "5級": "What goal does the student team have?",
+          "4級": "What place does the student team want to win in the race?",
+          "3級": "According to the article, what position or rank does the student team aim for in the main race?",
+          "準2級": "What specific goal has the student team set for themselves for the main Hakone Ekiden race?",
+          "2級": "With the support of sixteen universities behind them, what specific ranking does the student team aim to achieve in the main race?",
+          "準1級": "Carrying the hopes and dreams of sixteen universities, what competitive target has the student team established for the main event?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New TV Drama Team",
+          "text": "A new TV drama is popular in Japan. It is about a running race. The story is called Hakone Ekiden. A special team has ten runners. Coach Kai tells the runners the news. Many students from sixteen universities help them. They want to run well and win a good prize in the big race.",
+          "wordCount": 54
+        },
+        "4級": {
+          "title": "Ten Runners for the Big Race",
+          "text": "A popular television drama shows a special running team. The team is made of students from different universities. In the recent episode, the coach announced the ten runners for the main race. The captain of the team will run the final section. Many friends came to support them. The team wants to finish in the top three places in the big race.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "Student Runners Get Ready for Hakone",
+          "text": "A popular Japanese television drama features a special running team called the student union. In a recent episode, the coach announced the ten runners who will compete in the main race. The team captain was chosen to run the final anchor section. Students from sixteen different universities gathered to give them a big surprise send-off party. Together, the team aims to finish in third place or higher during the famous Hakone Ekiden race.",
+          "wordCount": 73
+        },
+        "準2級": {
+          "title": "Drama Reveals Hakone Ekiden Student Lineup",
+          "text": "A popular television drama focusing on the famous Hakone Ekiden race recently announced its student union runner lineup in its seventh episode. The coach gathered the athletes for a surprise send-off party organized by members from sixteen different universities. During this event, the ten runners for the main race were finally revealed to the public. The team captain was selected to run the final tenth section as the anchor. Carrying the thoughts and support of all their peers, the unified team is working hard to achieve a ranking of third place or higher in the upcoming competition.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "Popular Drama Announces Student Union Runners for the Hakone Ekiden Race",
+          "text": "A widely watched television drama depicting the iconic Hakone Ekiden race reached an exciting turning point when its seventh episode revealed the ten-person runner lineup for the student union team. The coach led the athletes to a gymnasium where a surprise send-off party awaited them, organized by track and field members from sixteen different universities who missed out on direct entry to the tournament. With many supportive peers watching, the coach announced the selected runners, including the team captain who was chosen to take on the crucial final anchor leg as the tenth runner. United by the shared feelings of their supporters across multiple campuses, the team is more determined than ever to achieve their ambitious goal of finishing in third place or higher during the main event. The television broadcast also highlights the behind-the-scenes efforts of a broadcasting station covering the legendary race. As the story progresses towards the start of the tournament, the competitors and broadcasters face new challenges and emotional trials together, deepening the dramatic tension across every single scene.",
+          "wordCount": 173
+        },
+        "準1級": {
+          "title": "Television Drama Sets Stage for Hakone Ekiden Main Race",
+          "text": "A compelling television drama centered around the legendary Hakone Ekiden race has officially advanced its plot with the broadcast of its seventh episode, which unveiled the highly anticipated runner lineup for the student union team. Composed of athletes from universities that narrowly missed qualifying for the main tournament, the student union represents a collective effort supported by sixteen different institutions. The team coach orchestrated a memorable reveal by leading the competitors into a gymnasium for a surprise send-off party hosted by their peers from all participating campuses. Amidst an atmosphere of shared dedication, the ten official runners were announced, culminating with the team captain being entrusted with the pivotal tenth anchor section. Bound together by the aspirations of countless supporters across all involved universities, the team is aggressively strengthening its resolve to secure a podium finish of third place or higher as the long-awaited main race finally draws near. Meanwhile, the broadcasting station responsible for the live television coverage faces its own intense internal pressures regarding ratings and production responsibilities. As the narrative prepares for the upcoming start of the tournament, both the dedicated student athletes and the television staff must confront high-stakes challenges that test their ultimate resolve, setting the stage for an unforgettable confrontation.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261121-5374852/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-22-strongest-universities-chugoku-shikoku-2026",
+      "date": "2026-11-22",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "education"
+      ],
+      "careerTags": [
+        "education"
+      ],
+      "tags": [
+        "ranking",
+        "universities",
+        "chugoku",
+        "shikoku",
+        "japan"
+      ],
+      "titleJa": "中国四国の強い大学",
+      "title": "Hiroshima University Tops Chugoku-Shikoku University Ranking",
+      "summaryJa": "東洋経済による2026年版「本当に強い大学ランキング」の中国・四国地方編が発表され、48校の中で広島大学が1位、岡山大学が2位に選ばれました。",
+      "sourcePublishedAt": "2026-11-20T21:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "中国・四国地方でトップクラスの大学を目指す受験生や保護者が、各大学の強みや順位を理解できるようにするため。",
+        "followUpJa": "あなたの進路や興味に合わせて、最も魅力的だと思う大学を選んでみましょう。",
+        "questions": {
+          "5級": "Which university is number one in the Chugoku and Shikoku region?",
+          "4級": "What is the name of the university that is ranked second in the region?",
+          "3級": "How many universities in the Chugoku and Shikoku region are included in this ranking?",
+          "準2級": "Which two specific strengths helped Hiroshima University secure the top position in the ranking?",
+          "2級": "What specific financial and structural factors created the small gap in the overall ranking between Hiroshima University and Okayama University?",
+          "準1級": "Analyze the distinct institutional strategies and financial metrics that separate the top-ranked universities in the Chugoku and Shikoku region according to Toyo Keizai's data."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Top Universities in Japan",
+          "text": "A new university ranking is out. Toyo Keizai makes this list. Many universities are in Japan. Hiroshima University is number one. Okayama University is number two. They are in the Chugoku and Shikoku region. Students study hard at these schools. Education and jobs are very important for young people today.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Strong Universities in Chugoku and Shikoku",
+          "text": "Toyo Keizai announced a new university ranking for the Chugoku and Shikoku region. Forty-eight schools are in this study. Hiroshima University is the top school. Okayama University is in second place. Hiroshima University has great programs and high employment rates. Okayama University also has strong education investments. Both universities work hard to improve student success and research.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "Toyo Keizai Published University Rankings for Chugoku and Shikoku",
+          "text": "Toyo Keizai has published its 2026 university ranking for the Chugoku and Shikoku region. This special ranking evaluates forty-eight schools using clear quantitative data instead of standard entrance examination scores. Hiroshima University secured the first place position in the regional ranking. It stands out with a strong number of corporate executive graduates, high research funding, and impressive employment rates at major companies. Okayama University followed closely in second place. Although Okayama University excelled in specific education investment rates, Hiroshima University maintained an advantage through its financial stability, profitability, and global programs. Other schools like Tokushima University and Eikei University also received high praise.",
+          "wordCount": 102
+        },
+        "準2級": {
+          "title": "Toyo Keizai Releases Regional University Ranking for Chugoku and Shikoku",
+          "text": "Toyo Keizai has released the 2026 edition of its strong university ranking for the Chugoku and Shikoku region. The report analyzes forty-eight institutions using comparable quantitative data that goes beyond traditional entrance examination difficulty to measure real capabilities. Hiroshima University claimed the top spot in the region. The university performs exceptionally well in producing listed company executives and securing research grants. It also expanded global engineering education by launching a semiconductor program with an American university. Okayama University placed second in the overall regional list. Although Okayama University surpassed Hiroshima University in education investment rates and international exchange agreements, differences in financial health, profitability, and faculty-to-student ratios created a gap in their overall rankings.",
+          "wordCount": 113
+        },
+        "2級": {
+          "title": "Toyo Keizai Publishes Comprehensive 2026 University Ranking for Chugoku and Shikoku",
+          "text": "Toyo Keizai published its 2026 university ranking focusing on the Chugoku and Shikoku region, assessing forty-eight institutions through comprehensive quantitative data that measures institutional strength beyond standard entrance examination scores. Hiroshima University emerged as the top-ranked institution in the area, bolstered by an impressive number of corporate executive alumni, robust research grants, and high employment rates at major companies. Furthermore, it continues to expand global engineering education by establishing a semiconductor program with an American university. Okayama University secured second place, demonstrating strong performance in education investment rates, job placement, and international exchange agreements. However, disparities in financial stability, capital adequacy ratios, and overall profitability contributed to the score gap between the region's top two universities, while other schools like Tokushima University and Eikei University also ranked near the top in this important annual evaluation published by Toyo Keizai for students and parents.",
+          "wordCount": 142
+        },
+        "準1級": {
+          "title": "Analyzing Higher Education Competitiveness in the Chugoku and Shikoku Region",
+          "text": "Amid rapid demographic shifts characterized by a declining eighteen-year-old population, Toyo Keizai has released its 2026 regional university ranking for the Chugoku and Shikoku area, evaluating forty-eight institutions using comparative quantitative metrics rather than traditional entrance examination difficulty. The assessment framework focuses on four critical dimensions: educational and research capacity, employment strength, foundational financial health, and global adaptability. Hiroshima University secured the premier position in the regional ranking, driven by superior outcomes in producing listed company executives, substantial research funding, and strong placement rates in major corporations. Its strategic initiatives include establishing a semiconductor-focused undergraduate program in collaboration with an American university and advancing vaccine manufacturing infrastructure. Meanwhile, Okayama University claimed second place, outperforming the leader in specific educational investment metrics, job placement rates, and overseas partner institutions. Nevertheless, advantages in financial resilience, profitability, capital adequacy, and faculty-to-student ratios allowed Hiroshima University to maintain a distinct overall edge. Other notable institutions, such as Tokushima University and Eikei University, also earned high recognition for specialized research integration, high international faculty and student ratios, and innovative educational frameworks designed for modern academic and career success.",
+          "wordCount": 182
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964872?display=b"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-22-wyrmrss-free-rss-reader",
+      "date": "2026-11-22",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "it"
+      ],
+      "tags": [
+        "rss",
+        "youtube",
+        "discord",
+        "slack"
+      ],
+      "titleJa": "無料RSSリーダー登場",
+      "title": "Free RSS Reader WyrmRSS Offers YouTube and Notifications",
+      "summaryJa": "無料のオープンソースRSSリーダー「WyrmRSS」が登場しました。ニュースサイトの更新情報だけでなく、YouTube動画の再生やDiscordやSlackへの新着通知機能も備えています。",
+      "sourcePublishedAt": "2026-11-21T14:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "自分の用途に合う機能を持つWyrmRSSの導入を検討するため。",
+        "followUpJa": "どの機能が自分の情報収集に最も役立つか話し合ってみましょう。",
+        "questions": {
+          "5級": "What is WyrmRSS?",
+          "4級": "Can you watch YouTube videos in WyrmRSS?",
+          "3級": "Which apps can send new article notifications from WyrmRSS?",
+          "準2級": "What are the three different display modes you can set for feeds in WyrmRSS?",
+          "2級": "How does the filtering feature work when you set a rule like '+title:AI'?",
+          "準1級": "According to Hacker News discussions and the author's explanation, how does WyrmRSS manage to handle and filter YouTube Shorts compared to regular videos?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "WyrmRSS Reader",
+          "text": "A new tool is here. It is a free RSS reader. Its name is WyrmRSS. You can use it on Windows. You can use it on Mac. You can watch YouTube videos too. It is very useful for everyone.",
+          "wordCount": 39
+        },
+        "4級": {
+          "title": "A New Free RSS Reader",
+          "text": "A new free open-source RSS reader called WyrmRSS is now available for users everywhere. It helps people check updates from various websites and blogs easily in one place. You can install the software on Windows, macOS, and Linux, or you can use it with self-hosting. In addition to reading normal articles, you can watch YouTube videos directly inside the application interface. Furthermore, WyrmRSS can send new article notifications to external services like Discord and Slack through webhooks easily.",
+          "wordCount": 78
+        },
+        "3級": {
+          "title": "Discovering WyrmRSS Features",
+          "text": "WyrmRSS is a new free and open-source RSS reader designed to collect updates from different websites and blogs easily. Users can run the software on Windows, macOS, and Linux, or they can choose to set up self-hosting. The platform supports standard RSS and Atom feeds along with folder organization and background auto-fetching. Besides reading text articles, people can watch YouTube videos directly inside the app interface. Moreover, the tool can send new article notifications to services such as Discord and Slack using webhooks.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Exploring WyrmRSS Capabilities",
+          "text": "WyrmRSS is a free, open-source RSS reader created to aggregate updates from numerous websites and blogs. It offers desktop applications for Windows, macOS, and Linux, as well as self-hosting options for advanced users. The platform allows people to organize feeds into folders, set flexible display modes, and use powerful filtering rules based on titles or URLs. In addition to managing traditional text feeds, WyrmRSS lets users watch YouTube videos directly within the player interface. Furthermore, the software supports webhook integrations to send instant new article alerts to external communication platforms like Discord and Slack.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "New Open-Source RSS Reader WyrmRSS",
+          "text": "WyrmRSS is an open-source RSS reader that aggregates news and blog updates while providing desktop applications for Windows, macOS, and Linux, alongside self-hosting capabilities. The application features feed organization through folders, background fetching, and flexible display modes such as River, Feed only, and Radar. Users can also filter content by specifying rules like title keywords or URL paths, such as filtering for specific topics by entering rules like '+title:AI' to retrieve only articles containing that keyword in their titles. In addition to reading text, WyrmRSS supports YouTube channel subscriptions and direct video playback within the app interface. It can integrate with external platforms like Discord and Slack via Webhooks to deliver instant notifications whenever new articles arrive from your configured sources. This comprehensive platform helps users manage and customize their digital information consumption efficiently every single day.",
+          "wordCount": 138
+        },
+        "準1級": {
+          "title": "Comprehensive Review of WyrmRSS Capabilities",
+          "text": "WyrmRSS emerges as a versatile, open-source RSS reader and aggregator designed to streamline information consumption across web and desktop environments, offering native applications for Windows, macOS, and Linux in addition to self-hosting options. Beyond traditional RSS and Atom feed management, the platform incorporates advanced features such as folder categorization, background auto-fetching, and customizable display modes including River, Feed only, and Radar. A notable strength lies in its robust filtering system, which allows users to curate content by applying precise conditions to titles, URLs, and descriptions, such as specifying rules like '+title:AI' to capture only relevant items. Furthermore, WyrmRSS enhances multimedia consumption by enabling direct playback of YouTube videos and HLS content within its interface. Discussion within communities like Hacker News highlights its innovative approach to handling and filtering YouTube content, where the author explains that the platform retrieves YouTube channel RSS feeds and applies URL, title, and content filters to manage different video formats. Meanwhile, its Webhook integration facilitates seamless notifications to platforms like Discord and Slack, making it a comprehensive tool for modern digital curation and daily news organization.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261121-wyrmrss/"
+        }
+      ]
+    },
     {
       "id": "2026-11-21-aiko-visits-singapore",
       "date": "2026-11-21",
