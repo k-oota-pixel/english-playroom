@@ -1,13 +1,438 @@
 {
-  "generatedAt": "2026-11-20T02:17:49.388Z",
-  "editionDate": "2026-11-20",
+  "generatedAt": "2026-11-21T02:10:33.222Z",
+  "editionDate": "2026-11-21",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-20"
+    "lastSuccessfulEdition": "2026-11-21"
   },
   "articles": [
+    {
+      "id": "2026-11-21-aiko-visits-singapore",
+      "date": "2026-11-21",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "singapore",
+        "princess-aiko",
+        "merlion",
+        "royal-visit"
+      ],
+      "titleJa": "愛子さま帰国へ",
+      "title": "Princess Aiko Visits Singapore",
+      "summaryJa": "天皇皇后両陛下の長女、愛子さまは5日間のシンガポール訪問を終え、21日に帰国されます。",
+      "sourcePublishedAt": "2026-11-21T02:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "愛子さまのシンガポール訪問と帰国に関する詳細を把握するため。",
+        "followUpJa": "今回の訪問地や日程について誰かと話し合ってみましょう。",
+        "questions": {
+          "5級": "What did Princess Aiko visit in Singapore?",
+          "4級": "How many days was Princess Aiko in Singapore?",
+          "3級": "When will Princess Aiko return to Japan?",
+          "準2級": "Why is the Merlion Park an important place in Singapore?",
+          "2級": "What marked the end of Princess Aiko's official visit to Singapore?",
+          "準1級": "How does Princess Aiko's five-day trip reflect her official diplomatic role?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Princess Aiko in Singapore",
+          "text": "Princess Aiko is in Singapore. She visits the Merlion Park. It is a famous place. She has a good time there. Now her trip is over. She goes back to Japan today. She finishes five days of her visit. Many people are happy to see her.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "Princess Aiko Visits Singapore",
+          "text": "Princess Aiko is visiting Singapore right now. She went to see the famous Merlion Park during her stay. The Merlion is a very important symbol of the country. Princess Aiko finished her five-day schedule there. Today, she will return to Japan. Many people are glad that she had a good trip to Singapore.",
+          "wordCount": 53
+        },
+        "3級": {
+          "title": "Princess Aiko Completes Singapore Visit",
+          "text": "Princess Aiko, the eldest daughter of the Emperor and Empress, is visiting Singapore on her official trip. During her stay in the country, she visited the Merlion Park, which is a well-known symbol of the nation. Princess Aiko has successfully finished her five-day schedule there. Today, she will return to Japan. Many people are happy about her journey and safe return home.",
+          "wordCount": 62
+        },
+        "準2級": {
+          "title": "Princess Aiko Visits Singapore and Returns to Japan",
+          "text": "Princess Aiko, the eldest daughter of the Emperor and Empress of Japan, is currently visiting Singapore on an official trip. During her stay in the country, she visited the Merlion Park, which serves as a national symbol. Princess Aiko has now completed her five-day schedule abroad and is scheduled to return to Japan today. Her visit to Singapore has drawn much attention and marked a very successful journey for international goodwill and diplomacy. Many people have followed her schedule closely as she explored the country and met various individuals during her time abroad. As her meaningful overseas trip comes to an end, preparation for her journey back home is fully underway. The royal visit has been described as a very fruitful stay by those observing her diplomatic engagements in the island nation.",
+          "wordCount": 132
+        },
+        "2級": {
+          "title": "Princess Aiko Returns to Japan After Official Singapore Visit",
+          "text": "Princess Aiko, the eldest daughter of the Emperor and Empress of Japan, has been visiting Singapore for her official duties and engagements. While in the country, she made a special visit to the Merlion Park, which serves as an important national symbol of Singapore and is widely recognized by visitors from around the world. Princess Aiko has successfully completed her five-day itinerary abroad, engaging in various diplomatic activities designed to strengthen international ties. Today, she will return to Japan, wrapping up a significant journey that highlighted her official visit and cultural exchanges in the island nation. Observers have noted that her presence during this trip has been extremely well received, creating positive impressions and fostering mutual understanding. As she concludes this important chapter of her international schedule, people across Japan are preparing to welcome her back home safely following her successful overseas mission.",
+          "wordCount": 143
+        },
+        "準1級": {
+          "title": "Princess Aiko Concludes Five-Day Official Visit to Singapore and Returns to Japan",
+          "text": "Princess Aiko, who is the eldest daughter of the Emperor and the Empress of Japan, has successfully concluded her official visit to the nation of Singapore. During her time abroad in the island nation, Princess Aiko made a scheduled visit to the well-known Merlion Park, which serves as a prominent national symbol of Singapore and is widely recognized by people around the world. Princess Aiko spent a total of five days fulfilling her itinerary and engaging in official duties during the diplomatic journey. Having completed her busy schedule in Singapore, Princess Aiko is scheduled to return to Japan today. Her journey has drawn significant public attention and media coverage across the country, as citizens and observers follow the final details of her overseas trip. The visit highlights her growing royal responsibilities and her role in international engagement. As Princess Aiko prepares to depart from Singapore and head back to Japan today, people throughout the nation are reflecting on her successful overseas schedule and preparing to welcome her home following the conclusion of her productive five-day stay abroad in the island nation.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261121de79551"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-21-bigmotor-insurance-culture",
+      "date": "2026-11-21",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "Bigmotor",
+        "insurance",
+        "business-culture"
+      ],
+      "titleJa": "損保の文化と不祥事",
+      "title": "Why Insurance Scandals Happen",
+      "summaryJa": "損害保険会社には、個別の専門性を重視する文化と、大量の契約を標準化して販売する文化の二つが内在しており、それが不祥事の背景にあると指摘されています。",
+      "sourcePublishedAt": "2026-11-21T02:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "損害保険会社が抱える二つの文化の違いを理解し、今後の業界に必要な改善策を考える。",
+        "followUpJa": "あなたは保険会社の経営者です。二つの文化のバランスを取るために最初にどの部門を見直しますか？",
+        "questions": {
+          "5級": "What are the two cultures in insurance?",
+          "4級": "Why do non-marine insurance companies sell many contracts?",
+          "3級": "How do marine and non-marine insurance cultures differ?",
+          "準2級": "What role does the Law of Large Numbers play in retail insurance?",
+          "2級": "How do historical roots affect wholesale and retail insurance departments today?",
+          "準1級": "In what ways do distinct internal cultures and structural conflicts contribute to insurance scandals?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Two Cultures",
+          "text": "Insurance companies have two cultures. One is for ships. It is special. The other is for cars and houses. It sells many contracts. This culture is very big today. People can see different styles inside the same company.",
+          "wordCount": 38
+        },
+        "4級": {
+          "title": "Insurance Culture",
+          "text": "Non-life insurance companies have two old cultures. One comes from marine insurance. Workers look at each ship and talk about risks. The other comes from fire and car insurance. It uses standard rules for many people. Today, most business is the second type. Workers often feel confused when they move between these two different departments.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Inside Insurance",
+          "text": "Property and casualty insurance companies have historically maintained two distinct cultures. The first originates from marine insurance, where underwriters carefully assess unique risks for ships and cargo. The second comes from fire and automobile insurance, which relies on standardized rules and sells many contracts under identical conditions. Today, marine insurance represents only a small percentage of the market. Most employees work in the retail sector, inheriting the mass-market culture. Moving between these two departments often creates confusion for staff members within the company.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Cultures of Insurance",
+          "text": "Property and casualty insurance companies have historically maintained two distinct internal cultures. The first comes from marine insurance, where risks vary and underwriters carefully negotiate terms for each ship or cargo item. This requires high specialization. The second originates from fire and automobile insurance, which relies on standardized terms and uniform rates to sell numerous contracts under identical conditions. Today, marine insurance represents only a tiny fraction of the market, while mass-market non-marine insurance dominates. Corporate sales maintain the marine tradition, while regional retail sales follow the standardized model. Employees who move between these departments often feel confused by the stark cultural differences, which can influence company practices and compliance issues across the entire organization.",
+          "wordCount": 115
+        },
+        "2級": {
+          "title": "Understanding Insurance Scandals",
+          "text": "Recent discussions surrounding insurance scandals suggest that the root causes lie deep within the internal culture of non-life insurance companies. Historically, two distinct cultures have coexisted within these firms. One derives from marine insurance, which handles unique risks for ships and cargo, requiring individual assessment and expert negotiation based on professional expertise. The other stems from fire and automobile insurance, characterized by standardized clauses and uniform rates designed to sell large volumes of contracts under identical conditions. Although the marine segment has shrunk to just a few percentage points of today's market, both traditions survive within the organization. Wholesale corporate sales inherit the marine culture, while retail regional sales carry on the mass-market approach. Employees transferred between departments frequently experience confusion due to these contrasting environments. Recognizing these internal dynamics helps explain why governance issues and scandals continue to surface within the insurance industry today.",
+          "wordCount": 145
+        },
+        "準1級": {
+          "title": "The Duality of Insurance Culture",
+          "text": "An examination of recent insurance industry scandals reveals that internal corporate culture plays a critical role in shaping business practices. Historically, property and casualty insurance companies have housed two fundamentally different operational cultures. The first originates from marine insurance, where risks associated with ships and cargo vary considerably, requiring underwriters to evaluate each case individually and negotiate specific terms and rates based on deep professional expertise. Conversely, the second culture derives from fire and automobile insurance, which standardizes policy provisions and pricing to market numerous contracts uniformly under identical conditions. In the modern insurance market, marine insurance has contracted to a mere fraction of total volume, leaving mass-market non-marine insurance to dominate the industry. Nevertheless, both traditions persist today, with wholesale corporate sales preserving the specialized marine approach and regional retail sales maintaining the standardized, volume-driven model. Staff members who transition between these distinct departments often struggle with the profound cultural divide. Experts argue that understanding how these contrasting internal environments and structural pressures coexist is essential for analyzing the underlying causes of industry-wide governance failures and recurring scandals.",
+          "wordCount": 179
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/965194?display=b"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-21-comedian-yoichi-okano-father-passing-gamble-free-days",
+      "date": "2026-11-21",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Yoichi Okano",
+        "radio",
+        "family",
+        "gambling"
+      ],
+      "titleJa": "岡野陽一が父の死を告白",
+      "title": "Comedian Yoichi Okano Shares Story of His Late Father and 49 Days Without Gambling",
+      "summaryJa": "お笑い芸人の岡野陽一がラジオ番組で9月に父親が亡くなったことを明かし、真面目だった父を偲んで27年ぶりに私的ギャンブルを49日間断ったエピソードを語りました。",
+      "sourcePublishedAt": "2026-11-21T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "記事を読んで、岡野陽一さんが亡くなったお父様のために何を決意し実行したかを確認し、大切な人のために行動することの意味について考えましょう。",
+        "followUpJa": "もしあなたが大切な人のために何かを我慢するとしたら、どのようなことに挑戦したいですか。",
+        "questions": {
+          "5級": "Did Yoichi Okano stop gambling for 49 days?",
+          "4級": "Why did Yoichi stop gambling during the 49 days?",
+          "3級": "What kind of person was Yoichi's father according to the story?",
+          "準2級": "How did Yoichi feel about his father's reaction when his father was beaten years ago?",
+          "2級": "What unexpected lifestyle change did Yoichi experience during his 49 days without gambling?",
+          "準1級": "How did Yoichi's perspective on his father's past actions evolve as he grew older?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Yoichi's Father",
+          "text": "Comedian Yoichi Okano has a radio show. He said a sad thing on his show. His father passed away in September. Yoichi loved his father very much. His father was a very kind and serious man. Yoichi never had an angry word from him. Yoichi wanted to do something special for his late father.",
+          "wordCount": 54
+        },
+        "4級": {
+          "title": "A Big Promise",
+          "text": "Yoichi Okano talked about his father on his radio show. His father died in September. Yoichi had a habit of gambling for twenty-seven years. But he made a big decision. He decided to stop private gambling for forty-nine days. He wanted to remember his serious father. It was hard, but he did not buy any horse racing tickets on the train.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "A Special Promise for His Father",
+          "text": "Japanese comedian Yoichi Okano shared a personal story on his radio program. He revealed that his father passed away in September. His father was an honest and gentle man who never scolded Yoichi. To honor his late father, Yoichi decided to stop private gambling for forty-nine days. He had continued gambling since he was eighteen years old. During these forty-nine days without private gambling, he experienced a strange change in his daily life because he usually used horse racing to know the weekend.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Memories of a Gentle Father",
+          "text": "Comedian Yoichi Okano recently shared a touching story on his radio show about his late father, who passed away in September. Yoichi recalled that his father was a peaceful man who never scolded him, even when drinking alcohol. He also remembered an incident when his father was punched by someone but refused to fight back. Although Yoichi thought it was weak at the time, he now deeply respects his father's quiet strength. To honor his father, who lived a very honest life without gambling, Yoichi made a firm decision to stop his own private gambling for forty-nine days after his father passed away.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Comedian Yoichi Okano Reflects on Father's Passing",
+          "text": "Japanese comedian Yoichi Okano revealed on his radio program that his father passed away in September. Reflecting on his father's life, Yoichi described him as an honest and calm man who never scolded his children, even after drinking alcohol. He shared a memorable story from his youth when his father was assaulted by an unknown person but chose not to retaliate or fight back. Although young Yoichi found this reaction disappointing at the time, he now respects his father's restraint as a sign of true maturity and dignity. To honor his father, who lived a serious life completely free of private gambling, Yoichi made a firm decision to stop his own private gambling habits for a period of forty-nine days. During this unique time, without horse racing to mark the passing of the weekends, he found himself taking walks, spending quiet time with his dog, and experiencing a completely new daily routine.",
+          "wordCount": 152
+        },
+        "準1級": {
+          "title": "Yoichi Okano Honors Late Father Through Forty-Nine Days Without Gambling",
+          "text": "Comedian Yoichi Okano candidly shared a deeply personal and emotional revelation on his radio program, announcing that his father had passed away in September. Describing his father as a remarkably serious and gentle person, Okano noted that he had never once been scolded by him throughout his life. He recounted a memorable episode from his youth when his father returned home with a bruised face after being assaulted, yet refused to seek revenge or return the violence. While Okano initially viewed this peaceful response as weakness, the passage of time transformed his perspective, fostering a profound sense of respect for his father's quiet dignity. Inspired by his father, who lived an honest life entirely detached from gambling, Okano made a resolute commitment to abstain from his own private gambling habits for the traditional forty-nine-day mourning period. Despite initial temptations during his train travels, he resisted placing bets. This temporary departure from gambling altered his perception of time, causing him to lose track of weekends and prompting new hobbies such as walking his dog and buying clothes. Okano ultimately expressed gratitude for the experience, feeling that he had successfully honored his father's memory.",
+          "wordCount": 192
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261121-5370431/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-21-idc-ai-investment-and-hiring-trends",
+      "date": "2026-11-21",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "AI",
+        "IDC",
+        "hiring",
+        "ROI"
+      ],
+      "titleJa": "AI成果企業の人員",
+      "title": "IDC Survey Shows Companies with High AI Returns Plan to Hire More Staff",
+      "summaryJa": "IDCの調査によると、AI投資で高い成果を上げている企業ほど、今後の人員増員を計画している割合が高いことが分かった。",
+      "sourcePublishedAt": "2026-11-21T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "AI導入が進む企業がなぜ人員を増やすのか、その背景を理解し今後のキャリア戦略に役立てるため。",
+        "followUpJa": "あなたの職場やキャリアにおいて、AIとどのように協働すべきだと思いますか？",
+        "questions": {
+          "5級": "Do companies with high AI returns want to hire more people?",
+          "4級": "According to the IDC survey, what do companies with high AI returns plan to do?",
+          "3級": "Why do organizations that get high ROI from AI expect to increase their staff?",
+          "準2級": "How do leaders who achieve high ROI from AI differ from other companies regarding entry-level hiring?",
+          "2級": "What common belief about AI and workforce reduction does the IDC survey challenge?",
+          "準1級": "How does the IDC report explain the relationship between AI implementation success and the expansion of entry-level roles?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "AI and Jobs",
+          "text": "Many people think AI makes jobs go away. But a new IDC study has a different result. Companies with good AI results want to hire more workers. They have high ROI from AI. They plan to grow their teams in the future. AI helps workers do more tasks. So, these companies need more people now.",
+          "wordCount": 55
+        },
+        "4級": {
+          "title": "IDC Survey Results",
+          "text": "A common belief is that AI will reduce the number of workers in companies. However, a new report by IDC shows a different result. Organizations that get high returns on investment from AI actually plan to hire more staff. IDC calls these successful companies leaders. These leaders want to increase their workers because AI helps them find new business areas and grow their operations.",
+          "wordCount": 64
+        },
+        "3級": {
+          "title": "Why Successful Companies Hire More",
+          "text": "Many people believe that artificial intelligence will reduce company staff. However, a recent IDC survey challenges this common idea. The research shows that organizations gaining high financial returns from AI are actually the ones planning to increase their employees. IDC calls these top groups leaders. Unlike lagging companies, these leaders do not cut entry-level jobs. Instead, they use AI to create new value, which means they need more human workers to handle growing business tasks and expand operations effectively today.",
+          "wordCount": 80
+        },
+        "準2級": {
+          "title": "Challenging the Myth of Workforce Reduction",
+          "text": "The common belief that widespread AI adoption will inevitably lead to massive workforce reductions has been challenged by a new IDC survey. According to the research, organizations achieving the highest return on investment from AI are the most likely to expand their teams. IDC classifies these top-performing companies as leaders. While some lagging organizations cut entry-level positions, AI leaders continue to grow their staff across various levels, including entry-level, middle management, and senior management. This data suggests that AI does not eliminate the need for human labor. Instead, it shifts the focus of work, creating new opportunities and tasks that require more people to execute effectively in modern business.",
+          "wordCount": 109
+        },
+        "2級": {
+          "title": "IDC Study Reveals Truth Behind AI and Hiring",
+          "text": "A widespread assumption in the modern business world is that as artificial intelligence automates tasks, corporate headcounts will naturally decline. However, a comprehensive survey by IDC reveals a surprising contradiction to this theory. Organizations that have secured the highest return on investment from AI are actually the most likely to project future staff increases. IDC refers to these high-performing organizations as leaders. The survey data shows that while lagging companies often reduce entry-level personnel, AI leaders continue hiring across all organizational tiers, including entry-level, middle, and upper management. Rather than replacing human workers entirely, AI alters the nature of work. Companies that successfully leverage artificial intelligence find new areas of business growth, meaning their need for human labor does not disappear. Instead, technology handles specific tasks, allowing employees to focus on broader strategies, new business domains, and expanded operations.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "IDC Survey Shows Companies with High AI Returns Plan to Hire More Staff",
+          "text": "The widespread assumption that artificial intelligence adoption will lead directly to corporate downsizing has been challenged by recent research from IDC. According to their survey data, organizations achieving high financial returns from artificial intelligence investments are paradoxically the most inclined to project future workforce expansions. IDC designates these high-performing entities as leaders, distinguishing them from lagging counterparts. While struggling firms frequently curtail entry-level personnel in response to automation, artificial intelligence leaders maintain robust hiring pipelines across diverse organizational echelons, from frontline staff to middle and senior management. The IDC report posits that artificial intelligence does not simply supplant human labor in a zero-sum substitution. Instead, it redefines the very nature of operational tasks and responsibilities within modern businesses. Successful artificial intelligence implementation enables enterprises to scale their business domains, thereby generating new responsibilities that necessitate human oversight, strategic allocation, and collaborative execution. Consequently, the IDC research underscores that technological integration enhances productivity without diminishing the fundamental demand for human ingenuity across modern industries. IDC notes that organizations gaining exceptional financial returns from artificial intelligence continue expanding their teams because artificial intelligence helps them unlock new business potential and manage growing operational demands effectively today.",
+          "wordCount": 194
+        }
+      },
+      "sources": [
+        {
+          "name": "ITmedia AI+",
+          "url": "https://www.itmedia.co.jp/enterprise/articles/2611/21/news003.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-21-price-undisputed-champion",
+      "date": "2026-11-21",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "boxing",
+        "welterweight",
+        "undisputed"
+      ],
+      "titleJa": "ローレン・プライスが歴史的…",
+      "title": "Price makes boxing history",
+      "summaryJa": "ローレン・プライス選手がミカエラ・コタスコバ選手を破り、ウェルター級の主要4団体統一王者となりました。",
+      "sourcePublishedAt": "2026-11-20T23:30:56.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "プライス選手が歴史的な勝利を収めた試合の詳細と、今後の展望について理解する。",
+        "followUpJa": "プライス選手の次の対戦相手の噂や、試合の規模についてさらに調べてみましょう。",
+        "questions": {
+          "5級": "Who won the boxing match?",
+          "4級": "What title did Lauren Price win in Cardiff?",
+          "3級": "How many professional wins does Price have now?",
+          "準2級": "Why was this victory a historic moment for Welsh boxing?",
+          "2級": "What specific career milestone and future stadium fight possibility are mentioned for Price?",
+          "準1級": "How did the atmosphere in the arena and the presence of former boxing greats underline the significance of Price's achievement?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Price Wins Match",
+          "text": "Lauren Price is a great boxer. She fought Michaela Kotaskova in Wales. Price won the fight. She is now the undisputed world champion. Many fans cheered for her. Price has eleven wins and zero losses. She is very happy.",
+          "wordCount": 39
+        },
+        "4級": {
+          "title": "Lauren Price Wins Big Match",
+          "text": "Lauren Price made boxing history in Cardiff. She fought against Michaela Kotaskova in a big match. Price won every round of the contest. She now holds all four major world titles in the welterweight division. Price is the first Welsh fighter to reach this amazing milestone. Her professional record is now eleven wins with no losses at all.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "Historic Win in Cardiff",
+          "text": "On a thrilling night in Cardiff, Lauren Price dominated Michaela Kotaskova to become the undisputed world welterweight champion. Price won every single round on the judges' scorecards in front of a sell-out crowd. This important victory adds the WBO title to her collection, making her the first Welsh fighter to hold all four major belts simultaneously. With eleven professional wins and zero losses, her impressive legacy continues to grow.",
+          "wordCount": 69
+        },
+        "準2級": {
+          "title": "Price Claims Undisputed Crown",
+          "text": "Lauren Price cemented her legendary status by defeating Michaela Kotaskova at the Utilita Arena in Cardiff. The thirty-two-year-old displayed an unrelenting pace, winning every round from every judge to secure the WBO title and become the undisputed world welterweight champion. She is the first fighter from Wales to achieve the remarkable feat of holding all four major world titles at the same time. Having extended her perfect professional record to eleven victories, Price celebrated in the ring as fans and former Welsh world champions watched the historic moment unfold. This incredible success has sparked immediate discussions about her future, with fans and experts looking forward to what she will accomplish next in her remarkable boxing career.",
+          "wordCount": 116
+        },
+        "2級": {
+          "title": "Price Becomes Undisputed Welterweight Champion",
+          "text": "Lauren Price delivered a commanding performance against Michaela Kotaskova in Cardiff, securing a unanimous, shut-out decision to become the undisputed world welterweight champion. The victory added the WBO belt to her collection, establishing her as the first Welsh fighter to hold all four major world titles simultaneously. Price maintained an unrelenting pace throughout the contest, and though she could not force a stoppage against the stubborn Kotaskova, she won every round from every judge in front of a partisan crowd. This triumph extends her professional record to eleven wins and highlights her status among the elite in the sport, building upon her previous success as an Olympic and amateur world champion. Discussions have already begun regarding a potential stadium fight next summer against five-weight world champion Claressa Shields, as Price looks toward even bigger stages and challenges. Former Welsh world champions were present in the stands to witness the historic occasion, acknowledging her remarkable achievement as the capacity crowd celebrated long into the night.",
+          "wordCount": 164
+        },
+        "準1級": {
+          "title": "Price Makes History as Undisputed Champion in Cardiff",
+          "text": "Inside an electric, sold-out Utilita Arena in Cardiff, Lauren Price produced a relentless masterclass against Michaela Kotaskova to clinch a unanimous, shut-out decision and etch her name firmly into boxing history. By successfully securing the WBO title, the thirty-two-year-old Olympic and amateur world champion became the very first Welsh fighter to hold all four major world titles concurrently. Lauren Price dominated every single round with unrelenting pressure, stamina, and technical expertise, extending her immaculate professional record to eleven victories from eleven professional fights without a single defeat. The immense magnitude of her historic achievement was witnessed by several former Welsh world champions in attendance, including Steve Robinson, Barry Jones, and Joe Cordina, who were present in the stands to acknowledge her rare and unprecedented status. Champions recognize champions, and the presence of these former boxing greats highlighted the true significance of the milestone. As celebratory cheers echoed through the arena amidst passionate displays of national pride, attention swiftly turned toward future aspirations, including a potential blockbuster stadium fight against multi-weight champion Claressa Shields next summer as Lauren Price looks to conquer even bigger stages. The packed crowd celebrated long into the night, fully recognizing the exceptional talent and enduring legacy of the fighter who has brought unprecedented glory to Welsh boxing.",
+          "wordCount": 211
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/boxing/articles/cw808y2lrkzxo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-21-sapporo-assault-arrest-2026",
+      "date": "2026-11-21",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Sapporo",
+        "police",
+        "arrest"
+      ],
+      "titleJa": "札幌で同僚暴行、男逮捕",
+      "title": "Man Arrested in Sapporo for Assaulting Co-worker",
+      "summaryJa": "札幌市北区の飲食店で、同僚の男性の顔を殴ったとして、バングラデシュ国籍の男が暴行の疑いで逮捕されました。",
+      "sourcePublishedAt": "2026-11-21T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "事件の経緯と警察への相談のタイミングを正しく理解し、被害者の行動が事件発覚にどうつながったか判断する。",
+        "followUpJa": "もしあなたが被害者の立場なら、被害を受けたあとどのくらいで警察に相談すべきだと思いますか？",
+        "questions": {
+          "5級": "Who was arrested in Sapporo?",
+          "4級": "Where did the assault happen?",
+          "3級": "When did the victim go to the police station to talk about the attack?",
+          "準2級": "What did the suspect say to the police after his arrest?",
+          "2級": "How many days passed between the incident and the victim visiting the police station?",
+          "準1級": "Based on the investigative details, what specific factors led the police to arrest the suspect on November 20?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Man Arrested",
+          "text": "A man is in trouble. He is fifty years old. He lives in Sapporo. Police caught him on November twenty. He can not work now. They think he hit his friend at a shop. The friend is from Nepal. The man says he did not do it. Police want to know more.",
+          "wordCount": 52
+        },
+        "4級": {
+          "title": "Man Arrested for Assault",
+          "text": "Police in Sapporo arrested a fifty-year-old man from Bangladesh. The man has no job. On November twelve, he was at a restaurant in Kita Ward. Police think he hit his co-worker in the face. The victim is a man from Nepal in his thirties. Four days later, the victim went to the police. The suspect says he is not guilty.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Man Arrested in Sapporo for Assault",
+          "text": "Police in Sapporo arrested a fifty-year-old unemployed man from Bangladesh on November twenty. Officers say he attacked his co-worker at a local restaurant on November twelve. The victim is a man from Nepal in his thirties. The suspect allegedly hit the victim in the face with his bare hand. The victim went to the police station four days later to report the crime. When officers questioned him, the suspect denied the charge, saying he did not hit anyone. Police are continuing their investigation.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Worker Arrested for Restaurant Assault in Sapporo",
+          "text": "Japanese police have arrested a fifty-year-old unemployed man from Bangladesh living in Sapporo. He is accused of assaulting his co-worker, a Nepalese man in his thirties. The incident allegedly occurred inside a restaurant in Kita Ward on the morning of November twelve. According to investigators, the suspect struck the victim in the face with his bare hand without using any weapons. The case came to light four days later when the victim visited a police station to report the attack. Following their investigation, officers arrested the suspect on November twenty. During questioning, the man denied the allegations, stating that he never hit the victim. Authorities are now investigating the exact background and motive behind the altercation.",
+          "wordCount": 116
+        },
+        "2級": {
+          "title": "Sapporo Police Arrest Unemployed Man for Co-worker Assault",
+          "text": "The Kita Police Station in Sapporo has arrested a fifty-year-old unemployed Bangladeshi national on suspicion of assault. The suspect, who resides in Sapporo's Kita Ward, is accused of striking a Nepalese co-worker in his thirties in the face. The incident took place at a restaurant in Kita-14-jo on the morning of November twelve. Investigators stated that the suspect used his bare hand to deliver a single blow and that no weapons were involved in the attack. The assault was discovered four days later, on November sixteen, when the victim visited the police station to report that he had been attacked by a colleague. Subsequent police investigations led to the suspect's arrest on November twenty. Under questioning, the man denied the charges, telling investigators that he did not hit the victim. Police plan to examine the detailed circumstances and motives surrounding the incident.",
+          "wordCount": 143
+        },
+        "準1級": {
+          "title": "Bangladesh National Arrested in Sapporo Following Restaurant Assault Allegations Involving Co-worker",
+          "text": "Authorities in Hokkaido at the Kita Police Station have formally apprehended a fifty-year-old unemployed man of Bangladeshi nationality who resides in Sapporo's Kita Ward, following serious allegations that he physically assaulted a colleague inside a local establishment. According to the comprehensive police investigation, the incident transpired on the morning of November twelfth, specifically around ten-twenty, within a restaurant located in Kita-14-jo within Sapporo's Kita Ward. During this confrontation, the suspect allegedly struck a Nepalese man in his thirties, who was his co-worker, directly in the face. Investigators confirmed that the assault involved a single blow delivered with a bare hand, and importantly, no weapons or dangerous instruments were utilized during the altercation. The entire incident remained publicly unknown until four days later, on November sixteenth, when the victim courageously walked into a police station to disclose that he had been attacked by his colleague. This crucial disclosure prompted an intensive and formal police investigation that successfully culminated in the suspect's arrest on November twentieth. Throughout all subsequent police questioning and formal interrogations, the man has firmly and consistently denied the accusations, maintaining before officers that he did not commit the assault. Law enforcement officials are currently pursuing further inquiries and examining detailed background circumstances to fully clarify the precise timeline, events, and underlying motives of the dispute.",
+          "wordCount": 218
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63782"
+        }
+      ]
+    },
     {
       "id": "2026-11-20-arsenal-lyon-champions-league",
       "date": "2026-11-20",
