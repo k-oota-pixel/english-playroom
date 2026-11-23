@@ -1,13 +1,438 @@
 {
-  "generatedAt": "2026-11-21T15:18:53.552Z",
-  "editionDate": "2026-11-22",
+  "generatedAt": "2026-11-23T01:38:20.897Z",
+  "editionDate": "2026-11-23",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-22"
+    "lastSuccessfulEdition": "2026-11-23"
   },
   "articles": [
+    {
+      "id": "2026-11-23-amazon-shipping-labels-nyc",
+      "date": "2026-11-23",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "business"
+      ],
+      "tags": [
+        "Amazon",
+        "NYC",
+        "Delivery Protection Act"
+      ],
+      "titleJa": "Amazonが配送保護法に…",
+      "title": "Amazon Starts Putting Warning Labels on Packages Against NYC Shipping Law",
+      "summaryJa": "ニューヨーク市議会で審議中の配送保護法に対抗するため、Amazonが配送物に「追加料金がかかる可能性がある」とするラベルを貼り始めています。",
+      "sourcePublishedAt": "2026-11-23T01:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "Amazonの新しい抗議行動とニューヨーク市での法案について理解し、企業がどのように世論に働きかけているかを考察する。",
+        "followUpJa": "もしあなたがニューヨーク市民なら、Amazonのこのラベルを見てどう行動しますか？",
+        "questions": {
+          "5級": "What is Amazon putting on boxes in New York?",
+          "4級": "Why is Amazon putting warning labels on its packages?",
+          "3級": "What does the Delivery Protection Act want to do in New York City?",
+          "準2級": "How much extra fee does the label say customers might need to pay per order?",
+          "2級": "What threat has Amazon made regarding its warehouses if the new shipping protection law is passed?",
+          "準1級": "In what ways do city officials criticize Amazon's recent labeling strategy and app notifications regarding the proposed legislation?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Amazon Puts Labels on Boxes",
+          "text": "Amazon has a new idea. It puts labels on boxes. The labels are in New York. They talk about a new law. The law is from the city council. Amazon does not like this new law. The company wants people to know about it. Customers can see the labels on their packages now.",
+          "wordCount": 53
+        },
+        "4級": {
+          "title": "Amazon Labels Packages in New York",
+          "text": "Amazon is fighting a new law in New York City. The city council is talking about a shipping protection law. This law could stop Amazon from using some delivery partners. Amazon is very unhappy. Now, the company is putting labels on boxes. The labels say that orders might cost up to five dollars more. Amazon wants to make customers worried and stop the new law.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Amazon Fights New NYC Shipping Law with Labels",
+          "text": "Amazon is taking new steps to fight a proposed law in New York City. The city council is discussing the Delivery Protection Act. This law could break up Amazon's delivery partner programs. To protest, Amazon has started putting special labels on its packages. The labels warn customers that the city council might add up to five dollars to every order. Amazon hopes this message will turn public opinion against the new law and protect its delivery system. The company wants to show people how the proposed rules could negatively affect their everyday shopping experiences across the entire city.",
+          "wordCount": 98
+        },
+        "準2級": {
+          "title": "Amazon Places Warning Labels on Packages to Protest NYC Shipping Bill",
+          "text": "Amazon is launching a new campaign against a proposed law in New York City. The Delivery Protection Act aims to stop Amazon's delivery partner programs by requiring new safety and employment standards for local warehouses. Opponents argue that Amazon avoids proper employment responsibilities, while Amazon warns the bill will hurt workers and delay deliveries. To protest, Amazon has begun putting labels on its shipping boxes. These labels warn customers that the city council might charge an extra five dollars per order. City officials have criticized Amazon, accusing the company of trying to threaten and intimidate the council through these public awareness tactics.",
+          "wordCount": 102
+        },
+        "2級": {
+          "title": "Amazon Uses Package Labels and App Notifications to Fight New York City Shipping Bill",
+          "text": "As the New York City Council considers the Delivery Protection Act, Amazon is using creative tactics to oppose the legislation. The proposed law aims to regulate warehouses and delivery operations, which could dismantle Amazon's delivery partner programs. Critics and labor unions argue that Amazon uses these programs to avoid labor and safety responsibilities. In response, Amazon has started attaching warning labels to physical packages and displaying notifications on its mobile app and website. These messages claim that the city council could add an extra five dollars to every customer order if the law passes. Furthermore, Amazon warns that if the bill is passed, its deliveries will become slower and more expensive, and it has threatened to move its warehouses outside the city. Meanwhile, city officials and council leaders have strongly condemned Amazon's actions, calling them an attempt to intimidate local government and frighten residents.",
+          "wordCount": 144
+        },
+        "準1級": {
+          "title": "Amazon Deploys Package Labels and Warnings in High-Stakes Battle Over New York City Shipping Legislation",
+          "text": "In an escalating clash with municipal authorities, Amazon has initiated a public awareness campaign by affixing warning labels to packages delivered across New York City. The friction centers on the newly proposed Delivery Protection Act currently under review by the City Council, which seeks to mandate stricter operational permits and employment standards for local fulfillment facilities. Proponents and labor unions argue that Amazon's current reliance on independent contractors and delivery partner networks allows the tech giant to evade direct legal and financial liability for its workforce. Conversely, Amazon contends that the legislation would disrupt established contracts, jeopardize thousands of local jobs, and severely degrade delivery efficiency. To sway public sentiment, the company has leveraged its digital platforms and physical packaging, featuring notices that warn consumers of potential five-dollar surcharges per order should the bill be enacted. The company also threatens to move its warehouses outside the city if the law passes. While city officials have dismissed these tactics as coercive intimidation designed to frighten residents and bully the council, the fierce political battle highlights ongoing tensions regarding gig-economy regulations and corporate responsibility.",
+          "wordCount": 182
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261123-amazon-complaining-nyc-council-shipping-labels/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-23-hobonichi-techo-mexico-popularity",
+      "date": "2026-11-23",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hobonichi Techo",
+        "Mexico",
+        "Stationery",
+        "Business"
+      ],
+      "titleJa": "ほぼ日手帳が海外で大人気",
+      "title": "Hobonichi Techo Becomes a Big Hit in Mexico and Worldwide",
+      "summaryJa": "デジタル時代にもかかわらず、紙の「ほぼ日手帳」が世界中で114万部を売り上げ、その6割を海外売上が占める驚きの成長戦略に迫ります。",
+      "sourcePublishedAt": "2026-11-22T21:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "スマホ時代になぜ紙の手帳が海外で売れているのか、その理由を見つけ出そう。",
+        "followUpJa": "あなたの周りでは、スケジュール管理に紙とデジタルのどちらを使っていますか？",
+        "questions": {
+          "5級": "Where is the Hobonichi Techo very popular now?",
+          "4級": "How many copies does the Hobonichi Techo sell in total?",
+          "3級": "What percentage of sales does the overseas market make up?",
+          "準2級": "Why do people around the world love the Hobonichi Techo in the digital age?",
+          "2級": "What specific features and user activities help the Hobonichi Techo spread across global markets?",
+          "準1級": "How has the Hobonichi Techo achieved a 60% overseas sales ratio despite the dominance of smartphones?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Hobonichi Techo in Mexico",
+          "text": "Look at the Hobonichi Techo. It is a paper planner from Japan. It is very popular in Mexico now. Many people love to use it. They can write plans every day. Paper planners are good.",
+          "wordCount": 35
+        },
+        "4級": {
+          "title": "A Popular Japanese Planner",
+          "text": "The Hobonichi Techo is a famous paper planner from Japan. Today, it is very popular in Mexico. People can write their daily plans in it. Why do they like paper in the smartphone age? The planner has a free layout and nice covers. Users share pictures on social media. That helps it grow and makes many people happy around the world.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Why Paper Planners Sell Well",
+          "text": "In the digital age, the paper Hobonichi Techo is very popular around the world. It sells 1.14 million copies in total. Interestingly, overseas sales make up 60 percent of the total. What is the secret behind this big success? Users love the one-page-per-day layout and colorful covers. Furthermore, fans share their decorated pages on social media. This natural online spread helps the Japanese planner win many fans globally.",
+          "wordCount": 66
+        },
+        "準2級": {
+          "title": "The Global Success of Hobonichi Techo",
+          "text": "Despite the dominance of smartphones, the Japanese paper planner known as the Hobonichi Techo continues to achieve explosive popularity worldwide. It sells 1.14 million copies annually, with overseas sales accounting for an impressive sixty percent of the total market. This success comes from unique features like a free one-page layout per day and a wide variety of attractive covers. Moreover, enthusiastic users share pictures of their customized pages on social media platforms. This user-driven communication drives global enthusiasm and explains why a traditional paper product thrives in our modern digital era.",
+          "wordCount": 90
+        },
+        "2級": {
+          "title": "Inside the Worldwide Popularity of Hobonichi Techo",
+          "text": "In an era dominated by smartphones and digital calendars, the physical paper planner called the Hobonichi Techo enjoys explosive popularity across the globe. Total sales have reached 1.14 million copies, with overseas sales accounting for a remarkable sixty percent of that figure. Several key factors drive this international phenomenon, including a notable surge in popularity in countries like Mexico. Users appreciate the flexible one-page-per-day layout and the extensive collection of creative covers. Additionally, fans actively share their customized layouts on social media networks. This organic user-generated promotion creates a powerful global community, proving that a traditional paper product can still achieve massive commercial success in modern markets. The brand continues to expand its reach internationally by connecting with enthusiastic customers who value personal expression and tactile writing experiences. Through thoughtful design and community engagement, the planner maintains its strong position in households and offices worldwide, bridging cultural divides through shared creativity and daily journaling routines that bring people together across borders and continents.",
+          "wordCount": 162
+        },
+        "準1級": {
+          "title": "The Secret Behind Hobonichi Techo's Global Boom",
+          "text": "At a time when digital applications and smartphones govern everyday scheduling, the paper-based Hobonichi Techo defies conventional expectations by achieving a staggering global following. With total sales reaching 1.14 million copies, an extraordinary sixty percent of this revenue stems from international markets, including a striking surge in popularity in countries like Mexico. This remarkable cross-border appeal is rooted in several deliberate design choices and cultural dynamics. The planner offers a liberating one-page-per-day layout and a rich variety of artistic covers that resonate with diverse personal aesthetics. Crucially, the brand relies heavily on organic advocacy, as dedicated users enthusiastically showcase their customized journals across various social media platforms. This grassroots engagement transforms individual creativity into a powerful international marketing engine, illuminating how tactile stationery can transcend cultural boundaries and thrive brilliantly in a hyper-connected digital landscape. Furthermore, the dedication of the community ensures that word-of-mouth recommendations continue to fuel its steady growth without traditional advertising campaigns dominating the strategy. By understanding what global consumers truly desire in their personal organization tools, the company behind the planner has unlocked a sustainable model for international expansion that keeps physical stationery relevant and deeply cherished by modern users everywhere.",
+          "wordCount": 194
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/964868"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-23-hokkaido-bear-highway-2026",
+      "date": "2026-11-23",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "brown-bear",
+        "hokkaido",
+        "highway",
+        "safety"
+      ],
+      "titleJa": "道路にクマが出現",
+      "title": "Brown Bear Blocks Hokkaido Highway at Night",
+      "summaryJa": "北海道遠軽町の自動車専用道路でクマがうずくまり、一時通行止めとなりました。",
+      "sourcePublishedAt": "2026-11-23T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "夜間運転の安全を守るための具体的な行動を考えるため。",
+        "followUpJa": "夜間に道路で動物に遭遇した場合、どのように行動すべきか話し合ってみましょう。",
+        "questions": {
+          "5級": "What animal was on the road?",
+          "4級": "Where did the bear appear on the road?",
+          "3級": "What time did the driver call the police?",
+          "準2級": "Why did the police close the highway?",
+          "2級": "How long was the road closed because of the bear?",
+          "準1級": "What safety precautions do police recommend for drivers at night?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Bear on the Road",
+          "text": "A big bear was on a road in Hokkaido. It was night time. The bear stayed by the road. A driver saw the bear and called the police. No one was hurt. The road had to close for some hours. The police tell drivers to be careful at night.",
+          "wordCount": 49
+        },
+        "4級": {
+          "title": "Bear Stops Hokkaido Road",
+          "text": "A brown bear was seen on a highway in Hokkaido. A driver called the police at night. The driver saw the bear resting by the road. The car did not hit the bear. Police closed the road to keep people safe. The bear moved away after a few hours. Police ask drivers to be careful when driving at night before winter comes.",
+          "wordCount": 62
+        },
+        "3級": {
+          "title": "Highway Closed Due to Bear",
+          "text": "A brown bear caused a temporary road closure on a highway in Hokkaido. At around nine at night, a driver reported seeing a bear crouching by the roadside. Fortunately, the car did not hit the animal, and the driver was safe. Police arrived and closed the road for safety. After checking the area, they lifted the closure past one in the morning. Police remind drivers to be very careful at night.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "Brown Bear Forces Highway Closure",
+          "text": "A brown bear resting on a highway in Hokkaido caused a temporary road closure lasting about three and a half hours. The incident began around nine at night when a motorist spotted the bear crouching near the roadside and immediately called the emergency number. The car passed safely without hitting the animal. To ensure public safety, police closed a section of the expressway. Authorities searched the area with floodlights until they confirmed the bear was gone. Police note that bears become more active before winter hibernation and urge drivers to exercise caution at night.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "Highway Reopens After Bear Encounter",
+          "text": "A late-night encounter with a brown bear on a highway in Engaru, Hokkaido, resulted in a temporary road closure of approximately three and a half hours. According to police reports, a driver travelling along the expressway at around nine at night spotted a bear crouching near the lane and made an emergency call. The vehicle passed the animal without incident or injury. Responding to the report, police secured the area and implemented a road closure between specific interchanges for safety reasons. Officials tracked the bear's movements with the help of lighting vehicles until confirming it had left the area. The restriction was lifted early the next morning. Authorities point out that bears grow increasingly active ahead of their winter hibernation and advise motorists to remain vigilant, particularly during poor visibility at night.",
+          "wordCount": 132
+        },
+        "準1級": {
+          "title": "Highway Temporarily Closed After Brown Bear Sighting on Expressway",
+          "text": "A stretch of the Asahikawa-Monbetsu Expressway in Engaru, Hokkaido, experienced a temporary closure lasting roughly three and a half hours after a brown bear was spotted crouching near the roadway. The incident unfolded late at night when a motorist observing the conditions ahead noticed a brown bear measuring about one to one and a half meters in length crouching by the roadside in the lane heading toward Kitami, prompting an immediate call to emergency services. Fortunately, the vehicle bypassed the bear without contact, leaving the driver uninjured and safe. Law enforcement officers arrived at the scene to monitor the situation, eventually deciding to close a section of the expressway between the Maruseppu Interchange and the Shirataki Interchange starting around 9:30 p.m. to safeguard passing motorists. Authorities utilized specialized lighting equipment brought in by the Hokkaido Regional Development Bureau to inspect the area and track the animal's movements after it had relocated near an emergency telephone south of the initial sighting. Once confirmation was established in the early hours past 1 a.m. on November 23 that the bear had departed and no longer posed an immediate hazard, the road closure was officially lifted. Local law enforcement emphasizes that wildlife activity tends to peak as winter hibernation approaches, prompting an official warning for drivers to exercise heightened caution when navigating roadways during hours of limited visibility at night.",
+          "wordCount": 225
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63808"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-23-liverpool-red-card-luck",
+      "date": "2026-11-23",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "liverpool",
+        "manchester-united",
+        "premier-league",
+        "football"
+      ],
+      "titleJa": "リヴァプールの幸運",
+      "title": "Did Liverpool get lucky with a red card decision against Manchester United?",
+      "summaryJa": "マッチ・オブ・ザ・デイの解説者であるダニー・マーフィーとアシュリー・ヤングは、アンフィールドでのマンチェスター・ユナイテッド戦でレニー・ヨロが退場になった際、リヴァプールは運が良かったかもしれないと考えています。",
+      "sourcePublishedAt": "2026-11-22T23:59:59.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "サッカーの試合における審判の判定や運の要素について自分の意見を持つために読みましょう。",
+        "followUpJa": "試合の流れを変えた判定について、あなたはどう思いますか？クラスメイトと話し合ってみましょう。",
+        "questions": {
+          "5級": "Who got a red card early in the match at Anfield?",
+          "4級": "Which two pundits talked about the red card decision?",
+          "3級": "Why do the pundits think Liverpool were perhaps lucky in the match?",
+          "準2級": "At what minute did Manchester United's Leny Yoro receive a red card?",
+          "2級": "What specific match event do Match of the Day pundits Danny Murphy and Ashley Young analyze regarding Liverpool?",
+          "準1級": "How do pundits Danny Murphy and Ashley Young interpret the early red card incident involving Leny Yoro at Anfield?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Football Red Card",
+          "text": "Football is a great game. Liverpool played Manchester United. A player got a red card. It was early in the match. The player was Leny Yoro. Some pundits think Liverpool had good luck. They can talk about this big match now. It was at Anfield.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Was Liverpool Lucky?",
+          "text": "Football fans watched a big game between Liverpool and Manchester United. The match was played at Anfield. During the game, a big thing happened very early. Manchester United player Leny Yoro received a red card in the eighth minute. Match of the Day pundits Danny Murphy and Ashley Young talked about this moment. They believe that Liverpool were perhaps lucky with the referee's decision.",
+          "wordCount": 64
+        },
+        "3級": {
+          "title": "Pundits Discuss Red Card",
+          "text": "Football matches can change very quickly because of one big decision by the referee. Recently, Liverpool played against Manchester United at Anfield. During the eighth minute of the game, Manchester United player Leny Yoro was sent off with a red card. After the match, Match of the Day pundits Danny Murphy and Ashley Young discussed the incident. Both experts believe that Liverpool were perhaps lucky when this early red card happened. Many fans are still talking about the call now.",
+          "wordCount": 80
+        },
+        "準2級": {
+          "title": "Did Liverpool Get Lucky?",
+          "text": "English football games often feature controversial moments that spark long debates among fans and experts. During a high-profile match between Liverpool and Manchester United at Anfield, a major turning point occurred very early in the game. In the eighth minute, Manchester United defender Leny Yoro was shown a red card and sent off by the referee. Following the match, Match of the Day pundits Danny Murphy and Ashley Young analyzed the critical incident on television. Both analysts expressed the belief that Liverpool were perhaps lucky to benefit from the referee's early decision against their traditional rivals in this important fixture.",
+          "wordCount": 100
+        },
+        "2級": {
+          "title": "Analyzing the Early Red Card at Anfield",
+          "text": "In the fast-paced world of English football, referee decisions can heavily influence the final outcome of any important match. A prime example occurred during a tense encounter between bitter rivals Liverpool and Manchester United at Anfield. Only eight minutes into the game, Manchester United player Leny Yoro received a red card and had to leave the field. This early dismissal quickly became the main talking point of the fixture for supporters and analysts alike. Match of the Day pundits Danny Murphy and Ashley Young reviewed the critical play after the final whistle. Both former players believe that Liverpool were perhaps lucky when the official sent Yoro off, suggesting that the decision might have unexpectedly favored the home side and shaped the rest of the game in a significant way. Fans across the country continue to debate whether the referee made the correct call during this high-stakes Premier League clash.",
+          "wordCount": 149
+        },
+        "準1級": {
+          "title": "Evaluating Match-Changing Decisions in the Premier League",
+          "text": "The margin between victory and defeat in top-tier football is often razor-thin, frequently hinging on pivotal refereeing decisions that alter the strategic landscape of a game. Such a scenario unfolded during a heavily anticipated clash between traditional rivals Liverpool and Manchester United at Anfield. The trajectory of the match shifted dramatically in the eighth minute when Manchester United player Leny Yoro was shown a red card, leaving his team with a numerical disadvantage for the vast majority of the fixture. In the aftermath of the encounter, esteemed Match of the Day pundits Danny Murphy and Ashley Young dissected the controversial incident on air. Both analysts concurred that Liverpool were perhaps fortunate, or lucky, to capitalize on the early dismissal of Yoro. Their expert commentary highlights how crucial moments can heavily tilt momentum in high-stakes fixtures, prompting ongoing discussions among supporters regarding the accuracy, fairness, and overall impact of the official's judgment on the pitch as teams compete for crucial league points throughout the demanding season, knowing that a single whistle can permanently redefine the narrative of an entire rivalry weekend.",
+          "wordCount": 180
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/videos/cq23jmklrj33o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-23-matsuyama-house-fire-missing-residents",
+      "date": "2026-11-23",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "matsuyama",
+        "fire",
+        "nhk"
+      ],
+      "titleJa": "松山市で住宅火災 2人と連…",
+      "title": "House Fire in Matsuyama Leaves Two Missing",
+      "summaryJa": "松山市中心部の住宅街で火事があり、住人の50代姉弟と連絡が取れなくなっています。",
+      "sourcePublishedAt": "2026-11-22T23:27:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "火事の発生時間や状況について記事から正確な情報を読み取りましょう。",
+        "followUpJa": "家族や警察からの情報をもとに、どのような状況だったか確認してみましょう。",
+        "questions": {
+          "5級": "What time did the fire start in Matsuyama?",
+          "4級": "How many houses were completely burned down in the fire?",
+          "3級": "Who are the two people that police cannot contact after the fire?",
+          "準2級": "What are the ages of the sister and brother who live in the house?",
+          "2級": "Where was the house located in relation to the city area of Matsuyama?",
+          "準1級": "According to the police, what specific circumstance regarding the residents emerged after the fire?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Fire in Matsuyama",
+          "text": "A big fire happened in Matsuyama. It started early in the morning. One house burned down. The police are looking at the fire now. Two people live in this house. The police cannot talk to them. Everyone is very worried about this bad accident today.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "House Fire Burns Down Building",
+          "text": "A fire happened in Matsuyama city early in the morning. The fire burned down one house completely. Police said that two people live in this home. They are a sister and a brother in their fifties. After the fire, the police cannot contact them. People are searching for more news about this sad accident in the neighborhood.",
+          "wordCount": 57
+        },
+        "3級": {
+          "title": "Fire Destroys Matsuyama House",
+          "text": "On November 23, a serious fire broke out in a residential area near the center of Matsuyama. The flames completely destroyed one house. According to local police reports, a sister and a brother in their fifties live together in the building. After the fire started, authorities found that they could not contact these two residents. Police and firefighters are continuing to check the details of the accident and investigate the situation to ensure safety.",
+          "wordCount": 73
+        },
+        "準2級": {
+          "title": "Residential Fire in Matsuyama Leaves Two Residents Unreachable",
+          "text": "Early in the morning on November 23, a destructive fire occurred in a residential area near the center of Matsuyama. The flames completely burned down a single house. According to local police statements, a sister and a brother in their fifties share the home. Following the outbreak of the fire, authorities reported that they have been unable to establish contact with either of the two residents. Emergency teams and police are currently investigating the situation to confirm their safety and determine the cause of the sudden blaze in the neighborhood. We hope everyone is safe and that investigators can find more answers soon as they check the area carefully.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "Morning Fire in Matsuyama Center Leaves Two Residents Missing",
+          "text": "Early in the morning on November 23, a serious residential fire struck a neighborhood located near the center of Matsuyama. Local media and official reports confirmed that the sudden blaze caused a single residential house to be entirely burned to the ground. According to statements released by local police officials, the property was occupied by two residents, specifically a sister and a brother who are both in their fifties. In the immediate wake of the destructive fire, local authorities announced that they are currently completely unable to establish contact with either of the two individuals. Emergency services, local firefighters, and police investigators remain highly active at the accident scene as they try to ascertain the exact circumstances surrounding the devastating blaze, carefully check the extensive damage, and locate the missing residents while providing necessary information to the public about the ongoing emergency situation in the residential district.",
+          "wordCount": 146
+        },
+        "準1級": {
+          "title": "Severe Residential Fire Breaks Out in Matsuyama Neighborhood, Leaving Two Residents Unreachable",
+          "text": "On November 23, specifically shortly after three o'clock in the morning, a destructive fire occurred in a residential neighborhood situated very close to the central area of Matsuyama. The sudden and intense flames completely burned down one residential house, destroying the entire structure and prompting immediate concern across the local community. According to official statements released by local law enforcement authorities, the unfortunate property was normally inhabited by two individuals, specifically a sister and a brother who are both currently in their fifties. Disturbingly, in the immediate aftermath of the tragic disaster, local police reported that all ongoing attempts by authorities and family members to contact the two residents had completely failed, leaving their precise whereabouts and immediate safety deeply uncertain. Emergency responders, dedicated firefighters, and local police investigators are currently actively probing the tragic incident, working diligently to gather more verified information regarding the exact circumstances of the fierce fire while continuing their exhaustive efforts to connect with the missing residents and ensure public safety across the entire neighborhood. Local authorities continue to review the situation carefully as investigators remain deployed at the scene to examine the extensive damage left behind by the devastating morning blaze.",
+          "wordCount": 196
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261123de80132"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-23-sixtones-jesse-kindergarten-diy-reform",
+      "date": "2026-11-23",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "SixTONES",
+        "Jesse",
+        "Sota Fukushi",
+        "DIY",
+        "Tachikawa"
+      ],
+      "titleJa": "ジェシーが幼稚園を改造",
+      "title": "Jesse and Sota Fukushi Face Big DIY Challenge",
+      "summaryJa": "SixTONESのジェシーがバラエティ番組の企画で地元・立川市の幼稚園を訪れ、俳優の福士蒼汰と共にフリースペースを森の図書館へと大改造する。",
+      "sourcePublishedAt": "2026-11-23T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "子どもたちのために幼稚園を大改造するプロジェクト内容を理解し、どのような空間を作るべきか自分の意見を持つため。",
+        "followUpJa": "もしあなたが幼稚園を改造するなら、子どもたちのためにどのような空間を作りたいですか？",
+        "questions": {
+          "5級": "Where does Jesse go to build a new place?",
+          "4級": "What is the problem with the 12-mat free space in the kindergarten?",
+          "3級": "What kind of special place does Jesse want to make for the children in Tachikawa?",
+          "準2級": "How does Sota Fukushi react when he starts helping Jesse with the DIY project?",
+          "2級": "Why is this renovation project considered Jesse's biggest challenge so far in his DIY work?",
+          "準1級": "Analyze the main motivations behind Jesse taking on this particular renovation project in his hometown and how Fukushi's participation contributes to its execution."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Jesse Builds a New Room",
+          "text": "Jesse is in a TV show. He is a singer in SixTONES. He goes to a kindergarten in Tachikawa. He wants to help kids. The kids need a nice room. Jesse works hard to make a forest library for them. Sota Fukushi comes to help him. They make a fun place.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "Helping a Local Kindergarten",
+          "text": "Jesse from SixTONES visits a kindergarten in Tachikawa. He grew up in this city. The kindergarten has a big problem. A twelve-mat room is full of boxes and things. Children cannot play there. Jesse wants to change this room into a forest oasis. Sota Fukushi comes to help him. Fukushi says making things is hard, but he tries his best for the kids.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Jesse and Fukushi Take on a DIY Challenge",
+          "text": "Jesse, a member of the idol group SixTONES, goes to Kobato Kindergarten in Tachikawa City. He grew up there until junior high school. The kindergarten has a free space, but it is full of luggage and boxes. Children cannot use it safely. Jesse wants to create a forest oasis and a library where kids can read books and play freely. Actor Sota Fukushi joins him as a helper for the project. Although Fukushi says he has not done craftwork since school, they work hard together to build a wonderful place for the children.",
+          "wordCount": 93
+        },
+        "準2級": {
+          "title": "Renovating a Kindergarten in Tachikawa",
+          "text": "SixTONES member Jesse visited Kobato Kindergarten in Tachikawa City for a television program. Having grown up in the area until junior high school, Jesse wanted to give back to his hometown by transforming a cluttered free space into a forest oasis and library. The kindergarten room was previously used just for storage, leaving little area for children to play safely. With the help of actor Sota Fukushi, who admitted he had not done much DIY since art class, Jesse tackled his biggest renovation challenge yet. Together, they worked hard to build a lake-themed bookshelf and a warm space where children could enjoy reading and playing.",
+          "wordCount": 105
+        },
+        "2級": {
+          "title": "Jesse and Sota Fukushi Tackle Their Biggest DIY Challenge",
+          "text": "Idol group SixTONES member Jesse took on a major DIY challenge for a television special, visiting Kobato Kindergarten in Tachikawa City where he spent his youth until junior high school. His goal was to give back to his hometown by transforming the kindergarten's twelve-mat free space, which had unfortunately become a crowded storage area for seasonal items and equipment. Jesse envisioned a forest oasis and a library featuring a lake-shaped bookshelf, allowing children to read and play surrounded by a natural design. To accomplish this difficult task, actor Sota Fukushi joined as a helper while shooting his drama. Although Fukushi jokingly noted he had not done craftwork since junior high school, he followed Jesse's lead and worked hard. Facing their biggest challenge, the two stars pushed through to create a comforting environment for the children.",
+          "wordCount": 135
+        },
+        "準1級": {
+          "title": "Revitalizing a Hometown Kindergarten Through Collaborative DIY",
+          "text": "In a special television broadcast of a popular variety program, Jesse of the idol group SixTONES returned to his roots in Tachikawa City to spearhead a major renovation project at Kobato Kindergarten, where he grew up until junior high school. Seeking to express his genuine gratitude to his hometown, Jesse addressed a pressing spatial issue: a twelve-mat free space that had regrettably devolved into a mere storage area for miscellaneous equipment and seasonal items, depriving children of safe recreation zones. Motivated to establish a forest oasis complete with a lake-inspired bookshelf, Jesse aimed to cultivate an environment where children could immerse themselves in reading and play within a natural design. During this ambitious endeavor, actor Sota Fukushi stepped in as a guest assistant amidst his busy drama filming schedule. Fukushi candidly admitted that manual craftwork was largely unfamiliar territory since his school days, yet he diligently followed Jesse's instruction and offered robust support. Despite facing what was described as the most formidable obstacle in Jesse's extensive DIY career, both entertainers successfully combined their efforts to construct a deeply nurturing space, showcasing a heartwarming dedication to the children's welfare.",
+          "wordCount": 188
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261123-5381603/"
+        }
+      ]
+    },
     {
       "id": "2026-11-22-drunk-driving-arrest-hokuryu-2026",
       "date": "2026-11-22",
