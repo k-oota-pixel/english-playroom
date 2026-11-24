@@ -1,13 +1,439 @@
 {
-  "generatedAt": "2026-11-23T01:38:20.897Z",
-  "editionDate": "2026-11-23",
+  "generatedAt": "2026-11-24T05:20:10.768Z",
+  "editionDate": "2026-11-24",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-23"
+    "lastSuccessfulEdition": "2026-11-24"
   },
   "articles": [
+    {
+      "id": "2026-11-24-hokkaido-weather-november-24",
+      "date": "2026-11-24",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "hokkaido",
+        "snow",
+        "cold-weather"
+      ],
+      "titleJa": "北海道で気温低下",
+      "title": "Hokkaido Weather Turns Colder With Snow on November 24",
+      "summaryJa": "2026年11月24日、北海道は午後から気温が下がり、日本海側を中心に雨から雪に変わって冬景色に戻りました。",
+      "sourcePublishedAt": "2026-11-24T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "北海道で安全に過ごすための対策を考えます。",
+        "followUpJa": "寒さや雪への備えについて話し合ってみましょう。",
+        "questions": {
+          "5級": "Is it cold in Hokkaido today?",
+          "4級": "Will rain turn into snow in Hokkaido?",
+          "3級": "How much snow is expected in the Kamikawa region?",
+          "準2級": "Why will it be colder in the evening than in the morning?",
+          "2級": "What kind of weather changes and temperatures are expected from November 25 to December 1?",
+          "準1級": "How should residents manage their health and travel during this drastic temperature swing?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Cold Weather in Hokkaido",
+          "text": "Today is November 24 in Hokkaido. The weather is getting cold. Temperatures will go down in the afternoon. It will be colder at night than in the morning. Rain will change to snow in some areas. Please be very careful today.",
+          "wordCount": 40
+        },
+        "4級": {
+          "title": "Rain and Snow in Hokkaido",
+          "text": "On November 24, Hokkaido has cold weather. Temperatures will go down in the afternoon. It will be colder tonight than this morning. Rain will change to snow in the northern and central areas. Please watch out for frozen roads and stay warm.",
+          "wordCount": 41
+        },
+        "3級": {
+          "title": "Hokkaido Weather Turns Colder With Snow",
+          "text": "On November 24, Hokkaido is experiencing a sharp temperature drop. Afternoon temperatures will fall continuously, making the night colder than the morning. Rain clouds are moving east, and rain will turn to snow in northern and central areas. Up to 25 centimeters of snow is expected in parts of Kamikawa by Wednesday morning. Please be careful of frozen roads and stay safe today.",
+          "wordCount": 61
+        },
+        "準2級": {
+          "title": "Sudden Temperature Drop and Snow in Hokkaido",
+          "text": "According to the weather forecast for November 24 in Hokkaido, cold air is bringing a significant temperature drop. Afternoon temperatures will fall steadily, meaning it will actually be colder at night than in the morning. Rain in northern and central regions will change to snow as strong westerly winds blow. Up to 25 centimeters of snow is predicted in the Kamikawa central area by Wednesday morning, bringing winter scenery back. Please watch out for frozen roads and manage your health carefully during this change. The weather will continue to shift across different areas. Residents must stay safe and prepared for winter conditions. Cold air is creating these winter scenes across northern and central parts of Hokkaido. Please be careful of frozen roads and cold temperatures today.",
+          "wordCount": 124
+        },
+        "2級": {
+          "title": "Winter Returns to Hokkaido With Snow and Falling Temperatures on November 24",
+          "text": "On November 24, Hokkaido faces a dramatic weather shift as cold air flows into the region, causing temperatures to fall continuously through the afternoon hours. Unlike typical days, the evening in Hokkaido will actually be colder than the morning, with strong west winds following the rain. According to forecasts, rain will turn to snow in the northern and central parts of Hokkaido. By Wednesday morning, snowfall is expected to reach up to 25 centimeters in parts of Kamikawa, while Sapporo anticipates some snow accumulation in both central areas and mountain zones. Furthermore, weather conditions will continue to change significantly from November 25 to December 1 across different areas. On November 25, the central and southern regions of Hokkaido will experience mid-winter cold with high temperatures around zero degrees, while Iwamizawa expects around 20 centimeters of snow. After Thursday, temperatures are expected to rise again, with Sapporo potentially reaching over 10 degrees on Friday and Saturday. Residents across Hokkaido must watch for frozen roads, strong winds, and sudden temperature swings during this period.",
+          "wordCount": 165
+        },
+        "準1級": {
+          "title": "Drastic Weather Shift and Snow Return in Hokkaido",
+          "text": "On November 24, Hokkaido is experiencing a sharp meteorological turn as cold air sweeps across the region. According to UHB Hokkaido News, temperatures are on a downward trajectory throughout the afternoon, making the evening noticeably colder than the morning hours. Rain clouds are moving eastward, shifting into snow across northern and central areas accompanied by strong westerly winds. Forecasts indicate that by Wednesday morning, snowfall could reach up to 25 centimeters in the Kamikawa central region, bringing back a stark winter landscape. Furthermore, upcoming weekly forecasts predict mid-winter cold around zero degrees on Wednesday before temporary warming later in the week, requiring careful health management and attention to road conditions. Residents must watch for frozen roads, strong winds, and sudden temperature swings during this period. On November 25, the central and southern regions of Hokkaido will experience mid-winter cold with high temperatures around zero degrees, while Iwamizawa expects around 20 centimeters of snow. After Thursday, temperatures are expected to rise again, with Sapporo potentially reaching over 10 degrees on Friday and Saturday. Residents across Hokkaido must watch for frozen roads, strong winds, and sudden temperature swings during this period. The weather will continue to shift across different areas. Residents must stay safe and prepared for winter conditions. Cold air is creating these winter scenes across northern and central parts of Hokkaido. Please be careful of frozen roads and cold temperatures today.",
+          "wordCount": 226
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63834"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-24-ladybird-browser-alpha-release",
+      "date": "2026-11-24",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [],
+      "careerTags": [
+        "it"
+      ],
+      "tags": [
+        "browser",
+        "ladybird",
+        "alpha"
+      ],
+      "titleJa": "新ブラウザ登場",
+      "title": "New Indie Web Browser Ladybird Releases Alpha Version",
+      "summaryJa": "グーグルから独立した新しいウェブブラウザ「Ladybird」のアルファ版が公開されました。",
+      "sourcePublishedAt": "2026-11-24T05:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "新しいウェブブラウザ「Ladybird」の特徴について理解しましょう。",
+        "followUpJa": "Ladybirdが他のブラウザとどう違うかを確認してみてください。",
+        "questions": {
+          "5級": "What is the name of the new browser?",
+          "4級": "What two operating systems can use the Ladybird alpha version?",
+          "3級": "Why is Ladybird different from popular browsers like Google Chrome?",
+          "準2級": "What did developer Andreas Kling ask security experts to do with the alpha version?",
+          "2級": "According to The Verge, what are the three main browser engines used by most popular browsers today?",
+          "準1級": "Explain the significance of Ladybird's engine development from scratch compared to historical browser engines mentioned in the text."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Web Browser",
+          "text": "A new web browser is here. The name is Ladybird. It has a new browser engine. It is not like Google Chrome. You can use it on macOS and Linux. The alpha version is out now. The developer is very happy to share it with everyone today.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Ladybird Alpha Version",
+          "text": "A new independent web browser called Ladybird has an alpha version now. Most popular web browsers use Chromium or other engines. However, Ladybird uses a totally new browser engine. It is built completely from scratch. You can download it for macOS and Linux. The developer says it is an alpha version, so some websites may not work well yet.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Independent Web Browser Ladybird Releases Alpha",
+          "text": "Many popular web browsers like Google Chrome, Microsoft Edge, Opera, and Brave are based on Chromium, which is led by Google. Now, an independent web browser named Ladybird has officially released its alpha version. It features a newly developed browser engine built entirely from scratch instead of forking existing engines like Blink or Gecko. Users can download it for macOS and Linux today. The developer notes that some websites might crash or not work properly yet, but users can easily send bug reports.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "New Independent Web Browser Ladybird Launches Alpha Version",
+          "text": "Web browsers such as Google Chrome, Microsoft Edge, Opera, and Brave are based on Chromium, which is led by Google. Moving away from this ecosystem, an independent web browser called Ladybird has released its alpha version. Ladybird features a newly developed browser engine built completely from scratch rather than forking existing engines like Blink or Gecko. The alpha version is now available for macOS and Linux users. The developer, Andreas Kling, noted that the software might crash and some websites may not work correctly. Therefore, users can report bugs directly inside the browser. Additionally, Kling invited security experts to hack the alpha version to help find vulnerabilities and improve overall security. Technology media outlet The Verge welcomed this release, noting it is the first new browser engine in years.",
+          "wordCount": 129
+        },
+        "2級": {
+          "title": "Ladybird Indie Browser Engine Reaches Alpha Milestone",
+          "text": "Most mainstream web browsers, including Google Chrome, Microsoft Edge, Opera, and Brave, rely on Chromium under Google's development leadership. In contrast, an independent web browser named Ladybird has launched its long-awaited alpha version, offering an alternative outside the major tech ecosystems. Ladybird stands out because it features a custom-developed browser engine built entirely from scratch, rather than forking existing engines like Blink or Gecko. Andreas Kling, the developer, released the alpha version for macOS and Linux platforms, though he cautioned that users might encounter crashes and incompatible websites. To address this, the browser includes a built-in feature to report bugs and send crash logs with user permission. Furthermore, Kling encouraged security researchers to test and hack the software to strengthen its defenses, viewing security vulnerabilities as a normal part of early development. The Verge highlighted this milestone, pointing out that prior to Ladybird, the vast majority of popular browsers depended on only three major engines: Gecko, Blink, and WebKit.",
+          "wordCount": 159
+        },
+        "準1級": {
+          "title": "Independent Web Browser Ladybird Debuts Alpha With Custom Engine",
+          "text": "Web browsers like Google Chrome, Microsoft Edge, Opera, and Brave are predominantly anchored to Chromium, a project whose development and maintenance are heavily influenced by Google. Breaking away from this dominant ecosystem, an independent alternative called Ladybird has officially introduced its alpha version to the public. Unlike most contemporary software that forks existing architectures, Ladybird is distinguished by a custom-developed browser engine built entirely from scratch, avoiding reliance on established frameworks like Blink or Gecko. Released for macOS and Linux, developer Andreas Kling acknowledged that the alpha software remains a work in progress, prone to occasional crashes and website incompatibility. To streamline improvements, Ladybird incorporates native mechanisms for users to submit bug reports and transmit crash logs. In a bold move to accelerate hardening, Kling explicitly invited security specialists to attempt hacking the browser, framing vulnerability discovery as an essential phase of collaborative development. Industry observers, including The Verge, have praised the release, emphasizing that it introduces the first completely new browser engine in years to challenge a landscape long dominated by just three foundational lineages: Gecko from 2000, Apple's WebKit from 2003, and Google-backed Blink from 2013.",
+          "wordCount": 185
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261124-ladybird-now-alpha/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-24-nagano-gifu-snow-power-outages",
+      "date": "2026-11-24",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "snow",
+        "power-outage",
+        "nagano",
+        "gifu",
+        "chubu-electric"
+      ],
+      "titleJa": "大雪で長野停電続く",
+      "title": "Snow Causes Long Power Outages in Nagano and Gifu",
+      "summaryJa": "先週末からの大雪による倒木が原因で、長野県や岐阜県の一部地域では4日以上にわたり停電が続いています。",
+      "sourcePublishedAt": "2026-11-24T05:00:24.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "大雪による停電被害の状況と電力会社の復旧見込みについて正確な情報を把握する。",
+        "followUpJa": "あなたの地域で同様の大雪や停電が発生した場合に備えて、どのような対策が必要か話し合いましょう。",
+        "questions": {
+          "5級": "How many days did the power go out in some areas?",
+          "4級": "What caused the power outages in Nagano and Gifu?",
+          "3級": "When does Chubu Electric Power Grid expect power to be fully fixed?",
+          "準2級": "Why did falling trees cause problems during the recent snow?",
+          "2級": "What specific challenges besides power outages were reported in Gifu due to the snow?",
+          "準1級": "How has the continuous snow since last weekend impacted local infrastructure and daily life according to the report?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Power Outages by Snow",
+          "text": "Heavy snow falls in Japan. Nagano has a big problem. Some places have no power for four days. Trees fall down on wires. People can not use lights. Chubu Electric Power Grid works hard. Power will come back soon. Night time is very cold.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Snow Causes Long Power Outages",
+          "text": "Heavy snow continues from last weekend in Nagano and Gifu prefectures. Fallen trees break electric wires in many places. Some areas have no power for over four days. Chubu Electric Power Grid says power will return tonight. People must stay safe in this cold winter weather. Workers try hard to fix everything.",
+          "wordCount": 52
+        },
+        "3級": {
+          "title": "Snow Storms Cause Long Power Outages",
+          "text": "Heavy snow has fallen continuously since last weekend in Nagano and Gifu prefectures. Fallen trees damaged electric lines and caused long power outages. Some areas have been without electricity for more than four days. According to Chubu Electric Power Grid, all power is expected to be restored by tonight. Workers are trying their best to fix the lines quickly and safely.",
+          "wordCount": 61
+        },
+        "準2級": {
+          "title": "Persistent Power Outages After Heavy Snow in Nagano and Gifu",
+          "text": "Heavy snow has fallen continuously since last weekend in parts of Nagano and Gifu prefectures. The severe weather caused many trees to fall, damaging power lines and resulting in prolonged electricity outages. In some areas, residents have lived without power for over four days. Chubu Electric Power Grid stated that recovery operations are ongoing, and full restoration is expected by the night of the 24th. The snow also caused other issues such as communication problems and train suspensions in the region, making daily life difficult for local residents who are waiting for normal services to resume.",
+          "wordCount": 95
+        },
+        "2級": {
+          "title": "Snow and Fallen Trees Leave Nagano and Gifu Without Power",
+          "text": "Heavy snow that began last weekend has caused severe disruptions and long power outages in Nagano and Gifu prefectures. Fallen trees, weighed down by the heavy accumulation, damaged power lines and triggered extensive outages across the region. As of November 24th, some communities have experienced power failures lasting more than four days due to these ongoing weather conditions. Chubu Electric Power Grid reported that repair teams have been working continuously to fix the damaged infrastructure, and full restoration across all affected areas is anticipated by the night of the 24th. In addition to the extensive power failures, the severe winter weather led to other infrastructure problems, including mobile phone communication disturbances and temporary train suspensions in Gifu, highlighting the broad impact of winter storms on local daily life and regional transportation networks while residents wait for normal services to fully resume.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "Prolonged Power Outages Persist in Central Japan Following Heavy Snowfall",
+          "text": "A severe winter storm that began last weekend has brought heavy, continuous snowfall to parts of Nagano and Gifu prefectures, triggering widespread infrastructure challenges and severe disruption across the region. The primary catalyst for these profound problems was fallen trees, which collapsed under the heavy snow load and severely damaged power transmission lines across the affected areas. Consequently, certain communities have endured power outages stretching for over four days, leaving residents to cope with difficult conditions without electricity while waiting patiently for essential services to be fully restored. According to official reports from Chubu Electric Power Grid, repair crews have been deployed extensively across the region, with full recovery and restoration projected for the evening of November 24th. Beyond the prolonged blackouts, the severe weather compounded regional difficulties, inducing mobile communication network failures and forcing the temporary suspension of local railway operations in Gifu prefecture. This ongoing incident underscores the cascading effects of extreme weather events on regional infrastructure and emphasizes the vital importance of swift utility responses during severe winter emergencies as local communities strive to return to normal daily life.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261124de80343"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-24-nvidia-ceo-jensen-huang-returns",
+      "date": "2026-11-24",
+      "scope": "japan",
+      "category": "business",
+      "categories": [
+        "technology"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Nvidia",
+        "Jensen Huang",
+        "stocks",
+        "business"
+      ],
+      "titleJa": "フアン氏がCEO復帰",
+      "title": "Jensen Huang Returns as Nvidia CEO After Eleven Days",
+      "summaryJa": "エヌビディアのジェンスン・フアンCEOが辞任からわずか11日後に電撃復帰し、株価が急騰しました。",
+      "sourcePublishedAt": "2026-11-24T02:15:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "フアン氏の復帰がエヌビディアに与えた影響と今後のリスクについて考える。",
+        "followUpJa": "復帰後のリスクについて、あなたの考えをまとめてみましょう。",
+        "questions": {
+          "5級": "Did Jensen Huang come back to Nvidia?",
+          "4級": "How many days was Jensen Huang away from Nvidia?",
+          "3級": "What happened to Nvidia's stock price when the return was announced?",
+          "準2級": "Why did the board change their mind and let Huang return so soon?",
+          "2級": "What hidden weakness in Nvidia was revealed during Huang's brief absence?",
+          "準1級": "How did political figures such as Donald Trump influence the rapid reinstatement of Jensen Huang?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "Jensen Huang is back at Nvidia. He was away for only eleven days. Many people were very surprised. When he came back, the stock price went up a lot. Nvidia is a very big company. Huang is a strong leader. He makes the company grow. Everyone is happy to see him return now.",
+          "wordCount": 53
+        },
+        "4級": {
+          "title": "Elementary Level",
+          "text": "Jensen Huang is the CEO of Nvidia. He resigned earlier this month after some scandals. However, he returned to his position after only eleven days. When the company announced his quick return, the stock price jumped up by thirty-one percent. Many people rely on his leadership. Still, this short absence showed that the company depends too much on one person.",
+          "wordCount": 60
+        },
+        "3級": {
+          "title": "Intermediate Level",
+          "text": "Jensen Huang is back as the CEO of Nvidia just eleven days after his sudden resignation. His departure followed reports about personal scandals, which caused the stock price to drop significantly. However, after discussions with government officials and the board, he returned to lead the company again. The stock price surged thirty-one percent after the announcement. Even so, experts note that this brief absence revealed major risks in relying too heavily on a single charismatic leader in the business world.",
+          "wordCount": 80
+        },
+        "準2級": {
+          "title": "Upper-Intermediate Level",
+          "text": "Jensen Huang has made a dramatic return as the CEO of Nvidia just eleven days after stepping down amid scandal reports. His initial resignation caused the company stock to fall by about forty percent. During his brief absence, an earnings briefing highlighted the vulnerabilities of the so-called Nvidia economic sphere and its heavy reliance on Huang's personal management. Despite initial statements from the board claiming he would not return, political backing and discussions with US government officials helped pave the way for his rapid reinstatement. When the company announced his return on November 23, the stock price surged thirty-one percent, proving how much investors depend on his continued leadership today.",
+          "wordCount": 109
+        },
+        "2級": {
+          "title": "Advanced Level",
+          "text": "In a stunning turn of events, Jensen Huang has resumed his role as CEO of Nvidia merely eleven days after his sudden resignation. His departure was triggered by reports regarding personal relationships, which led to a forty percent drop in the company's share value over several weeks. During his brief absence, an earnings briefing underscored the severe vulnerabilities within the Nvidia economic sphere, exposing the risks of depending entirely on one charismatic leader's capabilities. Initially, board members insisted he would not return. However, following discussions with United States government officials and backing from President Donald Trump, the board reversed its decision. Upon the announcement of his immediate reinstatement on November 23, Nvidia shares surged thirty-one percent. While this quick return stabilized markets temporarily, it also highlighted ongoing corporate governance questions about succession planning and over-reliance on a single individual.",
+          "wordCount": 138
+        },
+        "準1級": {
+          "title": "Proficient Level",
+          "text": "In a dramatic reversal that surprised global financial markets, Jensen Huang has returned as CEO of Nvidia just eleven days after his abrupt resignation. His initial departure, prompted by investigative reports detailing personal scandals, had sent shockwaves through the market and wiped out roughly forty percent of the company's share value. The brief vacuum at the top thrust Nvidia into uncharted territory, forcing an earnings briefing to focus less on quarterly performance and more on the precarious nature of the expansive Nvidia economic sphere. Analysts noted that his absence brutally exposed the inherent fragility of a corporate ecosystem overly dependent on a single charismatic figure. Although the board initially declared that Huang would not be reinstated, intense behind-the-scenes lobbying, coupled with tacit and explicit support from high-ranking US government officials including President Donald Trump, swiftly altered the calculus. Security assessments cleared him of national security risks, paving the way for the board to rescind its previous stance. When his return was officially announced, Nvidia's closing stock price skyrocketed thirty-one percent. While this rapid restoration of leadership reassured nervous investors in the short term, it left fundamental questions unaddressed regarding corporate governance, succession pipelines, and the long-term sustainability of an empire built around one man.",
+          "wordCount": 204
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/965661?display=b"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-24-troy-deeneys-team-of-the-week",
+      "date": "2026-11-24",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Troy Deeney",
+        "Premier League",
+        "football",
+        "BBC Sport"
+      ],
+      "titleJa": "トルの今週のベスト11",
+      "title": "Who has made Troy's Premier League team of the week?",
+      "summaryJa": "BBCのサッカー解説者であるトロイ・ディニーが、毎節のプレミアリーグの試合から今週のベストイレブンと監督を発表しています。",
+      "sourcePublishedAt": "2026-11-23T23:26:35.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "記事の中から自分も応援したいと思うお気に入りの選手を1人選ぶため。",
+        "followUpJa": "選んだ選手がチームでどんな活躍をしたか友達に教えてあげよう。",
+        "questions": {
+          "5級": "Who is the football pundit who makes the team of the week?",
+          "4級": "Which goalkeeper made unbelievable saves for Hull City?",
+          "3級": "How many goals did Keane Lewis-Potter score against Everton?",
+          "準2級": "What did James Hill do after getting into the England squad to prove his good form?",
+          "2級": "Why does Troy Deeney praise Konstantinos Tzolakis as a potential goalkeeper of the season?",
+          "準1級": "According to Troy Deeney, what specific qualities and recent changes have allowed Florian Wirtz to shine at Liverpool?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Troy's Best Team",
+          "text": "Troy Deeney is a football pundit. He chooses a team of the week for the Premier League. Konstantinos Tzolakis is a great goalkeeper for Hull City. He makes many top saves. James Hill plays well for Bournemouth. Keane Lewis-Potter scores two goals. Noah Okafor scores twice for Leeds. Fans can see the best players on this special list today.",
+          "wordCount": 59
+        },
+        "4級": {
+          "title": "Football Team of the Week",
+          "text": "After every round of Premier League matches, football pundit Troy Deeney chooses his team of the week. Konstantinos Tzolakis played amazing in goal for Hull City with many top-class saves. James Hill played solidly for Bournemouth and got an assist. Keane Lewis-Potter scored two goals against Everton. Noah Okafor scored twice as Leeds beat Chelsea. Many young and talented players show great skills in these matches.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Troy Deeney's Premier League Selections",
+          "text": "Every week in the Premier League, football pundit Troy Deeney picks his best team and manager. Hull City goalkeeper Konstantinos Tzolakis made unbelievable saves to help his team win. James Hill played very well for Bournemouth after joining the England squad. In addition, Keane Lewis-Potter scored two goals against Everton, while Noah Okafor also scored twice when Leeds played against Chelsea. Other talented players like Jack Rudoni and Florian Wirtz showed fantastic performances to make this special weekly team and please fans.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "Troy Deeney Chooses His Premier League Team of the Week",
+          "text": "Following every round of Premier League matches, football pundit Troy Deeney selects his team and manager of the week. This week features several standout players who delivered exceptional performances. Konstantinos Tzolakis was brilliant in goal for Hull City, making numerous top-class saves that earned high praise. James Hill maintained great form for Bournemouth following his call-up to the England squad, contributing a cheeky assist alongside solid defending. Meanwhile, Keane Lewis-Potter scored two impressive goals against Everton before a sending-off occurred. Noah Okafor also netted twice as Leeds defeated Chelsea convincingly. Players like Jack Rudoni, Elliott Anderson, and Florian Wirtz added crucial energy, goals, and assists for their respective clubs, highlighting the unpredictable and exciting nature of this football season.",
+          "wordCount": 119
+        },
+        "2級": {
+          "title": "Analyzing Troy Deeney's Premier League Team of the Week",
+          "text": "After every round of Premier League fixtures, football pundit Troy Deeney shares his carefully chosen team and manager of the week. This selection highlights players who made a significant impact during recent matches. For instance, Konstantinos Tzolakis put on an unbelievable performance in goal for Hull City, producing five or six top-class saves that led Deeney to name him a potential goalkeeper of the season. In defense, James Hill proved his worth for Bournemouth by maintaining his strong form and delivering a cheeky assist after entering the England squad. Further up the pitch, Keane Lewis-Potter secured a fantastic brace against Everton, while Noah Okafor netted twice as Leeds outplayed Chelsea. Other notable inclusions feature Jack Rudoni with two assists, Elliott Anderson showing great pace and effort for Manchester City, and young Luca Williams-Barnett providing an instant spark for Tottenham. Finally, Florian Wirtz shone for Liverpool with an exceptional display of finding space and creating opportunities, rounding out a fascinating list of top performers.",
+          "wordCount": 163
+        },
+        "準1級": {
+          "title": "Inside Troy Deeney's Premier League Team of the Week Selections",
+          "text": "As the Premier League season progresses, former player and BBC football pundit Troy Deeney continues to release his subjective yet insightful team and manager of the week selections. His latest list captures a diverse array of standout performances from across the division. In goal, Konstantinos Tzolakis earned immense praise for Hull City, producing a string of unbelievable saves that prompted Deeney to argue he would be the goalkeeper of the season if it ended immediately. Defensive solidity was also on display through Bournemouth's James Hill, who avoided complacency after his England call-up, and Newcastle's Malick Thiaw, who secured a goal despite dividing opinion. Brentford's Keane Lewis-Potter emerged as a remarkable bargain after netting twice against Everton, while Noah Okafor spearheaded Leeds' dominant victory over Chelsea with a clinical two-goal display. Midfielders and creative talents also left their mark; Jack Rudoni provided vital assists, and Elliott Anderson offered a solitary pulse of energy and pace for Manchester City. Furthermore, teenage prospect Luca Williams-Barnett electrified Tottenham supporters with an immediate goal and assist debut. Rounding out the squad, Liverpool's Florian Wirtz demonstrated a renewed purple patch by exploiting spaces effectively, accompanied by Oli McBurnie's relentless work ethic for Hull City, offering fans plenty to debate.",
+          "wordCount": 203
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/c34gn2p5d0zwo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-24-yamashita-tomohisa-independence-reflection",
+      "date": "2026-11-24",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Tomohisa Yamashita",
+        "music",
+        "interview"
+      ],
+      "titleJa": "山下智久が独立語を回想",
+      "title": "Tomohisa Yamashita Reflects on Six Years Since Going Independent",
+      "summaryJa": "山下智久がテレビ番組に出演し、独立後の6年間や全国アリーナツアーを通じて周囲への感謝を語りました。",
+      "sourcePublishedAt": "2026-11-24T00:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "独立や大きなキャリアの変化を経験した人物の心情と学びを理解し、自身のキャリアやチームワークに対する考え方を見つめ直します。",
+        "followUpJa": "記事から読み取れた変化やチームへの感謝の気持ちについて、日本語または英語で一言まとめてみましょう。",
+        "questions": {
+          "5級": "What did Yamashita do after 2020?",
+          "4級": "How did Yamashita describe driving on an unpaved road?",
+          "3級": "What important thing did Yamashita realize during his first arena tour?",
+          "準2級": "Why does Yamashita feel that music is different from his acting work?",
+          "2級": "How did leaving his long-time agency change Yamashita's perspective on the people supporting him?",
+          "準1級": "Discuss how Yamashita's milestone 30th anniversary in entertainment and his return to music as his starting point shaped his recent tour."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Tomohisa Yamashita",
+          "text": "Tomohisa Yamashita is a famous singer and actor in Japan. He started working at age eleven. In 2020, he left his old company and became independent. For six years, he worked hard by himself. He learned many things from this big change.",
+          "wordCount": 41
+        },
+        "4級": {
+          "title": "Working Alone",
+          "text": "Tomohisa Yamashita talked about his life on a television show. He left his agency six years ago. He said that working alone was like driving on an unpaved road. It was very difficult sometimes. However, he also realized how much help he received from other people before. This made him feel very thankful to his staff and fans.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "Tomohisa Yamashita Reflects on Six Years",
+          "text": "Famous star Tomohisa Yamashita recently appeared on a music television program. He celebrated his thirtieth anniversary in the entertainment world. After leaving his long-time agency in 2020, he spent six years working independently. He compared these years to driving on an unpaved road. During his first solo arena tour, he made an important discovery. He learned that he cannot do everything by himself and felt deeply grateful to his staff and fans.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "Tomohisa Yamashita on Independent Career",
+          "text": "Tomohisa Yamashita reflected on his career during a recent television appearance. Celebrating thirty years in the entertainment industry, Yamashita discussed the past six years since leaving his agency in 2020. He compared his independent journey to driving on an unpaved road, noting that the experience helped him understand how much his former agency had done for him. During his first solo arena tour, he realized that he could not achieve anything alone. This realization increased his gratitude toward his staff and supporters. Furthermore, Yamashita explained that music serves as his original starting point where he can express his true self, unlike acting, which requires him to adapt to various fictional roles.",
+          "wordCount": 110
+        },
+        "2級": {
+          "title": "Reflecting on Independence and Music",
+          "text": "Japanese singer and actor Tomohisa Yamashita recently appeared on a music program to discuss his career evolution. Marking his thirtieth anniversary since entering the entertainment world at age eleven, Yamashita spoke openly about the six years that have passed since he left his long-time agency in 2020. He vividly compared his independent career path to driving on an unpaved road, explaining that the daily challenges made him fully appreciate the extensive support his agency had previously provided. He likened the realization to leaving one's family home and finally understanding its true value. A major turning point occurred during his first independent national arena tour, where he actively participated in production. Despite his desire to do everything on his own, he came to understand that he could not succeed without others. Consequently, his appreciation for his staff and fans grew immensely. He also contrasted his acting career, where he adopts specific characters, with his music, which acts as a personal business card reflecting his true identity.",
+          "wordCount": 164
+        },
+        "準1級": {
+          "title": "Tomohisa Yamashita Discusses Six Years of Independence and Musical Roots",
+          "text": "Marking a remarkable three-decade milestone since entering the Japanese entertainment industry at the age of eleven, singer and actor Tomohisa Yamashita recently opened up about his career trajectory on a television program. Reflecting on the six years following his departure from his long-time management agency in 2020, Yamashita offered a candid metaphor, describing his independent journey as akin to driving along an unpaved road. This challenging path allowed him to recognize the immense scope of administrative and operational support he had previously taken for granted, drawing a parallel to the newfound appreciation one feels after finally leaving the family home. A pivotal awakening arrived during his inaugural post-independence national arena tour, where he took direct charge of staging and production. Although his initial ambition was to accomplish everything autonomously, he experienced a profound realization that he could not achieve success in isolation. This humbling lesson fostered a deep sense of gratitude toward his supporting staff and devoted fans. During the broadcast, Yamashita also highlighted the distinct nature of his artistic pursuits, contrasting his acting roles—where he immerses himself entirely in fictional characters—with his musical endeavors, which serve as an unfiltered reflection of his true self.",
+          "wordCount": 196
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261124-5392811/"
+        }
+      ]
+    },
     {
       "id": "2026-11-23-amazon-shipping-labels-nyc",
       "date": "2026-11-23",
