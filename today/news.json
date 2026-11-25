@@ -1,13 +1,443 @@
 {
-  "generatedAt": "2026-11-24T05:20:10.768Z",
-  "editionDate": "2026-11-24",
+  "generatedAt": "2026-11-25T04:09:21.192Z",
+  "editionDate": "2026-11-25",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-24"
+    "lastSuccessfulEdition": "2026-11-25"
   },
   "articles": [
+    {
+      "id": "2026-11-25-gpt-6-protein-design",
+      "date": "2026-11-25",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "science"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "OpenAI",
+        "GPT-6",
+        "biology",
+        "protein"
+      ],
+      "titleJa": "GPT-6がタンパク質設計",
+      "title": "GPT-6 Can Design New Proteins Without Special Biology AI",
+      "summaryJa": "OpenAIのGPT-6シリーズは、生物学専用のAIを使わずに新しいタンパク質を設計できることが分かり、実験でも結合が確認されました。",
+      "sourcePublishedAt": "2026-11-25T03:33:00.000Z",
+      "mission": {
+        "type": "prediction",
+        "purposeJa": "汎用AIによるタンパク質設計の今後の可能性を予測する。",
+        "followUpJa": "特化型AIと汎用LLMの強みを比較してどうなるか話し合ってみましょう。",
+        "questions": {
+          "5級": "Can GPT-6 design new proteins?",
+          "4級": "What did OpenAI announce about the GPT-6 series?",
+          "3級": "Why do scientists need to design new proteins?",
+          "準2級": "How did researchers test the proteins designed by GPT-6.2?",
+          "2級": "What limitation does GPT-6 still have compared to specialized AI models like ESMFold2?",
+          "準1級": "What main advantage does using a general-purpose language model offer researchers when specifying protein design conditions?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "GPT-6 and Proteins",
+          "text": "OpenAI has a new AI. It is the GPT-6 series. This AI can design new proteins. It does not need special biology AI. Researchers tested it in a lab. The AI made good proteins. People are very happy.",
+          "wordCount": 38
+        },
+        "4級": {
+          "title": "New AI Protein Design",
+          "text": "OpenAI announced that the GPT-6 series can design new proteins without special biology AI. Researchers tested GPT-6.2 in a laboratory. They made mini-binders and antibodies. Some of these designed proteins successfully bound to their target molecules. This shows that general artificial intelligence can help biological work. OpenAI plans to continue studying protein design with models.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "GPT-6 Shows Protein Design Skills",
+          "text": "OpenAI announced that the GPT-6 series can design new protein structures and amino acid sequences without special biology AI. Researchers tested GPT-6.2 in a laboratory with a biotechnology company. They synthesized mini-binders and antibodies designed by the model. Laboratory tests showed that many of these designed proteins successfully bound to their target molecules. This discovery shows that general artificial intelligence can handle complex biological tasks.",
+          "wordCount": 65
+        },
+        "準2級": {
+          "title": "OpenAI GPT-6 Series Demonstrates Protein Design",
+          "text": "OpenAI announced that the GPT-6 large language model series can design new protein structures and amino acid sequences using only reasoning and coding. Without relying on specialized biology AI or internet access, researchers tested GPT-6.2 by having it design mini-binders and antibodies. Collaborating with a biotechnology company, scientists synthesized these designed proteins in a laboratory. Experiments confirmed that a significant number of these synthetic proteins successfully bound to their intended targets. This discovery demonstrates that general artificial intelligence can handle complex biological research tasks effectively. Furthermore, researchers found that the model could control design parameters using natural language prompts without requiring additional training.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "GPT-6 Series Proves Capable of Protein Design Without Special Biology AI",
+          "text": "OpenAI announced that the GPT-6 large language model series can design novel protein structures and amino acid sequences using only reasoning and coding capabilities. Researchers restricted internet access and specialized biology AI to test whether general artificial intelligence models possess intrinsic design skills. Collaborating with a biotechnology firm, scientists synthesized mini-binders and antibodies designed by the GPT-6.2 model in a laboratory. Laboratory tests confirmed that a significant number of these synthetic proteins successfully bound to their target molecules. While specialized AI models still outperform GPT-6 in predicting overall three-dimensional structures from amino acid sequences, this breakthrough highlights the potential of using natural language to control molecular design parameters flexibly. OpenAI plans to continue studying protein design with models to address current limitations and improve future scientific research applications. This discovery shows that general models can handle complex biological tasks.",
+          "wordCount": 139
+        },
+        "準1級": {
+          "title": "OpenAI's GPT-6 Series Exhibits Intrinsic Protein Design Capabilities Without Specialized Biology AI",
+          "text": "OpenAI recently announced that its GPT-6 large language model series is capable of designing novel protein structures and amino acid sequences relying solely on reasoning and coding skills. Eschewing specialized biology AI and internet access, researchers tasked the models with various biological challenges. In collaboration with biotechnology firm Onava, scientists synthesized mini-binders and antibodies generated by a pre-release version of GPT-6.2. Laboratory validations revealed that a notable proportion of these designed proteins successfully bound to their intended biological targets, even when the amino acid sequences differed significantly from existing data. Despite these promising results, OpenAI acknowledges certain limitations. GPT-6 models still lag behind specialized AI models when predicting overall three-dimensional structures from amino acid sequences. Furthermore, skepticism remains regarding whether the model comprehends underlying physical chemistry or merely generalizes from training data. Nevertheless, the ability to control molecular design parameters flexibly via natural language prompts opens exciting new avenues for biotechnological research. Researchers can specify protein design conditions using simple natural language prompts without requiring additional training, which offers significant flexibility when managing complex scientific workflows in the laboratory environment.",
+          "wordCount": 180
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261125-openai-gpt-6-protein/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-25-hokkaido-snow-cold-20261125",
+      "date": "2026-11-25",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hokkaido",
+        "snow",
+        "weather",
+        "winter",
+        "cold"
+      ],
+      "titleJa": "北海道で今季初の真冬日",
+      "title": "Hokkaido Faces Heavy Snow and Bitter Cold",
+      "summaryJa": "北海道に真冬並みの寒気が流れ込み、各地で大雪や厳しい寒さとなっています。交通障害や路面凍結への注意が呼びかけられています。",
+      "sourcePublishedAt": "2026-11-25T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "北海道の天気予報や雪の量に関する具体的な情報を把握し、今後の対策を考えるため。",
+        "followUpJa": "あなたの住んでいる地域の冬の寒さや雪への備えについて話し合ってみましょう。",
+        "questions": {
+          "5級": "Where does snow fall in Hokkaido?",
+          "4級": "How many centimeters of snow does Sounkyo have?",
+          "3級": "What should people watch out for on roads and streets?",
+          "準2級": "Which areas expect up to thirty centimeters of snow by tomorrow noon?",
+          "2級": "What are the temperature conditions and expected weather patterns for Sapporo and other areas?",
+          "準1級": "How are the weather forecasts and temperature fluctuations projected to affect regional conditions through next week according to the report?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Cold Snow in Hokkaido",
+          "text": "Cold air comes to Hokkaido. Many places have snow and cold weather. Sapporo may have a very cold day. People must wear warm coats. Please be careful of ice on the roads today. Winter is here now.",
+          "wordCount": 37
+        },
+        "4級": {
+          "title": "Heavy Snow and Cold in Hokkaido",
+          "text": "A strong winter cold wave is over Hokkaido today. Many areas have heavy snow and very cold weather. Sounkyo has twenty-two centimeters of snow. Iwamizawa has twenty-one centimeters. Sapporo may have its first freezing day this season. The Sea of Japan side will have more snow tonight. People must wear warm winter clothes and watch out for icy roads.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Hokkaido Hit by Winter Cold and Snow",
+          "text": "A strong winter cold wave is bringing severe cold and heavy snow to Hokkaido. By morning, Sounkyo had twenty-two centimeters of snow and Iwamizawa had twenty-one centimeters. Sapporo might experience its first midwinter day of the season. Heavy snow will continue on the Sea of Japan side until tonight. Temperatures are around zero degrees Celsius. Everyone needs heavy winter clothes and must be careful of frozen roads, heavy snow, and dangerous ice everywhere today.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Severe Cold and Snow Expected Across Hokkaido",
+          "text": "Hokkaido is experiencing a winter-like cold wave, bringing severe cold and heavy snow to many regions today. By late morning, places like Sounkyo recorded twenty-two centimeters of snow, while Iwamizawa saw twenty-one centimeters. Sapporo faces the possibility of its first freezing day of the season. Snow will continue along the Sea of Japan side through tonight, with northern and central Kamikawa expecting up to thirty centimeters of snow by tomorrow noon. Temperatures are hovering around zero degrees Celsius, requiring heavy winter gear. Authorities advise residents to watch out for heavy snowfall and icy road conditions.",
+          "wordCount": 95
+        },
+        "2級": {
+          "title": "Winter Cold Wave Brings Heavy Snow and Icy Roads to Hokkaido",
+          "text": "A powerful winter cold wave has arrived in Hokkaido, delivering severe cold and heavy snowfall across various areas. According to weather reports from late morning, twenty-four-hour snowfall totals reached twenty-two centimeters in Sounkyo and twenty-one centimeters in Iwamizawa. Sapporo is seeing light snow in the central district and fifteen centimeters in mountain areas, with a chance of its first official midwinter day this season. The Sea of Japan side will continue to see snow through tonight, and northern and central Kamikawa expect up to thirty centimeters of snow by tomorrow noon. With temperatures around zero degrees Celsius, full winter protection is necessary. Looking at the weekly forecast, temperatures in central and southern Hokkaido will rise slightly toward the weekend, melting some snow before more snow arrives on Sunday. Meanwhile, northern and eastern regions will experience sharp temperature changes, requiring careful health management and attention to changing road conditions.",
+          "wordCount": 148
+        },
+        "準1級": {
+          "title": "Intense Cold Wave and Heavy Snowfall Grip Hokkaido with Hazardous Conditions",
+          "text": "An intense winter-like cold wave has gripped Hokkaido, plunging the region into severe cold and triggering heavy snowfall across multiple areas according to recent meteorological reports. Meteorological data from late morning indicates significant snowfall accumulations, including twenty-two centimeters in Sounkyo, twenty-one centimeters in Iwamizawa, sixteen centimeters in Esashi, and fifteen centimeters in Shinshinotsu, alongside thirteen centimeters in Nakatombetsu. While central Sapporo experiences only flurries, nearby mountain areas have accumulated fifteen centimeters of snow, and the city faces the distinct possibility of recording its first freezing day of the season. Snowfall is projected to persist along the Sea of Japan side through the night, with particular intensity expected in northern and central Kamikawa, Sorachi, and around Mount Yotei. These areas are bracing for up to thirty centimeters of snow by tomorrow noon, while Sorachi and inland Shiribeshi anticipate twenty centimeters. Temperatures lingering around freezing necessitate proper heavy winter attire and caution. The weekly forecast indicates that central and southern regions will experience temporary warming through Saturday, causing the newly fallen snow to melt before a potential return of organized snowfall in the Iwamizawa area on Sunday. Conversely, northern and eastern areas face volatile temperature fluctuations next week, making effective layering, health management, and constant vigilance regarding treacherous, changing road conditions essential for residents throughout the prefecture.",
+          "wordCount": 215
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63859"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-25-japan-record-awards-2026-analysis",
+      "date": "2026-11-25",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Japan Record Awards",
+        "music awards",
+        "Mrs. GREEN APPLE",
+        "M!LK",
+        "MUSIC AWARDS JAPAN"
+      ],
+      "titleJa": "レコ大の現在地",
+      "title": "Japan Record Awards face new era",
+      "summaryJa": "日本レコード大賞の発表に伴い、音楽界におけるアワードの現状と課題について解説している。",
+      "sourcePublishedAt": "2026-11-25T00:00:00.000Z",
+      "mission": {
+        "type": "prediction",
+        "purposeJa": "今年の結果を踏まえて今後の音楽賞がどうなるか予想する。",
+        "followUpJa": "新しい音楽賞とレコ大の違いについて話し合ってみましょう。",
+        "questions": {
+          "5級": "Will Mrs. GREEN APPLE win again?",
+          "4級": "What awards did Mrs. GREEN APPLE win before?",
+          "3級": "Why do people call the Japan Record Awards a fan contest?",
+          "準2級": "What is the main difference between the Japan Record Awards and MUSIC AWARDS JAPAN?",
+          "2級": "Why are some popular artists missing from the Japan Record Awards list?",
+          "準1級": "How has public reaction toward the Japan Record Awards shifted in recent years, and what factors explain this change?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "The Japan Record Awards are here. Many famous groups can win. Mrs. GREEN APPLE wants to win four times. M!LK can win too. Fans are very happy to see them. People watch the show on TV every year. Music shows are very fun for everyone.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "Elementary Level",
+          "text": "The 68th Japan Record Awards announced its winners. Mrs. GREEN APPLE, M!LK, and other top groups are on the list. Fans love supporting their favorite stars. However, some famous artists do not join the show. Critics say the awards look like a fan popularity contest. Still, many people enjoy watching the wonderful performances at the end of the year.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Pre-Intermediate Level",
+          "text": "The 68th Japan Record Awards recently announced its winners. Popular groups like Mrs. GREEN APPLE and M!LK are on the list for major awards. Fans always get excited to support their favorite artists. However, some famous musicians are missing from the lineup. Critics note that the event now looks like a fan popularity contest rather than a complete industry overview. Meanwhile, new awards like MUSIC AWARDS JAPAN are emerging to compete and change the music scene.",
+          "wordCount": 76
+        },
+        "準2級": {
+          "title": "Intermediate Level",
+          "text": "The winners for the 68th Japan Record Awards have been announced, highlighting top groups such as Mrs. GREEN APPLE, M!LK, and BE:FIRST. While these acts represent the peak of Japanese fan culture, several artist-driven musicians are notably absent from the lineup. Critics point out that the awards function more like a fan popularity contest than a comprehensive industry ranking. As new music events like MUSIC AWARDS JAPAN gain attention with transparent selection processes, the traditional authority and presence of the Record Awards are being increasingly questioned by viewers across the country.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Japan Record Awards face new era",
+          "text": "The announcement of the winners for the 68th Japan Record Awards has once again sparked discussions regarding the current state of music accolades in the country. The official list features prominent fan-favorite groups such as Mrs. GREEN APPLE, who aims for an unprecedented fourth consecutive grand prize, alongside M!LK and BE:FIRST. However, the notable absence of artist-focused musicians highlights a recurring structure where winners are chosen from those who agree to perform. Critics argue that the event now resembles a fan popularity contest rather than an objective industry standard. Furthermore, the combination of traditional broadcasting network influences and the emergence of newer initiatives like MUSIC AWARDS JAPAN contributes to a growing sense of resignation among viewers regarding transparency and selection criteria. As fans continue to support their favorite artists every year, the traditional event faces increasing questions from audiences and critics alike about its future direction and overall authority in the modern music scene.",
+          "wordCount": 155
+        },
+        "準1級": {
+          "title": "Japan Record Awards face new era",
+          "text": "The unveiling of the winners for the 68th Japan Record Awards has reignited industry-wide debate concerning the transparency and relevance of traditional television music accolades. The finalist pool features a formidable lineup of fan-centric acts, including Mrs. GREEN APPLE—who is pursuing a historic fourth consecutive grand prize—alongside groups like M!LK and BE:FIRST. Yet, the conspicuous absence of prominent, critically acclaimed solo artists and alternative bands underscores a structural limitation: winners are inevitably drawn from a pool of participating performers rather than representing a definitive industry consensus. Consequently, public discourse has evolved from active frustration to a quiet resignation regarding selection criteria heavily influenced by broadcasting networks and media legacy. As alternative initiatives like MUSIC AWARDS JAPAN strive to establish transparent, global standards, the traditional landscape of Japanese music honors continues to face significant evolutionary pressure from audiences and critics alike. The 68th Japan Record Awards continues to spark intense discussion among viewers who follow the annual television broadcast. Meanwhile, fans of Mrs. GREEN APPLE and M!LK continue to celebrate the achievements of their favorite artists across the country, showing strong support during the ongoing winter music special season.",
+          "wordCount": 191
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/yomitoki-133/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-25-kindai-miss-contest-controversy",
+      "date": "2026-11-25",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "education"
+      ],
+      "tags": [
+        "Kindai University",
+        "miss contest",
+        "social media",
+        "society"
+      ],
+      "titleJa": "近大ミスコン炎上",
+      "title": "Kindai University Miss Contest Sparks Intense Controversy Over Social Media Excess",
+      "summaryJa": "近畿大学のミスコンテストにおいて、SNSでの過激な投稿や巨額の課金投票が物議を醸し、大学イベントのあり方について議論が起きています。",
+      "sourcePublishedAt": "2026-11-25T00:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "現代の大学イベントやSNSの使い方について、イベント主催者の立場から改善策を考える。",
+        "followUpJa": "SNS投票や過激な演出をどう制限すべきかについて話し合いましょう。",
+        "questions": {
+          "5級": "What university has a big contest?",
+          "4級": "Why are people talking about the Kindai University contest?",
+          "3級": "What two things are making the Kindai University contest controversial online?",
+          "準2級": "How do social media and online voting affect the behavior of contest candidates?",
+          "2級": "What specific pressures do candidates face regarding financial contributions and online presentation?",
+          "準1級": "In what ways has the commercialization and digital hyper-competition of modern campus contests undermined their original educational purpose?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Kindai Miss Contest",
+          "text": "Kindai University has a popular contest. Many people talk about it now. Students use social media. Some posts are very shocking. Big money is used for votes. People ask about the real meaning of this school event. Is it good? We need to think about students and rules today very carefully now.",
+          "wordCount": 52
+        },
+        "4級": {
+          "title": "Controversy at Kindai",
+          "text": "Kindai University has a famous miss contest. Today, it has big trouble on the internet. Students post very strong pictures. Some people pay a lot of money for online votes. This situation is very extreme. Many people ask a serious question. What is the real meaning of a school event? Students and teachers must think about these new problems on social media carefully.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "The Kindai Contest Debate",
+          "text": "Kindai University is facing a serious controversy over its annual miss contest. In recent years, social media and online voting have changed the event completely. Some candidates post very provocative pictures online to get attention. Furthermore, supporters spend over one million yen on donations to buy votes in the system. This extreme behavior causes intense debate across Japan. Many critics wonder about the true meaning of university events today. Students and schools must consider how digital pressure changes young people and campus rules very carefully now.",
+          "wordCount": 86
+        },
+        "準2級": {
+          "title": "Inside the Kindai Miss Contest Issue",
+          "text": "Kindai University is currently at the center of a major public debate regarding its miss contest. Driven by social media influence and online voting systems, the campus event has become increasingly radical over time. Some female students post exaggerated images to stand out on the internet, while supporters sometimes spend over one million yen in donations to secure votes. This hyper-competitive environment has sparked fierce discussions about lookism, commercialization, and excessive student behavior. Observers question the fundamental purpose of university festivals, asking whether such events still serve educational values or simply feed digital vanity in modern society.",
+          "wordCount": 97
+        },
+        "2級": {
+          "title": "The Radicalization of Campus Contests",
+          "text": "Kindai University has found itself at the center of intense public scrutiny due to the increasing radicalization of its annual miss contest. Influenced heavily by social media visibility and online voting mechanisms, the competition has transformed significantly in recent years. Candidates now face immense pressure to attract digital attention, sometimes leading to the posting of provocative photographs. Additionally, the system enables financial contributions exceeding one million yen, creating a troubling pay-to-win dynamic that alarms observers. These developments have reignited broader societal discussions surrounding lookism, commercialization, and student welfare across the nation. Critics and educators alike are questioning the true meaning and educational value of modern university events, urging a careful reevaluation of how campus contests are organized in the digital age. Furthermore, analysts note that the fierce competition online leaves students with little choice if they wish to remain visible in the contest.",
+          "wordCount": 143
+        },
+        "準1級": {
+          "title": "Reevaluating Campus Culture Amid Digital Excess and Extreme Online Competition",
+          "text": "The annual miss contest at Kindai University has ignited a profound societal debate across Japan, highlighting the complex intersection of social media influence, commercialization, and modern campus culture. Fueled heavily by online voting platforms, the competition has grown remarkably radical in recent years, with student candidates facing unprecedented psychological and social pressure to cultivate maximum digital engagement and high visibility online. This high-stakes environment has normalized provocative self-presentation, such as emphasizing physical appearance, alongside massive financial outlays including donations surpassing one million yen aimed at manipulating or securing vote counts within the voting system. As fierce discussions surrounding lookism, excessive commercialization, and ethical boundaries intensify nationwide, observers, critics, and educators are compelled to reexamine the core educational objectives of university-sanctioned events. The controversy underscores a broader systemic challenge for academic institutions: balancing student expression and autonomy with rigorous institutional oversight in an era where digital metrics often overshadow traditional educational values. Ultimately, industry experts and concerned analysts argue that universities must address these escalating online pressures and financial dynamics before campus events lose their original purpose entirely and compromise student welfare.",
+          "wordCount": 181
+        }
+      },
+      "sources": [
+        {
+          "name": "Toyokeizai Online",
+          "url": "https://toyokeizai.net/articles/-/965711"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-25-rangers-beat-aberdeen-3-2",
+      "date": "2026-11-25",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "sports"
+      ],
+      "tags": [
+        "Rangers",
+        "Aberdeen",
+        "Derek McInnes",
+        "Scottish Premiership"
+      ],
+      "titleJa": "レンジャーズが3-2で勝利",
+      "title": "Rangers beat Aberdeen 3-2 after a thrilling match",
+      "summaryJa": "レンジャーズはアバディーンに3-2で勝利し、監督はチームの油断を指摘しつつも勝利を称えました。",
+      "sourcePublishedAt": "2026-11-25T01:20:53.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "試合の課題をふまえ、チームが次に勝つためのアドバイスを考えよう。",
+        "followUpJa": "自分の考えたアドバイスを英語で簡単に伝えてみましょう。",
+        "questions": {
+          "5級": "Did Rangers win the game?",
+          "4級": "What did manager Derek McInnes say about his team?",
+          "3級": "Why did the manager make a triple substitution at half-time?",
+          "準2級": "How did Rangers turn the game around at the start of the second half?",
+          "2級": "What specific problems did McInnes point out regarding his team's performance?",
+          "準1級": "How do the team's recent comeback wins reflect their current standing in the Scottish Premiership?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Rangers Win a Game",
+          "text": "Rangers play a football game. They play against Aberdeen. Aberdeen score one goal first. Rangers score three goals in the second half. Aberdeen score one more goal. Rangers win the game 3-2. The manager is happy. But he says they can play better.",
+          "wordCount": 42
+        },
+        "4級": {
+          "title": "Rangers Beat Aberdeen 3-2",
+          "text": "Rangers played against Aberdeen in a football match. Aberdeen scored the first goal before half-time. After the break, Rangers made three changes. They scored three quick goals in eleven minutes. Aberdeen scored another goal near the end. Rangers won the match 3-2. The manager, Derek McInnes, said his team was too naive and complacent at times, but he was happy they got the win.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Rangers Overcome Complacency to Beat Aberdeen",
+          "text": "Rangers secured an exciting 3-2 victory against Aberdeen at Ibrox after a dramatic match. Aberdeen led at half-time following a header by Brad Lyons. In response, Rangers manager Derek McInnes made three substitutions at the break to change the game completely. Rangers scored three fast goals within eleven minutes through Ryan Naderi, Djeidi Gassama, and Nico Raskin. Although Aberdeen scored another goal later to make it very tense, Rangers held on for the important win. McInnes later warned his players about being too complacent and naive during matches.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Rangers Dig It Out Against Aberdeen",
+          "text": "Rangers manager Derek McInnes praised his team for grinding out a thrilling 3-2 victory over Aberdeen, despite expressing frustration over their naivety and complacency. Aberdeen had taken the lead at half-time through a header from Brad Lyons. Unhappy with the first-half display, McInnes made a half-time triple substitution, bringing on fresh players to change the momentum. The tactical change worked immediately. Rangers roared into a 3-1 lead after an 11-minute burst of goals from Ryan Naderi, Djeidi Gassama, and Nico Raskin at the start of the second half. Although Findlay Marshall pulled a goal back for the visitors and created a tense finish, Rangers held firm to secure the win. McInnes emphasized that his team must stop playing backwards passes and losing the initiative.",
+          "wordCount": 122
+        },
+        "2級": {
+          "title": "McInnes Warns Rangers After Thrilling Win",
+          "text": "Rangers manager Derek McInnes admitted that his team's complacency and naivety made their task much harder during a thrilling 3-2 victory over Aberdeen at Ibrox. The home side was forced to navigate a tense closing passage after holding off a defiant Aberdeen team, leaving them just one point behind Celtic at the top of the Scottish Premiership. Aberdeen had deservedly led at the break thanks to Brad Lyons' header. Dissatisfied with the opening period, McInnes introduced a triple substitution at half-time. The tactical shift paid immediate dividends as Rangers overwhelmed the visitors with three goals in an 11-minute burst at the start of the second half, courtesy of Ryan Naderi, Djeidi Gassama, and Nico Raskin. Although Findlay Marshall responded for Aberdeen to set up a nervous finale, Rangers secured their 14th consecutive game without defeat. However, McInnes strongly criticized his players for losing the initiative and playing too many backwards passes, insisting that such complacency must change for future matches.",
+          "wordCount": 158
+        },
+        "準1級": {
+          "title": "Rangers Extend Unbeaten Run Amid Managerial Warnings",
+          "text": "Rangers extended their impressive unbeaten run to 14 games with a hard-fought 3-2 victory over Aberdeen, though manager Derek McInnes remained critical of his squad's recurring naivety and complacency. Despite the thrilling nature of the encounter at Ibrox, which moved Rangers within a single point of league leaders Celtic, McInnes voiced clear displeasure regarding the manner in which his side surrendered the initiative. Aberdeen had capitalized on a sluggish start by the hosts, taking a lead into the interval via Brad Lyons' well-taken header. Recognizing the urgent need for a shift in momentum, McInnes executed a decisive half-time triple substitution. The tactical gamble proved spectacularly successful as Rangers erupted after the break, netting three goals in a blistering 11-minute sequence through Ryan Naderi, Djeidi Gassama, and Nico Raskin. Although Findlay Marshall clawed one back for the visitors to ensure a tense closing passage, Rangers ultimately dug deep to preserve their narrow advantage. In his post-match assessment, McInnes did not shy away from dissecting his team's shortcomings, lamenting a surplus of backwards passing and periods of dangerous complacency that nearly squandered their hard-earned lead. With supporters eagerly following their strong campaign, the manager stressed that such mental lapses must be eradicated if the team hopes to sustain their success.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/football/articles/cw808pyyxgzjo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-25-shobara-robbery-murder-arrest-2026",
+      "date": "2026-11-25",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hiroshima",
+        "Shobara",
+        "police",
+        "arrest"
+      ],
+      "titleJa": "広島の強盗殺人事件で会社員…",
+      "title": "Man Arrested in Hiroshima Robbery and Murder Case",
+      "summaryJa": "去年広島県庄原市で起きた高齢女性殺害事件で、警察は24日夜に強盗殺人などの疑いで会社員の男を逮捕しました。",
+      "sourcePublishedAt": "2026-11-25T04:03:20.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "事件の容疑者が過去にどのような仕事をしていて、土地勘を得た可能性があるかを確認する。",
+        "followUpJa": "容疑者の過去の仕事と土地勘の関連性について、英語で簡単に説明してみましょう。",
+        "questions": {
+          "5級": "What job did the man do before?",
+          "4級": "Where did the man work in the past?",
+          "3級": "Why might the arrested man know the area well?",
+          "準2級": "What connection was found between the suspect's past delivery job and the victim's neighborhood?",
+          "2級": "According to investigative sources, what professional background might have given the suspect knowledge of the victim's area?",
+          "準1級": "How do investigators believe the suspect's previous delivery work in Shobara relates to his potential familiarity with the victim's residential area?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Man is Arrested",
+          "text": "A man has a new problem. Police caught him in Japan. Last year, an old woman died in her house. She was eighty-four years old. This bad thing happened in Shobara, Hiroshima. The police can arrest the worker now. They think he did a bad crime. People want to know more news.",
+          "wordCount": 52
+        },
+        "4級": {
+          "title": "Police Catch a Suspect",
+          "text": "Police in Japan arrested a company worker. This happened on the night of November 24. Last year, an 84-year-old woman was killed in her home. Her house is in Shobara, Hiroshima. Investigators think the man has a connection to the crime. Now, people are talking about this terrible case. The police are working hard to find all the facts.",
+          "wordCount": 58
+        },
+        "3級": {
+          "title": "Company Worker Arrested for Murder in Shobara",
+          "text": "Japanese police arrested a company employee on Monday night. He is a suspect in a serious robbery and murder case. Last year, an 84-year-old woman living alone was killed in her house. This tragic event happened in Shobara, Hiroshima. According to investigative sources, the arrested worker used to have a delivery job in that area. This past work might explain why he knew the neighborhood well. Police are continuing their investigation into the suspect.",
+          "wordCount": 74
+        },
+        "準2級": {
+          "title": "Investigation into Shobara Robbery and Murder Case",
+          "text": "Japanese police have made a major arrest in a serious crime from last year. On the night of November 24, officers arrested a company employee on suspicion of robbery and murder. The case involves the tragic death of an 84-year-old woman who lived alone in a house in Shobara, Hiroshima. Investigative sources revealed new details about the suspect after the arrest. The man previously worked delivering items in the local area, which includes the victim's neighborhood. Investigators believe this past delivery work may have given him familiarity with the local geography and the woman's home.",
+          "wordCount": 94
+        },
+        "2級": {
+          "title": "Suspect Arrested in Hiroshima Senior Woman Murder Case",
+          "text": "Japanese law enforcement authorities have apprehended a suspect in connection with a high-profile homicide that occurred last year. Late on the night of November 24, police arrested a company employee on suspicion of robbery and murder. The investigation centers on the tragic death of an 84-year-old woman who lived by herself in a residential house in Shobara, Hiroshima. According to information obtained from investigative sources, the arrested man has a specific connection to the location. He had previously worked in the region doing delivery jobs, which included the area around the victim's home. Authorities are now examining whether this professional familiarity with the neighborhood played a significant role in the planning and execution of the crime, as they continue to gather evidence and question the suspect regarding the circumstances of the incident.",
+          "wordCount": 131
+        },
+        "準1級": {
+          "title": "Investigative Sources Reveal Suspect's Local Ties in Shobara Homicide Case",
+          "text": "In a significant development regarding a violent crime that shocked the community last year, Japanese law enforcement authorities have officially arrested a company employee on suspicion of robbery and murder. The arrest took place late on the night of November 24, targeting an individual linked to the tragic death of an 84-year-old woman who resided completely alone in a residential house located in Shobara, Hiroshima. As the investigation continues to progress toward a comprehensive understanding of the incident, investigative sources have disclosed a potentially crucial detail concerning the arrested company employee's background and his prior activities in the region. It was revealed through ongoing reporting that the company employee had previously been employed in a delivery role that covered the local municipality, specifically including the exact neighborhood where the victim's residential house is situated. Law enforcement officials are currently analyzing how this prior professional familiarity with the local terrain might have provided the suspect with a distinct geographical advantage when targeting the area, while investigative authorities continue to thoroughly probe the full extent of his suspected involvement in the case.",
+          "wordCount": 179
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261125de81022"
+        }
+      ]
+    },
     {
       "id": "2026-11-24-hokkaido-weather-november-24",
       "date": "2026-11-24",
