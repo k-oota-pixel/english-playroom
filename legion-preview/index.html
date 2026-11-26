@@ -106,7 +106,14 @@ img,svg{-webkit-user-drag:none}
 @media(prefers-reduced-motion:reduce){#quizOverlay .choices .order-submit.order-ready:not(:disabled){animation:none}}
 /* 0.4.0: summon traits and inheritance choices */
 .trait-line{display:grid;gap:2px;padding:4px 0;color:#f1d59c;font-size:12px;white-space:normal}.trait-line strong{font-size:inherit;color:#f1d59c}.trait-line small{font-size:11px;color:#ddd1c7;line-height:1.3;white-space:normal}.inspect .trait-line{border-top:1px solid #66556c;margin-top:3px;max-width:120px;font-size:clamp(10px,1.8vh,12px)}.inspect .trait-line strong{border:0;padding:0;margin:0;white-space:normal}.inspect .trait-line small{font-size:clamp(9px,1.6vh,11px)}.trait-choices{display:grid;gap:5px}.trait-choice{text-align:left;padding:7px;background:#2e2838;border:1px solid #716079}.trait-choice.chosen{border:2px solid #efcf87;background:#493c41;box-shadow:inset 0 0 0 1px #9d8050}.trait-choice .trait-line{padding:2px 0}.unit-summary>div{min-width:0;flex:1}
-</style></head><body><main><header class="top"><div><div class="eyebrow">MONSTUDY · LEGION / PREVIEW 0.4.3</div><h1>もんすたレギオン</h1><small>英語で召喚。軍団で防衛。</small></div><a href="../">ホームへ</a></header>
+/* 0.4.4: grammar review within the existing scrollable quiz body. */
+#quizOverlay .grammar-help{margin-top:8px;padding:7px 8px;border:1px solid #a78a59;border-radius:5px;background:#302b2c;color:#f7e8d2;display:grid;gap:5px;white-space:pre-wrap;line-height:1.55}
+#quizOverlay .grammar-help strong{color:#f5d18a;font-size:inherit}
+#quizOverlay .grammar-ja{color:#e9e4d9}
+#quizOverlay .grammar-meaning{color:#f1d49d}
+#quizOverlay .grammar-tip{overflow-wrap:anywhere}
+#quizOverlay .summon-feedback{margin-top:7px;padding-top:5px;border-top:1px solid #ffffff26}
+</style></head><body><main><header class="top"><div><div class="eyebrow">MONSTUDY · LEGION / PREVIEW 0.4.4</div><h1>もんすたレギオン</h1><small>英語で召喚。軍団で防衛。</small></div><a href="../">ホームへ</a></header>
 <section id="entry" class="entry panel"><h2>姫を守る軍団をつくろう</h2><p class="rotate-entry">スマホでは横向きがおすすめです。</p><p>英語に正解して召喚盤を回し、仲間を集めて敵の侵攻を防ぎます。</p><div class="settings"><label>英語の難易度<select id="grade"><option>4級</option><option selected>3級</option><option>準2級</option><option>2級</option></select></label><label>ゲーム難易度<select id="mode"><option value="10">Easy / 10 WAVE</option><option value="20">Normal / 20 WAVE</option><option value="30">Hard / 30 WAVE</option><option value="0">Endless</option></select></label></div><button id="start" class="primary" disabled>問題データを読み込み中…</button><div id="notice" class="notice" role="status"></div><details class="help" open><summary>ルール</summary><p>初期スタミナ10、最大20。召喚コストは1〜6。ウェーブ勝利で5回復し、コストが1に戻ります。連続正解3・5・10問でそれぞれ1・1・2回復。誤答では消費なし。</p><p>3×3の縦横斜め8ラインが揃うと、成立ラインごとに仲間を1体召喚。揃わなければ召喚なし。初回のみ1ライン以上確定。召喚された仲間には300種類から固有能力が1つ付き、強化時に素材の能力を引き継ぐこともできます。最大12体。吸収で★3まで育成し、戦場に自由配置して姫を守りましょう。姫が敵の攻撃を1回でも受けると敗北。仲間のHP・MPはウェーブごとに全回復します。</p><p>既存コイン・ペット・学習記録とは独立。途中保存なし。</p></details></section>
 <section id="game" hidden>
 
@@ -225,8 +232,190 @@ return {units,lines,create,cost,canSpin,answer,spin,stats,absorb,battle,step,fin
 document.addEventListener('selectstart',e=>e.preventDefault());document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('dragstart',e=>e.preventDefault());
 const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;return x;};
 let bank,s,q,grade,seen,order=[],selected=null,placing=null,drag=null,busy=false,b,timer,epoch=0,frame=0,lastFrame=0,accumulator=0,audio=null,detailId=null,portraitOverride=false;
+// Existing Retry Note rule-based learning hints, copied from assets/retry-app.js.
+// No additional requests or shared model changes. Keep original question metadata local.
+let retryHelpById=new Map();
+const orderHelpById=new Map(BASIC_GRAMMAR_STAGES.flatMap(stage=>stage.questions.map(row=>['g:order:'+row.id,{stage:stage.word,ja:row.ja,notes:row.notes||[]}])));
+const retryLearningHelp=(()=>{
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function completedEnglish(q){return q.question.replace('(____)',q.answer_text);}
+function cleanJa(s){return s&&s!=='訳を取得できませんでした'?s:'';}
+function phraseAroundBlank(q,left=3,right=3){
+ const marker='__ANSWER__',raw=q.question.replace('(____)',marker).replace(/([.,!?;:()])/g,' $1 '),parts=raw.split(/\s+/).filter(Boolean),i=parts.indexOf(marker);
+ if(i<0)return q.answer_text;
+ const before=parts.slice(Math.max(0,i-left),i),after=parts.slice(i+1,i+1+right);
+ return [...before,q.answer_text,...after].join(' ').replace(/\s+([.,!?;:])/g,'$1');
+}
+function choiceShape(q){
+ const cs=q.choices.map(c=>c.text.trim()),lower=cs.map(x=>x.toLowerCase());
+ return {cs,lower,single:cs.every(x=>/^[-A-Za-z']+$/.test(x)),hasIng:lower.some(x=>/ing$/.test(x)),hasTo:lower.some(x=>/^to\s+/.test(x)),hasEd:lower.some(x=>/(ed|en)$/.test(x))};
+}
+function contextSignal(q){
+ const t=q.question;
+ const tests=[
+  [/\balthough\b|\bthough\b|\beven though\b/i,['逆接','although / though の後ろと主節は、内容が対照的になります。']],
+  [/\bhowever\b|\bbut\b|\byet\b/i,['逆接','but / however / yet の前後で意味が反対方向に動くことが多いので、両側を比べます。']],
+  [/\bbecause\b|\bsince\b/i,['理由','because / since が「理由」を示します。理由と結論が自然につながる語を選びます。']],
+  [/\btherefore\b|\bthus\b|\bas a result\b/i,['結果','therefore / thus / as a result は「結果」のサインです。直前の原因から何が起こるかを考えます。']],
+  [/\bfor example\b|\bfor instance\b|\bsuch as\b/i,['具体例','for example / such as の後ろは具体例です。抽象的な意味を具体例から逆算できます。']],
+  [/\bin fact\b|\bspecifically\b/i,['言い換え・具体化','in fact / specifically の後ろが、前の内容を詳しく説明しています。']],
+  [/\binstead of\b|\brather than\b/i,['対比・選択','instead of / rather than は「AではなくB」という対比を作ります。']],
+  [/\buntil\b|\bbefore\b|\bafter\b|\bwhen\b|\bwhile\b/i,['時間関係','before / after / when / while / until で出来事の順序を整理すると選びやすくなります。']],
+  [/\bif\b|\bunless\b/i,['条件','if / unless は条件を示します。条件節と主節の意味・時制をセットで確認します。']]
+ ];
+ for(const [re,v] of tests)if(re.test(t))return v;return null;
+}
+function exactGrammarInsight(q){
+ const raw=q.question.replace(/\s+/g,' '),c=completedEnglish(q).replace(/\s+/g,' '),a=q.answer_text.trim(),al=a.toLowerCase(),sh=choiceShape(q);
+ const around=q.review_phrase||phraseAroundBlank(q,4,5);
+ // 0) 正解そのものが定型表現なら、文中の別構文よりこちらを最優先。
+ const exact={
+  'as long as':'<strong>as long as</strong> は「<strong>～する限り／～という条件なら</strong>」。条件を表す接続詞です。',
+  'as soon as':'<strong>as soon as</strong> は「<strong>～するとすぐに</strong>」。2つの出来事が続けて起こることを表します。',
+  'rather than':'<strong>rather than</strong> は「<strong>～ではなくて</strong>」。前後に同じ文法形を置いて選択・対比を作ります。',
+  'instead of':'<strong>instead of + 名詞 / V-ing</strong> は「<strong>～の代わりに／～せずに</strong>」。of は前置詞なので、動詞なら -ing 形です。',
+  'because of':'<strong>because of + 名詞</strong> は「～のために」。<strong>because + S + V</strong> との形の違いを確認しましょう。',
+  'in spite of':'<strong>in spite of + 名詞</strong> は「<strong>～にもかかわらず</strong>」。後ろには名詞（句）が続きます。',
+  'no wonder':'<strong>no wonder (that) ...</strong> は「～なのも当然だ」。後ろの内容が、その状況が当然である理由になります。',
+  'in common':'<strong>have ... in common</strong> は「共通して～を持つ／共通点がある」。<strong>in common</strong> をひとかたまりで覚えます。',
+  'on purpose':'<strong>on purpose</strong> は「わざと、故意に」。<strong>by accident / by mistake</strong>「偶然に／間違って」と対比すると覚えやすいです。',
+  'by mistake':'<strong>by mistake</strong> は「間違って」。意図的ではないことを表し、<strong>on purpose</strong>「わざと」と対照的です。',
+  'according to':'<strong>according to + 情報源</strong> は「～によると」。人・資料・報告など、情報の出どころを示します。',
+  'in addition to':'<strong>in addition to + 名詞 / V-ing</strong> は「～に加えて」。to は前置詞です。',
+  'aside from':'<strong>aside from</strong> は「～は別として／～に加えて」。文脈によって除外または追加の意味になります。',
+  'except for':'<strong>except for</strong> は「～を除いて」。全体から例外を取り出す表現です。',
+  'out of the question':'<strong>out of the question</strong> は「問題外で、不可能で」。ひとかたまりの決まり文句です。',
+  'all the more':'<strong>all the more</strong> は「なおさら、いっそう」。前に述べた事情によって程度がさらに強まることを表します。',
+  'as a whole':'<strong>as a whole</strong> は「全体として」。細部ではなく全体評価を述べるときに使います。',
+  'in turn':'<strong>in turn</strong> は「今度は／順番に」。前の人から次の人へ行為・影響が移る流れを表します。',
+  'by far':'<strong>by far</strong> は比較級・最上級を強めて「はるかに／断然」。特に最上級とよく使います。',
+  'and so on':'<strong>and so on</strong> は「～など」。同じ種類の例がまだ続くことを示します。',
+  'one another':'<strong>one another</strong> は「お互いに」。複数の人・ものが互いに同じ動作をするときに使います。',
+  'each other':'<strong>each other</strong> は「お互いに」。目的語として使われることが多い表現です。'
+ };
+ if(exact[al])return exact[al];
+ if(al==='despite')return `<strong>despite + 名詞</strong> は「<strong>～にもかかわらず</strong>」。despite の後ろに of は付けません。`;
+ // 1) 空所そのものが作る強調・結果・目的。
+ if(al==='that' && /^it\s+(?:is|was)\s+because\b[^.?!]{0,220}\(____\)/i.test(raw))return `<strong>It is because A that B</strong> は「<strong>BなのはAだからだ</strong>」という強調構文です。because 以下の「理由」を強調しています。途中の <strong>so + 副詞</strong> は程度を表すだけで、ここを <strong>so that（～するために）</strong> と取らないのがポイントです。`;
+ if(al==='that' && /\bso\s+[^.?!]{1,45}\(____\)/i.test(raw))return `<strong>so + 形容詞 / 副詞 + that S + V</strong> は「<strong>とても…なので～</strong>」という結果の構文です。so と that の間に程度を表す語が入ります。`;
+ if(al==='that' && /\bsuch\s+[^.?!]{1,55}\(____\)/i.test(raw))return `<strong>such + (a/an) + 形容詞 + 名詞 + that ...</strong> は「とても…なので～」という結果を表します。`;
+ if(al==='that' && /\bso\s*\(____\)/i.test(raw))return `<strong>so that S can/could ...</strong> の that なら「Sが～できるように」という目的を作ります。前後の助動詞まで含めて確認しましょう。`;
+ if(al==='in order' && /\(____\)\s+to\b/i.test(raw))return `<strong>in order to + 動詞の原形</strong> は「<strong>～するために</strong>」。目的をはっきり示す表現です。`;
+ // 2) 正解の形そのものが文法を示すもの。
+ if(/^being\s+\S+/i.test(a) && /(?:ed|en|treated|known|seen|taken|given|made|built|written|done|said|told)$/i.test(a))return `<strong>being + 過去分詞</strong> は「<strong>～されること／～されている状態</strong>」という受動の動名詞です。この文では動作を受ける側なので受動形になります。`;
+ if(/^(?:am|is|are|was|were|be|been|being)\s+\S+/i.test(a) && /^\s*(?:by\b|to\b|for\b|with\b|at\b|on\b|in\b|from\b|[.,!?])/i.test(raw.split('(____)')[1]||''))return `<strong>be動詞 + 過去分詞</strong> の受動態です。「主語が～する」のではなく「<strong>主語が～される</strong>」関係になっています。`;
+ if(/^(?:have|has|had)\s+\S+/i.test(a))return `<strong>have / has / had + 過去分詞</strong> は完了形です。この問題では周囲の時表現と出来事の前後関係から、現在完了か過去完了かを判断します。`;
+ if(/^to\s+[a-z]+/i.test(a)){
+  if(/\btoo\s+[^.?!]{0,35}\(____\)/i.test(raw))return `<strong>too + 形容詞 / 副詞 + to do</strong> は「<strong>～するには…すぎる</strong>／あまりに…なので～できない」という頻出構文です。`;
+  if(/\benough\s+\(____\)/i.test(raw))return `<strong>形容詞 / 副詞 + enough to do</strong> は「<strong>～するのに十分…だ</strong>」という形です。`;
+  return `<strong>to + 動詞の原形</strong> の不定詞です。<strong>${esc(around)}</strong> の中で、目的・補語・結果など何を表しているかを確認しましょう。`;
+ }
+ // 3) 空所の直前・直後が決める語法。raw の (____) を中心に判定する。
+ if(/would (?:you )?mind\s+\(____\)/i.test(raw))return `<strong>Would you mind V-ing ...?</strong> は「～していただけますか」。<strong>mind の後ろは動名詞（V-ing）</strong>です。`;
+ if(/(?:can't|cannot|couldn't|could not) help\s+\(____\)/i.test(raw))return `<strong>can't help V-ing</strong> は「<strong>～せずにはいられない</strong>」。help の後ろが -ing になる決まり表現です。`;
+ if(/\b(?:enjoy|finish|avoid|mind|practice|consider|suggest|recommend|admit|deny|quit|keep)\s+\(____\)/i.test(raw))return `直前の動詞は後ろに <strong>V-ing（動名詞）</strong> を取ります。正解語だけでなく、<strong>前の動詞 + V-ing</strong> のセットで覚えましょう。`;
+ if(/\blook forward to\s+\(____\)/i.test(raw))return `<strong>look forward to + 名詞 / V-ing</strong> は「～を楽しみにする」。この <strong>to は前置詞</strong>なので、動詞なら -ing 形です。`;
+ if(/\b(?:be|am|is|are|was|were|been|being|get|gets|got) used to\s+\(____\)/i.test(raw))return `<strong>be/get used to + 名詞 / V-ing</strong> は「～に慣れている／慣れる」。この <strong>to は前置詞</strong>です。`;
+ if(/\bused to\s+\(____\)/i.test(raw))return `<strong>used to + 動詞の原形</strong> は「以前は～したものだ／～だった」。<strong>be used to V-ing</strong> と区別します。`;
+ if(/\b(?:decide|hope|plan|promise|agree|learn|manage|refuse|choose|expect|want|need|try)\s+\(____\)/i.test(raw) && /^to\b/i.test(a))return `直前の動詞は後ろに <strong>to不定詞</strong> を取る語法です。動詞と <strong>to do</strong> をセットで覚えましょう。`;
+ if(/\b(?:ask|tell|want|allow|expect|encourage|advise|invite|force|enable)\s+[^.?!]{1,35}\s+\(____\)/i.test(raw) && /^to\b/i.test(a))return `<strong>動詞 + 人 + to do</strong> の形です。「人に～するよう…する」という語法を確認します。`;
+ if(/\blet\s+[^.?!]{1,30}\s+\(____\)/i.test(raw))return `<strong>let + 人 + 動詞の原形</strong>「人に～させる」。let の後ろでは <strong>to を付けません</strong>。`;
+ if(/\bmake\s+[^.?!]{1,30}\s+\(____\)/i.test(raw))return `<strong>make + 人 + 動詞の原形</strong>「人に～させる」という使役の形です。受動態では <strong>be made to do</strong> になります。`;
+ if(/\bkeep\s+[^.?!]{1,35}\s+\(____\)/i.test(raw))return `<strong>keep + O + C</strong> は「<strong>OをCの状態にしておく</strong>」。空所は目的語の状態を説明します。`;
+ if(/\bneed(?:s|ed)? to\s+\(____\)/i.test(raw) && /^be\s+/i.test(a))return `<strong>need to be + 過去分詞</strong> は「～される必要がある」。主語が動作を受けるので受動態です。`;
+ // 4) 比較・関係詞・相関表現（空所がその構成要素のとき）。
+ if(al==='to' && /\bprefer(?:s|red)?\b[^.?!]{0,55}\(____\)/i.test(raw))return `<strong>prefer A to B</strong> は「<strong>BよりAを好む</strong>」。比較相手の前は <strong>to</strong> です。`;
+ if(al==='as' && /\b(?:as|so)\s+[^.?!]{1,25}\s+\(____\)/i.test(raw))return `<strong>as + 形容詞 / 副詞 + as</strong> は「～と同じくらい…」。否定では <strong>not as/so ... as</strong> になります。`;
+ if(al==='than')return `<strong>比較級 + than</strong> の形です。「～より…」という比較なので、何と何を比べているかを確認します。`;
+ if(al==='why' && /\bthe reason\s+\(____\)/i.test(raw))return `<strong>the reason why S + V</strong> は「<strong>SがVする理由</strong>」。reason と why の組み合わせです。`;
+ if(al==='where')return `<strong>where</strong> は場所を表す疑問詞・関係副詞です。この文では空所の前後から、「どこで／～する場所」のどちらかを判断します。`;
+ if(al==='when')return `<strong>when</strong> は時を表す疑問詞・関係副詞です。「いつ／～するとき」のどちらの働きかを文全体で確認します。`;
+ if(['who','whom','whose','which'].includes(al) || (al==='that'&&!/^it\s+(?:is|was)\s+because/i.test(raw))){
+  const mm={who:'人を受け、後ろで主語になることが多い関係代名詞',whom:'人を受け、後ろで目的語になる関係代名詞',whose:'「～の」と所有を表す関係代名詞',which:'物・事を受ける関係代名詞',that:'人・物のどちらにも使える関係代名詞'};
+  if(mm[al])return `<strong>${esc(a)}</strong> は ${mm[al]} です。先行詞が「人か物か」と、後ろの節で何が欠けているかを確認します。`;
+ }
+ if(al==='other' && /\bone\b[^.?!]{0,80}\b\(____\)/i.test(raw))return `<strong>one ... the other ...</strong> は「一方は…、もう一方は…」。2つのものを対比するときの定番表現です。`;
+ if(/^do i$/i.test(a) && /\bso\s+\(____\)/i.test(raw))return `<strong>So + 助動詞 + 主語</strong> は「<strong>～もそうです</strong>」。直前の肯定内容に同意する倒置です。`;
+ if(al==='had' && /\(____\)\s+better\b/i.test(raw))return `<strong>had better + 動詞の原形</strong> は「～したほうがよい」。かなり強めの助言です。`;
+ if(al==='unless')return `<strong>unless = if ... not</strong>「<strong>～しない限り</strong>」。unless 自体に否定の意味があります。`;
+ // 5) 選択肢の語形差が中心の問題。
+ if(sh.hasIng&&sh.hasTo)return `選択肢に <strong>to do / V-ing</strong> の違いがあります。空所直前の語がどちらを取るかが決め手です。`;
+ if(sh.single&&(sh.hasIng||sh.hasEd))return `選択肢の語形が似ています。<strong>能動か受動か／動作か状態か／時制は何か</strong>を文の主語と動詞から判断します。`;
+ return '';
+}
+function slotInsight(q){
+ const t=q.question,a=q.answer_text,idx=t.indexOf('(____)');if(idx<0)return '';
+ const before=t.slice(0,idx).trim(),after=t.slice(idx+6).trim(),prev=(before.match(/([A-Za-z']+)\s*$/)||[])[1]||'',next=(after.match(/^([A-Za-z']+)/)||[])[1]||'',pl=prev.toLowerCase(),nl=next.toLowerCase();
+ const phrase=q.review_phrase||phraseAroundBlank(q,2,3),al=q.answer_text.trim().toLowerCase();
+ if(q.review_role==='grammar'&&['in','on','at','for','to','of','by','with','from','about','into','over','under','up','down','out','off','through','across','against','along','away','around','without','within','during','among','between'].includes(al))return `<strong>${esc(q.answer_text)}</strong> は単独の日本語訳だけでなく、前後の語との結びつきで決まります。この問題では <strong>${esc(phrase)}</strong> が定着させたい形です。前置詞まで含めて1セットで覚えましょう。`;
+ if(q.review_role==='grammar'&&al==='another')return `<strong>another + 単数名詞</strong> は「もう1つの／別の」。<strong>other + 複数名詞</strong> や <strong>the other</strong> と区別します。`;
+ if(q.review_role==='grammar'&&al==='other')return `<strong>other</strong> は「ほかの」。後ろに名詞を置く用法と、<strong>the other</strong>「（2つのうち）もう一方」の形を文脈で見分けます。`;
+ if(q.review_role==='grammar'&&['much','many','few','little'].includes(al))return `<strong>${esc(q.answer_text)}</strong> は数量を表す語です。数えられる名詞か数えられない名詞か、また肯定・否定の意味を確認して選びます。`;
+ if(q.review_role==='grammar'&&['how','why','where','when','what','who'].includes(al))return `<strong>${esc(q.answer_text)}</strong> は疑問詞です。後ろに続く内容が「方法・理由・場所・時・物・人」のどれを求めているかで判断します。`;
+ if(q.review_role==='verb')return `空所は<strong>動詞</strong>が入る位置です。この問題では <strong>${esc(phrase)}</strong> という語のつながりで覚えると、意味と語法を一緒に確認できます。`;
+ if(q.review_role==='noun')return `空所は<strong>名詞</strong>が中心になる位置です。<strong>${esc(phrase)}</strong> というまとまりを見て、「何・誰・どんな事柄」を置くのかを考えます。`;
+ if(q.review_role==='adjective')return `空所は<strong>形容詞</strong>として名詞や主語の状態を説明する位置です。<strong>${esc(phrase)}</strong> の形で確認しましょう。`;
+ if(q.review_role==='adverb')return `空所は<strong>副詞</strong>として動作・程度・文全体を説明する位置です。<strong>${esc(phrase)}</strong> の中で何を修飾しているかを見るのがポイントです。`;
+ if(q.review_role==='participle')return `過去分詞・形容詞的な形が入る位置です。<strong>${esc(phrase)}</strong> で「～された状態」なのか受動の動作なのかを確認します。`;
+ if(/^(a|an|the|this|that|my|your|his|her|our|their|some|any|many|several|each|every)$/.test(pl))return `直前が <strong>${esc(prev)}</strong> なので、名詞または名詞を修飾する語が入りやすい位置です。`;
+ if(/^(very|so|too|quite|really|extremely|rather)$/.test(pl))return `<strong>${esc(prev)}</strong> の後ろなので、形容詞・副詞として意味が通るかを確認します。`;
+ if(nl&&/^(to|for|of|with|about|from|into|on|at|by)$/.test(nl))return `正解語は直後の <strong>${esc(next)}</strong> と結びつきます。<strong>${esc(phrase)}</strong> を1つの語のまとまりとして覚えましょう。`;
+ return '';
+}
+function phraseInsight(q){
+ const a=q.answer_text.trim(),al=a.toLowerCase(),p=q.review_phrase||phraseAroundBlank(q,2,4);
+ if(!/\s/.test(a))return '';
+ if(/^to\s+[a-z]+/i.test(a))return `<strong>${esc(a)}</strong> は to不定詞です。文中では <strong>${esc(p)}</strong> という形になっており、to 以下が目的・結果・補語などの役割を持ちます。`;
+ const words=al.split(/\s+/),last=words[words.length-1];
+ if(['up','down','out','off','in','on','away','back','over','through','around','along','across'].includes(last))return `<strong>${esc(a)}</strong> は句動詞です。動詞と最後の <strong>${esc(last)}</strong> を切り離さず、<strong>${esc(p)}</strong> のまとまりで覚えましょう。`;
+ if(['for','with','into','from','to','of','at','about','against'].includes(last))return `<strong>${esc(a)}</strong> は前置詞まで含めて語法が決まる表現です。<strong>${esc(p)}</strong> のように「後ろに何が続くか」までセットで覚えるのが効果的です。`;
+ return `<strong>${esc(a)}</strong> は複数語で1つの意味を作る定型表現です。<strong>${esc(p)}</strong> の文脈ごと覚えると、単語をばらばらに暗記するより使いやすくなります。`;
+}
+function lexicalInsight(q){
+ const a=q.answer_text.trim(),p=q.review_phrase||phraseAroundBlank(q,2,4);
+ if(q.review_role==='phrase'||q.review_role==='infinitive')return phraseInsight(q);
+ if(/ly$/i.test(a))return `<strong>${esc(a)}</strong> は -ly で終わる副詞です。この文では <strong>${esc(p)}</strong> の中で、動作や程度をどのように説明しているかがポイントです。`;
+ if(/(tion|sion|ment|ness|ity|ance|ence|ship|hood|ism)$/i.test(a))return `<strong>${esc(a)}</strong> は名詞になりやすい語尾を持ちます。<strong>${esc(p)}</strong> の中で「事柄・状態・性質」のどれを表すかを確認しましょう。`;
+ if(/(ous|ful|less|ive|able|ible|al|ic|ary|ory)$/i.test(a))return `<strong>${esc(a)}</strong> は形容詞になりやすい語尾です。<strong>${esc(p)}</strong> の中で、どの名詞・主語を説明しているかを見ます。`;
+ return '';
+}
+function clueInsight(q){
+ const clue=(q.review_clue||'').trim(); if(!clue)return '';
+ const sig=contextSignal(q);
+ const prefix=sig?`<strong>${esc(sig[0])}</strong>：${esc(sig[1])}`:'この問題では、周囲の説明が正解を絞る手がかりになります。';
+ return `${prefix}<br><span class="note">文脈の手がかり：</span> <strong>${esc(clue)}</strong>`;
+}
+
+const validText=s=>typeof s==='string'&&s.trim()&&!/^(訳を取得できませんでした|意味を確認してください)$/.test(s.trim())?s.trim():'';
+const plain=s=>new DOMParser().parseFromString(String(s).replace(/<br\s*\/?\s*>/gi,'\n'),'text/html').body.textContent.trim();
+function help(row,correct){
+ if(!row)return null;
+ const q={...row,answer_text:String(correct||row.answer_text||'').trim(),question:String(row.question||''),choices:Array.isArray(row.choices)?row.choices:[]};
+ if(!q.answer_text||!q.question)return null;
+ const manual=validText(q.manual_tip),ja=validText(q.question_ja),meaning=validText(q.choices.find(c=>String(c.text).trim()===q.answer_text)?.ja),phrase=validText(q.review_phrase),phraseJa=validText(q.review_phrase_ja);
+ const main=manual?'':exactGrammarInsight(q)||lexicalInsight(q)||slotInsight(q);
+ const clue=manual?'':clueInsight(q);
+ const lines=manual?[manual]:[main&&plain(main),clue&&plain(clue)].filter(Boolean);
+ if(!manual&&phrase&&phrase.toLowerCase()!==q.answer_text.toLowerCase())lines.push('覚えるまとまり：'+phrase+(phraseJa?' ＝ '+phraseJa:''));
+ if(!lines.length&&q.question.includes('(____)')){const p=phraseAroundBlank(q,3,3);if(p&&p!==q.answer_text)lines.push('覚えるまとまり：'+p);}
+ return {ja,meaning,lines:[...new Set(lines)]};
+}
+return help;
+})();
+function appendGrammarHelp(question,correct){
+ if(question.kind!=='grammar')return;
+ const raw=question.source==='retry'?retryHelpById.get(question.id):null;
+ const orderData=question.source==='order'?orderHelpById.get(question.id):null;
+ const help=raw?retryLearningHelp(raw,correct):null;
+ const box=el('div',undefined,'grammar-help');
+ if(help?.ja)box.append(el('div',help.ja,'grammar-ja'));
+ if(help?.meaning)box.append(el('div',correct+' ＝ '+help.meaning,'grammar-meaning'));
+ if(help?.lines.length){box.append(el('strong','💡 ワンポイント'));for(const line of help.lines)box.append(el('div',line,'grammar-tip'));}
+ if(orderData){box.append(el('strong','💡 文法のポイント：'+orderData.stage));for(const note of orderData.notes)if(typeof note==='string'&&note.trim())box.append(el('div',note,'grammar-tip'));}
+ if(box.childElementCount)$('feedback').append(box);
+}
 function retry(){if(Array.isArray(window.RETRY_QUESTIONS))return Promise.resolve(window.RETRY_QUESTIONS);return new Promise((resolve,reject)=>{const t=document.createElement('script');t.src='https://k-oota-pixel.github.io/eiken-retry/assets/question-data.js?v=split1';const timeout=setTimeout(()=>{t.remove();reject(Error('文法データ取得がタイムアウト'));},25000);t.onload=()=>{clearTimeout(timeout);if(Array.isArray(window.RETRY_QUESTIONS))resolve(window.RETRY_QUESTIONS);else{t.remove();reject(Error('文法データの形式が不正'));}};t.onerror=()=>{clearTimeout(timeout);t.remove();reject(Error('文法データ取得失敗'));};document.head.append(t);});}
-async function load(){$('start').disabled=true;$('notice').textContent='';try{const [v,a,r]=await Promise.all([fetch('../pet-adventure/online-battle-vocab.json'),fetch('../data/vocab/pre1-advanced.json'),retry()]);if(!v.ok||!a.ok)throw Error('単語データ取得失敗');bank=buildQuestionBank(await v.json(),r,await a.json(),{basicGrammarStages:BASIC_GRAMMAR_STAGES});$('start').textContent='冒険を始める';$('start').onclick=start;}catch(e){$('notice').textContent=e.message;$('start').textContent='再試行';$('start').onclick=load;}finally{$('start').disabled=false;}}
+async function load(){$('start').disabled=true;$('notice').textContent='';try{const [v,a,r]=await Promise.all([fetch('../pet-adventure/online-battle-vocab.json'),fetch('../data/vocab/pre1-advanced.json'),retry()]);if(!v.ok||!a.ok)throw Error('単語データ取得失敗');bank=buildQuestionBank(await v.json(),r,await a.json(),{basicGrammarStages:BASIC_GRAMMAR_STAGES});retryHelpById=new Map(r.map(row=>['g:retry:'+row.id,row]));$('start').textContent='冒険を始める';$('start').onclick=start;}catch(e){$('notice').textContent=e.message;$('start').textContent='再試行';$('start').onclick=load;}finally{$('start').disabled=false;}}
 function start(){if(!bank)return;hideInspect();$('lever').classList.remove('pulling');document.body.classList.add('playing');portraitOverride=false;document.body.classList.remove('portrait-ok');$('summonNote').textContent='英語に正解して仲間を召喚';epoch++;clearTimeout(timer);cancelAnimationFrame(frame);placing=null;drag=null;s=E.create(Number($('mode').value));grade=$('grade').value;seen=new Set();selected=null;busy=false;b=null;$('entry').hidden=true;$('result').hidden=true;$('game').hidden=false;$('log').textContent='まず英語に正解して仲間を召喚しよう。';slots(Array(9).fill(null));resetQ();render();checkOrientation();}
 function cell(t,hit=false){const d=el('div',undefined,'cell'+(hit?' hit':''));if(t===null){d.textContent='?';return d;}const u=E.units[t];const symbol=el('b');symbol.append(sprite(t,false,false,false,true));d.append(symbol,el('span',u[0]));return d;}
 function slots(cells,hits=[]){const high=new Set(hits.flat());$('slots').replaceChildren(...[0,1,2].map(col=>{const r=el('div',undefined,'reel'),t=el('div',undefined,'reeltrack');for(let row=0;row<3;row++){const i=row*3+col;t.append(cell(cells[i],high.has(i)));}r.append(t);return r;}));}
@@ -284,7 +473,7 @@ function choose(){const kinds=grade==='4級'||grade==='2級'?['vocab','retry']:[
 function pullLever(){const lever=$('lever');lever.classList.remove('pulling');void lever.offsetWidth;lever.classList.add('pulling');prepareSound();const ep=epoch;setTimeout(()=>{if(ep===epoch)clunk();},210);setTimeout(()=>{if(ep===epoch)lever.classList.remove('pulling');},600);}
 function ask(){if(busy||q||!E.canSpin(s))return;hideInspect();pullLever();closeUnit();try{q=choose();order=[];$('kind').textContent=grade+' · '+q.direction;$('prompt').textContent=q.prompt;$('feedback').textContent='';drawChoices();openQuiz();$('quizBody').scrollTop=0;render();}catch(e){resetQ();$('summonNote').textContent=e.message;render();}}
 function drawChoices(){const c=$('choices');c.replaceChildren();function btn(t,f,disabled=false){const d=el('button',t);d.disabled=disabled;d.onclick=f;c.append(d);return d;}if(q.source==='order'){const p=el('div',order.map(i=>q.tokens.find(t=>t.id===i).text).join(' ')||'語句を選択','prompt');p.style.gridColumn='1 / -1';c.append(p);for(const t of q.tokens)btn(t.text,()=>{order.push(t.id);drawChoices();},order.includes(t.id));btn('並べ直す',()=>{order=[];drawChoices();});const ready=order.length===q.tokens.length;const answerButton=btn('回答する',()=>submit([...order]),!ready);answerButton.classList.add('order-submit');if(ready){answerButton.classList.add('order-ready');$('quizPhase').textContent='並べ替え完了！「回答する」を押そう';requestAnimationFrame(()=>{if(answerButton.isConnected&&!answerButton.disabled)answerButton.scrollIntoView({block:'nearest',inline:'nearest'});});}else $('quizPhase').textContent='語句を順番に選ぼう';}else q.options.forEach((t,i)=>btn(t,()=>submit(i)));btn('わからない',()=>submit(null));}
-async function submit(v){if(!q||busy)return;busy=true;prepareSound();const ep=epoch;let ok;try{ok=evaluateAttempt(q,v);}catch(e){busy=false;$('feedback').textContent=e.message;return;}let summonResult='';const bonus=E.answer(s,ok),model=modelAnswer(q);$('quizClose').disabled=true;$('quizTitle').textContent=ok?'正解！':'解説';$('choices').hidden=true;$('feedback').hidden=false;$('feedback').classList.toggle('good',ok);$('feedback').classList.toggle('bad',!ok);$('quizPhase').textContent=ok?'リール回転中…':'スタミナ消費なし';$('choices').querySelectorAll('button').forEach((d,i)=>{d.disabled=true;if(q.source!=='order'&&i===q.correctIndex)d.classList.add('correct');else if(q.source!=='order'&&i===v)d.classList.add('wrong');});$('feedback').textContent=(ok?'正解！':'不正解。スタミナ消費なし。')+'\n答え：'+model.correctAnswer+(model.completedSentence?'\n'+model.completedSentence:'')+(model.optionPairs?.length?'\n'+model.optionPairs.map(p=>p.en+' = '+p.ja).join(' / '):'')+(bonus?'\n連続正解ボーナス ⚡+'+bonus:'');render();if(ok){const out=E.spin(s);if(out){$('summonNote').textContent='正解！ 召喚中…';await rollReels(out,ep);if(ep!==epoch)return;summonResult=out.hits.length?'召喚完了！':'ハズレ · 成立ラインなし';$('feedback').textContent+='\n'+(out.hits.length?out.hits.length+'ライン成立！ '+out.types.map(t=>E.units[t][0]).join('、')+(out.joined<out.types.length?'（満員分は経験値に変換）':''):'ハズレ：図柄が揃わなかったため、仲間の召喚はありません。');}}busy=false;$('next').hidden=false;$('quizClose').disabled=false;$('quizPhase').textContent=ok?(summonResult||'終了'):'解説を確認しよう';$('summonNote').textContent=ok?(summonResult||'終了'):'不正解 · スタミナ消費なし';render();}
+async function submit(v){if(!q||busy)return;busy=true;prepareSound();const ep=epoch;let ok;try{ok=evaluateAttempt(q,v);}catch(e){busy=false;$('feedback').textContent=e.message;return;}let summonResult='';const bonus=E.answer(s,ok),model=modelAnswer(q);$('quizClose').disabled=true;$('quizTitle').textContent=ok?'正解！':'解説';$('choices').hidden=true;$('feedback').hidden=false;$('feedback').classList.toggle('good',ok);$('feedback').classList.toggle('bad',!ok);$('quizPhase').textContent=ok?'リール回転中…':'スタミナ消費なし';$('choices').querySelectorAll('button').forEach((d,i)=>{d.disabled=true;if(q.source!=='order'&&i===q.correctIndex)d.classList.add('correct');else if(q.source!=='order'&&i===v)d.classList.add('wrong');});$('feedback').textContent=(ok?'正解！':'不正解。スタミナ消費なし。')+'\n答え：'+model.correctAnswer+(model.completedSentence?'\n'+(q.source==='retry'?q.prompt.replace(/\(\s*_{2,}\s*\)|_{2,}/,()=>model.correctAnswer):model.completedSentence):'')+(model.optionPairs?.length?'\n'+model.optionPairs.map(p=>p.en+' = '+p.ja).join(' / '):'')+(bonus?'\n連続正解ボーナス ⚡+'+bonus:'');appendGrammarHelp(q,model.correctAnswer);render();if(ok){const out=E.spin(s);if(out){$('summonNote').textContent='正解！ 召喚中…';await rollReels(out,ep);if(ep!==epoch)return;summonResult=out.hits.length?'召喚完了！':'ハズレ · 成立ラインなし';$('feedback').append(el('div',(out.hits.length?out.hits.length+'ライン成立！ '+out.types.map(t=>E.units[t][0]).join('、')+(out.joined<out.types.length?'（満員分は経験値に変換）':''):'ハズレ：図柄が揃わなかったため、仲間の召喚はありません。'),'summon-feedback'));}}busy=false;$('next').hidden=false;$('quizClose').disabled=false;$('quizPhase').textContent=ok?(summonResult||'終了'):'解説を確認しよう';$('summonNote').textContent=ok?(summonResult||'終了'):'不正解 · スタミナ消費なし';render();}
 function fight(){if(busy||q||s.phase!=='prep'||!s.army.some(u=>u.active))return;closeUnit();selected=null;placing=null;drag=null;s.phase='battle';b=E.battle(s);hideInspect();$('fx').replaceChildren();render();arena(b);lastFrame=0;accumulator=0;frame=requestAnimationFrame(tick);}
 function tick(now){if(s?.phase!=='battle')return;if(!lastFrame)lastFrame=now;const speed=600/Number($('speed').value);accumulator+=Math.min(.1,(now-lastFrame)/1000)*speed;lastFrame=now;let done='',events=[];while(accumulator>=.05&&!done){done=E.step(b,Math.random,.05);events.push(...b.events);accumulator-=.05;}arena(b,Math.max(0,Math.min(1,accumulator/.05)));if(events.length)effects(events.slice(-14));$('log').textContent=b.time.toFixed(1)+' 秒 · 残敵 '+b.enemies.filter(u=>u.hp>0).length+' · 味方 '+b.allies.filter(u=>u.hp>0).length+(events.some(e=>e.kind==='princess')?' · 姫が攻撃された！':'');if(done){const w=s.wave;E.finish(s,b);$('fx').replaceChildren();if(s.phase==='prep'){$('log').textContent='WAVE '+w+' 突破！ スタミナ+5・仲間HP回復';resetQ();render();}else finish();return;}frame=requestAnimationFrame(tick);}
 function finish(){hideInspect();closeQuiz();closeUnit();$('rotateOverlay').hidden=true;document.body.classList.remove('playing','portrait-ok');clearTimeout(timer);cancelAnimationFrame(frame);drag=null;placing=null;epoch++;$('game').hidden=true;$('result').hidden=false;$('resultTitle').textContent=s.phase==='win'?'姫を守りきった！':s.phase==='lose'?(s.princessSafe?'防衛戦終了':'姫を守れなかった…'):'冒険を終了';$('resultText').textContent='突破 '+s.cleared+' WAVE · 英語 '+s.correct+' / '+s.answered+' 問正解';}
