@@ -2,7 +2,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.3.1";
 import {getFirestore,doc,onSnapshot,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
-const LEGACY_MAP=Object.freeze({rabbit:'hamster',fox:'dog',dragon:'bird',mystery:'cat'});
+const LEGACY_MAP=Object.freeze({rabbit:'hamster',fox:'dog',mystery:'cat'});
 
 function start(){
   if(!getApps().length)return;

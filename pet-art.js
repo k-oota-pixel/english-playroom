@@ -2,15 +2,14 @@ import {renderMugyuEyes,renderKiriEyes,renderPunsukaEyes} from './pet-grumpy-eye
 import {renderCatArt} from './pet-cat-art.js?v=1.8.30';
 import {renderSparkleEyes} from './pet-eye-art.js?v=1.5.27';
 import {renderDogArt} from './pet-dog-art.js?v=1.8.30';
-import {renderDragonArt} from './pet-dragon-art.js?v=1.8.30';
 if(typeof window!=='undefined')import('./nickname-profile.js?v=2.2.2');
-import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=2.5.34';
+import {OPTIONS,normalizeAppearance,equippedLayers} from './pet-model.js?v=2.5.37';
 
 const outline='#40564e';
-const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon','tree','cake'];
+const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon','tree','cake','cactus','onigiri','robot'];
 const LEGACY_SPECIES={rabbit:'hamster',fox:'dog',mystery:'cat'};
 // `panda` remains the persisted stable ID for backward compatibility, but is now the lion species.
-const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン',tree:'き',cake:'ケーキ'};
+const SPECIES_LABELS={cat:'ねこ',dog:'いぬ',bird:'ことり',hamster:'ハムスター',panda:'ライオン',penguin:'ペンギン',dragon:'ドラゴン',tree:'き',cake:'ケーキ',cactus:'サボテン',onigiri:'おにぎり',robot:'ロボット'};
 const EYE_STYLES=['round','gentle','watery','smile','sleepy','sparkle','oyoyo','mugyu','kiri','punsuka'];
 const EYE_LABELS={round:'まんまる',gentle:'たれ目',watery:'うるうる',smile:'にっこり',sleepy:'ねむねむ',sparkle:'きらきら',oyoyo:'およよ',mugyu:'むぎゅ',kiri:'きりっ',punsuka:'ぷんすか'};
 const BACKGROUND_LABELS={ivory:'おうち',sky:'青空',leaf:'お庭',rose:'花畑'};
@@ -172,6 +171,18 @@ function petFrameLayer(shop){
 }
 
 
+// Hand-drawn 160-unit preview silhouettes, scaled to the shared 240-unit pet canvas.
+function renderNewCompanionArt(species,color,eyes,eyeStyle){
+  const ink='#403345';
+  const bodyArt={
+    dragon:`<path d="M42 83 Q18 48 13 65 Q18 92 39 110 M118 83 Q142 48 147 65 Q142 92 121 110" fill="#eeb17d"/><path d="M117 112 Q151 121 141 92 L131 99 Q134 110 116 103" fill="${color}"/><ellipse cx="80" cy="112" rx="37" ry="25" fill="${color}"/><ellipse cx="80" cy="114" rx="23" ry="19" fill="#fff3cf" stroke="none"/><path d="M43 58 L40 34 Q57 37 63 52 M97 52 Q106 33 120 34 L117 59 M58 43 L66 24 L77 43 L90 22 L101 47" fill="#eeb17d"/><path d="M40 73 Q36 44 80 43 Q124 44 120 73 Q129 102 80 107 Q31 102 40 73Z" fill="${color}"/><ellipse cx="48" cy="130" rx="15" ry="9" fill="${color}"/><ellipse cx="112" cy="130" rx="15" ry="9" fill="${color}"/><path d="M46 57 Q52 50 61 49" fill="none" stroke="#fff"/>`,
+    cactus:`<path d="M48 101 Q17 105 18 77 L18 63 Q18 48 30 49 Q42 49 42 64 L42 79 L53 80 M112 101 Q143 105 142 77 L142 62 Q142 48 130 49 Q118 49 118 63 L118 79 L107 80" fill="${color}"/><rect x="43" y="31" width="74" height="100" rx="36" fill="${color}"/><path d="M54 59 Q53 43 65 37 M108 58 Q108 43 97 37 M55 104 L55 115 M104 104 L104 115" fill="none" stroke="#40564e" opacity=".45" stroke-width="2.5"/><path d="M43 119 L117 119 L108 139 Q80 145 52 139Z" fill="#dc9a79"/><rect x="39" y="113" width="82" height="12" rx="5" fill="#f1b798"/><path d="M30 73 l-4 -3 M130 73 l4 -3 M48 63 l-5 -2 M112 63 l5 -2" fill="none" stroke="#40564e" opacity=".6" stroke-width="2"/><g fill="#f4a4b5" stroke-width="2"><circle cx="108" cy="32" r="8"/><circle cx="119" cy="32" r="8"/><circle cx="114" cy="23" r="8"/><circle cx="114" cy="32" r="5" fill="#ffdf8b" stroke-width="1.5"/></g>`,
+    onigiri:`<path d="M66 29 Q80 12 94 29 Q113 49 137 103 Q147 129 121 136 Q80 145 39 136 Q13 129 23 103 Q47 49 66 29Z" fill="${color}"/><path d="M66 29 Q80 12 94 29 Q113 49 137 103 Q147 129 121 136 Q80 145 39 136 Q13 129 23 103 Q47 49 66 29Z" fill="#fffdf3" stroke="none" opacity=".58"/><path d="M58 108 Q80 103 102 108 L102 139 Q80 143 58 139Z" fill="#414e50"/><path d="M65 115 L65 132 M74 113 L74 135 M92 114 L92 133" fill="none" stroke="#667676" stroke-width="1.8"/><path d="M44 83 l5 -7 M112 83 l-5 -7 M53 55 l4 -5 M102 53 l4 6" fill="none" stroke="#b4a99b" opacity=".55" stroke-width="2.5"/>`,
+    robot:`<rect x="48" y="103" width="64" height="34" rx="10" fill="${color}"/><g fill="#f3b86e"><rect x="29" y="109" width="17" height="23" rx="6"/><rect x="114" y="109" width="17" height="23" rx="6"/><rect x="50" y="132" width="22" height="9" rx="3"/><rect x="88" y="132" width="22" height="9" rx="3"/><path d="M80 31 L80 19" fill="none" stroke-width="4"/><circle cx="80" cy="16" r="7" stroke-width="2.5"/><rect x="22" y="59" width="13" height="30" rx="5"/><rect x="125" y="59" width="13" height="30" rx="5"/></g><rect x="33" y="32" width="94" height="76" rx="23" fill="${color}"/><rect x="43" y="57" width="74" height="44" rx="13" fill="#e4f3f6" stroke="#7396a8" stroke-width="2"/><circle cx="80" cy="120" r="5" fill="#f3b86e" stroke-width="1.5"/><path d="M49 45 L68 45" fill="none" stroke="#fff"/>`
+  };
+  return `<g data-pet-novel-art="${species}" ${species==='dragon'?'data-pet-dragon-art="editable"':''}><g transform="scale(1.5)" stroke="${ink}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${bodyArt[species]}<g fill="#f4a1a1" stroke="none" opacity=".75"><ellipse cx="51" cy="89" rx="8" ry="4"/><ellipse cx="109" cy="89" rx="8" ry="4"/></g><path d="M73 90 Q80 99 87 90" fill="none" stroke-width="2.6"/></g><g data-pet-eyes="1" data-pet-eye-style="${eyeStyle}" ${species==='dragon'?'data-dragon-eye-style="'+eyeStyle+'"':''} fill="${outline}" stroke="${outline}" stroke-width="4" stroke-linecap="round">${eyes}</g></g>`;
+}
+
 function renderNovelPetArt(species,color,eyes,eyeStyle){
   const tree='<path d="M107 145 L101 182 Q91 188 77 194 Q73 204 94 202 L120 195 L146 202 Q167 204 163 194 L139 182 L133 145Z" fill="#c69469"/><path d="M113 164 L110 184 M126 172 L129 187" fill="none" stroke="#a57451" stroke-width="3"/><path d="M65 151 Q38 144 43 119 Q39 94 63 84 Q66 57 91 57 Q104 35 124 47 Q145 35 160 59 Q187 57 190 85 Q212 96 199 122 Q205 147 178 156 Q153 168 120 158 Q89 168 65 151Z" fill="'+color+'"/><path d="M62 90 Q69 73 83 72 M112 58 Q120 53 129 58" stroke="#fff" opacity=".48" stroke-width="6" fill="none"/><path d="M174 77 Q190 60 201 69 Q197 85 174 77Z" fill="#b6de96" stroke-width="3"/>';
   const cake='<path d="M81 181 Q66 199 89 202 Q104 203 108 185 M132 185 Q136 203 151 202 Q174 199 159 181" fill="'+color+'"/><path d="M55 135 Q35 131 36 148 Q40 160 56 158 M185 135 Q205 131 204 148 Q200 160 184 158" fill="#fff4df"/><rect x="53" y="83" width="134" height="109" rx="25" fill="'+color+'"/><path d="M55 155 Q120 163 185 155 L185 167 Q120 176 55 167Z" fill="#ef9da9" stroke="none"/><path d="M53 94 Q48 81 60 74 Q74 66 87 71 Q102 57 116 70 Q132 56 147 71 Q166 65 180 75 Q192 82 187 94 Q180 107 167 96 Q156 87 145 95 Q131 109 120 98 Q110 88 98 96 Q84 108 74 96 Q62 107 53 94Z" fill="#fff9ee"/><path d="M102 66 Q88 53 100 42 Q110 31 120 35 Q130 31 140 42 Q152 53 138 66 Q120 81 102 66Z" fill="#ea7e85"/><path d="M105 38 L112 27 L120 34 L129 26 L135 39 Q120 45 105 38Z" fill="#86bd86" stroke-width="3"/><g fill="#fff0be" stroke="none"><ellipse cx="110" cy="51" rx="2" ry="3"/><ellipse cx="127" cy="48" rx="2" ry="3"/><ellipse cx="121" cy="61" rx="2" ry="3"/></g>';
@@ -186,8 +197,8 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
     ? renderCatArt(color,a.eyeStyle)
     : a.species==='dog'
     ? renderDogArt(color,a.eyeStyle)
-    : a.species==='dragon'
-    ? renderDragonArt(color,a.eyeStyle)
+    : ['dragon','cactus','onigiri','robot'].includes(a.species)
+    ? renderNewCompanionArt(a.species,color,eyes,a.eyeStyle)
     : (a.species==='tree'||a.species==='cake')
     ? renderNovelPetArt(a.species,color,eyes,a.eyeStyle)
     : `<g stroke="${outline}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${details.rear}${anatomy}${feetFor(color,resolved,a.species)}${path(body,color)}${bellyFor(a.species,resolved)}${details.markings}${details.wings}<g data-pet-eyes="1" data-pet-eye-style="${a.eyeStyle}" fill="${outline}">${eyes}</g>${details.cheeks}${details.face}${armLines(a.species,resolved)}</g>`;
@@ -198,7 +209,7 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
-if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.5.34').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
+if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.5.37').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
 function renderMysterySVG(shop,background=true){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物">'+(background?'<rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds:'')+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+petFrameLayer(shop)+'</svg>';}
 
 // Keep the render key on the SVG so cloned markup and module copies share it.

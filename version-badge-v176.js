@@ -2,7 +2,7 @@ import './pet-jump-fix.js?v=1.5.7';
 import './pet-enhancements.js?v=1.5.31';
 import './pet-shop-appearance-lock.js?v=1.5.32';
 import './pet-shop-expansion-v1533.js?v=2.4.62';
-import './pet-shop-preview-fix-v1534.js?v=2.4.3';
+import './pet-shop-preview-fix-v1534.js?v=2.5.37';
 import './pet-dungeons-shop.js?v=2.1.25';
 import './pet-motion-polish.js';
 import './pet-sleep-mode.js?v=1.9.6';
@@ -10,7 +10,7 @@ import './pet-sleep-visibility.js';
 import './pet-grumpy-cleanup-v139.js';
 import './pet-lifecycle-v141.js?v=2.5.30';
 import './pet-egg-ui-v141.js?v=1.8.4';
-import './pet-six-species-v141.js?v=2.1.9';
+import './pet-six-species-v141.js?v=2.5.37';
 import './pet-eye-emphasis-v144.js?v=1.9.6';
 import './pet-cat-dog-v1425.js?v=1.5.7';
 // Cat and dog artwork are rendered directly by pet-art.js; no late redraw.
@@ -21,9 +21,9 @@ import './material-return.js?v=2.5.7';
 import './developer-contact.js?v=2.3.20';
 import './today-home-card.js?v=2.3.52';
 
-queueMicrotask(()=>import('./pet-admin-panel.js?v=2.5.34').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
+queueMicrotask(()=>import('./pet-admin-panel.js?v=2.5.37').then(()=>import('./pet-admin-limit-v1420.js?v=1.6.2')).catch(error=>console.error('Admin pet panel failed to load',error)));
 
-const APP_VERSION='2.5.36';
+const APP_VERSION='2.5.37';
 const APP_ROOT=new URL('./',import.meta.url);
 let forceRefreshBusy=false;
 

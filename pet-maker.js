@@ -1,6 +1,6 @@
-import {normalizePetName,validPetName} from './pet-model.js?v=2.5.34';
+import {normalizePetName,validPetName} from './pet-model.js?v=2.5.37';
 
-const SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon','tree','cake'];
+const SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon','tree','cake','cactus','onigiri','robot'];
 const PERSONALITY_POOLS={calm:['cat','panda'],playful:['dog','hamster'],curious:['bird','penguin','dragon']};
 const EYE_POOLS={
  bright:['sparkle','sparkle','sparkle','round','round'],
@@ -37,7 +37,7 @@ export const QUESTIONS=[
 ];
 export function createPetMaker(onSave){
  const dialog=document.createElement('dialog');dialog.className='pet-dialog pet-survey';dialog.setAttribute('aria-labelledby','petMakerTitle');
- dialog.innerHTML=`<div class="survey-eyebrow">MEET YOUR PET</div><h2 id="petMakerTitle">どんな子に出会いたい？</h2><p>過ごし方・色・相棒らしさ。3つの質問をヒントに、9種類のぺっとと10種類の目の中から、あなたの相棒に出会おう。選んだ色はそのまま、種類と表情には少しだけ偶然も。最後に名前をつけよう。</p><div class="survey-progress" aria-live="polite"></div><div class="pet-options"></div><div class="pet-save-status" role="status" aria-live="polite"></div><div class="pet-actions"><button type="button" class="pet-button secondary" data-close>あとで</button><button type="button" class="pet-button secondary" data-back>戻る</button><button type="button" class="pet-button" data-next>次へ</button></div>`;document.body.append(dialog);
+ dialog.innerHTML=`<div class="survey-eyebrow">MEET YOUR PET</div><h2 id="petMakerTitle">どんな子に出会いたい？</h2><p>過ごし方・色・相棒らしさ。3つの質問をヒントに、12種類のぺっとと10種類の目の中から、あなたの相棒に出会おう。選んだ色はそのまま、種類と表情には少しだけ偶然も。最後に名前をつけよう。</p><div class="survey-progress" aria-live="polite"></div><div class="pet-options"></div><div class="pet-save-status" role="status" aria-live="polite"></div><div class="pet-actions"><button type="button" class="pet-button secondary" data-close>あとで</button><button type="button" class="pet-button secondary" data-back>戻る</button><button type="button" class="pet-button" data-next>次へ</button></div>`;document.body.append(dialog);
  let answers={},step=0,busy=false,pendingAppearance=null,petName='';
  const status=dialog.querySelector('.pet-save-status'),next=dialog.querySelector('[data-next]'),back=dialog.querySelector('[data-back]'),options=dialog.querySelector('.pet-options');
  function update(focus=false){

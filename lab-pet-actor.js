@@ -3,7 +3,7 @@ import {initializeApp,getApps} from 'https://www.gstatic.com/firebasejs/13.0.0/f
 import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js';
 import {getAuth} from './auth-session.js?v=2.4.37';
 import {enableAppCheck} from './firebase-security.js?v=2.1.9';
-import {renderPetSVG} from './pet-art.js?v=2.5.34';
+import {renderPetSVG} from './pet-art.js?v=2.5.37';
 export async function loadLabPet(T,pet,report=()=>{}){
  const app=getApps().find(a=>a.name==='[DEFAULT]')||initializeApp({apiKey:'AIzaSyAllLjPcGhygMSEIORXhKZOaDjYvpSJ4EQ',authDomain:'eiken-retry.firebaseapp.com',projectId:'eiken-retry',storageBucket:'eiken-retry.firebasestorage.app',messagingSenderId:'231308672297',appId:'1:231308672297:web:5e8b8ede3a0246c2318b38'});enableAppCheck(app);
  const auth=getAuth(app);await auth.authStateReady();const user=auth.currentUser;
