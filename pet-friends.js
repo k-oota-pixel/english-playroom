@@ -1,4 +1,4 @@
-import {renderPetVisual} from './pet-art.js?v=2.4.3';
+import {renderPetVisual} from './pet-art.js?v=2.5.38';
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
 import {getAuth,onAuthStateChanged} from 'https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37';
 

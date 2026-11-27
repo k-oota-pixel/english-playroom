@@ -172,10 +172,31 @@ function petFrameLayer(shop){
 
 
 // Hand-drawn 160-unit preview silhouettes, scaled to the shared 240-unit pet canvas.
+// Mochimochi dragon: shared 240-unit coordinates, independently rendered eyes.
+function renderMochimochiDragon(color,eyes,eyeStyle){
+  const paw=(x)=>`<g><ellipse cx="${x}" cy="194" rx="25" ry="23" fill="${color}"/><ellipse cx="${x}" cy="200" rx="12" ry="9" fill="#f3b5c4" stroke="none"/><g fill="#f3b5c4" stroke="none">${[-12,0,12].map(dx=>`<circle cx="${x+dx}" cy="185" r="4.5"/>`).join('')}</g></g>`;
+  return `<g data-pet-novel-art="dragon" data-pet-dragon-art="editable" data-dragon-design="mochimochi" stroke="${outline}" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M168 181 Q206 192 211 169 Q229 202 181 208Z" fill="${color}"/>
+    <path d="M67 142 Q39 112 23 145 Q43 142 48 168 L74 162 M173 142 Q201 112 217 145 Q197 142 192 168 L166 162" fill="#fff0ce"/>
+    <ellipse cx="120" cy="166" rx="66" ry="47" fill="${color}"/>
+    <ellipse cx="120" cy="175" rx="44" ry="34" fill="#fff0ce" stroke="none"/>
+    <path d="M61 76 Q43 54 52 32 Q61 35 68 48 Q77 60 86 63 M179 76 Q197 54 188 32 Q179 35 172 48 Q163 60 154 63" fill="#fff0ce"/>
+    <path d="M97 61 Q98 40 108 48 Q111 23 120 25 Q134 37 136 59" fill="${color}"/>
+    <path d="M48 107 Q27 87 28 113 Q30 133 55 132 M192 107 Q213 87 212 113 Q210 133 185 132" fill="${color}"/>
+    <path d="M49 101 C46 36 194 36 191 101 C220 169 20 169 49 101Z" fill="${color}"/>
+    <path d="M70 77 Q82 64 100 64" fill="none" stroke="white" stroke-width="6" opacity=".6"/>
+    <path d="M76 153 Q59 168 81 179 Q99 184 99 165 M164 153 Q181 168 159 179 Q141 184 141 165" fill="${color}"/>
+    ${paw(69)}${paw(171)}
+    <g fill="#f3a3ae" stroke="none" opacity=".8"><ellipse cx="75" cy="133" rx="11" ry="6"/><ellipse cx="165" cy="133" rx="11" ry="6"/></g>
+    <path d="M108 138 Q113 146 120 140 Q127 146 132 138" fill="none" stroke-width="3"/>
+    <g data-pet-eyes="1" data-pet-eye-style="${eyeStyle}" data-dragon-eye-style="${eyeStyle}" fill="${outline}">${eyes}</g>
+  </g>`;
+}
+
 function renderNewCompanionArt(species,color,eyes,eyeStyle){
+  if(species==='dragon')return renderMochimochiDragon(color,eyes,eyeStyle);
   const ink='#403345';
   const bodyArt={
-    dragon:`<path d="M42 83 Q18 48 13 65 Q18 92 39 110 M118 83 Q142 48 147 65 Q142 92 121 110" fill="#eeb17d"/><path d="M117 112 Q151 121 141 92 L131 99 Q134 110 116 103" fill="${color}"/><ellipse cx="80" cy="112" rx="37" ry="25" fill="${color}"/><ellipse cx="80" cy="114" rx="23" ry="19" fill="#fff3cf" stroke="none"/><path d="M43 58 L40 34 Q57 37 63 52 M97 52 Q106 33 120 34 L117 59 M58 43 L66 24 L77 43 L90 22 L101 47" fill="#eeb17d"/><path d="M40 73 Q36 44 80 43 Q124 44 120 73 Q129 102 80 107 Q31 102 40 73Z" fill="${color}"/><ellipse cx="48" cy="130" rx="15" ry="9" fill="${color}"/><ellipse cx="112" cy="130" rx="15" ry="9" fill="${color}"/><path d="M46 57 Q52 50 61 49" fill="none" stroke="#fff"/>`,
     cactus:`<path d="M48 101 Q17 105 18 77 L18 63 Q18 48 30 49 Q42 49 42 64 L42 79 L53 80 M112 101 Q143 105 142 77 L142 62 Q142 48 130 49 Q118 49 118 63 L118 79 L107 80" fill="${color}"/><rect x="43" y="31" width="74" height="100" rx="36" fill="${color}"/><path d="M54 59 Q53 43 65 37 M108 58 Q108 43 97 37 M55 104 L55 115 M104 104 L104 115" fill="none" stroke="#40564e" opacity=".45" stroke-width="2.5"/><path d="M43 119 L117 119 L108 139 Q80 145 52 139Z" fill="#dc9a79"/><rect x="39" y="113" width="82" height="12" rx="5" fill="#f1b798"/><path d="M30 73 l-4 -3 M130 73 l4 -3 M48 63 l-5 -2 M112 63 l5 -2" fill="none" stroke="#40564e" opacity=".6" stroke-width="2"/><g fill="#f4a4b5" stroke-width="2"><circle cx="108" cy="32" r="8"/><circle cx="119" cy="32" r="8"/><circle cx="114" cy="23" r="8"/><circle cx="114" cy="32" r="5" fill="#ffdf8b" stroke-width="1.5"/></g>`,
     onigiri:`<path d="M66 29 Q80 12 94 29 Q113 49 137 103 Q147 129 121 136 Q80 145 39 136 Q13 129 23 103 Q47 49 66 29Z" fill="${color}"/><path d="M66 29 Q80 12 94 29 Q113 49 137 103 Q147 129 121 136 Q80 145 39 136 Q13 129 23 103 Q47 49 66 29Z" fill="#fffdf3" stroke="none" opacity=".58"/><path d="M58 108 Q80 103 102 108 L102 139 Q80 143 58 139Z" fill="#414e50"/><path d="M65 115 L65 132 M74 113 L74 135 M92 114 L92 133" fill="none" stroke="#667676" stroke-width="1.8"/><path d="M44 83 l5 -7 M112 83 l-5 -7 M53 55 l4 -5 M102 53 l4 6" fill="none" stroke="#b4a99b" opacity=".55" stroke-width="2.5"/>`,
     robot:`<rect x="48" y="103" width="64" height="34" rx="10" fill="${color}"/><g fill="#f3b86e"><rect x="29" y="109" width="17" height="23" rx="6"/><rect x="114" y="109" width="17" height="23" rx="6"/><rect x="50" y="132" width="22" height="9" rx="3"/><rect x="88" y="132" width="22" height="9" rx="3"/><path d="M80 31 L80 19" fill="none" stroke-width="4"/><circle cx="80" cy="16" r="7" stroke-width="2.5"/><rect x="22" y="59" width="13" height="30" rx="5"/><rect x="125" y="59" width="13" height="30" rx="5"/></g><rect x="33" y="32" width="94" height="76" rx="23" fill="${color}"/><rect x="43" y="57" width="74" height="44" rx="13" fill="#e4f3f6" stroke="#7396a8" stroke-width="2"/><circle cx="80" cy="120" r="5" fill="#f3b86e" stroke-width="1.5"/><path d="M49 45 L68 45" fill="none" stroke="#fff"/>`
@@ -209,7 +230,7 @@ export function renderPetSVG(value,shop={},stage='',{background=true}={}){
 
 export function appearanceLabel(value){const a=resolvedAppearance(value);const color=OPTIONS.bodyColor.find(x=>x.id===a.bodyColor)?.label||a.bodyColor;return [SPECIES_LABELS[a.species]||a.species,color,EYE_LABELS[a.eyeStyle]||'まんまる',BACKGROUND_LABELS[a.baseBackground]||'おうち'].join('・');}
 
-if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.5.37').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
+if(typeof window!=='undefined')queueMicrotask(()=>import('./pet-shop.js?v=2.5.38').then(()=>import('./pet-enhancements.js?v=1.5.7')).catch(error=>console.error('Pet shop failed to load',error)));
 function renderMysterySVG(shop,background=true){const l=equippedLayers(shop);return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" data-pet-stage="mystery" aria-label="ふわふわの謎の生き物">'+(background?'<rect width="240" height="240" rx="32" fill="#e3f0fc"/>'+l.backgrounds:'')+'<ellipse cx="120" cy="207" rx="58" ry="8" fill="#40564e" opacity=".1"/><g class="pet-jump-layer"><g class="pet-character"><g><path d="M62 169 Q36 153 52 132 Q33 108 58 94 Q52 66 82 65 Q94 39 116 57 Q139 36 155 61 Q184 54 188 83 Q215 95 196 120 Q215 146 193 161 Q192 191 163 190 Q146 215 122 199 Q96 215 80 193 Q55 196 62 169Z" fill="#fff8ed" stroke="#667b79" stroke-width="4"/><g data-shared-legacy-eyes data-pet-eyes="1" fill="#40564e"><ellipse cx="96" cy="122" rx="8" ry="11"/><ellipse cx="145" cy="122" rx="8" ry="11"/><g fill="white"><circle cx="94" cy="118" r="3"/><circle cx="143" cy="118" r="3"/></g></g><g fill="#f3b5c4" opacity=".7"><ellipse cx="79" cy="140" rx="12" ry="7"/><ellipse cx="162" cy="140" rx="12" ry="7"/></g><path d="M110 144 Q120 155 131 144" fill="none" stroke="#667b79" stroke-width="3" stroke-linecap="round"/></g>'+l.accessories+'</g></g>'+l.effects+petFrameLayer(shop)+'</svg>';}
 
 // Keep the render key on the SVG so cloned markup and module copies share it.

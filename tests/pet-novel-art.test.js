@@ -10,3 +10,11 @@ test('all six novel designs render all six colors and ten shared eyes with equip
     assert.ok(svg.includes('data-pet-species="'+species+'"'));assert.ok(svg.includes('data-pet-novel-art="'+species+'"'));assert.ok(svg.includes('data-pet-eye-style="'+eyeStyle+'"'));assert.ok(svg.includes(color));assert.ok(svg.includes('data-pet-shop-slot="head"'));assert.ok(svg.includes('data-pet-shop-slot="face"'));assert.ok(svg.includes('data-pet-shop-slot="neck"'));assert.ok(!/undefined|NaN/.test(svg));assert.ok(!svg.includes('width="240" height="240" rx="32"'));assert.ok(appearanceLabel(a).startsWith(({tree:'き',cake:'ケーキ',dragon:'ドラゴン',cactus:'サボテン',onigiri:'おにぎり',robot:'ロボット'})[species]+'・'));
   }
 });
+
+ test('mochimochi dragon keeps its shared eyes and paw pads',()=>{
+  const svg=renderPetSVG({...DEFAULT_APPEARANCE,species:'dragon',eyeStyle:'sleepy'}, {}, '', {background:false});
+  assert.ok(svg.includes('data-dragon-design="mochimochi"'));
+  assert.ok(svg.includes('data-pet-eye-style="sleepy"'));
+  assert.ok(svg.includes('cx="69" cy="194"'));
+  assert.ok(svg.includes('cx="171" cy="194"'));
+ });

@@ -2,7 +2,7 @@ import {getApps,getApp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase
 import {getAuth,onAuthStateChanged,accountSession} from "https://k-oota-pixel.github.io/english-playroom/auth-session.js?v=2.4.37";
 import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 import {OPTIONS,normalizeAppearance,validAppearance} from './pet-model.js?v=2.5.37';
-import {renderPetSVG} from './pet-art.js?v=2.5.37';
+import {renderPetSVG} from './pet-art.js?v=2.5.38';
 
 const OFFICIAL_SPECIES=['cat','dog','bird','hamster','panda','penguin','dragon','tree','cake','cactus','onigiri','robot'];
 const EYES=[{id:'round',label:'まんまる'},{id:'gentle',label:'たれ目'},{id:'watery',label:'うるうる'},{id:'smile',label:'にっこり'},{id:'sleepy',label:'ねむねむ'},{id:'sparkle',label:'きらきら'},{id:'oyoyo',label:'およよ'},{id:'mugyu',label:'むぎゅ'},{id:'kiri',label:'きりっ'},{id:'punsuka',label:'ぷんすか'}];
