@@ -182,7 +182,20 @@ img,svg{-webkit-user-drag:none}
 .wars-rank-name{min-width:0;overflow-wrap:anywhere}.wars-rank-name strong{font-size:16px}.wars-rank-time{color:#ffe7af;white-space:nowrap;font-variant-numeric:tabular-nums}
 #warsRankStatus{margin:8px 0;font-size:12px;min-height:18px;color:#e1cfae}#warsRankReload{margin-top:8px;width:100%}#warsRankResult{font-size:13px;color:#f0d598}
 @media(max-height:420px){.wars-ranking-dialog{padding:8px}.wars-rank-head{margin-bottom:5px}.wars-rank-tabs{margin-bottom:5px}.wars-rank-row{padding:5px}.wars-rank-rows{gap:4px}}
-</style></head><body><main><header class="top"><div><div class="eyebrow">MONSTUDY · WARS / PREVIEW 0.6.12</div><h1>もんすたウォーズ</h1><small>英語で召喚。軍団で防衛。</small></div><a href="../">ホームへ</a></header>
+/* Wars 0.6.13: expandable top-ten boards */
+.wars-rank-section{display:grid;gap:0}
+.wars-rank-row{width:100%;grid-template-columns:70px minmax(0,1fr) auto 16px;text-align:left;cursor:pointer}
+.wars-rank-row:hover{border-color:#e8c891;background:#41344a}
+.wars-rank-row[aria-expanded="true"]{border-radius:8px 8px 0 0;border-bottom-color:#65566b}
+.wars-rank-chevron{color:#e3c998;text-align:center}
+.wars-rank-detail{border:1px solid #89745c;border-top:0;border-radius:0 0 8px 8px;background:#251f2c;padding:8px 10px}
+.wars-rank-detail[hidden]{display:none}
+.wars-rank-detail-title{font-size:10px;letter-spacing:.15em;color:#c8ab7e;margin-bottom:4px}
+.wars-rank-place{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid #514454;font-size:13px}
+.wars-rank-place:last-child{border-bottom:0}.wars-rank-place:first-of-type{color:#ffe2a3}
+.wars-rank-place span{overflow-wrap:anywhere}.wars-rank-place strong{font-variant-numeric:tabular-nums;white-space:nowrap;color:#efdbba}
+@media(max-width:380px){.wars-rank-row{grid-template-columns:58px minmax(0,1fr) auto 12px;gap:5px}}
+</style></head><body><main><header class="top"><div><div class="eyebrow">MONSTUDY · WARS / PREVIEW 0.6.13</div><h1>もんすたウォーズ</h1><small>英語で召喚。軍団で防衛。</small></div><a href="../">ホームへ</a></header>
 <section id="entry" class="entry panel"><h2>姫を守る軍団をつくろう</h2><p class="rotate-entry">スマホでは横向きがおすすめです。</p><p>英語に正解して召喚盤を回し、仲間を集めて敵の侵攻を防ぎます。</p><div class="settings"><label>英語の難易度<select id="grade"><option>4級</option><option selected>3級</option><option>準2級</option><option>2級</option></select></label><label>ゲーム難易度<select id="mode"><option value="10">Easy / 10 WAVE</option><option value="20">Normal / 20 WAVE</option><option value="30">Hard / 30 WAVE</option><option value="0">Endless</option></select></label></div><details id="symbolSetup" class="symbol-setup"><summary>召喚盤の図柄設定</summary><p id="symbolBudget"></p><div id="symbolEditor"></div><small>スキルツリーの召喚系スキルを1つ習得するごとに追加図柄を1個（最大5個）配分できます。基本20個は固定。設定は今回の冒険に適用されます。</small><button id="symbolReset">追加図柄をリセット</button></details><button id="researchOpen" class="ice-open" disabled>❄ スキルツリー <span id="researchCount">0 / 60</span></button><button id="start" class="primary" disabled>問題データを読み込み中…</button><div id="notice" class="notice" role="status"></div><details class="help" open><summary>ルール</summary><p>初期スタミナ10、最大20。召喚コストは1〜6。ウェーブ勝利で5回復し、コストが1に戻ります。連続正解3・5・10問でそれぞれ1・1・2回復。誤答では消費なし。</p><p>図柄は基本20個から重み付き抽選し、兵種ごとに出現率が異なります。3×3の縦横斜め8ラインが揃うと、成立ラインごとに仲間を1体召喚。揃わなければ召喚なし。初回のみ1ライン以上確定。召喚された仲間には300種類から固有能力が1つ付き、強化時に素材の能力を引き継げます。能力枠は仲間ごとに最大4枠。第1枠は無料、第2〜4枠は50・100・200 Cで順に解放します。解放はその仲間の今回の冒険のみ有効で、冒険終了や素材として消費すると失われます。最大12体。吸収で★3まで育成し、戦場に自由配置して姫を守りましょう。姫が敵の攻撃を1回でも受けると敗北。仲間のHP・MPはウェーブごとに全回復します。</p><p>スキルツリーは既存のもんすたコインで習得できます。冒険の実績は終了時にアカウントへ保存します。軍団の途中保存はありません。</p></details></section>
 <section id="researchPage" class="ice-page panel" hidden><header class="ice-head"><div><div class="eyebrow">WARS · SKILL TREE</div><h2>スキルツリー</h2><small>実績と前提スキルで解放・コインで習得</small></div><div class="ice-wallet"><b id="iceCoins">— C</b><button id="researchClose">戻る</button></div></header><div id="iceSummary" class="ice-summary"></div><div class="ice-layout"><div class="ice-map"><div class="ice-toolbar"><button id="iceZoomOut" aria-label="縮小">−</button><button id="iceZoomIn" aria-label="拡大">＋</button><small>結晶を選択 · スクロールで移動</small></div><div id="iceViewport" class="ice-viewport"><svg id="iceTree" viewBox="0 0 880 880" role="group" aria-label="六方向の氷晶スキルツリー"></svg></div><div class="ice-legend"><span>◆ 習得済み</span><span class="ice-pending-legend">◆ 仮習得</span><span>◇ 習得可能</span><span>◈ 未解放</span></div></div><aside id="iceDetail" class="ice-detail"></aside></div><div class="ice-checkout"><div><b id="iceCart">仮習得 0個 · 0 C</b><small id="iceBalance">確定後の残高 — C</small></div><button id="iceCancel" disabled>仮習得を全取消</button><button id="iceCommit" class="ice-buy" disabled>まとめて確定</button></div><div class="ice-reset-row"><div><b id="iceResetInfo"></b><small id="iceRefundInfo"></small></div><button id="iceReset" class="ice-reset" disabled>スキルツリーをリセット</button></div><div id="iceMessage" role="status"></div></section>
 <section id="game" hidden>
@@ -211,7 +224,7 @@ img,svg{-webkit-user-drag:none}
  <div id="warsRankTabs" class="wars-rank-tabs" role="group" aria-label="英語の難易度"></div>
  <div id="warsRankRows" class="wars-rank-rows"></div>
  <p id="warsRankStatus" role="status"></p>
- <small>冒険開始から最後の敵を倒すまでの時間。完全クリアのみ対象。同タイムは先着優先。</small>
+ <small>冒険開始から最後の敵を倒すまでの時間。完全クリアのみ対象。同タイムは先着優先。各部門を押すと上位10名を表示します。</small>
  <button id="warsRankReload">更新</button>
 </dialog>
 <script type="module">
@@ -620,7 +633,7 @@ const warsQueueKey=uid=>'monstudy-wars-rank-v1:'+uid,warsQueueMemory=new Map(),w
 function warsQueued(uid){let ids=[];try{ids=JSON.parse(localStorage.getItem(warsQueueKey(uid))||'[]');}catch{}return [...new Set([...(Array.isArray(ids)?ids:[]),...(warsQueueMemory.get(uid)||[])].filter(id=>typeof id==='string'&&/^[0-9a-f-]{36}$/i.test(id)))];}
 function writeWarsQueue(uid,ids){warsQueueMemory.set(uid,ids);try{localStorage.setItem(warsQueueKey(uid),JSON.stringify(ids));}catch{}}
 function rememberWarsRank(uid,id){writeWarsQueue(uid,[...new Set([...warsQueued(uid),id])]);}
-let warsCache=null,warsRankGrade='3級',warsRankSequence=0;
+let warsCache=null,warsRankGrade='3級',warsRankSequence=0;const warsExpanded=new Set();
 async function warsRequest(uid,body){
  const user=researchAuth.currentUser;if(!user||user.uid!==uid)throw Error('ログイン情報が変わりました。');
  const token=await user.getIdToken();if(researchAuth.currentUser?.uid!==uid)throw Error('ログイン情報が変わりました。');
@@ -629,23 +642,37 @@ async function warsRequest(uid,body){
 }
 function flushWarsRanks(uid){
  if(warsFlushing.has(uid))return warsFlushing.get(uid);
- const job=(async()=>{let failed=false;for(const id of warsQueued(uid)){try{const data=await warsRequest(uid,{runId:id});if(data.ok!==true)throw Error('保存失敗');writeWarsQueue(uid,warsQueued(uid).filter(x=>x!==id));warsCache=null;if(s?.runId===id&&s.uid===uid)$('warsRankResult').textContent=data.updated?'🏆 最速記録を更新しました！':'ランキング確認済み';}catch{failed=true;if(s?.runId===id&&s.uid===uid)$('warsRankResult').textContent='ランキングの同期は次回表示時に再試行します。';break;}}return !failed;})().finally(()=>warsFlushing.delete(uid));
+ const job=(async()=>{let failed=false;for(const id of warsQueued(uid)){try{const data=await warsRequest(uid,{runId:id});if(data.ok!==true)throw Error('保存失敗');writeWarsQueue(uid,warsQueued(uid).filter(x=>x!==id));warsCache=null;if(s?.runId===id&&s.uid===uid)$('warsRankResult').textContent=data.updated?(data.rank===1?'🏆 最速記録を更新しました！':data.rank?'ランキング '+data.rank+'位に記録！':'ランキング記録を更新しました！'):'ランキング確認済み';}catch{failed=true;if(s?.runId===id&&s.uid===uid)$('warsRankResult').textContent='ランキングの同期は次回表示時に再試行します。';break;}}return !failed;})().finally(()=>warsFlushing.delete(uid));
  warsFlushing.set(uid,job);return job;
 }
-function paintWarsRanks(leaders){const rows=$('warsRankRows');rows.replaceChildren();for(const m of warsModes){const r=leaders?.['g'+warsGrades.indexOf(warsRankGrade)+'m'+m.mode],card=el('div',undefined,'wars-rank-row');const label=el('div',m.label,'wars-rank-mode');label.append(el('small',m.mode+' WAVE'));const identity=el('div',undefined,'wars-rank-name');identity.append(el('small',r?'👑 1位':'記録なし'),el('strong',r?.nickname||'—'));card.append(label,identity,el('strong',r&&Number.isSafeInteger(r.elapsedMs)?warsFormatTime(r.elapsedMs):'—','wars-rank-time'));rows.append(card);}}
-function paintWarsTabs(){const host=$('warsRankTabs');host.replaceChildren();for(const g of warsGrades){const button=el('button',g);button.type='button';button.setAttribute('aria-pressed',String(g===warsRankGrade));button.onclick=()=>{warsRankGrade=g;paintWarsTabs();if(warsCache?.uid===researchUid)paintWarsRanks(warsCache.leaders);};host.append(button);}}
+function paintWarsRanks(leaders,top10={}){
+ const rows=$('warsRankRows');rows.replaceChildren();
+ for(const m of warsModes){
+  const key='g'+warsGrades.indexOf(warsRankGrade)+'m'+m.mode,r=leaders?.[key],list=Array.isArray(top10[key])?top10[key].slice(0,10):r?[r]:[],expanded=warsExpanded.has(key);
+  const section=el('div',undefined,'wars-rank-section'),card=el('button',undefined,'wars-rank-row');card.type='button';card.setAttribute('aria-expanded',String(expanded));card.setAttribute('aria-controls','warsRankList'+key);
+  const label=el('div',m.label,'wars-rank-mode');label.append(el('small',m.mode+' WAVE'));
+  const identity=el('div',undefined,'wars-rank-name');identity.append(el('small',r?'👑 1位':'記録なし'),el('strong',r?.nickname||'—'));
+  card.append(label,identity,el('strong',r&&Number.isSafeInteger(r.elapsedMs)?warsFormatTime(r.elapsedMs):'—','wars-rank-time'),el('span',expanded?'▴':'▾','wars-rank-chevron'));
+  const detail=el('div',undefined,'wars-rank-detail');detail.id='warsRankList'+key;detail.hidden=!expanded;
+  detail.append(el('div','TOP 10','wars-rank-detail-title'));
+  for(let i=0;i<10;i++){const entry=list[i],row=el('div',undefined,'wars-rank-place');row.append(el('b',(i+1)+'位'),el('span',entry?.nickname||'—'),el('strong',entry&&Number.isSafeInteger(entry.elapsedMs)?warsFormatTime(entry.elapsedMs):'—'));detail.append(row);}
+  card.onclick=()=>{if(warsExpanded.has(key))warsExpanded.delete(key);else warsExpanded.add(key);const open=warsExpanded.has(key);card.setAttribute('aria-expanded',String(open));detail.hidden=!open;card.lastElementChild.textContent=open?'▴':'▾';};
+  section.append(card,detail);rows.append(section);
+ }
+}
+function paintWarsTabs(){const host=$('warsRankTabs');host.replaceChildren();for(const g of warsGrades){const button=el('button',g);button.type='button';button.setAttribute('aria-pressed',String(g===warsRankGrade));button.onclick=()=>{warsRankGrade=g;paintWarsTabs();if(warsCache?.uid===researchUid)paintWarsRanks(warsCache.leaders,warsCache.top10);};host.append(button);}}
 async function loadWarsRanking(force=false){
  const id=++warsRankSequence,uid=researchUid;$('warsRankReload').disabled=true;$('warsRankStatus').textContent='読み込み中…';
  try{
   if(warsQueued(uid).length)await flushWarsRanks(uid);
   if(id!==warsRankSequence)return;
-  if(!force&&warsCache?.uid===uid&&Date.now()-warsCache.at<60000){paintWarsRanks(warsCache.leaders);$('warsRankStatus').textContent='';return;}
+  if(!force&&warsCache?.uid===uid&&Date.now()-warsCache.at<60000){paintWarsRanks(warsCache.leaders,warsCache.top10);$('warsRankStatus').textContent='';return;}
   const data=await warsRequest(uid);if(id!==warsRankSequence)return;if(!data.leaders||typeof data.leaders!=='object')throw Error('ランキングを取得できませんでした。');
-  warsCache={uid,leaders:data.leaders,at:Date.now()};paintWarsRanks(data.leaders);$('warsRankStatus').textContent='最新の最速クリア記録';
+  warsCache={uid,leaders:data.leaders,top10:data.top10||{},at:Date.now()};paintWarsRanks(data.leaders,warsCache.top10);$('warsRankStatus').textContent='最新の最速クリア記録';
  }catch(e){if(id===warsRankSequence){$('warsRankRows').replaceChildren();$('warsRankStatus').textContent=e.message||'ランキングを取得できませんでした。';}}
  finally{if(id===warsRankSequence)$('warsRankReload').disabled=false;}
 }
-function openWarsRanking(){if(!researchUid)return;warsRankGrade=warsGrades.includes(s?.grade)?s.grade:'3級';paintWarsTabs();$('warsRankRows').replaceChildren();$('warsRanking').showModal();void loadWarsRanking();}
+function openWarsRanking(){if(!researchUid)return;warsExpanded.clear();warsRankGrade=warsGrades.includes(s?.grade)?s.grade:'3級';paintWarsTabs();$('warsRankRows').replaceChildren();$('warsRanking').showModal();void loadWarsRanking();}
 $('warsRankingOpen').onclick=openWarsRanking;$('warsRankingAfter').onclick=openWarsRanking;$('warsRankingClose').onclick=()=>$('warsRanking').close();$('warsRankReload').onclick=()=>void loadWarsRanking(true);$('warsRanking').addEventListener('close',()=>{warsRankSequence++;});
 
 async function settleRun(run){if(researchAuth.currentUser?.uid!==run.uid)throw Error('アカウントが変更されました。');const ref=wallet(run.uid),receipt=doc(researchDb,'users',run.uid,'apps','english-playroom','legionRuns',run.id);
