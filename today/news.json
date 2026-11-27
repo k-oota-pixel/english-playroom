@@ -1,13 +1,443 @@
 {
-  "generatedAt": "2026-11-26T03:32:08.514Z",
-  "editionDate": "2026-11-26",
+  "generatedAt": "2026-11-27T03:39:03.504Z",
+  "editionDate": "2026-11-27",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-26"
+    "lastSuccessfulEdition": "2026-11-27"
   },
   "articles": [
+    {
+      "id": "2026-11-27-831-long-summer-drama",
+      "date": "2026-11-27",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ACEes",
+        "Ryuga Sato",
+        "TV Tokyo",
+        "drama"
+      ],
+      "titleJa": "新ドラマに佐藤龍我",
+      "title": "New TV Tokyo Drama Features Ryuga Sato",
+      "summaryJa": "テレ東のドラマ「8月31日のロングサマー」が2027年1月8日にスタートし、ACEesの佐藤龍我がドラマ単独初主演を務める。",
+      "sourcePublishedAt": "2026-11-27T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "ドラマのキャラクターやストーリーの魅力を理解し、視聴する価値があるかを判断する。",
+        "followUpJa": "このドラマのタイムループの謎について、友達と話し合ってみましょう。",
+        "questions": {
+          "5級": "Who is the main actor?",
+          "4級": "What is the name of the new TV drama?",
+          "3級": "When does the drama start broadcasting on TV Tokyo?",
+          "準2級": "What is the main goal that the male protagonist wants to achieve during the repeated summer days?",
+          "2級": "According to the producer, what makes the two main characters and their relationship so special in this time loop?",
+          "準1級": "How does the original author warn the audience, and what underlying theme does he hope viewers will notice through the romance?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Drama",
+          "text": "A new TV drama starts in Japan. The name is August 31st Long Summer. It begins on January 8, 2027. Ryuga Sato is the star. He is from ACEes. He has a lead role for the first time. Many fans are very happy. They want to watch the show.",
+          "wordCount": 46
+        },
+        "4級": {
+          "title": "New TV Tokyo Drama",
+          "text": "A new TV Tokyo drama called August 31st Long Summer will start on January 8, 2027. Ryuga Sato from ACEes plays the main character for his first solo starring role. A girl named Takagi is played by Runa Nakajima. The producer praises Sato for his hard work and great effort during the filming. The cast and staff are very excited for viewers to watch the funny and unique story.",
+          "wordCount": 66
+        },
+        "3級": {
+          "title": "Exciting New Drama Start",
+          "text": "The new TV Tokyo drama August 31st Long Summer will begin on January 8, 2027. Ryuga Sato from ACEes plays the high school student Takuya Suzuki, marking his first solo starring role in a television series. Runa Nakajima plays the heroine, Kaka Takagi. The story follows two students who are trapped in a repeating time loop of the final summer day. The producer praised Sato for his hard work and dedication on set, while also noting that viewers can enjoy a funny and touching youth romance today.",
+          "wordCount": 84
+        },
+        "準2級": {
+          "title": "August 31st Long Summer Drama",
+          "text": "TV Tokyo has announced that its new drama series, August 31st Long Summer, will premiere on January 8, 2027. Based on a popular manga by Ikaku Ito, the story features Ryuga Sato from ACEes in his first solo starring television role. Sato plays Takuya Suzuki, a high school boy trapped in a time loop where every day resets to August 31st. Alongside him is Runa Nakajima, who plays Kaka Takagi. Only these two characters are aware of the repeating time loop, which is caused by strong regrets. To break the loop, Suzuki asks Takagi for help with his ultimate summer goal. The producer praised Sato for his incredible effort and energy on set, noting that viewers will be drawn to his clumsy yet sincere character during the broadcast.",
+          "wordCount": 124
+        },
+        "2級": {
+          "title": "TV Tokyo Announces New Drama Series",
+          "text": "TV Tokyo is set to broadcast its new drama series, August 31st Long Summer, starting on January 8, 2027. The original manga by Ikaku Ito has gained high popularity, and the television adaptation features Ryuga Sato of ACEes in his very first solo starring role. Sato portrays Takuya Suzuki, a second-year high school student who attends an all-boys school. Runa Nakajima plays his classmate, Kaka Takagi. The plot revolves around a strange time loop where August 31st repeats endlessly, and only the two main characters retain their memories of the previous days. Realizing that the loop is driven by personal regrets, Suzuki asks Takagi to help him achieve his major summer goal. The producer of the show praised Sato for his tremendous effort and dedication during challenging shooting scenes, expressing confidence that audiences will fall in love with the unique and clumsy romance between the two characters over the course of the series.",
+          "wordCount": 149
+        },
+        "準1級": {
+          "title": "Anticipation Builds for August 31st Long Summer",
+          "text": "As the winter season approaches, television audiences can look forward to a blast of summer heat with TV Tokyo's upcoming drama series, August 31st Long Summer, scheduled to premiere on January 8, 2027. Adapted from the critically acclaimed manga by Ikaku Ito, the series stars Ryuga Sato of ACEes in his inaugural solo television leading role. Sato plays Takuya Suzuki, a high school student trapped in an uncanny time loop where every midnight resets the world to August 31st, leaving only him and his classmate Kaka Takagi, played by Runa Nakajima, aware of the phenomenon. Believing the loop is triggered by unresolved personal regrets, Suzuki enlists Takagi's help to accomplish his ultimate summer objective. Behind the scenes, the show's producer lauded Sato's exceptional commitment and physical dedication on set, noting how his earnest enthusiasm brings the clumsy yet charming protagonist to life. Meanwhile, the original author has hinted that viewers expecting a conventional romantic comedy may be pleasantly surprised, hoping instead that audiences will appreciate the sincere depiction of two youths confronting one another through romance in an increasingly cynical age. Furthermore, international fans will be able to stream the series on Disney+, widening the reach of this captivating time-loop narrative for global audiences.",
+          "wordCount": 200
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261127-5421176/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-27-asml-ceo-warns-export-ban",
+      "date": "2026-11-27",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "ASML",
+        "chips",
+        "China",
+        "export-controls"
+      ],
+      "titleJa": "ASMLが過度な規制に警告",
+      "title": "ASML CEO Warns Chip Export Ban",
+      "summaryJa": "半導体露光装置メーカーASMLのCEOは、中国に対する過度なハイテク輸出規制が国内開発を加速させると警告しました。",
+      "sourcePublishedAt": "2026-11-27T03:35:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "ASMLのCEOが主張する輸出規制に対する考え方やその理由について理解する。",
+        "followUpJa": "過度な輸出規制が中国の半導体開発にどのような影響を与えるか自分の言葉でまとめてみましょう。",
+        "questions": {
+          "5級": "What is the name of the chip company?",
+          "4級": "Why are export controls needed for some technology?",
+          "3級": "What does ASML make for making chips?",
+          "準2級": "What did the CEO say excessive export bans will push China to do?",
+          "2級": "How does keeping DUV machine sales help ASML maintain its market share in China?",
+          "準1級": "According to the CEO, what is the strategic risk of completely frustrating a country with strict bans?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "ASML makes chips tools",
+          "text": "ASML is a big company. It makes tools for chips. The CEO talks about China. He says some rules are good. But too many rules are bad. China can make new tools fast. ASML wants to sell chips safely. They want to help global markets. Everyone uses these special machines today.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "CEO Talks About China",
+          "text": "Christophe Fouquet is the CEO of ASML. His company makes very important chip machines. He says that some export rules are necessary to protect technology. However, he warns that strict bans can cause problems. If rules are too hard, China will try to build its own technology. It is better to keep selling older machines so they rely on ASML instead.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "ASML Chief Warns About Chip Export Rules",
+          "text": "ASML is a major Dutch company that makes semiconductor lithography systems. Christophe Fouquet, the CEO of ASML, recently discussed trade regulations regarding China. He explained that protecting advanced technology is certainly important. For instance, they do not sell their cutting-edge EUV machines to China. However, he warned that stopping all sales would backfire completely. If the rules become too strict, China will work much harder to build domestic technology. Keeping normal business relations can prevent them from rushing into independent development quickly.",
+          "wordCount": 82
+        },
+        "準2級": {
+          "title": "ASML CEO Warns Against Excessive Chip Export Restrictions",
+          "text": "Christophe Fouquet, the CEO of ASML, has warned that excessive export controls on high-tech products could ultimately backfire. ASML is a leading global maker of semiconductor lithography systems, holding a dominant position in the industry. While Fouquet acknowledges that certain restrictions are necessary to protect advanced technology, such as EUV machines which are strictly kept out of China, he cautions against going too far. He argues that completely frustrating a country will only push it to focus intensely on building domestic alternatives. By continuing to supply less advanced equipment where appropriate, ASML maintains a strong market share because Chinese firms rely on their proven technology rather than investing heavily in local rivals immediately.",
+          "wordCount": 113
+        },
+        "2級": {
+          "title": "ASML CEO Warns Chip Export Ban",
+          "text": "Christophe Fouquet, the chief executive officer of semiconductor lithography system manufacturer ASML, recently discussed trade regulations concerning China and technology. Fouquet acknowledged that certain export restrictions are necessary to protect sensitive, cutting-edge innovations, noting that advanced EUV systems are strictly kept out of China. However, he cautioned that excessive and total export bans will ultimately backfire by driving China to accelerate its own domestic development systems. Fouquet suggested that completely frustrating a nation with strict restrictions encourages local rivals to build independent technologies rather than relying on established foreign suppliers. Instead, by continuing to supply older equipment where appropriate, ASML maintains a very strong market share. Chinese manufacturers currently prefer utilizing reliable foreign technology over immediate self-reliance in their production processes, which helps keep trade relationships stable. Fouquet explained these views during a recent media appearance, highlighting the complex strategic balance required in the global technology market today.",
+          "wordCount": 148
+        },
+        "準1級": {
+          "title": "ASML Chief Executive Christophe Fouquet Cautions That Excessive Export Bans Risk Accelerating Domestic Semiconductor Development",
+          "text": "Christophe Fouquet, the chief executive officer of the semiconductor lithography system manufacturer ASML, recently discussed the geopolitical complexities surrounding global trade restrictions and technology. Christophe Fouquet acknowledged that certain export controls are entirely necessary for safeguarding sensitive and cutting-edge innovations, noting that advanced EUV systems are strictly kept out of China. However, the ASML chief executive cautioned that excessive and total export bans will ultimately backfire by driving China to accelerate its own domestic development systems. Christophe Fouquet suggested that completely frustrating a nation with strict restrictions encourages local rivals to build independent technologies rather than relying on established foreign suppliers. Instead, by continuing to supply older equipment where appropriate, ASML maintains a very strong market share. Chinese manufacturers currently prefer utilizing reliable foreign technology over immediate self-reliance in their production processes, which helps keep trade relationships stable. Christophe Fouquet explained these views during a recent media appearance, highlighting the complex strategic balance required in the global technology market today. The Dutch company holds a dominant market position in the semiconductor lithography industry, making these strategic considerations particularly important for international trade relations and future technological developments worldwide.",
+          "wordCount": 188
+        }
+      },
+      "sources": [
+        {
+          "name": "GIGAZINE",
+          "url": "https://gigazine.net/news/20261127-asml-ceo-warn-to-export-ban/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-27-australia-sandpapergate-probe-ashes",
+      "date": "2026-11-27",
+      "scope": "world",
+      "category": "sports",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "cricket",
+        "australia",
+        "ashes",
+        "sandpapergate"
+      ],
+      "titleJa": "砂スキャンダル調査拡大",
+      "title": "Australia's Sandpapergate Probe Widens to Include Ashes",
+      "summaryJa": "クリケット・オーストラリアによる砂スキャンダルの独立調査が拡大され、2017-18年のアッシュズ・シリーズも対象に含まれることになりました。",
+      "sourcePublishedAt": "2026-11-27T00:43:03.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事から追加された調査範囲や期間の事実関係を確認し、今回の調査に関する正しい情報を把握するため。",
+        "followUpJa": "調査対象となった期間やシリーズについて、英語で簡単に説明してみましょう。",
+        "questions": {
+          "5級": "What series is in the new probe?",
+          "4級": "What season does the new probe include?",
+          "3級": "What series did Australia win 4-0?",
+          "準2級": "What specific ball-management practices are included in the new independent forum scope?",
+          "2級": "According to the terms of reference, what specific tours and matches are now covered by Cricket Australia's fresh probe?",
+          "準1級": "How do the stated objectives of the independent forum regarding transparency and sanctions contrast with the renewed controversy sparked by Usman Khawaja's autobiography?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "New Cricket Probe",
+          "text": "Cricket Australia has a new probe. It is about an old ball scandal. The probe is now bigger. It can look at the 2017-18 Ashes series too. Australia won that series. People can talk to the forum. No one will get a new ban. The report will come out soon. Cricket fans can read it.",
+          "wordCount": 54
+        },
+        "4級": {
+          "title": "Probe Expands to Ashes",
+          "text": "Cricket Australia has a fresh independent probe into the sandpapergate scandal. Now, the investigation is wider. It includes the 2017-18 Ashes series against England. Australia won that series four to zero. The forum will also look at the South Africa tour. Cricket Australia will publish the full report within thirty days. Players can speak to the forum safely. There will be no retrospective sanctions for anyone.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Cricket Probe Expands to Ashes",
+          "text": "Cricket Australia has a fresh independent probe into the sandpapergate scandal. The investigation is now much wider than before. It includes the 2017-18 Ashes series against England. Australia won that series four to zero. The inquiry also covers the South Africa tour and the investigation that followed. Cricket Australia promised to publish the full report within thirty days of receiving it. All players from the 2018 tour can speak to the forum safely. However, no one has to join, and no punishments will be given out to anyone.",
+          "wordCount": 86
+        },
+        "準2級": {
+          "title": "Cricket Australia Expands Sandpapergate Inquiry",
+          "text": "Cricket Australia has widened its independent probe into the infamous sandpapergate scandal. The updated investigation now includes ball-management practices from the 2017-18 season, featuring the Ashes series that Australia won four to zero against England. It also covers all four Tests of the subsequent South Africa tour and the following investigation. The inquiry was renewed after former batter Usman Khawaja released an autobiography claiming the whole team knew about ball-tampering. While four key bowlers denied knowing about the plan, other players backed Khawaja's claims. Cricket Australia will invite everyone involved to speak in a safe environment. Participants do not have to join, and no retrospective punishments will be issued. The full report will be published within thirty days.",
+          "wordCount": 117
+        },
+        "2級": {
+          "title": "Sandpapergate Probe Widens to 2017-18 Ashes",
+          "text": "Cricket Australia's independent probe into the sandpapergate scandal has officially been widened to include the 2017-18 Ashes series against England. The updated terms of reference state that the scope now covers ball-management practices in the Australian men's team during that 2017-18 season, where Australia secured a four-nil victory. The review also examines all four Tests of the subsequent South Africa tour and the original investigation that followed. This renewed focus comes after the publication of former batter Usman Khawaja's autobiography, in which he claimed the entire team knew about ball-tampering. Although current and former players disagree on who knew what, Cricket Australia has invited all participants to speak with the independent forum. Attendance is completely voluntary, and officials confirmed that no retrospective sanctions will be handed out. The board has pledged to publish the complete independent report and recommendations within thirty days.",
+          "wordCount": 140
+        },
+        "準1級": {
+          "title": "Cricket Australia Expands Independent Probe Following Autobiography",
+          "text": "Cricket Australia has broadened its independent investigation into the historical sandpapergate scandal, extending the official scope to encompass the 2017-18 Ashes series. Newly published terms of reference reveal that the independent forum will examine ball-management practices during the 2017-18 season, a period highlighted by Australia's four-nil Ashes triumph over England, alongside the controversial South African tour and its aftermath. The inquiry's revival was triggered by revelations in former batter Usman Khawaja's autobiography, where he alleged widespread team awareness of ball-tampering during the Cape Town Test. While several frontline bowlers from that era have vehemently denied any prior knowledge, other former team-mates have corroborated aspects of Khawaja's account, reigniting intense public debate about the events of that turbulent period. To address the heavy welfare toll on those involved, Cricket Australia has established a voluntary forum where past players, support staff, and board officials can share their accounts without any fear of retrospective punishment or disciplinary action. Chair David Boon emphasized that the primary goal is to listen, learn, and ensure organizational transparency, with a full and unedited report scheduled for publication within thirty days of its completion, ensuring complete openness with cricket fans regarding all findings and recommendations.",
+          "wordCount": 195
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/cricket/articles/cxdd1335nyj0o?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-27-fukuoka-bicycle-parking-incident-2026",
+      "date": "2026-11-27",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Fukuoka",
+        "investigation",
+        "police",
+        "NHK"
+      ],
+      "titleJa": "福岡で刺殺事件発生",
+      "title": "Fukuoka Man Killed in Bicycle Parking Area Attack",
+      "summaryJa": "福岡市の駐輪場で起きた男性刺殺事件で、容疑者の男が事務所に立ち寄った数分後に外で被害者を襲っていたことが分かりました。",
+      "sourcePublishedAt": "2026-11-27T03:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "事件の動きを把握するために、犯人が駐輪場内でどのような行動をとったかを確認しましょう。",
+        "followUpJa": "犯人が事務所にいた時間の長さや、その後の行動について人に説明してみましょう。",
+        "questions": {
+          "5級": "Where did the suspect go before the attack?",
+          "4級": "What did the police learn about the suspect from the office visit?",
+          "3級": "How long was the suspect inside the bicycle parking area office?",
+          "準2級": "What sequence of events did investigative sources discover regarding the suspect's movements?",
+          "2級": "Why are police closely examining the short time the suspect spent inside the parking area facility?",
+          "準1級": "How do investigators interpret the timeline involving the suspect's brief stop at the office prior to the assault?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Bad Crime in Fukuoka",
+          "text": "A man died in Fukuoka. He was in a bicycle parking area. A bad man attacked him. Police have new news. The bad man went to the office first. Then he went outside. He attacked the man. The police can see the truth now. It is a very sad thing.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "New Details in Fukuoka Attack",
+          "text": "A man was killed at a bicycle parking area in Fukuoka. Police are investigating the case now. New details came from investigative sources. They found that the attacker visited the parking area office first. After that, he went outside and attacked the victim. The attacker stayed in the parking area for only a few minutes. Police are looking closely at this short time.",
+          "wordCount": 63
+        },
+        "3級": {
+          "title": "Police Investigate Fukuoka Murder Case",
+          "text": "A tragic murder happened at a bicycle parking area in Fukuoka, where a man was stabbed to death. According to investigative sources, the suspect stopped by the parking area office before the attack. After leaving the office, he went outside and attacked the victim. Investigators also learned that the suspect stayed in the bicycle parking area for only a few minutes during the entire incident. The police are now looking carefully into these quick actions to understand how the crime happened and find more important details about the suspect today.",
+          "wordCount": 90
+        },
+        "準2級": {
+          "title": "Investigative Sources Reveal Details in Fukuoka Murder",
+          "text": "In the fatal stabbing of a man at a bicycle parking area in Fukuoka, new details have emerged from investigative sources. Police learned that the suspect stopped by the parking facility's office shortly before the attack. After leaving the office, he confronted and assaulted the victim outside. Furthermore, records and interviews show that the suspect spent only a few minutes inside the parking area. Authorities are analyzing this brief timeframe very closely to piece together the exact sequence of events leading up to the tragic crime and understand the suspect's movements.",
+          "wordCount": 91
+        },
+        "2級": {
+          "title": "Investigation Advances in Fukuoka Bicycle Parking Murder",
+          "text": "The investigation into the fatal stabbing of a man at a bicycle parking facility in Fukuoka city has revealed crucial new movements of the suspect. According to accounts gathered from investigative sources, the perpetrator visited the parking area's office before carrying out the sudden assault outside. Investigators also discovered that the suspect's entire presence inside the parking facility lasted only a couple of minutes. Given the extremely brief duration, police are carefully examining the timeline to determine how the attack was planned and executed, as they continue to gather important evidence regarding the tragic incident that shook the local community. Law enforcement officials are analyzing every detail of the suspect's actions within the area to uncover the full background of this violent crime and ensure a thorough pursuit of justice for the victim.",
+          "wordCount": 133
+        },
+        "準1級": {
+          "title": "Investigative Sources Reveal Suspect Movements in Fukuoka Bicycle Parking Facility Homicide",
+          "text": "As the ongoing investigation into the fatal stabbing of a man at a bicycle parking facility in Fukuoka continues to develop, authorities have uncovered significant new details regarding the suspect's movements prior to the violent assault. According to information obtained directly from investigative sources, the perpetrator briefly stopped at the parking area management office before confronting and attacking the victim outside the facility. Furthermore, investigators have confirmed that the suspect spent only a few minutes inside the bicycle parking facility during the entire course of the tragic incident. This crucial revelation has prompted law enforcement officials to scrutinize the compressed timeline closely as they examine the exact sequence of the suspect's actions within the area. Police are currently analyzing every available piece of information to better understand the nature of the attack and how the tragic events transpired at the Fukuoka location. This critical development forms an essential part of the ongoing inquiry into the fatal stabbing, with investigative agencies working diligently to piece together all relevant facts surrounding the case, examine the evidence thoroughly, and bring complete clarity to the tragic events that occurred on that fateful day in Fukuoka.",
+          "wordCount": 191
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261127de82318"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-27-hokkaido-bullying-cases-record-2026",
+      "date": "2026-11-27",
+      "scope": "japan",
+      "category": "life",
+      "categories": [
+        "education"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "いじめ",
+        "不登校",
+        "北海道",
+        "学校"
+      ],
+      "titleJa": "いじめ過去最多",
+      "title": "Hokkaido Records Highest Number of Bullying Cases",
+      "summaryJa": "北海道内の学校における2025年度のいじめ認知件数が5万4177件となり、4年連続で過去最多を更新しました。",
+      "sourcePublishedAt": "2026-11-27T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "北海道の学校におけるいじめや不登校の現状について、数字やその背景を確認しましょう。",
+        "followUpJa": "身近な学校環境における課題や、調査方法の変化について話し合ってみましょう。",
+        "questions": {
+          "5級": "How many bullying cases were found in Hokkaido?",
+          "4級": "How many serious bullying cases were reported in Hokkaido schools?",
+          "3級": "What is one reason the education board gives for the increase in cases?",
+          "準2級": "How many elementary and junior high school students were absent from school in Hokkaido?",
+          "2級": "By what percentage did the number of recognized bullying cases increase compared to the previous year?",
+          "準1級": "What specific factors besides increased surveys are cited as background for the rise in recognized cases?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Bullying in Hokkaido",
+          "text": "New news is here. Hokkaido has many schools. Bullying cases are very high. There are more than fifty-four thousand cases. This is a record high number. It is four years in a row. Serious cases are also up. Many students do not go to school. People want to help them now.",
+          "wordCount": 51
+        },
+        "4級": {
+          "title": "School Bullying Reaches New High",
+          "text": "Schools in Hokkaido have a big problem. In the last year, teachers found over fifty-four thousand bullying cases. This is a new record for four years. Serious situations also increased to seventy-eight cases. At the same time, the number of students who do not go to school reached over fourteen thousand. Officials think more surveys helped find these cases.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Hokkaido Reports Record School Bullying",
+          "text": "A new report shows that bullying cases in Hokkaido schools reached a record high. Officials counted fifty-four thousand one hundred seventy-seven cases across the region. This is an increase of over eight percent from the year before. It is the fourth straight year of record highs. Also, serious bullying events increased by twenty-nine to reach seventy-eight cases. The number of students refusing to go to school also hit a record high of fourteen thousand four hundred six. Education board members believe more frequent surveys and better understanding of the law caused these numbers to rise.",
+          "wordCount": 95
+        },
+        "準2級": {
+          "title": "Record Bullying and Absenteeism in Hokkaido Schools",
+          "text": "Recent data reveals that recognized bullying cases in Hokkaido schools have reached record levels for the fourth consecutive year. During the fiscal year, schools across the region identified fifty-four thousand one hundred seventy-seven bullying cases, which represents an increase of eight point three percent from the previous year. Furthermore, serious incidents defined by the bullying prevention law rose by twenty-nine to reach seventy-eight cases. Concurrently, absenteeism among elementary and junior high school students hit a record high of fourteen thousand four hundred six children, showing an increase of one point one percent. The Hokkaido Board of Education suggests that the increase in recognized cases stems from conducting surveys three times instead of two, reflecting a deeper understanding of the law among educators.",
+          "wordCount": 122
+        },
+        "2級": {
+          "title": "Hokkaido Schools Report Record Highs in Bullying and Absenteeism",
+          "text": "According to recent reports, the number of recognized bullying cases in schools throughout Hokkaido has climbed to fifty-four thousand one hundred seventy-seven. This figure marks an eight point three percent increase compared to the previous year, setting a new record for the fourth straight year. Cases classified as serious under the bullying prevention law also grew by twenty-nine, reaching a total of seventy-eight incidents across the prefecture. In addition to bullying, the number of elementary and junior high school students who refuse to attend school reached an unprecedented fourteen thousand four hundred six, representing a one point one percent increase. The Hokkaido Board of Education explained that the rise in recognized cases is partly due to increasing school surveys from twice to three times a year, showing that greater awareness and understanding of the prevention laws are taking effect across the region.",
+          "wordCount": 142
+        },
+        "準1級": {
+          "title": "Hokkaido Education Authorities Report Unprecedented Surge in Recognized Bullying and Absenteeism Across Schools",
+          "text": "In a comprehensive report released regarding educational statistics in Hokkaido, recognized school bullying cases have surged dramatically to fifty-four thousand one hundred seventy-seven, marking the fourth consecutive year of record-breaking figures across the region. This total represents an eight point three percent increase from the preceding fiscal year, reflecting detailed data collected from elementary, junior high, and high schools throughout the prefecture. Additionally, severe incidents categorized under the specific bullying prevention legislation rose by twenty-nine to reach a total of seventy-eight cases compared to the previous period. Alongside these concerning bullying statistics, long-term student absenteeism among elementary and junior high school students escalated to fourteen thousand four hundred six, establishing another historic high with a one point one percent increase from the prior year. The Hokkaido Board of Education carefully attributes this continuous upward trend in recognized cases primarily to procedural adjustments, such as increasing mandatory student survey frequencies from twice to three times annually, alongside a heightened institutional comprehension of the legal framework surrounding bullying prevention among local educators and administrative staff. Furthermore, the Hokkaido Board of Education noted that this ongoing increase demonstrates how schools in Hokkaido are working harder to find and address cases quickly. The administrators at the Hokkaido Board of Education emphasized that discovering more hidden cases helps protect students and allows teachers to respond to problems before the situations grow much worse.",
+          "wordCount": 228
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63906"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-27-hokkaido-electric-support-2026",
+      "date": "2026-11-27",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "electricity",
+        "gas",
+        "subsidy",
+        "hokkaido-electric"
+      ],
+      "titleJa": "北電が電気ガス料金の値引き…",
+      "title": "Hokkaido Electric Power to Lower Utility Bills",
+      "summaryJa": "北海道電力は国の支援を受け、2027年1月から3月まで電気と都市ガスの料金値引きを実施すると発表しました。",
+      "sourcePublishedAt": "2026-11-26T06:00:00.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "政府の支援による光熱費の値引き期間を正しく把握し、生活費の計画にどう影響するか判断する。",
+        "followUpJa": "値引きが行われる具体的な期間や対象となる月についてクラスメートと話し合ってみましょう。",
+        "questions": {
+          "5級": "When does the electricity discount start?",
+          "4級": "Which months are covered by the new utility bill support?",
+          "3級": "What did Hokkaido Electric Power apply for and receive from the Minister of Economy, Trade and Industry?",
+          "準2級": "How long will Hokkaido Electric Power implement the electricity and city gas bill discounts?",
+          "2級": "What specific actions did Hokkaido Electric Power take regarding its supply conditions to cooperate with the national government?",
+          "準1級": "How do the application date, the approval date by the Minister, and the actual implementation period of the utility support scheme align according to the company announcement?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Hokkaido Electric Helps",
+          "text": "Hokkaido Electric Power helps people. The company has good news. It will lower electricity and gas bills. The support is from the government. Bills will go down soon. This is for customers in Hokkaido. Everyone can save some money. The plan starts early next year. It is a big help.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Lower Bills in Hokkaido",
+          "text": "Hokkaido Electric Power has good news for customers. The company will lower electricity and city gas bills. This plan is part of national government support. The discounts will run from January to March next year. The company applied for special supply conditions. The Minister of Economy, Trade and Industry approved this plan. Customers can save money during the cold winter months.",
+          "wordCount": 61
+        },
+        "3級": {
+          "title": "Hokkaido Electric Power Lowers Utility Bills",
+          "text": "Hokkaido Electric Power announced a new plan to help customers with their living costs. The company will lower electricity and city gas bills. This action supports a national government program. The discount period runs from January 2027 through March 2027. On November 11, 2026, the company applied for special supply conditions to the Minister of Economy, Trade and Industry under the Electricity Business Act. They recently received official approval from the Minister. This discount will help many households manage their energy costs during the cold winter season.",
+          "wordCount": 83
+        },
+        "準2級": {
+          "title": "Hokkaido Electric Power Receives Approval for Bill Discounts",
+          "text": "Hokkaido Electric Power has announced that it will implement discounts on electricity and city gas bills. This measure cooperates directly with a national government utility support program. The price reductions will run from the January 2027 billing month through the March 2027 billing month. To make this discount plan possible, the company submitted an application for special supply conditions based on the Electricity Business Act to the Minister of Economy, Trade and Industry on November 11, 2026. The company recently received official approval from the Minister. These planned discounts aim to reduce financial burdens for customers during the winter season, ensuring reliable energy supply and support for local residents across the region.",
+          "wordCount": 108
+        },
+        "2級": {
+          "title": "Hokkaido Electric Power Secures Approval for Government Utility Support",
+          "text": "Hokkaido Electric Power has officially announced its cooperation with the national government's utility support initiative to assist households. The company will implement price reductions on electricity and city gas bills starting from the January 2027 billing month, which covers December 2026 usage, through the March 2027 billing month, which covers February 2027 usage. To execute these temporary discounts, Hokkaido Electric Power applied for special supply conditions under the Electricity Business Act to the Minister of Economy, Trade and Industry on November 11, 2026. Following this initial application process, the company successfully received the necessary official ministerial approval. This important regulatory step ensures that the regional utility provider can legally adjust its pricing structure to pass government-backed financial savings directly to consumers. Such measures are carefully designed to ease the economic pressure of energy costs for residents during the demanding winter months, reflecting a coordinated effort between government policy and local corporate responsibility across the region.",
+          "wordCount": 149
+        },
+        "準1級": {
+          "title": "Hokkaido Electric Power Gains Ministerial Approval to Implement National Utility Fee Relief",
+          "text": "In a formal corporate announcement issued on November 26, 2026, Hokkaido Electric Power confirmed its active participation in the national government's comprehensive utility fee support program. The regional utility provider will execute direct price reductions on both electricity and city gas bills, spanning the period from the January 2027 billing month, which corresponds to December 2026 usage, through the March 2027 billing month, which corresponds to February 2027 usage. To operationalize this relief initiative, the company previously submitted an application for special supply conditions outside the standard retail supply provisions to the Minister of Economy, Trade and Industry on November 11, 2026, pursuant to the provisions of the Electricity Business Act. Having officially secured the requested ministerial approval from the Minister on November 26, the company is now fully positioned to deliver timely financial relief to its extensive customer base across the region. This strategic measure underscores the collaborative operational framework between regional energy providers and national authorities to alleviate household economic strain amidst fluctuating resource costs during the winter season. The corporate administration stated that it promptly informed the public regarding both the initial application submitted earlier in the month and the subsequent authorization granted by the Minister, ensuring complete transparency as customers prepare for the upcoming billing adjustments throughout the specified winter months.",
+          "wordCount": 206
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253245_2073.html"
+        }
+      ]
+    },
     {
       "id": "2026-11-26-anne-kemuri-matsui-marriage-views-2026",
       "date": "2026-11-26",
