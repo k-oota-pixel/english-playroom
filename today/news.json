@@ -1,13 +1,444 @@
 {
-  "generatedAt": "2026-11-27T03:39:03.504Z",
-  "editionDate": "2026-11-27",
+  "generatedAt": "2026-11-27T17:27:50.923Z",
+  "editionDate": "2026-11-28",
   "automation": {
     "version": 1,
     "dailyCount": 6,
     "maxArchiveArticles": 540,
-    "lastSuccessfulEdition": "2026-11-27"
+    "lastSuccessfulEdition": "2026-11-28"
   },
   "articles": [
+    {
+      "id": "2026-11-28-azone-international-closes-ec-site-for-privacy",
+      "date": "2026-11-28",
+      "scope": "japan",
+      "category": "technology",
+      "categories": [
+        "business"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "cybersecurity",
+        "AI",
+        "privacy",
+        "e-commerce",
+        "dolls"
+      ],
+      "titleJa": "売上15%のEC閉店",
+      "title": "Doll Maker Closes Online Shop Representing 15 Percent of Sales to Protect Customer Privacy",
+      "summaryJa": "アゾンインターナショナルは、AIによるサイバー攻撃の高度化や情報漏えいリスクから顧客の個人情報を守るため、全社売上高の約15％を占める自社ECサイト「AZONET」を閉店することを決定しました。",
+      "sourcePublishedAt": "2026-11-27T07:47:38.000Z",
+      "mission": {
+        "type": "decision",
+        "purposeJa": "企業が重要な売上を捨ててまで個人情報を守る判断をした理由を把握し、セキュリティリスクへの対策について考える。",
+        "followUpJa": "自社ECを閉じる代わりに、同社がどのような方法で今後の販売や情報発信を行っていくか話し合ってみましょう。",
+        "questions": {
+          "5級": "What did the doll company close?",
+          "4級": "Why did Azone International decide to close its online shop?",
+          "3級": "How much of the company's total sales did the online shop make?",
+          "準2級": "What problem with AI and encryption made the company realize they could not keep customer data safe?",
+          "2級": "Besides the risk of data leaks, what specific ransomware threat made the management doubt their server security?",
+          "準1級": "Explain the strategic shift in information dissemination that Azone International adopted after stopping their email newsletter service."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Beginner Level",
+          "text": "A doll company in Japan made big news. It closed its online shop. The shop made fifteen percent of the company sales. The company wanted to keep customer data safe. Cyber attacks are very dangerous now. So, they stopped the shop to protect people.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Elementary Level",
+          "text": "Azone International makes dolls and doll clothes. Recently, the company announced the closure of its official online shop, AZONET. This site made about fifteen percent of their total sales. The company had eighty thousand members. However, cyber attacks are becoming very advanced because of AI. To protect customer personal information, the company decided not to keep user data anymore.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Intermediate Level",
+          "text": "Doll maker Azone International recently announced a major business decision. The company decided to close its online shop, AZONET, which accounted for roughly fifteen percent of its total sales. Although the site had about eighty thousand members and served as an official catalog, management chose to prioritize customer privacy. Because cyber attacks are becoming increasingly sophisticated through artificial intelligence, the company concluded that keeping personal data on their own servers was simply too risky and difficult to protect.",
+          "wordCount": 78
+        },
+        "準2級": {
+          "title": "Upper Intermediate Level",
+          "text": "Azone International, a Japanese manufacturer of collectible dolls, has made the difficult decision to close its official online shop, AZONET. The website represented approximately fifteen percent of the company's total sales and had about eighty thousand registered members. After experiencing security issues with an external email service and observing rising cyber threats, management reviewed their data security. Even though their customer information was encrypted, internal tests showed that modern artificial intelligence could decrypt the data relatively quickly. Furthermore, ransomware risks remained high. Believing that human defense could not keep up with advanced AI attacks, the company chose to stop keeping personal information entirely to ensure customer safety.",
+          "wordCount": 107
+        },
+        "2級": {
+          "title": "Advanced Level",
+          "text": "In a bold move prioritizing security over revenue, Japanese doll manufacturer Azone International announced the closure of its official e-commerce site, AZONET. The platform generated about fifteen percent of the company's total sales and held member data for roughly eighty thousand users. The decision came after an external email service suffered unauthorized access, prompting temporary site suspensions. Although the company initially considered system upgrades, internal security assessments yielded grim conclusions. Tests revealed that encrypted customer data could be decrypted by artificial intelligence within a relatively short timeframe, and the constant threat of ransomware added severe risks. Consequently, management shifted to a strict policy of minimizing personal data retention. Despite losing valuable customer insights and fifteen percent of sales, the company believes protecting user privacy is paramount, compensating for the loss by expanding wholesale partnerships, using existing retail channels, and stopping push-based email newsletters.",
+          "wordCount": 143
+        },
+        "準1級": {
+          "title": "Proficient Level",
+          "text": "Amid escalating concerns regarding sophisticated cyber threats, Japanese doll manufacturer Azone International has executed a decisive pivot, shuttering its proprietary e-commerce platform, AZONET, which previously accounted for approximately fifteen percent of the company's overall revenue. The facility, serving roughly eighty thousand members since its inception in 2008, was abruptly evaluated following external security incidents involving mailing list services. While the firm initially explored software remediation, rigorous internal testing exposed the harsh realities of modern technological vulnerabilities: advanced artificial intelligence proved capable of decrypting stored customer data within disturbingly brief intervals, alongside persistent threats from ransomware locking internal systems. Acknowledging that human defense mechanisms struggle to outpace the rapid evolution of AI-driven attacks, the leadership elected to renounce data retention altogether. Although relinquishing this digital storefront incurs noticeable business disadvantages—including the loss of direct marketing metrics and customer databases—management maintains that safeguarding consumer privacy overrides commercial convenience. To compensate for the structural loss, Azone plans to lean on broader retail partnerships and direct stores, simultaneously abandoning push-based email marketing in favor of voluntary pull-based platforms like social media to ensure absolute data minimization.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "ITmedia NEWS",
+          "url": "https://www.itmedia.co.jp/news/article/2611/27/2000003518/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-28-bodies-found-miyagi-mountains",
+      "date": "2026-11-28",
+      "scope": "japan",
+      "category": "world",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Miyagi",
+        "Yokohama",
+        "police",
+        "investigation"
+      ],
+      "titleJa": "宮城の山中で2遺体発見",
+      "title": "Two Unidentified Bodies Found in Miyagi Mountains",
+      "summaryJa": "宮城県七ヶ宿町の山中で身元不明の2人の遺体が見つかり、警察は身元の確認と捜査を進めています。",
+      "sourcePublishedAt": "2026-11-27T16:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "記事から事件の場所や警察の捜査状況に関する詳細な事実を正確に把握する。",
+        "followUpJa": "警察が行っている身元確認や発見場所についてクラスメートと話し合ってみましょう。",
+        "questions": {
+          "5級": "Where did the police find the two bodies?",
+          "4級": "When did the police find the two bodies in the mountain?",
+          "3級": "What city is the missing high school girl from?",
+          "準2級": "Which town in Miyagi Prefecture did the police find the bodies?",
+          "2級": "What are investigators checking regarding one of the bodies found in the mountains?",
+          "準1級": "How do investigators connect one of the unidentified bodies to a missing person from Yokohama?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Two Bodies in Mountain",
+          "text": "The police find two bodies in a mountain. The mountain is in Miyagi. One body is a high school girl. She is from Yokohama. She can not be found since last month. The police check the bodies now. People are very sad about this news.",
+          "wordCount": 45
+        },
+        "4級": {
+          "title": "Bodies Found in Miyagi",
+          "text": "On November 27, police found two unidentified bodies in the mountains of Shichikashuku Town, Miyagi Prefecture. Investigators are working hard on the case. They think that one of the bodies could be a first-year high school girl from Yokohama City. She has been missing since last month. The police want to know what happened to them.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "Unidentified Bodies Discovered in Miyagi",
+          "text": "According to investigative sources, police discovered two unidentified bodies in a mountainous area of Shichikashuku Town, Miyagi Prefecture, on November 27. Authorities believe that one of these bodies might belong to a first-year high school girl from Yokohama City who has been missing since last month. The police are continuing their careful investigation to confirm the identities of both victims and understand the full situation regarding this serious case in the mountains.",
+          "wordCount": 71
+        },
+        "準2級": {
+          "title": "Police Investigate Bodies Found in Miyagi Mountains",
+          "text": "Investigative sources report that police discovered two unidentified bodies on November 27 in a mountainous area located in Shichikashuku Town, Miyagi Prefecture. Authorities are currently examining the remains to determine who they are. Investigators suspect that one of the bodies may belong to a first-year high school female student from Yokohama City who has been missing since last month. The police department is carefully looking into the details of the case to uncover what happened in the mountains, and they are working to confirm the identities of both individuals as soon as possible.",
+          "wordCount": 92
+        },
+        "2級": {
+          "title": "Two Unidentified Bodies Discovered in Miyagi Mountain Area",
+          "text": "According to investigative sources, police made a serious discovery on November 27 when they found two unidentified bodies in a mountainous region of Shichikashuku Town, Miyagi Prefecture. Authorities are currently conducting a detailed investigation into the grim discovery to understand the full situation. Investigators believe that one of the individuals may be a first-year female high school student from Yokohama City who has been reported missing since last month. The police are working diligently to confirm the identities of both victims and gather more information regarding the circumstances surrounding the incident in the mountains. Officers are continuing to examine all available evidence carefully to determine exactly what took place. Furthermore, local police departments are cooperating closely to ensure that every aspect of the investigation is thoroughly handled. Investigators are pursuing multiple lines of inquiry to uncover the truth behind this tragic event in Miyagi Prefecture.",
+          "wordCount": 144
+        },
+        "準1級": {
+          "title": "Investigation Underway After Two Unidentified Bodies Found in Miyagi Mountains",
+          "text": "According to investigative sources, police in Miyagi Prefecture made a grim discovery on November 27 when they found two unidentified bodies in a mountainous area within Shichikashuku Town. Law enforcement officials in Miyagi Prefecture are now pushing forward with a thorough investigation to establish the exact identities of the deceased individuals found in the mountains of Shichikashuku Town. Authorities have stated that one of the bodies discovered in Shichikashuku Town could potentially be a first-year female high school student from Yokohama City who has been missing since last month. As investigators work to piece together the events leading up to this discovery in Miyagi Prefecture, local communities and law enforcement officials remain deeply concerned about the unfolding situation. The police department in Miyagi Prefecture are continuing their careful examination of the physical evidence to shed light on this tragic case, checking every detail to find out what really happened in the mountains of Shichikashuku Town. Specialized investigative teams from the police are analyzing the mountain site and gathering clues to ensure no detail is overlooked during this complex investigation into the two unidentified bodies.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "NHK News Japan — Society",
+          "url": "https://news.web.nhk/newsweb/na/nd-20261127de82799"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-28-hokkaido-bar-murder-trial-police-testimony",
+      "date": "2026-11-28",
+      "scope": "japan",
+      "category": "life",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hokkaido",
+        "trial",
+        "court",
+        "police testimony"
+      ],
+      "titleJa": "バー遺体事件で警察官が証言",
+      "title": "Police Testify in Hokkaido Bar Murder Trial",
+      "summaryJa": "北海道日高町の女性殺害・遺体遺棄事件の裁判で、逮捕前の取り調べを担当した警察官が被告の自白内容を証言しました。",
+      "sourcePublishedAt": "2026-11-27T00:00:00.000Z",
+      "mission": {
+        "type": "information-hunt",
+        "purposeJa": "裁判の証言内容について正確な情報を把握するため、記事の細部を確認しましょう。",
+        "followUpJa": "被告の主張と警察官の証言の食い違いについて、さらに情報を集めてみましょう。",
+        "questions": {
+          "5級": "What did the police officer talk about in the court?",
+          "4級": "What did the police officer say the suspect confessed before arrest?",
+          "3級": "How did the doctor explain the cause of death during the trial?",
+          "準2級": "What specific details did the police officer give about how the suspect killed the woman?",
+          "2級": "How does the suspect's stance in court differ from the statement the police officer claims he made before his arrest?",
+          "準1級": "Considering the conflicting statements from the suspect and the testimonies of both the police and the doctor, what key issues are expected to be addressed when the defendant takes the stand?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Police Testimony in Court",
+          "text": "A court trial is in Hokkaido. A police officer talked about a murder case. He spoke about a man named Matsukura. The officer said the man made a confession before he was arrested. The man denies the murder now. People want to know what happens next in this court case.",
+          "wordCount": 50
+        },
+        "4級": {
+          "title": "Officer Speaks About Confession",
+          "text": "A trial is happening in Hokkaido for a murder case. A man is accused of killing a woman and hiding her body in a bar. On the second day of the trial, a police officer spoke as a witness. The officer said the suspect confessed before his arrest. The officer stated the man admitted to killing the victim and hiding her body inside his shop.",
+          "wordCount": 65
+        },
+        "3級": {
+          "title": "Police Testify in Hokkaido Bar Murder Trial",
+          "text": "A court trial continues in Hokkaido regarding a murder and body abandonment case. Toshihiko Matsukura is accused of killing his partner, Hinano Kudo, and hiding her body inside his bar wall. During the trial, a police officer who questioned him before his arrest appeared as a witness in the courtroom. The officer testified that the suspect previously admitted to the crime. The officer stated that the man confessed to killing the victim and hiding her inside the shop using a rope. However, the defendant denied the murder charge in his first court appearance. An autopsy doctor also testified about the cause of death. People are watching closely to see what the defendant will say when he takes the witness stand soon.",
+          "wordCount": 121
+        },
+        "準2級": {
+          "title": "Police Officer Testifies in Hokkaido Bar Murder Trial",
+          "text": "The trial for a murder and body abandonment case in Hokkaido's Hidaka town continued with important testimony from a police officer. Toshihiko Matsukura is accused of strangling his partner, nurse Hinano Kudo, with a rope and hiding her body inside the wall of his bar. Although the defendant denied the murder charge during his opening court appearance, the investigating officer testified that the suspect had confessed before his arrest. The officer told the court the man admitted to killing the victim and hiding her in the shop. Furthermore, a doctor testified that the broken bones in the neck indicate the victim was killed by someone else rather than dying by suicide. The defendant is scheduled to take the witness stand soon after maintaining silence following his arrest.",
+          "wordCount": 127
+        },
+        "2級": {
+          "title": "Witness Testifies About Suspect's Confession in Hokkaido Murder Trial",
+          "text": "The trial regarding a woman's murder and the abandonment of her body inside a bar wall in Hokkaido featured crucial testimony from a police officer. Toshihiko Matsukura is accused of strangling his partner, Hinano Kudo, at a residence in Hidaka town and concealing her remains in his establishment. While the defendant denied the murder charge during his initial court appearance, the police officer who handled his pre-arrest interrogation took the stand as a witness. The officer firmly contradicted the defendant's plea, testifying that Matsukura had previously confessed to the crime, stating he had harmed the victim and hidden her inside the shop. The officer also detailed the suspect's account of using a rope to strangle her. Meanwhile, a doctor who performed the autopsy testified that the victim's neck fractures prove she was killed by someone else, dismissing any possibility of suicide. The defendant is scheduled to take the witness stand soon.",
+          "wordCount": 151
+        },
+        "準1級": {
+          "title": "Investigating Officer Contradicts Defendant's Plea in Hidaka Murder Trial",
+          "text": "Legal proceedings regarding the tragic murder and subsequent concealment of a woman's body within the walls of a Hokkaido bar intensified as a key investigator delivered compelling testimony. Toshihiko Matsukura stands accused of murdering his romantic partner, nurse Hinano Kudo, by strangulation with a rope at a Hidaka town shared residence, before hiding her remains inside his business establishment. Although the defendant formally denied the murder charge during his opening trial session, the police officer responsible for his pre-arrest interrogations appeared in court to challenge this stance directly. The witness stated under oath that Matsukura had previously admitted to the offense, quoting him as saying he had laid hands on the victim and concealed her within the premises. Additionally, the officer recounted specific details provided by the suspect regarding the method of strangulation. This testimony aligns with the findings of an autopsy expert, who concluded that severe neck fractures ruled out suicide and confirmed homicide. With the defendant scheduled to take the stand, public and legal attention focuses heavily on what explanation he will offer following a period of silence after his arrest.",
+          "wordCount": 183
+        }
+      },
+      "sources": [
+        {
+          "name": "UHB Hokkaido News",
+          "url": "https://www.uhb.jp/news/single.html?id=63910"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-28-hokkaido-electric-january-2027-prices",
+      "date": "2026-11-28",
+      "scope": "japan",
+      "category": "business",
+      "categories": [],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "Hokkaido Electric",
+        "electricity bills",
+        "fuel adjustment",
+        "Japan"
+      ],
+      "titleJa": "北電が電気代変更を発表",
+      "title": "Hokkaido Electric Announces January 2027 Electricity Prices",
+      "summaryJa": "北海道電力は、2027年1月分の電気料金における燃料費等調整の内容を発表しました。",
+      "sourcePublishedAt": "2026-11-27T06:00:00.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "家計への影響を理解し、来月の電気代対策を立てるため。",
+        "followUpJa": "政府の支援や値引き前後の価格を考慮してアドバイスを作成してみましょう。",
+        "questions": {
+          "5級": "How much will low-voltage prices change in January?",
+          "4級": "What is the new fuel adjustment price for low-voltage customers?",
+          "3級": "Why do electricity prices change based on trade statistics?",
+          "準2級": "How much will the monthly bill for a model household decrease in January compared to December?",
+          "2級": "What specific role does government support play in the January 2027 electricity bill calculations?",
+          "準1級": "How do the fuel adjustment rates differ between low-voltage and high-voltage customers under the new announcement?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Hokkaido Electric News",
+          "text": "Hokkaido Electric has news. It is about electricity bills. The bills will change in January 2027. Fuel prices go up and down. The company checks trade data. Customers can see new prices soon. Government help is here too. It helps users save money on power.",
+          "wordCount": 44
+        },
+        "4級": {
+          "title": "Hokkaido Electric January Prices",
+          "text": "Hokkaido Electric Power announced new electricity prices for January 2027. The company used trade statistics from August to October to calculate fuel costs. The government provides support for electricity and gas bills. Because of this support, low-voltage customers get a discount on their fuel adjustment costs. Families can check how these changes affect their monthly utility bills across the region.",
+          "wordCount": 59
+        },
+        "3級": {
+          "title": "Hokkaido Electric January Bill Details",
+          "text": "Hokkaido Electric Power released details about fuel cost adjustments for January 2027 electricity bills. These updates are based on trade statistics for crude oil, LNG, and overseas coal from August to October. Furthermore, national support programs provide special discounts for customers. For a standard household using 30 amperes and 230 kilowatt-hours per month, the total bill will decrease by 230 yen compared to December. The company shares this information to help customers understand regular utility price changes.",
+          "wordCount": 73
+        },
+        "準2級": {
+          "title": "Hokkaido Electric Announces January 2027 Price Adjustments",
+          "text": "Hokkaido Electric Power has officially announced the fuel cost adjustments for electricity bills in January 2027. This update follows the publication of trade statistics regarding crude oil, LNG, and overseas coal prices between August and October. To help ease financial burdens, government support programs for electricity and gas will provide specific discounts. For low-voltage customers, the fuel adjustment price includes a discount of one yen per kilowatt-hour. Meanwhile, a model household using 30 amperes and 230 kilowatt-hours monthly will see their total cost decrease by 230 yen to 10,310 yen in January, compared to the previous month. These adjustments ensure fair pricing based on actual fuel import costs.",
+          "wordCount": 103
+        },
+        "2級": {
+          "title": "Hokkaido Electric Details January 2027 Fuel Cost Adjustments and Household Impact",
+          "text": "Hokkaido Electric Power has released its fuel cost adjustment figures for January 2027 electricity bills, following the recent publication of Japanese trade statistics covering crude oil, LNG, and overseas coal from August to October. Thanks to ongoing government support for electricity and gas, January bills will feature specific discounts. Low-voltage customers will receive a fuel adjustment discount of one yen per kilowatt-hour, while high-voltage customers will receive a discount of fifty sen. For a standard model household using 30 amperes and consuming 230 kilowatt-hours, the basic fee and power charges remain unchanged, but the fuel adjustment credit will increase from 1,056 yen to 1,286 yen. Consequently, the total monthly charge for this model household will drop by 230 yen, bringing the final payment to 10,310 yen. Renewable energy promotion surcharges remain constant, ensuring transparent billing for all consumers across the region.",
+          "wordCount": 134
+        },
+        "準1級": {
+          "title": "Hokkaido Electric Power Unveils January 2027 Fuel Adjustments Amid Government Support",
+          "text": "Hokkaido Electric Power has officially disclosed its comprehensive fuel cost adjustment plan for January 2027 electricity bills, which was calculated in accordance with the latest trade statistics covering crude oil, liquefied natural gas, and overseas coal imports from August through October. These regular adjustments closely reflect international market fluctuations. In addition, national economic measures aimed at cushioning household energy costs will directly impact January invoices. Low-voltage consumers will benefit from a fuel adjustment unit price reduction of one yen per kilowatt-hour, whereas high-voltage users will see a specific discount of fifty sen. Evaluating the concrete impact on a typical residential household using thirty amperes and two hundred thirty kilowatt-hours per month, the basic fee and electricity consumption charges remain steady at 10,635 yen. However, enhanced fuel adjustments will expand the applied discount from 1,056 yen in December to 1,286 yen in January. Factoring in the unvarying renewable energy promotion surcharges of 961 yen, the total household expenditure will decrease by 230 yen, resulting in a final monthly bill of 10,310 yen instead of the previous month's 10,540 yen. Through this transparency, Hokkaido Electric aims to keep consumers fully informed of market-driven price shifts and government-backed relief efforts across the region.",
+          "wordCount": 192
+        }
+      },
+      "sources": [
+        {
+          "name": "Hokkaido Electric Power",
+          "url": "https://www.hepco.co.jp/info/2026/1253243_2073.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-28-kokuhou-tv-broadcast-2027",
+      "date": "2026-11-28",
+      "scope": "japan",
+      "category": "culture",
+      "categories": [],
+      "careerTags": [
+        "arts"
+      ],
+      "tags": [
+        "Kokuhou",
+        "Ryo Yoshizawa",
+        "Ryusei Yokohama",
+        "Japanese movie"
+      ],
+      "titleJa": "映画『国宝』がテレビ初放送へ",
+      "title": "Hit Movie 'Kokuhou' to Air on TV in 2027",
+      "summaryJa": "大ヒット映画『国宝』が2027年正月に日本テレビ系で2夜連続テレビ初放送されることが決定しました。",
+      "sourcePublishedAt": "2026-11-27T00:00:00.000Z",
+      "mission": {
+        "type": "recommendation",
+        "purposeJa": "映画『国宝』のテレビ放送を見るべきかどうかを判断するため、作品の魅力を探る。",
+        "followUpJa": "家族や友人にこの映画をすすめるためのポイントを話し合ってみましょう。",
+        "questions": {
+          "5級": "When will the movie Kokuhou air on TV?",
+          "4級": "How many consecutive nights will Kokuhou be broadcast on television?",
+          "3級": "What is the total box office revenue of the movie Kokuhou?",
+          "準2級": "Which awards did Kokuhou win at the 49th Japan Academy Film Prize?",
+          "2級": "How do the backgrounds of the two main characters, Kikuo and Shunsuke, differ?",
+          "準1級": "What dual themes in the kabuki world shape the lives and rivalry of the protagonists in Kokuhou?"
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "A Great Movie",
+          "text": "The hit movie Kokuhou will be on TV. It will air for two nights in January 2027. Ryo Yoshizawa and Ryusei Yokohama star in it. Many people watched this movie in Japan. Now you can watch it at home on TV. It is a very popular story about kabuki.",
+          "wordCount": 48
+        },
+        "4級": {
+          "title": "Kokuhou on Television",
+          "text": "The popular Japanese movie Kokuhou will have its first television broadcast. It will air on Nippon TV for two consecutive nights on January 2nd and 3rd in the year 2027. Famous actors Ryo Yoshizawa and Ryusei Yokohama play the main roles in this drama. The wonderful film became a huge hit across Japan, earning over 20.9 billion yen in total box office revenue. Many people are very excited to watch this wonderful story at home.",
+          "wordCount": 71
+        },
+        "3級": {
+          "title": "First TV Broadcast for Kokuhou",
+          "text": "The hit movie Kokuhou is coming to television for the very first time. It will be broadcast on Nippon TV over two consecutive nights on January 2 and 3, 2027. Starring Ryo Yoshizawa and Ryusei Yokohama, the film tells a dramatic story about the kabuki world and two devoted men. It achieved historic success, breaking box office records for live-action Japanese films with over 20.9 billion yen and attracting fourteen million viewers. Furthermore, the wonderful drama won ten awards at the 49th Japan Academy Film Prize and received an Academy Award nomination.",
+          "wordCount": 87
+        },
+        "準2級": {
+          "title": "Blockbuster Film Kokuhou Premieres on Television",
+          "text": "The smash-hit Japanese movie Kokuhou will make its television debut on Nippon TV during the 2027 New Year holidays. Scheduled for a two-night broadcast on January 2 and 3, the film stars Ryo Yoshizawa as Kikuo and Ryusei Yokohama as Shunsuke. Directed by Lee Sang-il and based on Shuichi Yoshida's novel, the story explores the dedication of two men in the traditional world of kabuki. Kokuhou shattered box office records, earning over 20.9 billion yen with fourteen million admissions, and won ten major awards at the 49th Japan Academy Film Prize. It also received a historic nomination at the 98th Academy Awards.",
+          "wordCount": 96
+        },
+        "2級": {
+          "title": "Record-Breaking Japanese Film Kokuhou Heads to Television",
+          "text": "The phenomenally successful film Kokuhou is scheduled for its first television broadcast on the Nippon TV network across two consecutive nights on January 2 and 3, 2027. Directed by Lee Sang-il and adapted from Shuichi Yoshida's acclaimed novel, the feature film stars Ryo Yoshizawa and Ryusei Yokohama. It depicts the dramatic lives of two men devoted to the world of kabuki, exploring the intricate lights and shadows of traditional Japanese theater. Kikuo, born into an underworld yakuza family, tragically loses his father in a conflict before being taken in by a master and diving into kabuki. Meanwhile, Shunsuke is born as the true heir to the prestigious theatrical family. As fierce rivals, they push each other to excel artistically while dedicating their entire youth to their craft. The film achieved historic success, grossing over 20.9 billion yen from fourteen million viewers to become the highest-grossing live-action Japanese film of all time. Furthermore, it secured ten awards at the 49th Japan Academy Film Prize, including Best Picture and Best Actor for Ryo Yoshizawa, alongside a historic nomination for Best Makeup and Hairstyling at the 98th Academy Awards.",
+          "wordCount": 180
+        },
+        "準1級": {
+          "title": "Historic Box Office Champion Kokuhou Set for Television Debut",
+          "text": "Following an unprecedented theatrical run that captivated audiences nationwide, the blockbuster drama Kokuhou is slated for its highly anticipated television premiere on the Nippon TV network across two consecutive nights on January 2 and 3, 2027. Directed by Lee Sang-il and rooted in Shuichi Yoshida's acclaimed novel, with a screenplay by Satoko Okudera, the film delves deep into the brilliant yet grueling lights and shadows of the kabuki world. It centers on the intertwined lives and artistic devotion of two men who dedicate their entire existence to the stage. Kikuo, portrayed by Ryo Yoshizawa, is born into an underworld yakuza family and enters the kabuki universe after losing his father to violent conflict, finding shelter under a master. Conversely, Shunsuke, played by Ryusei Yokohama, is born as the privileged theatrical heir to a renowned family. Their starkly contrasting origins—one rising from tragic circumstances and the other born into hereditary theatrical royalty—drive a profound narrative of lifelong rivalry, fierce dedication, and emotional turmoil. The film shattered Japanese live-action box office records by accumulating over 20.9 billion yen from fourteen million viewers. Furthermore, its immense critical acclaim yielded ten awards at the 49th Japan Academy Film Prize, including top honors for the picture and Yoshizawa's lead performance, as well as a historic nomination for Best Makeup and Hairstyling at the 98th Academy Awards, firmly cementing its legendary status in cinematic history.",
+          "wordCount": 225
+        }
+      },
+      "sources": [
+        {
+          "name": "Mynavi News",
+          "url": "https://news.mynavi.jp/article/20261127-5423908/"
+        }
+      ]
+    },
+    {
+      "id": "2026-11-28-snooker-mental-health-challenges",
+      "date": "2026-11-28",
+      "scope": "world",
+      "category": "sports",
+      "categories": [
+        "health"
+      ],
+      "careerTags": [
+        "undecided"
+      ],
+      "tags": [
+        "snooker",
+        "Mark Allen",
+        "mental health",
+        "BBC Sport"
+      ],
+      "titleJa": "スヌーカーのメンタル課題",
+      "title": "Why Snooker Is Mentally Challenging",
+      "summaryJa": "トップ選手のマーク・アレンがメンタルの問題について語り、BBCスポーツがスヌーカーの精神的な厳しさと選手への支援について報じました。",
+      "sourcePublishedAt": "2026-11-27T17:00:10.000Z",
+      "mission": {
+        "type": "advice",
+        "purposeJa": "選手が精神的な困難に直面したとき、周囲はどのようにサポートすべきか考える。",
+        "followUpJa": "記事から読み取れる選手の孤独感を踏まえて、プレッシャーの高い環境にいる人にどのような声かけができるか話し合いましょう。",
+        "questions": {
+          "5級": "What is the name of the snooker player in the story?",
+          "4級": "Why do snooker players feel very lonely during a match?",
+          "3級": "What did Mark Allen say about his future in October?",
+          "準2級": "How does Ken Doherty compare snooker and golf regarding the opponent?",
+          "2級": "What specific factors make snooker uniquely difficult according to players and psychologists?",
+          "準1級": "Analyze the psychological impact of sitting in a chair while an opponent is at the table, and discuss the support systems needed for elite athletes."
+        }
+      },
+      "levels": {
+        "5級": {
+          "title": "Snooker and Health",
+          "text": "Snooker is a popular sport. Players have hard times. Mark Allen is a famous snooker player. He talked about his mental health. BBC Sport looked at this sport. Many players work hard alone. The sport is very hard for the mind. People want to help the players.",
+          "wordCount": 47
+        },
+        "4級": {
+          "title": "Mental Health in Snooker",
+          "text": "Snooker is a very hard game for the mind. Mark Allen is a top player. He said he was in a bad place after a match. He spent time in a clinic to feel better. Other players also talk about mental health problems. They feel very lonely when they sit and watch their opponent play.",
+          "wordCount": 55
+        },
+        "3級": {
+          "title": "The Pressure of Snooker",
+          "text": "Snooker is known as a very mentally difficult sport. Recently, top player Mark Allen spoke about his mental health struggles. After a tough loss at the Northern Ireland Open, he admitted that he was just trying to survive. Many other champions have also talked about stress, addiction, and isolation. Unlike team sports, snooker players spend long hours alone. When your opponent is at the table, you can only sit and watch. BBC Sport reports on why the sport causes such deep mental pressure and how people want to help.",
+          "wordCount": 89
+        },
+        "準2級": {
+          "title": "Inside the Mind of Snooker Players",
+          "text": "Snooker is considered one of the most mentally challenging individual sports in the world. Recently, world number 11 Mark Allen opened up about his mental health struggles, stating he was in a bad place and trying to survive after a defeat. Allen spent time in a clinic to feel better and later noted he was stuck in a major low. Allen is not the only player facing such issues. Champions like Ronnie O'Sullivan and Mark Selby have also discussed heavy pressure and isolation. Experts explain that snooker is an intensely individual discipline. Players spend hours alone in practice rooms, and livelihoods can depend on tiny mistakes. Furthermore, sitting in a chair while your opponent is at the table creates a unique psychological burden.",
+          "wordCount": 122
+        },
+        "2級": {
+          "title": "The Unique Psychological Challenges of Elite Snooker",
+          "text": "Snooker has long been recognized as a sport with unique psychological challenges. In October, world number 11 Mark Allen gave a raw interview where he revealed he was in a bad place and struggling with his mental health after a defeat at the Northern Ireland Open. Allen later noted he was stuck in a major low, though he hopes for a brighter future after spending time in a clinic. Poor mental health is not new to the sport. Since the 1970s, players have spoken about addiction and isolation. Experts note that snooker is an intensely individual discipline. Former world champion Ken Doherty pointed out that unlike golf, where you play your own ball, snooker requires you to sit and bear it while your opponent is at the table. Psychologist Dr Paul Gaffney compares the arena to a colosseum where players can easily feel the crushing weight of public expectation, leading many to suffer in silence.",
+          "wordCount": 153
+        },
+        "準1級": {
+          "title": "Examining the Heavy Psychological Toll of Professional Snooker",
+          "text": "Professional snooker has long tested the psychological resilience of its competitors, a reality brought back into sharp focus by Mark Allen's candid revelations. Allen, currently ranked world number 11, spoke openly about his profound mental health struggles, admitting that he was merely trying to survive after a disappointing defeat at the Northern Ireland Open. His admission follows a historical pattern within the sport, where legendary figures since the 1970s have wrestled with isolation, addiction, and extreme pressure. Unlike team sports or even disciplines like golf, where athletes retain agency over their own equipment during play, snooker inflicts a distinct form of psychological torture: the powerlessness of sitting passively in a chair while an opponent clears the table. According to former champion Ken Doherty, this forced inactivity is the toughest aspect to comprehend. Compounding this, psychologist Dr Paul Gaffney describes the tournament environment as a modern colosseum, magnifying the intense scrutiny faced by elite players. As stars like Ronnie O'Sullivan and Mark Selby have also noted, many competitors suffer in silence, highlighting the urgent need for proper support systems to intervene and assist athletes facing these severe mental health challenges.",
+          "wordCount": 187
+        }
+      },
+      "sources": [
+        {
+          "name": "BBC Sport",
+          "url": "https://www.bbc.co.uk/sport/snooker/articles/cm174wqxk8lpo?at_medium=RSS&at_campaign=rss"
+        }
+      ]
+    },
     {
       "id": "2026-11-27-831-long-summer-drama",
       "date": "2026-11-27",
