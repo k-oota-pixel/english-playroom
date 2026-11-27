@@ -1,11 +1,11 @@
 import {enemyAttackInterval,createAttackClock} from './realtime.js?v=1.10.24';
 import {minibossForStage,chooseMinibossAction} from './miniboss.js?v=2.4.95';
 import {majorBossForStage,royalGuardHp,adminAdventureBest} from './royal-guard.js?v=2.3.25';
-import {createGuardPresentation} from './guard-presentation.js?v=2.3.21';
+import {createGuardPresentation} from './guard-presentation.js?v=2.5.32';
 import {createFinalEncounter,finalEnemyActions,FINAL_FLOOR} from './final-encounter.js?v=2.4.95';
-import {createFinalPresentation} from './final-presentation.js?v=2.3.22';
+import {createFinalPresentation} from './final-presentation.js?v=2.5.32';
 import {adminStatsAdjustment} from '../pet-admin-stats-adjustment.js?v=2.3.23';
-import {createFinalBattleUi} from './final-battle-ui.js?v=2.3.23';
+import {createFinalBattleUi} from './final-battle-ui.js?v=2.5.32';
 import {accountSession} from '../auth-session.js?v=2.4.37';
 import {strengthStatsFromAllocation,strengthLevel,incomingDamage,randomBaseStats,hasIndividualBaseStats} from '../pet-strength-model.js?v=2.3.23';
 import {MAGIC_SPELLS,DUNGEON_ITEMS,normalizeDungeonInventory,rollMagicAmount} from '../pet-dungeons-model.js?v=2.4.96';
@@ -239,7 +239,7 @@ function syncHud(){
   const pct=enemyMax?Math.max(0,enemyHp)/enemyMax*100:0;els.enemyHpBar.style.width=`${pct}%`;els.enemyHpText.textContent=`${Math.max(0,enemyHp)} / ${enemyMax}`;const meta=ELEMENTS[enemyElement];els.enemyElement.textContent=`${meta.icon} ${meta.label}${(finalEncounter?finalEncounter.target?.magicReflect:enemyReflect)?' · 🛡️反射待機中':''}`;els.enemyName.textContent=miniboss?miniboss.name:isBoss(stage,enemyIndex)?'BOSS':'ENEMY';
   els.enemySide.classList.toggle('miniboss-side',!!miniboss);
   const mpText=$('enemyMpText');mpText.hidden=!miniboss;mpText.textContent=miniboss?`Lv.${miniboss.level} · MP ${enemyMp} / ${miniboss.maxMp}`:'';
-  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.image||miniboss.id+'.svg'}?v=2.3.14`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
+  if(miniboss){if(els.enemyVisual.dataset.boss!==miniboss.id){const img=document.createElement('img');img.src=`./bosses/${miniboss.image||miniboss.id+'.svg'}?v=2.5.32`;img.alt=miniboss.name;els.enemyVisual.replaceChildren(img);els.enemyVisual.dataset.boss=miniboss.id;}}
   else{delete els.enemyVisual.dataset.boss;els.enemyVisual.textContent=enemyEmoji();}
   els.enemyCount.textContent=miniboss?.royal?`大ボス · 第${miniboss.phase}形態`:miniboss?'中ボス 1 / 1':els.enemyCount.textContent;finalUi.render(finalEncounter);syncActionAvailability();
 }
