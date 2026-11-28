@@ -202,8 +202,8 @@ img,svg{-webkit-user-drag:none}
 .stamina-buy{flex:none;width:100%;padding:4px 5px;font-size:clamp(10px,1.8vh,14px);background:linear-gradient(#28534f,#203b40);border-color:#70a69b;color:#e1ffe9;white-space:nowrap}
 .stamina-wallet{flex:none;text-align:center;font-size:clamp(9px,1.5vh,12px);color:#e7ce9f;line-height:1.2}
 @media(max-height:420px){.stamina-buy{padding:2px 4px;font-size:10px}.stamina-wallet{font-size:9px}}
-</style></head><body><main><header class="top"><div><div class="eyebrow">MONSTUDY · WARS / PREVIEW 0.6.18</div><h1>もんすたウォーズ</h1><small>英語で召喚。軍団で防衛。</small></div><a href="../">ホームへ</a></header>
-<section id="entry" class="entry panel"><h2>姫を守る軍団をつくろう</h2><p class="rotate-entry">スマホでは横向きがおすすめです。</p><p>英語に正解して召喚盤を回し、仲間を集めて敵の侵攻を防ぎます。</p><div class="settings"><label>英語の難易度<select id="grade"><option>4級</option><option selected>3級</option><option>準2級</option><option>2級</option></select></label><label>ゲーム難易度<select id="mode"><option value="10">Easy / 10 WAVE</option><option value="20">Normal / 20 WAVE</option><option value="30">Hard / 30 WAVE</option><option value="0">Endless</option></select></label></div><details id="symbolSetup" class="symbol-setup"><summary>召喚盤の図柄設定</summary><p id="symbolBudget"></p><div id="symbolEditor"></div><small>スキルツリーの召喚系スキルを1つ習得するごとに追加図柄を1個（最大5個）配分できます。基本20個は固定。召喚系の氷晶は指揮上限も1体ずつ増やします。設定は今回の冒険に適用されます。</small><button id="symbolReset">追加図柄をリセット</button></details><button id="researchOpen" class="ice-open" disabled>❄ スキルツリー <span id="researchCount">0 / 60</span></button><button id="start" class="primary" disabled>問題データを読み込み中…</button><div id="notice" class="notice" role="status"></div><details class="help" open><summary>ルール</summary><p>初期スタミナ9、最大20。召喚コストは2、3、4…と回転ごとに1増加し、ウェーブ勝利で2に戻ります。勝利で10回復、戦闘時間10秒以内と味方死亡ゼロで各＋1（最大12）。20 Cでスタミナを最大10回復できます。冒険中のスタミナ購入・能力枠解放のコインは終了時に一括精算します。回数制限はありませんが、消費21以上では次の戦闘まで回転できません。連続正解3・5・10問でそれぞれ1・1・2回復。誤答・わからない場合も表示された召喚コスト分のスタミナを消費します。スロットは回らず、次の召喚コストと回数は変わりません。</p><p>図柄は基本20個から重み付き抽選し、兵種ごとに出現率が異なります。3×3の縦横斜め8ラインが揃うと、成立ラインごとに仲間を1体召喚。揃わなければ召喚なし。初回のみ1ライン以上確定。召喚された仲間には300種類から固有能力が1つ付き、強化時に素材の能力を引き継げます。能力枠は仲間ごとに最大4枠。第1枠は無料、第2〜4枠は50・100・200 Cで順に解放します。解放はその仲間の今回の冒険のみ有効で、冒険終了や素材として消費すると失われます。指揮上限は初期8体。召喚系の氷晶を1つ習得するごとに上限＋1（最大13体）。召喚開始時に上限未満なら、成立した全ラインの仲間が加入します。上限以上では次の召喚を停止しますが、全員で戦闘できます。吸収で人数を減らし、★3まで育成し、戦場に自由配置して姫を守りましょう。姫が敵の攻撃を1回でも受けると敗北。仲間のHP・MPはウェーブごとに全回復します。</p><p>スキルツリーは既存のもんすたコインで習得できます。冒険の実績は終了時にアカウントへ保存します。軍団の途中保存はありません。</p></details></section>
+</style></head><body><main><header class="top"><div><div class="eyebrow">MONSTUDY · WARS / PREVIEW 0.6.19</div><h1>もんすたウォーズ</h1><small>英語で召喚。軍団で防衛。</small></div><a href="../">ホームへ</a></header>
+<section id="entry" class="entry panel"><h2>姫を守る軍団をつくろう</h2><p class="rotate-entry">スマホでは横向きがおすすめです。</p><p>英語に正解して召喚盤を回し、仲間を集めて敵の侵攻を防ぎます。</p><div class="settings"><label>英語の難易度<select id="grade"><option>4級</option><option selected>3級</option><option>準2級</option><option>2級</option></select></label><label>ゲーム難易度<select id="mode"><option value="10">Easy / 10 WAVE</option><option value="20">Normal / 20 WAVE</option><option value="30">Hard / 30 WAVE</option><option value="0">Endless</option></select></label></div><details id="symbolSetup" class="symbol-setup"><summary>召喚盤の図柄設定</summary><p id="symbolBudget"></p><div id="symbolEditor"></div><small>スキルツリーの召喚系スキルを1つ習得するごとに追加図柄を1個（最大5個）配分できます。基本20個は固定。召喚系の氷晶は指揮上限も1体ずつ増やします。設定は今回の冒険に適用されます。</small><button id="symbolReset">追加図柄をリセット</button></details><button id="researchOpen" class="ice-open" disabled>❄ スキルツリー <span id="researchCount">0 / 60</span></button><button id="start" class="primary" disabled>問題データを読み込み中…</button><div id="notice" class="notice" role="status"></div><details class="help" open><summary>ルール</summary><p>初期スタミナ9、最大20。召喚コストは2、3、4…と回転ごとに1増加し、ウェーブ勝利で2に戻ります。勝利で10回復、戦闘時間10秒以内と味方死亡ゼロで各＋1（最大12）。20 Cでスタミナを最大10回復できます。冒険中のスタミナ購入・能力枠解放は購入時にコインを精算します。回数制限はありませんが、消費21以上では次の戦闘まで回転できません。連続正解3・5・10問でそれぞれ1・1・2回復。誤答・わからない場合も表示された召喚コスト分のスタミナを消費します。スロットは回らず、次の召喚コストと回数は変わりません。</p><p>図柄は基本20個から重み付き抽選し、兵種ごとに出現率が異なります。3×3の縦横斜め8ラインが揃うと、成立ラインごとに仲間を1体召喚。揃わなければ召喚なし。初回のみ1ライン以上確定。召喚された仲間には300種類から固有能力が1つ付き、強化時に素材の能力を引き継げます。能力枠は仲間ごとに最大4枠。第1枠は無料、第2〜4枠は50・100・200 Cで順に解放します。解放はその仲間の今回の冒険のみ有効で、冒険終了や素材として消費すると失われます。指揮上限は初期8体。召喚系の氷晶を1つ習得するごとに上限＋1（最大13体）。召喚開始時に上限未満なら、成立した全ラインの仲間が加入します。上限以上では次の召喚を停止しますが、全員で戦闘できます。吸収で人数を減らし、★3まで育成し、戦場に自由配置して姫を守りましょう。姫が敵の攻撃を1回でも受けると敗北。仲間のHP・MPはウェーブごとに全回復します。</p><p>スキルツリーは既存のもんすたコインで習得できます。冒険の実績は終了時にアカウントへ保存します。軍団の途中保存はありません。</p></details></section>
 <section id="researchPage" class="ice-page panel" hidden><header class="ice-head"><div><div class="eyebrow">WARS · SKILL TREE</div><h2>スキルツリー</h2><small>実績と前提スキルで解放・コインで習得</small></div><div class="ice-wallet"><b id="iceCoins">— C</b><button id="researchClose">戻る</button></div></header><div id="iceSummary" class="ice-summary"></div><div class="ice-layout"><div class="ice-map"><div class="ice-toolbar"><button id="iceZoomOut" aria-label="縮小">−</button><button id="iceZoomIn" aria-label="拡大">＋</button><small>結晶を選択 · スクロールで移動</small></div><div id="iceViewport" class="ice-viewport"><svg id="iceTree" viewBox="0 0 880 880" role="group" aria-label="六方向の氷晶スキルツリー"></svg></div><div class="ice-legend"><span>◆ 習得済み</span><span class="ice-pending-legend">◆ 仮習得</span><span>◇ 習得可能</span><span>◈ 未解放</span></div></div><aside id="iceDetail" class="ice-detail"></aside></div><div class="ice-checkout"><div><b id="iceCart">仮習得 0個 · 0 C</b><small id="iceBalance">確定後の残高 — C</small></div><button id="iceCancel" disabled>仮習得を全取消</button><button id="iceCommit" class="ice-buy" disabled>まとめて確定</button></div><div class="ice-reset-row"><div><b id="iceResetInfo"></b><small id="iceRefundInfo"></small></div><button id="iceReset" class="ice-reset" disabled>スキルツリーをリセット</button></div><div id="iceMessage" role="status"></div></section>
 <section id="game" hidden>
 
@@ -631,31 +631,69 @@ function spendJournals(uid){
  return rows;
 }
 const stagedSpend=run=>validSpend(run?.coinSpend);
-const availableCoins=()=>Math.max(0,researchCoins-stagedSpend(s));
-function reserveCoins(run,price){
- if(!Number.isSafeInteger(price)||price<=0||availableCoins()<price)throw Error('コインが足りません。');
- const spend=stagedSpend(run)+price;
- if(validSpend(spend)!==spend)throw Error('購入額が上限を超えています。');
- const row={id:run.runId,uid:run.uid,mode:run.mode,spend};
- // Persist before granting the benefit; never grant a purchase if storage is unavailable.
- localStorage.setItem(spendKey(run.uid,run.runId),JSON.stringify(row));run.coinSpend=spend;
-}
+const availableCoins=()=>researchCoins;
 function clearSpendJournal(uid,id,paid){
  const key=spendKey(uid,id),raw=JSON.parse(localStorage.getItem(key)||'null');
  if(raw&&validSpend(raw.spend)<=paid)localStorage.removeItem(key);
 }
+// One wallet transaction per purchase. Keep retry IDs for 24h; never evict a live ID.
+const purchaseTTL=24*60*60*1000,purchaseMax=512;
+function purchasePatch(data,p,now){
+ const coins=coinsOf(data),raw=Array.isArray(data.legionPurchaseLedger)?data.legionPurchaseLedger:[];
+ const previous=raw.find(x=>x?.id===p.id);
+ if(previous){if(previous.cost!==p.cost||previous.kind!==p.kind)throw Error('購入記録が一致しません。');return {data,paid:true};}
+ if(!Number.isSafeInteger(p.at)||now-p.at>=purchaseTTL||p.at>now) return {data,expired:true};
+ if(coins<p.cost)return {data,insufficient:true};
+ const ledger=raw.filter(x=>x&&Number.isSafeInteger(x.at)&&now-x.at<purchaseTTL);
+ if(ledger.length>=purchaseMax)return {data,full:true};
+ const patch={coins:coins-p.cost,legionPurchaseLedger:[...ledger,{id:p.id,at:p.at,cost:p.cost,kind:p.kind}],coinUpdatedAt:serverTimestamp()};
+ return {data:{...data,...patch},patch,paid:true};
+}
+async function payPurchase(run,p){
+ const uid=run.uid,ref=wallet(uid),now=Date.now();
+ return runTransaction(researchDb,async tx=>{
+  if(researchAuth.currentUser?.uid!==uid)throw Error('アカウントが変更されました。');
+  const snap=await tx.get(ref),result=purchasePatch(snap.data()||{},p,now);
+  if(result.patch)tx.set(ref,result.patch,{merge:true});return result;
+ });
+}
+function beginPurchase(run,kind,cost,extra){
+ run.purchase={id:crypto.randomUUID(),at:Date.now(),kind,cost,...extra};
+}
+async function completePurchase(){
+ const run=s,p=run?.purchase;if(!p||slotPurchaseBusy)return;
+ slotPurchaseBusy=true;$('unitClose').disabled=true;render();
+ $('unitDetail').querySelectorAll('button').forEach(btn=>btn.disabled=true);
+ $('summonNote').textContent='コイン処理中…';let message='';
+ try{
+  const result=await payPurchase(run,p);
+  if(s!==run||researchAuth.currentUser?.uid!==run.uid)throw Error('冒険またはアカウントが変更されました。');
+  setResearchData(result.data);
+  if(result.paid){
+   if(p.kind==='stamina')run.stamina=Math.min(20,run.stamina+p.gain);
+   else {const u=run.army.find(v=>v.id===p.unitId);if(u&&E.nextSlot(u)?.index===p.index)E.unlockSlot(u,p.index);}
+   message=p.kind==='stamina'?'スタミナ +'+p.gain+' 回復 · 20 C消費':'能力枠を解放しました。';
+  }else message=result.insufficient?'コインが足りません。':result.expired?'購入の確認期限を過ぎました。再購入前に残高を確認してください。':'購入記録の一時上限です。時間をおいて再試行してください。';
+  run.purchase=null;
+ }catch(e){message='購入結果を確認できません。購入の再試行で同じ記録を確認します。';}
+ finally{
+  slotPurchaseBusy=false;$('unitClose').disabled=!!run.purchase;
+  if(s===run){$('summonNote').textContent=message;render();
+   if(p.kind==='slot'&&!$('unitOverlay').hidden){if(run.purchase){const retry=modalButton('購入結果を再確認',completePurchase,'primary');$('unitDetail').append(el('p',message,'slot-message'),retry);}else{const u=run.army.find(v=>v.id===p.unitId);if(u&&p.refresh)p.refresh();$('unitDetail').append(el('p',message,'slot-message'));}}
+  }
+ }
+}
 function buyUnitSlot(u,index,refresh){
  if(!editable()||!researchReady||!s.army.includes(u))return;const next=E.nextSlot(u);if(!next||next.index!==index)return;
- if(!confirm(E.units[u.t][0]+'の能力枠'+(index+1)+'を '+next.cost+' Cで解放します。\\n今回の冒険のみ有効。消費コインは冒険終了時に精算します。'))return;
- try{reserveCoins(s,next.cost);E.unlockSlot(u,index);render();refresh();}
- catch(e){$('unitDetail').append(el('p',e.message||'購入を記録できませんでした。','slot-message'));}
+ if(!confirm(E.units[u.t][0]+'の能力枠'+(index+1)+'を '+next.cost+' Cで解放します。\\n今回の冒険のみ有効です。'))return;
+ beginPurchase(s,'slot',next.cost,{unitId:u.id,index,refresh});void completePurchase();
 }
 function buyStamina(){
- if(!canBuyStamina())return;const gain=E.staminaGain(s);
- if(!confirm('20 Cでスタミナを '+gain+' 回復します。\\n消費コインは冒険終了時にまとめて精算します。'))return;
- try{reserveCoins(s,20);s.stamina=Math.min(20,s.stamina+gain);$('summonNote').textContent='スタミナ +'+gain+' 回復 · 20 C仮精算';}
- catch(e){$('summonNote').textContent=e.message||'購入を記録できませんでした。';}
- render();
+ if(!canBuyStamina())return;
+ if(s.purchase){void completePurchase();return;}
+ const gain=E.staminaGain(s);
+ if(!confirm('20 Cでスタミナを '+gain+' 回復します。\\n今回の冒険のみ有効です。'))return;
+ beginPurchase(s,'stamina',20,{gain});void completePurchase();
 }
 const coinsOf=d=>Math.max(0,Math.floor(Number(d?.coins)||0));
 const outboxKey=uid=>'monstudy-legion-runs-v1:'+uid;
@@ -786,9 +824,9 @@ if(track.animate)animation=track.animate([{transform:'translateY(0)'},{transform
 else{track.style.transition='transform '+ms+'ms cubic-bezier(.12,.36,.27,1)';requestAnimationFrame(()=>track.style.transform='translateY('+(-n*height)+'px)');}
 return (animation?animation.finished.catch(()=>{}):new Promise(resolve=>setTimeout(resolve,ms))).then(()=>{if(ep!==epoch)return;const last=[...track.children].slice(-3);animation?.cancel();track.style.transition='none';track.style.transform='';track.replaceChildren(...last);reel.classList.add('stopped');clunk();});});await Promise.all(tasks);if(ep!==epoch)return;const high=new Set(out.hits.flat());[...$('slots').querySelectorAll('.reel')].forEach((reel,col)=>{[...reel.firstElementChild.children].forEach((d,row)=>d.classList.toggle('hit',high.has(row*3+col)));});}
 function resetQ(){closeQuiz();q=null;order=[];orderCursor=0;$('choices').hidden=false;$('feedback').hidden=true;$('feedback').classList.remove('good','bad');$('quizPhase').textContent='答えを選ぼう';$('quizTitle').textContent='英語に挑戦';$('quizBody').scrollTop=0;$('kind').textContent='単語・文法・並べ替え';$('prompt').textContent='英語に正解すると召喚盤が回ります。';$('choices').replaceChildren();$('feedback').textContent='';$('next').hidden=true;}
-function canAsk(){return !!s&&!busy&&!slotPurchaseBusy&&(!q||!$('next').hidden)&&E.canSpin(s);}
-function canBuyStamina(){return !!s&&researchReady&&!busy&&!slotPurchaseBusy&&s.phase==='prep'&&(!q||!$('next').hidden)&&E.staminaGain(s)>0&&E.cost(s)<=20&&availableCoins()>=20;}
-function render(){if(!s)return;$('wave').textContent=s.wave+' / '+(s.mode||'∞');$('stamina').textContent=s.stamina+' / 20';$('stbar').style.width=s.stamina*5+'%';$('streak').textContent=s.streak;$('score').textContent=s.correct+' / '+s.answered;$('ask').disabled=!canAsk();$('buyStamina').disabled=!canBuyStamina();$('buyStamina').textContent=E.staminaGain(s)?'⚡ +'+E.staminaGain(s)+' / 20 C':'⚡ 満タン';$('staminaWallet').textContent='所持 '+availableCoins()+' C'+(stagedSpend(s)?' · 未精算 '+stagedSpend(s)+' C':'');$('lever').disabled=$('ask').disabled;$('ask').textContent=(q&&!$('next').hidden&&canAsk()?'次の英語に挑戦 ⚡':'英語に挑戦 ⚡')+E.cost(s);$('quit').disabled=slotPurchaseBusy||victoryPending;$('warsRankingOpen').disabled=s.phase!=='prep'||busy||slotPurchaseBusy||!!q;$('fight').disabled=busy||slotPurchaseBusy||!!q||s.phase!=='prep'||!s.army.length;$('status').textContent=s.phase==='battle'?(victoryPending?'勝利！':'戦闘中…'):s.army.length>=E.commandLimit(s)?'指揮上限：強化または戦闘へ':E.cost(s)>20?'消費が20を超過：戦闘へ':s.stamina<E.cost(s)?'スタミナ不足：回復または戦闘へ':'召喚 '+s.spins+'回 · 次の消費 '+E.cost(s);$('commandCount').textContent=s.army.length+' / '+E.commandLimit(s);$('commandHud').classList.toggle('full',s.army.length>=E.commandLimit(s));if(s.phase!=='battle'){if(placing!==null&&!s.army.some(u=>u.id===placing))placing=null;arena();}placeHint();}
+function canAsk(){return !!s&&!busy&&!slotPurchaseBusy&&!s.purchase&&(!q||!$('next').hidden)&&E.canSpin(s);}
+function canBuyStamina(){return !!s&&researchReady&&!busy&&!slotPurchaseBusy&&s.phase==='prep'&&(!q||!$('next').hidden)&&(s.purchase?s.purchase.kind==='stamina':E.staminaGain(s)>0&&E.cost(s)<=20);}
+function render(){if(!s)return;$('wave').textContent=s.wave+' / '+(s.mode||'∞');$('stamina').textContent=s.stamina+' / 20';$('stbar').style.width=s.stamina*5+'%';$('streak').textContent=s.streak;$('score').textContent=s.correct+' / '+s.answered;$('ask').disabled=!canAsk();$('buyStamina').disabled=!canBuyStamina();$('buyStamina').textContent=s.purchase?.kind==='stamina'?'購入を再確認':slotPurchaseBusy?'処理中…':E.staminaGain(s)?'⚡ +'+E.staminaGain(s)+' / 20 C':'⚡ 満タン';$('staminaWallet').textContent='所持 '+availableCoins()+' C';$('lever').disabled=$('ask').disabled;$('ask').textContent=(q&&!$('next').hidden&&canAsk()?'次の英語に挑戦 ⚡':'英語に挑戦 ⚡')+E.cost(s);$('quit').disabled=slotPurchaseBusy||victoryPending||!!s.purchase;$('warsRankingOpen').disabled=s.phase!=='prep'||busy||slotPurchaseBusy||!!s.purchase||!!q;$('fight').disabled=busy||slotPurchaseBusy||!!s.purchase||!!q||s.phase!=='prep'||!s.army.length;$('status').textContent=s.phase==='battle'?(victoryPending?'勝利！':'戦闘中…'):s.army.length>=E.commandLimit(s)?'指揮上限：強化または戦闘へ':E.cost(s)>20?'消費が20を超過：戦闘へ':s.stamina<E.cost(s)?'スタミナ不足：回復または戦闘へ':'召喚 '+s.spins+'回 · 次の消費 '+E.cost(s);$('commandCount').textContent=s.army.length+' / '+E.commandLimit(s);$('commandHud').classList.toggle('full',s.army.length>=E.commandLimit(s));if(s.phase!=='battle'){if(placing!==null&&!s.army.some(u=>u.id===placing))placing=null;arena();}placeHint();}
 function select(options,value,label,change,disabled){const d=el('select');for(const [v,n] of options){const o=el('option',n);o.value=v;d.append(o);}d.value=value;d.disabled=disabled;d.setAttribute('aria-label',label);d.onchange=()=>change(d.value);return d;}
 // Large, original pixel-style emblems, separate from the battlefield sprites.
 const symbolArt=[
@@ -838,20 +876,20 @@ function sprite(t,enemy=false,boss=false,flank=false,icon=false,variant=0,gear=0
  if(boss){rect(9,0,3,4,gold);rect(15,0,3,4,gold);rect(21,0,3,4,gold);rect(9,3,15,2,gold);}
  return svg;
 }
-function closeUnit(){if(slotPurchaseBusy)return;detailId=null;$('unitOverlay').hidden=true;}
+function closeUnit(){if(slotPurchaseBusy||s?.purchase)return;detailId=null;$('unitOverlay').hidden=true;}
 function showUnitDialog(title,content){$('unitTitle').textContent=title;$('unitDetail').replaceChildren(...content);$('unitOverlay').hidden=false;$('unitClose').focus();}
 function traitLine(u){const d=el('div',undefined,'trait-line'),slots=E.activeTraits(u);d.append(el('small','固有能力 '+slots.filter(Boolean).length+' / '+E.slotCount(u)+'枠（最大4）'));slots.forEach((t,i)=>{const row=el('div',undefined,'trait-slot-mini');row.append(el('strong',(i+1)+'. '+(t?t.name:'空き枠')),el('small',t?t.desc:'強化で能力を継承可能'));d.append(row);});return d;}
 function unitLine(u){const t=E.units[u.t],st=E.stats(u),d=el('div',undefined,'unit-summary');const info=el('div');info.append(el('div',t[0]+' '+ '★'.repeat(u.rank)+' · HP '+st.hp+' / ATK '+st.atk+(E.manaMax(u)?' / MP '+E.manaMax(u):'')+' · 個体値 '+u.iv+'%'),traitLine(u));d.append(sprite(u.t),info);return d;}
 function modalButton(label,fn,cls){const d=el('button',label,cls);d.onclick=fn;return d;}
 function mergeDonor(donor){if(!editable()||!donor)return;hideInspect();const targets=s.army.filter(u=>u.id!==donor.id&&(u.rank<3||E.activeTraits(donor).some(t=>t&&E.traitSlots(u).some((_,i)=>E.canInherit(u,donor,i,t.id)))||E.nextSlot(u)));const rows=targets.map(u=>{const row=el('div',undefined,'reserve-row');row.append(unitLine(u),modalButton('この仲間を強化',()=>confirmMerge(u,donor,null),'primary'));return row;});showUnitDialog('強化先を選ぶ',[unitLine(donor),el('p','この仲間を素材として消費します。引き継げる固有能力は1回の強化につき1つです。'),...(rows.length?rows:[el('p','強化できる他の仲間がいません。')])]);}
-function slotRows(u,onUnlock){const box=el('div',undefined,'ability-slots'),slots=E.activeTraits(u),next=E.nextSlot(u);for(let i=0;i<4;i++){const row=el('div',undefined,'ability-slot '+(i<slots.length?'opened':'locked')),t=slots[i];row.append(el('strong','SLOT '+(i+1)+(i===0?' · 無料':i<slots.length?' · 解放済み':' · '+E.slotCosts[i]+' C')));if(i<slots.length){row.append(el('b',t?t.name:'空き枠'),el('small',t?t.desc:'素材の能力を継承できます。'));}else{const btn=modalButton(next?.index===i?E.slotCosts[i]+' Cで解放':'前の枠を解放してください',()=>buyUnitSlot(u,i,onUnlock),'slot-unlock');btn.disabled=next?.index!==i||slotPurchaseBusy||(next?.index===i&&availableCoins()<next.cost);row.append(btn);}box.append(row);}return box;}
+function slotRows(u,onUnlock){const box=el('div',undefined,'ability-slots'),slots=E.activeTraits(u),next=E.nextSlot(u);for(let i=0;i<4;i++){const row=el('div',undefined,'ability-slot '+(i<slots.length?'opened':'locked')),t=slots[i];row.append(el('strong','SLOT '+(i+1)+(i===0?' · 無料':i<slots.length?' · 解放済み':' · '+E.slotCosts[i]+' C')));if(i<slots.length){row.append(el('b',t?t.name:'空き枠'),el('small',t?t.desc:'素材の能力を継承できます。'));}else{const btn=modalButton(next?.index===i?E.slotCosts[i]+' Cで解放':'前の枠を解放してください',()=>buyUnitSlot(u,i,onUnlock),'slot-unlock');btn.disabled=next?.index!==i||slotPurchaseBusy||!!s.purchase;row.append(btn);}box.append(row);}return box;}
 function showSlots(u,message=''){if(!editable()||!s.army.includes(u))return;hideInspect();showUnitDialog('能力スロット',[unitLine(u),el('p','所持コイン（直近確認時）：'+researchCoins+' C'),slotRows(u,()=>showSlots(u,'解放しました。強化で能力をセットできます。')),el('small','枠はこの仲間・今回の冒険のみ有効です。別の仲間には再購入が必要です。冒険終了・素材消費・ページ再読み込みで失われます。'),...(message?[el('p',message,'slot-message')]:[]),modalButton('閉じる',closeUnit)]);}
 function confirmMerge(u,donor,inherit=null,message=''){if(!editable()||!s.army.includes(u)||!s.army.includes(donor))return;if(inherit&&!E.canInherit(u,donor,inherit.slot,inherit.id))inherit=null;const copy=E.previewAbsorb(u,donor,inherit),before=E.stats(u),after=E.stats(copy),choices=el('div',undefined,'trait-choices');const keep=modalButton('能力を変更せず強化',()=>confirmMerge(u,donor,null),'trait-choice'+(!inherit?' chosen':''));keep.disabled=u.rank===3;choices.append(keep);
  for(const t of E.activeTraits(donor).filter(Boolean)){const group=el('div',undefined,'inherit-group');group.append(el('strong',t.name),el('small',t.desc));const targets=el('div',undefined,'inherit-targets');E.traitSlots(u).forEach((id,i)=>{const btn=modalButton('枠'+(i+1)+(id?' 上書き':' にセット'),()=>confirmMerge(u,donor,{slot:i,id:t.id}),'trait-choice'+(inherit?.slot===i&&inherit?.id===t.id?' chosen':''));btn.disabled=!E.canInherit(u,donor,i,t.id);targets.append(btn);});group.append(targets);choices.append(group);}
  const confirmBtn=modalButton(inherit?'継承して強化する':'そのまま強化する',()=>{if(!editable())return;const old=inherit?E.activeTraits(u)[inherit.slot]:null;if(old&&!confirm('枠'+(inherit.slot+1)+'の「'+old.name+'」を上書きしますか？ 元の能力は失われます。'))return;if(E.absorb(s,u.id,donor.id,inherit)){closeUnit();render();}},'primary');confirmBtn.disabled=!inherit&&u.rank===3;
  showUnitDialog('強化・固有能力の選択',[unitLine(u),el('p',E.units[donor.t][0]+' を消費します。所持コイン（直近確認時）：'+researchCoins+' C'),slotRows(u,()=>confirmMerge(u,donor,inherit,'解放しました。継承先の枠を選んでください。')),el('small','異なる種類の能力を最大4つ同時発動できます。同系統の能力は重複セットできません。素材側の枠自体は引き継がれません。'),choices,el('p','★'+u.rank+' → ★'+copy.rank+'　HP '+before.hp+' → '+after.hp+'　ATK '+before.atk+' → '+after.atk),...(inherit?[el('p','継承先：枠'+(inherit.slot+1),'slot-message')]:[]),...(message?[el('p',message,'slot-message')]:[]),confirmBtn,modalButton('戻る',()=>mergeDonor(donor))]);}
 
-function editable(){return !!s&&!busy&&!slotPurchaseBusy&&!q&&s.phase==='prep';}
+function editable(){return !!s&&!busy&&!slotPurchaseBusy&&!s.purchase&&!q&&s.phase==='prep';}
 function placementButton(u,edit){const d=el('button',placing===u.id?'戦場をタップ':'配置する','placebtn');d.disabled=!edit;d.onclick=()=>{selected=null;placing=placing===u.id?null:u.id;render();};return d;}
 function placeHint(){const u=s?.army.find(v=>v.id===placing);if(s?.phase==='prep'){const plan=E.enemyPlan(s),counts=E.units.map((v,i)=>[v[0],plan.filter(t=>t===i).length]).filter(v=>v[1]);$('enemyPreview').textContent='次の敵：'+counts.map(([n,c])=>n+'×'+c).join(' / ');$('enemyPreview').hidden=false;}else $('enemyPreview').hidden=true;$('arena').classList.toggle('placing',!!u&&editable());$('arena').classList.toggle('fighting',s?.phase==='battle');$('placeHint').textContent=s?.phase==='battle'?(victoryPending?'勝利！':'全軍交戦中'):u?E.units[u.t][0]+' の配置先をタップ / ドラッグ':'仲間をタップで詳細、ドラッグで配置';}
 const actorMap=new Map();let inspectId=null,inspectPinned=false;
@@ -922,7 +960,7 @@ function drawChoices(){
  btn('わからない',()=>submit(null));
 }
 async function submit(v){if(!q||busy||!$('next').hidden)return;busy=true;prepareSound();const ep=epoch;let ok;try{ok=evaluateAttempt(q,v);}catch(e){busy=false;$('feedback').textContent=e.message;return;}let summonResult='';const attemptCost=E.cost(s),bonus=E.answer(s,ok),model=modelAnswer(q);$('quizClose').disabled=true;$('quizTitle').textContent=ok?'正解！':'解説';$('choices').hidden=true;$('feedback').hidden=false;$('feedback').classList.toggle('good',ok);$('feedback').classList.toggle('bad',!ok);$('quizPhase').textContent=ok?'リール回転中…':'スタミナ −'+attemptCost;$('choices').querySelectorAll('button').forEach((d,i)=>{d.disabled=true;if(q.source!=='order'&&i===q.correctIndex)d.classList.add('correct');else if(q.source!=='order'&&i===v)d.classList.add('wrong');});$('feedback').textContent=(ok?'正解！':'不正解。スタミナ −'+attemptCost+'。')+'\n答え：'+model.correctAnswer+(model.completedSentence?'\n'+(q.source==='retry'?q.prompt.replace(/\(\s*_{2,}\s*\)|_{2,}/,()=>model.correctAnswer):model.completedSentence):'')+(model.optionPairs?.length?'\n'+model.optionPairs.map(p=>p.en+' = '+p.ja).join(' / '):'')+(bonus?'\n連続正解ボーナス ⚡+'+bonus:'');appendGrammarHelp(q,model.correctAnswer);render();if(ok){const out=E.spin(s);if(out){$('summonNote').textContent='正解！ 召喚中…';await rollReels(out,ep);if(ep!==epoch)return;summonResult=out.hits.length?'召喚完了！':'ハズレ · 成立ラインなし';$('feedback').append(el('div',(out.hits.length?out.hits.length+'ライン成立！ '+out.types.map(t=>E.units[t][0]).join('、')+(s.army.length>=E.commandLimit(s)?'（指揮 '+s.army.length+'/'+E.commandLimit(s)+'：次の召喚には強化が必要）':''):'ハズレ：図柄が揃わなかったため、仲間の召喚はありません。'),'summon-feedback'));}}busy=false;$('next').hidden=false;$('quizClose').disabled=false;$('quizPhase').textContent=ok?(summonResult||'終了'):'解説を確認しよう';$('summonNote').textContent=ok?(summonResult||'終了'):'不正解 · スタミナ −'+attemptCost;render();}
-function fight(){if(victoryPending||busy||slotPurchaseBusy||q||s.phase!=='prep'||!s.army.length)return;closeUnit();selected=null;placing=null;drag=null;s.phase='battle';b=E.battle(s);hideInspect();$('fx').replaceChildren();render();arena(b);lastFrame=0;accumulator=0;frame=requestAnimationFrame(tick);}
+function fight(){if(victoryPending||busy||slotPurchaseBusy||s.purchase||q||s.phase!=='prep'||!s.army.length)return;closeUnit();selected=null;placing=null;drag=null;s.phase='battle';b=E.battle(s);hideInspect();$('fx').replaceChildren();render();arena(b);lastFrame=0;accumulator=0;frame=requestAnimationFrame(tick);}
 function tick(now){if(s?.phase!=='battle'||victoryPending)return;if(!lastFrame)lastFrame=now;const speed=600/Number($('speed').value);accumulator+=Math.min(.1,(now-lastFrame)/1000)*speed;lastFrame=now;let done='',events=[];while(accumulator>=.05&&!done){done=E.step(b,Math.random,.05);events.push(...b.events);accumulator-=.05;}arena(b,Math.max(0,Math.min(1,accumulator/.05)));if(events.length)effects(events.slice(-14));$('log').textContent=b.time.toFixed(1)+' 秒 · 残敵 '+b.enemies.filter(u=>u.hp>0).length+' · 味方 '+b.allies.filter(u=>u.hp>0).length+(events.some(e=>e.kind==='princess')?' · 姫が攻撃された！':'');if(done){if(done==='win'){showVictory();}else{E.finish(s,b);$('fx').replaceChildren();finish();}return;}frame=requestAnimationFrame(tick);}
 function clearVictory(){clearTimeout(victoryTimer);victoryTimer=null;victoryPending=false;$('victoryBanner').hidden=true;}
 function showVictory(){
@@ -945,5 +983,5 @@ $('portraitContinue').onclick=()=>{portraitOverride=true;checkOrientation();};
 window.addEventListener('resize',checkOrientation);window.addEventListener('orientationchange',checkOrientation);
 $('quizClose').onclick=()=>{if(!busy){resetQ();render();$('ask').focus();}};$('unitClose').onclick=closeUnit;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){if(!$('unitOverlay').hidden)closeUnit();else if(!$('quizOverlay').hidden){resetQ();render();}}});
-$('buyStamina').onclick=buyStamina;$('ask').onclick=ask;$('lever').onclick=ask;$('fight').onclick=fight;$('next').onclick=()=>{if(!busy){resetQ();render();}};$('quit').onclick=()=>{if(slotPurchaseBusy||victoryPending)return;if(confirm('冒険を終了しますか？軍団は失われますが、ここまでの実績は保存します。')){if(s.phase==='battle'){s.princessSafe=b.princessSafe;E.collectBattle(s,b);}s.phase='quit';finish();}};$('again').onclick=()=>{$('result').hidden=true;$('entry').hidden=false;s=null;};initializeResearch();load();
+$('buyStamina').onclick=buyStamina;$('ask').onclick=ask;$('lever').onclick=ask;$('fight').onclick=fight;$('next').onclick=()=>{if(!busy){resetQ();render();}};$('quit').onclick=()=>{if(slotPurchaseBusy||victoryPending||s.purchase)return;if(confirm('冒険を終了しますか？軍団は失われますが、ここまでの実績は保存します。')){if(s.phase==='battle'){s.princessSafe=b.princessSafe;E.collectBattle(s,b);}s.phase='quit';finish();}};$('again').onclick=()=>{$('result').hidden=true;$('entry').hidden=false;s=null;};initializeResearch();load();
 </script></body></html>
